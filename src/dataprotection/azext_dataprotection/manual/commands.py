@@ -17,14 +17,12 @@ from ._exception_handler import exception_handler
 
 
 def load_command_table(self, _):
-    from .aaz_operations.backup_instance import BackupInstanceCreate
-    self.command_table['data-protection backup-instance create'] = BackupInstanceCreate(loader=self)
-    # with self.command_group('data-protection backup-instance') as g:
-    #     g.custom_command('create', 'data_protection_backup_instance_create', supports_no_wait=True)
-
+    # from .aaz_operations.backup_instance import BackupInstanceCreate
+    # self.command_table['data-protection backup-instance create'] = BackupInstanceCreate(loader=self)
     # from .aaz_operations.backup_instance import BackupInstanceValidateForBackup
     # self.command_table['data-protection backup-instance validate-for-backup'] = BackupInstanceValidateForBackup(loader=self)
     with self.command_group('data-protection backup-instance') as g:
+        g.custom_command('create', 'data_protection_backup_instance_create', supports_no_wait=True)
         g.custom_command('validate-for-backup', 'data_protection_backup_instance_validate_for_backup', supports_no_wait=True)
 
     with self.command_group('dataprotection backup-instance', client_factory=cf_backup_instance, exception_handler=exception_handler) as g:

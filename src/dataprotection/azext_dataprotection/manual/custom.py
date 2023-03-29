@@ -85,7 +85,6 @@ def dataprotection_resource_guard_update(client,
 
 
 def dataprotection_backup_instance_create(client, vault_name, resource_group_name, backup_instance, no_wait=False):
-    input("Wrong file you're in")
     backup_instance_name = backup_instance["backup_instance_name"]
     validate_backup_instance = copy.deepcopy(backup_instance)
     backup_instance["backup_instance_name"] = None
@@ -104,23 +103,90 @@ def dataprotection_backup_instance_create(client, vault_name, resource_group_nam
 
 
 def data_protection_backup_instance_create(cmd, vault_name, resource_group_name, backup_instance, no_wait=False):
-#     from azext_dataprotection.aaz.latest.data_protection.backup_instance import Create, ValidateForBackup
-#     from azure.cli.core.commands import LongRunningOperation
+    input("why")
+    # from azext_dataprotection.aaz.latest.data_protection.backup_instance import Create, ValidateForBackup
+    # from azure.cli.core.commands import LongRunningOperation
 
-#     poller = ValidateForBackup(cli_ctx=cmd.cli_ctx)(command_args={
-#         "resource_group": resource_group_name,
-#         "vault_name": vault_name,
-#         "backup_instance": backup_instance['properties']
-#     })
-#     LongRunningOperation(cmd.cli_ctx)(poller)
+    # poller = ValidateForBackup(cli_ctx=cmd.cli_ctx)(command_args={
+    #     "resource_group": resource_group_name,
+    #     "vault_name": vault_name,
+    #     "backup_instance": backup_instance['properties']
+    # })
+    # LongRunningOperation(cmd.cli_ctx)(poller)
 
-#     return Create(cli_ctx=cmd.cli_ctx)(command_args={
-#         "vault_name": vault_name,
-#         "resource_group": resource_group_name,
-#         "no_wait": no_wait
-#     }).update(backup_instance)
+    # return Create(cli_ctx=cmd.cli_ctx)(command_args={
+    #     "vault_name": vault_name,
+    #     "resource_group": resource_group_name,
+    #     "no_wait": no_wait
+    # }).update(backup_instance)
 
-    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Create as _Create, ValidateForBackup as _Validate, Update as _Update
+    # pass
+
+    print("using validateandcreate custom class inside the create command")
+    from azext_dataprotection.aaz.latest.data_protection.backup_instance import Create as _Create, ValidateForBackup as _Validate, Update as _Update
+
+    class ValidateAndCreate(_Update):
+
+        def _execute_operations(self):
+            self.pre_operations()
+            yield self.BackupInstancesValidateForBackup(ctx=self.ctx)()
+            yield self.BackupInstancesCreateOrUpdate(ctx=self.ctx)()
+            self.post_operations()
+
+        def pre_operations(self):
+            print("In pre ops of validateandcreate. ctx: ", self.ctx)
+            self.ctx.set_var(
+                "instance",
+                backup_instance,
+                schema_builder=self.BackupInstancesCreateOrUpdate._build_schema_on_200_201
+            )
+            print("In pre ops of validateandcreate after set_var. ctx: ", self.ctx)
+
+        class BackupInstancesValidateForBackup(_Validate.BackupInstancesValidateForBackup):
+
+            @property
+            def content(self):
+                print("In content of validate. ctx: ", self.ctx, ", args: ", self.ctx.args)
+                _content_value, _builder = self.new_content_builder(
+                    self.ctx.args,
+                    value=self.ctx.vars.instance.properties,
+                )
+                print("value of _contents-value: ",_content_value, self.serialize_content(_content_value))
+
+                return {
+                    "backupInstance": self.serialize_content(_content_value)
+                }
+
+            def on_200(self, session):
+                pass
+
+        class BackupInstancesCreateOrUpdate(_Create.BackupInstancesCreateOrUpdate):
+
+            @property
+            def content(self):
+                _content_value, _builder = self.new_content_builder(
+                    self.ctx.args,
+                    value=self.ctx.vars.instance,
+                )
+                return self.serialize_content(_content_value)
+
+    from pprint import pprint
+    pprint(backup_instance)
+    backup_instance_name = backup_instance["backup_instance_name"]
+    # del backup_instance["backup_instance_name"]
+    return ValidateAndCreate(cli_ctx=cmd.cli_ctx)(command_args={
+        "vault_name": vault_name,
+        "resource_group": resource_group_name,
+        "backup_instance_name": backup_instance_name,
+        "no_wait": no_wait,
+    })
+
+
+
+def data_protection_backup_instance_validate_for_backup(cmd, vault_name, resource_group_name, backup_instance,
+                                                        no_wait=False):
+    
+    from azext_dataprotection.aaz.latest.data_protection.backup_instance import Create as _Create, ValidateForBackup as _Validate, Update as _Update
 
     class ValidateAndCreate(_Update):
 
@@ -167,6 +233,8 @@ def data_protection_backup_instance_create(cmd, vault_name, resource_group_name,
                 )
                 return self.serialize_content(_content_value)
 
+    from pprint import pprint
+    pprint(backup_instance)
     backup_instance_name = backup_instance["backup_instance_name"]
     # del backup_instance["backup_instance_name"]
     return ValidateAndCreate(cli_ctx=cmd.cli_ctx)(command_args={
@@ -175,41 +243,58 @@ def data_protection_backup_instance_create(cmd, vault_name, resource_group_name,
         "backup_instance_name": backup_instance_name,
         "no_wait": no_wait,
     })
+    # from azext_dataprotection.aaz.latest.data_protection.backup_instance import ValidateForBackup as _ValidateForBackup, Create as _Create
 
-
-
-def data_protection_backup_instance_validate_for_backup(cmd, vault_name, resource_group_name, backup_instance,
-                                                        no_wait=False):
-    from azext_dataprotection.aaz.latest.data_protection.backup_instance import ValidateForBackup as _ValidateForBackup
-    from .aaz_operations.backup_instance import BackupInstanceValidateForBackup
-    from azure.cli.core.commands import LongRunningOperation
-
-    poller = BackupInstanceValidateForBackup(cli_ctx=cmd.cli_ctx)(command_args={
-        "resource_group": resource_group_name,
-        "vault_name": vault_name,
-        "backup_instance": backup_instance['properties']
-    })
-    LongRunningOperation(cmd.cli_ctx)(poller)
-
-    # class ValidateForBackup(_ValidateForBackup.BackupInstancesValidateForBackup):
-
-    #     @property
-    #     def content(self):
-    #         _content_value, _builder = self.new_content_builder(
-    #             self.ctx.args,
-    #             value=self.ctx.vars.instance.properties,
-    #         )
-
-    #         return {
-    #             "backupInstance": self.serialize_content(_content_value)
-    #         }
-
-    #     def on_200(self, session):
-    #         pass
+    # class ValidateForBackup(_ValidateForBackup):
+    #     def _execute_operations(self):
+    #         self.pre_operations()
+    #         yield self.BackupInstancesValidateForBackup(ctx=self.ctx)()
+    #         self.post_operations()
         
+    #     def pre_operations(self):
+    #         print("In pre ops of validate. ctx: ", self.ctx)
+    #         self.ctx.set_var(
+    #             "instance",
+    #             backup_instance,
+    #             schema_builder=_Create.BackupInstancesCreateOrUpdate._build_schema_on_200_201
+    #         )
+    #         print("In pre ops of validate after set_var. ctx: ", self.ctx)
+        
+    #     class BackupInstancesValidateForBackup(_ValidateForBackup.BackupInstancesValidateForBackup):
 
+    #         @property
+    #         def content(self):
+    #             print("In content of validate. ctx: ", self.ctx, ", args: ", self.ctx.args)
+    #             _content_value, _builder = self.new_content_builder(
+    #                 self.ctx.args,
+    #                 value=self.ctx.vars.instance.properties,
+    #             )
+    #             print("value of _contents-value: ",_content_value, self.serialize_content(_content_value))
 
-    # return ValidateForBackup
+    #             return {
+    #                 "backupInstance": self.serialize_content(_content_value)
+    #             }
+
+    #         def on_200(self, session):
+    #             pass
+    # from .aaz_operations.backup_instance import BackupInstanceValidateForBackup
+    # from azure.cli.core.commands import LongRunningOperation
+
+    # poller = BackupInstanceValidateForBackup(cli_ctx=cmd.cli_ctx)(command_args={
+    #     "resource_group": resource_group_name,
+    #     "vault_name": vault_name,
+    #     "backup_instance": backup_instance['properties']
+    # })
+    # LongRunningOperation(cmd.cli_ctx)(poller)
+
+    # from pprint import pprint
+    # pprint(backup_instance)
+    # return ValidateForBackup(cli_ctx=cmd.cli_ctx)(command_args={
+    #     "vault_name": vault_name,
+    #     "resource_group": resource_group_name,
+    #     "backup_instance": backup_instance["properties"],
+    #     "no_wait": no_wait,
+    # })
     
 
 
