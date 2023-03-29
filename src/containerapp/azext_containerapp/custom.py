@@ -1088,14 +1088,6 @@ def create_managed_environment(cmd,
         customDomain["certificateValue"] = blob
         managed_env_def["properties"]["customDomainConfiguration"] = customDomain
 
-    if hostname:
-        customDomain = CustomDomainConfigurationModel
-        blob, _ = load_cert_file(certificate_file, certificate_password)
-        customDomain["dnsSuffix"] = hostname
-        customDomain["certificatePassword"] = certificate_password
-        customDomain["certificateValue"] = blob
-        managed_env_def["properties"]["customDomainConfiguration"] = customDomain
-
     if instrumentation_key is not None:
         managed_env_def["properties"]["daprAIInstrumentationKey"] = instrumentation_key
 
@@ -1180,7 +1172,7 @@ def update_managed_environment(cmd,
     if logs_destination == "log-analytics":
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "customerId", value=logs_customer_id)
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "sharedKey", value=logs_key)
-    else:
+    elif logs_destination:
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", value=None)
 
     # Custom domains
@@ -2769,7 +2761,6 @@ def open_containerapp_in_browser(cmd, name, resource_group_name):
     open_page_in_browser(url)
 
 
-# TODO allow deploying to premium SKU envs
 def containerapp_up(cmd,
                     name,
                     resource_group_name=None,

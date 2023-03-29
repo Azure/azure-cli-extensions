@@ -1567,16 +1567,6 @@ def list_environment_locations(cmd):
 # normalizes workload profile type
 def get_workload_profile_type(cmd, name, location):
     return name.upper()
-    #Uncomment when WorkloadProfileTypes available in all regions
-    '''
-    workload_profiles = WorkloadProfileClient.list_supported(cmd, location)
-    if not workload_profiles:
-        raise ValidationError(f"Workload Profiles not supported in region {location}")
-    for p in workload_profiles:
-        if name == p["name"].lower() or name == p["properties"]["displayName"].lower() or name == p["properties"]["displayName"].lower().replace(" ", ""):
-            return p["name"]
-    raise ValidationError(f"Not a valid workload profile name: '{name}'. Run 'az containerapp env workload-profile list-supported -l {location}' to see options.")
-    '''
 
 def get_default_workload_profile(cmd, location):
     return "Consumption"

@@ -4,14 +4,19 @@ Release History
 ===============
 Upcoming
 +++++++
-* 'az containerapp env update': Fix bugs in update environment.
+* 'az containerapp create/update': --yaml support properties for api-version 2022-10-01 (e.g. exposedPort,clientCertificateMode,corsPolicy)
+* 'az containerapp env update': fix bugs in update environment.
 * Fix YAML create with user-assigned identity
 * Fix polling logic for long running operations.
 * 'az containerapp env create': add support for workload profiles
 * 'az containerapp env update': add support for workload profiles
 * 'az containerapp create': add support for workload profiles
 * 'az containerapp update': add support for workload profiles
-* Add 'az containerapp env workload-profile' commands
+* Add 'az containerapp env workload-profile delete' to support deleting a workload profile from an environment
+* Add 'az containerapp env workload-profile list' to support listing all workload profiles in an environment
+* Add 'az containerapp env workload-profile list-supported' to support listing all available workload profile types in a region
+* Add 'az containerapp env workload-profile set' to support creating or updating an existing workload profile in an environment
+* Add 'az containerapp env workload-profile show' to support showing details of a single workload profile in an environment
 * Upgrade api-version from 2022-10-01 to 2022-11-01-preview
 * Add `az containerapp ingress update` Command to Update Container App Ingress
 

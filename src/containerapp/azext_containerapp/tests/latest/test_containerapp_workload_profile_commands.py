@@ -30,61 +30,61 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
 
         location = "northcentralus"
 
-        self.cmd(f"az network vnet create -l {location} --address-prefixes '14.0.0.0/16' -g {resource_group} -n {vnet}")
-        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/22' --delegations Microsoft.App/environments -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
+        self.cmd("az network vnet create -l {} --address-prefixes '14.0.0.0/16' -g {} -n {}".format(location, resource_group, vnet))
+        sub_id = self.cmd("az network vnet subnet create --address-prefixes '14.0.0.0/22' --delegations Microsoft.App/environments -n sub -g {} --vnet-name {}".format(resource_group, vnet)).get_output_in_json()["id"]
 
-        self.cmd(f'containerapp env create -g {resource_group} -n {env} -s {sub_id} --location {location} --enableWorkloadProfiles')
+        self.cmd('containerapp env create -g {} -n {} -s {} --location {} --enableWorkloadProfiles'.format(resource_group, env, sub_id, location))
 
-        containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
-            containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
         time.sleep(30)
 
-        self.cmd(f'containerapp env show -n {env} -g {resource_group}', checks=[
+        self.cmd('containerapp env show -n {} -g {}'.format(env, resource_group), checks=[
             JMESPathCheck('name', env),
             JMESPathCheck('properties.workloadProfiles[0].name', "Consumption", case_sensitive=False),
             JMESPathCheck('properties.workloadProfiles[0].workloadProfileType', "Consumption", case_sensitive=False),
         ])
 
-        self.cmd(f"az containerapp env workload-profile list-supported -l {location}")
+        self.cmd("az containerapp env workload-profile list-supported -l {}".format(location))
 
-        profiles = self.cmd(f"az containerapp env workload-profile list -g {resource_group} -n {env}").get_output_in_json()
+        profiles = self.cmd("az containerapp env workload-profile list -g {} -n {}".format(resource_group, env)).get_output_in_json()
         self.assertEqual(len(profiles), 1)
         self.assertEqual(profiles[0]["properties"]["name"].lower(), "consumption")
         self.assertEqual(profiles[0]["properties"]["workloadProfileType"].lower(), "consumption")
 
-        self.cmd(f"az containerapp env workload-profile set -g {resource_group} -n {env} --workload-profile-name my-d4 --workload-profile-type D4 --min-nodes 2 --max-nodes 3")
+        self.cmd("az containerapp env workload-profile set -g {} -n {} --workload-profile-name my-d4 --workload-profile-type D4 --min-nodes 2 --max-nodes 3".format(resource_group, env))
 
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
-            containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
         time.sleep(30)
 
-        self.cmd(f"az containerapp env workload-profile show -g {resource_group} -n {env} --workload-profile-name my-d4 ", checks=[
+        self.cmd("az containerapp env workload-profile show -g {} -n {} --workload-profile-name my-d4 ".format(resource_group, env), checks=[
             JMESPathCheck("properties.name", "my-d4"),
             JMESPathCheck("properties.maximumCount", 3),
             JMESPathCheck("properties.minimumCount", 2),
             JMESPathCheck("properties.workloadProfileType", "D4"),
         ])
 
-        self.cmd(f"az containerapp env workload-profile set -g {resource_group} -n {env} --workload-profile-name my-d4 --min-nodes 1 --max-nodes 2")
+        self.cmd("az containerapp env workload-profile set -g {} -n {} --workload-profile-name my-d4 --min-nodes 1 --max-nodes 2".format(resource_group, env))
 
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
-            containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
         time.sleep(30)
 
-        self.cmd(f"az containerapp env workload-profile show -g {resource_group} -n {env} --workload-profile-name my-d4 ", checks=[
+        self.cmd("az containerapp env workload-profile show -g {} -n {} --workload-profile-name my-d4 ".format(resource_group, env), checks=[
             JMESPathCheck("properties.name", "my-d4"),
             JMESPathCheck("properties.maximumCount", 2),
             JMESPathCheck("properties.minimumCount", 1),
             JMESPathCheck("properties.workloadProfileType", "D4"),
         ])
 
-        self.cmd(f"az containerapp create -g {resource_group} --target-port 80 --ingress external --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest --environment {env} -n {app1} --workload-profile-name consumption")
-        self.cmd(f"az containerapp create -g {resource_group} --target-port 80 --ingress external --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest --environment {env} -n {app2} --workload-profile-name my-d4")
+        self.cmd("az containerapp create -g {} --target-port 80 --ingress external --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest --environment {} -n {} --workload-profile-name consumption".format(resource_group, env, app1))
+        self.cmd("az containerapp create -g {} --target-port 80 --ingress external --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest --environment {} -n {} --workload-profile-name my-d4".format(resource_group, env, app2))
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
@@ -97,36 +97,36 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
 
         location = "northcentralus"
 
-        self.cmd(f"az network vnet create -l {location} --address-prefixes '14.0.0.0/16' -g {resource_group} -n {vnet}")
-        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/22' --delegations Microsoft.App/environments -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
+        self.cmd("az network vnet create -l {} --address-prefixes '14.0.0.0/16' -g {} -n {}".format(location, resource_group, vnet))
+        sub_id = self.cmd("az network vnet subnet create --address-prefixes '14.0.0.0/22' --delegations Microsoft.App/environments -n sub -g {} --vnet-name {}".format(resource_group, vnet)).get_output_in_json()["id"]
 
-        self.cmd(f'containerapp env create -g {resource_group} -n {env} -s {sub_id} --location {location} --enableWorkloadProfiles')
+        self.cmd('containerapp env create -g {} -n {} -s {} --location {} --enableWorkloadProfiles'.format(resource_group, env, sub_id, location))
 
-        containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
-
-        while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
-            time.sleep(5)
-            containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
-        time.sleep(30)
-
-        self.cmd(f"az containerapp env workload-profile set -g {resource_group} -n {env} --workload-profile-name my-d8 --workload-profile-type D8 --min-nodes 1 --max-nodes 1")
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
-            containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
         time.sleep(30)
 
-        self.cmd(f"az containerapp env workload-profile show -g {resource_group} -n {env} --workload-profile-name my-d8 ", checks=[
+        self.cmd("az containerapp env workload-profile set -g {} -n {} --workload-profile-name my-d8 --workload-profile-type D8 --min-nodes 1 --max-nodes 1".format(resource_group, env))
+
+        while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+        time.sleep(30)
+
+        self.cmd("az containerapp env workload-profile show -g {} -n {} --workload-profile-name my-d8 ".format(resource_group, env), checks=[
             JMESPathCheck("properties.name", "my-d8"),
             JMESPathCheck("properties.maximumCount", 1),
             JMESPathCheck("properties.minimumCount", 1),
             JMESPathCheck("properties.workloadProfileType", "D8"),
         ])
 
-        profiles = self.cmd(f"az containerapp env workload-profile list -g {resource_group} -n {env}").get_output_in_json()
+        profiles = self.cmd("az containerapp env workload-profile list -g {} -n {}".format(resource_group, env)).get_output_in_json()
         self.assertEqual(len(profiles), 2)
 
-        self.cmd(f"az containerapp env workload-profile delete -g {resource_group} -n {env} --workload-profile-name my-d8 ")
+        self.cmd("az containerapp env workload-profile delete -g {} -n {} --workload-profile-name my-d8 ".format(resource_group, env))
 
-        profiles = self.cmd(f"az containerapp env workload-profile list -g {resource_group} -n {env}").get_output_in_json()
+        profiles = self.cmd("az containerapp env workload-profile list -g {} -n {}".format(resource_group, env)).get_output_in_json()
         self.assertEqual(len(profiles), 1)

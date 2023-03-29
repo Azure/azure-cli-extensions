@@ -1,0 +1,35 @@
+
+                    location: eastus
+                    type: Microsoft.App/containerApps
+                    tags:
+                        tagname: value
+                    properties:
+                      environmentId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002
+                      configuration:
+                        activeRevisionsMode: Multiple
+                        ingress:
+                          external: true
+                          allowInsecure: false
+                          targetPort: 80
+                          traffic:
+                            - latestRevision: true
+                              weight: 100
+                          transport: Auto
+                      template:
+                        revisionSuffix: myrevision
+                        containers:
+                          - image: nginx
+                            name: nginx
+                            env:
+                              - name: HTTP_PORT
+                                value: 80
+                            command:
+                              - npm
+                              - start
+                            resources:
+                              cpu: 0.5
+                              memory: 1Gi
+                        scale:
+                          minReplicas: 1
+                          maxReplicas: 3
+                    

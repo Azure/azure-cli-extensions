@@ -496,7 +496,7 @@ helps['containerapp env storage remove'] = """
 
 helps['containerapp env workload-profile'] = """
     type: group
-    short-summary: Commands to manage the workload profiles of a Container Apps environment
+    short-summary: Manage the workload profiles of a Container Apps environment
 """
 
 helps['containerapp env workload-profile delete'] = """

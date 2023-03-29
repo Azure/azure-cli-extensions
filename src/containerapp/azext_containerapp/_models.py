@@ -7,7 +7,6 @@
 
 VnetConfiguration = {
     "infrastructureSubnetId": None,
-    #"runtimeSubnetId": None,
     "dockerBridgeCidr": None,
     "platformReservedCidr": None,
     "platformReservedDnsIP": None
