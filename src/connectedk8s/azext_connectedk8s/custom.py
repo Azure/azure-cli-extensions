@@ -2444,15 +2444,10 @@ def get_issuer_url(cmd, client, resource_group_name, cluster_name):
     # Get the Issuer Url from the signingkey CR in the cluster specified
     kubectl_client_location = install_kubectl_client()
 
-    cmd = [kubectl_client_location, "get", "signingkeys.clusterconfig.azure.com", "-A"]
-    if kube_config:
-        cmd.extend(["--kubeconfig", kube_config])
-    if kube_context:
-        cmd.extend(["--context", kube_context])
+    cmd = [kubectl_client_location, "get", "signingkeys.clusterconfig.azure.com", "-n", "azure-arc", "signingkey", "-o=jsonpath={.status.issuerUrl}"]
     cmd_output = Popen(cmd, stdout=PIPE, stderr=PIPE)
-    _, error_helm_delete = cmd_output.communicate()
+    output, error_helm_delete = cmd_output.communicate()
 
     if(cmd_output.returncode == 0):
-        changed_cmd = json.loads(cmd_output.communicate()[0].strip())
-        status = changed_cmd['status']['conditions'][-1]['type']
-    return client.get(resource_group_name, cluster_name)
+        issuer_url = output.decode("utf-8").strip()
+    return issuer_url
