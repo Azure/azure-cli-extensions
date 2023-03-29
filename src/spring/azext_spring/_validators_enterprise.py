@@ -155,13 +155,13 @@ def validate_build_update(cmd, namespace):
                                                DEFAULT_BUILD_SERVICE_NAME,
                                                namespace.name)
         if namespace.builder is None:
-            namespace.builder=build.properties.builder.split("/")[-1]
+            namespace.builder = build.properties.builder.split("/")[-1]
         if namespace.build_cpu is None:
-            namespace.build_cpu=build.properties.resource_requests.cpu
+            namespace.build_cpu = build.properties.resource_requests.cpu
         if namespace.build_memory is None:
-            namespace.build_memory=build.properties.resource_requests.memory
+            namespace.build_memory = build.properties.resource_requests.memory
         if namespace.build_env is None:
-            namespace.build_env=build.properties.env
+            namespace.build_env = build.properties.env
     except ResourceNotFoundError:
         raise ClientRequestError('Build {} does not exist.'.format(namespace.name))
 

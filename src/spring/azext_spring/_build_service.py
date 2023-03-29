@@ -92,8 +92,8 @@ def update_container_registry(cmd, client, resource_group, service, name=None, s
             password=password))
     container_registry_resource = models.ContainerRegistryResource(
         properties=container_registry_properties)
-    return client.container_registries.begin_create_or_update(
-        resource_group, service, name, container_registry_resource)
+    return sdk_no_wait(False, client.container_registries.begin_create_or_update,
+                       resource_group, service, name, container_registry_resource)
 
 
 def container_registry_show(cmd, client, resource_group, service, name=None):
