@@ -12,6 +12,7 @@ from azure.cli.core import telemetry
 from azext_hybrid_appliance import _constants as consts
 from azure.cli.core.azclierror import CLIInternalError, ValidationError
 from kubernetes.client.rest import ApiException
+from kubernetes import client as kube_client, config
 logger = get_logger(__name__)
 
 def install_kubectl_client():
@@ -133,6 +134,49 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
             raise ValidationError(error_message + "\nError: " + str(ex))
         else:
             logger.debug("Kubernetes Exception: " + str(ex))
+
+def check_if_microk8s_is_running():
+    try:
+        output = subprocess.check_output(['microk8s', 'status'], stderr=subprocess.STDOUT)
+    except:
+        return False
+    
+    if output is None or "not running" in output.decode():
+        return False
+
+    return True
+
+def get_azure_clusterconfig_cm():
+    config.load_kube_config(get_kubeconfig_path())
+    api_instance = kube_client.CoreV1Api()
+    try:
+        azure_clusterconfig_cm = api_instance.read_namespaced_config_map("azure-clusterconfig", "azure-arc")
+        return azure_clusterconfig_cm
+    except Exception as e:
+        kubernetes_exception_handler(e, fault_type=consts.Read_ConfigMap_Fault_Type, summary="Unable to read ConfigMap", raise_error=False)
+
+def validate_cluster_resource_group_and_name(azure_clusterconfig_cm, resource_group_name, name):
+    try:
+        if azure_clusterconfig_cm.data["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm.data["AZURE_RESOURCE_NAME"] != name:
+            telemetry.set_exception()
+            raise ValidationError("The parameters passed do not correspond to this appliance. Please check the resource group name and appliance name")
+    except KeyError:
+        raise ValidationError("The required entries were not found in the config map")
+        
+
+def troubleshoot_connectedk8s(resource_group_name, name, filepath):
+    os.environ["TROUBLESHOOT_DIRECTORY"] = filepath
+    os.environ["RESOURCE_GROUP"] = resource_group_name
+    os.environ["APPLIANCE_NAME"] = name
+    os.environ["KUBECONFIG_PATH"] = get_kubeconfig_path()
+    
+    current_path = os.path.abspath(os.path.dirname(__file__))
+    script_file_path = os.path.join(current_path, "connectedk8s_troubleshoot.sh")
+    cmd = ["bash", script_file_path]
+    process = subprocess.Popen(cmd, stderr=subprocess.STDOUT)
+    if process.wait() != 0:
+        telemetry.set_exception(exception="Failed to run connectedk8s troubleshoot", fault_type=consts.Connectedk8s_Troubleshoot_Failed, summary="Connectedk8s troubleshoot failed")
+        raise CLIInternalError("Failed to run connectedk8s troubleshoot")
 
 def create_folder_diagnosticlogs(folder_name, appliance_name):
     current_time = time.ctime(time.time())

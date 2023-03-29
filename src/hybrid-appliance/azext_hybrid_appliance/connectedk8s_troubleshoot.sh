@@ -1,4 +1,4 @@
-file_path=$(az connectedk8s troubleshoot -g $RESOURCE_GROUP -n $APPLIANCE_NAME 2>&1 | grep -o "path:.*.")
+file_path=$(az connectedk8s troubleshoot -g $RESOURCE_GROUP -n $APPLIANCE_NAME --kube-config $KUBECONFIG_PATH 2>&1 | grep -o "path:.*.")
 if [ $? -ne 0 ]; then
     echo "Failed to run troubleshoot to collect the connected cluster logs"
     exit 1
