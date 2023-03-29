@@ -24,9 +24,6 @@ from azure.core.exceptions import HttpResponseError
 from knack.util import CLIError
 
 
-AZURE_SERVICE_MESH_PREVIEW_FEATURE_HEADER = 'Microsoft.ContainerService/AzureServiceMeshPreview'
-
-
 def _get_test_data_file(filename):
     curr_dir = os.path.dirname(os.path.realpath(__file__))
     return os.path.join(curr_dir, 'data', filename)
@@ -6839,12 +6836,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name,
             'location': resource_group_location,
             'ssh_key_value': self.generate_ssh_keys(),
-            'feature_header': AZURE_SERVICE_MESH_PREVIEW_FEATURE_HEADER,
         })
 
         # create cluster without --enable-azure-service-mesh
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--aks-custom-headers=AKSHTTPCustomFeatures={feature_header} ' \
+                     '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview ' \
                      '--ssh-key-value={ssh_key_value} --output=json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -6886,12 +6882,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name,
             'location': resource_group_location,
             'ssh_key_value': self.generate_ssh_keys(),
-            'feature_header': AZURE_SERVICE_MESH_PREVIEW_FEATURE_HEADER,
         })
 
         # create cluster with --enable-azure-service-mesh
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--aks-custom-headers=AKSHTTPCustomFeatures={feature_header} ' \
+                     '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview ' \
                      '--ssh-key-value={ssh_key_value} ' \
                      '--enable-azure-service-mesh --output=json'
         self.cmd(create_cmd, checks=[
