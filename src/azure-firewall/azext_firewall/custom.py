@@ -6,11 +6,14 @@
 import copy
 from knack.util import CLIError
 from knack.log import get_logger
+
+from azure.cli.core.aaz import has_value
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import UserFault, ServiceError, ValidationError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.tools import is_valid_resource_id, resource_id
 from ._client_factory import network_client_factory
+from .aaz.latest.network.firewall import Create as _AzureFirewallCreate
 
 logger = get_logger(__name__)
 
@@ -66,6 +69,80 @@ def _find_item_at_path(instance, path):
 
 
 # region AzureFirewall
+class AzureFirewallCreate(_AzureFirewallCreate):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZListArg, AAZStrArg, AAZBoolArg, AAZResourceIdArg, AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.private_ranges = AAZListArg(
+            options=['--private-ranges'],
+            help="Space-separated list of SNAT privaterange. Validate values are single Ip, "
+                 "Ipprefixes or a single special value \"IANAPrivateRanges\".")
+        args_schema.private_ranges.Element = AAZStrArg()
+        args_schema.allow_active_ftp = AAZBoolArg(
+            options=['--allow-active-ftp'],
+            help="Allow Active FTP. By default it is false. It's only allowed for azure firewall on virtual network.")
+        args_schema.enable_fat_flow_logging = AAZBoolArg(
+            options=['--enable-fat-flow-logging', '--fat-flow-logging'],
+            help="Allow fat flow logging. By default it is false.")
+        args_schema.enable_udp_log_optimization = AAZBoolArg(
+            options=['--enable-udp-log-optimization', '--udp-log-optimization'],
+            help="Allow UDP log optimization. By default it is false.")
+        args_schema.enable_dns_proxy = AAZBoolArg(
+            options=['--enable-dns-proxy'],
+            help="Enable DNS Proxy.")
+        args_schema.subnet_id = AAZResourceIdArg(
+            options=["--subnet-id"],
+            help="test",
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{vnet_name}/subnets/AzureFirewallSubnet"
+            ),
+        )
+        args_schema.public_ip = AAZResourceIdArg(
+            options=["--public-ip"],
+            help="Name or ID of the public IP to use.",
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/publicIPAddresses/{}"
+            ),
+        )
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.private_ranges):
+            private_ranges = args.private_ranges.to_serialized_data()
+            private_ranges = ', '.join(private_ranges)
+            if not has_value(args.additional_properties):
+                args.additional_properties = {}
+            args.additional_properties['Network.SNAT.PrivateRanges'] = private_ranges
+
+        if not has_value(args.sku) or args.sku.to_serialized_data().lower() == 'azfw_vnet':
+            if has_value(args.firewall_policy):
+                if not has_value(args.additional_properties):
+                    args.additional_properties = {}
+                if has_value(args.enable_dns_proxy):
+                    # service side requires lowercase
+                    args.additional_properties['Network.DNS.EnableProxy'] = str(args.enable_dns_proxy.to_serialized_data()).lower()
+                if has_value(args.dns_servers):
+                    args.additional_properties['Network.DNS.Servers'] = ','.join(args.dns_servers or '')
+
+        if args.allow_active_ftp:
+            if not has_value(args.additional_properties):
+                args.additional_properties = {}
+            args.additional_properties['Network.FTP.AllowActiveFTP'] = 'true'
+
+        if args.enable_fat_flow_logging:
+            if not has_value(args.additional_properties):
+                args.additional_properties = {}
+            args.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging'] = 'true'
+
+        if args.enable_udp_log_optimization:
+            if not has_value(args.additional_properties):
+                args.additional_properties = {}
+            args.additional_properties['Network.AdditionalLogs.EnableUdpLogOptimization'] = 'true'
+
+
 def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, location=None,
                           tags=None, zones=None, private_ranges=None, firewall_policy=None,
                           virtual_hub=None, sku=None,
