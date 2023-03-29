@@ -16,6 +16,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 * Raise a ClientRequestError when creating the same cluster again in command `az aks create`.
 * Vendor new SDK and bump API version to 2023-02-02-preview.
 
+0.5.133
++++++++
+* Add cluster upgrade settings options `--enable-upgrade-ignore-kubernetes-deprecations`, `--disable-upgrade-ignore-kubernetes-deprecations`, and `--upgrade_override_until`.
+
 0.5.132
 +++++++
 * Change the short name of option `--source-resource-id` in command `az aks trustedaccess rolebinding create` from `-s` to `-r`.

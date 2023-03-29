@@ -741,6 +741,15 @@ helps['aks update'] = """
         - name: --node-os-upgrade-channel
           type: string
           short-summary: Manner in which the OS on your nodes is updated. It could be NodeImage, None, SecurityPatch or Unmanaged.
+        - name: --enable-upgrade-ignore-kubernetes-deprecations
+          type: bool
+          short-summary: Set IgnoreKubernetesDeprecations override in cluster upgradeSettings.
+        - name: --disable-upgrade-ignore-kubernetes-deprecations
+          type: bool
+          short-summary: Remove IgnoreKubernetesDeprecations override in cluster upgradeSettings
+        - name: --upgrade-override-until
+          type: string
+          short-summary: Until when the cluster upgradeSettings overrides are effective. It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --upgrade_ignore_kubernetes_deprecations is set to true and --upgrade-override-until is not set, by default it will be set to 3 days from now.
         - name: --enable-managed-identity
           type: bool
           short-summary: Update current cluster to managed identity to manage cluster resource group.
