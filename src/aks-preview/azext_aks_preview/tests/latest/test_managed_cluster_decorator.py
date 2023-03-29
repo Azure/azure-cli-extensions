@@ -5956,7 +5956,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
                     control_plane_overrides=["IgnoreKubernetesDeprecations"],
-                    until="2023-04-01T13:00:00Z"
+                    until=parse("2023-04-01T13:00:00Z")
                 )
             )
         )
@@ -5967,7 +5967,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
                     control_plane_overrides=["IgnoreKubernetesDeprecations"],
-                    until="2023-04-01T13:00:00Z"
+                    until=parse("2023-04-01T13:00:00Z")
                 )
             )
         )
@@ -5985,14 +5985,15 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
                     control_plane_overrides=["IgnoreKubernetesDeprecations"],
-                    until="2099-04-01T13:00:00Z"
+                    until=parse("2099-04-01T13:00:00Z")
                 )
             )
         )
+        print(type(mc_2.upgrade_settings.override_settings.until))
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.update_upgrade_settings(mc_2)
-        self.assertGreater(parse(dec_mc_2.upgrade_settings.override_settings.until).timestamp(), (datetime.datetime.utcnow() - datetime.timedelta(days=1)).timestamp())
-        self.assertLess(parse(dec_mc_2.upgrade_settings.override_settings.until).timestamp(), (datetime.datetime.utcnow() + datetime.timedelta(days=1)).timestamp())
+        self.assertGreater(dec_mc_2.upgrade_settings.override_settings.until.timestamp(), (datetime.datetime.utcnow() - datetime.timedelta(days=1)).timestamp())
+        self.assertLess(dec_mc_2.upgrade_settings.override_settings.until.timestamp(), (datetime.datetime.utcnow() + datetime.timedelta(minutes=1)).timestamp())
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
@@ -6003,7 +6004,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
-                    until="2023-04-01T13:00:00Z"
+                    until=parse("2099-04-01T13:00:00Z")
                 )
             )
         )
@@ -6013,7 +6014,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
-                    until="2023-04-01T13:00:00Z" # unchanged as there's no overrides
+                    until=parse("2099-04-01T13:00:00Z")  # unchanged as there's no overrides
                 )
             )
         )
@@ -6031,7 +6032,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
                     control_plane_overrides=[],
-                    until="2099-04-01T13:00:00Z" # Will not override as it's > now()
+                    until=parse("2099-04-01T13:00:00Z")  # Will not override as it's > now()
                 )
             )
         )
@@ -6042,7 +6043,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
                     control_plane_overrides=["IgnoreKubernetesDeprecations"],
-                    until="2099-04-01T13:00:00Z"
+                    until=parse("2099-04-01T13:00:00Z")
                 )
             )
         )
@@ -6057,7 +6058,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
-                    until="2000-04-01T13:00:00Z" # Will override as it's <= now()
+                    until=parse("2000-04-01T13:00:00Z") # Will override as it's <= now()
                 )
             )
         )
@@ -6065,8 +6066,8 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_mc_5 = dec_5.update_upgrade_settings(mc_5)
 
         self.assertEqual(dec_mc_5.upgrade_settings.override_settings.control_plane_overrides, ["IgnoreKubernetesDeprecations"])
-        self.assertGreater(parse(dec_mc_5.upgrade_settings.override_settings.until).timestamp(), (datetime.datetime.utcnow() + datetime.timedelta(days=2)).timestamp())
-        self.assertLess(parse(dec_mc_5.upgrade_settings.override_settings.until).timestamp(), (datetime.datetime.utcnow() + datetime.timedelta(days=4)).timestamp())
+        self.assertGreater(dec_mc_5.upgrade_settings.override_settings.until.timestamp(), (datetime.datetime.utcnow() + datetime.timedelta(days=2)).timestamp())
+        self.assertLess(dec_mc_5.upgrade_settings.override_settings.until.timestamp(), (datetime.datetime.utcnow() + datetime.timedelta(days=4)).timestamp())
 
         # Set Until
         dec_6 = AKSPreviewManagedClusterUpdateDecorator(
@@ -6080,7 +6081,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
                     control_plane_overrides=[],
-                    until="2023-01-01T13:00:00Z"
+                    until=parse("2023-01-01T13:00:00Z")
                 )
             )
         )
@@ -6091,7 +6092,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
                     control_plane_overrides=[],
-                    until="2023-04-01T13:00:00Z"
+                    until=parse("2023-04-01T13:00:00Z")
                 )
             )
         )
@@ -6107,7 +6108,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
                     control_plane_overrides=["IgnoreKubernetesDeprecations"],
-                    until="2023-01-01T13:00:00Z"
+                    until=parse("2023-01-01T13:00:00Z")
                 )
             )
         )
@@ -6118,7 +6119,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
                     control_plane_overrides=["IgnoreKubernetesDeprecations"],
-                    until="2023-04-01T13:00:00Z"
+                    until=parse("2023-04-01T13:00:00Z")
                 )
             )
         )
@@ -6134,7 +6135,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             location="test_location",
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
-                    until="2023-05-01T13:00:00Z"
+                    until=parse("2023-05-01T13:00:00Z")
                 )
             )
         )
@@ -6146,11 +6147,28 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
                     control_plane_overrides=["IgnoreKubernetesDeprecations"],
-                    until="2023-04-01T13:00:00Z"
+                    until=parse("2023-04-01T13:00:00Z")
                 )
             )
         )
         self.assertEqual(dec_mc_8, ground_truth_mc_8)
+        dec_9 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"upgrade_override_until": "abc"},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_9 = self.models.ManagedCluster(
+            location="test_location",
+            upgrade_settings=self.models.ClusterUpgradeSettings(
+                override_settings = self.models.UpgradeOverrideSettings(
+                    until=parse("2023-05-01T13:00:00Z")
+                )
+            )
+        )
+        dec_9.context.attach_mc(mc_9)
+        with self.assertRaises(InvalidArgumentValueError):
+            dec_9.update_upgrade_settings(mc_9)
 
     def test_update_mc_profile_preview(self):
         import inspect

@@ -6974,6 +6974,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
 
         # update upgrade settings
+        self.cmd('aks update --resource-group={resource_group} --name={name} --upgrade-override-until 2020-08-01T22:30:17+00:00', checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.not_exists('upgradeSettings.overrideSettings.controlPlaneOverrides'),
+            self.exists('upgradeSettings.overrideSettings.until')
+        ])
         self.cmd('aks update --resource-group={resource_group} --name={name} --enable-upgrade-ignore-kubernetes-deprecations', checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('upgradeSettings.overrideSettings.controlPlaneOverrides[0]', "IgnoreKubernetesDeprecations"),
