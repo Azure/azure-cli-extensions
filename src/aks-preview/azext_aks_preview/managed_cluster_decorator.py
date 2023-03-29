@@ -3180,14 +3180,23 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
+        existing_until = None
+        if mc.upgrade_settings is not None and mc.upgrade_settings.override_settings is not None and mc.upgrade_settings.override_settings.until is not None and len(mc.upgrade_settings.override_settings.until) > 0:
+            try:
+                existing_until = parse(mc.upgrade_settings.override_settings.until)
+            except Exception as ex: # pylint: disable=broad-except
+                 logger.error("Failed to get existing upgradeSettings.overrideSettings.until field: %s", str(ex))
+
+
         # There is a limitation on differentiating empty list vs. not set in update requests.
         # In such case, we'll use a workaround here to disable it by setting the until field to the current time, to make the overrides no longer effective.
         # For now there's only one allowed override so we can return early here.
         if self.context.get_disable_upgrade_ignore_kubernetes_deprecations():
-            if mc.upgrade_settings.override_settings.control_plane_overrides == [CONST_IGNORE_KUBERNETES_DEPRECATIONS]:
-                if mc.upgrade_settings.override_settings.until is None or parse(mc.upgrade_settings.override_settings.until).timestamp() > datetime.datetime.utcnow().timestamp():
-                    mc.upgrade_settings.override_settings.until = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
-                    return mc
+            if mc.upgrade_settings is not None and mc.upgrade_settings.override_settings is not None and mc.upgrade_settings.override_settings.control_plane_overrides is not None:
+                if mc.upgrade_settings.override_settings.control_plane_overrides == [CONST_IGNORE_KUBERNETES_DEPRECATIONS]:
+                    if existing_until is None or existing_until.timestamp() > datetime.datetime.utcnow().timestamp():
+                        mc.upgrade_settings.override_settings.until = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+            return mc
 
         upgrade_ignore_kubernetes_deprecations = self.context.get_enable_upgrade_ignore_kubernetes_deprecations()
         override_until = self.context.get_upgrade_override_until()
@@ -3207,7 +3216,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if override_until is not None:
                 mc.upgrade_settings.override_settings.until = override_until
             elif upgrade_ignore_kubernetes_deprecations:
-                if mc.upgrade_settings.override_settings.until is None or parse(mc.upgrade_settings.override_settings.until).timestamp() < datetime.datetime.utcnow().timestamp():
+                if existing_until is None or existing_until.timestamp() < datetime.datetime.utcnow().timestamp():
                     default_extended_until = datetime.datetime.utcnow() + datetime.timedelta(days=3)
                     mc.upgrade_settings.override_settings.until = default_extended_until.strftime('%Y-%m-%dT%H:%M:%SZ')
 
