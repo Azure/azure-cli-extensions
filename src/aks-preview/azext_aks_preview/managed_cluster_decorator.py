@@ -3193,7 +3193,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if self.context.get_disable_upgrade_ignore_kubernetes_deprecations():
             if mc.upgrade_settings is not None and mc.upgrade_settings.override_settings is not None and mc.upgrade_settings.override_settings.control_plane_overrides is not None:
                 if mc.upgrade_settings.override_settings.control_plane_overrides == [CONST_IGNORE_KUBERNETES_DEPRECATIONS]:
-                    if existing_until is None or existing_until.timestamp() > datetime.datetime.utcnow().timestamp():
+                    if existing_until is not None and existing_until.timestamp() > datetime.datetime.utcnow().timestamp():
                         mc.upgrade_settings.override_settings.until = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
             return mc
 
