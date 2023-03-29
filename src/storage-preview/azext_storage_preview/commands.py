@@ -51,30 +51,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.custom_command('list', 'list_network_rules')
         g.custom_command('remove', 'remove_network_rule')
 
-    local_users_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_storage.operations#'
-                        'LocalUsersOperations.{}',
-        client_factory=cf_local_users,
-        resource_type=CUSTOM_MGMT_STORAGE
-    )
-
-    local_users_custom_type = CliCommandType(
-        operations_tmpl='azext_storage_preview.operations.account#{}',
-        client_factory=cf_local_users,
-        resource_type=CUSTOM_MGMT_STORAGE
-    )
-
-    with self.command_group('storage account local-user', local_users_sdk,
-                            custom_command_type=local_users_custom_type,
-                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2021-08-01', is_preview=True) as g:
-        g.custom_command('create', 'create_local_user')
-        g.custom_command('update', 'update_local_user')
-        g.command('delete', 'delete')
-        g.command('list', 'list')
-        g.show_command('show', 'get')
-        g.command('list-keys', 'list_keys')
-        g.command('regenerate-password', 'regenerate_password')
-
     block_blob_sdk = CliCommandType(
         operations_tmpl='azure.multiapi.storage.blob.blockblobservice#BlockBlobService.{}',
         client_factory=blob_data_service_factory,
