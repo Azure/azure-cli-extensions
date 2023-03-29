@@ -3159,6 +3159,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         :return: the ManagedCluster object
         """
+        self._ensure_mc(mc)
+
         if self.context.get_uptime_sla() or self.context.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
             mc.sku = self.models.ManagedClusterSKU(
                 name="Base",
@@ -3226,7 +3228,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_pod_security_policy(mc)
         # update pod identity profile
         mc = self.update_pod_identity_profile(mc)
-        # update workload identity profile"
+        # update workload identity profile
         mc = self.update_workload_identity_profile(mc)
         # update node restriction
         mc = self.update_node_restriction(mc)
