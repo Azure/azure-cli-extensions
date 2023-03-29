@@ -881,7 +881,6 @@ class WorkloadProfileClient():
         api_version = CURRENT_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourcegroups/{}/providers/Microsoft.App/managedEnvironments/{}/workloadProfileStates?api-version={}"
-        # url_fmt = "{}/subscriptions/{}/resourcegroups/{}/providers/Microsoft.App/managedEnvironments/{}/getWorkloadProfileStates?api-version={}"
         request_url = url_fmt.format(
             management_hostname.strip('/'),
             sub_id,

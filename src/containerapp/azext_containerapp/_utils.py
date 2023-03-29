@@ -1574,7 +1574,7 @@ def get_default_workload_profile(cmd, location):
     return "Consumption"
 
 
-def get_default_workload_profile_from_env(cmd, env_def, resource_group):
+def get_default_workload_profile_name_from_env(cmd, env_def, resource_group):
     location = env_def["location"]
     api_default = get_default_workload_profile(cmd, location)
     env_profiles = WorkloadProfileClient.list(cmd, resource_group, env_def["name"])

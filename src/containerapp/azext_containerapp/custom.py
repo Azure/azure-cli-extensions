@@ -71,7 +71,7 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart,
                      set_ip_restrictions, certificate_location_matches, certificate_matches, generate_randomized_managed_cert_name,
                      check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                     get_default_workload_profile_from_env, get_default_workload_profiles, ensure_workload_profile_supported)
+                     get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -399,7 +399,7 @@ def create_containerapp(cmd,
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "containerApps")
 
     if not workload_profile_name and "workloadProfiles" in managed_env_info:
-        workload_profile_name = get_default_workload_profile_from_env(cmd, managed_env_info, managed_env_rg)
+        workload_profile_name = get_default_workload_profile_name_from_env(cmd, managed_env_info, managed_env_rg)
 
     external_ingress = None
     if ingress is not None:
@@ -1037,7 +1037,7 @@ def create_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
-                               enableWorkloadProfiles=False,
+                               enable_workload_profiles=False,
                                no_wait=False):
     if zone_redundant:
         if not infrastructure_subnet_resource_id:
@@ -1078,7 +1078,7 @@ def create_managed_environment(cmd,
     managed_env_def["tags"] = tags
     managed_env_def["properties"]["zoneRedundant"] = zone_redundant
 
-    if enableWorkloadProfiles is True:
+    if enable_workload_profiles is True:
         managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(cmd, location)
 
     if hostname:
@@ -1190,7 +1190,7 @@ def update_managed_environment(cmd,
 
     if workload_profile_name:
         if "workloadProfiles" not in r["properties"] or not r["properties"]["workloadProfiles"]:
-            raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enableWorkloadProfiles'")
+            raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enable-workload-profiles'")
 
         if workload_profile_type:
             workload_profile_type = workload_profile_type.upper()
@@ -4155,7 +4155,7 @@ def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile
         handle_raw_exception(e)
 
     if "workloadProfiles" not in r["properties"] or not r["properties"]["workloadProfiles"]:
-        raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enableWorkloadProfiles'")
+        raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enable-workload-profiles'")
 
     if workload_profile_name.lower() == "consumption":
         raise ValidationError("Cannot delete the 'Consumption' workload profile")

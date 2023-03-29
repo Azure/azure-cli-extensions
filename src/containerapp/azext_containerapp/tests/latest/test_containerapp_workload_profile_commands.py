@@ -33,7 +33,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         self.cmd("az network vnet create -l {} --address-prefixes '14.0.0.0/16' -g {} -n {}".format(location, resource_group, vnet))
         sub_id = self.cmd("az network vnet subnet create --address-prefixes '14.0.0.0/22' --delegations Microsoft.App/environments -n sub -g {} --vnet-name {}".format(resource_group, vnet)).get_output_in_json()["id"]
 
-        self.cmd('containerapp env create -g {} -n {} -s {} --location {} --enableWorkloadProfiles'.format(resource_group, env, sub_id, location))
+        self.cmd('containerapp env create -g {} -n {} -s {} --location {} --enable-workload-profiles'.format(resource_group, env, sub_id, location))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
@@ -100,7 +100,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         self.cmd("az network vnet create -l {} --address-prefixes '14.0.0.0/16' -g {} -n {}".format(location, resource_group, vnet))
         sub_id = self.cmd("az network vnet subnet create --address-prefixes '14.0.0.0/22' --delegations Microsoft.App/environments -n sub -g {} --vnet-name {}".format(resource_group, vnet)).get_output_in_json()["id"]
 
-        self.cmd('containerapp env create -g {} -n {} -s {} --location {} --enableWorkloadProfiles'.format(resource_group, env, sub_id, location))
+        self.cmd('containerapp env create -g {} -n {} -s {} --location {} --enable-workload-profiles'.format(resource_group, env, sub_id, location))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
