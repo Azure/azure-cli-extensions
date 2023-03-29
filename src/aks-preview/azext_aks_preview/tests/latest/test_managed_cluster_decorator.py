@@ -6064,7 +6064,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_5.context.attach_mc(mc_5)
         dec_mc_5 = dec_5.update_upgrade_settings(mc_5)
 
-        print(dec_mc_5.upgrade_settings.override_settings)
         self.assertEqual(dec_mc_5.upgrade_settings.override_settings.control_plane_overrides, ["IgnoreKubernetesDeprecations"])
         self.assertGreater(parse(dec_mc_5.upgrade_settings.override_settings.until).timestamp(), (datetime.datetime.utcnow() + datetime.timedelta(days=2)).timestamp())
         self.assertLess(parse(dec_mc_5.upgrade_settings.override_settings.until).timestamp(), (datetime.datetime.utcnow() + datetime.timedelta(days=4)).timestamp())
@@ -6151,7 +6150,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 )
             )
         )
-        print(dec_mc_8.upgrade_settings.override_settings)
         self.assertEqual(dec_mc_8, ground_truth_mc_8)
 
     def test_update_mc_profile_preview(self):
