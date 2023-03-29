@@ -51,7 +51,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         deserialized_config: Any,
-        rego_fragments: Any = config.DEFAULT_REGO_FRAGMENTS,
+        rego_fragments: Any = copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS),
         existing_rego_fragments: Any = None,
         debug_mode: bool = False,
         disable_stdio: bool = False,
@@ -63,6 +63,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self._disable_stdio = disable_stdio
         self._fragments = rego_fragments
         self._existing_fragments = existing_rego_fragments
+        self._api_version = config.SVN_API_VERSION
         if debug_mode:
             self._allow_properties_access = config.DEBUG_MODE_SETTINGS.get(
                 "allowPropertiesAccess"
@@ -175,8 +176,9 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         # determine if we're outputting for a sidecar or not
         if self._images[0].get_id() and is_sidecar(self._images[0].get_id()):
-            return config.SIDECAR_REGO_POLICY % (output)
+            return config.SIDECAR_REGO_POLICY % (pretty_print_func(self._api_version), output)
         return config.CUSTOMER_REGO_POLICY % (
+            pretty_print_func(self._api_version),
             pretty_print_func(self._fragments),
             output,
             pretty_print_func(self._allow_properties_access),

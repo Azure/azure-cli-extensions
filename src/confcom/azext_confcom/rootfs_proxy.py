@@ -13,7 +13,7 @@ from azext_confcom.errors import eprint
 
 
 host_os = platform.system()
-arch = platform.architecture()[0]
+machine = platform.machine()
 
 
 class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
@@ -27,11 +27,11 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
         if host_os == "Linux":
             pass
         elif host_os == "Windows":
-            if arch == "64bit":
+            if machine.endswith("64"):
                 DEFAULT_LIB += ".exe"
             else:
-                raise NotImplementedError(
-                    f"The current architecture {arch} for windows is not supported."
+                eprint(
+                    "32-bit Windows is not supported."
                 )
         elif host_os == "Darwin":
             eprint("The extension for MacOS has not been implemented.")

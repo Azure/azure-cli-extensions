@@ -21,7 +21,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = "0.2.13"
+VERSION = "0.2.14"
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -47,17 +47,44 @@ bin_folder = dir_path + "/bin"
 if not os.path.exists(bin_folder):
     os.makedirs(bin_folder)
 
-exe_path = dir_path + "/bin/dmverity-vhd.exe"
-if not os.path.exists(exe_path):
-    r = requests.get("https://github.com/microsoft/hcsshim/releases/download/v0.10.0-rc.6/dmverity-vhd.exe")
-    with open(exe_path, "wb") as f:
-        f.write(r.content)
+data_folder = dir_path + "/data/"
+if not os.path.exists(data_folder):
+    os.makedirs(data_folder)
 
-bin_path = dir_path + "/bin/dmverity-vhd"
-if not os.path.exists(bin_path):
-    r = requests.get("https://github.com/microsoft/hcsshim/releases/download/v0.10.0-rc.6/dmverity-vhd")
-    with open(bin_path, "wb") as f:
-        f.write(r.content)
+# get the most recent release artifacts from github
+r = requests.get("https://api.github.com/repos/microsoft/hcsshim/releases")
+# list the artifacts from each release
+bin_flag = False
+exe_flag = False
+for release in r.json():
+    # these should be newest to oldest
+    for asset in release["assets"]:
+        # download the file if it contains dmverity-vhd
+        if "dmverity-vhd" in asset["name"]:
+            if "exe" in asset["name"]:
+                exe_flag = True
+            else:
+                bin_flag = True
+            # get the download url for the dmverity-vhd file
+            exe_url = asset["browser_download_url"]
+            # download the file
+            r = requests.get(exe_url)
+            # save the file to the bin folder
+            with open(bin_folder + asset["name"], "wb") as f:
+                f.write(r.content)
+    # break out of the loop if we have both files
+    if bin_flag and exe_flag:
+        # get the download url for the dmverity-vhd file
+        api_svn_url = release["html_url"]
+        # update the url to get framework svn file
+        api_svn_url = api_svn_url.replace("releases/tag", "raw")
+        api_svn_url += "/pkg/securitypolicy/svn_api"
+        # download the file
+        r = requests.get(api_svn_url)
+        # save the file to the data folder
+        with open(data_folder + "svn_api", "wb") as f:
+            f.write(r.content)
+        break
 
 with open("README.md", "r", encoding="utf-8") as f:
     README = f.read()

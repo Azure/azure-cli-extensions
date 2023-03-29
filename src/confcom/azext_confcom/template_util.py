@@ -355,6 +355,7 @@ def compare_containers(container1, container2) -> Dict[str, Any]:
     diff = deepdiff.DeepDiff(
         container1,
         container2,
+        ignore_order=True,
     )
     # cast to json using built-in function in deepdiff so there's safe translation
     # e.g. a type will successfully cast to string

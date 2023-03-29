@@ -276,7 +276,7 @@ class PolicyGenerating(unittest.TestCase):
         image = self.aci_policy.get_images()[0]
         self.assertEqual(image.base, "mcr.microsoft.com/aci/msi-atlas-adapter")
         self.assertIsNotNone(image)
-        
+
         self.maxDiff = None
         expected_workingdir = "/root/"
         self.assertEqual(image._workingDir, expected_workingdir)
@@ -567,6 +567,25 @@ class CustomJsonParsing(unittest.TestCase):
                 image.id,
                 "sha256:83ac22b6cf50c51a1d11b3220316be73271e59d30a65f33f4391dc4cfabdc856",
             )
+
+    def test_infrastructure_svn(self):
+        custom_json = """
+        {
+            "version": "1.0",
+            "containers": [
+                {
+                    "containerImage": "rust:1.52.1",
+                    "environmentVariables": [],
+                    "command": ["echo", "hello"]
+                }
+            ]
+        }
+        """
+        with load_policy_from_str(custom_json) as aci_policy:
+            aci_policy.populate_policy_content_for_all_images()
+            output = aci_policy.get_serialized_output(OutputType.PRETTY_PRINT)
+
+            self.assertTrue('"0.2.3"' in output)
 
     def test_environment_variables_parsing(self):
         custom_json = """

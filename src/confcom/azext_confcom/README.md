@@ -225,8 +225,8 @@ Below is an example rego policy:
     import future.keywords.every
     import future.keywords.in
 
-    api_svn := "0.10.0"
-    framework_svn := "0.1.0"
+    api_version := "0.10.0"
+    framework_version := "0.1.0"
 
     fragments := [...]
 

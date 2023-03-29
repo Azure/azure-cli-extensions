@@ -60,6 +60,7 @@ test_allow_elevated | python:3.6.14-slim-buster | Using allow_elevated in contai
 test_image_layers_python | python:3.6.14-slim-buster | Make sure image layers are as expected
 test_image_layers_rust | rust:1.52.1 | Make sure image layers are as expected with different image
 test_docker_pull | rust:1.52.1 | Test pulling an image from docker client
+test_infrastructure_svn | rust:1.52.1 | make sure the correct infrastructure_svn is present in the policy
 test_stdio_access_default | python:3.6.14-slim-buster | Checking the default value for std I/O access
 test_stdio_access_updated | python:3.6.14-slim-buster | Checking the value for std I/O when it's set
 test_environment_variables_parsing | mcr.microsoft.com/azuredocs/aci-dataprocessing-cc:v1 | Make sure env vars are output in the right format
