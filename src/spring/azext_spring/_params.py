@@ -133,13 +133,13 @@ def load_arguments(self, _):
                    arg_group='Build Service',
                    validator=validate_build_service,
                    help='(Enterprise Tier Only) Disable build service.')
-        c.argument('cr_server',
+        c.argument('registry_server',
                    validator=validate_build_service,
                    help='(Enterprise Tier Only) The container registry server used in build service.')
-        c.argument('cr_username',
+        c.argument('registry_username',
                    validator=validate_build_service,
                    help='(Enterprise Tier Only) The container registry username used in build service.')
-        c.argument('cr_password',
+        c.argument('registry_password',
                    validator=validate_build_service,
                    help='(Enterprise Tier Only) The container registry password used in build service.')
         c.argument('enable_application_configuration_service',

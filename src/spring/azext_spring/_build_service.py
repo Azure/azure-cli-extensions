@@ -32,15 +32,15 @@ def _update_default_build_agent_pool(cmd, client, resource_group, name, build_po
 
 
 def create_build_service(cmd, client, resource_group, service, disable_build_service=False,
-                         cr_server=None, cr_username=None, cr_password=None):
+                         registry_server=None, registry_username=None, registry_password=None):
     if not disable_build_service:
-        if cr_server is not None:
+        if registry_server is not None:
             container_registry_properties = models.ContainerRegistryProperties(
                 credentials=models.ContainerRegistryBasicCredentials(
                     type=DEFAULT_CONTAINER_REGISTRY_TYPE,
-                    server=cr_server,
-                    username=cr_username,
-                    password=cr_password))
+                    server=registry_server,
+                    username=registry_username,
+                    password=registry_password))
             container_registry_resource = models.ContainerRegistryResource(
                 properties=container_registry_properties)
             poller = client.container_registries.begin_create_or_update(

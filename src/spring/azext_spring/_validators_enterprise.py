@@ -114,14 +114,14 @@ def validate_build_pool_size(namespace):
 
 def validate_build_service(namespace):
     if _parse_sku_name(namespace.sku) == 'enterprise':
-        if (namespace.cr_server or namespace.cr_username or namespace.cr_password is not None) \
-                and ((namespace.cr_server is None) or (namespace.cr_username is None) or (namespace.cr_password is None)):
+        if (namespace.registry_server or namespace.registry_username or namespace.registry_password is not None) \
+                and ((namespace.registry_server is None) or (namespace.registry_username is None) or (namespace.registry_password is None)):
             raise InvalidArgumentValueError(
-                "The'--cr-server', '--cr-username' and '--cr-password' should be specified together.")
-        if (namespace.cr_server or namespace.cr_username or namespace.cr_password is not None) \
+                "The'--registry-server', '--registry-username' and '--registry-password' should be specified together.")
+        if (namespace.registry_server or namespace.registry_username or namespace.registry_password is not None) \
                 and namespace.disable_build_service:
             raise InvalidArgumentValueError(
-                "Conflict detected: '--cr-server', '--cr-username' and '--cr-password' "
+                "Conflict detected: '--registry-server', '--registry-username' and '--registry-password' "
                 "can not be set with '--disable-build-service'.")
         if namespace.disable_build_service:
             namespace.disable_app_insights = True
@@ -130,7 +130,7 @@ def validate_build_service(namespace):
                     "Conflict detected: '--app-insights' or '--app-insights-key' "
                     "can not be set with '--disable_build_service'.")
     else:
-        if namespace.disable_build_service or namespace.cr_server or namespace.cr_username or namespace.cr_password is not None:
+        if namespace.disable_build_service or namespace.registry_server or namespace.registry_username or namespace.registry_password is not None:
             raise InvalidArgumentValueError("The build service is only supported with enterprise tier.")
 
 

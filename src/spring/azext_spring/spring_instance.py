@@ -127,7 +127,7 @@ class EnterpriseSpringCloud(DefaultSpringCloud):
         # should create build service before creating build agent pool and app insights
         if not no_wait and not kwargs['disable_build_service']:
             poller = create_build_service(self.cmd, self.client, self.resource_group, self.name, kwargs['disable_build_service'],
-                                          kwargs['cr_server'], kwargs['cr_username'], kwargs['cr_password'])
+                                          kwargs['registry_server'], kwargs['registry_username'], kwargs['registry_password'])
             LongRunningOperation(self.cmd.cli_ctx)(poller)
         pollers = [
             # create sub components like Service registry, ACS, build service, etc.
@@ -172,9 +172,9 @@ def spring_create(cmd, client, resource_group, name,
                   zone_redundant=False,
                   build_pool_size=None,
                   disable_build_service=False,
-                  cr_server=None,
-                  cr_username=None,
-                  cr_password=None,
+                  registry_server=None,
+                  registry_username=None,
+                  registry_password=None,
                   enable_application_configuration_service=False,
                   enable_application_live_view=False,
                   enable_service_registry=False,
@@ -212,9 +212,9 @@ def spring_create(cmd, client, resource_group, name,
         'zone_redundant': zone_redundant,
         'build_pool_size': build_pool_size,
         'disable_build_service': disable_build_service,
-        'cr_server': cr_server,
-        'cr_username': cr_username,
-        'cr_password': cr_password,
+        'registry_server': registry_server,
+        'registry_username': registry_username,
+        'registry_password': registry_password,
         'enable_application_configuration_service': enable_application_configuration_service,
         'enable_application_live_view': enable_application_live_view,
         'enable_service_registry': enable_service_registry,
