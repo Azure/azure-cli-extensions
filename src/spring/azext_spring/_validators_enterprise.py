@@ -192,6 +192,8 @@ def validate_artifact_path(namespace):
     if namespace.disable_validation:
         telemetry.set_user_fault("jar validation is disabled")
         return
+    if namespace.artifact_path is None:
+        return
     if os.path.splitext(namespace.artifact_path)[-1] != "jar":
         return
     values = _parse_jar_file(namespace.artifact_path)
