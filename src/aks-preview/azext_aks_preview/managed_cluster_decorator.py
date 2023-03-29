@@ -3181,11 +3181,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         self._ensure_mc(mc)
 
         existing_until = None
-        if mc.upgrade_settings is not None and mc.upgrade_settings.override_settings is not None and mc.upgrade_settings.override_settings.until is not None and len(mc.upgrade_settings.override_settings.until) > 0:
+        if mc.upgrade_settings is not None and mc.upgrade_settings.override_settings is not None and mc.upgrade_settings.override_settings.until is not None:
             try:
                 existing_until = parse(mc.upgrade_settings.override_settings.until)
-            except Exception as ex: # pylint: disable=broad-except
-                 logger.error("Failed to get existing upgradeSettings.overrideSettings.until field: %s", str(ex))
+            except Exception as ex:  # pylint: disable=broad-except
+                logger.error("Failed to get existing upgradeSettings.overrideSettings.until field: %s", str(ex))
 
         # There is a limitation on differentiating empty list vs. not set in update requests.
         # In such case, we'll use a workaround here to disable it by setting the until field to the current time, to make the overrides no longer effective.

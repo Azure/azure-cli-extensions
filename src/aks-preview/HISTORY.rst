@@ -9,16 +9,16 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
+0.5.134
++++++++
+* Add cluster upgrade settings options `--enable-upgrade-ignore-kubernetes-deprecations`, `--disable-upgrade-ignore-kubernetes-deprecations`, and `--upgrade_override_until`.
+
 0.5.133
 +++++++
 * Add `az aks mesh` commands for Azure Service Mesh.
 * `az aks create/update`: Replace `--uptime-sla` and `--no-uptime-sla` argument with `--tier` argument.
 * Raise a ClientRequestError when creating the same cluster again in command `az aks create`.
 * Vendor new SDK and bump API version to 2023-02-02-preview.
-
-0.5.133
-+++++++
-* Add cluster upgrade settings options `--enable-upgrade-ignore-kubernetes-deprecations`, `--disable-upgrade-ignore-kubernetes-deprecations`, and `--upgrade_override_until`.
 
 0.5.132
 +++++++
