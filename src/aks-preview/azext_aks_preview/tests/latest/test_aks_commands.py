@@ -24,6 +24,9 @@ from azure.core.exceptions import HttpResponseError
 from knack.util import CLIError
 
 
+AZURE_SERVICE_MESH_PREVIEW_FEATURE_HEADER = 'Microsoft.ContainerService/AzureServiceMeshPreview'
+
+
 def _get_test_data_file(filename):
     curr_dir = os.path.dirname(os.path.realpath(__file__))
     return os.path.join(curr_dir, 'data', filename)
@@ -6820,7 +6823,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    def test_aks_create_with_azure_service_mesh(self, resource_group, resource_group_location):
+    def test_aks_azure_service_mesh_enable_disable(self, resource_group, resource_group_location):
         """ This test case exercises enabling and disabling service mesh profile.
 
         It creates a cluster without azure service mesh profile.  Then enable it by
@@ -6836,10 +6839,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name,
             'location': resource_group_location,
             'ssh_key_value': self.generate_ssh_keys(),
+            'feature_header': AZURE_SERVICE_MESH_PREVIEW_FEATURE_HEADER,
         })
 
         # create cluster without --enable-azure-service-mesh
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--aks-custom-headers=AKSHTTPCustomFeatures={feature_header} ' \
                      '--ssh-key-value={ssh_key_value} --output=json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -6881,10 +6886,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'name': aks_name,
             'location': resource_group_location,
             'ssh_key_value': self.generate_ssh_keys(),
+            'feature_header': AZURE_SERVICE_MESH_PREVIEW_FEATURE_HEADER,
         })
 
         # create cluster with --enable-azure-service-mesh
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
+                     '--aks-custom-headers=AKSHTTPCustomFeatures={feature_header} ' \
                      '--ssh-key-value={ssh_key_value} ' \
                      '--enable-azure-service-mesh --output=json'
         self.cmd(create_cmd, checks=[
