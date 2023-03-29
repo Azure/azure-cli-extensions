@@ -205,10 +205,8 @@ class ValidateForBackup(AAZCommand):
         data_store_parameters_list.Element = AAZObjectArg()
 
         _element = cls._args_schema.backup_instance.policy_info.policy_parameters.data_store_parameters_list.Element
-        _element.object_type = AAZStrArg(
-        # _element.azure_operational_store_parameters = AAZStrArg(
-            # options=["azure-operational-store-parameters"],
-            options=["object-type"],
+        _element.azure_operational_store_parameters = AAZObjectArg(
+            options=["azure-operational-store-parameters"],
         )
         _element.data_store_type = AAZStrArg(
             options=["data-store-type"],
@@ -217,9 +215,8 @@ class ValidateForBackup(AAZCommand):
             enum={"ArchiveStore": "ArchiveStore", "OperationalStore": "OperationalStore", "VaultStore": "VaultStore"},
         )
 
-        # azure_operational_store_parameters = cls._args_schema.backup_instance.policy_info.policy_parameters.data_store_parameters_list.Element.azure_operational_store_parameters
-        # azure_operational_store_parameters.resource_group_id = AAZStrArg(
-        _element.resource_group_id = AAZStrArg(
+        azure_operational_store_parameters = cls._args_schema.backup_instance.policy_info.policy_parameters.data_store_parameters_list.Element.azure_operational_store_parameters
+        azure_operational_store_parameters.resource_group_id = AAZStrArg(
             options=["resource-group-id"],
             help="Gets or sets the Snapshot Resource Group Uri.",
         )
@@ -365,12 +362,8 @@ class ValidateForBackup(AAZCommand):
 
             datasource_auth_credentials = _builder.get(".backupInstance.datasourceAuthCredentials")
             if datasource_auth_credentials is not None:
-                print(dir(datasource_auth_credentials), datasource_auth_credentials._values[0].to_serialized_data())
-                for i in datasource_auth_credentials._values:
-                    print("in datasource auth creds deets")
-                    print(i.to_serialized_data())
                 datasource_auth_credentials.set_const("objectType", "SecretStoreBasedAuthCredentials", AAZStrType, ".secret_store_based_auth_credentials", typ_kwargs={"flags": {"required": True}})
-                # datasource_auth_credentials.discriminate_by("objectType", "SecretStoreBasedAuthCredentials")
+                datasource_auth_credentials.discriminate_by("objectType", "SecretStoreBasedAuthCredentials")
 
             disc_secret_store_based_auth_credentials = _builder.get(".backupInstance.datasourceAuthCredentials{objectType:SecretStoreBasedAuthCredentials}")
             if disc_secret_store_based_auth_credentials is not None:
@@ -396,21 +389,12 @@ class ValidateForBackup(AAZCommand):
                 data_store_parameters_list.set_elements(AAZObjectType, ".")
 
             _elements = _builder.get(".backupInstance.policyInfo.policyParameters.dataStoreParametersList[]")
-            print(dir(_elements), type(_elements))
             if _elements is not None:
-                print(_elements._values[0].to_serialized_data())
-                print(dir(_elements._values[0]))
                 _elements.set_prop("dataStoreType", AAZStrType, ".data_store_type", typ_kwargs={"flags": {"required": True}})
-                print(_elements._values[0].to_serialized_data())
-                # _elements.set_const("objectType", "AzureOperationalStoreParameters", AAZStrType, ".azure_operational_store_parameters", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("objectType", AAZStrType, ".object_type")
-                # _elements._values[0]["objectType"] = "AzureOperationalStoreParameters"
-                print(_elements._values[0].to_serialized_data())
-                # _elements.discriminate_by("objectType", "AzureOperationalStoreParameters")
-                _elements.set_prop("resourceGroupId", AAZStrType, ".resource_group_id")
-                print(_elements._values[0].to_serialized_data())
+                _elements.set_const("objectType", "AzureOperationalStoreParameters", AAZStrType, ".azure_operational_store_parameters", typ_kwargs={"flags": {"required": True}})
+                _elements.discriminate_by("objectType", "AzureOperationalStoreParameters")
 
-            disc_azure_operational_store_parameters = _builder.get(". backupInstance.policyInfo.policyParameters.dataStoreParametersList[]{objectType:AzureOperationalStoreParameters}")
+            disc_azure_operational_store_parameters = _builder.get(".backupInstance.policyInfo.policyParameters.dataStoreParametersList[]{objectType:AzureOperationalStoreParameters}")
             if disc_azure_operational_store_parameters is not None:
                 disc_azure_operational_store_parameters.set_prop("resourceGroupId", AAZStrType, ".azure_operational_store_parameters.resource_group_id")
 
