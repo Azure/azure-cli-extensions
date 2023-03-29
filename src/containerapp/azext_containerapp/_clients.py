@@ -555,7 +555,7 @@ class ManagedEnvironmentClient():
             else:
                 raise AzureResponseError(f"Invalid operation URL: '{operation_url}'")
 
-        return
+        return r.json()
 
     @classmethod
     def delete(cls, cmd, resource_group_name, name, no_wait=False):
