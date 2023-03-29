@@ -1164,6 +1164,8 @@ def update_managed_environment(cmd,
     env_def = {}
     safe_set(env_def, "location", value=r["location"])  # required for API
     safe_set(env_def, "tags", value=tags)
+    if tags:
+        safe_set(env_def, "tags", value=tags)
 
     # Logs
     if logs_destination:
