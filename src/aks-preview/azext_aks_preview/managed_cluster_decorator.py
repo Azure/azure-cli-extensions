@@ -3187,7 +3187,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             except Exception as ex: # pylint: disable=broad-except
                  logger.error("Failed to get existing upgradeSettings.overrideSettings.until field: %s", str(ex))
 
-
         # There is a limitation on differentiating empty list vs. not set in update requests.
         # In such case, we'll use a workaround here to disable it by setting the until field to the current time, to make the overrides no longer effective.
         # For now there's only one allowed override so we can return early here.
