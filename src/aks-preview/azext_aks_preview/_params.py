@@ -89,6 +89,8 @@ from azext_aks_preview._consts import (
     CONST_WEEKINDEX_THIRD,
     CONST_WEEKINDEX_FOURTH,
     CONST_WEEKINDEX_LAST,
+    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
+    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -225,6 +227,12 @@ week_indexes = [
 credential_formats = [CONST_CREDENTIAL_FORMAT_AZURE, CONST_CREDENTIAL_FORMAT_EXEC]
 
 keyvault_network_access_types = [CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC, CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE]
+
+# azure service mesh
+ingress_gateway_types = [
+    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
+    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
+]
 
 
 def load_arguments(self, _):
@@ -381,6 +389,10 @@ def load_arguments(self, _):
         c.argument('enable_pod_identity_with_kubenet', action='store_true')
         c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_image_cleaner', action='store_true', is_preview=True)
+        c.argument('enable_azure_service_mesh',
+                   options_list=["--enable-azure-service-mesh", "--enable-asm"],
+                   action='store_true',
+                   is_preview=True)
         c.argument('image_cleaner_interval_hours', type=int, is_preview=True)
         c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
@@ -836,6 +848,14 @@ def load_arguments(self, _):
 
     with self.argument_context('aks trustedaccess rolebinding update') as c:
         c.argument('roles', help='comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...')
+
+    with self.argument_context('aks mesh enable-ingress-gateway') as c:
+        c.argument('ingress_gateway_type',
+                   arg_type=get_enum_type(ingress_gateway_types))
+
+    with self.argument_context('aks mesh disable-ingress-gateway') as c:
+        c.argument('ingress_gateway_type',
+                   arg_type=get_enum_type(ingress_gateway_types))
 
 
 def _get_default_install_location(exe_name):
