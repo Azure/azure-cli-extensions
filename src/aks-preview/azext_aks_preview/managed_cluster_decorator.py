@@ -3190,8 +3190,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         f"{override_until} is not a valid datatime format."
                     )
             elif upgrade_ignore_kubernetes_deprecations:
-                if existing_until is None or existing_until.timestamp() < datetime.datetime.utcnow().timestamp() + datetime.timedelta(days=3):
-                    default_extended_until = datetime.datetime.utcnow() + datetime.timedelta(days=3)
+                default_extended_until = datetime.datetime.utcnow() + datetime.timedelta(days=3)
+                if existing_until is None or existing_until.timestamp() < default_extended_until.timestamp():
                     mc.upgrade_settings.override_settings.until = default_extended_until
 
         return mc
