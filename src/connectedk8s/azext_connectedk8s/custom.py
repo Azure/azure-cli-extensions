@@ -2437,15 +2437,12 @@ def install_kubectl_client():
         telemetry.set_exception(exception=e, fault_type=consts.Download_And_Install_Kubectl_Fault_Type, summary="Failed to download and install kubectl")
         raise CLIInternalError("Unable to install kubectl. Error: ", str(e))
 
-def get_issuer_url(cmd, client, resource_group_name, cluster_name):
-    # Override preview client to show private link properties to customers
-    client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
-
+def get_issuer_url():
     # Get the Issuer Url from the signingkey CR in the cluster specified
     kubectl_client_location = install_kubectl_client()
 
-    cmd = [kubectl_client_location, "get", "signingkeys.clusterconfig.azure.com", "-n", "azure-arc", "signingkey", "-o=jsonpath={.status.issuerUrl}"]
-    cmd_output = Popen(cmd, stdout=PIPE, stderr=PIPE)
+    kubectl_cmd = [kubectl_client_location, "get", "signingkeys.clusterconfig.azure.com", "-n", "azure-arc", "signingkey", "-o=jsonpath={.status.clusterIssuerUrl}"]
+    cmd_output = Popen(kubectl_cmd, stdout=PIPE, stderr=PIPE)
     output, error_helm_delete = cmd_output.communicate()
 
     if(cmd_output.returncode == 0):

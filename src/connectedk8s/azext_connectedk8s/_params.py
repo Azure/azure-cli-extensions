@@ -117,6 +117,3 @@ def load_arguments(self, _):
         c.argument('cluster_name', options_list=['--name', '-n'], help='The name of the connected cluster.')
         c.argument('kube_config', options_list=['--kube-config'], help='Path to the kube config file.')
         c.argument('kube_context', options_list=['--kube-context'], help='Kubconfig context from current machine.')
-
-    with self.argument_context('connectedk8s show-issuer-url') as c:
-        c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
