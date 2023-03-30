@@ -13,7 +13,8 @@ interactions:
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
         --api-description --api-doc-location --api-version --server-url --apm-types
-        --properties --secrets --allowed-origins --allowed-methods --allowed-headers
+        --properties --secrets --certificate-names --enable-cert-verify
+        --allowed-origins --allowed-methods --allowed-headers
         --max-age --allow-credentials --exposed-headers --client-id --client-secret
         --issuer-uri --scope
       User-Agent:
@@ -22,7 +23,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"properties":{"public":true,"url":"tx-enterprise-gateway-fd0c7.svc.asc-test.net","provisioningState":"Succeeded","httpsOnly":true,"ssoProperties":{"scope":["openid","profile","email"],"clientId":"*","clientSecret":"*","issuerUri":"https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"},"apiMetadataProperties":{"title":"Pet
+      string: '{"properties":{"public":true,"url":"tx-enterprise-gateway-fd0c7.svc.asc-test.net","provisioningState":"Succeeded","httpsOnly":true,"clientAuth":{"certificateVerification":"Disabled","certificates":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/certificates/abc"]},"ssoProperties":{"scope":["openid","profile","email"],"clientId":"*","clientSecret":"*","issuerUri":"https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"},"apiMetadataProperties":{"title":"Pet
         clinic","description":"Demo for pet clinic","documentation":"doc","version":"v1","serverUrl":"https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"},"corsProperties":{"allowedOrigins":["*"],"allowedMethods":["GET","PUT","DELETE"],"allowedHeaders":["X-TEST","X-STAGING"],"maxAge":10,"allowCredentials":true,"exposedHeaders":["Access-Control-Request-Method","Access-Control-Request-Headers"]},"resourceRequests":{"cpu":"1","memory":"2Gi"},"instances":[{"name":"asc-scg-default-0","status":"Running"},{"name":"asc-scg-default-1","status":"Running"},{"name":"asc-scg-default-2","status":"Running"}],"operatorProperties":{"resourceRequests":{"cpu":"1","memory":"2Gi","instanceCount":2},"instances":[{"name":"scg-operator-b788f7c7-djqgj","status":"Running"},{"name":"scg-operator-b788f7c7-r4gvw","status":"Running"}]},"apmTypes":["NewRelic","ElasticAPM"],"environmentVariables":{"properties":{"a":"b","c":"d"},"secrets":null}},"type":"Microsoft.AppPlatform/Spring/gateways","sku":{"name":"E0","tier":"Enterprise","capacity":3},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default","name":"default","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-09T09:01:20.4949677Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-09T16:30:12.4479705Z"}}'
     headers:
       cache-control:
@@ -56,6 +57,7 @@ interactions:
     body: '{"properties": {"public": true, "httpsOnly": true, "ssoProperties": {"scope":
       ["openid", "profile", "email"], "clientId": "*", "clientSecret": "*", "issuerUri":
       "https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"},
+      "clientAuth":{"certificateVerification":"Disabled","certificates":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/certificates/abc"]},
       "apiMetadataProperties": {"title": "Pet clinic", "description": "Demo for pet
       clinic", "documentation": "doc", "version": "v1", "serverUrl": "https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"},
       "corsProperties": {"allowedOrigins": ["*"], "allowedMethods": ["GET", "PUT",
@@ -81,7 +83,8 @@ interactions:
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
         --api-description --api-doc-location --api-version --server-url --apm-types
-        --properties --secrets --allowed-origins --allowed-methods --allowed-headers
+        --properties --secrets --certificate-names --enable-cert-verify
+        --allowed-origins --allowed-methods --allowed-headers
         --max-age --allow-credentials --exposed-headers --client-id --client-secret
         --issuer-uri --scope
       User-Agent:
@@ -90,7 +93,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"properties":{"public":true,"url":"tx-enterprise-gateway-fd0c7.svc.asc-test.net","provisioningState":"Updating","httpsOnly":true,"ssoProperties":{"scope":["openid","profile","email"],"clientId":"*","clientSecret":"*","issuerUri":"https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"},"apiMetadataProperties":{"title":"Pet
+      string: '{"properties":{"public":true,"url":"tx-enterprise-gateway-fd0c7.svc.asc-test.net","provisioningState":"Updating","httpsOnly":true,"clientAuth":{"certificateVerification":"Disabled","certificates":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/certificates/abc"]},"ssoProperties":{"scope":["openid","profile","email"],"clientId":"*","clientSecret":"*","issuerUri":"https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"},"apiMetadataProperties":{"title":"Pet
         clinic","description":"Demo for pet clinic","documentation":"doc","version":"v1","serverUrl":"https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"},"corsProperties":{"allowedOrigins":["*"],"allowedMethods":["GET","PUT","DELETE"],"allowedHeaders":["X-TEST","X-STAGING"],"maxAge":10,"allowCredentials":true,"exposedHeaders":["Access-Control-Request-Method","Access-Control-Request-Headers"]},"resourceRequests":{"cpu":"1","memory":"2Gi"},"instances":[{"name":"asc-scg-default-0","status":"Running"},{"name":"asc-scg-default-1","status":"Running"},{"name":"asc-scg-default-2","status":"Running"}],"operatorProperties":{"resourceRequests":{"cpu":"1","memory":"2Gi","instanceCount":2},"instances":[{"name":"scg-operator-b788f7c7-djqgj","status":"Running"},{"name":"scg-operator-b788f7c7-r4gvw","status":"Running"}]},"apmTypes":["NewRelic","ElasticAPM"],"environmentVariables":{"properties":{"a":"b","c":"d"},"secrets":null}},"type":"Microsoft.AppPlatform/Spring/gateways","sku":{"name":"E0","tier":"Enterprise","capacity":3},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default","name":"default","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-09T09:01:20.4949677Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-09T16:36:52.520067Z"}}'
     headers:
       azure-asyncoperation:
@@ -136,7 +139,8 @@ interactions:
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
         --api-description --api-doc-location --api-version --server-url --apm-types
-        --properties --secrets --allowed-origins --allowed-methods --allowed-headers
+        --properties --secrets --certificate-names --enable-cert-verify
+        --allowed-origins --allowed-methods --allowed-headers
         --max-age --allow-credentials --exposed-headers --client-id --client-secret
         --issuer-uri --scope
       User-Agent:
@@ -188,7 +192,8 @@ interactions:
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
         --api-description --api-doc-location --api-version --server-url --apm-types
-        --properties --secrets --allowed-origins --allowed-methods --allowed-headers
+        --properties --secrets --certificate-names --enable-cert-verify
+        --allowed-origins --allowed-methods --allowed-headers
         --max-age --allow-credentials --exposed-headers --client-id --client-secret
         --issuer-uri --scope
       User-Agent:
@@ -240,7 +245,8 @@ interactions:
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
         --api-description --api-doc-location --api-version --server-url --apm-types
-        --properties --secrets --allowed-origins --allowed-methods --allowed-headers
+        --properties --secrets --certificate-names --enable-cert-verify
+        --allowed-origins --allowed-methods --allowed-headers
         --max-age --allow-credentials --exposed-headers --client-id --client-secret
         --issuer-uri --scope
       User-Agent:
@@ -292,7 +298,8 @@ interactions:
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
         --api-description --api-doc-location --api-version --server-url --apm-types
-        --properties --secrets --allowed-origins --allowed-methods --allowed-headers
+        --properties --secrets --certificate-names --enable-cert-verify
+        --allowed-origins --allowed-methods --allowed-headers
         --max-age --allow-credentials --exposed-headers --client-id --client-secret
         --issuer-uri --scope
       User-Agent:
@@ -344,7 +351,8 @@ interactions:
       ParameterSetName:
       - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
         --api-description --api-doc-location --api-version --server-url --apm-types
-        --properties --secrets --allowed-origins --allowed-methods --allowed-headers
+        --properties --secrets --certificate-names --enable-cert-verify
+        --allowed-origins --allowed-methods --allowed-headers
         --max-age --allow-credentials --exposed-headers --client-id --client-secret
         --issuer-uri --scope
       User-Agent:
@@ -353,8 +361,61 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"properties":{"public":true,"url":"tx-enterprise-gateway-fd0c7.svc.asc-test.net","provisioningState":"Succeeded","httpsOnly":true,"ssoProperties":{"scope":["openid","profile","email"],"clientId":"*","clientSecret":"*","issuerUri":"https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"},"apiMetadataProperties":{"title":"Pet
+      string: '{"properties":{"public":true,"url":"tx-enterprise-gateway-fd0c7.svc.asc-test.net","provisioningState":"Succeeded","httpsOnly":true,"clientAuth":{"certificateVerification":"Disabled","certificates":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/certificates/abc"]},"ssoProperties":{"scope":["openid","profile","email"],"clientId":"*","clientSecret":"*","issuerUri":"https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"},"apiMetadataProperties":{"title":"Pet
         clinic","description":"Demo for pet clinic","documentation":"doc","version":"v1","serverUrl":"https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"},"corsProperties":{"allowedOrigins":["*"],"allowedMethods":["GET","PUT","DELETE"],"allowedHeaders":["X-TEST","X-STAGING"],"maxAge":10,"allowCredentials":true,"exposedHeaders":["Access-Control-Request-Method","Access-Control-Request-Headers"]},"resourceRequests":{"cpu":"1","memory":"2Gi"},"instances":[{"name":"asc-scg-default-0","status":"Running"},{"name":"asc-scg-default-1","status":"Running"},{"name":"asc-scg-default-2","status":"Running"}],"operatorProperties":{"resourceRequests":{"cpu":"1","memory":"2Gi","instanceCount":2},"instances":[{"name":"scg-operator-b788f7c7-djqgj","status":"Running"},{"name":"scg-operator-b788f7c7-r4gvw","status":"Running"}]},"apmTypes":["NewRelic","ElasticAPM"],"environmentVariables":{"properties":{"a":"b","c":"d"},"secrets":null}},"type":"Microsoft.AppPlatform/Spring/gateways","sku":{"name":"E0","tier":"Enterprise","capacity":3},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default","name":"default","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-09T09:01:20.4949677Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-09T16:36:52.520067Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1764'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 09 Jan 2023 16:37:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - bf99ca20-f8aa-4656-b0e4-4b65aeee74d4
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring gateway update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --assign-endpoint --https-only --cpu --memory --instance-count --api-title
+        --api-description --api-doc-location --api-version --server-url --apm-types
+        --properties --secrets --certificate-names --enable-cert-verify
+        --allowed-origins --allowed-methods --allowed-headers
+        --max-age --allow-credentials --exposed-headers --client-id --client-secret
+        --issuer-uri --scope
+      User-Agent:
+      - AZURECLI/2.43.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.10.2 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/certificates?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '"[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/certificates/abc","name":"abc","properties":{"activateDate":null,"certVersion":null,"dnsNames":null,"excludePrivateKey":false,"expirationDate":null,"issuedDate":null,"issuer":null,"keyVaultCertName":"scg-to-app-tls","provisioningState":"Succeeded","subjectName":null,"thumbprint":null,"type":"KeyVaultCertificate","vaultUri":"https://xxxkv.vault.azure.net"},"resourceGroup":"tx","systemData":{"createdAt":"2023-01-31T10:18:38.892419+00:00","createdBy":"ninpan@microsoft.com","createdByType":"User","lastModifiedAt":"2023-01-31T15:44:24.718616+00:00","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User"},"type":"Microsoft.AppPlatform/Spring/certificates"}]"'
     headers:
       cache-control:
       - no-cache
@@ -452,7 +513,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"properties":{"public":true,"url":"tx-enterprise-gateway-fd0c7.svc.asc-test.net","provisioningState":"Succeeded","httpsOnly":true,"ssoProperties":{"scope":["openid","profile","email"],"clientId":"*","clientSecret":"*","issuerUri":"https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"},"apiMetadataProperties":{"title":"Pet
+      string: '{"properties":{"public":true,"url":"tx-enterprise-gateway-fd0c7.svc.asc-test.net","provisioningState":"Succeeded","httpsOnly":true,"clientAuth":{"certificateVerification":"Disabled","certificates":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/certificates/abc"]},"ssoProperties":{"scope":["openid","profile","email"],"clientId":"*","clientSecret":"*","issuerUri":"https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"},"apiMetadataProperties":{"title":"Pet
         clinic","description":"Demo for pet clinic","documentation":"doc","version":"v1","serverUrl":"https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"},"corsProperties":{"allowedOrigins":["*"],"allowedMethods":["GET","PUT","DELETE"],"allowedHeaders":["X-TEST","X-STAGING"],"maxAge":10,"allowCredentials":true,"exposedHeaders":["Access-Control-Request-Method","Access-Control-Request-Headers"]},"resourceRequests":{"cpu":"1","memory":"2Gi"},"instances":[{"name":"asc-scg-default-0","status":"Running"},{"name":"asc-scg-default-1","status":"Running"},{"name":"asc-scg-default-2","status":"Running"}],"operatorProperties":{"resourceRequests":{"cpu":"1","memory":"2Gi","instanceCount":2},"instances":[{"name":"scg-operator-b788f7c7-djqgj","status":"Running"},{"name":"scg-operator-b788f7c7-r4gvw","status":"Running"}]},"apmTypes":["NewRelic","ElasticAPM"],"environmentVariables":{"properties":{"a":"b","c":"d"},"secrets":null}},"type":"Microsoft.AppPlatform/Spring/gateways","sku":{"name":"E0","tier":"Enterprise","capacity":3},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default","name":"default","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-09T09:01:20.4949677Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-09T16:36:52.520067Z"}}'
     headers:
       cache-control:
@@ -2157,7 +2218,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"properties":{"public":true,"url":"tx-enterprise-gateway-fd0c7.svc.asc-test.net","provisioningState":"Succeeded","httpsOnly":true,"ssoProperties":{"scope":["openid","profile","email"],"clientId":"*","clientSecret":"*","issuerUri":"https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"},"apiMetadataProperties":{"title":"Pet
+      string: '{"properties":{"public":true,"url":"tx-enterprise-gateway-fd0c7.svc.asc-test.net","provisioningState":"Succeeded","httpsOnly":true,"clientAuth":{"certificateVerification":"Disabled","certificates":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/certificates/abc"]},"ssoProperties":{"scope":["openid","profile","email"],"clientId":"*","clientSecret":"*","issuerUri":"https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0"},"apiMetadataProperties":{"title":"Pet
         clinic","description":"Demo for pet clinic","documentation":"doc","version":"v1","serverUrl":"https://tx-enterprise-gateway-fd0c7.svc.asc-test.net"},"corsProperties":{"allowedOrigins":["*"],"allowedMethods":["GET","PUT","DELETE"],"allowedHeaders":["X-TEST","X-STAGING"],"maxAge":10,"allowCredentials":true,"exposedHeaders":["Access-Control-Request-Method","Access-Control-Request-Headers"]},"resourceRequests":{"cpu":"1","memory":"2Gi"},"instances":[{"name":"asc-scg-default-0","status":"Running"},{"name":"asc-scg-default-1","status":"Running"},{"name":"asc-scg-default-2","status":"Running"}],"operatorProperties":{"resourceRequests":{"cpu":"1","memory":"2Gi","instanceCount":2},"instances":[{"name":"scg-operator-b788f7c7-djqgj","status":"Running"},{"name":"scg-operator-b788f7c7-r4gvw","status":"Running"}]},"apmTypes":["NewRelic","ElasticAPM"],"environmentVariables":{"properties":{"a":"b","c":"d"},"secrets":null}},"type":"Microsoft.AppPlatform/Spring/gateways","sku":{"name":"E0","tier":"Enterprise","capacity":3},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/gateways/default","name":"default","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2023-01-09T09:01:20.4949677Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-09T16:36:52.520067Z"}}'
     headers:
       cache-control:
