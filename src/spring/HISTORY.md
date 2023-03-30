@@ -2,15 +2,15 @@ Release History
 ===============
 1.9.0
 ---
-* Add new command -- `az spring build-service build create`.
-* Add new command -- `az spring build-service build update`.
-* Add new command -- `az spring build-service build show`.
-* Add new command -- `az spring build-service build list`.
-* Add new command -- `az spring build-service build delete`.
-* Add new command -- `az spring build-service build result show`.
-* Add new command -- `az spring build-service build result list`.
-* Add new command -- `az spring container-registry update`.
-* Add new command -- `az spring container-registry show`.
+* Add new command -- `az spring build-service build create` to create the build resource when using your own container registry.
+* Add new command -- `az spring build-service build update` to update the build resource when using your own container registry.
+* Add new command -- `az spring build-service build show` to show the build resource.
+* Add new command -- `az spring build-service build list` to list all build resource.
+* Add new command -- `az spring build-service build delete` to delete the build resource.
+* Add new command -- `az spring build-service build result show` to show the build result by build name and result name.
+* Add new command -- `az spring build-service build result list` to list all build results of the build resource.
+* Add new command -- `az spring container-registry update` to update container registry resource.
+* Add new command -- `az spring container-registry show` to show the container registry resource.
 * Add new parameters -- `--disable-build-service`, `--container-registry-server`, `--container-registry-username` and `--container-registry-password` when creating service.
 
 1.8.0
