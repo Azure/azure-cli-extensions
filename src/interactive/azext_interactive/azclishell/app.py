@@ -244,8 +244,8 @@ class AzInteractiveShell(object):
 
         for i, _ in list(enumerate(list_examples)):
             if len(list_examples[i]) > 1:
-                examples_with_index.append("[" + str(i + 1) + "] " + list_examples[i][0] +
-                                           list_examples[i][1])
+                examples_with_index.append("[" + str(i + 1) + "] " + list_examples[i][0] + "\n" +
+                                           list_examples[i][1] + "\n")
 
         example = "".join(exam for exam in examples_with_index)
         num_newline = example.count('\n')
