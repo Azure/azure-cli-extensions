@@ -220,8 +220,7 @@ def delete_hybrid_appliance(resource_group_name, name):
         try:
             utils.validate_cluster_resource_group_and_name(azure_clusterconfig_cm, resource_group_name, name)
         except Exception as ex:
-            logger.warning("Failed to validate the configmap: {}.".format(str(ex)))
-            delete_cc = False
+            raise ValidationError("Failed to validate the configmap: {}.".format(str(ex)))
 
     if delete_cc:
         utils.set_no_proxy_from_helm_values()
