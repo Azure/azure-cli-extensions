@@ -121,7 +121,7 @@ def validate_ca_cert(namespace):
     if resource_id and ((not resource_id.startswith("/subscriptions/")) or ("/providers/Microsoft.AppPlatform/Spring/" not in resource_id) or ("/certificates/" not in resource_id) or ("/resourceGroups/" not in resource_id)):
         raise InvalidArgumentValueError("Invalid CA certificate resource id.")
 
-    
+
 def validate_git_uri(namespace):
     uri = namespace.uri
     if uri and (not uri.startswith("https://")) and (not uri.startswith("git@")):
