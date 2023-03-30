@@ -33,7 +33,7 @@ class GatewayTest(ScenarioTest):
                  '--assign-endpoint true --https-only true --cpu 1 --memory 2Gi --instance-count 3 '
                  '--api-title "Pet clinic" --api-description "Demo for pet clinic" --api-doc-location "doc" --api-version v1 '
                  '--server-url https://tx-enterprise-gateway-fd0c7.svc.asc-test.net '
-                 '--certificate-names abc --enable-cert-verify true'
+                 '--certificate-names abc --enable-cert-verify true '
                  '--apm-types NewRelic ElasticAPM --properties a=b c=d --secrets e=f g=h '
                  '--allowed-origins "*" --allowed-methods "GET,PUT,DELETE" --allowed-headers "X-TEST,X-STAGING" --max-age 10 --allow-credentials true --exposed-headers "Access-Control-Request-Method,Access-Control-Request-Headers" '
                  '--client-id * --client-secret * --issuer-uri https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0 --scope "openid,profile,email"', checks=[
