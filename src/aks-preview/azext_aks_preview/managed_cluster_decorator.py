@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import copy
 import os
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
@@ -45,6 +46,8 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 
 from azext_aks_preview._consts import (
+    CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
+    CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
     CONST_EBPF_DATAPLANE_CILIUM,
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
@@ -101,6 +104,7 @@ ManagedClusterSecurityProfileDefender = TypeVar("ManagedClusterSecurityProfileDe
 ManagedClusterSecurityProfileNodeRestriction = TypeVar("ManagedClusterSecurityProfileNodeRestriction")
 ManagedClusterWorkloadProfileVerticalPodAutoscaler = TypeVar("ManagedClusterWorkloadProfileVerticalPodAutoscaler")
 ManagedClusterLoadBalancerProfile = TypeVar("ManagedClusterLoadBalancerProfile")
+ServiceMeshProfile = TypeVar("ServiceMeshProfile")
 
 
 # pylint: disable=too-few-public-methods
@@ -1899,6 +1903,108 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return ssh_key_value
 
+    def get_initial_service_mesh_profile(self) -> ServiceMeshProfile:
+        """ Obtain the initial service mesh profile from parameters.
+        This function is used only when setting up a new AKS cluster.
+
+        :return: initial service mesh profile
+        """
+
+        # returns a service mesh profile only if '--enable-azure-service-mesh' is applied
+        enable_asm = self.raw_param.get("enable_azure_service_mesh", False)
+        if enable_asm:
+            return self.models.ServiceMeshProfile(
+                mode=CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
+                istio=self.models.IstioServiceMesh(),
+            )
+
+        return None
+
+    def update_azure_service_mesh_profile(self) -> ServiceMeshProfile:
+        """ Update azure service mesh profile.
+
+        This function clone the existing service mesh profile, then apply user supplied changes
+        like enable or disable mesh, enable or disable internal or external ingress gateway
+        then return the updated service mesh profile.
+
+        It does not overwrite the service mesh profile attribute of the managed cluster.
+
+        :return: updated service mesh profile
+        """
+
+        updated = False
+        new_profile = self.models.ServiceMeshProfile(mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED) \
+            if self.mc.service_mesh_profile is None else copy.deepcopy(self.mc.service_mesh_profile)
+
+        # enable/disable
+        enable_asm = self.raw_param.get("enable_azure_service_mesh", False)
+        disable_asm = self.raw_param.get("disable_azure_service_mesh", False)
+
+        if enable_asm and disable_asm:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot both enable and disable azure service mesh at the same time.",
+            )
+
+        if disable_asm:
+            new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_DISABLED
+            updated = True
+        elif enable_asm:
+            new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
+            if new_profile.istio is None:
+                new_profile.istio = self.models.IstioServiceMesh()
+            updated = True
+
+        enable_ingress_gateway = self.raw_param.get("enable_ingress_gateway", False)
+        disable_ingress_gateway = self.raw_param.get("disable_ingress_gateway", False)
+        ingress_gateway_type = self.raw_param.get("ingress_gateway_type", None)
+
+        if enable_ingress_gateway and disable_ingress_gateway:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot both enable and disable azure service mesh ingress gateway at the same time.",
+            )
+
+        # deal with gateways
+        if enable_ingress_gateway or disable_ingress_gateway:
+            # if a gateway is enabled, enable the mesh
+            if enable_ingress_gateway:
+                new_profile.mode = CONST_AZURE_SERVICE_MESH_MODE_ISTIO
+                updated = True
+
+            if not ingress_gateway_type:
+                raise RequiredArgumentMissingError("--ingress-gateway-type is required.")
+
+            # ensure necessary fields
+            if new_profile.istio.components is None:
+                new_profile.istio.components = self.models.IstioComponents()
+                updated = True
+            if new_profile.istio.components.ingress_gateways is None:
+                new_profile.istio.components.ingress_gateways = []
+                updated = True
+
+            # make update if the gateway already exist
+            gateway_exists = False
+            for ingress in new_profile.istio.components.ingress_gateways:
+                if ingress.mode == ingress_gateway_type:
+                    ingress.enabled = enable_ingress_gateway
+                    gateway_exists = True
+                    updated = True
+                    break
+
+            # gateway not exist, append
+            if not gateway_exists:
+                new_profile.istio.components.ingress_gateways.append(
+                    self.models.IstioIngressGateway(
+                        mode=ingress_gateway_type,
+                        enabled=enable_ingress_gateway,
+                    )
+                )
+                updated = True
+
+        if updated:
+            return new_profile
+        else:
+            return self.mc.service_mesh_profile
+
     def _get_uptime_sla(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of uptime_sla.
 
@@ -2353,6 +2459,18 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
         return mc
 
+    def set_up_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up azure service mesh for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        profile = self.context.get_initial_service_mesh_profile()
+        if profile is not None:
+            mc.service_mesh_profile = profile
+        return mc
+
     def set_up_sku(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up sku (uptime sla) for the ManagedCluster object.
 
@@ -2407,6 +2525,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_node_resource_group_profile(mc)
         # set up auto upgrade profile
         mc = self.set_up_auto_upgrade_profile(mc)
+        # set up azure service mesh profile
+        mc = self.set_up_azure_service_mesh_profile(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -2946,6 +3066,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if mc.auto_upgrade_profile is None:
                 mc.auto_upgrade_profile = self.models.ManagedClusterAutoUpgradeProfile()
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
+        return mc
+
+    def update_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update azure service mesh profile for the ManagedCluster object.
+        """
+        self._ensure_mc(mc)
+
+        mc.service_mesh_profile = self.context.update_azure_service_mesh_profile()
         return mc
 
     def update_sku(self, mc: ManagedCluster) -> ManagedCluster:

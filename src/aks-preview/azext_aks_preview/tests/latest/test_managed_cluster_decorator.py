@@ -3996,6 +3996,41 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
 
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
+    def test_set_up_azure_service_mesh(self):
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_azure_service_mesh_profile(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_service_mesh": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_azure_service_mesh_profile(mc_2)
+
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh()
+            ),
+        )
+
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
     def test_construct_mc_profile_preview(self):
         import inspect
 
@@ -5692,6 +5727,62 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
                 admin_username="olduser",
                 ssh= self.models.ContainerServiceSshConfiguration(
                     public_keys=[self.models.ContainerServiceSshPublicKey(key_data="new_key")]
+                )
+            )
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+    def test_update_service_mesh_profile(self):
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_service_mesh": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.update_azure_service_mesh_profile(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh()
+            )
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_azure_service_mesh": True,
+                "enable_ingress_gateway": True,
+                "ingress_gateway_type": "Internal",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_azure_service_mesh_profile(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            service_mesh_profile=self.models.ServiceMeshProfile(
+                mode="Istio",
+                istio=self.models.IstioServiceMesh(
+                    components=self.models.IstioComponents(
+                        ingress_gateways=[
+                            self.models.IstioIngressGateway(
+                                mode="Internal",
+                                enabled=True,
+                            )
+                        ]
+                    )
                 )
             )
         )

@@ -115,6 +115,7 @@ def load_command_table(self, _):
     with self.command_group('containerapp ingress') as g:
         g.custom_command('enable', 'enable_ingress', exception_handler=ex_handler_factory())
         g.custom_command('disable', 'disable_ingress', exception_handler=ex_handler_factory())
+        g.custom_command('update', 'update_ingress', exception_handler=ex_handler_factory())
         g.custom_show_command('show', 'show_ingress')
 
     with self.command_group('containerapp ingress traffic') as g:

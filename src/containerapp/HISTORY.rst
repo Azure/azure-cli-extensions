@@ -4,9 +4,11 @@ Release History
 ===============
 Upcoming
 +++++++
-* 'az containerapp env update': Fix bugs in update environment.
+* 'az containerapp create/update': --yaml support properties for api-version 2022-10-01 (e.g. exposedPort,clientCertificateMode,corsPolicy)
+* 'az containerapp env update': fix bugs in update environment.
 * Fix YAML create with user-assigned identity
 * Fix polling logic for long running operations.
+* Add `az containerapp ingress update` Command to Update Container App Ingress
 
 0.3.24
 ++++++
