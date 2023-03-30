@@ -777,6 +777,8 @@ def aks_update(
     kube_proxy_config=None,
     auto_upgrade_channel=None,
     node_os_upgrade_channel=None,
+    upgrade_settings=None,
+    upgrade_override_until=None,
     cluster_autoscaler_profile=None,
     uptime_sla=False,
     no_uptime_sla=False,
