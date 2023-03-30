@@ -13,6 +13,11 @@ Release History
 * Add new command -- `az spring container-registry show` to show the container registry resource.
 * Add new parameters -- `--disable-build-service`, `--container-registry-server`, `--container-registry-username` and `--container-registry-password` when creating service.
 
+1.8.1
+---
+* Support `--ca-cert-name` and `--sync-cert` in `az spring application-accelerator customized-accelerator`.
+* Support client cert validation for customized accelerator with CA certificate.
+
 1.8.0
 ---
 * Add Azure Spring Apps StandardGen2 tier.

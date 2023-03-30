@@ -37,7 +37,7 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
-from .vendored_sdks.appplatform.v2023_01_01_preview.models._app_platform_management_client_enums import (SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
+from .vendored_sdks.appplatform.v2023_03_01_preview.models._app_platform_management_client_enums import (SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
 
 name_type = CLIArgumentType(options_list=[
@@ -898,6 +898,7 @@ def load_arguments(self, _):
                   'spring application-accelerator customized-accelerator show',
                   'spring application-accelerator customized-accelerator create',
                   'spring application-accelerator customized-accelerator update',
+                  'spring application-accelerator customized-accelerator sync-cert',
                   'spring application-accelerator customized-accelerator delete']:
         with self.argument_context(scope) as c:
             c.argument('name', name_type, help='Name for customized accelerator.')
@@ -916,6 +917,7 @@ def load_arguments(self, _):
             c.argument('git_commit', type=str, help='Git repository commit to be used.', validator=validate_acc_git_refs)
             c.argument('git_tag', type=str, help='Git repository tag to be used.', validator=validate_acc_git_refs)
 
+            c.argument('ca_cert_name', help='CA certificate name.')
             c.argument('username', help='Username of git repository basic auth.')
             c.argument('password', help='Password of git repository basic auth.')
             c.argument('private_key', help='Private SSH Key algorithm of git repository.')

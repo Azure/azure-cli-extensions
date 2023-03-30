@@ -370,6 +370,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'customized_accelerator_show', table_transformer=transform_customized_accelerator_output)
         g.custom_command('create', 'customized_accelerator_upsert', supports_no_wait=True, validator=validate_customized_accelerator)
         g.custom_command('update', 'customized_accelerator_upsert', supports_no_wait=True, validator=validate_customized_accelerator)
+        g.custom_command('sync-cert', 'customized_accelerator_sync_cert', supports_no_wait=True, table_transformer=transform_customized_accelerator_output)
         g.custom_command('delete', 'customized_accelerator_delete', supports_no_wait=True)
 
     with self.command_group('spring build-service builder',
