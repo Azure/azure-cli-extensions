@@ -104,12 +104,12 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
                                   host_key_algorithm=None,
                                   no_wait=False):
     auth_setting = None
-    
+
     caCertResourceId = None
     if ca_cert_name:
         subscription = get_subscription_id(cmd.cli_ctx)
         caCertResourceId = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/certificates/{}".format(subscription, resource_group, service, ca_cert_name)
-    
+
     if username and password:
         auth_setting = models.AcceleratorBasicAuthSetting(
             ca_cert_resource_id=caCertResourceId,
