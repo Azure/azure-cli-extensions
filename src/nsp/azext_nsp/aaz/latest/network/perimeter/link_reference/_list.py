@@ -12,19 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network perimeter profile access-rule list",
+    "network perimeter link-reference list",
 )
 class List(AAZCommand):
-    """Lists the NSP access rules in the specified NSP profile.
-
-    :example: List access rules inside a Profile
-        az network perimeter profile access-rule list --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup
+    """List the NSP LinkReference resources in the specified network security perimeter.
     """
 
     _aaz_info = {
         "version": "2021-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/profiles/{}/accessrules", "2021-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/linkreferences", "2021-02-01-preview"],
         ]
     }
 
@@ -43,14 +40,9 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.perimeter_name = AAZStrArg(
-            options=["--perimeter-name"],
+        _args_schema.network_security_perimeter_name = AAZStrArg(
+            options=["--network-security-perimeter-name"],
             help="The name of the network security perimeter.",
-            required=True,
-        )
-        _args_schema.profile_name = AAZStrArg(
-            options=["--profile-name"],
-            help="The name of the NSP profile.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -72,7 +64,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NspAccessRulesList(ctx=self.ctx)()
+        self.NspLinkReferencesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -88,7 +80,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class NspAccessRulesList(AAZHttpOperation):
+    class NspLinkReferencesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -102,7 +94,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/profiles/{profileName}/accessRules",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/linkReferences",
                 **self.url_parameters
             )
 
@@ -118,11 +110,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkSecurityPerimeterName", self.ctx.args.perimeter_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "profileName", self.ctx.args.profile_name,
+                    "networkSecurityPerimeterName", self.ctx.args.network_security_perimeter_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -188,75 +176,70 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
+            _element.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType()
-            _element.name = AAZStrType()
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.address_prefixes = AAZListType(
-                serialized_name="addressPrefixes",
+            properties.description = AAZStrType(
+                flags={"read_only": True},
             )
-            properties.direction = AAZStrType()
-            properties.email_addresses = AAZListType(
-                serialized_name="emailAddresses",
+            properties.local_inbound_profiles = AAZListType(
+                serialized_name="localInboundProfiles",
             )
-            properties.fully_qualified_domain_names = AAZListType(
-                serialized_name="fullyQualifiedDomainNames",
-            )
-            properties.network_security_perimeters = AAZListType(
-                serialized_name="networkSecurityPerimeters",
-            )
-            properties.phone_numbers = AAZListType(
-                serialized_name="phoneNumbers",
+            properties.local_outbound_profiles = AAZListType(
+                serialized_name="localOutboundProfiles",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.subscriptions = AAZListType()
-
-            address_prefixes = cls._schema_on_200.value.Element.properties.address_prefixes
-            address_prefixes.Element = AAZStrType()
-
-            email_addresses = cls._schema_on_200.value.Element.properties.email_addresses
-            email_addresses.Element = AAZStrType()
-
-            fully_qualified_domain_names = cls._schema_on_200.value.Element.properties.fully_qualified_domain_names
-            fully_qualified_domain_names.Element = AAZStrType()
-
-            network_security_perimeters = cls._schema_on_200.value.Element.properties.network_security_perimeters
-            network_security_perimeters.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.network_security_perimeters.Element
-            _element.id = AAZStrType()
-            _element.location = AAZStrType(
+            properties.remote_inbound_profiles = AAZListType(
+                serialized_name="remoteInboundProfiles",
                 flags={"read_only": True},
             )
-            _element.perimeter_guid = AAZStrType(
-                serialized_name="perimeterGuid",
+            properties.remote_outbound_profiles = AAZListType(
+                serialized_name="remoteOutboundProfiles",
                 flags={"read_only": True},
             )
+            properties.remote_perimeter_guid = AAZStrType(
+                serialized_name="remotePerimeterGuid",
+                flags={"read_only": True},
+            )
+            properties.remote_perimeter_location = AAZStrType(
+                serialized_name="remotePerimeterLocation",
+                flags={"read_only": True},
+            )
+            properties.remote_perimeter_resource_id = AAZStrType(
+                serialized_name="remotePerimeterResourceId",
+                flags={"read_only": True},
+            )
+            properties.status = AAZStrType()
 
-            phone_numbers = cls._schema_on_200.value.Element.properties.phone_numbers
-            phone_numbers.Element = AAZStrType()
+            local_inbound_profiles = cls._schema_on_200.value.Element.properties.local_inbound_profiles
+            local_inbound_profiles.Element = AAZStrType()
 
-            subscriptions = cls._schema_on_200.value.Element.properties.subscriptions
-            subscriptions.Element = AAZObjectType()
+            local_outbound_profiles = cls._schema_on_200.value.Element.properties.local_outbound_profiles
+            local_outbound_profiles.Element = AAZStrType()
 
-            _element = cls._schema_on_200.value.Element.properties.subscriptions.Element
-            _element.id = AAZStrType()
+            remote_inbound_profiles = cls._schema_on_200.value.Element.properties.remote_inbound_profiles
+            remote_inbound_profiles.Element = AAZStrType()
 
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
+            remote_outbound_profiles = cls._schema_on_200.value.Element.properties.remote_outbound_profiles
+            remote_outbound_profiles.Element = AAZStrType()
 
             return cls._schema_on_200
 

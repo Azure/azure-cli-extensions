@@ -8,9 +8,16 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._create import *
-from ._delete import *
-from ._list import *
-from ._show import *
-from ._wait import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "network perimeter link",
+)
+class __CMDGroup(AAZCommandGroup):
+    """Network Security Perimeter Link
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

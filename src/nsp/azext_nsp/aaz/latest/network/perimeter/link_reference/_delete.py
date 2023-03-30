@@ -12,26 +12,25 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network perimeter show",
+    "network perimeter link-reference delete",
+    confirmation="Are you sure you want to perform this operation?",
 )
-class Show(AAZCommand):
-    """Gets the specified network security perimeter by the name.
-
-    :example: Get the Network Security Perimeter
-        az network perimeter show -g MyResourceGroup -n MyPerimeter
+class Delete(AAZCommand):
+    """Delete an NSP LinkReference resource.
     """
 
     _aaz_info = {
         "version": "2021-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}", "2021-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/linkreferences/{}", "2021-02-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -44,8 +43,14 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.perimeter_name = AAZStrArg(
-            options=["-n", "--name", "--perimeter-name"],
+        _args_schema.link_reference_name = AAZStrArg(
+            options=["-n", "--name", "--link-reference-name"],
+            help="The name of the NSP linkReference.",
+            required=True,
+            id_part="child_name_1",
+        )
+        _args_schema.network_security_perimeter_name = AAZStrArg(
+            options=["--network-security-perimeter-name"],
             help="The name of the network security perimeter.",
             required=True,
             id_part="name",
@@ -57,7 +62,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NetworkSecurityPerimetersGet(ctx=self.ctx)()
+        yield self.NspLinkReferencesDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -68,31 +73,52 @@ class Show(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
-    class NetworkSecurityPerimetersGet(AAZHttpOperation):
+    class NspLinkReferencesDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [204]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/linkReferences/{linkReferenceName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "DELETE"
 
         @property
         def error_format(self):
@@ -102,7 +128,11 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkSecurityPerimeterName", self.ctx.args.perimeter_name,
+                    "linkReferenceName", self.ctx.args.link_reference_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "networkSecurityPerimeterName", self.ctx.args.network_security_perimeter_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -126,64 +156,15 @@ class Show(AAZCommand):
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
         def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
+            pass
 
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType()
-            _schema_on_200.name = AAZStrType()
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.perimeter_guid = AAZStrType(
-                serialized_name="perimeterGuid",
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200
+        def on_204(self, session):
+            pass
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _DeleteHelper:
+    """Helper class for Delete"""
 
 
-__all__ = ["Show"]
+__all__ = ["Delete"]
