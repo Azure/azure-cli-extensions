@@ -23,12 +23,12 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import open_page_in_browser
 from azure.cli.command_modules.appservice.utils import _normalize_location
 from knack.log import get_logger
-from knack.prompting import prompt_y_n
+from knack.prompting import prompt_y_n, prompt as prompt_str
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
-from ._client_factory import handle_raw_exception
+from ._client_factory import handle_raw_exception, handle_non_404_exception
 from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient
 from ._github_oauth import get_github_access_token
 from ._models import (
@@ -69,13 +69,15 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      validate_hostname, patch_new_custom_domain, get_custom_domains, _validate_revision_name, set_managed_identity,
                      create_acrpull_role_assignment, is_registry_msi_system, clean_null_values, _populate_secret_values,
                      validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart,
-                     set_ip_restrictions)
+                     set_ip_restrictions, certificate_location_matches, certificate_matches, generate_randomized_managed_cert_name,
+                     check_managed_cert_name_availability, prepare_managed_certificate_envelop)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
 from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, FACEBOOK_SECRET_SETTING_NAME, GITHUB_SECRET_SETTING_NAME,
                          GOOGLE_SECRET_SETTING_NAME, TWITTER_SECRET_SETTING_NAME, APPLE_SECRET_SETTING_NAME, CONTAINER_APPS_RP,
-                         NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, HELLO_WORLD_IMAGE, LOG_TYPE_SYSTEM, LOG_TYPE_CONSOLE)
+                         NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, HELLO_WORLD_IMAGE, LOG_TYPE_SYSTEM, LOG_TYPE_CONSOLE,
+                         MANAGED_CERTIFICATE_RT, PRIVATE_CERTIFICATE_RT, PENDING_STATUS, SUCCEEDED_STATUS)
 
 logger = get_logger(__name__)
 
@@ -85,13 +87,23 @@ def process_loaded_yaml(yaml_containerapp):
     if not yaml_containerapp.get('properties'):
         yaml_containerapp['properties'] = {}
 
-    nested_properties = ["provisioningState", "managedEnvironmentId", "latestRevisionName", "latestRevisionFqdn",
+    if yaml_containerapp.get('identity') and yaml_containerapp['identity'].get('userAssignedIdentities'):
+        for identity in yaml_containerapp['identity']['userAssignedIdentities']:
+            # properties (principalId and clientId) are readonly and create (PUT) will throw error if they are provided
+            # Update (PATCH) ignores them so it's okay to remove them as well
+            yaml_containerapp['identity']['userAssignedIdentities'][identity] = {}
+
+    nested_properties = ["provisioningState", "managedEnvironmentId", "environmentId", "latestRevisionName", "latestRevisionFqdn",
                          "customDomainVerificationId", "configuration", "template", "outboundIPAddresses"]
     for nested_property in nested_properties:
         tmp = yaml_containerapp.get(nested_property)
         if tmp:
             yaml_containerapp['properties'][nested_property] = tmp
             del yaml_containerapp[nested_property]
+
+    if "managedEnvironmentId" in yaml_containerapp['properties']:
+        yaml_containerapp['properties']["environmentId"] = yaml_containerapp['properties']['managedEnvironmentId']
+        del yaml_containerapp['properties']['managedEnvironmentId']
 
     return yaml_containerapp
 
@@ -255,10 +267,10 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
     _remove_readonly_attributes(containerapp_def)
 
     # Validate managed environment
-    if not containerapp_def["properties"].get('managedEnvironmentId'):
-        raise RequiredArgumentMissingError('managedEnvironmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+    if not containerapp_def["properties"].get('environmentId'):
+        raise RequiredArgumentMissingError('environmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
-    env_id = containerapp_def["properties"]['managedEnvironmentId']
+    env_id = containerapp_def["properties"]['environmentId']
     env_name = None
     env_rg = None
     env_info = None
@@ -268,7 +280,7 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
         env_name = parsed_managed_env['name']
         env_rg = parsed_managed_env['resource_group']
     else:
-        raise ValidationError('Invalid managedEnvironmentId specified. Environment not found')
+        raise ValidationError('Invalid environmentId specified. Environment not found')
 
     try:
         env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=env_rg, name=env_name)
@@ -286,12 +298,12 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
 
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+        if r["properties"] and r["properties"]["provisioningState"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
             logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(
                 name, resource_group_name
             ))
 
-        if "configuration" in r["properties"] and "ingress" in r["properties"]["configuration"] and "fqdn" in r["properties"]["configuration"]["ingress"]:
+        if r["properties"] and r["properties"]["configuration"] and r["properties"]["configuration"]["ingress"] and r["properties"]["configuration"]["ingress"]["fqdn"]:
             logger.warning("\nContainer app created. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
         else:
             logger.warning("\nContainer app created. To access it over HTTPS, enable ingress: az containerapp ingress enable --help\n")
@@ -527,7 +539,7 @@ def create_containerapp(cmd,
     containerapp_def = ContainerAppModel
     containerapp_def["location"] = location
     containerapp_def["identity"] = identity_def
-    containerapp_def["properties"]["managedEnvironmentId"] = managed_env
+    containerapp_def["properties"]["environmentId"] = managed_env
     containerapp_def["properties"]["configuration"] = config_def
     containerapp_def["properties"]["template"] = template_def
     containerapp_def["tags"] = tags
@@ -972,9 +984,9 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None):
             env_name = parse_resource_id(managed_env)["name"].lower()
             if "resource_group" in parse_resource_id(managed_env):
                 ManagedEnvironmentClient.show(cmd, parse_resource_id(managed_env)["resource_group"], parse_resource_id(managed_env)["name"])
-                containerapps = [c for c in containerapps if c["properties"]["managedEnvironmentId"].lower() == managed_env.lower()]
+                containerapps = [c for c in containerapps if c["properties"]["environmentId"].lower() == managed_env.lower()]
             else:
-                containerapps = [c for c in containerapps if parse_resource_id(c["properties"]["managedEnvironmentId"])["name"].lower() == env_name]
+                containerapps = [c for c in containerapps if parse_resource_id(c["properties"]["environmentId"])["name"].lower() == env_name]
 
         return containerapps
     except CLIError as e:
@@ -1114,6 +1126,12 @@ def update_managed_environment(cmd,
                                certificate_password=None,
                                tags=None,
                                no_wait=False):
+    if logs_destination == "log-analytics" or logs_customer_id or logs_key:
+        if logs_destination != "log-analytics":
+            raise ValidationError("When configuring Log Analytics workspace, --logs-destination should be \"log-analytics\"")
+        if not logs_customer_id or not logs_key:
+            raise ValidationError("Must provide --logs-workspace-id and --logs-workspace-key if updating logs destination to type 'log-analytics'.")
+
     try:
         r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
     except CLIError as e:
@@ -1129,25 +1147,25 @@ def update_managed_environment(cmd,
         logs_destination = None if logs_destination == "none" else logs_destination
         safe_set(env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
 
-    if logs_destination == "log-analytics" and (not logs_customer_id or not logs_key):
-        raise ValidationError("Must provide logs-workspace-id and logs-workspace-key if updating logs destination to type 'log-analytics'.")
-
-    if logs_customer_id and logs_key:
+    if logs_destination == "log-analytics":
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "customerId", value=logs_customer_id)
         safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "sharedKey", value=logs_key)
+    elif logs_destination:
+        safe_set(env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", value=None)
 
     # Custom domains
-    safe_set(env_def, "properties", "customDomainConfiguration", value={})
-    cert_def = env_def["properties"]["customDomainConfiguration"]
     if hostname:
-        blob, _ = load_cert_file(certificate_file, certificate_password)
+        safe_set(env_def, "properties", "customDomainConfiguration", value={})
+        cert_def = env_def["properties"]["customDomainConfiguration"]
+        if certificate_file:
+            blob, _ = load_cert_file(certificate_file, certificate_password)
+            safe_set(cert_def, "certificateValue", value=blob)
         safe_set(cert_def, "dnsSuffix", value=hostname)
-        safe_set(cert_def, "certificatePassword", value=certificate_password)
-        safe_set(cert_def, "certificateValue", value=blob)
+        if certificate_password:
+            safe_set(cert_def, "certificatePassword", value=certificate_password)
 
-    # no PATCH api support atm, put works fine even with partial json
     try:
-        r = ManagedEnvironmentClient.create(
+        r = ManagedEnvironmentClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=env_def, no_wait=no_wait)
 
     except Exception as e:
@@ -1879,6 +1897,60 @@ def disable_ingress(cmd, name, resource_group_name, no_wait=False):
         handle_raw_exception(e)
 
 
+def update_ingress(cmd, name, resource_group_name, type=None, target_port=None, transport=None, exposed_port=None, allow_insecure=False, disable_warnings=False, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
+
+    if containerapp_def["properties"]["configuration"]["ingress"] is None:
+        raise ValidationError("The containerapp '{}' does not have ingress enabled. Try running `az containerapp ingress -h` for more info.".format(name))
+
+    external_ingress = None
+    if type is not None:
+        if type.lower() == "internal":
+            external_ingress = False
+        elif type.lower() == "external":
+            external_ingress = True
+
+    containerapp_patch_def = {}
+    containerapp_patch_def['properties'] = {}
+    containerapp_patch_def['properties']['configuration'] = {}
+    containerapp_patch_def['properties']['configuration']['ingress'] = {}
+
+    ingress_def = {}
+    if external_ingress is not None:
+        ingress_def["external"] = external_ingress
+    if target_port is not None:
+        ingress_def["targetPort"] = target_port
+    if transport is not None:
+        ingress_def["transport"] = transport
+    if allow_insecure is not None:
+        ingress_def["allowInsecure"] = allow_insecure
+
+    if "transport" in ingress_def and ingress_def["transport"] == "tcp":
+        if exposed_port is not None:
+            ingress_def["exposedPort"] = exposed_port
+    else:
+        ingress_def["exposedPort"] = None
+
+    containerapp_patch_def["properties"]["configuration"]["ingress"] = ingress_def
+
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch_def, no_wait=no_wait)
+        not disable_warnings and logger.warning("\nIngress Updated. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
+        return r["properties"]["configuration"]["ingress"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+
 def set_ingress_traffic(cmd, name, resource_group_name, label_weights=None, revision_weights=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     if not label_weights and not revision_weights:
@@ -2030,7 +2102,7 @@ def show_ip_restrictions(cmd, name, resource_group_name):
         except Exception as e:
             raise ValidationError("Ingress must be enabled to list ip restrictions. Try running `az containerapp ingress -h` for more info.") from e
         return safe_get(containerapp_def, "properties", "configuration", "ingress", "ipSecurityRestrictions", default=[])
-    except Exception as e:
+    except:
         return []
 
 
@@ -2735,32 +2807,73 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
     return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
 
 
-def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None):
+def create_managed_certificate(cmd, name, resource_group_name, hostname, validation_method, certificate_name=None):
+    if certificate_name and not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
+        raise ValidationError(f"Certificate name '{certificate_name}' is not available.")
+    cert_name = certificate_name
+    while not cert_name:
+        cert_name = generate_randomized_managed_cert_name(hostname, resource_group_name)
+        if not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
+            cert_name = None
+    certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method)
+    try:
+        r = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, True, validation_method == 'TXT')
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None, managed_certificates_only=False, private_key_certificates_only=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    if managed_certificates_only and private_key_certificates_only:
+        raise MutuallyExclusiveArgumentError("Use either '--managed-certificates-only' or '--private-key-certificates-only'.")
+    if managed_certificates_only and thumbprint:
+        raise MutuallyExclusiveArgumentError("'--thumbprint' not supported for managed certificates.")
 
-    def location_match(c):
-        return c["location"] == location or not location
+    if certificate and is_valid_resource_id(certificate):
+        certificate_name = parse_resource_id(certificate)["resource_name"]
+        certificate_type = parse_resource_id(certificate)["resource_type"]
+    else:
+        certificate_name = certificate
+        certificate_type = PRIVATE_CERTIFICATE_RT if private_key_certificates_only or thumbprint else (MANAGED_CERTIFICATE_RT if managed_certificates_only else None)
 
-    def thumbprint_match(c):
-        return c["properties"]["thumbprint"] == thumbprint or not thumbprint
+    if certificate_type == MANAGED_CERTIFICATE_RT:
+        return get_managed_certificates(cmd, name, resource_group_name, certificate_name, location)
+    if certificate_type == PRIVATE_CERTIFICATE_RT:
+        return get_private_certificates(cmd, name, resource_group_name, certificate_name, thumbprint, location)
+    managed_certs = get_managed_certificates(cmd, name, resource_group_name, certificate_name, location)
+    private_certs = get_private_certificates(cmd, name, resource_group_name, certificate_name, thumbprint, location)
+    return managed_certs + private_certs
 
-    def both_match(c):
-        return location_match(c) and thumbprint_match(c)
 
-    if certificate:
-        if is_valid_resource_id(certificate):
-            certificate_name = parse_resource_id(certificate)["resource_name"]
-        else:
-            certificate_name = certificate
+def get_private_certificates(cmd, name, resource_group_name, certificate_name=None, thumbprint=None, location=None):
+    if certificate_name:
         try:
             r = ManagedEnvironmentClient.show_certificate(cmd, resource_group_name, name, certificate_name)
-            return [r] if both_match(r) else []
+            return [r] if certificate_matches(r, location, thumbprint) else []
         except Exception as e:
-            handle_raw_exception(e)
+            handle_non_404_exception(e)
+            return []
     else:
         try:
             r = ManagedEnvironmentClient.list_certificates(cmd, resource_group_name, name)
-            return list(filter(both_match, r))
+            return list(filter(lambda c: certificate_matches(c, location, thumbprint), r))
+        except Exception as e:
+            handle_raw_exception(e)
+
+
+def get_managed_certificates(cmd, name, resource_group_name, certificate_name=None, location=None):
+    if certificate_name:
+        try:
+            r = ManagedEnvironmentClient.show_managed_certificate(cmd, resource_group_name, name, certificate_name)
+            return [r] if certificate_location_matches(r, location) else []
+        except Exception as e:
+            handle_non_404_exception(e)
+            return []
+    else:
+        try:
+            r = ManagedEnvironmentClient.list_managed_certificates(cmd, resource_group_name, name)
+            return list(filter(lambda c: certificate_location_matches(c, location), r))
         except Exception as e:
             handle_raw_exception(e)
 
@@ -2819,11 +2932,42 @@ def delete_certificate(cmd, resource_group_name, name, location=None, certificat
 
     if not certificate and not thumbprint:
         raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --thumbprint')
-    certs = list_certificates(cmd, name, resource_group_name, location, certificate, thumbprint)
-    for cert in certs:
+
+    cert_type = None
+    cert_name = certificate
+    if certificate and is_valid_resource_id(certificate):
+        cert_type = parse_resource_id(certificate)["resource_type"]
+        cert_name = parse_resource_id(certificate)["resource_name"]
+    if thumbprint:
+        cert_type = PRIVATE_CERTIFICATE_RT
+
+    if cert_type == PRIVATE_CERTIFICATE_RT:
+        certs = list_certificates(cmd, name, resource_group_name, location, certificate, thumbprint)
+        if len(certs) == 0:
+            msg = "'{}'".format(cert_name) if cert_name else "with thumbprint '{}'".format(thumbprint)
+            raise ResourceNotFoundError(f"The certificate {msg} does not exist in Container app environment '{name}'.")
+        for cert in certs:
+            try:
+                ManagedEnvironmentClient.delete_certificate(cmd, resource_group_name, name, cert["name"])
+                logger.warning('Successfully deleted certificate: %s', cert["name"])
+            except Exception as e:
+                handle_raw_exception(e)
+    elif cert_type == MANAGED_CERTIFICATE_RT:
         try:
-            ManagedEnvironmentClient.delete_certificate(cmd, resource_group_name, name, cert["name"])
-            logger.warning('Successfully deleted certificate: {}'.format(cert["name"]))
+            ManagedEnvironmentClient.delete_managed_certificate(cmd, resource_group_name, name, cert_name)
+            logger.warning('Successfully deleted certificate: {}'.format(cert_name))
+        except Exception as e:
+            handle_raw_exception(e)
+    else:
+        managed_certs = list(filter(lambda c: c["name"] == cert_name, get_managed_certificates(cmd, name, resource_group_name, None, location)))
+        private_certs = list(filter(lambda c: c["name"] == cert_name, get_private_certificates(cmd, name, resource_group_name, None, None, location)))
+        if len(managed_certs) == 0 and len(private_certs) == 0:
+            raise ResourceNotFoundError(f"The certificate '{cert_name}' does not exist in Container app environment '{name}'.")
+        if len(managed_certs) > 0 and len(private_certs) > 0:
+            raise RequiredArgumentMissingError(f"Found more than one certificates with name '{cert_name}':\n'{managed_certs[0]['id']}',\n'{private_certs[0]['id']}'.\nPlease specify the certificate id using --certificate.")
+        try:
+            ManagedEnvironmentClient.delete_managed_certificate(cmd, resource_group_name, name, cert_name)
+            logger.warning('Successfully deleted certificate: %s', cert_name)
         except Exception as e:
             handle_raw_exception(e)
 
@@ -2838,56 +2982,101 @@ def upload_ssl(cmd, resource_group_name, name, environment, certificate_file, ho
     custom_domains = get_custom_domains(cmd, resource_group_name, name, location, environment)
     new_custom_domains = list(filter(lambda c: c["name"] != hostname, custom_domains))
 
+    env_name = _get_name(environment)
+    logger.warning('Uploading certificate to %s.', env_name)
     if is_valid_resource_id(environment):
-        cert = upload_certificate(cmd, _get_name(environment), parse_resource_id(environment)["resource_group"], certificate_file, certificate_name, certificate_password, location)
+        cert = upload_certificate(cmd, env_name, parse_resource_id(environment)["resource_group"], certificate_file, certificate_name, certificate_password, location)
     else:
-        cert = upload_certificate(cmd, _get_name(environment), resource_group_name, certificate_file, certificate_name, certificate_password, location)
+        cert = upload_certificate(cmd, env_name, resource_group_name, certificate_file, certificate_name, certificate_password, location)
     cert_id = cert["id"]
 
     new_domain = ContainerAppCustomDomainModel
     new_domain["name"] = hostname
     new_domain["certificateId"] = cert_id
     new_custom_domains.append(new_domain)
-
+    logger.warning('Adding hostname %s and binding to %s.', hostname, name)
     return patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains)
 
 
-def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, certificate=None, location=None, environment=None):
+def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, certificate=None, location=None, environment=None, validation_method=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    if not thumbprint and not certificate:
-        raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --thumbprint')
     if not environment and not certificate:
         raise RequiredArgumentMissingError('Please specify at least one of parameters: --certificate and --environment')
     if certificate and not is_valid_resource_id(certificate) and not environment:
         raise RequiredArgumentMissingError('Please specify the parameter: --environment')
 
-    passed, message = validate_hostname(cmd, resource_group_name, name, hostname)
+    standardized_hostname = hostname.lower()
+    passed, message = validate_hostname(cmd, resource_group_name, name, standardized_hostname)
     if not passed:
         raise ValidationError(message or 'Please configure the DNS records before adding the hostname.')
 
-    env_name = None
-    cert_name = None
-    cert_id = None
+    env_name = _get_name(environment) if environment else None
+
     if certificate:
         if is_valid_resource_id(certificate):
             cert_id = certificate
         else:
-            cert_name = certificate
-    if environment:
-        env_name = _get_name(environment)
-    if not cert_id:
-        certs = list_certificates(cmd, env_name, resource_group_name, location, cert_name, thumbprint)
+            certs = list_certificates(cmd, env_name, resource_group_name, location, certificate, thumbprint)
+            if len(certs) == 0:
+                msg = "'{}' with thumbprint '{}'".format(certificate, thumbprint) if thumbprint else "'{}'".format(certificate)
+                raise ResourceNotFoundError(f"The certificate {msg} does not exist in Container app environment '{env_name}'.")
+            cert_id = certs[0]["id"]
+    elif thumbprint:
+        certs = list_certificates(cmd, env_name, resource_group_name, location, certificate, thumbprint)
+        if len(certs) == 0:
+            raise ResourceNotFoundError(f"The certificate with thumbprint '{thumbprint}' does not exist in Container app environment '{env_name}'.")
         cert_id = certs[0]["id"]
+    else:  # look for or create a managed certificate if no certificate info provided
+        managed_certs = get_managed_certificates(cmd, env_name, resource_group_name, None, None)
+        managed_cert = [cert for cert in managed_certs if cert["properties"]["subjectName"].lower() == standardized_hostname]
+        if len(managed_cert) > 0 and managed_cert[0]["properties"]["provisioningState"] in [SUCCEEDED_STATUS, PENDING_STATUS]:
+            cert_id = managed_cert[0]["id"]
+            cert_name = managed_cert[0]["name"]
+        else:
+            cert_name = None
+            while not cert_name:
+                random_name = generate_randomized_managed_cert_name(standardized_hostname, env_name)
+                available = check_managed_cert_name_availability(cmd, resource_group_name, env_name, cert_name)
+                if available:
+                    cert_name = random_name
+            logger.warning("Creating managed certificate '%s' for %s.\nIt may take up to 20 minutes to create and issue a managed certificate.", cert_name, standardized_hostname)
+
+            validation = validation_method
+            while validation not in ["TXT", "CNAME", "HTTP"]:
+                validation = prompt_str('\nPlease choose one of the following domain validation methods: TXT, CNAME, HTTP\nYour answer: ')
+
+            certificate_envelop = prepare_managed_certificate_envelop(cmd, env_name, resource_group_name, standardized_hostname, validation_method, location)
+            try:
+                managed_cert = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, env_name, cert_name, certificate_envelop, False, validation_method == 'TXT')
+            except Exception as e:
+                handle_raw_exception(e)
+            cert_id = managed_cert["id"]
+
+        logger.warning("\nBinding managed certificate '%s' to %s\n", cert_name, standardized_hostname)
 
     custom_domains = get_custom_domains(cmd, resource_group_name, name, location, environment)
-    new_custom_domains = list(filter(lambda c: safe_get(c, "name", default=[]) != hostname, custom_domains))
+    new_custom_domains = list(filter(lambda c: safe_get(c, "name", default=[]) != standardized_hostname, custom_domains))
     new_domain = ContainerAppCustomDomainModel
-    new_domain["name"] = hostname
+    new_domain["name"] = standardized_hostname
     new_domain["certificateId"] = cert_id
     new_custom_domains.append(new_domain)
 
     return patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains)
+
+
+def add_hostname(cmd, resource_group_name, name, hostname, location=None):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    standardized_hostname = hostname.lower()
+    custom_domains = get_custom_domains(cmd, resource_group_name, name, location, None)
+    existing_hostname = list(filter(lambda c: safe_get(c, "name", default=[]) == standardized_hostname, custom_domains))
+    if len(existing_hostname) > 0:
+        raise InvalidArgumentValueError("'{standardized_hostname}' already exists in container app '{name}'.")
+    new_domain = ContainerAppCustomDomainModel
+    new_domain["name"] = standardized_hostname
+    new_domain["bindingType"] = "Disabled"
+    custom_domains.append(new_domain)
+    return patch_new_custom_domain(cmd, resource_group_name, name, custom_domains)
 
 
 def list_hostname(cmd, resource_group_name, name, location=None):

@@ -2,6 +2,25 @@
 
 Release History
 ===============
+1.3.15
+++++++
+
+* Diagnoser Enhancements - storing metadata and KAP CR snapshots , azure-arc helm values , azure-arc ns secret list
+* Removing circular imports of 1. custom from precheckutils and 2.(precheckutils and troubleshootutils) from utils
+* Adding back heuristics detection in connect command
+
+1.3.14
+++++++
+
+* Changing telemetry push interval to 1 hr
+* Adding two new supported infra values - Windows 10 IoT Enterprise, LTSCWindows 10 Enterprise LTSC
+* Saving cluster diagnostic checks pod and job logs
+
+1.3.13
+++++++
+
+* Bumping up the cluster diagnostic checks helm chart version - Nodeselector addition
+
 1.3.12
 ++++++
 

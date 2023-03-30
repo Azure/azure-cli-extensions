@@ -59,6 +59,10 @@ CONST_GPU_INSTANCE_PROFILE_MIG7_G = "MIG7g"
 CONST_LOAD_BALANCER_SKU_BASIC = "basic"
 CONST_LOAD_BALANCER_SKU_STANDARD = "standard"
 
+# ManagedClusterSKU Tier
+CONST_MANAGED_CLUSTER_SKU_TIER_FREE = "free"
+CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD = "standard"
+
 # outbound type
 CONST_OUTBOUND_TYPE_LOAD_BALANCER = "loadBalancer"
 CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING = "userDefinedRouting"
@@ -89,6 +93,9 @@ CONST_NODE_OS_CHANNEL_NODE_IMAGE = "NodeImage"
 CONST_NODE_OS_CHANNEL_NONE = "None"
 CONST_NODE_OS_CHANNEL_SECURITY_PATCH = "SecurityPatch"
 CONST_NODE_OS_CHANNEL_UNMANAGED = "Unmanaged"
+
+# consts for cluster upgrade settings
+CONST_IGNORE_KUBERNETES_DEPRECATIONS = "IgnoreKubernetesDeprecations"
 
 # consts for nrg-lockdown restriction level
 CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY = "ReadOnly"
@@ -180,7 +187,7 @@ ADDONS_DESCRIPTIONS = {
     CONST_INGRESS_APPGW_ADDON_NAME: '- enable Application Gateway Ingress Controller addon (PREVIEW).',
     CONST_CONFCOM_ADDON_NAME: '- enable confcom addon, this will enable SGX device plugin by default (PREVIEW).',
     CONST_OPEN_SERVICE_MESH_ADDON_NAME: '- enable Open Service Mesh addon (PREVIEW).',
-    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: '- enable Azure Keyvault Secrets Provider addon (PREVIEW).',
+    CONST_AZURE_KEYVAULT_SECRETS_PROVIDER_ADDON_NAME: '- enable Azure Keyvault Secrets Provider addon.',
     CONST_GITOPS_ADDON_NAME: '- enable GitOps (PREVIEW).',
     CONST_WEB_APPLICATION_ROUTING_KEY_NAME: '- enable web application routing (PREVIEW).'
 }
@@ -240,3 +247,8 @@ CONST_WEEKINDEX_LAST = "Last"
 CONST_DEFAULT_CONFIGURATION_NAME = "default"
 CONST_AUTOUPGRADE_CONFIGURATION_NAME = "aksManagedAutoUpgradeSchedule"
 CONST_NODEOSUPGRADE_CONFIGURATION_NAME = "aksManagedNodeOSUpgradeSchedule"
+
+CONST_AZURE_SERVICE_MESH_MODE_DISABLED = "Disabled"
+CONST_AZURE_SERVICE_MESH_MODE_ISTIO = "Istio"
+CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL = "External"
+CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL = "Internal"

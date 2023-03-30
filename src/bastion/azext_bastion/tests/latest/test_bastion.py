@@ -13,7 +13,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 class BastionScenario(ScenarioTest):
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix="cli_test_bastion_host_", location="westus")
+    @ResourceGroupPreparer(name_prefix="cli_test_bastion_host_", location="westus2")
     def test_bastion_host_crud(self):
         self.kwargs.update({
             "vnet_name": self.create_random_name("vnet-", 12),

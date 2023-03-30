@@ -4,10 +4,10 @@
 # --------------------------------------------------------------------------------------------
 import json
 import unittest
-from azure.cli.testsdk import (ScenarioTest, record_only)
-from azure.cli.core.azclierror import ResourceNotFoundError
-from knack.util import CLIError
-from ...vendored_sdks.appplatform.v2022_11_01_preview import models
+from azure.cli.testsdk import (ScenarioTest)
+from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer)
+from .custom_dev_setting_constant import SpringTestEnvironmentEnum
+from ...vendored_sdks.appplatform.v2023_03_01_preview import models
 from ...application_accelerator import (application_accelerator_create as create, 
                                         application_accelerator_delete as delete)
 try:
@@ -134,14 +134,15 @@ Since the scenarios covered here depend on a Azure Spring service instance creat
 It cannot support live run. So mark it as record_only. 
 '''
 
-@record_only()
 class ApiApplicationAcceleratorTest(ScenarioTest):
 
-    def test_application_accelerator(self):
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE['spring'])
+    def test_application_accelerator(self, resource_group, spring):
         
         self.kwargs.update({
-            'serviceName': 'acc-test',
-            'rg': 'acc'
+            'serviceName': spring,
+            'rg': resource_group
         })
 
         self.cmd('spring dev-tool create -g {rg} -s {serviceName} --assign-endpoint', checks=[
