@@ -115,15 +115,12 @@ def validate_cpu(namespace):
 def validate_memory(namespace):
     namespace.memory = validate_and_normalize_memory(namespace.memory)
 
+
 def validate_ca_cert(namespace):
     resource_id = namespace.ca_cert
-    if resource_id and (
-        (not resource_id.startswith("/subscriptions/")) or 
-        ("/providers/Microsoft.AppPlatform/Spring/" not in resource_id) or 
-        ("/certificates/" not in resource_id) or 
-        ("/resourceGroups/" not in resource_id)
-    ):
+    if resource_id and ((not resource_id.startswith("/subscriptions/")) or ("/providers/Microsoft.AppPlatform/Spring/" not in resource_id) or ("/certificates/" not in resource_id) or ("/resourceGroups/" not in resource_id)):
         raise InvalidArgumentValueError("Invalid CA certificate resource id.")
+
     
 def validate_git_uri(namespace):
     uri = namespace.uri

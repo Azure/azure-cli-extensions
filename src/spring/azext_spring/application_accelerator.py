@@ -80,9 +80,11 @@ def customized_accelerator_list(cmd, client, resource_group, service):
 def customized_accelerator_show(cmd, client, resource_group, service, name):
     return client.customized_accelerators.get(resource_group, service, DEFAULT_NAME, name)
 
+
 def customized_accelerator_sync_cert(cmd, client, resource_group, service, name, no_wait=False):
     customized_accelerator_resource = client.customized_accelerators.get(resource_group, service, DEFAULT_NAME, name)
     return sdk_no_wait(no_wait, client.customized_accelerators.begin_create_or_update, resource_group, service, DEFAULT_NAME, name, customized_accelerator_resource)
+
 
 def customized_accelerator_upsert(cmd, client, resource_group, service, name,
                                   display_name,
