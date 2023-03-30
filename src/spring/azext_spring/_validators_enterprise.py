@@ -128,7 +128,7 @@ def validate_build_service(namespace):
             if namespace.app_insights or namespace.app_insights_key:
                 raise InvalidArgumentValueError(
                     "Conflict detected: '--app-insights' or '--app-insights-key' "
-                    "can not be set with '--disable_build_service'.")
+                    "can not be set with '--disable-build-service'.")
     else:
         if namespace.disable_build_service or namespace.registry_server or namespace.registry_username or namespace.registry_password is not None:
             raise InvalidArgumentValueError("The build service is only supported with enterprise tier.")
@@ -192,9 +192,7 @@ def validate_artifact_path(namespace):
     if namespace.disable_validation:
         telemetry.set_user_fault("jar validation is disabled")
         return
-    if namespace.artifact_path is None:
-        return
-    if os.path.splitext(namespace.artifact_path)[-1] != "jar":
+    if namespace.artifact_path is None or os.path.splitext(namespace.artifact_path)[-1] != "jar":
         return
     values = _parse_jar_file(namespace.artifact_path)
     if values is None:
