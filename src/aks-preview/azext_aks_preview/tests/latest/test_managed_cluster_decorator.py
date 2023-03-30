@@ -3137,121 +3137,86 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_3.get_disable_vpa()
 
-    def test_get_enable_upgrade_ignore_kubernetes_deprecations(self):
+    def test_get_upgrade_settings(self):
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict({}),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_0.get_enable_upgrade_ignore_kubernetes_deprecations(), None)
+        self.assertEqual(ctx_0.get_upgrade_settings(), None)
 
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"enable_upgrade_ignore_kubernetes_deprecations": False}),
+            AKSManagedClusterParamDict({"upgrade_settings": "None"}),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_1.get_enable_upgrade_ignore_kubernetes_deprecations(), False)
+        self.assertEqual(ctx_1.get_upgrade_settings(), [])
         ctx_2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"enable_upgrade_ignore_kubernetes_deprecations": True}),
+            AKSManagedClusterParamDict({"upgrade_settings": "IgnoreKubernetesDeprecations"}),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_2.get_enable_upgrade_ignore_kubernetes_deprecations(), True)
+        self.assertEqual(ctx_2.get_upgrade_settings(), ["IgnoreKubernetesDeprecations"])
 
         ctx_3 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
                 {
-                    "enable_upgrade_ignore_kubernetes_deprecations": True,
-                    "disable_upgrade_ignore_kubernetes_deprecations": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        # fail on mutually exclusive enable_upgrade_ignore_kubernetes_deprecations and disable_upgrade_ignore_kubernetes_deprecations
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_3.get_enable_upgrade_ignore_kubernetes_deprecations()
-        ctx_4 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_upgrade_ignore_kubernetes_deprecations": True,
-                    "disable_upgrade_ignore_kubernetes_deprecations": False,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_4.get_enable_upgrade_ignore_kubernetes_deprecations(), True)
-
-    def test_get_disable_upgrade_ignore_kubernetes_deprecations(self):
-        ctx_0 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({}),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_0.get_disable_upgrade_ignore_kubernetes_deprecations(), None)
-
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({"disable_upgrade_ignore_kubernetes_deprecations": False}),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_1.get_disable_upgrade_ignore_kubernetes_deprecations(), False)
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({"disable_upgrade_ignore_kubernetes_deprecations": True}),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_2.get_disable_upgrade_ignore_kubernetes_deprecations(), True)
-
-        ctx_3 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_upgrade_ignore_kubernetes_deprecations": True,
-                    "disable_upgrade_ignore_kubernetes_deprecations": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        # fail on mutually exclusive enable_upgrade_ignore_kubernetes_deprecations and disable_upgrade_ignore_kubernetes_deprecations
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_3.get_disable_upgrade_ignore_kubernetes_deprecations()
-        ctx_4 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
+                    "upgrade_settings": "None",
                     "upgrade_override_until": "2022-11-01T13:00:00Z",
-                    "disable_upgrade_ignore_kubernetes_deprecations": True,
                 }
             ),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        # fail on mutually exclusive enable_upgrade_ignore_kubernetes_deprecations and disable_upgrade_ignore_kubernetes_deprecations
+        # fail on mutually exclusive upgrade_override_until and empty
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_4.get_disable_upgrade_ignore_kubernetes_deprecations()
+            ctx_3.get_upgrade_settings()
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"upgrade_settings": "IgnoreKubernetesDeprecations,IgnoreKubernetesDeprecations"}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on invalid input
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_4.get_upgrade_settings()
         ctx_5 = AKSPreviewManagedClusterContext(
             self.cmd,
+            AKSManagedClusterParamDict({"upgrade_settings": "xyz"}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on invalid input
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_5.get_upgrade_settings()
+        # fail on invalid input
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_4.get_upgrade_settings()
+        ctx_6 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"upgrade_settings": "None,IgnoreKubernetesDeprecations"}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on invalid input
+        with self.assertRaises(InvalidArgumentValueError):
+            ctx_6.get_upgrade_settings()
+        ctx_7 = AKSPreviewManagedClusterContext(
+            self.cmd,
             AKSManagedClusterParamDict(
                 {
-                    "enable_upgrade_ignore_kubernetes_deprecations": False,
-                    "disable_upgrade_ignore_kubernetes_deprecations": True,
+                    "upgrade_settings": "IgnoreKubernetesDeprecations",
+                    "upgrade_override_until": "2022-11-01T13:00:00Z",
                 }
             ),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_5.get_disable_upgrade_ignore_kubernetes_deprecations(), True)
+        self.assertEqual(ctx_7.get_upgrade_settings(), ["IgnoreKubernetesDeprecations"])
 
     def test_get_upgrade_override_until(self):
         ctx_0 = AKSPreviewManagedClusterContext(
@@ -5977,7 +5942,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"disable_upgrade_ignore_kubernetes_deprecations": True},
+            {"upgrade_settings": "None"},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_2 = self.models.ManagedCluster(
@@ -5985,11 +5950,10 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             upgrade_settings=self.models.ClusterUpgradeSettings(
                 override_settings = self.models.UpgradeOverrideSettings(
                     control_plane_overrides=["IgnoreKubernetesDeprecations"],
-                    until=parse("2099-04-01T13:00:00Z")
+                    until=parse("2099-04-01T13:00:00Z")  # Will be reset to now() to make overrides no longer effective.
                 )
             )
         )
-        print(type(mc_2.upgrade_settings.override_settings.until))
         dec_2.context.attach_mc(mc_2)
         dec_mc_2 = dec_2.update_upgrade_settings(mc_2)
         self.assertGreater(dec_mc_2.upgrade_settings.override_settings.until.timestamp(), (datetime.datetime.utcnow() - datetime.timedelta(days=1)).timestamp())
@@ -5997,7 +5961,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"disable_upgrade_ignore_kubernetes_deprecations": True},
+            {"upgrade_settings": "None"},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_3 = self.models.ManagedCluster(
@@ -6024,7 +5988,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_4 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"enable_upgrade_ignore_kubernetes_deprecations": True},
+            {"upgrade_settings": "IgnoreKubernetesDeprecations"},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_4 = self.models.ManagedCluster(
@@ -6051,7 +6015,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_5 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"enable_upgrade_ignore_kubernetes_deprecations": True},
+            {"upgrade_settings": "IgnoreKubernetesDeprecations"},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_5 = self.models.ManagedCluster(
@@ -6127,7 +6091,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_8 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"enable_upgrade_ignore_kubernetes_deprecations": True,
+            {"upgrade_settings": "IgnoreKubernetesDeprecations",
              "upgrade_override_until": "2023-04-01T13:00:00Z"},
             CUSTOM_MGMT_AKS_PREVIEW,
         )

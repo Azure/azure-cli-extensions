@@ -11,7 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 0.5.134
 +++++++
-* Add cluster upgrade settings options `--enable-upgrade-ignore-kubernetes-deprecations`, `--disable-upgrade-ignore-kubernetes-deprecations`, and `--upgrade_override_until`.
+* Add cluster upgrade settings options `--upgrade-settings`, and `--upgrade-override-until`.
 
 0.5.133
 +++++++

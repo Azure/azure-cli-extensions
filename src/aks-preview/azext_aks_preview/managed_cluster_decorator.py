@@ -633,68 +633,39 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return self.raw_param.get("upgrade_override_until")
 
-    def _get_enable_upgrade_ignore_kubernetes_deprecations(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of enable_upgrade_ignore_kubernetes_deprecations.
-
-        This function supports the option of enable_validation. When enabled, if both enable_upgrade_ignore_kubernetes_deprecations and
-        disable_upgrade_ignore_kubernetes_deprecations are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
+    def get_upgrade_settings(self) -> Union[List[str], None]:
+        """Obtain the value of upgrade_settings.
+        :return: string or None
         """
-        # read the original value passed by the command
-        enable_upgrade_ignore_kubernetes_deprecations = self.raw_param.get("enable_upgrade_ignore_kubernetes_deprecations")
-
         # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if enable_upgrade_ignore_kubernetes_deprecations and self._get_disable_upgrade_ignore_kubernetes_deprecations(enable_validation=False):
+        # this parameter does not need validation
+        upgrade_settings = self.raw_param.get("upgrade_settings")
+        if upgrade_settings is None or len(upgrade_settings.strip()) == 0:
+            return None
+
+        goal_upgrade_settings_list = []
+
+        if upgrade_settings.strip().lower() == str("None").lower():
+            if self.get_upgrade_override_until():
                 raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-upgrade-ignore-kubernetes-deprecations and "
-                    "--disable-upgrade-ignore-kubernetes-deprecations at the same time."
+                    "Cannot specify --upgrade-override-until when upgrade-settings is None. Set only the upgrade-override-until parameter instead."
                 )
-        return enable_upgrade_ignore_kubernetes_deprecations
+            return goal_upgrade_settings_list
 
-    def get_enable_upgrade_ignore_kubernetes_deprecations(self) -> bool:
-        """Obtain the value of enable_upgrade_ignore_kubernetes_deprecations.
+        input_upgrade_settings_list = [x.strip() for x in upgrade_settings.split(',')]
 
-        This function will verify the parameter by default. If both enable_upgrade_ignore_kubernetes_deprecations and
-        disable_upgrade_ignore_kubernetes_deprecations are specified, raise a MutuallyExclusiveArgumentError.
+        supported_upgrade_settings = [
+            CONST_IGNORE_KUBERNETES_DEPRECATIONS,
+        ]
 
-        :return: bool
-        """
-        return self._get_enable_upgrade_ignore_kubernetes_deprecations(enable_validation=True)
+        for s in input_upgrade_settings_list:
+            if s in goal_upgrade_settings_list or s not in supported_upgrade_settings:
+                raise InvalidArgumentValueError(
+                    f"{upgrade_settings} either has duplicates or contains invalid upgrade-settings. Supported settings include, IgnoreKubernetesDeprecations."
+                )
+            goal_upgrade_settings_list.append(s)
 
-    def _get_disable_upgrade_ignore_kubernetes_deprecations(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of disable_upgrade_ignore_kubernetes_deprecations.
-
-        This function supports the option of enable_validation. When enabled, if both enable_upgrade_ignore_kubernetes_deprecations and
-        disable_upgrade_ignore_kubernetes_deprecations are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        disable_upgrade_ignore_kubernetes_deprecations = self.raw_param.get("disable_upgrade_ignore_kubernetes_deprecations")
-
-        # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if disable_upgrade_ignore_kubernetes_deprecations:
-                if self.get_upgrade_override_until() is not None or self._get_enable_upgrade_ignore_kubernetes_deprecations(enable_validation=False):
-                    raise MutuallyExclusiveArgumentError(
-                        "Cannot specify --enable-upgrade-ignore-kubernetes-deprecations or --upgrade-override-until when"
-                        "--disable-upgrade-ignore-kubernetes-deprecations is set to True."
-                    )
-        return disable_upgrade_ignore_kubernetes_deprecations
-
-    def get_disable_upgrade_ignore_kubernetes_deprecations(self) -> bool:
-        """Obtain the value of disable_upgrade_ignore_kubernetes_deprecations.
-
-        This function will verify the parameter by default. If both enable_upgrade_ignore_kubernetes_deprecations and
-        disable_upgrade_ignore_kubernetes_deprecations are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        return self._get_disable_upgrade_ignore_kubernetes_deprecations(enable_validation=True)
+        return goal_upgrade_settings_list
 
     def _get_enable_pod_security_policy(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_pod_security_policy.
@@ -3184,20 +3155,22 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if mc.upgrade_settings is not None and mc.upgrade_settings.override_settings is not None and mc.upgrade_settings.override_settings.until is not None:
             existing_until = mc.upgrade_settings.override_settings.until
 
+        upgrade_settings = self.context.get_upgrade_settings()
+
         # There is a limitation on differentiating empty list vs. not set in update requests.
         # In such case, we'll use a workaround here to disable it by setting the until field to the current time, to make the overrides no longer effective.
         # For now there's only one allowed override so we can return early here.
-        if self.context.get_disable_upgrade_ignore_kubernetes_deprecations():
+        if upgrade_settings is not None and len(upgrade_settings) == 0:
             if mc.upgrade_settings is not None and mc.upgrade_settings.override_settings is not None and mc.upgrade_settings.override_settings.control_plane_overrides is not None:
                 if mc.upgrade_settings.override_settings.control_plane_overrides == [CONST_IGNORE_KUBERNETES_DEPRECATIONS]:
                     if existing_until is not None and existing_until.timestamp() > datetime.datetime.utcnow().timestamp():
                         mc.upgrade_settings.override_settings.until = datetime.datetime.utcnow()
             return mc
 
-        upgrade_ignore_kubernetes_deprecations = self.context.get_enable_upgrade_ignore_kubernetes_deprecations()
         override_until = self.context.get_upgrade_override_until()
+        upgrade_ignore_kubernetes_deprecations = upgrade_settings is not None and CONST_IGNORE_KUBERNETES_DEPRECATIONS in upgrade_settings
 
-        if upgrade_ignore_kubernetes_deprecations or override_until is not None:
+        if upgrade_settings is not None or override_until is not None:
             if mc.upgrade_settings is None:
                 mc.upgrade_settings = self.models.ClusterUpgradeSettings()
             if mc.upgrade_settings.override_settings is None:
@@ -3217,7 +3190,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         f"{override_until} is not a valid datatime format."
                     )
             elif upgrade_ignore_kubernetes_deprecations:
-                if existing_until is None or existing_until.timestamp() < datetime.datetime.utcnow().timestamp():
+                if existing_until is None or existing_until.timestamp() < datetime.datetime.utcnow().timestamp() + datetime.timedelta(days=3):
                     default_extended_until = datetime.datetime.utcnow() + datetime.timedelta(days=3)
                     mc.upgrade_settings.override_settings.until = default_extended_until
 
