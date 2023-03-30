@@ -37,6 +37,8 @@ from azext_aks_preview._consts import (
     CONST_GPU_INSTANCE_PROFILE_MIG7_G,
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_LOAD_BALANCER_SKU_STANDARD,
+    CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
+    CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_NETWORK_PLUGIN_AZURE,
     CONST_NETWORK_PLUGIN_KUBENET,
     CONST_NETWORK_PLUGIN_NONE,
@@ -87,6 +89,8 @@ from azext_aks_preview._consts import (
     CONST_WEEKINDEX_THIRD,
     CONST_WEEKINDEX_FOURTH,
     CONST_WEEKINDEX_LAST,
+    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
+    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -114,6 +118,7 @@ from azext_aks_preview._validators import (
     validate_load_balancer_outbound_ips,
     validate_load_balancer_outbound_ports,
     validate_load_balancer_sku,
+    validate_sku_tier,
     validate_max_surge,
     validate_message_of_the_day,
     validate_nat_gateway_idle_timeout,
@@ -160,13 +165,8 @@ node_priorities = [CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SP
 node_eviction_policies = [CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE]
 node_os_disk_types = [CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL]
 node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]
-node_os_skus = [
-    CONST_OS_SKU_UBUNTU,
-    CONST_OS_SKU_CBLMARINER,
-    CONST_OS_SKU_MARINER,
-    CONST_OS_SKU_WINDOWS2019,
-    CONST_OS_SKU_WINDOWS2022,
-]
+node_os_skus_create = [CONST_OS_SKU_UBUNTU, CONST_OS_SKU_CBLMARINER, CONST_OS_SKU_MARINER]
+node_os_skus = node_os_skus_create + [CONST_OS_SKU_WINDOWS2019, CONST_OS_SKU_WINDOWS2022]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
 workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI, CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION]
 gpu_instance_profiles = [
@@ -179,6 +179,7 @@ gpu_instance_profiles = [
 
 # consts for ManagedCluster
 load_balancer_skus = [CONST_LOAD_BALANCER_SKU_BASIC, CONST_LOAD_BALANCER_SKU_STANDARD]
+sku_tiers = [CONST_MANAGED_CLUSTER_SKU_TIER_FREE, CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD]
 network_plugins = [CONST_NETWORK_PLUGIN_KUBENET, CONST_NETWORK_PLUGIN_AZURE, CONST_NETWORK_PLUGIN_NONE]
 network_plugin_modes = [CONST_NETWORK_PLUGIN_MODE_OVERLAY]
 disk_driver_versions = [CONST_DISK_DRIVER_V1, CONST_DISK_DRIVER_V2]
@@ -226,6 +227,12 @@ week_indexes = [
 credential_formats = [CONST_CREDENTIAL_FORMAT_AZURE, CONST_CREDENTIAL_FORMAT_EXEC]
 
 keyvault_network_access_types = [CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC, CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE]
+
+# azure service mesh
+ingress_gateway_types = [
+    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
+    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
+]
 
 
 def load_arguments(self, _):
@@ -281,7 +288,8 @@ def load_arguments(self, _):
         c.argument('node_os_upgrade_channel', arg_type=get_enum_type(node_os_upgrade_channels))
         c.argument('cluster_autoscaler_profile', nargs='+', options_list=["--cluster-autoscaler-profile", "--ca-profile"],
                    help="Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.")
-        c.argument('uptime_sla', action='store_true')
+        c.argument('uptime_sla', action='store_true', deprecate_info=c.deprecate(target='--uptime-sla', redirect='--tier', hide=True))
+        c.argument('tier', arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier)
         c.argument('fqdn_subdomain')
         c.argument('api_server_authorized_ip_ranges', validator=validate_ip_ranges)
         c.argument('enable_private_cluster', action='store_true')
@@ -340,7 +348,7 @@ def load_arguments(self, _):
         c.argument('nodepool_name', default='nodepool1',
                    help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
         c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
-        c.argument('os_sku', arg_type=get_enum_type(node_os_skus))
+        c.argument('os_sku', arg_type=get_enum_type(node_os_skus_create))
         c.argument('snapshot_id', validator=validate_snapshot_id)
         c.argument('vnet_subnet_id', validator=validate_vnet_subnet_id)
         c.argument('pod_subnet_id', validator=validate_pod_subnet_id)
@@ -381,6 +389,10 @@ def load_arguments(self, _):
         c.argument('enable_pod_identity_with_kubenet', action='store_true')
         c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('enable_image_cleaner', action='store_true', is_preview=True)
+        c.argument('enable_azure_service_mesh',
+                   options_list=["--enable-azure-service-mesh", "--enable-asm"],
+                   action='store_true',
+                   is_preview=True)
         c.argument('image_cleaner_interval_hours', type=int, is_preview=True)
         c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
@@ -421,8 +433,9 @@ def load_arguments(self, _):
         c.argument('node_os_upgrade_channel', arg_type=get_enum_type(node_os_upgrade_channels))
         c.argument('cluster_autoscaler_profile', nargs='+', options_list=["--cluster-autoscaler-profile", "--ca-profile"],
                    help="Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.")
-        c.argument('uptime_sla', action='store_true')
-        c.argument('no_uptime_sla', action='store_true')
+        c.argument('uptime_sla', action='store_true', deprecate_info=c.deprecate(target='--uptime-sla', redirect='--tier', hide=True))
+        c.argument('no_uptime_sla', action='store_true', deprecate_info=c.deprecate(target='--no-uptime-sla', redirect='--tier', hide=True))
+        c.argument('tier', arg_type=get_enum_type(sku_tiers), validator=validate_sku_tier)
         c.argument('api_server_authorized_ip_ranges', validator=validate_ip_ranges)
         c.argument('enable_public_fqdn', action='store_true')
         c.argument('disable_public_fqdn', action='store_true')
@@ -507,6 +520,7 @@ def load_arguments(self, _):
         c.argument('ksm_metric_labels_allow_list', validator=validate_ksm_labels, is_preview=True)
         c.argument('ksm_metric_annotations_allow_list', validator=validate_ksm_annotations, is_preview=True)
         c.argument('grafana_resource_id', validator=validate_grafanaresourceid, is_preview=True)
+        c.argument('enable_windows_recording_rules', action='store_true', is_preview=True)
         c.argument('disable_azuremonitormetrics', action='store_true', is_preview=True)
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
         c.argument('disable_vpa', action='store_true', is_preview=True, help="disable vertical pod autoscaler for cluster")
@@ -830,10 +844,18 @@ def load_arguments(self, _):
 
     with self.argument_context('aks trustedaccess rolebinding create') as c:
         c.argument('roles', help='comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...')
-        c.argument('source_resource_id', options_list=['--source-resource-id', '-s'], help='The source resource id of the binding')
+        c.argument('source_resource_id', options_list=['--source-resource-id', '-r', c.deprecate(target='-s', redirect='--source-resource-id', hide=True)], help='The source resource id of the binding')
 
     with self.argument_context('aks trustedaccess rolebinding update') as c:
         c.argument('roles', help='comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...')
+
+    with self.argument_context('aks mesh enable-ingress-gateway') as c:
+        c.argument('ingress_gateway_type',
+                   arg_type=get_enum_type(ingress_gateway_types))
+
+    with self.argument_context('aks mesh disable-ingress-gateway') as c:
+        c.argument('ingress_gateway_type',
+                   arg_type=get_enum_type(ingress_gateway_types))
 
 
 def _get_default_install_location(exe_name):

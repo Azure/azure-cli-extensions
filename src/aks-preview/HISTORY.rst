@@ -9,8 +9,17 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
-Pending
+0.5.133
 +++++++
+* Add `az aks mesh` commands for Azure Service Mesh.
+* `az aks create/update`: Replace `--uptime-sla` and `--no-uptime-sla` argument with `--tier` argument.
+* Raise a ClientRequestError when creating the same cluster again in command `az aks create`.
+* Vendor new SDK and bump API version to 2023-02-02-preview.
+
+0.5.132
++++++++
+* Change the short name of option `--source-resource-id` in command `az aks trustedaccess rolebinding create` from `-s` to `-r`.
+* Add parameter to enable windows recording rules `--enable-windows-recording-rules` for the Azure Monitor Metrics addon
 
 0.5.131
 +++++++

@@ -179,8 +179,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp env certificate create') as c:
         c.argument('hostname', options_list=['--hostname'], help='The custom domain name.')
         c.argument('certificate_name', options_list=['--certificate-name', '-c'], help='Name of the managed certificate which should be unique within the Container Apps environment.')
-        c.argument('location', get_location_type(self.cli_ctx), help='Location of the managed certificate which can be different from the location of the Container Apps environment.')
-        c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership.')
+        c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership. Supported methods are HTTP, CNAME and TXT.')
 
     with self.argument_context('containerapp env certificate upload') as c:
         c.argument('certificate_file', options_list=['--certificate-file', '-f'], help='The filepath of the .pfx or .pem file')
@@ -251,7 +250,7 @@ def load_arguments(self, _):
         c.argument('target_label', options_list=['--target'], help='Target label to be swapped to.')
 
     with self.argument_context('containerapp ingress') as c:
-        c.argument('allow_insecure', help='Allow insecure connections for ingress traffic.')
+        c.argument('allow_insecure', arg_type=get_three_state_flag(), help='Allow insecure connections for ingress traffic.')
         c.argument('type', validator=validate_ingress, arg_type=get_enum_type(['internal', 'external']), help="The ingress type.")
         c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2', 'tcp']), help="The transport protocol used for ingress traffic.")
         c.argument('target_port', type=int, validator=validate_target_port, help="The application port used for ingress traffic.")
@@ -374,7 +373,7 @@ def load_arguments(self, _):
         c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
         c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
         c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
-        c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership.')
+        c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership.', is_preview=True)
 
     with self.argument_context('containerapp hostname add') as c:
         c.argument('hostname', help='The custom domain name.')
