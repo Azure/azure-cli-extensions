@@ -20,7 +20,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_builder_update, validate_build_pool_size,
                                      validate_git_uri, validate_acc_git_url, validate_acc_git_refs, validate_acs_patterns, validate_config_file_patterns,
-                                     validate_routes, validate_gateway_instance_count, validate_git_interval, validate_ca_cert,
+                                     validate_routes, validate_gateway_instance_count, validate_git_interval,
                                      validate_api_portal_instance_count,
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
@@ -853,7 +853,7 @@ def load_arguments(self, _):
             c.argument('git_commit', type=str, help='Git repository commit to be used.', validator=validate_acc_git_refs)
             c.argument('git_tag', type=str, help='Git repository tag to be used.', validator=validate_acc_git_refs)
 
-            c.argument('ca_cert', help='CA certificate resource id.', validator=validate_ca_cert)
+            c.argument('ca_cert_name', help='CA certificate name.')
             c.argument('username', help='Username of git repository basic auth.')
             c.argument('password', help='Password of git repository basic auth.')
             c.argument('private_key', help='Private SSH Key algorithm of git repository.')

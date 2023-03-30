@@ -5,7 +5,7 @@
 
 from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
-
+from azure.cli.core.commands.client_factory import get_subscription_id
 from .vendored_sdks.appplatform.v2023_03_01_preview import models
 from .dev_tool_portal import (is_updatable as is_dev_tool_portal_updatable,
                               try_get as get_dev_tool_portal,
@@ -96,7 +96,7 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
                                   git_branch=None,
                                   git_commit=None,
                                   git_tag=None,
-                                  ca_cert=None,
+                                  ca_cert_name=None,
                                   username=None,
                                   password=None,
                                   private_key=None,
@@ -104,9 +104,15 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
                                   host_key_algorithm=None,
                                   no_wait=False):
     auth_setting = None
+    
+    caCertResourceId = None
+    if ca_cert_name:
+        subscription = get_subscription_id(cmd.cli_ctx)
+        caCertResourceId = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/certificates/{}".format(subscription, resource_group, service, ca_cert_name)
+    
     if username and password:
         auth_setting = models.AcceleratorBasicAuthSetting(
-            ca_cert_resource_id=ca_cert,
+            ca_cert_resource_id=caCertResourceId,
             username=username,
             password=password
         )
@@ -118,7 +124,7 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
         )
     else:
         auth_setting = models.AcceleratorPublicSetting(
-            ca_cert_resource_id=ca_cert
+            ca_cert_resource_id=caCertResourceId
         )
     git_repository = models.AcceleratorGitRepository(
         auth_setting=auth_setting,
