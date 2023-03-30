@@ -648,7 +648,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if upgrade_settings.strip() == "":
             if self.get_upgrade_override_until():
                 raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --upgrade-override-until when upgrade-settings is set to empty string. Set only the upgrade-override-until parameter instead."
+                    "Cannot specify --upgrade-override-until when --upgrade-settings is set to empty string. Set only the --upgrade-override-until parameter instead."
                 )
             return goal_upgrade_settings_list
 
