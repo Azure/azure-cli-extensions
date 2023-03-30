@@ -635,7 +635,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
     def get_upgrade_settings(self) -> Union[List[str], None]:
         """Obtain the value of upgrade_settings.
-        :return: string or None
+        :return: List[str] or None
         """
         # this parameter does not need dynamic completion
         # this parameter does not need validation
