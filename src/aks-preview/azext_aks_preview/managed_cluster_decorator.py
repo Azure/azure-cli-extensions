@@ -640,15 +640,15 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         upgrade_settings = self.raw_param.get("upgrade_settings")
-        if upgrade_settings is None or len(upgrade_settings.strip()) == 0:
+        if upgrade_settings is None:
             return None
 
         goal_upgrade_settings_list = []
 
-        if upgrade_settings.strip().lower() == str("None").lower():
+        if upgrade_settings.strip() == "":
             if self.get_upgrade_override_until():
                 raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --upgrade-override-until when upgrade-settings is None. Set only the upgrade-override-until parameter instead."
+                    "Cannot specify --upgrade-override-until when upgrade-settings is set to empty string. Set only the upgrade-override-until parameter instead."
                 )
             return goal_upgrade_settings_list
 
@@ -2623,6 +2623,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             (self.context.get_api_server_authorized_ip_ranges(), None),
             (self.context.get_nodepool_labels(), None),
             (self.context.raw_param.get("enable_workload_identity"), None),
+            (self.context.raw_param.get("upgrade_settings"), None),
         ]
 
     def check_raw_parameters(self):

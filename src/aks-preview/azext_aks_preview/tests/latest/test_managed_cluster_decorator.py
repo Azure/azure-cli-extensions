@@ -3148,7 +3148,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
 
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"upgrade_settings": "None"}),
+            AKSManagedClusterParamDict({"upgrade_settings": ""}),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
@@ -3165,7 +3165,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.cmd,
             AKSManagedClusterParamDict(
                 {
-                    "upgrade_settings": "None",
+                    "upgrade_settings": "",
                     "upgrade_override_until": "2022-11-01T13:00:00Z",
                 }
             ),
@@ -5942,7 +5942,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_2 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"upgrade_settings": "None"},
+            {"upgrade_settings": ""},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_2 = self.models.ManagedCluster(
@@ -5961,7 +5961,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_3 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"upgrade_settings": "None"},
+            {"upgrade_settings": ""},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_3 = self.models.ManagedCluster(

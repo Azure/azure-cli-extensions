@@ -744,7 +744,7 @@ helps['aks update'] = """
         - name: --upgrade-settings
           type: string
           short-summary: A comma separated list of supported cluster upgrade settings. E.g., IgnoreKubernetesDeprecations.
-          long-summary: Allowed value is "IgnoreKubernetesDeprecations". If set as "None", will set upgrade settings to default and the existing overrides will no longer be effective.
+          long-summary: Allowed value is "IgnoreKubernetesDeprecations". If set as "", upgrade settings will be set to default and the existing overrides will no longer be effective.
         - name: --upgrade-override-until
           type: string
           short-summary: Until when the cluster upgradeSettings overrides are effective. It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --upgrade-settings is set to IgnoreKubernetesDeprecations and --upgrade-override-until is not set, by default it will be set to 3 days from now.
