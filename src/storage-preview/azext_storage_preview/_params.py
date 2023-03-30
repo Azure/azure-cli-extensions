@@ -170,11 +170,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                     '"[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,'
                                     '[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,...". '
                                     'e.g."user::rwx,user:john.doe@contoso:rwx,group::r--,other::---,mask::rwx".')
-    progress_type = CLIArgumentType(help='Include this flag to disable progress reporting for the command.',
-                                    action='store_true', validator=add_upload_progress_callback)
-    timeout_type = CLIArgumentType(
-        help='Request timeout in seconds. Applies to each call to the service.', type=int
-    )
 
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
