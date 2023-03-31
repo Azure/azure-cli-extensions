@@ -621,66 +621,6 @@ def update_blob_inventory_policy(cmd, client, resource_group_name, account_name,
                                    blob_inventory_policy_name=BlobInventoryPolicyName.DEFAULT, properties=parameters)
 
 
-def list_network_rules(client, resource_group_name, account_name):
-    sa = client.get_properties(resource_group_name, account_name)
-    rules = sa.network_rule_set
-    delattr(rules, 'bypass')
-    delattr(rules, 'default_action')
-    return rules
-
-
-def add_network_rule(cmd, client, resource_group_name, account_name, action='Allow', subnet=None,
-                     vnet_name=None, ip_address=None, tenant_id=None, resource_id=None):  # pylint: disable=unused-argument
-    sa = client.get_properties(resource_group_name, account_name)
-    rules = sa.network_rule_set
-    if subnet:
-        from msrestazure.tools import is_valid_resource_id
-        if not is_valid_resource_id(subnet):
-            raise CLIError("Expected fully qualified resource ID: got '{}'".format(subnet))
-        VirtualNetworkRule = cmd.get_models('VirtualNetworkRule')
-        if not rules.virtual_network_rules:
-            rules.virtual_network_rules = []
-        rules.virtual_network_rules = [r for r in rules.virtual_network_rules
-                                       if r.virtual_network_resource_id.lower() != subnet.lower()]
-        rules.virtual_network_rules.append(VirtualNetworkRule(virtual_network_resource_id=subnet, action=action))
-    if ip_address:
-        IpRule = cmd.get_models('IPRule')
-        if not rules.ip_rules:
-            rules.ip_rules = []
-        rules.ip_rules = [r for r in rules.ip_rules if r.ip_address_or_range != ip_address]
-        rules.ip_rules.append(IpRule(ip_address_or_range=ip_address, action=action))
-    if resource_id:
-        ResourceAccessRule = cmd.get_models('ResourceAccessRule')
-        if not rules.resource_access_rules:
-            rules.resource_access_rules = []
-        rules.resource_access_rules = [r for r in rules.resource_access_rules if r.resource_id !=
-                                       resource_id or r.tenant_id != tenant_id]
-        rules.resource_access_rules.append(ResourceAccessRule(tenant_id=tenant_id, resource_id=resource_id))
-
-    StorageAccountUpdateParameters = cmd.get_models('StorageAccountUpdateParameters')
-    params = StorageAccountUpdateParameters(network_rule_set=rules)
-    return client.update(resource_group_name, account_name, params)
-
-
-def remove_network_rule(cmd, client, resource_group_name, account_name, ip_address=None, subnet=None,
-                        vnet_name=None, tenant_id=None, resource_id=None):  # pylint: disable=unused-argument
-    sa = client.get_properties(resource_group_name, account_name)
-    rules = sa.network_rule_set
-    if subnet:
-        rules.virtual_network_rules = [x for x in rules.virtual_network_rules
-                                       if not x.virtual_network_resource_id.endswith(subnet)]
-    if ip_address:
-        rules.ip_rules = [x for x in rules.ip_rules if x.ip_address_or_range != ip_address]
-
-    if resource_id:
-        rules.resource_access_rules = [x for x in rules.resource_access_rules if
-                                       not (x.tenant_id == tenant_id and x.resource_id == resource_id)]
-
-    StorageAccountUpdateParameters = cmd.get_models('StorageAccountUpdateParameters')
-    params = StorageAccountUpdateParameters(network_rule_set=rules)
-    return client.update(resource_group_name, account_name, params)
-
-
 def create_management_policies(client, resource_group_name, account_name, policy=None):
     if policy:
         if os.path.exists(policy):
