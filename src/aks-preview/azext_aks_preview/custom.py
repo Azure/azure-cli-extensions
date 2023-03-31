@@ -842,6 +842,8 @@ def aks_update(
     ssh_key_value=None,
     load_balancer_managed_outbound_ipv6_count=None,
     outbound_type=None,
+    network_plugin_mode=None,
+    pod_cidr=None,
     enable_pod_security_policy=False,
     disable_pod_security_policy=False,
     enable_pod_identity=False,

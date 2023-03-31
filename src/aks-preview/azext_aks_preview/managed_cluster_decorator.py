@@ -471,15 +471,35 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     )
         return network_plugin
 
-    def get_network_plugin_mode(self) -> Union[str, None]:
-        """Get the value of network_plugin_mode.
-
-        Note: Currently this parameter does not support being updated.
+    def get_pod_cidr(self) -> Union[str, None]:
+        """Get the value of pod_cidr.
 
         :return: str or None
         """
-        # read the original value passed by the command
-        network_plugin_mode = self.raw_param.get("network_plugin_mode")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        pod_cidr = None
+
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.pod_cidr is not None
+        ):
+            pod_cidr = self.mc.network_profile.pod_cidr
+
+        # overwrite if provided by user
+        if self.raw_param.get("pod_cidr") is not None:
+            pod_cidr = self.raw_param.get("pod_cidr")
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return pod_cidr
+
+    def get_network_plugin_mode(self) -> Union[str, None]:
+        """Get the value of network_plugin_mode.
+
+        :return: str or None
+        """
+        network_plugin_mode = None
         # try to read the property value corresponding to the parameter from the `mc` object
         if (
             self.mc and
@@ -487,6 +507,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             self.mc.network_profile.network_plugin_mode is not None
         ):
             network_plugin_mode = self.mc.network_profile.network_plugin_mode
+
+        # overwrite if provided by user
+        if self.raw_param.get("network_plugin_mode") is not None:
+            network_plugin_mode = self.raw_param.get("network_plugin_mode")
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -2669,6 +2693,22 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         )
         raise RequiredArgumentMissingError(error_msg)
 
+    def update_network_plugin_settings(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update network plugin settings of network profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        network_plugin_mode = self.context.get_network_plugin_mode()
+        if network_plugin_mode:
+            mc.network_profile.network_plugin_mode = network_plugin_mode
+
+        pod_cidr = self.context.get_pod_cidr()
+        if pod_cidr:
+            mc.network_profile.pod_cidr = pod_cidr
+        return mc
+
     def update_outbound_type_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update outbound type of network profile for the ManagedCluster object.
 
@@ -3228,6 +3268,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_creation_data(mc)
         # update linux profile
         mc = self.update_linux_profile(mc)
+        # update network profile
+        mc = self.update_network_plugin_settings(mc)
         # update outbound type
         mc = self.update_outbound_type_in_network_profile(mc)
         # update kube proxy config
