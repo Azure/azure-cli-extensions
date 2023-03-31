@@ -12,7 +12,7 @@ from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 from msrestazure.tools import resource_id
 
-from .vendored_sdks.appplatform.v2023_01_01_preview import models
+from .vendored_sdks.appplatform.v2023_03_01_preview import models
 
 APPLICATION_CONFIGURATION_SERVICE_NAME = "applicationConfigurationService"
 RESOURCE_ID = "resourceId"
