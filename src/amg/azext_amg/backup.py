@@ -194,7 +194,7 @@ def _get_individual_library_panel_setting_and_save(panels, folder_path, log_file
                     _save_library_panel_setting(
                         panel['name'],
                         panel_uri,
-                        content,
+                        content['result'],
                         folder_path)
                     f.write(panel_uri + '\t' + panel['name'] + '\n')
 

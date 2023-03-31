@@ -28,6 +28,7 @@ def restore(grafana_url, archive_file, components, http_headers, destination_dat
     restore_functions = collections.OrderedDict()
     restore_functions['folder'] = _create_folder
     restore_functions['dashboard'] = _create_dashboard
+    restore_functions['library_panel'] = _create_library_panel
     restore_functions['snapshot'] = _create_snapshot
     restore_functions['annotation'] = _create_annotation
     restore_functions['datasource'] = _create_datasource
@@ -65,6 +66,9 @@ def _restore_components(grafana_url, restore_functions, tmpdir, components, http
         global uid_mapping  # pylint: disable=global-statement
         uid_mapping = create_datasource_mapping(source_datasources, destination_datasources)
 
+    if "dashboard" in exts:  # dashboard restoration can't work if linked library panel isn't existing
+        exts.insert(0, "library_panel")
+
     if "folder" in exts:  # make "folder" be the first to restore, so dashboards can be positioned under a right folder
         exts.insert(0, exts.pop(exts.index("folder")))
 
@@ -94,6 +98,24 @@ def _create_dashboard(grafana_url, file_path, http_headers):
     result = send_grafana_post(f'{grafana_url}/api/dashboards/db', json.dumps(payload), http_headers)
     dashboard_title = content['dashboard'].get('title', '')
     logger.warning("Create dashboard \"%s\". %s", dashboard_title, "SUCCESS" if result[0] == 200 else "FAILURE")
+    logger.info("status: %s, msg: %s", result[0], result[1])
+
+
+# Restore Library Panel
+def _create_library_panel(grafana_url, file_path, http_headers):
+    with open(file_path, 'r', encoding="utf8") as f:
+        data = f.read()
+
+    payload = json.loads(data)
+    payload['id'] = None
+    payload['folderId'] = get_folder_id(payload, grafana_url, http_post_headers=http_headers)
+
+    datasources_missed = set()
+    remap_datasource_uids(payload, uid_mapping, datasources_missed)
+
+    result = send_grafana_post(f'{grafana_url}/api/library-elements', json.dumps(payload), http_headers)
+    panel_name = payload.get('name', '')
+    logger.warning("Create dashboard \"%s\". %s", panel_name, "SUCCESS" if result[0] == 200 else "FAILURE")
     logger.info("status: %s, msg: %s", result[0], result[1])
 
 
