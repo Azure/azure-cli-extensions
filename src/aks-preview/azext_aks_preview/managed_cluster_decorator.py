@@ -49,12 +49,12 @@ from knack.prompting import prompt_y_n
 from azext_aks_preview._consts import (
     CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
     CONST_AZURE_SERVICE_MESH_MODE_ISTIO,
-    CONST_EBPF_DATAPLANE_CILIUM,
     CONST_LOAD_BALANCER_SKU_BASIC,
     CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
     CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
     CONST_NETWORK_PLUGIN_AZURE,
     CONST_NETWORK_PLUGIN_MODE_OVERLAY,
+    CONST_NETWORK_DATAPLANE_CILIUM,
     CONST_OUTBOUND_TYPE_LOAD_BALANCER,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
@@ -515,6 +515,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return network_plugin_mode
+
+    def get_network_dataplane(self) -> Union[str, None]:
+        """Get the value of network_dataplane.
+
+        :return: str or None
+        """
+        return self.raw_param.get("network_dataplane")
 
     def get_enable_cilium_dataplane(self) -> bool:
         """Get the value of enable_cilium_dataplane
@@ -2254,7 +2261,16 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         network_profile.network_plugin_mode = self.context.get_network_plugin_mode()
 
         if self.context.get_enable_cilium_dataplane():
-            network_profile.network_dataplane = CONST_EBPF_DATAPLANE_CILIUM
+            # --network-dataplane was introduced with API v20230202preview to replace --enable-cilium-dataplane.
+            # Keep both for backwards compatibility, but validate that the user sets only one of them.
+            if self.context.get_network_dataplane() is not None:
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --enable-cilium-dataplane and "
+                    "--network-dataplane at the same time"
+                )
+            network_profile.network_dataplane = CONST_NETWORK_DATAPLANE_CILIUM
+        else:
+            network_profile.network_dataplane = self.context.get_network_dataplane()
 
         return mc
 

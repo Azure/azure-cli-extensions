@@ -109,8 +109,9 @@ CONST_NETWORK_PLUGIN_NONE = "none"
 # network plugin mode
 CONST_NETWORK_PLUGIN_MODE_OVERLAY = "overlay"
 
-# networkprofile eBPF dataplane
-CONST_EBPF_DATAPLANE_CILIUM = "cilium"
+# network dataplane
+CONST_NETWORK_DATAPLANE_AZURE = "azure"
+CONST_NETWORK_DATAPLANE_CILIUM = "cilium"
 
 # disk driver versions
 CONST_DISK_DRIVER_V1 = "v1"
