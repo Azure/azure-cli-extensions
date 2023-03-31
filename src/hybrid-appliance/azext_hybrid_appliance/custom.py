@@ -5,6 +5,7 @@
 
 import json
 import os
+import time
 import psutil
 import requests
 import subprocess
@@ -15,10 +16,11 @@ from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from azext_hybrid_appliance import _constants as consts
 from azext_hybrid_appliance import _utils as utils
 from azure.cli.core.azclierror import ValidationError, CLIInternalError
+from kubernetes import client as kube_client, config
 logger = get_logger(__name__)
 
 
-def validate_hybrid_appliance(resource_group_name, name, cmd):
+def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connectedk8s_exists=True):
     # changing cli config to push telemetry in 1 hr interval
     try:
         if cmd.cli_ctx and hasattr(cmd.cli_ctx, 'config'):
@@ -64,25 +66,26 @@ def validate_hybrid_appliance(resource_group_name, name, cmd):
     # Install specific version of connectedk8s
     get_default_cli().invoke(['extension', 'add', '-n', 'connectedk8s', '--version', '1.3.14'])
     
-    try:
-        cmd_show_arc= ['az', 'connectedk8s', 'show', '-n', name, '-g', resource_group_name, '-o', 'none']
-        process = subprocess.Popen(cmd_show_arc, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if process.wait() == 0:
-            telemetry.set_exception(exception="An appliance with same name already exists in the resource group", fault_type=consts.Resource_Already_Exists_Fault_Type, summary="Appliance resource with same name already exists")
-            logger.warning("The appliance name and resource group name passed already correspond to an existing connected cluster. Please try again with a different appliance name.")
-            all_validations_passed = False
-        stdout = process.stdout.read().decode()
-        stderr = process.stderr.read().decode()
-        if "ResourceGroupNotFound" in stdout or "ResourceGroupNotFound" in stderr:
-            all_validations_passed = False
-            logger.warning("The specified resource group could not be found. Please make sure the resource group exists in the specified subscription")
-        if "AuthorizationFailed" in stdout or "AuthorizationFailed" in stderr:
-            all_validations_passed = False
-            logger.warning("The current user does not have the required Azure permissions to perform this action. Please assign the required roles.")
+    if validate_connectedk8s_exists:
+        try:
+            cmd_show_arc= ['az', 'connectedk8s', 'show', '-n', name, '-g', resource_group_name, '-o', 'none']
+            process = subprocess.Popen(cmd_show_arc, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if process.wait() == 0:
+                telemetry.set_exception(exception="An appliance with same name already exists in the resource group", fault_type=consts.Resource_Already_Exists_Fault_Type, summary="Appliance resource with same name already exists")
+                logger.warning("The appliance name and resource group name passed already correspond to an existing connected cluster. Please try again with a different appliance name.")
+                all_validations_passed = False
+            stdout = process.stdout.read().decode()
+            stderr = process.stderr.read().decode()
+            if "ResourceGroupNotFound" in stdout or "ResourceGroupNotFound" in stderr:
+                all_validations_passed = False
+                logger.warning("The specified resource group could not be found. Please make sure the resource group exists in the specified subscription")
+            if "AuthorizationFailed" in stdout or "AuthorizationFailed" in stderr:
+                all_validations_passed = False
+                logger.warning("The current user does not have the required Azure permissions to perform this action. Please assign the required roles.")
 
-    except Exception as e:
-        telemetry.set_exception(exception=e, fault_type=consts.CC_Resource_Get_Failed, summary="Failed to verify if CC resource already exists")
-        logger.warning("An exception has occurred while trying verify if appliance resource already exists with the same name. Exception:" + str(e))
+        except Exception as e:
+            telemetry.set_exception(exception=e, fault_type=consts.CC_Resource_Get_Failed, summary="Failed to verify if CC resource already exists")
+            logger.warning("An exception has occurred while trying verify if appliance resource already exists with the same name. Exception:" + str(e))
     
     if all_validations_passed is False:
         telemetry.set_exception(exception="One or more pre-requisite validations failed", fault_type=consts.Validations_Failed, summary="Pre-requisite validations failed")
@@ -90,7 +93,7 @@ def validate_hybrid_appliance(resource_group_name, name, cmd):
     else:
         print("All pre-requisite validations have passed successfully")
 
-def create_hybrid_appliance(resource_group_name, name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None):
+def create_hybrid_appliance(resource_group_name, name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None, tags=None):
     kubeconfig_path = utils.get_kubeconfig_path()
     kubectl_client_location = utils.install_kubectl_client()
     latestMajorVersion, latestMinorVersion = utils.get_latest_tested_microk8s_version()
@@ -117,7 +120,7 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
     # The NO_PROXY env variable needs the api server address, which is not available with the user before the cluster is provisioned.
     # To get around that, we get the server address and services cidr and append the no_proxy variable with those values.
     if http_proxy or https_proxy or no_proxy:
-        no_proxy = utils.get_proxy_parameters(no_proxy)
+        no_proxy = utils.get_no_proxy_parameters(no_proxy)
         os.environ["NO_PROXY"] = no_proxy
     if location:
         cmd_onboard_arc.extend(["--location", location])
@@ -129,36 +132,40 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
         cmd_onboard_arc.extend(["--proxy-skip-range", no_proxy])
     if proxy_cert:
         cmd_onboard_arc.extend(["--proxy-cert", proxy_cert])
+    if tags:
+        cmd_onboard_arc.extend(["--tags"])
+        for tag in tags:
+            cmd_onboard_arc.extend(["{}={}".format(tag, tags[tag])])
 
     onboarding_result = get_default_cli().invoke(cmd_onboard_arc)
     if onboarding_result != 0:
         telemetry.set_exception(exception="Arc onboarding of the k8s cluster failed", fault_type=consts.Arc_Onboarding_Failed, summary="Arc onboarding of the k8s cluster failed")
+        filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(consts.diagnostics_folder_name, name)
+
+        if not diagnostic_folder_status:
+            raise ValidationError("Unable to create the folder to store diagnostics logs.")
+            
+        utils.troubleshoot_connectedk8s(resource_group_name, name, filepath_with_timestamp)
         raise CLIInternalError("Onboarding the k8s cluster to Arc failed")
     else:
         print("The k8s cluster has been onboarded to Arc successfully")
 
 def upgrade_hybrid_appliance(resource_group_name, name):
+    config.load_kube_config(utils.get_kubeconfig_path())
+    api_instance = kube_client.CoreV1Api()
     try:
-        azure_clusterconfig_cm = subprocess.check_output(['microk8s', 'kubectl', 'get', 'cm', 'azure-clusterconfig', '-n', 'azure-arc', '-o', 'json']).decode()
+        azure_clusterconfig_cm = api_instance.read_namespaced_config_map("azure-clusterconfig", "azure-arc")
     except Exception as e:
-        if utils.check_microk8s():
-            # Is there anything else which can be done in this case?
-            telemetry.set_exception(exception=e, fault_type=consts.ConfigMap_not_Found, summary="Configmap 'azure-clusterconfig' not found on the k8s cluster")
-            raise ValidationError("The required configmap 'azure-clusterconfig' was not found on the kubernetes cluster. Exception:" + str(e), "Please delete the appliance and create it again.")
-        else:
-            telemetry.set_exception(exception=e, fault_type=consts.K8s_Cluster_Unreacheable_Or_Not_Running, summary="The k8s cluster is not running as expected or is not reachable")
-            raise ValidationError("The kubernetes cluster is not running as expected or is not reachable. Exception:" + str(e), "Please delete the appliance and create it again.")
+        utils.kubernetes_exception_handler(e, fault_type=consts.Read_ConfigMap_Fault_Type, summary="Unable to read ConfigMap")
             
-    
-    azure_clusterconfig_cm = json.loads(azure_clusterconfig_cm)
     try:
-        if azure_clusterconfig_cm["data"]["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm["data"]["AZURE_RESOURCE_NAME"] != name:
+        if azure_clusterconfig_cm.data["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm.data["AZURE_RESOURCE_NAME"] != name:
             telemetry.set_exception(exception='The provided name and rg correspond to different appliance', fault_type=consts.Upgrade_RG_Cluster_Name_Conflict,
                                     summary='The provided name and resource group name do not correspond to the current appliance')
             raise ValidationError("The parameters passed do not correspond to this appliance", "Please check the resource group name and appliance name.")
     except KeyError:
         telemetry.set_exception(exception="Name and RG entries not found in configmap", fault_type=consts.Entries_Not_Found_In_ConfigMap, summary="Name and RG entries not found in configmap")
-        raise CLIInternalError("The required entries were not found in the config map.",  "Please delete the appliance and recreate it.")
+        raise ValidationError("The required entries were not found in the config map.",  "Please delete the appliance and recreate it.")
 
     kubernetesVersionResponseString = subprocess.check_output(['microk8s', 'kubectl', 'version', '-o', 'json']).decode()
     kubernetesVersionResponse = json.loads(kubernetesVersionResponseString)
@@ -178,13 +185,18 @@ def upgrade_hybrid_appliance(resource_group_name, name):
         
         # This logic works as long as new versions are only minor version bumps
         # TODO: Figure out what to do in case major version is bumped (very unlikely)
-        while currentMinorVersion != latestMinorVersion:
+        while int(currentMinorVersion) != int(latestMinorVersion):
             currentMinorVersion = int(currentMinorVersion) + 1
             process = subprocess.Popen(['snap', 'refresh', 'microk8s', '--channel={}.{}'.format(currentMajorVersion, currentMinorVersion)])
             _, stderr = process.communicate()
             if process.returncode != 0:
-                telemetry.set_exception(exception="Failed to upgrade microk8s cluster: {}".format(stderr.decode()), fault_type=consts.MicroK8s_Upgrade_Failed, summary="Failed to upgrade microk8s cluster: {}".format(stderr.decode()))
-                raise CLIInternalError("Failed to upgrade microk8s cluster: {}".format(stderr.decode()))
+                error_message = ""
+                if stderr is not None:
+                    error_message = ": {}".format(stderr.decode())
+                telemetry.set_exception(exception="Failed to upgrade microk8s cluster{}".format(error_message), fault_type=consts.MicroK8s_Upgrade_Failed, summary="Failed to upgrade microk8s cluster: {}".format(stderr.decode()))
+                raise CLIInternalError("Failed to upgrade microk8s cluster{}}".format(error_message))
+            
+            time.sleep(60) # Sleep to give time for the cluster to get ready
             try:
                 subprocess.check_call(['microk8s', 'start'])
             except subprocess.CalledProcessError as e:
@@ -198,37 +210,33 @@ def upgrade_hybrid_appliance(resource_group_name, name):
             print("Upgraded cluster to {}.{}".format(currentMajorVersion, currentMinorVersion))
 
 def delete_hybrid_appliance(resource_group_name, name):
-    utils.set_no_proxy_from_helm_values()
+    delete_cc = True
     kubeconfig_path = utils.get_kubeconfig_path()
-    try:
-        output = subprocess.check_output(['microk8s', 'status'], stderr=STDOUT)
-    except Exception as e:
+    if not utils.check_if_microk8s_is_running():
         telemetry.set_exception()
         raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
-
-    if "not running" in output.decode():
-            telemetry.set_exception()
-            raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
-
+    
     try:
-        azure_clusterconfig_cm = subprocess.check_output(['microk8s', 'kubectl', 'get', 'cm', 'azure-clusterconfig', '-n', 'azure-arc', '-o', 'json']).decode()
-    except Exception as e:
+        azure_clusterconfig_cm = utils.get_azure_clusterconfig_cm()
+    except Exception as ex:
         telemetry.set_exception(exception=e, fault_type=consts.ConfigMap_Not_Found, summary="Config Map 'azure-clusterconfig' not found on the k8s cluster")
         raise CLIInternalError("Unable to find the required config map on the kubernetes cluster. Please delete the appliance and create it again.")
-    
-    azure_clusterconfig_cm = json.loads(azure_clusterconfig_cm)
-    try:
-        if azure_clusterconfig_cm["data"]["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm["data"]["AZURE_RESOURCE_NAME"] != name:
-            telemetry.set_exception()
-            raise ValidationError("The parameters passed do not correspond to this appliance. Please check the resource group name and appliance name.")
-    except KeyError:
-        telemetry.set_exception()
-        raise CLIInternalError("The required entries were not found in the config map. Please delete the appliance and recreate it.")
+        delete_cc = False
 
-    cmd_delete_arc= ['connectedk8s', 'delete', '-n', name, '-g', resource_group_name, '-y', '--kube-config', kubeconfig_path]
-    delete_result = get_default_cli().invoke(cmd_delete_arc)
-    if delete_result != 0:
-        logger.error("Failed to delete connected cluster resource. The kubernetes cluster will be deleted. To delete the connected cluster resource, please visit the resource group in the Azure portal and delete the corresponding Azure resource.")
+    if delete_cc:
+        try:
+            utils.validate_cluster_resource_group_and_name(azure_clusterconfig_cm, resource_group_name, name)
+        except Exception as ex:
+            raise ValidationError("Failed to validate the configmap: {}.".format(str(ex)))
+
+    if delete_cc:
+        utils.set_no_proxy_from_helm_values()
+        cmd_delete_arc= ['connectedk8s', 'delete', '-n', name, '-g', resource_group_name, '-y', '--kube-config', kubeconfig_path]
+        delete_result = get_default_cli().invoke(cmd_delete_arc)
+        if delete_result != 0:
+            logger.error("Failed to delete connected cluster resource. The kubernetes cluster will be deleted. To delete the connected cluster resource, please visit the resource group in the Azure portal and delete the corresponding Azure resource.")
+    else:
+        logger.warning("The connected cluster resource will not be deleted. The kubernetes cluster will be deleted. To delete the connected cluster resource, please visit the resource group in the Azure portal and delete the corresponding Azure resource.")
 
     process = subprocess.Popen(['snap', 'remove', 'microk8s'])
     process.wait()
@@ -237,3 +245,51 @@ def delete_hybrid_appliance(resource_group_name, name):
         return_code = subprocess.Popen(['microk8s', 'inspect']).wait()
         if return_code == 0:
             logger.warning("Please share the logs generated at the above path, under /var/snap/microk8s/current")
+
+def collect_logs(resource_group_name, name):
+    try:
+        validate_hybrid_appliance(resource_group_name, name, validate_connectedk8s_exists=False)
+    except Exception as ex:
+        logger.warning("One or more of the required prechecks have failed. Please ensure all the pre-requisites are met.")
+
+    troubleshoot_connectedk8s = True
+    if not utils.check_if_microk8s_is_running():
+        telemetry.set_exception()
+        raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
+    
+    try:
+        azure_clusterconfig_cm = utils.get_azure_clusterconfig_cm()
+    except:
+        logger.warning("Failed to get the configmap from the cluster. Not running connectedk8s troubleshoot")
+        troubleshoot_connectedk8s = False
+
+    if troubleshoot_connectedk8s:
+        try:
+            utils.validate_cluster_resource_group_and_name(azure_clusterconfig_cm, resource_group_name, name)    
+        except Exception as ex:
+            logger.warning("Failed to validate the configmap: {}. Not running connectedk8s troubleshoot".format(str(ex)))
+            troubleshoot_connectedk8s = False
+
+    filepath_with_timestamp, diagnostic_folder_status = utils.create_folder_diagnosticlogs(consts.diagnostics_folder_name, name)
+
+    if not diagnostic_folder_status:
+        logger.error("Unable to create the folder to store diagnostics logs.")
+        return
+    
+    if troubleshoot_connectedk8s:
+        try:
+            utils.troubleshoot_connectedk8s(resource_group_name, name, filepath_with_timestamp)
+        except Exception as ex:
+            logger.warning(str(ex))
+
+    os.environ["TROUBLESHOOT_DIRECTORY"] = filepath_with_timestamp
+    current_path = os.path.abspath(os.path.dirname(__file__))
+    script_file_path = os.path.join(current_path, "microk8s_inspect.sh")
+    cmd = ["bash", script_file_path]
+    process = subprocess.Popen(cmd)
+    if process.wait() != 0:
+        telemetry.set_exception(exception="Failed to run microk8s inspect", fault_type=consts.Microk8s_Inspect_Failed, summary="Microk8s inspect failed")
+        raise CLIInternalError("Failed to run microk8s inspect")
+    
+    logger.warning("The logs have been stored at {}".format(filepath_with_timestamp))
+    

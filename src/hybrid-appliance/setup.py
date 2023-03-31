@@ -16,7 +16,7 @@ except ImportError:
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 
-VERSION = '0.1.3-dev'
+VERSION = '0.1.4.dev'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -38,6 +38,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 DEPENDENCIES = [
+    'kubernetes==24.2.0'
 ]
 
 setup(
@@ -52,5 +53,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_hybrid_appliance': ['azext_metadata.json', 'microk8sbootstrap.sh']}
+    package_data={'azext_hybrid_appliance': ['azext_metadata.json', 'microk8sbootstrap.sh', 'microk8s_inspect.sh', 'connectedk8s_troubleshoot.sh']}
 )

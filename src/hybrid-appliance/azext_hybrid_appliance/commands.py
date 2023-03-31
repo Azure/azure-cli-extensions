@@ -11,3 +11,4 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_hybrid_appliance')
         g.custom_command('upgrade', 'upgrade_hybrid_appliance')
         g.custom_command('delete', 'delete_hybrid_appliance')
+        g.custom_command('troubleshoot', 'collect_logs')
