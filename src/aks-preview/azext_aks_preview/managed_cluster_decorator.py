@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import copy
+import datetime
 import os
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
@@ -60,6 +61,7 @@ from azext_aks_preview._consts import (
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
     CONST_PRIVATE_DNS_ZONE_NONE,
     CONST_PRIVATE_DNS_ZONE_SYSTEM,
+    CONST_IGNORE_KUBERNETES_DEPRECATIONS,
 )
 from azext_aks_preview._helpers import (
     check_is_private_cluster,
@@ -82,6 +84,8 @@ from azext_aks_preview.agentpool_decorator import (
     AKSPreviewAgentPoolUpdateDecorator,
 )
 from msrestazure.tools import is_valid_resource_id
+
+from dateutil.parser import parse
 
 logger = get_logger(__name__)
 
@@ -467,15 +471,35 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                     )
         return network_plugin
 
-    def get_network_plugin_mode(self) -> Union[str, None]:
-        """Get the value of network_plugin_mode.
-
-        Note: Currently this parameter does not support being updated.
+    def get_pod_cidr(self) -> Union[str, None]:
+        """Get the value of pod_cidr.
 
         :return: str or None
         """
-        # read the original value passed by the command
-        network_plugin_mode = self.raw_param.get("network_plugin_mode")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        pod_cidr = None
+
+        if (
+            self.mc and
+            self.mc.network_profile and
+            self.mc.network_profile.pod_cidr is not None
+        ):
+            pod_cidr = self.mc.network_profile.pod_cidr
+
+        # overwrite if provided by user
+        if self.raw_param.get("pod_cidr") is not None:
+            pod_cidr = self.raw_param.get("pod_cidr")
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return pod_cidr
+
+    def get_network_plugin_mode(self) -> Union[str, None]:
+        """Get the value of network_plugin_mode.
+
+        :return: str or None
+        """
+        network_plugin_mode = None
         # try to read the property value corresponding to the parameter from the `mc` object
         if (
             self.mc and
@@ -483,6 +507,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             self.mc.network_profile.network_plugin_mode is not None
         ):
             network_plugin_mode = self.mc.network_profile.network_plugin_mode
+
+        # overwrite if provided by user
+        if self.raw_param.get("network_plugin_mode") is not None:
+            network_plugin_mode = self.raw_param.get("network_plugin_mode")
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -627,6 +655,48 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return node_os_upgrade_channel
+
+    def get_upgrade_override_until(self) -> Union[str, None]:
+        """Obtain the value of upgrade_override_until.
+        :return: string or None
+        """
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return self.raw_param.get("upgrade_override_until")
+
+    def get_upgrade_settings(self) -> Union[List[str], None]:
+        """Obtain the value of upgrade_settings.
+        :return: List[str] or None
+        """
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        upgrade_settings = self.raw_param.get("upgrade_settings")
+        if upgrade_settings is None:
+            return None
+
+        goal_upgrade_settings_list = []
+
+        if upgrade_settings.strip() == "":
+            if self.get_upgrade_override_until():
+                raise MutuallyExclusiveArgumentError(
+                    "Cannot specify --upgrade-override-until when --upgrade-settings is set to empty string. Set only the --upgrade-override-until parameter instead."
+                )
+            return goal_upgrade_settings_list
+
+        input_upgrade_settings_list = [x.strip() for x in upgrade_settings.split(',')]
+
+        supported_upgrade_settings = [
+            CONST_IGNORE_KUBERNETES_DEPRECATIONS,
+        ]
+
+        for s in input_upgrade_settings_list:
+            if s in goal_upgrade_settings_list or s not in supported_upgrade_settings:
+                raise InvalidArgumentValueError(
+                    f"{upgrade_settings} either has duplicates or contains invalid upgrade-settings. Supported settings include, IgnoreKubernetesDeprecations."
+                )
+            goal_upgrade_settings_list.append(s)
+
+        return goal_upgrade_settings_list
 
     def _get_enable_pod_security_policy(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_pod_security_policy.
@@ -2593,6 +2663,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             (self.context.get_api_server_authorized_ip_ranges(), None),
             (self.context.get_nodepool_labels(), None),
             (self.context.raw_param.get("enable_workload_identity"), None),
+            (self.context.raw_param.get("upgrade_settings"), None),
         ]
 
     def check_raw_parameters(self):
@@ -2637,6 +2708,22 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             " or ".join(option_names)
         )
         raise RequiredArgumentMissingError(error_msg)
+
+    def update_network_plugin_settings(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update network plugin settings of network profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        network_plugin_mode = self.context.get_network_plugin_mode()
+        if network_plugin_mode:
+            mc.network_profile.network_plugin_mode = network_plugin_mode
+
+        pod_cidr = self.context.get_pod_cidr()
+        if pod_cidr:
+            mc.network_profile.pod_cidr = pod_cidr
+        return mc
 
     def update_outbound_type_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update outbound type of network profile for the ManagedCluster object.
@@ -3115,6 +3202,57 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             )
         return mc
 
+    def update_upgrade_settings(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update upgrade settings for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        existing_until = None
+        if mc.upgrade_settings is not None and mc.upgrade_settings.override_settings is not None and mc.upgrade_settings.override_settings.until is not None:
+            existing_until = mc.upgrade_settings.override_settings.until
+
+        upgrade_settings = self.context.get_upgrade_settings()
+
+        # There is a limitation on differentiating empty list vs. not set in update requests.
+        # In such case, we'll use a workaround here to disable it by setting the until field to the current time, to make the overrides no longer effective.
+        # For now there's only one allowed override so we can return early here.
+        if upgrade_settings is not None and len(upgrade_settings) == 0:
+            if mc.upgrade_settings is not None and mc.upgrade_settings.override_settings is not None and mc.upgrade_settings.override_settings.control_plane_overrides is not None:
+                if mc.upgrade_settings.override_settings.control_plane_overrides == [CONST_IGNORE_KUBERNETES_DEPRECATIONS]:
+                    if existing_until is not None and existing_until.timestamp() > datetime.datetime.utcnow().timestamp():
+                        mc.upgrade_settings.override_settings.until = datetime.datetime.utcnow()
+            return mc
+
+        override_until = self.context.get_upgrade_override_until()
+        upgrade_ignore_kubernetes_deprecations = upgrade_settings is not None and CONST_IGNORE_KUBERNETES_DEPRECATIONS in upgrade_settings
+
+        if upgrade_settings is not None or override_until is not None:
+            if mc.upgrade_settings is None:
+                mc.upgrade_settings = self.models.ClusterUpgradeSettings()
+            if mc.upgrade_settings.override_settings is None:
+                mc.upgrade_settings.override_settings = self.models.UpgradeOverrideSettings()
+            # sets control_plane_overrides
+            if upgrade_ignore_kubernetes_deprecations:
+                if mc.upgrade_settings.override_settings.control_plane_overrides is None:
+                    mc.upgrade_settings.override_settings.control_plane_overrides = []
+                if CONST_IGNORE_KUBERNETES_DEPRECATIONS not in mc.upgrade_settings.override_settings.control_plane_overrides:
+                    mc.upgrade_settings.override_settings.control_plane_overrides.append(CONST_IGNORE_KUBERNETES_DEPRECATIONS)
+            # sets until
+            if override_until is not None:
+                try:
+                    mc.upgrade_settings.override_settings.until = parse(override_until)
+                except Exception as ex:  # pylint: disable=broad-except
+                    raise InvalidArgumentValueError(
+                        f"{override_until} is not a valid datatime format."
+                    )
+            elif upgrade_ignore_kubernetes_deprecations:
+                default_extended_until = datetime.datetime.utcnow() + datetime.timedelta(days=3)
+                if existing_until is None or existing_until.timestamp() < default_extended_until.timestamp():
+                    mc.upgrade_settings.override_settings.until = default_extended_until
+
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -3146,6 +3284,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_creation_data(mc)
         # update linux profile
         mc = self.update_linux_profile(mc)
+        # update network profile
+        mc = self.update_network_plugin_settings(mc)
         # update outbound type
         mc = self.update_outbound_type_in_network_profile(mc)
         # update kube proxy config
@@ -3156,5 +3296,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_node_resource_group_profile(mc)
         # update auto upgrade profile
         mc = self.update_auto_upgrade_profile(mc)
+        # update auto upgrade profile
+        mc = self.update_upgrade_settings(mc)
 
         return mc

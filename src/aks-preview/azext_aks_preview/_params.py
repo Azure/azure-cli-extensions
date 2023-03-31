@@ -205,6 +205,7 @@ node_os_upgrade_channels = [
     CONST_NODE_OS_CHANNEL_SECURITY_PATCH,
     CONST_NODE_OS_CHANNEL_UNMANAGED,
 ]
+
 nrg_lockdown_restriction_levels = [
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED,
@@ -435,6 +436,8 @@ def load_arguments(self, _):
         c.argument('kube_proxy_config')
         c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
         c.argument('node_os_upgrade_channel', arg_type=get_enum_type(node_os_upgrade_channels))
+        c.argument('upgrade_settings', is_preview=True)
+        c.argument('upgrade_override_until', is_preview=True)
         c.argument('cluster_autoscaler_profile', nargs='+', options_list=["--cluster-autoscaler-profile", "--ca-profile"],
                    help="Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.")
         c.argument('uptime_sla', action='store_true', deprecate_info=c.deprecate(target='--uptime-sla', redirect='--tier', hide=True))
