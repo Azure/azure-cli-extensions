@@ -12,20 +12,19 @@ import tempfile
 from azure.cli.core.azclierror import ArgumentUsageError
 from knack.log import get_logger
 
-from .utils import get_folder_id, send_grafana_post
-
+from .utils import get_folder_id, send_grafana_post, create_datasource_mapping, remap_datasource_uids
 
 logger = get_logger(__name__)
 
+uid_mapping = {}
 
-def restore(grafana_url, archive_file, components, http_headers):
+
+def restore(grafana_url, archive_file, components, http_headers, destination_datasources=None):
     try:
         tarfile.is_tarfile(name=archive_file)
     except IOError as e:
         raise ArgumentUsageError(f"failed to open {archive_file} as a tar file") from e
 
-    # Shell game magic warning: restore_function keys require the 's'
-    # to be removed in order to match file extension names...
     restore_functions = collections.OrderedDict()
     restore_functions['folder'] = _create_folder
     restore_functions['dashboard'] = _create_dashboard
@@ -37,15 +36,35 @@ def restore(grafana_url, archive_file, components, http_headers):
         with tempfile.TemporaryDirectory() as tmpdir:
             tar.extractall(tmpdir)
             tar.close()
-            _restore_components(grafana_url, restore_functions, tmpdir, components, http_headers)
+            _restore_components(grafana_url, restore_functions, tmpdir, components, http_headers,
+                                destination_datasources=destination_datasources)
 
 
-def _restore_components(grafana_url, restore_functions, tmpdir, components, http_headers):
+def _restore_components(grafana_url, restore_functions, tmpdir, components, http_headers, destination_datasources=None):
 
     if components:
         exts = [c[:-1] for c in components]
     else:
         exts = list(restore_functions.keys())
+
+    # to re-map data sources, create a mapping from source to destination workspace before transform the dashboards
+    if destination_datasources:
+        if "datasource" in exts:  # first let us skip datasource restoration
+            exts.pop(exts.index("datasource"))
+        datasource_backups = glob(f'{tmpdir}/**/*.datasource', recursive=True)
+        if not datasource_backups:
+            logger.warning('"remap data source" is on, but data sources info wasn\'t archived to transform dashboards')
+
+        source_datasources = []
+        for file_path in datasource_backups:
+            with open(file_path, 'r', encoding="utf8") as f:
+                data = f.read()
+            datasource = json.loads(data)
+            source_datasources.append(datasource)
+
+        global uid_mapping  # pylint: disable=global-statement
+        uid_mapping = create_datasource_mapping(source_datasources, destination_datasources)
+
     if "folder" in exts:  # make "folder" be the first to restore, so dashboards can be positioned under a right folder
         exts.insert(0, exts.pop(exts.index("folder")))
 
@@ -68,6 +87,9 @@ def _create_dashboard(grafana_url, file_path, http_headers):
         'folderId': get_folder_id(content, grafana_url, http_post_headers=http_headers),
         'overwrite': True
     }
+
+    datasources_missed = set()
+    remap_datasource_uids(payload, uid_mapping, datasources_missed)
 
     result = send_grafana_post(f'{grafana_url}/api/dashboards/db', json.dumps(payload), http_headers)
     dashboard_title = content['dashboard'].get('title', '')

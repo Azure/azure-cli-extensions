@@ -118,6 +118,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp create') as c:
         c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="Name of the workload profile to run the app on.", is_preview=True)
 
     with self.argument_context('containerapp create', arg_group='Identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
@@ -131,6 +132,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp update', arg_group='Container') as c:
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile', is_preview=True)
 
     with self.argument_context('containerapp scale') as c:
         c.argument('min_replicas', type=int, help="The minimum number of replicas.")
@@ -165,10 +167,16 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env create') as c:
         c.argument('zone_redundant', options_list=["--zone-redundant", "-z"], help="Enable zone redundancy on the environment. Cannot be used without --infrastructure-subnet-resource-id. If used with --location, the subnet's location must match")
+        c.argument('enable_workload_profiles', options_list=["--enable-workload-profiles", "-w"], help="Allow this environment to have workload profiles --infrastructure-subnet-resource-id/-s is required for workload profiles to be enabled", is_preview=True)
 
     with self.argument_context('containerapp env update') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')
         c.argument('tags', arg_type=tags_type)
+        # c.argument('plan', help="The sku of the containerapp environment. Downgrading from premium to consumption is not supported. Environment must have a subnet to be upgraded to premium sku.", arg_type=get_enum_type(['consumption', 'premium', None], default=None))
+        c.argument('workload_profile_type', help='The type of workload profile to add or update in this environment, --workload-profile-name required')
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
+        c.argument('min_nodes', help='The minimum nodes for this workload profile, --workload-profile-name required')
+        c.argument('max_nodes', help='The maximum nodes for this workload profile, --workload-profile-name required')
 
     with self.argument_context('containerapp env delete') as c:
         c.argument('name', name_type, help='Name of the Container Apps Environment.')
@@ -238,6 +246,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp revision copy') as c:
         c.argument('from_revision', help='Revision to copy from. Default: latest revision.')
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile', is_preview=True)
 
     with self.argument_context('containerapp revision label') as c:
         c.argument('name', id_part=None)
@@ -250,7 +259,7 @@ def load_arguments(self, _):
         c.argument('target_label', options_list=['--target'], help='Target label to be swapped to.')
 
     with self.argument_context('containerapp ingress') as c:
-        c.argument('allow_insecure', help='Allow insecure connections for ingress traffic.')
+        c.argument('allow_insecure', arg_type=get_three_state_flag(), help='Allow insecure connections for ingress traffic.')
         c.argument('type', validator=validate_ingress, arg_type=get_enum_type(['internal', 'external']), help="The ingress type.")
         c.argument('transport', arg_type=get_enum_type(['auto', 'http', 'http2', 'tcp']), help="The transport protocol used for ingress traffic.")
         c.argument('target_port', type=int, validator=validate_target_port, help="The application port used for ingress traffic.")
@@ -310,6 +319,7 @@ def load_arguments(self, _):
         c.argument('source', help='Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using Oryx. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.')
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('browse', help='Open the app in a web browser after creation and deployment, if possible.')
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
 
     with self.argument_context('containerapp up', arg_group='Log Analytics (Environment)') as c:
         c.argument('logs_customer_id', options_list=['--logs-workspace-id'], help='Workspace ID of the Log Analytics workspace to send diagnostics logs to. You can use \"az monitor log-analytics workspace create\" to create one. Extra billing may apply.')
@@ -391,3 +401,12 @@ def load_arguments(self, _):
         c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
         c.argument('compose_file_path', options_list=['--compose-file-path', '-f'], help='Path to a Docker Compose file with the configuration to import to Azure Container Apps.')
         c.argument('transport_mapping', options_list=['--transport-mapping', c.deprecate(target='--transport', redirect='--transport-mapping')], action='append', nargs='+', help="Transport options per Container App instance (servicename=transportsetting).")
+
+    with self.argument_context('containerapp env workload-profile') as c:
+        c.argument('env_name', options_list=['--name', '-n'], help="The name of the Container App environment")
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
+
+    with self.argument_context('containerapp env workload-profile set') as c:
+        c.argument('workload_profile_type', help="The type of workload profile to add or update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
+        c.argument('min_nodes', help="The minimum node count for the workload profile")
+        c.argument('max_nodes', help="The maximum node count for the workload profile")

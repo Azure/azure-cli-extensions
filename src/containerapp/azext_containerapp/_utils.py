@@ -25,7 +25,7 @@ from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
-from ._clients import ContainerAppClient, ManagedEnvironmentClient
+from ._clients import ContainerAppClient, ManagedEnvironmentClient, WorkloadProfileClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
                          LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
@@ -1448,7 +1448,7 @@ def get_custom_domains(cmd, resource_group_name, name, location=None, environmen
             _ensure_location_allowed(cmd, location, "Microsoft.App", "containerApps")
             if _normalize_location(cmd, app["location"]) != _normalize_location(cmd, location):
                 raise ResourceNotFoundError('Container app {} is not in location {}.'.format(name, location))
-        if environment and (_get_name(environment) != _get_name(app["properties"]["managedEnvironmentId"])):
+        if environment and (_get_name(environment) != _get_name(app["properties"]["environmentId"])):
             raise ResourceNotFoundError('Container app {} is not under environment {}.'.format(name, environment))
         custom_domains = safe_get(app, "properties", "configuration", "ingress", "customDomains", default=[])
     except CLIError as e:
@@ -1580,6 +1580,40 @@ def list_environment_locations(cmd):
     return res_locations
 
 
+# normalizes workload profile type
+def get_workload_profile_type(cmd, name, location):
+    return name.upper()
+
+
+def get_default_workload_profile(cmd, location):
+    return "Consumption"
+
+
+def get_default_workload_profile_name_from_env(cmd, env_def, resource_group):
+    location = env_def["location"]
+    api_default = get_default_workload_profile(cmd, location)
+    env_profiles = WorkloadProfileClient.list(cmd, resource_group, env_def["name"])
+    if api_default in [p["name"] for p in env_profiles]:
+        return api_default
+    return env_profiles[0]["name"]
+
+
+def get_default_workload_profiles(cmd, location):
+    profiles = [
+        {
+            "workloadProfileType": "Consumption",
+            "Name": "Consumption"
+        }
+    ]
+    return profiles
+
+
+def ensure_workload_profile_supported(cmd, env_name, env_rg, workload_profile_name, managed_env_info):
+    profile_names = [p["name"] for p in safe_get(managed_env_info, "properties", "workloadProfiles", default=[])]
+    if workload_profile_name not in profile_names:
+        raise ValidationError(f"Not a valid workload profile name: '{workload_profile_name}'. Run 'az containerapp env workload-profile list -n myEnv -g myResourceGroup' to see options.")
+
+
 def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, action):
     updated = False
     for e in ip_restrictions:
@@ -1606,7 +1640,7 @@ def _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, l
             logger.warning("Storage accounts only accepted for Azure Monitor logs destination. Ignoring storage account value.")
         return
     if not storage_account:
-        logger.warning("Azure monitor must be set up manually. Run `az monitor diagnostic-settings create --name mydiagnosticsettings --resource myManagedEnvironmentId --storage-account myStorageAccountId --logs myJsonLogSettings` to set up Azure Monitor diagnostic settings on your storage account.")
+        logger.warning("Azure monitor must be set up manually. Run `az monitor diagnostic-settings create --name mydiagnosticsettings --resource myEnvironmentId --storage-account myStorageAccountId --logs myJsonLogSettings` to set up Azure Monitor diagnostic settings on your storage account.")
         return
 
     from azure.cli.command_modules.monitor.operations.diagnostics_settings import create_diagnostics_settings

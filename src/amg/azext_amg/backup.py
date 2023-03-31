@@ -87,10 +87,12 @@ def _save_dashboards(grafana_url, backup_dir, timestamp, http_headers, **kwargs)
         folders_to_exclude = kwargs.get('folders_to_exclude')
         if folders_to_include:
             folders_to_include = [f.lower() for f in folders_to_include]
-            dashboards = [d for d in dashboards if d.get('folderTitle', '').lower() in folders_to_include]
+            dashboards = [d for d in dashboards if (d.get('folderTitle', '').lower() in folders_to_include or
+                                                    not d.get('folderTitle', '') and 'general' in folders_to_include)]
         if folders_to_exclude:
             folders_to_exclude = [f.lower() for f in folders_to_exclude]
-            dashboards = [d for d in dashboards if d.get('folderTitle', '').lower() not in folders_to_exclude]
+            dashboards = [d for d in dashboards if (d.get('folderTitle', '').lower() not in folders_to_exclude or
+                                                    d.get('folderTitle', '') and 'general' in folders_to_exclude)]
 
         _print_an_empty_line()
         if len(dashboards) == 0:

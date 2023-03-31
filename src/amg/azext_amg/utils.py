@@ -11,6 +11,35 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 
+def create_datasource_mapping(source_data_sources, destination_data_sources):
+    uid_mapping = {}
+    for s in source_data_sources:
+        s_type = s.get("type")
+        s_name = s.get("name")
+        matched_ds = next((x for x in destination_data_sources
+                           if s_type == x.get("type") and s_name == x.get("name")), None)
+        if not matched_ds:
+            continue
+        uid_mapping[s.get("uid")] = matched_ds.get("uid")
+    return uid_mapping
+
+
+def remap_datasource_uids(dashboard, uid_mapping, data_source_missed):
+    if isinstance(dashboard, dict):
+        for key, value in dashboard.items():
+            if isinstance(value, dict):
+                if key == "datasource" and isinstance(value, dict) and ("uid" in value):
+                    if value["uid"] in uid_mapping:
+                        value["uid"] = uid_mapping[value["uid"]]
+                    elif value["uid"] not in ["-- Grafana --", "grafana"]:
+                        data_source_missed.add(value["uid"])
+                else:
+                    remap_datasource_uids(value, uid_mapping, data_source_missed)
+            elif isinstance(value, (list, tuple)):
+                for v in value:
+                    remap_datasource_uids(v, uid_mapping, data_source_missed)
+
+
 def log_response(resp):
     status_code = resp.status_code
     logger.debug("[DEBUG] resp status: %s", status_code)

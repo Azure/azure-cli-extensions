@@ -14,3 +14,7 @@ def load_command_table(self, _):
     with self.command_group('databricks workspace'):
         from azext_databricks.custom import DatabricksWorkspaceCreate
         self.command_table['databricks workspace create'] = DatabricksWorkspaceCreate(loader=self)
+
+    with self.command_group('databricks workspace vnet-peering'):
+        from azext_databricks.custom import WorkspaceVnetPeeringCreate
+        self.command_table['databricks workspace vnet-peering create'] = WorkspaceVnetPeeringCreate(loader=self)

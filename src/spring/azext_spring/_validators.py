@@ -21,7 +21,7 @@ from knack.log import get_logger
 from ._clierror import NotSupportedPricingTierError
 from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name, _java_runtime_in_number)
 from ._util_enterprise import is_enterprise_tier
-from .vendored_sdks.appplatform.v2022_11_01_preview import models
+from .vendored_sdks.appplatform.v2023_03_01_preview import models
 from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PLAN_ID, MARKETPLACE_PUBLISHER_ID)
 
 logger = get_logger(__name__)
@@ -734,3 +734,13 @@ def validate_config_server_ssh_or_warn(namespace):
     if private_key or host_key or host_key_algorithm or strict_host_key_checking:
         logger.warning("SSH authentication only supports SHA-1 signature under Config Server restriction. "
                        "Please refer to https://aka.ms/asa-configserver-ssh to understand how to use SSH under this restriction.")
+
+
+def validate_managed_environment(namespace):
+    managed_environment_id = namespace.managed_environment
+    if managed_environment_id:
+        if not is_valid_resource_id(managed_environment_id):
+            raise InvalidArgumentValueError('--managed-environment {0} is not a valid Container App Environment resource ID'.format(managed_environment_id))
+        managed_environment = parse_resource_id(managed_environment_id)
+        if managed_environment['namespace'].lower() != 'microsoft.app' or managed_environment['type'].lower() != 'managedenvironments':
+            raise InvalidArgumentValueError('--managed-environment {0} is not a valid Container App Environment resource ID'.format(managed_environment_id))

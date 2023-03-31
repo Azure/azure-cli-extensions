@@ -2,6 +2,13 @@
 
 Release History
 ===============
+0.10.0
+
++++++
+* Upgrade API version from 2022-04-01-preview to 2022-10-01-preview and 2023-02-01
+* az databricks workspace update: add --sku to change the sku tier name
+* az databricks access-connector create/update: add --identities to set the user assigned identities associated with the resource.
+
 0.9.0
 +++++
 * Upgrade API version from 2021-04-01-preview to 2022-04-01-preview
