@@ -7,6 +7,154 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
+helps['cosmosdb mongocluster firewall rule'] = """
+type: group
+short-summary: CosmosDB for MongoDB cluster firewall rule.
+"""
+
+helps['cosmosdb mongocluster firewall rule create'] = """
+type: command
+short-summary: Create a CosmosDB for MongoDB cluster firewall rule.
+examples:
+  - name: Create a CosmosDB for MongoDB cluster firewall rule.
+    text: |
+      az cosmosdb mongocluster firewall rule create \\
+        --cluster-name MyCluster \\
+        --resource-group MyResourceGroup \\
+        --rule-name MyRule \\
+        --start_ip_address MyStartIpAddress \\
+        --end_ip_address MyEndIpAddress \\
+"""
+
+helps['cosmosdb mongocluster firewall rule update'] = """
+type: command
+short-summary: Create a CosmosDB for MongoDB cluster firewall rule.
+examples:
+  - name: Create a CosmosDB for MongoDB cluster firewall rule.
+    text: |
+      az cosmosdb mongocluster firewall rule create \\
+        --cluster-name MyCluster \\
+        --resource-group MyResourceGroup \\
+        --rule-name MyRule \\
+        --start_ip_address MyStartIpAddress \\
+        --end_ip_address MyEndIpAddress \\
+"""
+
+helps['cosmosdb mongocluster firewall rule list'] = """
+type: command
+short-summary: Lists firewall rule on a mongo cluster.
+examples:
+  - name: Lists a Mongo Cluster firewall rule in a resource group.
+    text: |
+      az cosmosdb mongocluster list --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb mongocluster firewall rule show'] = """
+type: command
+short-summary: Get a Mongo Cluster firewall rule.
+examples:
+  - name: Gets a Mongo Cluster firewall rule. If the firewall rule doesnot exist a NotFound response is returned.
+    text: |
+      az cosmosdb mongocluster show --cluster-name MyCluster --resource-group MyResourceGroup --rule-name MyRuleName
+"""
+
+helps['cosmosdb mongocluster firewall rule delete'] = """
+type: command
+short-summary: Delete a Mongo Cluster firewall rule.
+examples:
+  - name: Delete a Mongo Cluster firewall rule. If the firewall rule does not exist a NotFound response is returned.
+    text: |
+      az cosmosdb mongocluster show --cluster-name MyCluster --resource-group MyResourceGroup --rule-name MyRuleName
+"""
+
+helps['cosmosdb mongocluster'] = """
+type: group
+short-summary: CosmosDB for MongoDB cluster.
+"""
+
+helps['cosmosdb mongocluster create'] = """
+type: command
+short-summary: Create a CosmosDB for MongoDB cluster.
+examples:
+  - name: Create a CosmosDB for MongoDB cluster.
+    text: |
+      az cosmosdb mongocluster create \\
+        --cluster-name MyCluster \\
+        --resource-group MyResourceGroup \\
+        --location MyLocation \\
+        --administrator-login MyAdminUser \\
+        --administrator-login-password MyAdminPassword \\
+        --server-version 5.0 \\
+        --shard-node-tier "M30" \\
+        --shard-node-ha true \\
+        --shard-node-disk-size-gb 128 \\
+        --shard-node-count 2
+  - name: Create a CosmosDB for MongoDB cluster with PITR option.
+    text: |
+      az cosmosdb mongocluster create \\
+        --cluster-name MyCluster \\
+        --resource-group MyResourceGroup \\
+        --location MyLocation \\
+        --administrator-login MyAdminUser \\
+        --administrator-login-password MyAdminPassword \\
+        --server-version 5.0 \\
+        --shard-node-tier "M30" \\
+        --shard-node-ha true \\
+        --shard-node-disk-size-gb 128 \\
+        --shard-node-count 2
+        --restore-point-in-time-utc "2023-01-13T20:07:35Z"
+        --restore-source-resource-id /subscriptions/ffffffff-ffff-ffff-ffff-ffffffffffff/resourceGroups/TestResourceGroup/providers/Microsoft.DocumentDB/mongoClusters/MyOtherMongoCluster
+"""
+
+helps['cosmosdb mongocluster update'] = """
+type: command
+short-summary: Update a CosmosDB for MongoDB cluster.
+examples:
+  - name: Create a CosmosDB for MongoDB cluster with PITR option.
+    text: |
+      az cosmosdb mongocluster create \\
+        --cluster-name MyCluster \\
+        --resource-group MyResourceGroup \\
+        --location MyLocation \\
+        --administrator-login MyAdminUser \\
+        --administrator-login-password MyAdminPassword \\
+        --server-version 5.0 \\
+        --shard-node-tier "M30" \\
+        --shard-node-ha true \\
+        --shard-node-disk-size-gb 128 \\
+        --shard-node-count 2
+"""
+
+helps['cosmosdb mongocluster list'] = """
+type: command
+short-summary: List a Mongo Cluster Resource.
+examples:
+  - name: Lists Mongo Cluster Resource list in a resource group.
+    text: |
+      az cosmosdb mongocluster list --resource-group MyResourceGroup
+  - name: Lists a Mongo Cluster Resource list in the subscription.
+    text: |
+      az cosmosdb mongocluster list
+"""
+
+helps['cosmosdb mongocluster show'] = """
+type: command
+short-summary: Get a Mongo Cluster Resource.
+examples:
+  - name: Gets a Mongo Cluster Resource. ProvisioningState tells the state of this cluster. If the cluster does not exist a NotFound response is returned.
+    text: |
+      az cosmosdb mongocluster show --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb mongocluster delete'] = """
+type: command
+short-summary: Delete a Mongo Cluster Resource.
+examples:
+  - name: Deletes a Mongo Cluster Resource. If the cluster doesnot exist a NotFound response is returned.
+    text: |
+      az cosmosdb mongocluster show --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
 helps['managed-cassandra'] = """
 type: group
 short-summary: Azure Managed Cassandra.
