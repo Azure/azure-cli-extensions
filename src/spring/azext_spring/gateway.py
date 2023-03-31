@@ -248,7 +248,7 @@ def _update_client_auth(client, resource_group, service, existing, enable_certif
     if certificate_names is not None:
         client_auth.certificates = []
         if certificate_names == "":
-            # Clear certificates 
+            # Clear certificates
             return client_auth
         certs_in_asa = client.certificates.list(resource_group, service)
         certs_array = certificate_names.split(",")
