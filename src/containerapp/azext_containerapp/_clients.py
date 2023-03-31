@@ -150,7 +150,7 @@ class ContainerAppClient():
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, container_app_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = PREVIEW_API_VERSION
+        api_version = CURRENT_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}?api-version={}"
         request_url = url_fmt.format(
@@ -308,7 +308,7 @@ class ContainerAppClient():
     def list_secrets(cls, cmd, resource_group_name, name):
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        api_version = PREVIEW_API_VERSION
+        api_version = CURRENT_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/containerApps/{}/listSecrets?api-version={}"
         request_url = url_fmt.format(
