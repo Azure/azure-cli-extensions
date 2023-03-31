@@ -825,14 +825,14 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         assert public_network_access == 'Disabled'
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_provision_continuous30days', location='eastus2')
-    def test_cosmosdb_sql_xrr(self, resource_group):
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_cross_region_restore', location='eastus2')
+    def test_cosmosdb_xrr(self, resource_group):
         col = self.create_random_name(prefix='cli', length=15)
         db_name = self.create_random_name(prefix='cli', length=15)
         source_acc = self.create_random_name(prefix='cli-continuous30-', length=25)
         target_acc = source_acc + "-restored"
-        target_loc = 'westus2'
         loc = 'eastus2'
+        target_loc = 'centralus'
 
         self.kwargs.update({
             'acc': source_acc,
@@ -843,11 +843,11 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'target_loc': target_loc
         })
 
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} failoverPriority=0 isZoneRedundant=False --locations regionName={target_loc} failoverPriority=1 isZoneRedundant=True --kind GlobalDocumentDB')
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --backup-policy-type Continuous --continuous-tier Continuous7Days --locations regionName={loc} failoverPriority=0 isZoneRedundant=False --locations regionName={target_loc} failoverPriority=1 isZoneRedundant=False --kind GlobalDocumentDB')
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         print(account)
 
-        assert restored_account['location'] == loc
+        assert account['location'] == 'East US 2'
 
         self.kwargs.update({
             'ins_id': account['instanceId']
@@ -860,24 +860,24 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         self.cmd('az cosmosdb sql container create -g {rg} -a {acc} -d {db_name} -n {col} -p /pk ').get_output_in_json()
 
         restorable_database_account = self.cmd('az cosmosdb restorable-database-account show --location {loc} --instance-id {ins_id}').get_output_in_json()
-        print(account)
+        print(restorable_database_account)
 
         account_creation_time = restorable_database_account['creationTime']
         creation_timestamp_datetime = parser.parse(account_creation_time)
-        restore_ts = creation_timestamp_datetime + timedelta(minutes=4)
+        restore_ts = creation_timestamp_datetime + timedelta(minutes=61)
         import time
-        time.sleep(240)
+        time.sleep(3662)
         restore_ts_string = restore_ts.isoformat()
         self.kwargs.update({
-            'rts': restore_ts_string
+            'rts': restore_ts_string,
+            'target_loc': target_loc
         })
 
-        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --source-backup-location {loc} --location {target_loc}')
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --source-backup-location "East US 2" --location {target_loc}')
         restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
             self.check('restoreParameters.restoreMode', 'PointInTime')
         ]).get_output_in_json()
 
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
-        assert restored_account['location'] == target_loc
-        assert restored_account['locations'][0]['locationName'] == target_loc
+        assert restored_account['writeLocations'][0]['locationName'] == 'Central US'

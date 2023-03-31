@@ -77,6 +77,7 @@ def _handle_exists_exception(cloud_error):
         return False
     raise cloud_error
 
+
 def cli_cosmosdb_mongocluster_firewall_rule_create(client,
                                                    resource_group_name,
                                                    cluster_name,
@@ -85,31 +86,33 @@ def cli_cosmosdb_mongocluster_firewall_rule_create(client,
                                                    end_ip_address):
 
     '''Creates an Azure Cosmos DB Mongo Cluster Firewall rule'''
-        
-    firewall_rule =  FirewallRule(start_ip_address=start_ip_address, end_ip_address=end_ip_address)
-    
+
+    firewall_rule = FirewallRule(start_ip_address=start_ip_address, end_ip_address=end_ip_address)
+
     return client.begin_create_or_update_firewall_rule(resource_group_name, cluster_name, rule_name, firewall_rule)
 
+
 def cli_cosmosdb_mongocluster_firewall_rule_update(client,
-                                    resource_group_name,
-                                    cluster_name,
-                                    rule_name,
-                                    start_ip_address,
-                                    end_ip_address):
+                                                   resource_group_name,
+                                                   cluster_name,
+                                                   rule_name,
+                                                   start_ip_address,
+                                                   end_ip_address):
 
     '''Creates an Azure Cosmos DB Mongo Cluster Firewall rule'''
-    
+
     mongo_cluster_firewallRule = client.get_firewall_rule(resource_group_name, cluster_name, rule_name)
 
     if start_ip_address is None:
         start_ip_address = mongo_cluster_firewallRule.startIpAddress
-    
+
     if end_ip_address is None:
         firewall_rule_end_ip_address = mongo_cluster_firewallRule.endIpAddress
-    
-    firewall_rule =  FirewallRule(start_ip_address=start_ip_address, end_ip_address=end_ip_address)
-    
+
+    firewall_rule = FirewallRule(start_ip_address=start_ip_address, end_ip_address=end_ip_address)
+
     return client.begin_create_or_update_firewall_rule(resource_group_name, cluster_name, rule_name, firewall_rule)
+
 
 def cli_cosmosdb_mongocluster_firewall_rule_list(client, resource_group_name, cluster_name):
 
@@ -117,11 +120,13 @@ def cli_cosmosdb_mongocluster_firewall_rule_list(client, resource_group_name, cl
 
     return client.list_firewall_rules(resource_group_name, cluster_name)
 
+
 def cli_cosmosdb_mongocluster_firewall_rule_get(client, resource_group_name, cluster_name, rule_name):
 
     """Gets Azure CosmosDB Mongo Cluster Firewall rule"""
 
     return client.get_firewall_rule(resource_group_name, cluster_name, rule_name)
+
 
 def cli_cosmosdb_mongocluster_firewall_rule_delete(client, resource_group_name, cluster_name, rule_name):
 
@@ -129,8 +134,9 @@ def cli_cosmosdb_mongocluster_firewall_rule_delete(client, resource_group_name, 
 
     return client.begin_delete_firewall_rule(resource_group_name, cluster_name, rule_name)
 
+
 def cli_cosmosdb_mongocluster_create(client,
-                                    resource_group_name,
+                                     resource_group_name,
                                     cluster_name,
                                     administrator_login,
                                     administrator_login_password,
@@ -971,7 +977,8 @@ def cli_cosmosdb_restore(cmd,
                          databases_to_restore=None,
                          gremlin_databases_to_restore=None,
                          tables_to_restore=None,
-                         enable_public_network=None):
+                         enable_public_network=None,
+                         source_backup_location=None):
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
     restorable_database_accounts_list = list(restorable_database_accounts)
@@ -1072,7 +1079,8 @@ def cli_cosmosdb_restore(cmd,
                                     gremlin_databases_to_restore=gremlin_databases_to_restore,
                                     tables_to_restore=tables_to_restore,
                                     arm_location=target_restorable_account.location,
-                                    enable_public_network=enable_public_network)
+                                    enable_public_network=enable_public_network,
+                                    source_backup_location=source_backup_location)
 
 
 # pylint: disable=too-many-statements
@@ -1115,7 +1123,8 @@ def _create_database_account(client,
                              restore_source=None,
                              restore_timestamp=None,
                              arm_location=None,
-                             enable_materialized_views=None):
+                             enable_materialized_views=None,
+                             source_backup_location=None):
 
     consistency_policy = None
     if default_consistency_level is not None:
@@ -1221,6 +1230,9 @@ def _create_database_account(client,
 
         if tables_to_restore is not None:
             restore_parameters.tables_to_restore = tables_to_restore
+
+        if source_backup_location is not None:
+            restore_parameters.source_backup_location = source_backup_location
 
     params = DatabaseAccountCreateUpdateParameters(
         location=arm_location,
