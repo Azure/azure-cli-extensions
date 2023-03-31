@@ -42,7 +42,7 @@ class PollingAnimation():
         sys.stderr.write("\r\033[K")
 
 
-def poll(cmd, request_url, poll_if_status: list):  # pylint: disable=inconsistent-return-statements
+def poll(cmd, request_url, poll_if_status):  # pylint: disable=inconsistent-return-statements
     try:
         start = time.time()
         end = time.time() + POLLING_TIMEOUT
@@ -69,7 +69,7 @@ def poll(cmd, request_url, poll_if_status: list):  # pylint: disable=inconsisten
 
         delete_statuses = ["scheduledfordelete", "cancelled"]
 
-        if poll_if_status[0] not in delete_statuses:  # Catch "not found" errors if polling for delete
+        if poll_if_status not in delete_statuses:  # Catch "not found" errors if polling for delete
             raise e
 
 
