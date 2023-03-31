@@ -65,14 +65,14 @@ def get_dashboard(board_uri, grafana_url, http_get_headers):
 
 def search_library_panels(page, grafana_url, http_get_headers):
     url = f'{grafana_url}/api/library-elements?page={page}'
-    logger.info("search dashboard in grafana: %s", url)
+    logger.info("search library panel in grafana: %s", url)
     (status_code, content) = send_grafana_get(url, http_get_headers)
     return (status_code, content.get('result', {}).get('elements', []))
 
 
 def get_library_panel(panel_uri, grafana_url, http_get_headers):
     url = f'{grafana_url}/api/library-elements/{panel_uri}'
-    logger.info("search library panel in grafana: %s", url)
+    logger.info("query library panel in grafana: %s", url)
     return send_grafana_get(url, http_get_headers)
 
 

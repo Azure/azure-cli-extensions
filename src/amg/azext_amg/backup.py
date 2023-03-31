@@ -37,7 +37,7 @@ def backup(grafana_name, grafana_url, backup_dir, components, http_headers, **kw
     timestamp = datetime.datetime.today().strftime('%Y%m%d%H%M')
     if components:
         # Backup only the components that provided via an argument
-        if 'dashboards' in components:
+        if 'dashboards' in components:  # dashboards won't load if linked library panels don't exist
             components.insert(0, 'library_panels')
         for backup_function in components:
             backup_functions[backup_function](grafana_url, backup_dir, timestamp, http_headers, **kwargs)

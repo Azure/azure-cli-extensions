@@ -66,7 +66,7 @@ def _restore_components(grafana_url, restore_functions, tmpdir, components, http
         global uid_mapping  # pylint: disable=global-statement
         uid_mapping = create_datasource_mapping(source_datasources, destination_datasources)
 
-    if "dashboard" in exts:  # dashboard restoration can't work if linked library panel isn't existing
+    if "dashboard" in exts:  # dashboard restoration can't work if linked library panels don't exist
         exts.insert(0, "library_panel")
 
     if "folder" in exts:  # make "folder" be the first to restore, so dashboards can be positioned under a right folder
