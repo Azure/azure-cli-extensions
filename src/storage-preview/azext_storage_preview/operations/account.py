@@ -696,25 +696,3 @@ def _generate_local_user(local_user, permission_scope=None, ssh_authorized_key=N
         local_user.has_ssh_key = has_ssh_key
     if has_ssh_password is not None:
         local_user.has_ssh_password = has_ssh_password
-
-
-def create_local_user(cmd, client, resource_group_name, account_name, username, permission_scope=None, home_directory=None,
-                      has_shared_key=None, has_ssh_key=None, has_ssh_password=None, ssh_authorized_key=None, **kwargs):
-    LocalUser = cmd.get_models('LocalUser')
-    local_user = LocalUser()
-
-    _generate_local_user(local_user, permission_scope, ssh_authorized_key,
-                         home_directory, has_shared_key, has_ssh_key, has_ssh_password)
-    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
-                                   username=username, properties=local_user)
-
-
-def update_local_user(cmd, client, resource_group_name, account_name, username, permission_scope=None,
-                      home_directory=None, has_shared_key=None, has_ssh_key=None, has_ssh_password=None,
-                      ssh_authorized_key=None, **kwargs):
-    local_user = client.get(resource_group_name, account_name, username)
-
-    _generate_local_user(local_user, permission_scope, ssh_authorized_key,
-                         home_directory, has_shared_key, has_ssh_key, has_ssh_password)
-    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
-                                   username=username, properties=local_user)
