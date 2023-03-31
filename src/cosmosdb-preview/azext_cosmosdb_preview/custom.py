@@ -1833,26 +1833,26 @@ def cli_cosmosdb_gremlin_database_restore(cmd,
                     break
 
     if restorable_database_account is None:
-        raise CLIError("Cannot find a database account with name {} that is online at {}".format(account_name, restore_timestamp))
+        raise CLIError("Cannot find a Gremlin database account with name {} that is online at {}".format(account_name, restore_timestamp))
 
-    # """Restores the deleted Azure Cosmos DB SQL database"""
+    # """Restores the deleted Azure Cosmos DB Gremlin database"""
     create_mode = CreateMode.restore.value
     restore_parameters = RestoreParameters(
         restore_source=restorable_database_account.id,
         restore_timestamp_in_utc=restore_timestamp
     )
 
-    sql_database_resource = SqlDatabaseCreateUpdateParameters(
+    gremlin_database_resource = GremlinDatabaseCreateUpdateParameters(
         resource=SqlDatabaseResource(
             id=database_name,
             create_mode=create_mode,
             restore_parameters=restore_parameters)
     )
 
-    return client.begin_create_update_sql_database(resource_group_name,
-                                                   account_name,
-                                                   database_name,
-                                                   sql_database_resource)
+    return client.begin_create_update_gremlin_database(resource_group_name,
+                                                       account_name,
+                                                       database_name,
+                                                       gremlin_database_resource)
 
 
 def cli_cosmosdb_gremlin_graph_restore(cmd,
@@ -1860,9 +1860,9 @@ def cli_cosmosdb_gremlin_graph_restore(cmd,
                                        resource_group_name,
                                        account_name,
                                        database_name,
-                                       container_name,
+                                       graph_name,
                                        restore_timestamp=None):
-    # """Restores the deleted Azure Cosmos DB SQL container """
+    # """Restores the deleted Azure Cosmos DB Gremlin graph """
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
     restorable_database_accounts_list = list(restorable_database_accounts)
@@ -1873,7 +1873,7 @@ def cli_cosmosdb_gremlin_graph_restore(cmd,
         if account.account_name == account_name:
             if account.deletion_time is not None:
                 if account.deletion_time >= restore_timestamp_datetime_utc >= account.creation_time:
-                    raise CLIError("Cannot perform inaccount restore on a deleted database account {}".format(account_name))
+                    raise CLIError("Cannot perform inaccount restore on a deleted gremlin database account {}".format(account_name))
             else:
                 if restore_timestamp_datetime_utc >= account.creation_time:
                     restorable_database_account = account
@@ -1882,36 +1882,36 @@ def cli_cosmosdb_gremlin_graph_restore(cmd,
     if restorable_database_account is None:
         raise CLIError("Cannot find a database account with name {} that is online at {}".format(account_name, restore_timestamp))
 
-    # """Restores the deleted Azure Cosmos DB SQL container"""
+    # """Restores the deleted Azure Cosmos DB Gremlin graph"""
     create_mode = CreateMode.restore.value
     restore_parameters = RestoreParameters(
         restore_source=restorable_database_account.id,
         restore_timestamp_in_utc=restore_timestamp
     )
 
-    sql_container_resource = SqlContainerResource(
-        id=container_name,
+    gremlin_graph_resource = GremlinGraphResource(
+        id=graph_name,
         create_mode=create_mode,
         restore_parameters=restore_parameters)
 
-    sql_container_create_update_resource = SqlContainerCreateUpdateParameters(
-        resource=sql_container_resource,
+    gremlin_graph_create_update_resource = GremlinGraphCreateUpdateParameters(
+        resource=gremlin_graph_resource,
         options={})
 
-    return client.begin_create_update_sql_container(resource_group_name,
+    return client.begin_create_update_gremlin_graph(resource_group_name,
                                                     account_name,
                                                     database_name,
-                                                    container_name,
-                                                    sql_container_create_update_resource)
+                                                    graph_name,
+                                                    gremlin_graph_create_update_resource)
 
 
 def cli_cosmosdb_table_restore(cmd,
                                client,
                                resource_group_name,
                                account_name,
-                               database_name,
+                               table_name,
                                restore_timestamp=None):
-    # """Restores the deleted Azure Cosmos DB MongoDB database"""
+    # """Restores the deleted Azure Cosmos DB Table"""
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
     restorable_database_accounts_list = list(restorable_database_accounts)
@@ -1922,29 +1922,29 @@ def cli_cosmosdb_table_restore(cmd,
         if account.account_name == account_name:
             if account.deletion_time is not None:
                 if account.deletion_time >= restore_timestamp_datetime_utc >= account.creation_time:
-                    raise CLIError("Cannot perform inaccount restore on a deleted database account {}".format(account_name))
+                    raise CLIError("Cannot perform inaccount restore on a deleted table {}".format(account_name))
             else:
                 if restore_timestamp_datetime_utc >= account.creation_time:
                     restorable_database_account = account
                     break
 
     if restorable_database_account is None:
-        raise CLIError("Cannot find a database account with name {} that is online at {}".format(account_name, restore_timestamp))
+        raise CLIError("Cannot find a account with name {} that is online at {}".format(account_name, restore_timestamp))
 
-    # """Restores the deleted Azure Cosmos DB MongoDB database"""
+    # """Restores the deleted Azure Cosmos DB Table"""
     create_mode = CreateMode.restore.value
     restore_parameters = RestoreParameters(
         restore_source=restorable_database_account.id,
         restore_timestamp_in_utc=restore_timestamp
     )
 
-    mongodb_database_resource = MongoDBDatabaseCreateUpdateParameters(
-        resource=MongoDBDatabaseResource(id=database_name,
-                                         create_mode=create_mode,
-                                         restore_parameters=restore_parameters),
+    table_resource = TableCreateUpdateParameters(
+        resource=TableResource(id=table_name,
+                               create_mode=create_mode,
+                               restore_parameters=restore_parameters),
         options={})
 
-    return client.begin_create_update_mongo_db_database(resource_group_name,
-                                                        account_name,
-                                                        database_name,
-                                                        mongodb_database_resource)
+    return client.begin_create_update_table(resource_group_name,
+                                            account_name,
+                                            table_name,
+                                            table_resource)
