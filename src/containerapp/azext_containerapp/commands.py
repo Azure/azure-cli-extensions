@@ -188,3 +188,10 @@ def load_command_table(self, _):
 
     with self.command_group('containerapp compose') as g:
         g.custom_command('create', 'create_containerapps_from_compose')
+
+    with self.command_group('containerapp env workload-profile', is_preview=True) as g:
+        g.custom_command('list-supported', 'list_supported_workload_profiles')
+        g.custom_command('list', 'list_workload_profiles')
+        g.custom_show_command('show', 'show_workload_profile')
+        g.custom_command('set', 'set_workload_profile')
+        g.custom_command('delete', 'delete_workload_profile')
