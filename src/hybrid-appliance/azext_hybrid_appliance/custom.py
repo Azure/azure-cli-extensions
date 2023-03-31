@@ -18,7 +18,13 @@ from azure.cli.core.azclierror import ValidationError, CLIInternalError
 logger = get_logger(__name__)
 
 
-def validate_hybrid_appliance(resource_group_name, name):
+def validate_hybrid_appliance(resource_group_name, name, cmd):
+    # changing cli config to push telemetry in 1 hr interval
+    try:
+        if cmd.cli_ctx and hasattr(cmd.cli_ctx, 'config'):
+            cmd.cli_ctx.config.set_value('telemetry', 'push_interval_in_hours', '1')
+    except Exception as e:
+        telemetry.set_exception(exception=e, fault_type=consts.Failed_To_Change_Telemetry_Push_Interval, summary="Failed to change the telemetry push interval to 1 hr")
 
     all_validations_passed = True
 
@@ -196,7 +202,7 @@ def delete_hybrid_appliance(resource_group_name, name):
     kubeconfig_path = utils.get_kubeconfig_path()
     try:
         output = subprocess.check_output(['microk8s', 'status'], stderr=STDOUT)
-    except:
+    except Exception as e:
         telemetry.set_exception()
         raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
 
@@ -207,7 +213,7 @@ def delete_hybrid_appliance(resource_group_name, name):
     try:
         azure_clusterconfig_cm = subprocess.check_output(['microk8s', 'kubectl', 'get', 'cm', 'azure-clusterconfig', '-n', 'azure-arc', '-o', 'json']).decode()
     except Exception as e:
-        telemetry.set_exception()
+        telemetry.set_exception(exception=e, fault_type=consts.ConfigMap_Not_Found, summary="Config Map 'azure-clusterconfig' not found on the k8s cluster")
         raise CLIInternalError("Unable to find the required config map on the kubernetes cluster. Please delete the appliance and create it again.")
     
     azure_clusterconfig_cm = json.loads(azure_clusterconfig_cm)
