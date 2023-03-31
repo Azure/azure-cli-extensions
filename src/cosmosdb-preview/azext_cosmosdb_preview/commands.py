@@ -233,6 +233,15 @@ def load_command_table(self, _):
     with self.command_group('cosmosdb mongodb collection', cosmosdb_mongo_sdk, client_factory=cf_mongo_db_resources) as g:
         g.custom_command('restore', 'cli_cosmosdb_mongodb_collection_restore', is_preview=True)
 
+    with self.command_group('cosmosdb gremlin database', cosmosdb_gremlin_sdk, client_factory=cf_gremlin_resources) as g:
+        g.custom_command('restore', 'cli_cosmosdb_gremlin_database_restore', is_preview=True)
+
+    with self.command_group('cosmosdb gremlin graph', cosmosdb_gremlin_sdk, client_factory=cf_gremlin_resources) as g:
+        g.custom_command('restore', 'cli_cosmosdb_gremlin_graph_restore', is_preview=True)
+
+    with self.command_group('cosmosdb table', cosmosdb_table_sdk, client_factory=cf_table_resources) as g:
+        g.custom_command('restore', 'cli_cosmosdb_table_restore', is_preview=True)
+
     # Mongo cluster operations
     cosmosdb_mongocluster_sdk = CliCommandType(
         operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations.#MongoClustersOperations.{}',

@@ -477,3 +477,22 @@ def load_arguments(self, _):
         c.argument('database_name', database_name_type, required=True)
         c.argument('collection_name', options_list=['--name', '-n'], help="Collection name", required=True)
         c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the collection needs to be restored to.", required=True)
+
+    # Gremlin database restore
+    with self.argument_context('cosmosdb gremlin database restore') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True)
+        c.argument('database_name', options_list=['--name', '-n'], help="Name of the CosmosDB Gremlin database name", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the database needs to be restored to.", required=True)
+
+    # Gremlin Graph restore
+    with self.argument_context('cosmosdb gremlin graph restore') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True)
+        c.argument('database_name', database_name_type, required=True, help='Name of the CosmosDB Gremlin database name')
+        c.argument('graph_name', options_list=['--name', '-n'], help="Name of the CosmosDB Gremlin graph name", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the graph needs to be restored to.", required=True)
+
+    # Table restore
+    with self.argument_context('cosmosdb table restore') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True)
+        c.argument('table_name', options_list=['--table-name', '-n'], required=True, help='Name of the CosmosDB Table name')
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the Table needs to be restored to.", required=True)
