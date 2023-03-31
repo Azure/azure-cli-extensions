@@ -118,7 +118,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp create') as c:
         c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
-        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="Name of the workload profile to run the app on.", )
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="Name of the workload profile to run the app on.", is_preview=True)
 
     with self.argument_context('containerapp create', arg_group='Identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
@@ -132,7 +132,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp update', arg_group='Container') as c:
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
-        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile', is_preview=True)
 
     with self.argument_context('containerapp scale') as c:
         c.argument('min_replicas', type=int, help="The minimum number of replicas.")
@@ -167,7 +167,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env create') as c:
         c.argument('zone_redundant', options_list=["--zone-redundant", "-z"], help="Enable zone redundancy on the environment. Cannot be used without --infrastructure-subnet-resource-id. If used with --location, the subnet's location must match")
-        c.argument('enable_workload_profiles', options_list=["--enable-workload-profiles", "-w"], help="Allow this environment to have workload profiles --infrastructure-subnet-resource-id/-s is required for workload profiles to be enabled")
+        c.argument('enable_workload_profiles', options_list=["--enable-workload-profiles", "-w"], help="Allow this environment to have workload profiles --infrastructure-subnet-resource-id/-s is required for workload profiles to be enabled", is_preview=True)
 
     with self.argument_context('containerapp env update') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')
@@ -246,7 +246,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp revision copy') as c:
         c.argument('from_revision', help='Revision to copy from. Default: latest revision.')
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
-        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile', is_preview=True)
 
     with self.argument_context('containerapp revision label') as c:
         c.argument('name', id_part=None)
@@ -404,9 +404,9 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env workload-profile') as c:
         c.argument('env_name', options_list=['--name', '-n'], help="The name of the Container App environment")
-        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile', is_preview=True)
 
     with self.argument_context('containerapp env workload-profile set') as c:
-        c.argument('workload_profile_type', help="The type of workload profile to add or update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
-        c.argument('min_nodes', help="The minimum node count for the workload profile")
-        c.argument('max_nodes', help="The maximum node count for the workload profile")
+        c.argument('workload_profile_type', help="The type of workload profile to add or update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.", is_preview=True)
+        c.argument('min_nodes', help="The minimum node count for the workload profile", is_preview=True)
+        c.argument('max_nodes', help="The maximum node count for the workload profile", is_preview=True)
