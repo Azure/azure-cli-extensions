@@ -11,7 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Add `--network-dataplane` flag to `az aks create`
+
+0.5.135
++++++++
+* Add `--network-dataplane` flag to `az aks create`.
+* Allow updating the pod CIDR and network plugin mode to migrate clusters to Azure CNI Overlay.
 
 0.5.134
 +++++++
@@ -23,7 +27,6 @@ Pending
 * `az aks create/update`: Replace `--uptime-sla` and `--no-uptime-sla` argument with `--tier` argument.
 * Raise a ClientRequestError when creating the same cluster again in command `az aks create`.
 * Vendor new SDK and bump API version to 2023-02-02-preview.
-* Allow updating the pod CIDR and network plugin mode to migrate clusters to Azure CNI Overlay
 
 0.5.132
 +++++++
