@@ -1227,6 +1227,14 @@ helps['spring application-accelerator customized-accelerator update'] = """
           text: az spring application-accelerator customized-accelerator update --name AcceleratorName --service MyCluster --resource-group MyResourceGroup --git-url https://github.com/xxx --git-branch main --display-name acc-name
 """
 
+helps['spring application-accelerator customized-accelerator sync-cert'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Sync certificate of a customized accelerator.
+    examples:
+        - name: Sync certificate of a customized accelerator.
+          text: az spring application-accelerator customized-accelerator sync-cert --name AcceleratorName --service MyCluster --resource-group MyResourceGroup
+"""
+
 helps['spring application-accelerator customized-accelerator delete'] = """
     type: command
     short-summary: (Enterprise Tier Only) Delete a customized accelerator.
