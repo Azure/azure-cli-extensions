@@ -179,12 +179,10 @@ def data_protection_backup_instance_validate_for_backup(cmd, vault_name, resourc
 
             @property
             def content(self):
-                print("In content of validate. ctx: ", self.ctx, ", args: ", self.ctx.args)
                 _content_value, _builder = self.new_content_builder(
                     self.ctx.args,
                     value=self.ctx.vars.instance.properties,
                 )
-                print("value of _contents-value: ",_content_value, self.serialize_content(_content_value))
 
                 return {
                     "backupInstance": self.serialize_content(_content_value)
