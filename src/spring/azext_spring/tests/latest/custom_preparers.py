@@ -80,7 +80,7 @@ class SpringPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
     def remove_resource(self, name, **kwargs):
         if not self.dev_setting_name:
             group = self._get_resource_group(**kwargs)
-            template = 'az spring delete -n {} -g {} --no-wait'.format(name, group)
+            template = 'az spring delete -n {} -g {}'.format(name, group)
             self.live_only_execute(self.cli_ctx, template)
 
     def _get_resource_group(self, **kwargs):
@@ -100,13 +100,19 @@ class SpringAppNamePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
     def __init__(self, name_prefix='clitest',
                  parameter_name='app',
                  dev_setting_name='AZURE_CLI_TEST_DEV_APP_NAME',
+                 resource_group_parameter_name='resource_group',
+                 spring_parameter_name='spring',
+                 skip_delete=False,
                  random_name_length=15, key='spring_app'):
         if ' ' in name_prefix:
             raise CliTestError('Error: Space character in Spring App name prefix \'%s\'' % name_prefix)
         super(SpringAppNamePreparer, self).__init__(name_prefix, random_name_length)
         self.cli_ctx = get_dummy_cli()
         self.parameter_name = parameter_name
+        self.resource_group_parameter_name = resource_group_parameter_name
+        self.spring_parameter_name = spring_parameter_name
         self.key = key
+        self.skip_delete = skip_delete
 
         self.dev_setting_name = os.environ.get(dev_setting_name, None)
 
@@ -118,3 +124,27 @@ class SpringAppNamePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             return {self.parameter_name: self.dev_setting_name}
         self.test_class_instance.kwargs[self.key] = name
         return {self.parameter_name: name}
+
+    def remove_resource(self, name, **kwargs):
+        if self.dev_setting_name or self.skip_delete:
+            return
+        group = self._get_resource_group(**kwargs)
+        spring = self._get_spring(**kwargs)
+        template = 'az spring app delete -n {} -s {} -g {}'.format(name, spring, group)
+        self.live_only_execute(self.cli_ctx, template)
+
+    def _get_resource_group(self, **kwargs):
+        try:
+            return kwargs.get(self.resource_group_parameter_name)
+        except KeyError:
+            template = 'To create a Spring a resource group is required. Please add ' \
+                       'decorator @{} in front of this Spring preparer.'
+            raise CliTestError(template.format(SpringResourceGroupPreparer.__name__))
+
+    def _get_spring(self, **kwargs):
+        try:
+            return kwargs.get(self.spring_parameter_name)
+        except KeyError:
+            template = 'To get a Spring app, a Spring resource is required. Please add ' \
+                       'decorator @{} in front of this Spring preparer.'
+            raise CliTestError(template.format(SpringPreparer.__name__))
