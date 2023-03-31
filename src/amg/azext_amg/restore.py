@@ -12,7 +12,8 @@ import tempfile
 from azure.cli.core.azclierror import ArgumentUsageError
 from knack.log import get_logger
 
-from .utils import get_folder_id, send_grafana_post, create_datasource_mapping, remap_datasource_uids
+from .utils import (get_folder_id, send_grafana_post, send_grafana_patch,
+                    send_grafana_get, create_datasource_mapping, remap_datasource_uids)
 
 logger = get_logger(__name__)
 
@@ -113,10 +114,24 @@ def _create_library_panel(grafana_url, file_path, http_headers):
     datasources_missed = set()
     remap_datasource_uids(payload, uid_mapping, datasources_missed)
 
-    result = send_grafana_post(f'{grafana_url}/api/library-elements', json.dumps(payload), http_headers)
     panel_name = payload.get('name', '')
-    logger.warning("Create dashboard \"%s\". %s", panel_name, "SUCCESS" if result[0] == 200 else "FAILURE")
-    logger.info("status: %s, msg: %s", result[0], result[1])
+
+    (status, content) = send_grafana_post(f'{grafana_url}/api/library-elements', json.dumps(payload), http_headers)
+    if status >= 400 and ('name or UID already exists' in content.get('message', '')):
+        uid = payload['uid']
+        panel_uri = f'{grafana_url}/api/library-elements/{uid}'
+        (status, content) = send_grafana_get(panel_uri, http_headers)
+        if status == 200:
+            patch_payload = {
+                'name': panel_name,
+                'model': payload['model'],
+                'version': content['result']['version'],
+                'kind': payload['kind']
+            }
+            (status, content) = send_grafana_patch(f'{grafana_url}/api/library-elements/{uid}',
+                                                   json.dumps(patch_payload), http_headers)
+    logger.warning("Create library panel \"%s\". %s", panel_name, "SUCCESS" if status == 200 else "FAILURE")
+    logger.info("status: %s, msg: %s", status, content)
 
 
 # Restore snapshots

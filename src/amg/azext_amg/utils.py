@@ -162,6 +162,15 @@ def send_grafana_post(url, json_payload, http_post_headers):
         return (r.status_code, r.text)
 
 
+def send_grafana_patch(url, json_payload, http_post_headers):
+    r = requests.patch(url, headers=http_post_headers, data=json_payload)
+    log_response(r)
+    try:
+        return (r.status_code, r.json())
+    except ValueError:
+        return (r.status_code, r.text)
+
+
 def send_grafana_put(url, json_payload, http_post_headers):
     r = requests.put(url, headers=http_post_headers, data=json_payload)
     log_response(r)
