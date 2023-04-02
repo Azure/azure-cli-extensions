@@ -121,14 +121,20 @@ class Create(AAZCommand):
             arg_group="Management IP Configuration",
             help="Name of the management IP configuration.",
         )
-        _args_schema.m_public_ip = AAZObjectArg(
+        _args_schema.m_public_ip = AAZStrArg(
             options=["--m-public-ip"],
             arg_group="Management IP Configuration",
             help="Name or ID of the public IP to use for management IP configuration.",
         )
-        cls._build_args_sub_resource_create(_args_schema.m_public_ip)
 
         # define Arg Group "ManagementIpConfiguration"
+
+        _args_schema = cls._args_schema
+        _args_schema.mgmt_ip_conf_subnet = AAZStrArg(
+            options=["--mgmt-ip-conf-subnet"],
+            arg_group="ManagementIpConfiguration",
+            help="test",
+        )
 
         # define Arg Group "Parameters"
 
@@ -259,7 +265,27 @@ class Create(AAZCommand):
 
         ip_configurations = cls._args_schema.ip_configurations
         ip_configurations.Element = AAZObjectArg()
-        cls._build_args_azure_firewall_ip_configuration_create(ip_configurations.Element)
+
+        _element = cls._args_schema.ip_configurations.Element
+        _element.name = AAZStrArg(
+            options=["name"],
+        )
+        _element.public_ip_address = AAZObjectArg(
+            options=["public-ip-address"],
+        )
+        _element.subnet = AAZObjectArg(
+            options=["subnet"],
+        )
+
+        public_ip_address = cls._args_schema.ip_configurations.Element.public_ip_address
+        public_ip_address.id = AAZStrArg(
+            options=["id"],
+        )
+
+        subnet = cls._args_schema.ip_configurations.Element.subnet
+        subnet.id = AAZStrArg(
+            options=["id"],
+        )
 
         nat_rule_collections = cls._args_schema.nat_rule_collections
         nat_rule_collections.Element = AAZObjectArg()
@@ -463,31 +489,6 @@ class Create(AAZCommand):
         )
         return cls._args_schema
 
-    _args_azure_firewall_ip_configuration_create = None
-
-    @classmethod
-    def _build_args_azure_firewall_ip_configuration_create(cls, _schema):
-        if cls._args_azure_firewall_ip_configuration_create is not None:
-            _schema.m_conf_name = cls._args_azure_firewall_ip_configuration_create.m_conf_name
-            _schema.m_public_ip = cls._args_azure_firewall_ip_configuration_create.m_public_ip
-            return
-
-        cls._args_azure_firewall_ip_configuration_create = AAZObjectArg()
-
-        azure_firewall_ip_configuration_create = cls._args_azure_firewall_ip_configuration_create
-        azure_firewall_ip_configuration_create.m_conf_name = AAZStrArg(
-            options=["m-conf-name"],
-            help="Name of the resource that is unique within a resource group. This name can be used to access the resource.",
-        )
-        azure_firewall_ip_configuration_create.m_public_ip = AAZObjectArg(
-            options=["m-public-ip"],
-            help="Reference to the PublicIP resource. This field is a mandatory input if subnet is not null.",
-        )
-        cls._build_args_sub_resource_create(azure_firewall_ip_configuration_create.m_public_ip)
-
-        _schema.m_conf_name = cls._args_azure_firewall_ip_configuration_create.m_conf_name
-        _schema.m_public_ip = cls._args_azure_firewall_ip_configuration_create.m_public_ip
-
     _args_azure_firewall_rc_action_create = None
 
     @classmethod
@@ -506,24 +507,6 @@ class Create(AAZCommand):
         )
 
         _schema.type = cls._args_azure_firewall_rc_action_create.type
-
-    _args_sub_resource_create = None
-
-    @classmethod
-    def _build_args_sub_resource_create(cls, _schema):
-        if cls._args_sub_resource_create is not None:
-            _schema.id = cls._args_sub_resource_create.id
-            return
-
-        cls._args_sub_resource_create = AAZObjectArg()
-
-        sub_resource_create = cls._args_sub_resource_create
-        sub_resource_create.id = AAZStrArg(
-            options=["id"],
-            help="Resource ID.",
-        )
-
-        _schema.id = cls._args_sub_resource_create.id
 
     def _execute_operations(self):
         self.pre_operations()
@@ -723,7 +706,25 @@ class Create(AAZCommand):
 
             ip_configurations = _builder.get(".properties.ipConfigurations")
             if ip_configurations is not None:
-                _CreateHelper._build_schema_azure_firewall_ip_configuration_create(ip_configurations.set_elements(AAZObjectType, "."))
+                ip_configurations.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.ipConfigurations[]")
+            if _elements is not None:
+                _elements.set_prop("name", AAZStrType, ".name")
+                _elements.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+
+            properties = _builder.get(".properties.ipConfigurations[].properties")
+            if properties is not None:
+                properties.set_prop("publicIPAddress", AAZObjectType, ".public_ip_address")
+                properties.set_prop("subnet", AAZObjectType, ".subnet")
+
+            public_ip_address = _builder.get(".properties.ipConfigurations[].properties.publicIPAddress")
+            if public_ip_address is not None:
+                public_ip_address.set_prop("id", AAZStrType, ".id")
+
+            subnet = _builder.get(".properties.ipConfigurations[].properties.subnet")
+            if subnet is not None:
+                subnet.set_prop("id", AAZStrType, ".id")
 
             management_ip_configuration = _builder.get(".properties.managementIpConfiguration")
             if management_ip_configuration is not None:
@@ -732,7 +733,16 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties.managementIpConfiguration.properties")
             if properties is not None:
-                _CreateHelper._build_schema_sub_resource_create(properties.set_prop("publicIPAddress", AAZObjectType, ".m_public_ip"))
+                properties.set_prop("publicIPAddress", AAZObjectType)
+                properties.set_prop("subnet", AAZObjectType)
+
+            public_ip_address = _builder.get(".properties.managementIpConfiguration.properties.publicIPAddress")
+            if public_ip_address is not None:
+                public_ip_address.set_prop("id", AAZStrType, ".m_public_ip")
+
+            subnet = _builder.get(".properties.managementIpConfiguration.properties.subnet")
+            if subnet is not None:
+                subnet.set_prop("id", AAZStrType, ".mgmt_ip_conf_subnet")
 
             nat_rule_collections = _builder.get(".properties.natRuleCollections")
             if nat_rule_collections is not None:
@@ -1205,27 +1215,10 @@ class _CreateHelper:
     """Helper class for Create"""
 
     @classmethod
-    def _build_schema_azure_firewall_ip_configuration_create(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("name", AAZStrType, ".m_conf_name")
-        _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-
-        properties = _builder.get(".properties")
-        if properties is not None:
-            cls._build_schema_sub_resource_create(properties.set_prop("publicIPAddress", AAZObjectType, ".m_public_ip"))
-
-    @classmethod
     def _build_schema_azure_firewall_rc_action_create(cls, _builder):
         if _builder is None:
             return
         _builder.set_prop("type", AAZStrType, ".type")
-
-    @classmethod
-    def _build_schema_sub_resource_create(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("id", AAZStrType, ".id")
 
     _schema_azure_firewall_ip_configuration_read = None
 

@@ -92,6 +92,16 @@ class AzureFirewallCreate(_AzureFirewallCreate):
         args_schema.enable_dns_proxy = AAZBoolArg(
             options=['--enable-dns-proxy'],
             help="Enable DNS Proxy.")
+        args_schema.conf_name = AAZStrArg(
+            options=["--conf-name"],
+            arg_group="Data Traffic IP Configuration",
+            help="Name of the IP configuration.",
+        )
+        args_schema.vnet_name = AAZStrArg(
+            options=["--vnet-name"],
+            arg_group="Data Traffic IP Configuration",
+            help="The virtual network (VNet) name. It should contain one subnet called \"AzureFirewallSubnet\".",
+        )
         args_schema.subnet_id = AAZResourceIdArg(
             options=["--subnet-id"],
             help="test",
@@ -101,6 +111,7 @@ class AzureFirewallCreate(_AzureFirewallCreate):
         )
         args_schema.public_ip = AAZResourceIdArg(
             options=["--public-ip"],
+            arg_group="Data Traffic IP Configuration",
             help="Name or ID of the public IP to use.",
             fmt=AAZResourceIdArgFormat(
                 template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/publicIPAddresses/{}"
@@ -110,17 +121,32 @@ class AzureFirewallCreate(_AzureFirewallCreate):
 
     def pre_operations(self):
         args = self.ctx.args
+        if has_value(args.sku):
+            sku = args.sku.to_serialized_data()
+            if sku.lower() == 'azfw_hub' and not all([args.virtual_hub, args.hub_public_ip_count]):
+                raise CLIError(
+                    'usage error: virtual hub and hub ip addresses are mandatory for azure firewall on virtual hub.')
+            if sku.lower() == 'azfw_hub' and has_value(args.allow_active_ftp):
+                raise CLIError('usage error: allow active ftp is not allowed for azure firewall on virtual hub.')
+        if has_value(args.firewall_policy) and any([args.enable_dns_proxy, args.dns_servers]):
+            raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
+
+        # validate basic sku firewall
+        if has_value(args.tier):
+            tier = args.tier.to_serialized_data()
+            if tier.lower() == 'basic' and args.sku and sku.lower() == 'azfw_vnet' \
+                    and not all([args.m_conf_name, args.m_public_ip]):
+                err_msg = "When creating Basic SKU firewall, both --m-conf-name and --m-public-ip-address should be provided."
+                raise ValidationError(err_msg)
+
+        args.additional_properties = {}
         if has_value(args.private_ranges):
             private_ranges = args.private_ranges.to_serialized_data()
             private_ranges = ', '.join(private_ranges)
-            if not has_value(args.additional_properties):
-                args.additional_properties = {}
             args.additional_properties['Network.SNAT.PrivateRanges'] = private_ranges
 
         if not has_value(args.sku) or args.sku.to_serialized_data().lower() == 'azfw_vnet':
             if has_value(args.firewall_policy):
-                if not has_value(args.additional_properties):
-                    args.additional_properties = {}
                 if has_value(args.enable_dns_proxy):
                     # service side requires lowercase
                     args.additional_properties['Network.DNS.EnableProxy'] = str(args.enable_dns_proxy.to_serialized_data()).lower()
@@ -128,19 +154,67 @@ class AzureFirewallCreate(_AzureFirewallCreate):
                     args.additional_properties['Network.DNS.Servers'] = ','.join(args.dns_servers or '')
 
         if args.allow_active_ftp:
-            if not has_value(args.additional_properties):
-                args.additional_properties = {}
             args.additional_properties['Network.FTP.AllowActiveFTP'] = 'true'
 
         if args.enable_fat_flow_logging:
-            if not has_value(args.additional_properties):
-                args.additional_properties = {}
             args.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging'] = 'true'
 
         if args.enable_udp_log_optimization:
-            if not has_value(args.additional_properties):
-                args.additional_properties = {}
             args.additional_properties['Network.AdditionalLogs.EnableUdpLogOptimization'] = 'true'
+
+        if len(args.additional_properties) == 0:
+            args.additional_properties = None
+
+        if has_value(args.conf_name):
+            # subnet_id = resource_id(
+            #     subscription=get_subscription_id(cmd.cli_ctx),
+            #     resource_group=resource_group_name,
+            #     namespace='Microsoft.Network',
+            #     type='virtualNetworks',
+            #     name=virtual_network_name,
+            #     child_type_1='subnets',
+            #     child_name_1='AzureFirewallSubnet'
+            # )
+            # if public_ip and not is_valid_resource_id(public_ip):
+            #     public_ip = resource_id(
+            #         subscription=get_subscription_id(cmd.cli_ctx),
+            #         resource_group=resource_group_name,
+            #         namespace='Microsoft.Network',
+            #         type='publicIPAddresses',
+            #         name=public_ip
+            #     )
+            # config = AzureFirewallIPConfiguration(
+            #     name=conf_name,
+            #     subnet=SubResource(id=subnet_id) if virtual_network_name else None,
+            #     public_ip_address=SubResource(id=public_ip) if public_ip else None
+            # )
+            args.ip_configurations = [{"name": args.conf_name, "subnet": args.subnet_id, "public_ip_address": args.public_ip}]
+
+        if has_value(args.tier) and tier.lower() == 'basic' and has_value(args.sku) and sku.lower() == 'azfw_vnet':
+            # management_subnet_id = resource_id(
+            #     subscription=get_subscription_id(cmd.cli_ctx),
+            #     resource_group=resource_group_name,
+            #     namespace='Microsoft.Network',
+            #     type='virtualNetworks',
+            #     name=virtual_network_name,
+            #     child_type_1='subnets',
+            #     child_name_1='AzureFirewallManagementSubnet'
+            # )
+            # if not is_valid_resource_id(management_public_ip):
+            #     management_public_ip = resource_id(
+            #         subscription=get_subscription_id(cmd.cli_ctx),
+            #         resource_group=resource_group_name,
+            #         namespace='Microsoft.Network',
+            #         type='publicIPAddresses',
+            #         name=management_public_ip
+            #     )
+            # management_config = AzureFirewallIPConfiguration(
+            #     name=management_conf_name,
+            #     subnet=SubResource(id=management_subnet_id),
+            #     public_ip_address=SubResource(id=management_public_ip)
+            # )
+            args.mgmt_ip_conf_subnet = args.subnet_id
+            # firewall.management_ip_configuration = management_config
 
 
 def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, location=None,
