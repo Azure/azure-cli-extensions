@@ -1190,7 +1190,7 @@ def update_managed_environment(cmd,
 
     if workload_profile_name:
         if "workloadProfiles" not in r["properties"] or not r["properties"]["workloadProfiles"]:
-            raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enable-workload-profiles true'")
+            raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enable-workload-profiles'")
 
         if workload_profile_type:
             workload_profile_type = workload_profile_type.upper()
@@ -4155,7 +4155,7 @@ def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile
         handle_raw_exception(e)
 
     if "workloadProfiles" not in r["properties"] or not r["properties"]["workloadProfiles"]:
-        raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enable-workload-profiles true'")
+        raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enable-workload-profiles'")
 
     if workload_profile_name.lower() == "consumption":
         raise ValidationError("Cannot delete the 'Consumption' workload profile")
