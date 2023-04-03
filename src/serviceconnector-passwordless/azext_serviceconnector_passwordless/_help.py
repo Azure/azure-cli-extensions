@@ -263,7 +263,21 @@ for source in SOURCE_RESOURCES:
                 Usage: --system-identity
 
             '''
-        user_identity_param = '''
+        user_identity_param = ''
+        if AUTH_TYPE.UserIdentity in auth_types:
+            if target in {RESOURCE.MysqlFlexible}:
+                user_identity_param = '''
+            - name: --user-identity
+              short-summary: The user assigned identity auth info
+              long-summary: |
+                Usage: --user-identity client-id=XX subs-id=XX
+
+                client-id            : Required. Client id of the user assigned identity.
+                subs-id              : Required. Subscription id of the user assigned identity.
+                mysql-identity-id    : Optional. ID of identity used for MySQL flexible server AAD Authentication. Ignore it if you are the server AAD administrator.
+        '''
+            else:
+                user_identity_param = '''
             - name: --user-identity
               short-summary: The user assigned identity auth info
               long-summary: |
@@ -271,8 +285,23 @@ for source in SOURCE_RESOURCES:
 
                 client-id      : Required. Client id of the user assigned identity.
                 subs-id        : Required. Subscription id of the user assigned identity.
-        ''' if AUTH_TYPE.UserIdentity in auth_types else ''
-        service_principal_param = '''
+        '''
+        service_principal_param = ''
+        if AUTH_TYPE.ServicePrincipalSecret in auth_types:
+            if target in {RESOURCE.MysqlFlexible}:
+                service_principal_param = '''
+            - name: --service-principal
+              short-summary: The service principal auth info
+              long-summary: |
+                Usage: --service-principal client-id=XX secret=XX
+
+                client-id            : Required. Client id of the service principal.
+                object-id            : Optional. Object id of the service principal (Enterprise Application).
+                secret               : Required. Secret of the service principal.
+                mysql-identity-id    : Optional. ID of identity used for MySQL flexible server AAD Authentication. Ignore it if you are the server AAD administrator.
+        '''
+            else:
+                service_principal_param = '''
             - name: --service-principal
               short-summary: The service principal auth info
               long-summary: |
@@ -281,7 +310,7 @@ for source in SOURCE_RESOURCES:
                 client-id      : Required. Client id of the service principal.
                 object-id      : Optional. Object id of the service principal (Enterprise Application).
                 secret         : Required. Secret of the service principal.
-        ''' if AUTH_TYPE.ServicePrincipalSecret in auth_types else ''
+        '''
 
         # create with `--new` examples
         provision_example = '''
