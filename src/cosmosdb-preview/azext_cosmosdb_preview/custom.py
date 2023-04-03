@@ -54,7 +54,6 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     AnalyticalStorageConfiguration,
     ManagedServiceIdentityUserAssignedIdentity,
     MongoCluster,
-    MongoClusterRestoreParameters,
     NodeGroupSpec,
     NodeKind,
     FirewallRule

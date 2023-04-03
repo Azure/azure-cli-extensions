@@ -94,26 +94,13 @@ examples:
       --shard-node-ha true \\
       --shard-node-disk-size-gb 128 \\
       --shard-node-count 2
-  - name: Create a CosmosDB for Mongo cluster with PITR option.
-    text: |
-      az cosmosdb mongocluster create \\
-      --cluster-name MyCluster \\
-      --resource-group MyResourceGroup \\
-      --location MyLocation \\
-      --administrator-login MyAdminUser \\
-      --administrator-login-password MyAdminPassword \\
-      --server-version 5.0 \\
-      --shard-node-tier "M30" \\
-      --shard-node-ha true \\
-      --shard-node-disk-size-gb 128 \\
-      --shard-node-count 2
 """
 
 helps['cosmosdb mongocluster update'] = """
 type: command
 short-summary: Update a CosmosDB for Mongo cluster.
 examples:
-  - name: Create a CosmosDB for Mongo cluster with PITR option.
+  - name: Update a CosmosDB for Mongo cluster.
     text: |
       az cosmosdb mongocluster update \\
       --cluster-name MyCluster \\
