@@ -807,7 +807,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'default_id2' : default_id2
         })
 
-        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc} --assign-identity {user_id_2} --default-identity {default_id2} --enable-public-network False')
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc} --assign-identity {user_id_2} --default-identity {default_id2}')
         restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
             self.check('restoreParameters.restoreMode', 'PointInTime')
         ]).get_output_in_json()
@@ -821,18 +821,23 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         restored_account_defaultIdentity = restored_account['defaultIdentity']
         assert user_id_2 in restored_account_defaultIdentity
 
-        public_network_access = restored_account['publicNetworkAccess']
-        assert public_network_access == 'Disabled'
-
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_cross_region_restore', location='eastus2')
     def test_cosmosdb_xrr(self, resource_group):
-        col = self.create_random_name(prefix='cli', length=15)
-        db_name = self.create_random_name(prefix='cli', length=15)
-        source_acc = self.create_random_name(prefix='cli-continuous30-', length=25)
+        col = self.create_random_name(prefix='cli-xrr', length=15)
+        db_name = self.create_random_name(prefix='cli-xrr', length=15)
+        source_acc = self.create_random_name(prefix='cli-xrr-', length=25)
         target_acc = source_acc + "-restored"
         loc = 'eastus2'
+
+        # This is a multi region account, as of now for cross region restore we cannot create a single region account in cli, since there is a check for target location
+        # in the handler where it verifies if account exists in the `location` input variable (which is target location for cross region restore)
+        # Hence, created a multi region account, where using target location as the read region as well.
         target_loc = 'centralus'
+
+        # For this new parameter source_backup_location we need to wired in the handler to understand eastus means `East US`.
+        # Until that fix is added we have to send the location in this way for a clean run.
+        source_loc_for_xrr = 'East US 2'
 
         self.kwargs.update({
             'acc': source_acc,
@@ -862,6 +867,8 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         restorable_database_account = self.cmd('az cosmosdb restorable-database-account show --location {loc} --instance-id {ins_id}').get_output_in_json()
         print(restorable_database_account)
 
+        # As of now cross region restore does not have forced master backup during restore.
+        # So, we need to wait one hour in order to get the master backup for a restore to be performed.
         account_creation_time = restorable_database_account['creationTime']
         creation_timestamp_datetime = parser.parse(account_creation_time)
         restore_ts = creation_timestamp_datetime + timedelta(minutes=61)
@@ -869,11 +876,10 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         time.sleep(3662)
         restore_ts_string = restore_ts.isoformat()
         self.kwargs.update({
-            'rts': restore_ts_string,
-            'target_loc': target_loc
+            'rts': restore_ts_string
         })
 
-        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --source-backup-location "East US 2" --location {target_loc}')
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --source-backup-location "{source_loc_for_xrr}" --location {target_loc}')
         restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
             self.check('restoreParameters.restoreMode', 'PointInTime')
         ]).get_output_in_json()
