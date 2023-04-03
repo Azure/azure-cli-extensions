@@ -5,6 +5,7 @@ Release History
 Upcoming
 +++++++
 * 'az containerapp exec': fix bugs for consumption workload based environment
+* Add CLI support for ingress sticky-sessions'
 
 0.3.25
 ++++++
@@ -40,7 +41,6 @@ Upcoming
 * Upgrade api-version from 2022-06-01-preview to 2022-10-01
 * Fix error when running `az containerapp up` on local source that doesn't contain a Dockerfile
 * Fix the 'TypeError: 'NoneType' object does not support item assignment' error obtained while running the CLI command 'az containerapp dapr enable'
-* Add CLI support for ingress sticky-sessions'
 
 0.3.21
 ++++++
