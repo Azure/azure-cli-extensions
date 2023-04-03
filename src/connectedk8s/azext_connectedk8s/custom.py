@@ -950,7 +950,7 @@ def update_connected_cluster_internal(client, resource_group_name, cluster_name,
 def update_connected_cluster(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
                              disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, tags=None,
                              distribution=None, distribution_version=None, azure_hybrid_benefit=None, yes=False, container_log_path=None,
-                             enable_oidc_issuer=False):
+                             enable_oidc_issuer=None):
 
     # Prompt for confirmation for few parameters
     if azure_hybrid_benefit == "True":
@@ -1079,6 +1079,16 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
             telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Get_Helm_Values_Failed,
                                     summary='Error while doing helm get values azure-arc')
             raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_get_values.decode("ascii")))
+        
+    response_helm_values_get = response_helm_values_get.decode("ascii")
+    existing_values = None
+
+    try:
+        existing_values = yaml.safe_load(response_helm_values_get)
+    except Exception as e:
+        telemetry.set_exception(exception=e, fault_type=consts.Helm_Existing_User_Supplied_Value_Get_Fault,
+                                summary='Problem loading the helm existing values')
+        raise CLIInternalError("Problem loading the helm existing values: " + str(e))
 
     cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "-f",
@@ -1103,10 +1113,15 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     if container_log_path is not None:
         cmd_helm_upgrade.extend(["--set", "systemDefaultValues.fluent-bit.containerLogPath={}".format(container_log_path)])
     if enable_oidc_issuer:
-        if not auto_upgrade:
-            logger.warning("Please enable auto_upgrade to upgrade to latest agent version in order to enable this oidc issuer feature")
+        if existing_values.get('systemDefaultValues').get('azureArcAgents').get('autoUpdate') is False:
+            logger.warning("Please enable auto_upgrade to upgrade to latest agent version in order to enable the oidc issuer feature")
         else:
             cmd_helm_upgrade.extend(["--set", "systemDefaultValues.signingkeycontroller.oidcenabled={}".format(True)])
+    else:
+        if existing_values.get('systemDefaultValues').get('azureArcAgents').get('autoUpdate') is False:
+            logger.warning("Please enable auto_upgrade to upgrade to latest agent version in order to explicitly disable the oidc issuer feature")
+        else:
+            cmd_helm_upgrade.extend(["--set", "systemDefaultValues.signingkeycontroller.oidcenabled={}".format(False)])
     if kube_config:
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:
