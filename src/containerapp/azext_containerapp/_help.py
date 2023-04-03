@@ -860,10 +860,10 @@ helps['containerapp secret set'] = """
     examples:
     - name: Add secrets to a container app.
       text: |
-          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MySecretName1=MySecretValue1 MySecretName2=MySecretValue2
+          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets mysecretname1=MySecretValue1 mysecretname2=MySecretValue2
     - name: Update a secret.
       text: |
-          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue
+          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets myexistingsecretname=MyNewSecretValue
 """
 
 helps['containerapp github-action'] = """
