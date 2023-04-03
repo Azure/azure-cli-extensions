@@ -8,9 +8,7 @@
 
 from codecs import open
 from setuptools import setup, find_packages
-import stat
-import requests
-import os
+from azext_confcom.rootfs_proxy import SecurityPolicyProxy
 
 try:
     from azure_bdist_wheel import cmdclass
@@ -41,38 +39,7 @@ CLASSIFIERS = [
 
 DEPENDENCIES = ["docker", "tqdm", "deepdiff"]
 
-dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "azext_confcom")
-
-bin_folder = dir_path + "/bin"
-if not os.path.exists(bin_folder):
-    os.makedirs(bin_folder)
-
-data_folder = dir_path + "/data/"
-if not os.path.exists(data_folder):
-    os.makedirs(data_folder)
-
-# get the most recent release artifacts from github
-r = requests.get("https://api.github.com/repos/microsoft/hcsshim/releases")
-# list the artifacts from each release
-bin_flag = False
-exe_flag = False
-for release in r.json():
-    # these should be newest to oldest
-    for asset in release["assets"]:
-        # download the file if it contains dmverity-vhd
-        if "dmverity-vhd" in asset["name"]:
-            if "exe" in asset["name"]:
-                exe_flag = True
-            else:
-                bin_flag = True
-            # get the download url for the dmverity-vhd file
-            exe_url = asset["browser_download_url"]
-            # download the file
-            r = requests.get(exe_url)
-            # save the file to the bin folder
-            with open(os.path.join(bin_folder, asset["name"]), "wb") as f:
-                f.write(r.content)
-    break
+SecurityPolicyProxy.download_binaries()
 
 with open("README.md", "r", encoding="utf-8") as f:
     README = f.read()
