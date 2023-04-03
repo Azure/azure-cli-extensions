@@ -170,8 +170,6 @@ def load_arguments(self, _):
         c.argument('shard_node_ha', arg_type=get_three_state_flag(), options_list=['--shard-node-ha'], help="If enabled the cluster has HA.", required=True, arg_group='Shard')
         c.argument('shard_node_disk_size_gb', options_list=['--shard-node-disk-size-gb'], help="The node disk size for mongo cluster.", required=True, arg_group='Shard')
         c.argument('shard_node_count', options_list=['--shard-node-count'], help="The node count for mongo cluster.", required=True, arg_group='Shard')
-        c.argument('restore_point_in_time_utc', options_list=['--restore-point-in-time-utc'], action=UtcDatetimeAction, help="The timestamp to which the account has to be restored to.", arg_group='Restore')
-        c.argument('restore_source_resource_id', options_list=['--restore-source-resource-id'], help="The restorable source Id of the source mongo cluster from which the cluster has to be restored", arg_group='Restore')
 
     with self.argument_context('cosmosdb mongocluster update') as c:
         c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)
@@ -478,3 +476,22 @@ def load_arguments(self, _):
         c.argument('database_name', database_name_type, required=True)
         c.argument('collection_name', options_list=['--name', '-n'], help="Collection name", required=True)
         c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the collection needs to be restored to.", required=True)
+
+    # Gremlin database restore
+    with self.argument_context('cosmosdb gremlin database restore') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True)
+        c.argument('database_name', options_list=['--name', '-n'], help="Name of the CosmosDB Gremlin database name", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the database needs to be restored to.", required=True)
+
+    # Gremlin Graph restore
+    with self.argument_context('cosmosdb gremlin graph restore') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True)
+        c.argument('database_name', database_name_type, required=True, help='Name of the CosmosDB Gremlin database name')
+        c.argument('graph_name', options_list=['--name', '-n'], help="Name of the CosmosDB Gremlin graph name", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the graph needs to be restored to.", required=True)
+
+    # Table restore
+    with self.argument_context('cosmosdb table restore') as c:
+        c.argument('account_name', account_name_type, id_part=None, required=True)
+        c.argument('table_name', options_list=['--table-name', '-n'], required=True, help='Name of the CosmosDB Table name')
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the Table needs to be restored to.", required=True)
