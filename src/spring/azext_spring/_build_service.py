@@ -35,31 +35,31 @@ def create_build_service(cmd, client, resource_group, service, disable_build_ser
                          registry_server=None, registry_username=None, registry_password=None):
     if disable_build_service:
         return
-    else:
-        if registry_server:
-            container_registry_properties = models.ContainerRegistryProperties(
-                credentials=models.ContainerRegistryBasicCredentials(
-                    type=DEFAULT_CONTAINER_REGISTRY_TYPE,
-                    server=registry_server,
-                    username=registry_username,
-                    password=registry_password))
-            container_registry_resource = models.ContainerRegistryResource(
-                properties=container_registry_properties)
-            poller = client.container_registries.begin_create_or_update(
-                resource_group, service, DEFAULT_CONTAINER_REGISTRY_NAME, container_registry_resource)
-            LongRunningOperation(cmd.cli_ctx)(poller)
 
-            build_service_properties = models.BuildServiceProperties(
-                container_registry=DEFAULT_CONTAINER_REGISTRY_NAME)
-            build_service_resource = models.BuildService(
-                properties=build_service_properties)
-            return client.build_service.begin_create_or_update(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, build_service_resource)
-        else:
-            build_service_properties = models.BuildServiceProperties(
-                container_registry=None)
-            build_service_resource = models.BuildService(
-                properties=build_service_properties)
-            return client.build_service.begin_create_or_update(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, build_service_resource)
+    if registry_server:
+        container_registry_properties = models.ContainerRegistryProperties(
+            credentials=models.ContainerRegistryBasicCredentials(
+                type=DEFAULT_CONTAINER_REGISTRY_TYPE,
+                server=registry_server,
+                username=registry_username,
+                password=registry_password))
+        container_registry_resource = models.ContainerRegistryResource(
+            properties=container_registry_properties)
+        poller = client.container_registries.begin_create_or_update(
+            resource_group, service, DEFAULT_CONTAINER_REGISTRY_NAME, container_registry_resource)
+        LongRunningOperation(cmd.cli_ctx)(poller)
+
+        build_service_properties = models.BuildServiceProperties(
+            container_registry=DEFAULT_CONTAINER_REGISTRY_NAME)
+        build_service_resource = models.BuildService(
+            properties=build_service_properties)
+        return client.build_service.begin_create_or_update(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, build_service_resource)
+    else:
+        build_service_properties = models.BuildServiceProperties(
+            container_registry=None)
+        build_service_resource = models.BuildService(
+            properties=build_service_properties)
+        return client.build_service.begin_create_or_update(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, build_service_resource)
 
 
 def create_or_update_builder(cmd, client, resource_group, service, name, builder_json=None, builder_file=None, no_wait=False):
