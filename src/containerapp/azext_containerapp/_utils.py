@@ -360,7 +360,7 @@ def parse_secret_flags(secret_list):
         kv_url = ""
         identity_Id = ""
 
-        kv_identity = value.split(',', 1)
+        kv_identity = value.split(',', 2)
         if len(kv_identity) == 2:
             kv = kv_identity[0]
             identity = kv_identity[1]
@@ -680,13 +680,14 @@ def _ensure_identity_resource_id(subscription_id, resource_group, resource):
 def _add_or_update_secrets(containerapp_def, add_secrets):
     if "secrets" not in containerapp_def["properties"]["configuration"]:
         containerapp_def["properties"]["configuration"]["secrets"] = []
-
     for new_secret in add_secrets:
         is_existing = False
         for existing_secret in containerapp_def["properties"]["configuration"]["secrets"]:
             if existing_secret["name"].lower() == new_secret["name"].lower():
                 is_existing = True
-                existing_secret = new_secret
+                existing_secret["value"] = new_secret["value"]
+                existing_secret["keyVaultUrl"] = new_secret["keyVaultUrl"]
+                existing_secret["identity"] = new_secret["identity"]
                 break
 
         if not is_existing:
