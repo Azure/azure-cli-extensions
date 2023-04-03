@@ -31,3 +31,8 @@ Release History
 ++++++
 * `az grafana update`: support email through new SMTP configuration arguments
 
+1.2
++++++
+* `az grafana backup`: backup a grafana workspace
+* `az grafana restore`: restore a grafana workspace
+* `az grafana dashboard sync`: sync dashboard between 2 grafana workspaces

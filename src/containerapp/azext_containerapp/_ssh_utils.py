@@ -119,6 +119,9 @@ def _decode_and_output_to_terminal(connection: WebSocketConnection, response, en
 
 
 def read_ssh(connection: WebSocketConnection, response_encodings):
+    # We just need to do resize once for the whole session
+    _resize_terminal(connection)
+
     # response_encodings is the ordered list of Unicode encodings to try to decode with before raising an exception
     while connection.is_connected:
         response = connection.recv()
@@ -142,9 +145,7 @@ def read_ssh(connection: WebSocketConnection, response_encodings):
 
 def _send_stdin(connection: WebSocketConnection, getch_fn):
     while connection.is_connected:
-        _resize_terminal(connection)
         ch = getch_fn()
-        _resize_terminal(connection)
         if connection.is_connected:
             connection.send(b"".join([SSH_INPUT_PREFIX, ch]))
 

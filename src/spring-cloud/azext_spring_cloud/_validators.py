@@ -299,51 +299,62 @@ def validate_vnet(cmd, namespace):
         instance_location_slice = instance_location.split(" ")
         instance_location = "".join([piece.lower()
                                      for piece in instance_location_slice])
-    if vnet_obj.location.lower() != instance_location.lower():
+    if vnet_obj["location"].lower() != instance_location.lower():
         raise InvalidArgumentValueError('--vnet and Azure Spring Cloud instance should be in the same location.')
-    for subnet in vnet_obj.subnets:
+    for subnet in vnet_obj["subnets"]:
         _validate_subnet(namespace, subnet)
     _validate_route_table(namespace, vnet_obj)
 
     if namespace.reserved_cidr_range:
         _validate_cidr_range(namespace)
     else:
-        namespace.reserved_cidr_range = _set_default_cidr_range(vnet_obj.address_space.address_prefixes) if \
-            vnet_obj and vnet_obj.address_space and vnet_obj.address_space.address_prefixes \
+        namespace.reserved_cidr_range = _set_default_cidr_range(vnet_obj["addressSpace"]["addressPrefixes"]) if \
+            vnet_obj and vnet_obj.get("addressSpace", None) and vnet_obj["addressSpace"].get("addressPrefixes", None) \
             else '10.234.0.0/16,10.244.0.0/16,172.17.0.1/16'
 
 
 def _validate_subnet(namespace, subnet):
     name = ''
     limit = 32
-    if subnet.id.lower() == namespace.app_subnet.lower():
+    if subnet["id"].lower() == namespace.app_subnet.lower():
         name = 'app-subnet'
         limit = 28
-    elif subnet.id.lower() == namespace.service_runtime_subnet.lower():
+    elif subnet["id"].lower() == namespace.service_runtime_subnet.lower():
         name = 'service-runtime-subnet'
         limit = 28
     else:
         return
-    if subnet.ip_configurations:
+    if subnet.get("ipConfigurations", None):
         raise InvalidArgumentValueError('--{} should not have connected device.'.format(name))
-    address = ip_network(subnet.address_prefix, strict=False)
+    address = ip_network(subnet["addressPrefix"], strict=False)
     if address.prefixlen > limit:
         raise InvalidArgumentValueError('--{0} should contain at least /{1} address, got /{2}'.format(name, limit, address.prefixlen))
 
 
 def _get_vnet(cmd, vnet_id):
     vnet = parse_resource_id(vnet_id)
-    network_client = _get_network_client(cmd.cli_ctx, subscription_id=vnet['subscription'])
-    return network_client.virtual_networks.get(vnet['resource_group'], vnet['resource_name'])
+    from .aaz.latest.network.vnet import Show as _VirtualNetworkShow
 
+    class VirtualNetworkShow(_VirtualNetworkShow):
+        @classmethod
+        def _build_arguments_schema(cls, *args, **kwargs):
+            from azure.cli.core.aaz import AAZStrArg
+            args_schema = super()._build_arguments_schema(*args, **kwargs)
+            args_schema.subscription_id = AAZStrArg()
+            return args_schema
 
-def _get_network_client(cli_ctx, subscription_id=None):
-    from azure.cli.core.profiles import ResourceType, get_api_version
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    return get_mgmt_service_client(cli_ctx,
-                                   ResourceType.MGMT_NETWORK,
-                                   subscription_id=subscription_id,
-                                   api_version=get_api_version(cli_ctx, ResourceType.MGMT_NETWORK))
+        def pre_operations(self):
+            from azure.cli.core.aaz import has_value
+            args = self.ctx.args
+            if has_value(args.subscription_id):
+                self.ctx._subscription_id = args.subscription_id.to_serialized_data()
+
+    get_args = {
+        'name': vnet['resource_name'],
+        'subscription_id': vnet['subscription'],
+        'resource_group': vnet['resource_group']
+    }
+    return VirtualNetworkShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
 
 
 def _get_authorization_client(cli_ctx, subscription_id=None):
@@ -508,11 +519,11 @@ def _validate_resource_group_name(name, message_name):
 def _validate_route_table(namespace, vnet_obj):
     app_route_table_id = ""
     runtime_route_table_id = ""
-    for subnet in vnet_obj.subnets:
-        if subnet.id.lower() == namespace.app_subnet.lower() and subnet.route_table:
-            app_route_table_id = subnet.route_table.id
-        if subnet.id.lower() == namespace.service_runtime_subnet.lower() and subnet.route_table:
-            runtime_route_table_id = subnet.route_table.id
+    for subnet in vnet_obj["subnets"]:
+        if subnet["id"].lower() == namespace.app_subnet.lower() and subnet.get("routeTable", None):
+            app_route_table_id = subnet["routeTable"]["id"]
+        if subnet["id"].lower() == namespace.service_runtime_subnet.lower() and subnet.get("routeTable", None):
+            runtime_route_table_id = subnet["routeTable"]["id"]
 
     if app_route_table_id and runtime_route_table_id:
         if app_route_table_id == runtime_route_table_id:

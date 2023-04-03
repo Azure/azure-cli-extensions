@@ -61,6 +61,23 @@ class BlueprintScenarioTest(ScenarioTest):
             ])
 
         self.cmd(
+            'az blueprint resource-group show '
+            '--blueprint-name "{blueprintName}" '
+            '--artifact-name "myRgArt" ',
+            checks=[
+                JMESPathCheck(
+                    'myRgArt.displayName',
+                    "Resource Group 1")
+            ])
+
+        self.cmd(
+            'az blueprint resource-group list '
+            '--blueprint-name "{blueprintName}" ',
+            checks=[
+                self.check('length(@)', 1)
+            ])
+
+        self.cmd(
             'az blueprint artifact role create '
             '--blueprint-name "{blueprintName}" '
             '--artifact-name "reader-role-art" '
@@ -79,6 +96,17 @@ class BlueprintScenarioTest(ScenarioTest):
             '--resource-group-art "myRgArt" '
             '--parameters @src/blueprint/azext_blueprint/tests/latest/input/create/policy_params.json',
             checks=[JMESPathCheck('name', 'policy-audit-win-vm-art')])
+
+        self.cmd(
+            'blueprint artifact show '
+            '--blueprint-name "{blueprintName}" '
+            '--name "policy-audit-win-vm-art" ',
+            checks=[JMESPathCheck('name', 'policy-audit-win-vm-art')])
+
+        self.cmd(
+            'az blueprint show '
+            '--name "{blueprintName}" ',
+            checks=[JMESPathCheck('name', self.kwargs.get('blueprintName', ''))])
 
         self.cmd(
             'az blueprint update '
@@ -120,6 +148,16 @@ class BlueprintScenarioTest(ScenarioTest):
             '--name "{assignmentName}"',
             checks=[])
 
+        self.cmd(
+            'az blueprint assignment list ',
+            checks=[
+                self.check("length([?provisioningState == 'succeeded']) == length(@)", True),
+            ])
+
+        self.cmd('az blueprint assignment who '
+            '--name "{assignmentName}"',
+            checks=[])
+
         with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
             self.cmd(
                 'az role assignment create '
@@ -132,6 +170,7 @@ class BlueprintScenarioTest(ScenarioTest):
         assignment = self.cmd(
             'az blueprint assignment update '
             '--name "{assignmentName}" '
+            '--location "westus2" '
             '--user-assigned-identity {userAssignedIdentity} '
             '--locks-mode "AllResourcesReadOnly" ',
             checks=[self.exists('identity.userAssignedIdentities'),
@@ -156,10 +195,70 @@ class BlueprintScenarioTest(ScenarioTest):
             checks=[])
 
         self.cmd(
+            'az blueprint version show '
+            '--blueprint-name "{blueprintName}" '
+            '--version "1.0" ',
+            checks=[])
+
+        self.cmd(
+            'az blueprint version list '
+            '--blueprint-name "{blueprintName}" ',
+            checks=[])
+
+        self.cmd(
+            'az blueprint version artifact show '
+            '--blueprint-name "{blueprintName}" '
+            '--artifact-name "reader-role-art" '
+            '--version "1.0" ',
+            checks=[])
+
+        self.cmd(
+            'az blueprint version artifact list '
+            '--blueprint-name "{blueprintName}" '
+            '--version "1.0" ',
+            checks=[])
+
+        self.cmd(
             'az blueprint version delete '
             '--blueprint-name "{blueprintName}" '
             '--version "1.0" '
             '-y',
+            checks=[])
+
+        self.cmd(
+            'az blueprint artifact role update '
+            '--blueprint-name "{blueprintName}" '
+            '--artifact-name "reader-role-art" '
+            '--description "Role description." ',
+            checks=[JMESPathCheck('description', 'Role description.')])
+
+        self.cmd(
+            'az blueprint artifact policy update '
+            '--blueprint-name "{blueprintName}" '
+            '--artifact-name "policy-audit-win-vm-art" '
+            '--description "Policy description."',
+            checks=[JMESPathCheck('description', 'Policy description.')])
+
+        self.cmd(
+            'az blueprint artifact delete '
+            '--blueprint-name "{blueprintName}" '
+            '--name "policy-audit-win-vm-art" -y')
+
+        self.cmd(
+            'az blueprint resource-group update '
+            '--blueprint-name "{blueprintName}" '
+            '--artifact-name "myRgArt" '
+            '--display-name "Resource Group 2"',
+            checks=[
+                JMESPathCheck(
+                    'myRgArt.displayName',
+                    "Resource Group 2")
+            ])
+
+        self.cmd(
+            'az blueprint resource-group remove '
+            '--blueprint-name "{blueprintName}" '
+            '--artifact-name "myRgArt" -y ',
             checks=[])
 
         self.cmd('az blueprint delete '
