@@ -115,8 +115,9 @@ class ApiPortalCustomDomainsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -187,8 +188,9 @@ class ApiPortalCustomDomainsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -323,7 +325,7 @@ class ApiPortalCustomDomainsOperations:
         :param domain_name: The name of the API portal custom domain. Required.
         :type domain_name: str
         :param api_portal_custom_domain_resource: The API portal custom domain for the create or update
-         operation. Is either a model type or a IO type. Required.
+         operation. Is either a ApiPortalCustomDomainResource type or a IO type. Required.
         :type api_portal_custom_domain_resource:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.ApiPortalCustomDomainResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -428,8 +430,9 @@ class ApiPortalCustomDomainsOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -599,8 +602,9 @@ class ApiPortalCustomDomainsOperations:
         async def get_next(next_link=None):
             request = prepare_request(next_link)
 
+            _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=False, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 

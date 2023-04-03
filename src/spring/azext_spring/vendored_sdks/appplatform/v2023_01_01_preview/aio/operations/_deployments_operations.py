@@ -127,8 +127,9 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -199,8 +200,9 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -335,8 +337,8 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         :type app_name: str
         :param deployment_name: The name of the Deployment resource. Required.
         :type deployment_name: str
-        :param deployment_resource: Parameters for the create or update operation. Is either a model
-         type or a IO type. Required.
+        :param deployment_resource: Parameters for the create or update operation. Is either a
+         DeploymentResource type or a IO type. Required.
         :type deployment_resource:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.DeploymentResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -441,8 +443,9 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -583,8 +586,9 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -716,8 +720,8 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         :type app_name: str
         :param deployment_name: The name of the Deployment resource. Required.
         :type deployment_name: str
-        :param deployment_resource: Parameters for the update operation. Is either a model type or a IO
-         type. Required.
+        :param deployment_resource: Parameters for the update operation. Is either a DeploymentResource
+         type or a IO type. Required.
         :type deployment_resource:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.DeploymentResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -876,8 +880,9 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         async def get_next(next_link=None):
             request = prepare_request(next_link)
 
+            _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=False, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -972,8 +977,9 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         async def get_next(next_link=None):
             request = prepare_request(next_link)
 
+            _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=False, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -1022,8 +1028,9 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -1146,8 +1153,9 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -1270,8 +1278,9 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -1415,8 +1424,9 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -1548,8 +1558,8 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         :type app_name: str
         :param deployment_name: The name of the Deployment resource. Required.
         :type deployment_name: str
-        :param remote_debugging_payload: Parameters for enable remote debugging. Is either a model type
-         or a IO type. Default value is None.
+        :param remote_debugging_payload: Parameters for enable remote debugging. Is either a
+         RemoteDebuggingPayload type or a IO type. Default value is None.
         :type remote_debugging_payload:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.RemoteDebuggingPayload or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -1654,8 +1664,9 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -1807,8 +1818,9 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -1878,8 +1890,9 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -1952,8 +1965,9 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -2073,8 +2087,8 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         :type app_name: str
         :param deployment_name: The name of the Deployment resource. Required.
         :type deployment_name: str
-        :param diagnostic_parameters: Parameters for the diagnostic operation. Is either a model type
-         or a IO type. Required.
+        :param diagnostic_parameters: Parameters for the diagnostic operation. Is either a
+         DiagnosticParameters type or a IO type. Required.
         :type diagnostic_parameters:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.DiagnosticParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -2193,8 +2207,9 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -2314,8 +2329,8 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         :type app_name: str
         :param deployment_name: The name of the Deployment resource. Required.
         :type deployment_name: str
-        :param diagnostic_parameters: Parameters for the diagnostic operation. Is either a model type
-         or a IO type. Required.
+        :param diagnostic_parameters: Parameters for the diagnostic operation. Is either a
+         DiagnosticParameters type or a IO type. Required.
         :type diagnostic_parameters:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.DiagnosticParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -2434,8 +2449,9 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -2555,8 +2571,8 @@ class DeploymentsOperations:  # pylint: disable=too-many-public-methods
         :type app_name: str
         :param deployment_name: The name of the Deployment resource. Required.
         :type deployment_name: str
-        :param diagnostic_parameters: Parameters for the diagnostic operation. Is either a model type
-         or a IO type. Required.
+        :param diagnostic_parameters: Parameters for the diagnostic operation. Is either a
+         DiagnosticParameters type or a IO type. Required.
         :type diagnostic_parameters:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.DiagnosticParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.

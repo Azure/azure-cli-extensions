@@ -18,7 +18,9 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_remote_debugging_port, validate_ingress_client_auth_certificates,
                           validate_managed_environment)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
-                                     validate_builder_update, validate_build_pool_size,
+                                     validate_source_path, validate_artifact_path, validate_build_create,
+                                     validate_build_update, validate_container_registry, validate_central_build_instance,
+                                     validate_builder_update, validate_build_pool_size, validate_build_service,
                                      validate_git_uri, validate_acc_git_url, validate_acc_git_refs, validate_acs_patterns, validate_config_file_patterns,
                                      validate_routes, validate_gateway_instance_count, validate_git_interval,
                                      validate_api_portal_instance_count,
@@ -35,7 +37,7 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
-from .vendored_sdks.appplatform.v2023_01_01_preview.models._app_platform_management_client_enums import (SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
+from .vendored_sdks.appplatform.v2023_03_01_preview.models._app_platform_management_client_enums import (SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
 
 name_type = CLIArgumentType(options_list=[
@@ -123,8 +125,23 @@ def load_arguments(self, _):
                    validator=validate_ingress_timeout)
         c.argument('build_pool_size',
                    arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9']),
+                   arg_group='Build Service',
                    validator=validate_build_pool_size,
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
+        c.argument('disable_build_service',
+                   arg_type=get_three_state_flag(),
+                   arg_group='Build Service',
+                   validator=validate_build_service,
+                   help='(Enterprise Tier Only) Disable build service.')
+        c.argument('registry_server',
+                   validator=validate_build_service,
+                   help='(Enterprise Tier Only) The container registry server used in build service.')
+        c.argument('registry_username',
+                   validator=validate_build_service,
+                   help='(Enterprise Tier Only) The container registry username used in build service.')
+        c.argument('registry_password',
+                   validator=validate_build_service,
+                   help='(Enterprise Tier Only) The container registry password used in build service.')
         c.argument('enable_application_configuration_service',
                    action='store_true',
                    options_list=['--enable-application-configuration-service', '--enable-acs'],
@@ -668,6 +685,53 @@ def load_arguments(self, _):
                    arg_group='Application Insights',
                    help="Disable Application Insights.")
 
+    with self.argument_context('spring container-registry') as c:
+        c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    with self.argument_context('spring container-registry update') as c:
+        c.argument('name', help="The container registry name.", validator=validate_container_registry)
+        c.argument('server', help="The container registry sever.", validator=validate_container_registry)
+        c.argument('username', help="The container registry username.", validator=validate_container_registry)
+        c.argument('password', help="The container registry password.", validator=validate_container_registry)
+
+    with self.argument_context('spring container-registry show') as c:
+        c.argument('name', help="The container registry name.")
+
+    with self.argument_context('spring build-service build') as c:
+        c.argument('service', service_name_type, validator=validate_central_build_instance)
+
+    for scope in ['create', 'update']:
+        with self.argument_context('spring build-service build {}'.format(scope)) as c:
+            c.argument('build_env', build_env_type)
+            c.argument('source_path', arg_type=source_path_type, validator=validate_source_path)
+            c.argument('artifact_path', help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_artifact_path)
+            c.argument('disable_validation', arg_type=get_three_state_flag(), help='If true, disable jar validation.')
+
+    with self.argument_context('spring build-service build create') as c:
+        c.argument('name', help="The build name.", validator=validate_build_create)
+        c.argument('builder', help='The builder name used to build the executable.', default='default')
+        c.argument('build_cpu', arg_type=build_cpu_type, default="1")
+        c.argument('build_memory', arg_type=build_memory_type, default="2Gi")
+
+    with self.argument_context('spring build-service build update') as c:
+        c.argument('name', help="The build name.", validator=validate_build_update)
+        c.argument('builder', help='The builder name used to build the executable.', validator=validate_build_update)
+        c.argument('build_cpu', arg_type=build_cpu_type, validator=validate_build_update)
+        c.argument('build_memory', arg_type=build_memory_type, validator=validate_build_update)
+
+    with self.argument_context('spring build-service build delete') as c:
+        c.argument('name', help="The build name.")
+
+    with self.argument_context('spring build-service build show') as c:
+        c.argument('name', help="The build name.")
+
+    with self.argument_context('spring build-service build result') as c:
+        c.argument('service', service_name_type, validator=validate_central_build_instance)
+        c.argument('build_name', help="The build name of the result.")
+
+    with self.argument_context('spring build-service build result show') as c:
+        c.argument('name', help="The build result name.")
+
     with self.argument_context('spring build-service builder') as c:
         c.argument('service', service_name_type, validator=only_support_enterprise)
 
@@ -834,6 +898,7 @@ def load_arguments(self, _):
                   'spring application-accelerator customized-accelerator show',
                   'spring application-accelerator customized-accelerator create',
                   'spring application-accelerator customized-accelerator update',
+                  'spring application-accelerator customized-accelerator sync-cert',
                   'spring application-accelerator customized-accelerator delete']:
         with self.argument_context(scope) as c:
             c.argument('name', name_type, help='Name for customized accelerator.')
@@ -852,6 +917,7 @@ def load_arguments(self, _):
             c.argument('git_commit', type=str, help='Git repository commit to be used.', validator=validate_acc_git_refs)
             c.argument('git_tag', type=str, help='Git repository tag to be used.', validator=validate_acc_git_refs)
 
+            c.argument('ca_cert_name', help='CA certificate name.')
             c.argument('username', help='Username of git repository basic auth.')
             c.argument('password', help='Password of git repository basic auth.')
             c.argument('private_key', help='Private SSH Key algorithm of git repository.')

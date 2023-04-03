@@ -74,6 +74,7 @@ class ElasticSanScenario(ScenarioTest):
                          JMESPathCheck('networkAcls', {"virtualNetworkRules":[{
                              "action": "Allow",
                              "id": subnet_id,
+                             "state": "Provisioning",
                              "resourceGroup": self.kwargs.get('rg','')}]})])
         self.cmd('az elastic-san volume-group list -g {rg} -e {san_name}', checks=[JMESPathCheck('length(@)', 1)])
 

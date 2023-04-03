@@ -116,8 +116,9 @@ class ServicesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -180,8 +181,9 @@ class ServicesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -293,8 +295,8 @@ class ServicesOperations:
         :type resource_group_name: str
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
-        :param resource: Parameters for the create or update operation. Is either a model type or a IO
-         type. Required.
+        :param resource: Parameters for the create or update operation. Is either a ServiceResource
+         type or a IO type. Required.
         :type resource: ~azure.mgmt.appplatform.v2023_01_01_preview.models.ServiceResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
@@ -394,8 +396,9 @@ class ServicesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -520,8 +523,9 @@ class ServicesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -630,8 +634,8 @@ class ServicesOperations:
         :type resource_group_name: str
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
-        :param resource: Parameters for the update operation. Is either a model type or a IO type.
-         Required.
+        :param resource: Parameters for the update operation. Is either a ServiceResource type or a IO
+         type. Required.
         :type resource: ~azure.mgmt.appplatform.v2023_01_01_preview.models.ServiceResource or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
@@ -742,8 +746,9 @@ class ServicesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -835,8 +840,8 @@ class ServicesOperations:
         :type resource_group_name: str
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
-        :param regenerate_test_key_request: Parameters for the operation. Is either a model type or a
-         IO type. Required.
+        :param regenerate_test_key_request: Parameters for the operation. Is either a
+         RegenerateTestKeyRequestPayload type or a IO type. Required.
         :type regenerate_test_key_request:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.RegenerateTestKeyRequestPayload or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -887,8 +892,9 @@ class ServicesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -952,8 +958,9 @@ class ServicesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -1013,8 +1020,9 @@ class ServicesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -1065,8 +1073,9 @@ class ServicesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -1179,8 +1188,9 @@ class ServicesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -1314,8 +1324,8 @@ class ServicesOperations:
 
         :param location: the region. Required.
         :type location: str
-        :param availability_parameters: Parameters supplied to the operation. Is either a model type or
-         a IO type. Required.
+        :param availability_parameters: Parameters supplied to the operation. Is either a
+         NameAvailabilityParameters type or a IO type. Required.
         :type availability_parameters:
          ~azure.mgmt.appplatform.v2023_01_01_preview.models.NameAvailabilityParameters or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
@@ -1365,8 +1375,9 @@ class ServicesOperations:
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
 
+        _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=False, **kwargs
+            request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -1453,8 +1464,9 @@ class ServicesOperations:
         async def get_next(next_link=None):
             request = prepare_request(next_link)
 
+            _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=False, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -1539,8 +1551,9 @@ class ServicesOperations:
         async def get_next(next_link=None):
             request = prepare_request(next_link)
 
+            _stream = False
             pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=False, **kwargs
+                request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 

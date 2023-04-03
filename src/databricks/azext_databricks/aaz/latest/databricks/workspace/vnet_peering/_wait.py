@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}/virtualnetworkpeerings/{}", "2022-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}/virtualnetworkpeerings/{}", "2023-02-01"],
         ]
     }
 
@@ -132,7 +132,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2023-02-01",
                     required=True,
                 ),
             }
@@ -191,7 +191,7 @@ class Wait(AAZWaitCommand):
             properties.databricks_address_space = AAZObjectType(
                 serialized_name="databricksAddressSpace",
             )
-            _build_schema_address_space_read(properties.databricks_address_space)
+            _WaitHelper._build_schema_address_space_read(properties.databricks_address_space)
             properties.databricks_virtual_network = AAZObjectType(
                 serialized_name="databricksVirtualNetwork",
             )
@@ -206,7 +206,7 @@ class Wait(AAZWaitCommand):
             properties.remote_address_space = AAZObjectType(
                 serialized_name="remoteAddressSpace",
             )
-            _build_schema_address_space_read(properties.remote_address_space)
+            _WaitHelper._build_schema_address_space_read(properties.remote_address_space)
             properties.remote_virtual_network = AAZObjectType(
                 serialized_name="remoteVirtualNetwork",
                 flags={"required": True},
@@ -227,26 +227,28 @@ class Wait(AAZWaitCommand):
             pass
 
 
-_schema_address_space_read = None
+class _WaitHelper:
+    """Helper class for Wait"""
 
+    _schema_address_space_read = None
 
-def _build_schema_address_space_read(_schema):
-    global _schema_address_space_read
-    if _schema_address_space_read is not None:
-        _schema.address_prefixes = _schema_address_space_read.address_prefixes
-        return
+    @classmethod
+    def _build_schema_address_space_read(cls, _schema):
+        if cls._schema_address_space_read is not None:
+            _schema.address_prefixes = cls._schema_address_space_read.address_prefixes
+            return
 
-    _schema_address_space_read = AAZObjectType()
+        cls._schema_address_space_read = _schema_address_space_read = AAZObjectType()
 
-    address_space_read = _schema_address_space_read
-    address_space_read.address_prefixes = AAZListType(
-        serialized_name="addressPrefixes",
-    )
+        address_space_read = _schema_address_space_read
+        address_space_read.address_prefixes = AAZListType(
+            serialized_name="addressPrefixes",
+        )
 
-    address_prefixes = _schema_address_space_read.address_prefixes
-    address_prefixes.Element = AAZStrType()
+        address_prefixes = _schema_address_space_read.address_prefixes
+        address_prefixes.Element = AAZStrType()
 
-    _schema.address_prefixes = _schema_address_space_read.address_prefixes
+        _schema.address_prefixes = cls._schema_address_space_read.address_prefixes
 
 
 __all__ = ["Wait"]
