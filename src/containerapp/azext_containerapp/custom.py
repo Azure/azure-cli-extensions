@@ -2161,6 +2161,7 @@ def show_ip_restrictions(cmd, name, resource_group_name):
     except:
         return []
 
+
 def set_ingress_sticky_session(cmd, name, resource_group_name, affinity, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
@@ -2199,6 +2200,7 @@ def show_ingress_sticky_session(cmd, name, resource_group_name):
         return containerapp_def["properties"]["configuration"]["ingress"]
     except Exception as e:
         raise ValidationError("Ingress must be enabled to enable sticky sessions. Try running `az containerapp ingress -h` for more info.") from e
+
 
 def show_registry(cmd, name, resource_group_name, server):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
