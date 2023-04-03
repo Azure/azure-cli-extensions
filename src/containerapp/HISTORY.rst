@@ -2,6 +2,10 @@
 
 Release History
 ===============
+Upcoming
++++++++
+* 'az containerapp exec': fix bugs for consumption workload based environment
+
 0.3.25
 ++++++
 * 'az containerapp create/update': --yaml support properties for api-version 2022-10-01 (e.g. exposedPort,clientCertificateMode,corsPolicy)

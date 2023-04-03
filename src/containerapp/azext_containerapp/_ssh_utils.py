@@ -183,12 +183,10 @@ def ping_container_app(app):
 
 def get_stdin_writer(connection: WebSocketConnection):
     if not is_platform_windows():
-        print("not windows")
         import tty
         tty.setcbreak(sys.stdin.fileno())  # needed to prevent printing arrow key characters
         writer = threading.Thread(target=_send_stdin, args=(connection, _getch_unix))
     else:
-        print("windows")
         enable_vt_mode()  # needed for interactive commands (ie vim)
         writer = threading.Thread(target=_send_stdin, args=(connection, _getch_windows))
 
