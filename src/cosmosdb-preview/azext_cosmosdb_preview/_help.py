@@ -7,7 +7,7 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-helps['cosmosdb mongocluster firewall rule'] = """
+helps['cosmosdb mongocluster firewall'] = """
 type: group
 short-summary: CosmosDB for Mongo cluster firewall.
 """

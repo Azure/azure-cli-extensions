@@ -188,12 +188,12 @@ def cli_cosmosdb_mongocluster_update(client,
                                      administrator_login=None,
                                      administrator_login_password=None,
                                      tags=None,
-                                     create_mode=CreateMode.DEFAULT.value,
-                                     server_version="5.0",
+                                     create_mode=None,
+                                     server_version=None,
                                      shard_node_tier=None,
                                      shard_node_ha=None,
                                      shard_node_disk_size_gb=None,
-                                     shard_kind=NodeKind.SHARD.value):
+                                     shard_kind=None):
 
     '''Updates an Azure Cosmos DB Mongo Cluster '''
 
