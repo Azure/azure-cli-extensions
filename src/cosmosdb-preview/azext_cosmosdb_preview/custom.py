@@ -1068,8 +1068,8 @@ def cli_cosmosdb_restore(cmd,
                                     gremlin_databases_to_restore=gremlin_databases_to_restore,
                                     tables_to_restore=tables_to_restore,
                                     arm_location=target_restorable_account.location,
-                                    source_backup_location=source_backup_location,
-                                    enable_public_network=enable_public_network)
+                                    enable_public_network=enable_public_network,
+                                    source_backup_location=source_backup_location)
 
 
 # pylint: disable=too-many-statements

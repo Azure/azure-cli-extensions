@@ -856,7 +856,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         account = self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
         print(account)
 
-        assert account['location'] == 'East US 2'
+        assert account['location'] == source_loc_for_xrr
 
         self.kwargs.update({
             'ins_id': account['instanceId']
@@ -880,7 +880,8 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         time.sleep(3662)
         restore_ts_string = restore_ts.isoformat()
         self.kwargs.update({
-            'rts': restore_ts_string
+            'rts': restore_ts_string,
+            'source_loc_for_xrr': source_loc_for_xrr
         })
 
         self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --source-backup-location "{source_loc_for_xrr}" --location {target_loc}')
