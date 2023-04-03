@@ -7,7 +7,6 @@
 
 VnetConfiguration = {
     "infrastructureSubnetId": None,
-    "runtimeSubnetId": None,
     "dockerBridgeCidr": None,
     "platformReservedCidr": None,
     "platformReservedDnsIP": None
@@ -16,15 +15,12 @@ VnetConfiguration = {
 ManagedEnvironment = {
     "location": None,
     "tags": None,
-    "sku": {
-        "name": "Consumption",
-    },
     "properties": {
         "daprAIInstrumentationKey": None,
         "vnetConfiguration": None,  # VnetConfiguration
-        "internalLoadBalancerEnabled": None,
         "appLogsConfiguration": None,
-        "customDomainConfiguration": None  # CustomDomainConfiguration
+        "customDomainConfiguration": None,  # CustomDomainConfiguration,
+        "workloadProfiles": None
     }
 }
 
@@ -191,7 +187,7 @@ ContainerApp = {
     "location": None,
     "identity": None,  # ManagedServiceIdentity
     "properties": {
-        "managedEnvironmentId": None,
+        "environmentId": None,
         "configuration": None,  # Configuration
         "template": None  # Template
     },

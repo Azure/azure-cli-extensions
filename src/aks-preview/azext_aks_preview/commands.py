@@ -243,3 +243,24 @@ def load_command_table(self, _):
         g.custom_command('create', 'aks_trustedaccess_role_binding_create')
         g.custom_command('update', 'aks_trustedaccess_role_binding_update')
         g.custom_command('delete', 'aks_trustedaccess_role_binding_delete', confirmation=True)
+
+    # AKS mesh commands
+    with self.command_group('aks mesh', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
+        g.custom_command(
+            'enable',
+            'aks_mesh_enable',
+            supports_no_wait=True)
+        g.custom_command(
+            'disable',
+            'aks_mesh_disable',
+            supports_no_wait=True,
+            confirmation=True)
+        g.custom_command(
+            'enable-ingress-gateway',
+            'aks_mesh_enable_ingress_gateway',
+            supports_no_wait=True)
+        g.custom_command(
+            'disable-ingress-gateway',
+            'aks_mesh_disable_ingress_gateway',
+            supports_no_wait=True,
+            confirmation=True)

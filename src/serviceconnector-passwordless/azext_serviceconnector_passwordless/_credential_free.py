@@ -441,28 +441,19 @@ class SqlHandler(TargetHandler):
             logger.warning("Connecting to database...")
             self.create_aad_user_in_sql(connection_args, query_list)
         except AzureConnectionError as e:
+            if not self.ip:
+                raise e
             logger.warning(e)
             # allow local access
-            from requests import get
-            ip_address = self.ip or get(IP_ADDRESS_CHECKER).text
+            ip_address = self.ip
             self.set_target_firewall(True, ip_name, ip_address, ip_address)
             try:
                 # create again
                 self.create_aad_user_in_sql(connection_args, query_list)
             except AzureConnectionError as e:
                 logger.warning(e)
-                try:
-                    if not self.skip_prompt:
-                        if not prompt_y_n(OPEN_ALL_IP_MESSAGE):
-                            raise AzureConnectionError(
-                                "Please confirm local environment can connect to database and try again.") from e
-                except NoTTYException as e:
-                    raise CLIInternalError(
-                        'Unable to prompt for confirmation as no tty available. Use --yes.') from e
-                self.set_target_firewall(
-                    True, ip_name, '0.0.0.0', '255.255.255.255')
-                # create again
-                self.create_aad_user_in_sql(connection_args, query_list)
+                raise AzureConnectionError(
+                    "Please confirm local environment can connect to database and try again.") from e
             finally:
                 self.set_target_firewall(False, ip_name)
 
