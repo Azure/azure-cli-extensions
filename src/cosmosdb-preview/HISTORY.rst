@@ -4,6 +4,8 @@ Release History
 ===============
 0.23.0
 * Create and manage mongo clusters.
+* Add support for performing in-account restore of deleted databases and graphs in a Gremlin account.
+* Add support for performing in-account restore of deleted tables in a Table account.
 
 ++++++
 0.22.0
