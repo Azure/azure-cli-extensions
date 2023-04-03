@@ -218,12 +218,19 @@ helps['aks create'] = """
               Using together with "azure" network plugin.
               Specify "azure" for Azure network policy manager and "calico" for calico network policy controller.
               Defaults to "" (network policy disabled).
+        - name: --network-dataplane
+          type: string
+          short-summary: The network dataplane to use.
+          long-summary: |
+              Network dataplane used in the Kubernetes cluster.
+              Specify "azure" to use the Azure dataplane (default) or "cilium" to enable Cilium dataplane.
         - name: --enable-cilium-dataplane
           type: bool
           short-summary: Use Cilium as the networking dataplane for the Kubernetes cluster.
           long-summary: |
               Used together with the "azure" network plugin.
               Requires either --pod-subnet-id or --network-plugin-mode=overlay.
+              This flag is deprecated in favor of --network-dataplane=cilium.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -741,6 +748,13 @@ helps['aks update'] = """
         - name: --node-os-upgrade-channel
           type: string
           short-summary: Manner in which the OS on your nodes is updated. It could be NodeImage, None, SecurityPatch or Unmanaged.
+        - name: --upgrade-settings
+          type: string
+          short-summary: A comma separated list of supported cluster upgrade settings. E.g., IgnoreKubernetesDeprecations.
+          long-summary: Allowed value is "IgnoreKubernetesDeprecations". If set as "", upgrade settings will be set to default and the existing overrides will no longer be effective.
+        - name: --upgrade-override-until
+          type: string
+          short-summary: Until when the cluster upgradeSettings overrides are effective. It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --upgrade-settings is set to IgnoreKubernetesDeprecations and --upgrade-override-until is not set, by default it will be set to 3 days from now.
         - name: --enable-managed-identity
           type: bool
           short-summary: Update current cluster to managed identity to manage cluster resource group.
@@ -774,6 +788,16 @@ helps['aks update'] = """
         - name: --enable-disk-driver
           type: bool
           short-summary: Enable AzureDisk CSI Driver.
+        - name: --pod-cidr
+          type: string
+          short-summary: A CIDR notation IP range from which to assign pod IPs when kubenet is used.
+          long-summary: This range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16.
+        - name: --network-plugin-mode
+          type: string
+          short-summary: The network plugin mode to use.
+          long-summary: |
+              Used to control the mode the network plugin should operate in. For example, "overlay" used with
+              --network-plugin=azure will use an overlay network (non-VNET IPs) for pods in the cluster.
         - name: --disk-driver-version
           type: string
           short-summary: Specify AzureDisk CSI Driver version.
