@@ -510,7 +510,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             ):
                 network_plugin_mode = self.mc.network_profile.network_plugin_mode
 
-
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return network_plugin_mode
@@ -3241,7 +3240,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if override_until is not None:
                 try:
                     mc.upgrade_settings.override_settings.until = parse(override_until)
-                except Exception as ex:  # pylint: disable=broad-except
+                except Exception as ex:  # pylint: disable=broad-except # noqa: F841
                     raise InvalidArgumentValueError(
                         f"{override_until} is not a valid datatime format."
                     )
