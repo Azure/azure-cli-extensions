@@ -1807,6 +1807,7 @@ def cli_begin_redistribute_mongo_container_partition_throughput(client,
 
     return async_partition_redistribute_throughput_result.result()
 
+
 def cli_cosmosdb_gremlin_database_restore(cmd,
                                           client,
                                           resource_group_name,
