@@ -188,11 +188,10 @@ class SslTests(ScenarioTest):
         self.assertTrue(len(app_result) > 0)
 
 
+@record_only()
 class CustomImageTest(ScenarioTest):
 
-    @ResourceGroupPreparer()
-    @SpringPreparer(additional_params='--disable-app-insights')
-    def test_app_deploy_container(self, resource_group, spring):
+    def test_app_deploy_container(self):
         self.kwargs.update({
             'app': 'test-container',
             'serviceName': 'cli-unittest',
