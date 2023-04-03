@@ -1,8 +1,8 @@
-import subprocess, sys, os
+import subprocess, sys, os, argparse
 
 def check_iscsi():
     if os.path.exists('/usr/bin/apt-get'):
-        command = f"dpkg -l open-iscsi1".split(' ')
+        command = f"dpkg -l open-iscsi".split(' ')
     elif os.path.exists('/usr/bin/yum'):
         command = f"rpm -qa | grep iscsi-initiator-utils".split(' ')
     elif os.path.exists('/usr/bin/zypper'):
@@ -22,7 +22,7 @@ def check_iscsi():
            
 def check_mpio():
     if os.path.exists('/usr/bin/apt-get'):
-        command = f"dpkg -l multipath-tools1".split(' ')
+        command = f"dpkg -l multipath-tools".split(' ')
     elif os.path.exists('/usr/bin/yum'):
         command = f"rpm -qa | grep device-mapper-multipath".split(' ')
     elif os.path.exists('/usr/bin/zypper'):
@@ -40,22 +40,20 @@ def check_mpio():
             else:
                 value = input('\033[93m[Y/Yes to terminate; N/No to proceed with rest of the steps]:\033[00m')
 
-def connect_single_volume(target_iqn, target_portal_hostname, target_portal_port, number_of_sessions):
+def check_connection(target_iqn, target_portal_hostname, target_portal_port):
     # try to connect, if failed then skip adding new sessions
     command = f"sudo iscsiadm -m node --targetname {target_iqn} -p {target_portal_hostname}:{target_portal_port} -l".split(' ')
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    if result.returncode!=0:
-        return 
+    return result.stderr!=''
         
+def connect_single_volume(target_iqn, target_portal_hostname, target_portal_port, number_of_sessions):    
+    print(f'Volume name [{target_iqn}]: Connecting to this volume')
     # add target and attempt to register a session
     command = f"sudo iscsiadm -m node --targetname {target_iqn} --portal {target_portal_hostname}:{target_portal_port} -o new".split(' ')
     subprocess.run(command)
     command = f"sudo iscsiadm -m node --targetname {target_iqn} -p {target_portal_hostname}:{target_portal_port} -l".split(' ')
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-   
-    # if a new session has been registered, need to reduce the num of sessions remaining 
-    if result.returncode==0:
-        number_of_sessions-=1
+    subprocess.run(command)
+    number_of_sessions-=1
 
     # get session id
     command = f"sudo iscsiadm -m session".split(' ')
@@ -67,12 +65,11 @@ def connect_single_volume(target_iqn, target_portal_hostname, target_portal_port
             break
         
     # register remaining sessions
-    if session_id:
-        command = f"sudo iscsiadm -m session -r {session_id} --op new".split(' ')
-        for i in range(number_of_sessions):
-            subprocess.run(command)
+    command = f"sudo iscsiadm -m session -r {session_id} --op new".split(' ')
+    for i in range(number_of_sessions):
+        subprocess.run(command)
             
-    # maintain persistent  connection
+    # maintain persistent connection
     command = f"sudo iscsiadm -m node --targetname {target_iqn} --portal {target_portal_hostname}:{target_portal_port} --op update -n node.session.nr_sessions -v {number_of_sessions}".split(' ')
     subprocess.run(command)
 
@@ -81,24 +78,27 @@ if __name__ == "__main__":
     # iSCSI initiator
     check_iscsi()
     
-    # # MPIO
+    # MPIO
     check_mpio()
     
-    print("keep running")
+    # get parameters
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-v", "--volume-names", nargs='+')
+    parser.add_argument("-i", "--target-iqns", nargs='+')
+    parser.add_argument("-n", "--target-portal-hostnames", nargs='+')
+    parser.add_argument("-p", "--target-portal-ports", nargs='+')
+    parser.add_argument("-s", "--num-of-sessions", nargs='+')
+    args = parser.parse_args(sys.argv[1:])
+    volume_names = args.volume_names if args.volume_names is not None else ["testvolume1"]
+    target_iqns = args.target_iqns if args.target_iqns is not None else ["iqn.2023-03.net.windows.core.blob.ElasticSan.es-4qtreagkjzj0:testvolume1"]
+    target_portal_hostnames = args.target_portal_hostnames if args.target_portal_hostnames is not None else ["es-4qtreagkjzj0.z45.blob.storage.azure.net"]
+    target_portal_ports = args.target_portal_ports if args.target_portal_ports is not None else [3260]
+    number_of_sessions = args.target_portal_ports if args.target_portal_ports is not None else [32] #default 32
+    number_of_sessions = [min(32, int(s)) for s in number_of_sessions]
     
-    # # get parameters
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("-v", "--volume-names", nargs='+')
-    # parser.add_argument("-i", "--target-iqns", nargs='+')
-    # parser.add_argument("-h", "--target-portal-hostnames", nargs='+')
-    # parser.add_argument("-p", "--target-portal-ports", nargs='+')
-    # parser.add_argument("-s", "--num-of-sessions", nargs='+')
-    # args = parser.parse_args(sys.argv[1:])
-    # target_iqns = args.target_iqns if args.target_iqns is not None else ["iqn.2023-03.net.windows.core.blob.ElasticSan.es-4qtreagkjzj0:testvolume1"]
-    # target_portal_hostnames = args.target_portal_hostnames if args.target_portal_hostnames is not None else ["es-4qtreagkjzj0.z45.blob.storage.azure.net"]
-    # target_portal_ports = args.target_portal_ports if args.target_portal_ports is not None else [3260]
-    # number_of_sessions = int(args.num_of_sessions) if args.num_of_sessions is not None else 32 #default 32
-    # number_of_sessions = min(32, number_of_sessions)
-    
-    # for volume_name in volume_names:
-    #     connect_single_volume(target_iqn, target_portal_hostname, target_portal_port, volume_name, number_of_sessions)
+    for i, volume_name in enumerate(volume_names):
+        connected = check_connection(target_iqns[i], target_portal_hostnames[i], target_portal_ports[i])
+        if connected:
+            print(f'Volume name [{target_iqns[i]}]: Skipped as this volume is already connected')
+            continue
+        # connect_single_volume(target_iqns[i], target_portal_hostnames[i], target_portal_ports[i], number_of_sessions)
