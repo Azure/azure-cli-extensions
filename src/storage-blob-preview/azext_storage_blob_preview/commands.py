@@ -50,7 +50,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.storage_custom_command_oauth('generate-sas', 'generate_sas_blob_uri',
                                        custom_command_type=blob_service_custom_sdk)
         g.storage_custom_command_oauth('set-tier', 'set_blob_tier_v2')
-        g.storage_command_oauth('snapshot', 'create_snapshot')  # need to refine output
         g.storage_custom_command_oauth('show', 'show_blob_v2', transform=transform_blob_json_output,
                                        table_transformer=transform_blob_output,
                                        exception_handler=show_exception_handler)

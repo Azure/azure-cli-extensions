@@ -85,9 +85,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
     tags_condition_type = CLIArgumentType(
         options_list='--tags-condition', min_api='2019-12-12',
         help='Specify a SQL where clause on blob tags to operate only on blobs with a matching value.')
-    timeout_type = CLIArgumentType(
-        help='Request timeout in seconds. Applies to each call to the service.', type=int
-    )
+
     t_delete_snapshots = self.get_sdk('_generated.models#DeleteSnapshotsOptionType',
                                       resource_type=CUSTOM_DATA_STORAGE_BLOB)
     delete_snapshots_type = CLIArgumentType(
@@ -193,12 +191,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.extra('snapshot', snapshot_type)
         c.extra('lease', lease_type)
         c.argument('version_id', version_id_type)
-
-    with self.argument_context('storage blob snapshot') as c:
-        c.register_blob_arguments()
-        c.register_precondition_options()
-        c.extra('lease', lease_type)
-        c.extra('if_tags_match_condition', tags_condition_type)
 
     with self.argument_context('storage blob tag list') as c:
         c.register_blob_arguments()
