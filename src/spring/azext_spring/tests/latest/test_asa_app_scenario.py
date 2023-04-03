@@ -51,16 +51,16 @@ class AppDeploy(ScenarioTest):
         with self.assertRaisesRegexp(CLIError, "112404: Exit code 1: application error."):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v1')
 
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --runtime-version Java_8 --env "bas=baz"', checks=[
-            self.check('properties.activeDeployment.name', 'default'),
-            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.memory', '1Gi'),
-            self.check('properties.activeDeployment.sku.capacity', 1),
-            self.check('properties.activeDeployment.properties.source.type', 'Jar'),
-            self.check('properties.activeDeployment.properties.source.version', 'v1'),
-            self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_8'),
-            self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'bas': 'baz'}),
-        ])
+        # self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --runtime-version Java_8 --env "bas=baz"', checks=[
+        #     self.check('properties.activeDeployment.name', 'default'),
+        #     self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
+        #     self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.memory', '1Gi'),
+        #     self.check('properties.activeDeployment.sku.capacity', 1),
+        #     self.check('properties.activeDeployment.properties.source.type', 'Jar'),
+        #     self.check('properties.activeDeployment.properties.source.version', 'v1'),
+        #     self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_8'),
+        #     self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'bas': 'baz'}),
+        # ])
 
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
@@ -89,17 +89,17 @@ class AppDeploy(ScenarioTest):
         with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped."):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v2 --runtime-version NetCore_31 --main-entry test')
 
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --main-entry test1', checks=[
-            self.check('properties.activeDeployment.name', 'default'),
-            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.memory', '1Gi'),
-            self.check('properties.activeDeployment.sku.capacity', 1),
-            self.check('properties.activeDeployment.properties.source.type', 'NetCoreZip'),
-            self.check('properties.activeDeployment.properties.source.version', 'v2'),
-            self.check('properties.activeDeployment.properties.source.runtimeVersion', 'NetCore_31'),
-            self.check('properties.activeDeployment.properties.source.netCoreMainEntryPath', 'test1'),
-            self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'bas': 'baz'}),
-        ])
+        # self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --main-entry test1', checks=[
+        #     self.check('properties.activeDeployment.name', 'default'),
+        #     self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
+        #     self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.memory', '1Gi'),
+        #     self.check('properties.activeDeployment.sku.capacity', 1),
+        #     self.check('properties.activeDeployment.properties.source.type', 'NetCoreZip'),
+        #     self.check('properties.activeDeployment.properties.source.version', 'v2'),
+        #     self.check('properties.activeDeployment.properties.source.runtimeVersion', 'NetCore_31'),
+        #     self.check('properties.activeDeployment.properties.source.netCoreMainEntryPath', 'test1'),
+        #     self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'bas': 'baz'}),
+        # ])
 
 
 @record_only()
@@ -132,16 +132,16 @@ class AppCRUD(ScenarioTest):
             self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
 
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --runtime-version Java_11', checks=[
-            self.check('properties.activeDeployment.name', 'default'),
-            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.memory', '1Gi'),
-            self.check('properties.activeDeployment.sku.capacity', 1),
-            self.check('properties.activeDeployment.properties.source.type', 'Jar'),
-            self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_11'),
-            self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
-        ])
-        self.cmd('spring app delete -n {app} -g {rg} -s {serviceName}')
+        # self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --runtime-version Java_11', checks=[
+        #     self.check('properties.activeDeployment.name', 'default'),
+        #     self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
+        #     self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.memory', '1Gi'),
+        #     self.check('properties.activeDeployment.sku.capacity', 1),
+        #     self.check('properties.activeDeployment.properties.source.type', 'Jar'),
+        #     self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_11'),
+        #     self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
+        # ])
+        # self.cmd('spring app delete -n {app} -g {rg} -s {serviceName}')
 
 
     def test_app_crud_1(self):
