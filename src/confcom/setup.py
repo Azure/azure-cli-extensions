@@ -70,21 +70,9 @@ for release in r.json():
             # download the file
             r = requests.get(exe_url)
             # save the file to the bin folder
-            with open(bin_folder + asset["name"], "wb") as f:
+            with open(os.path.join(bin_folder, asset["name"]), "wb") as f:
                 f.write(r.content)
-    # break out of the loop if we have both files
-    if bin_flag and exe_flag:
-        # get the download url for the dmverity-vhd file
-        api_svn_url = release["html_url"]
-        # update the url to get framework svn file
-        api_svn_url = api_svn_url.replace("releases/tag", "raw")
-        api_svn_url += "/pkg/securitypolicy/svn_api"
-        # download the file
-        r = requests.get(api_svn_url)
-        # save the file to the data folder
-        with open(data_folder + "svn_api", "wb") as f:
-            f.write(r.content)
-        break
+    break
 
 with open("README.md", "r", encoding="utf-8") as f:
     README = f.read()

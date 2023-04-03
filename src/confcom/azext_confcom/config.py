@@ -132,9 +132,7 @@ CUSTOMER_REGO_POLICY = os_util.load_str_from_file(REGO_FILE_PATH)
 SIDECAR_REGO_FILE = "./data/sidecar_rego_policy.txt"
 SIDECAR_REGO_FILE_PATH = f"{script_directory}/{SIDECAR_REGO_FILE}"
 SIDECAR_REGO_POLICY = os_util.load_str_from_file(SIDECAR_REGO_FILE_PATH)
-# api svn file
-SVN_API_FILE = "./data/svn_api"
-SVN_API_PATH = f"{script_directory}/{SVN_API_FILE}"
-SVN_API_VERSION = os_util.load_str_from_file(SVN_API_PATH)
+# api version
+API_VERSION = _config["version_api"]
 # default containers to be added to all container groups
 DEFAULT_CONTAINERS = _config["default_containers"]

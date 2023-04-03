@@ -63,7 +63,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self._disable_stdio = disable_stdio
         self._fragments = rego_fragments
         self._existing_fragments = existing_rego_fragments
-        self._api_version = config.SVN_API_VERSION
+        self._api_version = config.API_VERSION
         if debug_mode:
             self._allow_properties_access = config.DEBUG_MODE_SETTINGS.get(
                 "allowPropertiesAccess"
