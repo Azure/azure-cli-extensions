@@ -14,7 +14,8 @@ except ImportError:
     from distutils import log as logger
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-VERSION = '0.3.0'
+
+VERSION = '0.3.1'
 try:
     from azext_serviceconnector_passwordless.config import VERSION
 except ImportError:
