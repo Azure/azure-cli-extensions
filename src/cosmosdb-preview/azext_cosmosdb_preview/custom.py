@@ -966,7 +966,8 @@ def cli_cosmosdb_restore(cmd,
                          databases_to_restore=None,
                          gremlin_databases_to_restore=None,
                          tables_to_restore=None,
-                         enable_public_network=None):
+                         enable_public_network=None,
+                         source_backup_location=None):
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
     restorable_database_accounts_list = list(restorable_database_accounts)
@@ -1067,7 +1068,8 @@ def cli_cosmosdb_restore(cmd,
                                     gremlin_databases_to_restore=gremlin_databases_to_restore,
                                     tables_to_restore=tables_to_restore,
                                     arm_location=target_restorable_account.location,
-                                    enable_public_network=enable_public_network)
+                                    enable_public_network=enable_public_network,
+                                    source_backup_location=source_backup_location)
 
 
 # pylint: disable=too-many-statements
@@ -1111,7 +1113,8 @@ def _create_database_account(client,
                              restore_timestamp=None,
                              arm_location=None,
                              enable_materialized_views=None,
-                             enable_burst_capacity=None):
+                             enable_burst_capacity=None,
+                             source_backup_location=None):
 
     consistency_policy = None
     if default_consistency_level is not None:
@@ -1217,6 +1220,9 @@ def _create_database_account(client,
 
         if tables_to_restore is not None:
             restore_parameters.tables_to_restore = tables_to_restore
+
+        if source_backup_location is not None:
+            restore_parameters.source_backup_location = source_backup_location
 
     params = DatabaseAccountCreateUpdateParameters(
         location=arm_location,
@@ -1800,6 +1806,7 @@ def cli_begin_redistribute_mongo_container_partition_throughput(client,
                                                                                                              redistribute_throughput_parameters=redistribute_throughput_parameters)
 
     return async_partition_redistribute_throughput_result.result()
+
 
 def cli_cosmosdb_gremlin_database_restore(cmd,
                                           client,

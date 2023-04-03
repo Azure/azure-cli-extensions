@@ -296,18 +296,19 @@ def load_arguments(self, _):
             c.argument('continuous_tier', arg_type=get_enum_type(ContinuousTier), help="The tier of Continuous backup", arg_group='Backup Policy')
             c.argument('enable_materialized_views', options_list=['--enable-materialized-views', '--enable-mv'], arg_type=get_three_state_flag(), help="Flag to enable MaterializedViews on the account.", is_preview=True)
             c.argument('enable_burst_capacity', arg_type=get_three_state_flag(), help="Flag to enable burst capacity on the account.", is_preview=True)
-            
+
     with self.argument_context('cosmosdb restore') as c:
         c.argument('target_database_account_name', options_list=['--target-database-account-name', '-n'], help='Name of the new target Cosmos DB database account after the restore')
         c.argument('account_name', completer=None, options_list=['--account-name', '-a'], help='Name of the source Cosmos DB database account for the restore', id_part=None)
         c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the account has to be restored to.")
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), help="The location of the source account from which restore is triggered. This will also be the write region of the restored account")
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), help="This is the write region of the restored account. This is also the location of the source account where its backups are located if source_backup_location is not provided.")
         c.argument('databases_to_restore', nargs='+', action=CreateDatabaseRestoreResource)
         c.argument('gremlin_databases_to_restore', nargs='+', action=CreateGremlinDatabaseRestoreResource, is_preview=True)
         c.argument('tables_to_restore', nargs='+', action=CreateTableRestoreResource, is_preview=True)
         c.argument('assign_identity', nargs='*', help="Assign system or user assigned identities separated by spaces. Use '[system]' to refer system assigned identity.", is_preview=True)
         c.argument('default_identity', help="The primary identity to access key vault in CMK related features. e.g. 'FirstPartyIdentity', 'SystemAssignedIdentity' and more.", is_preview=True)
         c.argument('enable_public_network', options_list=['--enable-public-network', '-e'], arg_type=get_three_state_flag(), help="Enable or disable public network access to server.", is_preview=True)
+        c.argument('source_backup_location', help="This is the location of the source account where backups are located. Provide this value if the source and target are in different locations.", is_preview=True)
 
     # Restorable Database Accounts
     with self.argument_context('cosmosdb restorable-database-account show') as c:
