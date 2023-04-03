@@ -20,7 +20,38 @@ from azure.cli.testsdk.reverse_dependency import (
     get_dummy_cli,
 )
 from .custom_recording_processor import RegexSingleValueReplacer
+from knack.log import get_logger
 
+logger = get_logger(__name__)
+
+
+class SpringSubResourceWrapper(NoTrafficRecordingPreparer):
+    def __init__(self, *args, **kwargs):
+        if not args:
+            args = ['fake', 10]
+        super(SpringSubResourceWrapper, self).__init__(*args, **kwargs)
+
+    def _get_resource_group(self, **kwargs):
+        try:
+            return kwargs.get(self.resource_group_parameter_name)
+        except KeyError:
+            template = 'To create a Spring a resource group is required. Please add ' \
+                       'decorator @{} in front of this Spring preparer.'
+            raise CliTestError(template.format(SpringResourceGroupPreparer.__name__))
+
+    def _get_spring(self, **kwargs):
+        try:
+            return kwargs.get(self.spring_parameter_name)
+        except KeyError:
+            template = 'To get a Spring app, a Spring resource is required. Please add ' \
+                       'decorator @{} in front of this Spring preparer.'
+            raise CliTestError(template.format(SpringPreparer.__name__))
+
+    def _safe_exec(self, cmd):
+        try:
+            self.live_only_execute(self.cli_ctx, cmd, expect_failure=True)
+        except Exception:
+            pass
 
 class SpringSingleValueReplacer(RegexSingleValueReplacer):
     def __init__(self, dev_setting_name, moniker):
@@ -92,7 +123,7 @@ class SpringPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             raise CliTestError(template.format(SpringResourceGroupPreparer.__name__))
 
 
-class SpringAppNamePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
+class SpringAppNamePreparer(SpringSubResourceWrapper, SingleValueReplacer):
     """
     Prepare a Spring instance before testing and distroy it when finishing.
     It runs `az spring create -n {} -g {} {addtional_params}` to create the instance
@@ -132,19 +163,3 @@ class SpringAppNamePreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         spring = self._get_spring(**kwargs)
         template = 'az spring app delete -n {} -s {} -g {}'.format(name, spring, group)
         self.live_only_execute(self.cli_ctx, template)
-
-    def _get_resource_group(self, **kwargs):
-        try:
-            return kwargs.get(self.resource_group_parameter_name)
-        except KeyError:
-            template = 'To create a Spring a resource group is required. Please add ' \
-                       'decorator @{} in front of this Spring preparer.'
-            raise CliTestError(template.format(SpringResourceGroupPreparer.__name__))
-
-    def _get_spring(self, **kwargs):
-        try:
-            return kwargs.get(self.spring_parameter_name)
-        except KeyError:
-            template = 'To get a Spring app, a Spring resource is required. Please add ' \
-                       'decorator @{} in front of this Spring preparer.'
-            raise CliTestError(template.format(SpringPreparer.__name__))

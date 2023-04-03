@@ -29,7 +29,7 @@ class RegexSingleValueReplacer(RecordingProcessor):
         if is_text_payload(request) and request.body:
             body = str(request.body, 'utf-8') if isinstance(request.body, bytes) else str(request.body)
             if self.anchor in body:
-                request.body = self._replace(request.body)
+                request.body = self._replace(body)
         return request
 
     def process_response(self, response):
