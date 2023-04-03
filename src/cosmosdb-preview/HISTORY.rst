@@ -4,6 +4,7 @@ Release History
 ===============
 0.23.0
 * Create and manage mongo clusters.
+* Add 'enable_public_network' param to 'cosmosdb restore' command
 * Add support for performing in-account restore of deleted databases and graphs in a Gremlin account.
 * Add support for performing in-account restore of deleted tables in a Table account.
 
