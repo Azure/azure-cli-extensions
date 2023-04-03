@@ -27,15 +27,15 @@ class MongoClusterScenarioTest(ScenarioTest):
             'admin_user': self.create_random_name(prefix='cli', length=8),
             'admin_password': 'Cli1@asvrct',
             'server_version': '5.0',
-            'shard_node_sku': 'M40',
-            'shard_node_sku_update': 'M50',
+            'shard_node_tier': 'M40',
+            'shard_node_tier_update': 'M50',
             'shard_node_ha': True,
             'shard_node_disk_size_gb': 128,
             'shard_node_count': 2,
         })
 
         # Create Cluster
-        cluster = self.cmd('az cosmosdb mongocluster create --cluster-name {c} --resource-group {rg} --location {loc} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-sku {shard_node_sku} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb} --shard-node-count {shard_node_count}').get_output_in_json()
+        cluster = self.cmd('az cosmosdb mongocluster create --cluster-name {c} --resource-group {rg} --location {loc} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-tier {shard_node_tier} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb} --shard-node-count {shard_node_count}').get_output_in_json()
         assert cluster['provisioningState'] == 'Succeeded'
 
         # show cluster 
@@ -49,14 +49,14 @@ class MongoClusterScenarioTest(ScenarioTest):
         # create resource group
         self.cmd('az group create -l {loc} -n {rg_new}')
         
-        cluster = self.cmd('az cosmosdb mongocluster create --cluster-name {c_new} --resource-group {rg_new} --location {loc} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-sku {shard_node_sku} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb} --shard-node-count {shard_node_count}').get_output_in_json()
+        cluster = self.cmd('az cosmosdb mongocluster create --cluster-name {c_new} --resource-group {rg_new} --location {loc} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-tier {shard_node_tier} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb} --shard-node-count {shard_node_count}').get_output_in_json()
         assert cluster['provisioningState'] == 'Succeeded'
 
         clusters = self.cmd('az cosmosdb mongocluster list -g {rg_new}').get_output_in_json()
         assert len(clusters) == 1
 
         # update sku
-        cluster = self.cmd('az cosmosdb mongocluster update --cluster-name {c_new} --resource-group {rg_new} --location {loc} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-sku {shard_node_sku_update} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb} --shard-node-count {shard_node_count}').get_output_in_json()
+        cluster = self.cmd('az cosmosdb mongocluster update --cluster-name {c_new} --resource-group {rg_new} --location {loc} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-tier {shard_node_tier_update} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb} --shard-node-count {shard_node_count}').get_output_in_json()
         assert cluster['provisioningState'] == 'Succeeded'
         
         # Delete Clusters
@@ -80,7 +80,7 @@ class MongoClusterScenarioTest(ScenarioTest):
             'admin_user': self.create_random_name(prefix='cli', length=8),
             'admin_password': 'Cli1@asvrct',
             'server_version': '5.0',
-            'shard_node_sku': 'M40',
+            'shard_node_tier': 'M40',
             'shard_node_ha': True,
             'shard_node_disk_size_gb': 128,
             'shard_node_count': 2,
@@ -91,7 +91,7 @@ class MongoClusterScenarioTest(ScenarioTest):
         })
 
         # Create Cluster
-        cluster = self.cmd('az cosmosdb mongocluster create --cluster-name {c} --resource-group {rg} --location {loc} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-sku {shard_node_sku} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb} --shard-node-count {shard_node_count}').get_output_in_json()
+        cluster = self.cmd('az cosmosdb mongocluster create --cluster-name {c} --resource-group {rg} --location {loc} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-tier {shard_node_tier} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb} --shard-node-count {shard_node_count}').get_output_in_json()
         assert cluster['provisioningState'] == 'Succeeded'
 
         # show cluster 

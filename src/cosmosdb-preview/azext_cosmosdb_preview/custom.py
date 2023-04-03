@@ -40,6 +40,12 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     MongoDBDatabaseCreateUpdateParameters,
     MongoDBCollectionResource,
     MongoDBCollectionCreateUpdateParameters,
+    TableResource,
+    TableCreateUpdateParameters,
+    GremlinDatabaseResource,
+    GremlinDatabaseCreateUpdateParameters,
+    GremlinGraphResource,
+    GremlinGraphCreateUpdateParameters,
     Location,
     CreateMode,
     ConsistencyPolicy,
@@ -107,7 +113,7 @@ def cli_cosmosdb_mongocluster_firewall_rule_update(client,
         start_ip_address = mongo_cluster_firewallRule.startIpAddress
 
     if end_ip_address is None:
-        firewall_rule_end_ip_address = mongo_cluster_firewallRule.endIpAddress
+        end_ip_address = mongo_cluster_firewallRule.endIpAddress
 
     firewall_rule = FirewallRule(start_ip_address=start_ip_address, end_ip_address=end_ip_address)
 
@@ -137,56 +143,37 @@ def cli_cosmosdb_mongocluster_firewall_rule_delete(client, resource_group_name, 
 
 def cli_cosmosdb_mongocluster_create(client,
                                      resource_group_name,
-                                    cluster_name,
-                                    administrator_login,
-                                    administrator_login_password,
-                                    location,
-                                    tags=None,
-                                    create_mode=CreateMode.DEFAULT.value,
-                                    restore_point_in_time_utc=None,
-                                    restore_source_resource_id=None,
-                                    server_version="5.0",
-                                    shard_node_sku=None,
-                                    shard_node_disk_size_gb=None, 
-                                    shard_node_ha=None,
-                                    shard_node_name=None,
-                                    shard_kind=NodeKind.SHARD.value,
-                                    shard_node_count=1):
+                                     cluster_name,
+                                     administrator_login,
+                                     administrator_login_password,
+                                     location,
+                                     tags=None,
+                                     create_mode=CreateMode.DEFAULT.value,
+                                     server_version="5.0",
+                                     shard_node_tier=None,
+                                     shard_node_disk_size_gb=None,
+                                     shard_node_ha=None,
+                                     shard_kind=NodeKind.SHARD.value,
+                                     shard_node_count=1):
 
     '''Creates an Azure Cosmos DB Mongo Cluster '''
-    
-    if administrator_login is None:
-        raise InvalidArgumentValueError('Initial Mongo Cluster Admin user is required.')
 
-    if administrator_login_password is None :
-        raise InvalidArgumentValueError('Initial Mongo Cluster Admin Password is required.')
-
-    if restore_point_in_time_utc is not None and restore_source_resource_id is None:
-        raise InvalidArgumentValueError('Both(restore_point_in_time_utc and restore_source_resource_id) Mongo Cluster restore parameters must be provided together')
-
-    if restore_point_in_time_utc is None and restore_source_resource_id is not None:
-        raise InvalidArgumentValueError('Both(restore_point_in_time_utc and restore_source_resource_id) Mongo Cluster restore parameters must be provided together.')
-    
-    mongocluster_restore_parameters = MongoClusterRestoreParameters(
-        point_in_time_utc=restore_point_in_time_utc,
-        source_resource_id=restore_source_resource_id,
-    )
+    if ((administrator_login is None and administrator_login_password is not None) or (administrator_login is not None and administrator_login_password is None)):
+        raise InvalidArgumentValueError('Both(administrator_login and administrator_login_password) Mongo Cluster admin user parameters must be provided together')
 
     node_group_spec = NodeGroupSpec(
-        sku= shard_node_sku,
-        disk_size_gb= shard_node_disk_size_gb,
+        sku=shard_node_tier,
+        disk_size_gb=shard_node_disk_size_gb,
         enable_ha=shard_node_ha,
-        name= shard_node_name,
         kind=shard_kind,
-        node_count= shard_node_count
+        node_count=shard_node_count
     )
-    
+
     node_group_specs = [node_group_spec]
     mongodb_cluster = MongoCluster(
         location=location,
         tags=tags,
         create_mode=create_mode,
-        restore_parameters= mongocluster_restore_parameters,
         administrator_login=administrator_login,
         administrator_login_password=administrator_login_password,
         server_version=server_version,
@@ -194,31 +181,29 @@ def cli_cosmosdb_mongocluster_create(client,
 
     return client.begin_create_or_update(resource_group_name, cluster_name, mongodb_cluster)
 
+
 def cli_cosmosdb_mongocluster_update(client,
-                                    resource_group_name,
-                                    cluster_name,
-                                    administrator_login=None,
-                                    administrator_login_password=None,
-                                    tags=None,
-                                    create_mode=CreateMode.DEFAULT.value,
-                                    server_version="5.0",
-                                    shard_node_sku=None,
-                                    shard_node_ha=None,
-                                    shard_node_disk_size_gb=None, 
-                                    shard_node_name=None,
-                                    shard_kind=NodeKind.SHARD.value):
+                                     resource_group_name,
+                                     cluster_name,
+                                     administrator_login=None,
+                                     administrator_login_password=None,
+                                     tags=None,
+                                     create_mode=CreateMode.DEFAULT.value,
+                                     server_version="5.0",
+                                     shard_node_tier=None,
+                                     shard_node_ha=None,
+                                     shard_node_disk_size_gb=None,
+                                     shard_kind=NodeKind.SHARD.value):
 
     '''Updates an Azure Cosmos DB Mongo Cluster '''
 
     mongo_cluster_resource = client.get(resource_group_name, cluster_name)
 
     # user name and password should be updated together
-    if administrator_login is None and administrator_login_password is not None:
-          raise InvalidArgumentValueError('Both administrator_login and administrator_login_password should be updated together.')
-    
-    if administrator_login is not None and administrator_login_password is None:
-          raise InvalidArgumentValueError('Both administrator_login and administrator_login_password should be updated together.')
-  
+
+    if ((administrator_login is None and administrator_login_password is not None) or (administrator_login is not None and administrator_login_password is None)):
+        raise InvalidArgumentValueError('Both(administrator_login and administrator_login_password) Mongo Cluster admin user parameters must be provided together')
+
     if administrator_login_password is None:
         administrator_login_password = mongo_cluster_resource.administrator_login_password
 
@@ -230,29 +215,26 @@ def cli_cosmosdb_mongocluster_update(client,
     if tags is None:
         tags = mongo_cluster_resource.tags
     if create_mode is None:
-        create_mode= mongo_cluster_resource.create_mode
-    
+        create_mode = mongo_cluster_resource.create_mode
+
     # Shard info update.
-    if shard_node_sku is None:
-        shard_node_sku= mongo_cluster_resource.node_group_specs[0].sku
+    if shard_node_tier is None:
+        shard_node_tier = mongo_cluster_resource.node_group_specs[0].sku
     if shard_node_disk_size_gb is None:
-        shard_node_disk_size_gb= mongo_cluster_resource.node_group_specs[0].disk_size_gb
+        shard_node_disk_size_gb = mongo_cluster_resource.node_group_specs[0].disk_size_gb
     if shard_node_ha is None:
-        shard_node_ha= mongo_cluster_resource.node_group_specs[0].enable_ha
-    if shard_node_name is None:
-        shard_node_name= mongo_cluster_resource.node_group_specs[0].additional_properties["name"]
+        shard_node_ha = mongo_cluster_resource.node_group_specs[0].enable_ha
     if shard_kind is None:
-        shard_kind= mongo_cluster_resource.node_group_specs[0].kind
-   
+        shard_kind = mongo_cluster_resource.node_group_specs[0].kind
+
     node_group_spec = NodeGroupSpec(
-        sku= shard_node_sku,
-        disk_size_gb= shard_node_disk_size_gb,
+        sku=shard_node_tier,
+        disk_size_gb=shard_node_disk_size_gb,
         enable_ha=shard_node_ha,
-        name= shard_node_name,
         kind=shard_kind,
         node_count=None,
     )
-    
+
     node_group_specs = [node_group_spec]
     mongodb_cluster = MongoCluster(
         location=location,
@@ -264,7 +246,8 @@ def cli_cosmosdb_mongocluster_update(client,
         node_group_specs=node_group_specs)
 
     return client.begin_create_or_update(resource_group_name, cluster_name, mongodb_cluster)
-    
+
+
 def cli_cosmosdb_mongocluster_list(client,
                                    resource_group_name=None):
 
@@ -277,18 +260,20 @@ def cli_cosmosdb_mongocluster_list(client,
 
 
 def cli_cosmosdb_mongocluster_get(client,
-                                   resource_group_name, cluster_name):
+                                  resource_group_name, cluster_name):
 
     """Gets Azure CosmosDB Mongo Cluster"""
 
     return client.get(resource_group_name, cluster_name)
 
+
 def cli_cosmosdb_mongocluster_delete(client,
-                                   resource_group_name, cluster_name):
+                                     resource_group_name, cluster_name):
 
     """Delete Azure CosmosDB Mongo Cluster"""
 
     return client.begin_delete(resource_group_name, cluster_name)
+
 
 def cli_cosmosdb_managed_cassandra_cluster_create(client,
                                                   resource_group_name,
@@ -753,7 +738,8 @@ def cli_cosmosdb_create(cmd,
                         is_restore_request=None,
                         restore_source=None,
                         restore_timestamp=None,
-                        enable_materialized_views=None):
+                        enable_materialized_views=None,
+                        enable_burst_capacity=None):
     """Create a new Azure Cosmos DB database account."""
 
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -806,7 +792,8 @@ def cli_cosmosdb_create(cmd,
                                     gremlin_databases_to_restore=gremlin_databases_to_restore,
                                     tables_to_restore=tables_to_restore,
                                     arm_location=resource_group_location,
-                                    enable_materialized_views=enable_materialized_views)
+                                    enable_materialized_views=enable_materialized_views,
+                                    enable_burst_capacity=enable_burst_capacity)
 
 
 # pylint: disable=too-many-branches
@@ -837,7 +824,8 @@ def cli_cosmosdb_update(client,
                         analytical_storage_schema_type=None,
                         backup_policy_type=None,
                         continuous_tier=None,
-                        enable_materialized_views=None):
+                        enable_materialized_views=None,
+                        enable_burst_capacity=None):
     """Update an existing Azure Cosmos DB database account. """
     existing = client.get(resource_group_name, account_name)
 
@@ -927,7 +915,8 @@ def cli_cosmosdb_update(client,
         backup_policy=backup_policy,
         default_identity=default_identity,
         analytical_storage_configuration=analytical_storage_configuration,
-        enable_materialized_views=enable_materialized_views)
+        enable_materialized_views=enable_materialized_views,
+        enable_burst_capacity=enable_burst_capacity)
 
     async_docdb_update = client.begin_update(resource_group_name, account_name, params)
     docdb_account = async_docdb_update.result()
@@ -977,6 +966,7 @@ def cli_cosmosdb_restore(cmd,
                          databases_to_restore=None,
                          gremlin_databases_to_restore=None,
                          tables_to_restore=None,
+                         enable_public_network=None,
                          source_backup_location=None):
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
@@ -1078,7 +1068,8 @@ def cli_cosmosdb_restore(cmd,
                                     gremlin_databases_to_restore=gremlin_databases_to_restore,
                                     tables_to_restore=tables_to_restore,
                                     arm_location=target_restorable_account.location,
-                                    source_backup_location=source_backup_location)
+                                    source_backup_location=source_backup_location,
+                                    enable_public_network=enable_public_network)
 
 
 # pylint: disable=too-many-statements
@@ -1122,6 +1113,7 @@ def _create_database_account(client,
                              restore_timestamp=None,
                              arm_location=None,
                              enable_materialized_views=None,
+                             enable_burst_capacity=None,
                              source_backup_location=None):
 
     consistency_policy = None
@@ -1258,7 +1250,8 @@ def _create_database_account(client,
         analytical_storage_configuration=analytical_storage_configuration,
         create_mode=create_mode,
         restore_parameters=restore_parameters,
-        enable_materialized_views=enable_materialized_views
+        enable_materialized_views=enable_materialized_views,
+        enable_burst_capacity=enable_burst_capacity
     )
 
     async_docdb_create = client.begin_create_or_update(resource_group_name, account_name, params)
@@ -1813,3 +1806,142 @@ def cli_begin_redistribute_mongo_container_partition_throughput(client,
                                                                                                              redistribute_throughput_parameters=redistribute_throughput_parameters)
 
     return async_partition_redistribute_throughput_result.result()
+
+def cli_cosmosdb_gremlin_database_restore(cmd,
+                                          client,
+                                          resource_group_name,
+                                          account_name,
+                                          database_name,
+                                          restore_timestamp=None):
+    restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
+    restorable_database_accounts = restorable_database_accounts_client.list()
+    restorable_database_accounts_list = list(restorable_database_accounts)
+    restore_timestamp_datetime_utc = _convert_to_utc_timestamp(restore_timestamp)
+    restorable_database_account = None
+
+    for account in restorable_database_accounts_list:
+        if account.account_name == account_name:
+            if account.deletion_time is not None:
+                if account.deletion_time >= restore_timestamp_datetime_utc >= account.creation_time:
+                    raise CLIError("Cannot perform inaccount restore on a deleted database account {}".format(account_name))
+            else:
+                if restore_timestamp_datetime_utc >= account.creation_time:
+                    restorable_database_account = account
+                    break
+
+    if restorable_database_account is None:
+        raise CLIError("Cannot find a Gremlin database account with name {} that is online at {}".format(account_name, restore_timestamp))
+
+    # """Restores the deleted Azure Cosmos DB Gremlin database"""
+    create_mode = CreateMode.restore.value
+    restore_parameters = RestoreParameters(
+        restore_source=restorable_database_account.id,
+        restore_timestamp_in_utc=restore_timestamp
+    )
+
+    gremlin_database_resource = GremlinDatabaseCreateUpdateParameters(
+        resource=SqlDatabaseResource(
+            id=database_name,
+            create_mode=create_mode,
+            restore_parameters=restore_parameters)
+    )
+
+    return client.begin_create_update_gremlin_database(resource_group_name,
+                                                       account_name,
+                                                       database_name,
+                                                       gremlin_database_resource)
+
+
+def cli_cosmosdb_gremlin_graph_restore(cmd,
+                                       client,
+                                       resource_group_name,
+                                       account_name,
+                                       database_name,
+                                       graph_name,
+                                       restore_timestamp=None):
+    # """Restores the deleted Azure Cosmos DB Gremlin graph """
+    restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
+    restorable_database_accounts = restorable_database_accounts_client.list()
+    restorable_database_accounts_list = list(restorable_database_accounts)
+    restore_timestamp_datetime_utc = _convert_to_utc_timestamp(restore_timestamp)
+    restorable_database_account = None
+
+    for account in restorable_database_accounts_list:
+        if account.account_name == account_name:
+            if account.deletion_time is not None:
+                if account.deletion_time >= restore_timestamp_datetime_utc >= account.creation_time:
+                    raise CLIError("Cannot perform inaccount restore on a deleted gremlin database account {}".format(account_name))
+            else:
+                if restore_timestamp_datetime_utc >= account.creation_time:
+                    restorable_database_account = account
+                    break
+
+    if restorable_database_account is None:
+        raise CLIError("Cannot find a database account with name {} that is online at {}".format(account_name, restore_timestamp))
+
+    # """Restores the deleted Azure Cosmos DB Gremlin graph"""
+    create_mode = CreateMode.restore.value
+    restore_parameters = RestoreParameters(
+        restore_source=restorable_database_account.id,
+        restore_timestamp_in_utc=restore_timestamp
+    )
+
+    gremlin_graph_resource = GremlinGraphResource(
+        id=graph_name,
+        create_mode=create_mode,
+        restore_parameters=restore_parameters)
+
+    gremlin_graph_create_update_resource = GremlinGraphCreateUpdateParameters(
+        resource=gremlin_graph_resource,
+        options={})
+
+    return client.begin_create_update_gremlin_graph(resource_group_name,
+                                                    account_name,
+                                                    database_name,
+                                                    graph_name,
+                                                    gremlin_graph_create_update_resource)
+
+
+def cli_cosmosdb_table_restore(cmd,
+                               client,
+                               resource_group_name,
+                               account_name,
+                               table_name,
+                               restore_timestamp=None):
+    # """Restores the deleted Azure Cosmos DB Table"""
+    restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
+    restorable_database_accounts = restorable_database_accounts_client.list()
+    restorable_database_accounts_list = list(restorable_database_accounts)
+    restore_timestamp_datetime_utc = _convert_to_utc_timestamp(restore_timestamp)
+    restorable_database_account = None
+
+    for account in restorable_database_accounts_list:
+        if account.account_name == account_name:
+            if account.deletion_time is not None:
+                if account.deletion_time >= restore_timestamp_datetime_utc >= account.creation_time:
+                    raise CLIError("Cannot perform inaccount restore on a deleted table {}".format(account_name))
+            else:
+                if restore_timestamp_datetime_utc >= account.creation_time:
+                    restorable_database_account = account
+                    break
+
+    if restorable_database_account is None:
+        raise CLIError("Cannot find a account with name {} that is online at {}".format(account_name, restore_timestamp))
+
+    # """Restores the deleted Azure Cosmos DB Table"""
+    create_mode = CreateMode.restore.value
+    restore_parameters = RestoreParameters(
+        restore_source=restorable_database_account.id,
+        restore_timestamp_in_utc=restore_timestamp
+    )
+
+    table_resource = TableCreateUpdateParameters(
+        resource=TableResource(id=table_name,
+                               create_mode=create_mode,
+                               restore_parameters=restore_parameters),
+        options={})
+
+    return client.begin_create_update_table(resource_group_name,
+                                            account_name,
+                                            table_name,
+                                            table_resource)
