@@ -170,8 +170,6 @@ def load_arguments(self, _):
         c.argument('shard_node_ha', arg_type=get_three_state_flag(), options_list=['--shard-node-ha'], help="If enabled the cluster has HA.", required=True, arg_group='Shard')
         c.argument('shard_node_disk_size_gb', options_list=['--shard-node-disk-size-gb'], help="The node disk size for mongo cluster.", required=True, arg_group='Shard')
         c.argument('shard_node_count', options_list=['--shard-node-count'], help="The node count for mongo cluster.", required=True, arg_group='Shard')
-        c.argument('restore_point_in_time_utc', options_list=['--restore-point-in-time-utc'], action=UtcDatetimeAction, help="The timestamp to which the account has to be restored to.", arg_group='Restore')
-        c.argument('restore_source_resource_id', options_list=['--restore-source-resource-id'], help="The restorable source Id of the source mongo cluster from which the cluster has to be restored", arg_group='Restore')
 
     with self.argument_context('cosmosdb mongocluster update') as c:
         c.argument('cluster_name', completer=None, options_list=['--cluster-name', '-c'], help='Name of the Cosmos DB Mongo Cluster.', id_part=None)

@@ -143,8 +143,6 @@ def cli_cosmosdb_mongocluster_create(client,
                                      location,
                                      tags=None,
                                      create_mode=CreateMode.DEFAULT.value,
-                                     restore_point_in_time_utc=None,
-                                     restore_source_resource_id=None,
                                      server_version="5.0",
                                      shard_node_tier=None,
                                      shard_node_disk_size_gb=None,
@@ -156,14 +154,6 @@ def cli_cosmosdb_mongocluster_create(client,
 
     if ((administrator_login is None and administrator_login_password is not None) or (administrator_login is not None and administrator_login_password is None)):
         raise InvalidArgumentValueError('Both(administrator_login and administrator_login_password) Mongo Cluster admin user parameters must be provided together')
-
-    if ((restore_point_in_time_utc is not None and restore_source_resource_id is None) or (restore_point_in_time_utc is None and restore_source_resource_id is not None)):
-        raise InvalidArgumentValueError('Both(restore_point_in_time_utc and restore_source_resource_id) Mongo Cluster restore parameters must be provided together')
-
-    mongocluster_restore_parameters = MongoClusterRestoreParameters(
-        point_in_time_utc=restore_point_in_time_utc,
-        source_resource_id=restore_source_resource_id,
-    )
 
     node_group_spec = NodeGroupSpec(
         sku=shard_node_tier,
@@ -178,7 +168,6 @@ def cli_cosmosdb_mongocluster_create(client,
         location=location,
         tags=tags,
         create_mode=create_mode,
-        restore_parameters=mongocluster_restore_parameters,
         administrator_login=administrator_login,
         administrator_login_password=administrator_login_password,
         server_version=server_version,
