@@ -159,6 +159,8 @@ class AppCRUD(ScenarioTest):
             self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
 
+        self.cmd('spring app show -n {app} -g {rg} -s {serviceName}')
+
         # green deployment copy settings from active, but still accept input as highest priority
         self.cmd('spring app deployment create -n green --app {app} -g {rg} -s {serviceName} --instance-count 2', checks=[
             self.check('name', 'green'),
@@ -169,6 +171,8 @@ class AppCRUD(ScenarioTest):
             self.check('sku.capacity', 2),
             self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
+
+        self.cmd('spring app show -n {app} -g {rg} -s {serviceName}')
 
         self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --runtime-version Java_11', checks=[
             self.check('properties.activeDeployment.name', 'default'),
@@ -212,7 +216,7 @@ class BlueGreenTest(ScenarioTest):
 
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
-    @SpringAppNamePreparer(skip_delete=True)
+    @SpringAppNamePreparer()
     def test_blue_green_deployment(self, resource_group, spring, app):
         self.kwargs.update({
             'app': app,
@@ -223,6 +227,10 @@ class BlueGreenTest(ScenarioTest):
         self.cmd('spring app create -n {app} -g {rg} -s {serviceName}', checks=[
             self.check('name', '{app}'),
             self.check('properties.activeDeployment.name', 'default')
+        ])
+
+        self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
+            self.check('properties.active', True)
         ])
 
         self.cmd('spring app deployment create --app {app} -n green -g {rg} -s {serviceName}', checks=[
@@ -258,8 +266,6 @@ class BlueGreenTest(ScenarioTest):
             self.check('properties.active', False)
         ])
 
-        self.cmd('spring app delete -n {app} -g {rg} -s {serviceName}')
-
 
 class I2aTLSTest(ScenarioTest):
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
@@ -273,8 +279,11 @@ class I2aTLSTest(ScenarioTest):
         })
 
         self.cmd('spring app create -n {app} -g {rg} -s {serviceName}')
+        self.cmd('spring app show -n {app} -g {rg} -s {serviceName}', checks=[
+            self.check('properties.enableEndToEndTls', False)
+        ])
 
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --enable-ingress-to-app-tls true', checks=[
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --enable-ingress-to-app-tls true --env foo=bar', checks=[
             self.check('properties.enableEndToEndTls', True)
         ])
 
@@ -285,15 +294,6 @@ class I2aTLSTest(ScenarioTest):
         self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --enable-ingress-to-app-tls false', checks=[
             self.check('properties.enableEndToEndTls', False)
         ])
-
-        self.cmd('spring app show -n {app} -g {rg} -s {serviceName}', checks=[
-            self.check('properties.enableEndToEndTls', False)
-        ])
-
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --enable-end-to-end-tls true', checks=[
-            self.check('properties.enableEndToEndTls', True)
-        ])
-
 
 @record_only()
 class GenerateDumpTest(ScenarioTest):

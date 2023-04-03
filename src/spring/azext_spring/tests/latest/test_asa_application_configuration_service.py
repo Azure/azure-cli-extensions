@@ -76,6 +76,9 @@ class ApplicationConfigurationServiceTest(ScenarioTest):
             self.check('properties.addonConfigs.applicationConfigurationService.resourceId',
             "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/configurationServices/default".format(self.get_subscription_id(), resource_group, spring))
         ])
+
+        self.cmd('spring app show -n {app} -g {rg} -s {serviceName}')
+
         self.cmd('spring application-configuration-service unbind --app {app} -g {rg} -s {serviceName}')
 
         self.cmd('spring application-configuration-service clear -g {rg} -s {serviceName}', checks=[

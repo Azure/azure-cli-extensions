@@ -34,6 +34,7 @@ class ServiceRegistryTest(ScenarioTest):
             self.check('properties.addonConfigs.serviceRegistry.resourceId',
             "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/serviceRegistries/default".format(self.get_subscription_id(), resource_group, spring))
         ])
+        self.cmd('spring app show -n {app} -g {rg} -s {serviceName}')
         self.cmd('spring service-registry unbind --app {app} -g {rg} -s {serviceName}')
 
         self.cmd('spring service-registry delete -g {rg} -s {serviceName} --yes')
