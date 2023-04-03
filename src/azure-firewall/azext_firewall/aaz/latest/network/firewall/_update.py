@@ -53,30 +53,21 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.location = AAZResourceLocationArg(
-            help="Resource location.",
+        _args_schema.firewall_policy = AAZStrArg(
+            options=["--policy", "--firewall-policy"],
+            help="Name or ID of the firewallPolicy associated with this azure firewall.",
             nullable=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.sku = AAZStrArg(
-            options=["--sku"],
-            help="SKU of Azure firewall. This field cannot be updated after the creation. The default sku in server end is AZFW_VNet. If you want to attach azure firewall to  vhub, you should set sku to AZFW_Hub.",
-            nullable=True,
-            enum={"AZFW_Hub": "AZFW_Hub", "AZFW_VNet": "AZFW_VNet"},
-        )
-        _args_schema.tier = AAZStrArg(
-            options=["--tier"],
-            help="Tier of an azure firewall. --tier will take effect only when --sku is set.",
-            nullable=True,
-            enum={"Basic": "Basic", "Premium": "Premium", "Standard": "Standard"},
         )
         _args_schema.threat_intel_mode = AAZStrArg(
             options=["--threat-intel-mode"],
             help="The operation mode for Threat Intelligence.",
             nullable=True,
             enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
+        )
+        _args_schema.virtual_hub = AAZStrArg(
+            options=["--vhub", "--virtual-hub"],
+            help="Name or ID of the virtualHub to which the firewall belongs.",
+            nullable=True,
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -99,6 +90,28 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define Arg Group "HubIpAddresses"
+
+        _args_schema = cls._args_schema
+        _args_schema.addresses = AAZListArg(
+            options=["--addresses"],
+            arg_group="HubIpAddresses",
+            help="The list of Public IP addresses associated with azure firewall or IP addresses to be retained.",
+            nullable=True,
+        )
+
+        addresses = cls._args_schema.addresses
+        addresses.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.addresses.Element
+        _element.address = AAZStrArg(
+            options=["address"],
+            help="Public IP Address value.",
+            nullable=True,
+        )
+
         # define Arg Group "Parameters"
 
         # define Arg Group "Properties"
@@ -110,446 +123,19 @@ class Update(AAZCommand):
             help="The additional properties used to further config this azure firewall.",
             nullable=True,
         )
-        _args_schema.application_rule_collections = AAZListArg(
-            options=["--application-rule-collections"],
-            arg_group="Properties",
-            help="Collection of application rule collections used by Azure Firewall.",
-            nullable=True,
-        )
-        _args_schema.firewall_policy = AAZObjectArg(
-            options=["--firewall-policy"],
-            arg_group="Properties",
-            help="The firewallPolicy associated with this azure firewall.",
-            nullable=True,
-        )
-        cls._build_args_sub_resource_update(_args_schema.firewall_policy)
-        _args_schema.hub_ip_addresses = AAZObjectArg(
-            options=["--hub-ip-addresses"],
-            arg_group="Properties",
-            help="IP addresses associated with AzureFirewall.",
-            nullable=True,
-        )
-        _args_schema.ip_configurations = AAZListArg(
-            options=["--ip-configurations"],
-            arg_group="Properties",
-            help="IP configuration of the Azure Firewall resource.",
-            nullable=True,
-        )
-        _args_schema.management_ip_configuration = AAZObjectArg(
-            options=["--management-ip-configuration"],
-            arg_group="Properties",
-            help="IP configuration of the Azure Firewall used for management traffic.",
-            nullable=True,
-        )
-        cls._build_args_azure_firewall_ip_configuration_update(_args_schema.management_ip_configuration)
-        _args_schema.nat_rule_collections = AAZListArg(
-            options=["--nat-rule-collections"],
-            arg_group="Properties",
-            help="Collection of NAT rule collections used by Azure Firewall.",
-            nullable=True,
-        )
-        _args_schema.network_rule_collections = AAZListArg(
-            options=["--network-rule-collections"],
-            arg_group="Properties",
-            help="Collection of network rule collections used by Azure Firewall.",
-            nullable=True,
-        )
-        _args_schema.virtual_hub = AAZObjectArg(
-            options=["--virtual-hub"],
-            arg_group="Properties",
-            help="The virtualHub to which the firewall belongs.",
-            nullable=True,
-        )
-        cls._build_args_sub_resource_update(_args_schema.virtual_hub)
 
         additional_properties = cls._args_schema.additional_properties
         additional_properties.Element = AAZStrArg(
             nullable=True,
         )
 
-        application_rule_collections = cls._args_schema.application_rule_collections
-        application_rule_collections.Element = AAZObjectArg(
-            nullable=True,
-        )
+        # define Arg Group "Virtual Hub Public Ip"
 
-        _element = cls._args_schema.application_rule_collections.Element
-        _element.id = AAZStrArg(
-            options=["id"],
-            help="Resource ID.",
-            nullable=True,
-        )
-        _element.name = AAZStrArg(
-            options=["name"],
-            help="The name of the resource that is unique within the Azure firewall. This name can be used to access the resource.",
-            nullable=True,
-        )
-        _element.action = AAZObjectArg(
-            options=["action"],
-            help="The action type of a rule collection.",
-            nullable=True,
-        )
-        cls._build_args_azure_firewall_rc_action_update(_element.action)
-        _element.priority = AAZIntArg(
-            options=["priority"],
-            help="Priority of the application rule collection resource.",
-            nullable=True,
-            fmt=AAZIntArgFormat(
-                maximum=65000,
-                minimum=100,
-            ),
-        )
-        _element.rules = AAZListArg(
-            options=["rules"],
-            help="Collection of rules used by a application rule collection.",
-            nullable=True,
-        )
-
-        rules = cls._args_schema.application_rule_collections.Element.rules
-        rules.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.application_rule_collections.Element.rules.Element
-        _element.description = AAZStrArg(
-            options=["description"],
-            help="Description of the rule.",
-            nullable=True,
-        )
-        _element.fqdn_tags = AAZListArg(
-            options=["fqdn-tags"],
-            help="List of FQDN Tags for this rule.",
-            nullable=True,
-        )
-        _element.name = AAZStrArg(
-            options=["name"],
-            help="Name of the application rule.",
-            nullable=True,
-        )
-        _element.protocols = AAZListArg(
-            options=["protocols"],
-            help="Array of ApplicationRuleProtocols.",
-            nullable=True,
-        )
-        _element.source_addresses = AAZListArg(
-            options=["source-addresses"],
-            help="List of source IP addresses for this rule.",
-            nullable=True,
-        )
-        _element.source_ip_groups = AAZListArg(
-            options=["source-ip-groups"],
-            help="List of source IpGroups for this rule.",
-            nullable=True,
-        )
-        _element.target_fqdns = AAZListArg(
-            options=["target-fqdns"],
-            help="List of FQDNs for this rule.",
-            nullable=True,
-        )
-
-        fqdn_tags = cls._args_schema.application_rule_collections.Element.rules.Element.fqdn_tags
-        fqdn_tags.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        protocols = cls._args_schema.application_rule_collections.Element.rules.Element.protocols
-        protocols.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.application_rule_collections.Element.rules.Element.protocols.Element
-        _element.port = AAZIntArg(
-            options=["port"],
-            help="Port number for the protocol, cannot be greater than 64000. This field is optional.",
-            nullable=True,
-            fmt=AAZIntArgFormat(
-                maximum=64000,
-                minimum=0,
-            ),
-        )
-        _element.protocol_type = AAZStrArg(
-            options=["protocol-type"],
-            help="Protocol type.",
-            nullable=True,
-            enum={"Http": "Http", "Https": "Https", "Mssql": "Mssql"},
-        )
-
-        source_addresses = cls._args_schema.application_rule_collections.Element.rules.Element.source_addresses
-        source_addresses.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        source_ip_groups = cls._args_schema.application_rule_collections.Element.rules.Element.source_ip_groups
-        source_ip_groups.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        target_fqdns = cls._args_schema.application_rule_collections.Element.rules.Element.target_fqdns
-        target_fqdns.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        hub_ip_addresses = cls._args_schema.hub_ip_addresses
-        hub_ip_addresses.public_ip_count = AAZIntArg(
-            options=["count", "public-ip-count"],
+        _args_schema = cls._args_schema
+        _args_schema.public_ip_count = AAZIntArg(
+            options=["--count", "--public-ip-count"],
+            arg_group="Virtual Hub Public Ip",
             help="Number of Public IP Address associated with azure firewall. It's used to add public ip addresses into this firewall.",
-            nullable=True,
-        )
-
-        ip_configurations = cls._args_schema.ip_configurations
-        ip_configurations.Element = AAZObjectArg(
-            nullable=True,
-        )
-        cls._build_args_azure_firewall_ip_configuration_update(ip_configurations.Element)
-
-        nat_rule_collections = cls._args_schema.nat_rule_collections
-        nat_rule_collections.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.nat_rule_collections.Element
-        _element.id = AAZStrArg(
-            options=["id"],
-            help="Resource ID.",
-            nullable=True,
-        )
-        _element.name = AAZStrArg(
-            options=["name"],
-            help="The name of the resource that is unique within the Azure firewall. This name can be used to access the resource.",
-            nullable=True,
-        )
-        _element.action = AAZObjectArg(
-            options=["action"],
-            help="The action type of a NAT rule collection.",
-            nullable=True,
-        )
-        _element.priority = AAZIntArg(
-            options=["priority"],
-            help="Priority of the NAT rule collection resource.",
-            nullable=True,
-            fmt=AAZIntArgFormat(
-                maximum=65000,
-                minimum=100,
-            ),
-        )
-        _element.rules = AAZListArg(
-            options=["rules"],
-            help="Collection of rules used by a NAT rule collection.",
-            nullable=True,
-        )
-
-        action = cls._args_schema.nat_rule_collections.Element.action
-        action.type = AAZStrArg(
-            options=["type"],
-            help="The type of action.",
-            nullable=True,
-            enum={"Dnat": "Dnat", "Snat": "Snat"},
-        )
-
-        rules = cls._args_schema.nat_rule_collections.Element.rules
-        rules.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.nat_rule_collections.Element.rules.Element
-        _element.description = AAZStrArg(
-            options=["description"],
-            help="Description of the rule.",
-            nullable=True,
-        )
-        _element.destination_addresses = AAZListArg(
-            options=["destination-addresses"],
-            help="List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags.",
-            nullable=True,
-        )
-        _element.destination_ports = AAZListArg(
-            options=["destination-ports"],
-            help="List of destination ports.",
-            nullable=True,
-        )
-        _element.name = AAZStrArg(
-            options=["name"],
-            help="Name of the NAT rule.",
-            nullable=True,
-        )
-        _element.protocols = AAZListArg(
-            options=["protocols"],
-            help="Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule.",
-            nullable=True,
-        )
-        _element.source_addresses = AAZListArg(
-            options=["source-addresses"],
-            help="List of source IP addresses for this rule.",
-            nullable=True,
-        )
-        _element.source_ip_groups = AAZListArg(
-            options=["source-ip-groups"],
-            help="List of source IpGroups for this rule.",
-            nullable=True,
-        )
-        _element.translated_address = AAZStrArg(
-            options=["translated-address"],
-            help="The translated address for this NAT rule.",
-            nullable=True,
-        )
-        _element.translated_fqdn = AAZStrArg(
-            options=["translated-fqdn"],
-            help="The translated FQDN for this NAT rule.",
-            nullable=True,
-        )
-        _element.translated_port = AAZStrArg(
-            options=["translated-port"],
-            help="The translated port for this NAT rule.",
-            nullable=True,
-        )
-
-        destination_addresses = cls._args_schema.nat_rule_collections.Element.rules.Element.destination_addresses
-        destination_addresses.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        destination_ports = cls._args_schema.nat_rule_collections.Element.rules.Element.destination_ports
-        destination_ports.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        protocols = cls._args_schema.nat_rule_collections.Element.rules.Element.protocols
-        protocols.Element = AAZStrArg(
-            nullable=True,
-            enum={"Any": "Any", "ICMP": "ICMP", "TCP": "TCP", "UDP": "UDP"},
-        )
-
-        source_addresses = cls._args_schema.nat_rule_collections.Element.rules.Element.source_addresses
-        source_addresses.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        source_ip_groups = cls._args_schema.nat_rule_collections.Element.rules.Element.source_ip_groups
-        source_ip_groups.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        network_rule_collections = cls._args_schema.network_rule_collections
-        network_rule_collections.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.network_rule_collections.Element
-        _element.id = AAZStrArg(
-            options=["id"],
-            help="Resource ID.",
-            nullable=True,
-        )
-        _element.name = AAZStrArg(
-            options=["name"],
-            help="The name of the resource that is unique within the Azure firewall. This name can be used to access the resource.",
-            nullable=True,
-        )
-        _element.action = AAZObjectArg(
-            options=["action"],
-            help="The action type of a rule collection.",
-            nullable=True,
-        )
-        cls._build_args_azure_firewall_rc_action_update(_element.action)
-        _element.priority = AAZIntArg(
-            options=["priority"],
-            help="Priority of the network rule collection resource.",
-            nullable=True,
-            fmt=AAZIntArgFormat(
-                maximum=65000,
-                minimum=100,
-            ),
-        )
-        _element.rules = AAZListArg(
-            options=["rules"],
-            help="Collection of rules used by a network rule collection.",
-            nullable=True,
-        )
-
-        rules = cls._args_schema.network_rule_collections.Element.rules
-        rules.Element = AAZObjectArg(
-            nullable=True,
-        )
-
-        _element = cls._args_schema.network_rule_collections.Element.rules.Element
-        _element.description = AAZStrArg(
-            options=["description"],
-            help="Description of the rule.",
-            nullable=True,
-        )
-        _element.destination_addresses = AAZListArg(
-            options=["destination-addresses"],
-            help="List of destination IP addresses.",
-            nullable=True,
-        )
-        _element.destination_fqdns = AAZListArg(
-            options=["destination-fqdns"],
-            help="List of destination FQDNs.",
-            nullable=True,
-        )
-        _element.destination_ip_groups = AAZListArg(
-            options=["destination-ip-groups"],
-            help="List of destination IpGroups for this rule.",
-            nullable=True,
-        )
-        _element.destination_ports = AAZListArg(
-            options=["destination-ports"],
-            help="List of destination ports.",
-            nullable=True,
-        )
-        _element.name = AAZStrArg(
-            options=["name"],
-            help="Name of the network rule.",
-            nullable=True,
-        )
-        _element.protocols = AAZListArg(
-            options=["protocols"],
-            help="Array of AzureFirewallNetworkRuleProtocols.",
-            nullable=True,
-        )
-        _element.source_addresses = AAZListArg(
-            options=["source-addresses"],
-            help="List of source IP addresses for this rule.",
-            nullable=True,
-        )
-        _element.source_ip_groups = AAZListArg(
-            options=["source-ip-groups"],
-            help="List of source IpGroups for this rule.",
-            nullable=True,
-        )
-
-        destination_addresses = cls._args_schema.network_rule_collections.Element.rules.Element.destination_addresses
-        destination_addresses.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        destination_fqdns = cls._args_schema.network_rule_collections.Element.rules.Element.destination_fqdns
-        destination_fqdns.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        destination_ip_groups = cls._args_schema.network_rule_collections.Element.rules.Element.destination_ip_groups
-        destination_ip_groups.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        destination_ports = cls._args_schema.network_rule_collections.Element.rules.Element.destination_ports
-        destination_ports.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        protocols = cls._args_schema.network_rule_collections.Element.rules.Element.protocols
-        protocols.Element = AAZStrArg(
-            nullable=True,
-            enum={"Any": "Any", "ICMP": "ICMP", "TCP": "TCP", "UDP": "UDP"},
-        )
-
-        source_addresses = cls._args_schema.network_rule_collections.Element.rules.Element.source_addresses
-        source_addresses.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        source_ip_groups = cls._args_schema.network_rule_collections.Element.rules.Element.source_ip_groups
-        source_ip_groups.Element = AAZStrArg(
             nullable=True,
         )
         return cls._args_schema
@@ -861,7 +447,6 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
             _builder.set_prop("zones", AAZListType, ".zones")
@@ -869,75 +454,19 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("additionalProperties", AAZDictType, ".additional_properties")
-                properties.set_prop("applicationRuleCollections", AAZListType, ".application_rule_collections")
-                _UpdateHelper._build_schema_sub_resource_update(properties.set_prop("firewallPolicy", AAZObjectType, ".firewall_policy"))
-                properties.set_prop("hubIPAddresses", AAZObjectType, ".hub_ip_addresses")
-                properties.set_prop("ipConfigurations", AAZListType, ".ip_configurations")
-                _UpdateHelper._build_schema_azure_firewall_ip_configuration_update(properties.set_prop("managementIpConfiguration", AAZObjectType, ".management_ip_configuration"))
-                properties.set_prop("natRuleCollections", AAZListType, ".nat_rule_collections")
-                properties.set_prop("networkRuleCollections", AAZListType, ".network_rule_collections")
+                properties.set_prop("firewallPolicy", AAZObjectType)
+                properties.set_prop("hubIPAddresses", AAZObjectType)
                 properties.set_prop("sku", AAZObjectType)
                 properties.set_prop("threatIntelMode", AAZStrType, ".threat_intel_mode")
-                _UpdateHelper._build_schema_sub_resource_update(properties.set_prop("virtualHub", AAZObjectType, ".virtual_hub"))
+                properties.set_prop("virtualHub", AAZObjectType)
 
             additional_properties = _builder.get(".properties.additionalProperties")
             if additional_properties is not None:
                 additional_properties.set_elements(AAZStrType, ".")
 
-            application_rule_collections = _builder.get(".properties.applicationRuleCollections")
-            if application_rule_collections is not None:
-                application_rule_collections.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.applicationRuleCollections[]")
-            if _elements is not None:
-                _elements.set_prop("id", AAZStrType, ".id")
-                _elements.set_prop("name", AAZStrType, ".name")
-                _elements.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-
-            properties = _builder.get(".properties.applicationRuleCollections[].properties")
-            if properties is not None:
-                _UpdateHelper._build_schema_azure_firewall_rc_action_update(properties.set_prop("action", AAZObjectType, ".action"))
-                properties.set_prop("priority", AAZIntType, ".priority")
-                properties.set_prop("rules", AAZListType, ".rules")
-
-            rules = _builder.get(".properties.applicationRuleCollections[].properties.rules")
-            if rules is not None:
-                rules.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.applicationRuleCollections[].properties.rules[]")
-            if _elements is not None:
-                _elements.set_prop("description", AAZStrType, ".description")
-                _elements.set_prop("fqdnTags", AAZListType, ".fqdn_tags")
-                _elements.set_prop("name", AAZStrType, ".name")
-                _elements.set_prop("protocols", AAZListType, ".protocols")
-                _elements.set_prop("sourceAddresses", AAZListType, ".source_addresses")
-                _elements.set_prop("sourceIpGroups", AAZListType, ".source_ip_groups")
-                _elements.set_prop("targetFqdns", AAZListType, ".target_fqdns")
-
-            fqdn_tags = _builder.get(".properties.applicationRuleCollections[].properties.rules[].fqdnTags")
-            if fqdn_tags is not None:
-                fqdn_tags.set_elements(AAZStrType, ".")
-
-            protocols = _builder.get(".properties.applicationRuleCollections[].properties.rules[].protocols")
-            if protocols is not None:
-                protocols.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.applicationRuleCollections[].properties.rules[].protocols[]")
-            if _elements is not None:
-                _elements.set_prop("port", AAZIntType, ".port")
-                _elements.set_prop("protocolType", AAZStrType, ".protocol_type")
-
-            source_addresses = _builder.get(".properties.applicationRuleCollections[].properties.rules[].sourceAddresses")
-            if source_addresses is not None:
-                source_addresses.set_elements(AAZStrType, ".")
-
-            source_ip_groups = _builder.get(".properties.applicationRuleCollections[].properties.rules[].sourceIpGroups")
-            if source_ip_groups is not None:
-                source_ip_groups.set_elements(AAZStrType, ".")
-
-            target_fqdns = _builder.get(".properties.applicationRuleCollections[].properties.rules[].targetFqdns")
-            if target_fqdns is not None:
-                target_fqdns.set_elements(AAZStrType, ".")
+            firewall_policy = _builder.get(".properties.firewallPolicy")
+            if firewall_policy is not None:
+                firewall_policy.set_prop("id", AAZStrType, ".firewall_policy")
 
             hub_ip_addresses = _builder.get(".properties.hubIPAddresses")
             if hub_ip_addresses is not None:
@@ -945,133 +474,20 @@ class Update(AAZCommand):
 
             public_i_ps = _builder.get(".properties.hubIPAddresses.publicIPs")
             if public_i_ps is not None:
+                public_i_ps.set_prop("addresses", AAZListType, ".addresses")
                 public_i_ps.set_prop("count", AAZIntType, ".public_ip_count")
 
-            ip_configurations = _builder.get(".properties.ipConfigurations")
-            if ip_configurations is not None:
-                _UpdateHelper._build_schema_azure_firewall_ip_configuration_update(ip_configurations.set_elements(AAZObjectType, "."))
+            addresses = _builder.get(".properties.hubIPAddresses.publicIPs.addresses")
+            if addresses is not None:
+                addresses.set_elements(AAZObjectType, ".")
 
-            nat_rule_collections = _builder.get(".properties.natRuleCollections")
-            if nat_rule_collections is not None:
-                nat_rule_collections.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.natRuleCollections[]")
+            _elements = _builder.get(".properties.hubIPAddresses.publicIPs.addresses[]")
             if _elements is not None:
-                _elements.set_prop("id", AAZStrType, ".id")
-                _elements.set_prop("name", AAZStrType, ".name")
-                _elements.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+                _elements.set_prop("address", AAZStrType, ".address")
 
-            properties = _builder.get(".properties.natRuleCollections[].properties")
-            if properties is not None:
-                properties.set_prop("action", AAZObjectType, ".action")
-                properties.set_prop("priority", AAZIntType, ".priority")
-                properties.set_prop("rules", AAZListType, ".rules")
-
-            action = _builder.get(".properties.natRuleCollections[].properties.action")
-            if action is not None:
-                action.set_prop("type", AAZStrType, ".type")
-
-            rules = _builder.get(".properties.natRuleCollections[].properties.rules")
-            if rules is not None:
-                rules.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.natRuleCollections[].properties.rules[]")
-            if _elements is not None:
-                _elements.set_prop("description", AAZStrType, ".description")
-                _elements.set_prop("destinationAddresses", AAZListType, ".destination_addresses")
-                _elements.set_prop("destinationPorts", AAZListType, ".destination_ports")
-                _elements.set_prop("name", AAZStrType, ".name")
-                _elements.set_prop("protocols", AAZListType, ".protocols")
-                _elements.set_prop("sourceAddresses", AAZListType, ".source_addresses")
-                _elements.set_prop("sourceIpGroups", AAZListType, ".source_ip_groups")
-                _elements.set_prop("translatedAddress", AAZStrType, ".translated_address")
-                _elements.set_prop("translatedFqdn", AAZStrType, ".translated_fqdn")
-                _elements.set_prop("translatedPort", AAZStrType, ".translated_port")
-
-            destination_addresses = _builder.get(".properties.natRuleCollections[].properties.rules[].destinationAddresses")
-            if destination_addresses is not None:
-                destination_addresses.set_elements(AAZStrType, ".")
-
-            destination_ports = _builder.get(".properties.natRuleCollections[].properties.rules[].destinationPorts")
-            if destination_ports is not None:
-                destination_ports.set_elements(AAZStrType, ".")
-
-            protocols = _builder.get(".properties.natRuleCollections[].properties.rules[].protocols")
-            if protocols is not None:
-                protocols.set_elements(AAZStrType, ".")
-
-            source_addresses = _builder.get(".properties.natRuleCollections[].properties.rules[].sourceAddresses")
-            if source_addresses is not None:
-                source_addresses.set_elements(AAZStrType, ".")
-
-            source_ip_groups = _builder.get(".properties.natRuleCollections[].properties.rules[].sourceIpGroups")
-            if source_ip_groups is not None:
-                source_ip_groups.set_elements(AAZStrType, ".")
-
-            network_rule_collections = _builder.get(".properties.networkRuleCollections")
-            if network_rule_collections is not None:
-                network_rule_collections.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.networkRuleCollections[]")
-            if _elements is not None:
-                _elements.set_prop("id", AAZStrType, ".id")
-                _elements.set_prop("name", AAZStrType, ".name")
-                _elements.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-
-            properties = _builder.get(".properties.networkRuleCollections[].properties")
-            if properties is not None:
-                _UpdateHelper._build_schema_azure_firewall_rc_action_update(properties.set_prop("action", AAZObjectType, ".action"))
-                properties.set_prop("priority", AAZIntType, ".priority")
-                properties.set_prop("rules", AAZListType, ".rules")
-
-            rules = _builder.get(".properties.networkRuleCollections[].properties.rules")
-            if rules is not None:
-                rules.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.networkRuleCollections[].properties.rules[]")
-            if _elements is not None:
-                _elements.set_prop("description", AAZStrType, ".description")
-                _elements.set_prop("destinationAddresses", AAZListType, ".destination_addresses")
-                _elements.set_prop("destinationFqdns", AAZListType, ".destination_fqdns")
-                _elements.set_prop("destinationIpGroups", AAZListType, ".destination_ip_groups")
-                _elements.set_prop("destinationPorts", AAZListType, ".destination_ports")
-                _elements.set_prop("name", AAZStrType, ".name")
-                _elements.set_prop("protocols", AAZListType, ".protocols")
-                _elements.set_prop("sourceAddresses", AAZListType, ".source_addresses")
-                _elements.set_prop("sourceIpGroups", AAZListType, ".source_ip_groups")
-
-            destination_addresses = _builder.get(".properties.networkRuleCollections[].properties.rules[].destinationAddresses")
-            if destination_addresses is not None:
-                destination_addresses.set_elements(AAZStrType, ".")
-
-            destination_fqdns = _builder.get(".properties.networkRuleCollections[].properties.rules[].destinationFqdns")
-            if destination_fqdns is not None:
-                destination_fqdns.set_elements(AAZStrType, ".")
-
-            destination_ip_groups = _builder.get(".properties.networkRuleCollections[].properties.rules[].destinationIpGroups")
-            if destination_ip_groups is not None:
-                destination_ip_groups.set_elements(AAZStrType, ".")
-
-            destination_ports = _builder.get(".properties.networkRuleCollections[].properties.rules[].destinationPorts")
-            if destination_ports is not None:
-                destination_ports.set_elements(AAZStrType, ".")
-
-            protocols = _builder.get(".properties.networkRuleCollections[].properties.rules[].protocols")
-            if protocols is not None:
-                protocols.set_elements(AAZStrType, ".")
-
-            source_addresses = _builder.get(".properties.networkRuleCollections[].properties.rules[].sourceAddresses")
-            if source_addresses is not None:
-                source_addresses.set_elements(AAZStrType, ".")
-
-            source_ip_groups = _builder.get(".properties.networkRuleCollections[].properties.rules[].sourceIpGroups")
-            if source_ip_groups is not None:
-                source_ip_groups.set_elements(AAZStrType, ".")
-
-            sku = _builder.get(".properties.sku")
-            if sku is not None:
-                sku.set_prop("name", AAZStrType, ".sku")
-                sku.set_prop("tier", AAZStrType, ".tier")
+            virtual_hub = _builder.get(".properties.virtualHub")
+            if virtual_hub is not None:
+                virtual_hub.set_prop("id", AAZStrType, ".virtual_hub")
 
             tags = _builder.get(".tags")
             if tags is not None:

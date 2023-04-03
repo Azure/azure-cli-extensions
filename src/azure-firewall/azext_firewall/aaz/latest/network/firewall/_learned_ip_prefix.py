@@ -42,9 +42,9 @@ class LearnedIpPrefix(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.azure_firewall_name = AAZStrArg(
-            options=["--azure-firewall-name"],
-            help="The name of the azure firewall.",
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="Azure Firewall name.",
             required=True,
             id_part="name",
         )
@@ -116,7 +116,7 @@ class LearnedIpPrefix(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "azureFirewallName", self.ctx.args.azure_firewall_name,
+                    "azureFirewallName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(

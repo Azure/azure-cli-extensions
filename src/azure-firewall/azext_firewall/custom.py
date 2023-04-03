@@ -13,7 +13,7 @@ from azure.cli.core.azclierror import UserFault, ServiceError, ValidationError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.tools import is_valid_resource_id, resource_id
 from ._client_factory import network_client_factory
-from .aaz.latest.network.firewall import Create as _AzureFirewallCreate
+from .aaz.latest.network.firewall import Create as _AzureFirewallCreate, Update as _AzureFirewallUpdate
 
 logger = get_logger(__name__)
 
@@ -89,9 +89,19 @@ class AzureFirewallCreate(_AzureFirewallCreate):
         args_schema.enable_udp_log_optimization = AAZBoolArg(
             options=['--enable-udp-log-optimization', '--udp-log-optimization'],
             help="Allow UDP log optimization. By default it is false.")
+        args_schema.dns_servers = AAZListArg(
+            options=['--dns-servers'],
+            arg_group="DNS",
+            help="Space-separated list of DNS server IP addresses.")
+        args_schema.dns_servers.Element = AAZStrArg()
         args_schema.enable_dns_proxy = AAZBoolArg(
             options=['--enable-dns-proxy'],
+            arg_group="DNS",
             help="Enable DNS Proxy.")
+        # "Network.RouteServerInfo.RouteServerID"
+        args_schema.route_server_id = AAZStrArg(
+            options=['--route-server-id'],
+            help="The Route Server Id for the firewall.")
         args_schema.conf_name = AAZStrArg(
             options=["--conf-name"],
             arg_group="Data Traffic IP Configuration",
@@ -102,13 +112,6 @@ class AzureFirewallCreate(_AzureFirewallCreate):
             arg_group="Data Traffic IP Configuration",
             help="The virtual network (VNet) name. It should contain one subnet called \"AzureFirewallSubnet\".",
         )
-        args_schema.subnet_id = AAZResourceIdArg(
-            options=["--subnet-id"],
-            help="test",
-            fmt=AAZResourceIdArgFormat(
-                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{vnet_name}/subnets/AzureFirewallSubnet"
-            ),
-        )
         args_schema.public_ip = AAZResourceIdArg(
             options=["--public-ip"],
             arg_group="Data Traffic IP Configuration",
@@ -117,6 +120,18 @@ class AzureFirewallCreate(_AzureFirewallCreate):
                 template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/publicIPAddresses/{}"
             ),
         )
+        args_schema.m_public_ip._fmt = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
+                     "/publicIPAddresses/{}",
+        )
+        args_schema.firewall_policy._fmt = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
+                     "/firewallPolicies/{}",
+        )
+        args_schema.additional_properties._registered = False
+        args_schema.ip_configurations._registered = False
+        args_schema.mgmt_ip_conf_subnet._registered = False
+
         return args_schema
 
     def pre_operations(self):
@@ -132,9 +147,9 @@ class AzureFirewallCreate(_AzureFirewallCreate):
             raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
 
         # validate basic sku firewall
-        if has_value(args.tier):
+        if has_value(args.tier) and has_value(args.sku):
             tier = args.tier.to_serialized_data()
-            if tier.lower() == 'basic' and args.sku and sku.lower() == 'azfw_vnet' \
+            if tier.lower() == 'basic' and sku.lower() == 'azfw_vnet' \
                     and not all([args.m_conf_name, args.m_public_ip]):
                 err_msg = "When creating Basic SKU firewall, both --m-conf-name and --m-public-ip-address should be provided."
                 raise ValidationError(err_msg)
@@ -142,39 +157,45 @@ class AzureFirewallCreate(_AzureFirewallCreate):
         args.additional_properties = {}
         if has_value(args.private_ranges):
             private_ranges = args.private_ranges.to_serialized_data()
-            private_ranges = ', '.join(private_ranges)
-            args.additional_properties['Network.SNAT.PrivateRanges'] = private_ranges
+            args.additional_properties['Network.SNAT.PrivateRanges'] = ', '.join(private_ranges)
 
         if not has_value(args.sku) or args.sku.to_serialized_data().lower() == 'azfw_vnet':
-            if has_value(args.firewall_policy):
+            if not has_value(args.firewall_policy):
                 if has_value(args.enable_dns_proxy):
                     # service side requires lowercase
-                    args.additional_properties['Network.DNS.EnableProxy'] = str(args.enable_dns_proxy.to_serialized_data()).lower()
+                    if args.enable_dns_proxy:
+                        args.additional_properties['Network.DNS.EnableProxy'] = 'true'
+                    else:
+                        args.additional_properties['Network.DNS.EnableProxy'] = 'false'
                 if has_value(args.dns_servers):
-                    args.additional_properties['Network.DNS.Servers'] = ','.join(args.dns_servers or '')
+                    dns_servers = args.dns_servers.to_serialized_data()
+                    args.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
 
-        if args.allow_active_ftp:
+        if has_value(args.allow_active_ftp) and args.allow_active_ftp:
             args.additional_properties['Network.FTP.AllowActiveFTP'] = 'true'
 
-        if args.enable_fat_flow_logging:
+        if has_value(args.enable_fat_flow_logging) and args.enable_fat_flow_logging:
             args.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging'] = 'true'
 
-        if args.enable_udp_log_optimization:
+        if has_value(args.enable_udp_log_optimization) and args.enable_udp_log_optimization:
             args.additional_properties['Network.AdditionalLogs.EnableUdpLogOptimization'] = 'true'
 
-        if len(args.additional_properties) == 0:
-            args.additional_properties = None
+        if has_value(args.route_server_id):
+            args.additional_properties['Network.RouteServerInfo.RouteServerID'] = args.route_server_id
 
         if has_value(args.conf_name):
-            # subnet_id = resource_id(
-            #     subscription=get_subscription_id(cmd.cli_ctx),
-            #     resource_group=resource_group_name,
-            #     namespace='Microsoft.Network',
-            #     type='virtualNetworks',
-            #     name=virtual_network_name,
-            #     child_type_1='subnets',
-            #     child_name_1='AzureFirewallSubnet'
-            # )
+            subnet_id = resource_id(
+                subscription=get_subscription_id(self.cli_ctx),
+                resource_group=args.resource_group,
+                namespace='Microsoft.Network',
+                type='virtualNetworks',
+                name=args.vnet_name,
+                child_type_1='subnets',
+                child_name_1='AzureFirewallSubnet'
+            )
+            args.ip_configurations = [{"name": args.conf_name,
+                                       "subnet": subnet_id if has_value(subnet_id) else None,
+                                       "public_ip_address": args.public_ip if has_value(args.public_ip) else None}]
             # if public_ip and not is_valid_resource_id(public_ip):
             #     public_ip = resource_id(
             #         subscription=get_subscription_id(cmd.cli_ctx),
@@ -188,18 +209,22 @@ class AzureFirewallCreate(_AzureFirewallCreate):
             #     subnet=SubResource(id=subnet_id) if virtual_network_name else None,
             #     public_ip_address=SubResource(id=public_ip) if public_ip else None
             # )
-            args.ip_configurations = [{"name": args.conf_name, "subnet": args.subnet_id, "public_ip_address": args.public_ip}]
+            # Reference to the PublicIP resource. This field is a mandatory input if subnet is not null.
+            # Reference to the subnet resource. This resource must be named 'AzureFirewallSubnet' or 'AzureFirewallManagementSubnet'.
 
-        if has_value(args.tier) and tier.lower() == 'basic' and has_value(args.sku) and sku.lower() == 'azfw_vnet':
-            # management_subnet_id = resource_id(
-            #     subscription=get_subscription_id(cmd.cli_ctx),
-            #     resource_group=resource_group_name,
-            #     namespace='Microsoft.Network',
-            #     type='virtualNetworks',
-            #     name=virtual_network_name,
-            #     child_type_1='subnets',
-            #     child_name_1='AzureFirewallManagementSubnet'
-            # )
+
+        if has_value(args.tier) and has_value(args.sku):
+            if tier.lower() == 'basic' and sku.lower() == 'azfw_vnet':
+                management_subnet_id = resource_id(
+                    subscription=get_subscription_id(self.cli_ctx),
+                    resource_group=args.resource_group,
+                    namespace='Microsoft.Network',
+                    type='virtualNetworks',
+                    name=args.vnet_name,
+                    child_type_1='subnets',
+                    child_name_1='AzureFirewallManagementSubnet'
+                )
+                args.mgmt_ip_conf_subnet = management_subnet_id
             # if not is_valid_resource_id(management_public_ip):
             #     management_public_ip = resource_id(
             #         subscription=get_subscription_id(cmd.cli_ctx),
@@ -213,7 +238,6 @@ class AzureFirewallCreate(_AzureFirewallCreate):
             #     subnet=SubResource(id=management_subnet_id),
             #     public_ip_address=SubResource(id=management_public_ip)
             # )
-            args.mgmt_ip_conf_subnet = args.subnet_id
             # firewall.management_ip_configuration = management_config
 
 
@@ -347,6 +371,158 @@ def create_azure_firewall(cmd, resource_group_name, azure_firewall_name, locatio
 
 
 # pylint: disable=too-many-branches disable=too-many-statements
+class AzureFirewallUpdate(_AzureFirewallUpdate):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZListArg, AAZStrArg, AAZBoolArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.private_ranges = AAZListArg(
+            options=['--private-ranges'],
+            help="Space-separated list of SNAT privaterange. Validate values are single Ip, "
+                 "Ipprefixes or a single special value \"IANAPrivateRanges\".",
+            nullable=True)
+        args_schema.private_ranges.Element = AAZStrArg(nullable=True)
+        args_schema.allow_active_ftp = AAZBoolArg(
+            options=['--allow-active-ftp'],
+            help="Allow Active FTP. By default it is false. It's only allowed for azure firewall on virtual network.",
+            nullable=True,)
+        args_schema.enable_fat_flow_logging = AAZBoolArg(
+            options=['--enable-fat-flow-logging', '--fat-flow-logging'],
+            help="Allow fat flow logging. By default it is false.",
+            nullable=True)
+        args_schema.enable_udp_log_optimization = AAZBoolArg(
+            options=['--enable-udp-log-optimization', '--udp-log-optimization'],
+            help="Allow UDP log optimization. By default it is false.",
+            nullable=True)
+        args_schema.dns_servers = AAZListArg(
+            options=['--dns-servers'],
+            arg_group="DNS",
+            help="Space-separated list of DNS server IP addresses.",
+            nullable=True)
+        args_schema.dns_servers.Element = AAZStrArg(nullable=True)
+        args_schema.enable_dns_proxy = AAZBoolArg(
+            options=['--enable-dns-proxy'],
+            arg_group="DNS",
+            help="Enable DNS Proxy.",
+            nullable=True)
+        args_schema.public_ips = AAZListArg(
+            options=['--public-ips'],
+            arg_group="Virtual Hub Public Ip",
+            help="Space-separated list of Public IP addresses associated with azure firewall. "
+                 "It's used to delete public ip addresses from this firewall.",
+            nullable=True)
+        args_schema.public_ips.Element = AAZStrArg(nullable=True)
+        # "Network.RouteServerInfo.RouteServerID"
+        args_schema.route_server_id = AAZStrArg(
+            options=['--route-server-id'],
+            help="The Route Server Id for the firewall.",
+            nullable=True)
+        args_schema.addresses._registered = False
+        args_schema.additional_properties._registered = False
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.firewall_policy) and any([args.enable_dns_proxy, args.dns_servers]):
+            raise CLIError('usage error: firewall policy and dns settings cannot co-exist.')
+        if all([args.public_ips, args.public_ip_count]):
+            raise CLIError('Cannot add and remove public ip addresses at same time.')
+
+        if has_value(args.private_ranges):
+            if not has_value(args.additional_properties):
+                args.additional_properties = {}
+            private_ranges = args.private_ranges.to_serialized_data()
+            args.additional_properties['Network.SNAT.PrivateRanges'] = ', '.join(private_ranges)
+            # instance.additional_properties['Network.SNAT.PrivateRanges'] = args.private_ranges
+
+        if has_value(args.enable_dns_proxy):
+            if not has_value(args.additional_properties):
+                args.additional_properties = {}
+            # service side requires lowercase
+            if args.enable_dns_proxy:
+                args.additional_properties['Network.DNS.EnableProxy'] = 'true'
+            else:
+                args.additional_properties['Network.DNS.EnableProxy'] = 'false'
+
+        if has_value(args.dns_servers):
+            if not has_value(args.additional_properties):
+                args.additional_properties = {}
+            dns_servers = args.dns_servers.to_serialized_data()
+            args.additional_properties['Network.DNS.Servers'] = ','.join(dns_servers or '')
+
+        if has_value(args.route_server_id):
+            if not has_value(args.additional_properties):
+                args.additional_properties = {}
+            args.additional_properties['Network.RouteServerInfo.RouteServerID'] = args.route_server_id
+        # if has_value(args.virtual_hub):
+        #     if virtual_hub == '':
+        #         instance.virtual_hub = None
+        #     else:
+        #         instance.virtual_hub = SubResource(id=virtual_hub)
+
+    def pre_instance_update(self, instance):
+        args = self.ctx.args
+        if has_value(args.public_ips):
+            try:
+                if instance.hub_ip_addresses is None:
+                    pass
+            except AttributeError:
+                raise CLIError('Cannot delete public ip addresses from vhub without creation.')
+        if has_value(args.public_ip_count):
+            try:
+                if has_value(instance.hub_ip_addresses.public_i_ps.count) and \
+                        args.public_ip_count.to_serialized_data() > \
+                        instance.hub_ip_addresses.public_i_ps.count.to_serialized_data():  # pylint: disable=line-too-long
+                    instance.hub_ip_addresses.public_i_ps.count = args.public_ip_count
+                else:
+                    raise CLIError('Cannot decrease the count of hub ip addresses through --count.')
+            except AttributeError:
+                instance.hub_ip_addresses.public_i_ps.count = args.public_ip_count
+
+        if has_value(args.public_ips):
+            try:
+                if len(args.public_ips.to_serialized_data()) > \
+                        instance.hub_ip_addresses.public_i_ps.count.to_serialized_data():
+                    raise CLIError('Number of public ip addresses must be less than or equal to existing ones.')
+                from azure.cli.core.aaz.utils import assign_aaz_list_arg
+                args.addresses = assign_aaz_list_arg(
+                    args.addresses,
+                    args.public_ips,
+                    element_transformer=lambda _, public_ip: {"address": public_ip}
+                )
+                args.public_ip_count = len(args.public_ips.to_serialized_data())
+                # instance.hub_ip_addresses.public_i_ps.addresses = [{"address": ip} for ip in args.hub_public_ip_addresses]  # pylint: disable=line-too-long
+                # instance.hub_ip_addresses.public_i_ps.count = len(args.hub_public_ip_addresses.to_serialized_data())
+            except AttributeError as err:
+                raise CLIError('Public Ip addresses must exist before deleting them.') from err
+
+        if has_value(args.allow_active_ftp):
+            if not has_value(instance.properties.additional_properties):
+                instance.properties.additional_properties = {}
+            if args.allow_active_ftp:
+                instance.properties.additional_properties['Network.FTP.AllowActiveFTP'] = 'true'
+            elif 'Network.FTP.AllowActiveFTP' in instance.properties.additional_properties:
+                del instance.properties.additional_properties['Network.FTP.AllowActiveFTP']
+
+        if has_value(args.enable_fat_flow_logging):
+            if not has_value(instance.properties.additional_properties):
+                instance.properties.additional_properties = {}
+            if args.enable_fat_flow_logging:
+                instance.properties.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging'] = 'true'
+            elif 'Network.AdditionalLogs.EnableFatFlowLogging' in instance.properties.additional_properties:
+                del instance.properties.additional_properties['Network.AdditionalLogs.EnableFatFlowLogging']
+
+        if has_value(args.enable_udp_log_optimization):
+            if not has_value(instance.properties.additional_properties):
+                instance.properties.additional_properties = {}
+            if args.enable_udp_log_optimization:
+                instance.properties.additional_properties['Network.AdditionalLogs.EnableUdpLogOptimization'] = 'true'
+            elif 'Network.AdditionalLogs.EnableUdpLogOptimization' in instance.properties.additional_properties:
+                del instance.properties.additional_properties['Network.AdditionalLogs.EnableUdpLogOptimization']
+
+
 def update_azure_firewall(cmd, instance, tags=None, zones=None, private_ranges=None,
                           firewall_policy=None, virtual_hub=None,
                           dns_servers=None, enable_dns_proxy=None,

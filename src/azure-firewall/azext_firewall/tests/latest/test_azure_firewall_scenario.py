@@ -22,7 +22,6 @@ class AzureFirewallScenario(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall')
     def test_azure_firewall(self, resource_group):
-
         self.kwargs.update({
             'af': 'af1',
             'coll': 'rc1',
@@ -31,11 +30,11 @@ class AzureFirewallScenario(ScenarioTest):
         })
         self.cmd('network firewall create -g {rg} -n {af} --threat-intel-mode Alert --allow-active-ftp', checks=[
             self.check('threatIntelMode', 'Alert'),
-            self.check('"Network.FTP.AllowActiveFTP"', 'true')
+            self.check('additionalProperties."Network.FTP.AllowActiveFTP"', 'true')
         ])
         self.cmd('network firewall update -g {rg} -n {af} --threat-intel-mode Deny --allow-active-ftp false', checks=[
             self.check('threatIntelMode', 'Deny'),
-            self.not_exists('"Network.FTP.AllowActiveFTP"')
+            self.not_exists('additionalProperties."Network.FTP.AllowActiveFTP"')
         ])
         self.cmd('network firewall show -g {rg} -n {af}')
         self.cmd('network firewall list -g {rg}')
@@ -51,16 +50,16 @@ class AzureFirewallScenario(ScenarioTest):
             "network firewall create -n {firewall_name} -g {rg} "
             "--enable-fat-flow-logging --enable-udp-log-optimization",
             checks=[
-                self.check('"Network.AdditionalLogs.EnableFatFlowLogging"', "true"),
-                self.check('"Network.AdditionalLogs.EnableUdpLogOptimization"', "true")
+                self.check('additionalProperties."Network.AdditionalLogs.EnableFatFlowLogging"', "true"),
+                self.check('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"', "true")
             ]
         )
         self.cmd(
              "network firewall update -n {firewall_name} -g {rg} "
              "--enable-fat-flow-logging false --enable-udp-log-optimization false",
              checks=[
-                 self.not_exists('"Network.AdditionalLogs.EnableFatFlowLogging"'),
-                 self.not_exists('"Network.AdditionalLogs.EnableUdpLogOptimization"')
+                 self.not_exists('additionalProperties."Network.AdditionalLogs.EnableFatFlowLogging"'),
+                 self.not_exists('additionalProperties."Network.AdditionalLogs.EnableUdpLogOptimization"')
              ]
         )
 
@@ -182,7 +181,7 @@ class AzureFirewallScenario(ScenarioTest):
             'af': 'af1',
         })
         self.cmd('network firewall create -g {rg} -n {af} --private-ranges 10.0.0.0 10.0.0.0/24 IANAPrivateRanges', checks=[
-            self.check('"Network.SNAT.PrivateRanges"', '10.0.0.0, 10.0.0.0/24, IANAPrivateRanges')
+            self.check('additionalProperties."Network.SNAT.PrivateRanges"', '10.0.0.0, 10.0.0.0/24, IANAPrivateRanges')
         ])
         self.cmd('network firewall threat-intel-allowlist create -g {rg} -n {af} --ip-addresses 10.0.0.0 10.0.0.1 --fqdns www.bing.com *.microsoft.com *google.com', checks=[
             self.check('"ThreatIntel.Whitelist.FQDNs"', 'www.bing.com, *.microsoft.com, *google.com'),
@@ -197,7 +196,7 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('"ThreatIntel.Whitelist.IpAddresses"', '10.0.0.1, 10.0.0.0')
         ])
         self.cmd('network firewall update -g {rg} -n {af} --private-ranges IANAPrivateRanges 10.0.0.1 10.0.0.0/16', checks=[
-            self.check('"Network.SNAT.PrivateRanges"', 'IANAPrivateRanges, 10.0.0.1, 10.0.0.0/16')
+            self.check('additionalProperties."Network.SNAT.PrivateRanges"', 'IANAPrivateRanges, 10.0.0.1, 10.0.0.0/16')
         ])
         self.cmd('network firewall threat-intel-allowlist delete -g {rg} -n {af}')
 
@@ -924,8 +923,8 @@ class AzureFirewallScenario(ScenarioTest):
                                  '--dns-servers {dns_servers} '
                                  '--enable-dns-proxy false ').get_output_in_json()
         self.assertEqual(creation_data['name'], self.kwargs['fw'])
-        self.assertEqual(creation_data['Network.DNS.Servers'], "10.0.0.2,10.0.0.3")
-        self.assertEqual(creation_data['Network.DNS.EnableProxy'], 'false')
+        self.assertEqual(creation_data['additionalProperties."Network.DNS.Servers"'], "10.0.0.2,10.0.0.3")
+        self.assertEqual(creation_data['additionalProperties."Network.DNS.EnableProxy"'], 'false')
 
         show_data = self.cmd('network firewall show -g {rg} -n {fw}').get_output_in_json()
         self.assertEqual(show_data['name'], self.kwargs['fw'])
