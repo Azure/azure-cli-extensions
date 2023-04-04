@@ -11,7 +11,6 @@ from knack import log
 
 logger = log.get_logger(__name__)
 
-
 # Send target OS type telemetry and check if authentication options are valid for that OS.
 def handle_target_os_type(cmd, op_info):
 
@@ -55,30 +54,36 @@ def _get_azure_vm_os(cmd, resource_group_name, vm_name):
 
 
 def _get_arc_server_os(cmd, resource_group_name, vm_name):
-    from azext_ssh._client_factory import cf_machine
-    client = cf_machine(cmd.cli_ctx)
-    arc = None
+    from .aaz.latest.hybrid_compute.machine import Show as ArcServerShow
+    arc_server = None
     os_type = None
+    get_args = {
+            'resource_group': resource_group_name,
+            'machine_name': vm_name
+        }
     # pylint: disable=broad-except
     try:
-        arc = client.get(resource_group_name=resource_group_name, machine_name=vm_name)
+        arc_server = ArcServerShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
     except Exception:
         return None
 
-    if arc and arc.properties and arc.properties and arc.properties.os_name:
-        os_type = arc.properties.os_name
+    if arc_server and arc_server.properties and arc_server.properties and arc_server.properties.os_name:
+        os_type = arc_server.properties.os_name
 
     return os_type
 
 
 def _get_connected_vmware_os(cmd, resource_group_name, vm_name):
-    from azext_ssh._client_factory import cf_vmware
-    client = cf_vmware(cmd.cli_ctx)
+    from .aaz.latest.connected_v_mwarev_sphere.virtual_machine import Show as VMwarevSphereShow
     vmware = None
     os_type = None
+    get_args = {
+            'resource_group': resource_group_name,
+            'virtual_machine_name': vm_name
+        }
     # pylint: disable=broad-except
     try:
-        vmware = client.get(resource_group_name=resource_group_name, virtual_machine_name=vm_name)
+        vmware = VMwarevSphereShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
     except Exception:
         return None
 
