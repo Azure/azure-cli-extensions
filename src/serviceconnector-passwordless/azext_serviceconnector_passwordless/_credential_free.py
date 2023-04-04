@@ -100,7 +100,7 @@ def get_enable_mi_for_db_linker_func(yes=False):
                 umi_info = run_cli_cmd(
                     f'az identity list --subscription {mi_sub_id} --query "[?clientId==\'{mi_client_id}\']"')
                 if umi_info is None or len(umi_info) == 0:
-                    raise Exception(
+                    raise ResourceNotFoundError(
                         "No identity found for client id {}".format(mi_client_id))
                 source_object_id = umi_info[0].get('principalId')
                 target_handler.identity_object_id = source_object_id
