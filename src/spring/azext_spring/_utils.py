@@ -289,7 +289,7 @@ def wait_till_end(cmd, *pollers):
     progress_bar = cmd.cli_ctx.get_progress_controller()
     progress_bar.add(message='Running')
     progress_bar.begin()
-    while any(x and not x.done() for x in pollers):
+    while any(x for x in pollers if not x.done()):
         progress_bar.add(message='Running')
         sleep(5)
     progress_bar.end()

@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.3.26
++++++++
+* 'az containerapp exec': fix bugs for consumption workload based environment
+* 'az containerapp env create': fix bug causing --enable-workload-profiles to require an argument
+
 0.3.25
 ++++++
 * 'az containerapp create/update': --yaml support properties for api-version 2022-10-01 (e.g. exposedPort,clientCertificateMode,corsPolicy)
