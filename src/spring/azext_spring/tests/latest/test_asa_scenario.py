@@ -15,7 +15,7 @@ from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-@record_only()
+#@record_only()
 class CustomDomainTests(ScenarioTest):
 
     def test_bind_cert_to_domain(self):
@@ -189,14 +189,16 @@ class SslTests(ScenarioTest):
         self.assertTrue(len(app_result) > 0)
 
 
-@record_only()
 class CustomImageTest(ScenarioTest):
-    def test_app_deploy_container(self):
+
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
+    def test_app_deploy_container(self, resource_group, spring):
         self.kwargs.update({
             'app': 'test-container',
-            'serviceName': 'cli-unittest',
-            'resourceGroup': 'cli',
+            'serviceName': spring,
             'containerImage': 'springio/gs-spring-boot-docker',
+            'resourceGroup': resource_group,
         })
 
         self.cmd('spring app create -s {serviceName} -g {resourceGroup} -n {app}')
