@@ -23,7 +23,7 @@ class AcrqueryCommandsLoader(AzCommandsLoader):
              client_factory=cf_metadata)
         
         with self.command_group('acr', acr_metadata_util) as g:
-            g.custom_command('query', 'create_query', transform=transform_metadata_output)
+            g.custom_command('query', 'create_query')
 
         return self.command_table
 
