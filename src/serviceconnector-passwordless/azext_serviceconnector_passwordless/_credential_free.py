@@ -383,7 +383,7 @@ class MysqlFlexibleHandler(TargetHandler):
                 cursor.close()
             except Exception as e:  # pylint: disable=broad-except
                 raise CLIInternalError(
-                    "connection close failed." + str(e)) from e
+                    "Connection close failed." + str(e)) from e
 
     def get_connection_string(self):
         password = run_cli_cmd(
