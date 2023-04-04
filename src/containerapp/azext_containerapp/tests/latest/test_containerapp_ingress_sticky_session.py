@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import time
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
@@ -30,3 +31,6 @@ class ContainerAppIngressStickySessionsTest(ScenarioTest):
 
         self.cmd("az containerapp create -g {} --target-port 80 --ingress external --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest --environment {} -n {} ".format(resource_group, env, app))        
         self.cmd("az containerapp ingress sticky-sessions set -n {} -g {} --affinity sticky".format(app, resource_group))        
+        self.cmd('containerapp show -g {} -n {}'.format(resource_group, app), checks=[
+            JMESPathCheck('properties.configuration.ingress.stickySessions.affinity', "sticky"),        
+        ])
