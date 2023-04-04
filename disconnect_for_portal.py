@@ -3,7 +3,7 @@ import subprocess, sys, argparse
 def check_connection(target_iqn, target_portal_hostname, target_portal_port):
     command = f"sudo iscsiadm -m session".split(' ')
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    return f"{target_iqn}" in result.stdout
+    return f"{target_portal_hostname}:{target_portal_port},-1 {target_iqn}" in result.stdout
         
 def disconnect_volume(target_iqn, target_portal_hostname, target_portal_port):    
     print(f'Volume name [{target_iqn}]: Disconnecting volume')
