@@ -2,9 +2,10 @@
 
 Release History
 ===============
-Upcoming
+0.3.26
 +++++++
 * 'az containerapp exec': fix bugs for consumption workload based environment
+* 'az containerapp env create': fix bug causing --enable-workload-profiles to require an argument
 
 0.3.25
 ++++++
