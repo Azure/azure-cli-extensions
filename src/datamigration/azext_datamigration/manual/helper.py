@@ -103,6 +103,27 @@ def loginMigration_console_app_setup():
 
 
 # -----------------------------------------------------------------------------------------------------------------
+# TdeMigration helper function to do console app setup (mkdir, download and extract)
+# -----------------------------------------------------------------------------------------------------------------
+def tdeMigration_console_app_setup():
+
+    validate_os_env()
+
+    defaultOutputFolder = get_tdeMigration_default_output_folder()
+
+    # Assigning base folder path
+    baseFolder = os.path.join(defaultOutputFolder, "Downloads")
+    exePath = os.path.join(baseFolder, "Microsoft.SqlServer.Migration.Tde.ConsoleApp.csproj", "Microsoft.SqlServer.Migration.Tde.ConsoleApp.exe")
+
+    # Creating base folder structure
+    create_dir_path(baseFolder)
+    # check and download console app
+    # TODO
+
+    return exePath
+
+
+# -----------------------------------------------------------------------------------------------------------------
 # Assessment helper function to return the default output folder path depending on OS environment.
 # -----------------------------------------------------------------------------------------------------------------
 def get_default_output_folder():
@@ -132,6 +153,23 @@ def get_loginMigration_default_output_folder():
         defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), "Library", "Application Support", "Microsoft", "SqlLoginMigrations")
     else:
         defaultOutputPath = os.path.join(os.getenv('LOCALAPPDATA'), "Microsoft", "SqlLoginMigrations")
+
+    return defaultOutputPath
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# TdeMigration helper function to return the default output folder path depending on OS environment.
+# -----------------------------------------------------------------------------------------------------------------
+def get_tdeMigration_default_output_folder():
+
+    osPlatform = platform.system()
+
+    if osPlatform.__contains__('Linux'):
+        defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), ".config", "Microsoft", "SqlTdeMigrations")
+    elif osPlatform.__contains__('Darwin'):
+        defaultOutputPath = os.path.join(os.getenv('USERPROFILE'), "Library", "Application Support", "Microsoft", "SqlTdeMigrations")
+    else:
+        defaultOutputPath = os.path.join(os.getenv('LOCALAPPDATA'), "Microsoft", "SqlTdeMigrations")
 
     return defaultOutputPath
 

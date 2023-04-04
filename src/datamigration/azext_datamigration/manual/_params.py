@@ -63,6 +63,17 @@ def load_arguments(self, _):
         c.argument('aad_domain_name', type=str, help='Required if Windows logins are included in the list of logins to be migrated.')
         c.argument('config_file_path', type=file_type, completer=FilesCompleter(), help='Path of the ConfigFile')
 
+    with self.argument_context('datamigration tde-migration') as c:
+        c.argument('source_sql_connection_string', type=str, help='Connection string for the source SQL instance, using the formal connection string format.')
+        c.argument('target_subscription_id', type=str, help='Subscription Id of the target Azure SQL server.')
+        c.argument('target_resource_group_name', type=str, help='Resource group name of the target Azure SQL server.')
+        c.argument('target_managed_instance_name', type=str, help='Name of the Azure SQL Server.')
+        c.argument('network_share_path', type=str, help='Network share path.')
+        c.argument('network_share_domain', type=str, help='Network share domain.')
+        c.argument('network_share_user_name', type=str, help='Network share user name.')
+        c.argument('network_share_password', type=str, help='Network share password.')
+        c.argument('database_name', nargs='+', help='Source database name.')
+
     with self.argument_context('datamigration register-integration-runtime') as c:
         c.argument('auth_key', type=str, help='AuthKey of SQL Migration Service')
         c.argument('ir_path', type=str, help='Path of Integration Runtime MSI')
