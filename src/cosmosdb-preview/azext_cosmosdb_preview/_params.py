@@ -28,15 +28,14 @@ from azext_cosmosdb_preview.actions import (
     CreatePhysicalPartitionIdListAction)
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
-    ContinuousTier,
-    NodeKind
+    ContinuousTier
 )
 
 from azure.cli.core.commands.parameters import (
     tags_type, get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_location_type)
 
 from azure.mgmt.cosmosdb.models import (
-    DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion, NetworkAclBypass, BackupPolicyType, AnalyticalStorageSchemaType, BackupStorageRedundancy, CreateMode)
+    DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion, NetworkAclBypass, BackupPolicyType, AnalyticalStorageSchemaType, BackupStorageRedundancy)
 
 from azure.cli.command_modules.cosmosdb.actions import (
     CreateLocation, CreateDatabaseRestoreResource, UtcDatetimeAction)
@@ -168,8 +167,6 @@ def load_arguments(self, _):
         c.argument('administrator_login', options_list=['--administrator-login', '-a'], help="The initial administrator user to be configured when a cluster is created", required=True)
         c.argument('administrator_login_password', options_list=['--administrator-login-password', '-p'], help="The initial administrator password to be configured when a cluster is created", required=True)
         c.argument('server_version', options_list=['--server-version'], help="The server version of the mongo cluster", required=True)
-        c.argument('create_mode', arg_type=get_enum_type(CreateMode))
-        c.argument('shard_kind', arg_type=get_enum_type(NodeKind))
         c.argument('shard_node_tier', options_list=['--shard-node-tier'], help="The node tier for mongo cluster.", required=True, arg_group='Shard')
         c.argument('shard_node_ha', arg_type=get_three_state_flag(), options_list=['--shard-node-ha'], help="If enabled the cluster has HA.", required=True, arg_group='Shard')
         c.argument('shard_node_disk_size_gb', options_list=['--shard-node-disk-size-gb', '-d'], help="The node disk size for mongo cluster.", required=True, arg_group='Shard')
@@ -183,8 +180,6 @@ def load_arguments(self, _):
         c.argument('administrator_login', options_list=['--administrator-login', '-a'], help="The initial administrator user to be configured when a cluster is created")
         c.argument('administrator_login_password', options_list=['--administrator-login-password', '-p'], help="The initial administrator password to be configured when a cluster is created")
         c.argument('server_version', options_list=['--server-version'], help="The server version of the mongo cluster")
-        c.argument('create_mode', arg_type=get_enum_type(CreateMode))
-        c.argument('shard_kind', arg_type=get_enum_type(NodeKind))
         c.argument('shard_node_tier', options_list=['--shard-node-tier'], help="The node tier for mongo cluster.", arg_group='Shard')
         c.argument('shard_node_ha', arg_type=get_three_state_flag(), options_list=['--shard-node-ha'], help="If enabled the cluster has HA.", arg_group='Shard')
         c.argument('shard_node_disk_size_gb', options_list=['--shard-node-disk-size-gb', '-d'], help="The node disk size for mongo cluster.", arg_group='Shard')
