@@ -827,7 +827,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
 
         # Explicit CRD Deletion
-        crd_cleanup_force_delete(kubectl_client_location,kube_config,kube_context)
+        crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
 
         if(release_namespace):
             utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster, True)
@@ -2402,6 +2402,7 @@ def install_kubectl_client():
 
 
 def crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context):
+
         timeout_for_crd_deletion = "20s"
         for crds in consts.CRD_FOR_FORCE_DELETE:
             cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found", "--wait", "--timeout", "{}".format(timeout_for_crd_deletion)]
