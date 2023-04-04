@@ -1350,17 +1350,17 @@ class StickySessions(Model):
     """Sticky Sessions of a Container App.
 
     :param name: affinity
-    :type name: str    
+    :type name: str
 
     """
 
     _attribute_map = {
-        'affinity': {'key': 'affinity', 'type': 'str'},        
+        'affinity': {'key': 'affinity', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
         super(StickySessions, self).__init__(**kwargs)
-        self.affinity = kwargs.get('affinity', None)                
+        self.affinity = kwargs.get('affinity', None)
 
 
 class CustomHostnameAnalysisResult(ProxyResource):
@@ -2148,8 +2148,8 @@ class Ingress(Model):
         self.allow_insecure = kwargs.get('allow_insecure', None)
         self.ipSecurityRestrictions = kwargs.get('ip_security_restrictions', None)
         self.clientCertificateMode = kwargs.get('client_certificate_mode', None)
-        self.corsPolicy = kwargs.get('cors_policy', None)        
-        self.stickySessions = kwargs.get('sticky_sessions', None)        
+        self.corsPolicy = kwargs.get('cors_policy', None)
+        self.stickySessions = kwargs.get('sticky_sessions', None)
 
 
 class LegacyMicrosoftAccount(Model):
