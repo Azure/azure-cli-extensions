@@ -2,6 +2,10 @@
 
 Release History
 ===============
+Upcoming
++++++++
+ * 'az containerapp secret set': fix help typo
+
 0.3.27
 ++++++
 * 'az containerapp secret set': add support for secrets from Key Vault
