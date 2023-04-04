@@ -12,19 +12,15 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network perimeter profile show",
+    "network perimeter link wait",
 )
-class Show(AAZCommand):
-    """Gets the specified NSP profile.
-
-    :example: Get NSP Profile
-        az network perimeter profile show --perimeter-name MyPerimeter -g MyResourceGroup -n MyProfile
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2021-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/profiles/{}", "2021-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/links/{}", "2021-02-01-preview"],
         ]
     }
 
@@ -44,17 +40,17 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.perimeter_name = AAZStrArg(
-            options=["--perimeter-name"],
+        _args_schema.link_name = AAZStrArg(
+            options=["-n", "--name", "--link-name"],
+            help="The name of the NSP link.",
+            required=True,
+            id_part="child_name_1",
+        )
+        _args_schema.network_security_perimeter_name = AAZStrArg(
+            options=["--network-security-perimeter-name"],
             help="The name of the network security perimeter.",
             required=True,
             id_part="name",
-        )
-        _args_schema.profile_name = AAZStrArg(
-            options=["-n", "--name", "--profile-name"],
-            help="The name of the NSP profile.",
-            required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -63,7 +59,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NspProfilesGet(ctx=self.ctx)()
+        self.NspLinksGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,10 +71,10 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class NspProfilesGet(AAZHttpOperation):
+    class NspLinksGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,7 +88,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/profiles/{profileName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/links/{linkName}",
                 **self.url_parameters
             )
 
@@ -108,11 +104,11 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "networkSecurityPerimeterName", self.ctx.args.perimeter_name,
+                    "linkName", self.ctx.args.link_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "profileName", self.ctx.args.profile_name,
+                    "networkSecurityPerimeterName", self.ctx.args.network_security_perimeter_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -163,37 +159,74 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.location = AAZStrType()
-            _schema_on_200.name = AAZStrType()
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
-            properties.access_rules_version = AAZStrType(
-                serialized_name="accessRulesVersion",
+            properties.auto_approved_remote_perimeter_resource_id = AAZStrType(
+                serialized_name="autoApprovedRemotePerimeterResourceId",
+            )
+            properties.description = AAZStrType()
+            properties.local_inbound_profiles = AAZListType(
+                serialized_name="localInboundProfiles",
+            )
+            properties.local_outbound_profiles = AAZListType(
+                serialized_name="localOutboundProfiles",
                 flags={"read_only": True},
             )
-            properties.diagnostic_settings_version = AAZStrType(
-                serialized_name="diagnosticSettingsVersion",
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.remote_inbound_profiles = AAZListType(
+                serialized_name="remoteInboundProfiles",
+            )
+            properties.remote_outbound_profiles = AAZListType(
+                serialized_name="remoteOutboundProfiles",
+                flags={"read_only": True},
+            )
+            properties.remote_perimeter_guid = AAZStrType(
+                serialized_name="remotePerimeterGuid",
+                flags={"read_only": True},
+            )
+            properties.remote_perimeter_location = AAZStrType(
+                serialized_name="remotePerimeterLocation",
+                flags={"read_only": True},
+            )
+            properties.status = AAZStrType(
                 flags={"read_only": True},
             )
 
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
+            local_inbound_profiles = cls._schema_on_200.properties.local_inbound_profiles
+            local_inbound_profiles.Element = AAZStrType()
+
+            local_outbound_profiles = cls._schema_on_200.properties.local_outbound_profiles
+            local_outbound_profiles.Element = AAZStrType()
+
+            remote_inbound_profiles = cls._schema_on_200.properties.remote_inbound_profiles
+            remote_inbound_profiles.Element = AAZStrType()
+
+            remote_outbound_profiles = cls._schema_on_200.properties.remote_outbound_profiles
+            remote_outbound_profiles.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
-__all__ = ["Show"]
+__all__ = ["Wait"]

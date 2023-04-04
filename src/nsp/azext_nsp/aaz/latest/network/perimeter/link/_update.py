@@ -12,19 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network perimeter association update",
+    "network perimeter link update",
 )
 class Update(AAZCommand):
-    """Creates or updates a NSP resource association.
-
-    :example: Update NSP Association
-        az network perimeter association update --name MyAssociation --perimeter-name MyPerimeter --resource-group MyResourceGroup --access-mode Enforced --private-link-resource id="<PaaSArmID> --profile id="ProfileArmID"
+    """Update NSP link resource.
     """
 
     _aaz_info = {
         "version": "2021-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/resourceassociations/{}", "2021-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/links/{}", "2021-02-01-preview"],
         ]
     }
 
@@ -46,14 +43,14 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.association_name = AAZStrArg(
-            options=["-n", "--name", "--association-name"],
-            help="The name of the NSP association.",
+        _args_schema.link_name = AAZStrArg(
+            options=["-n", "--name", "--link-name"],
+            help="The name of the NSP link.",
             required=True,
             id_part="child_name_1",
         )
-        _args_schema.perimeter_name = AAZStrArg(
-            options=["--perimeter-name"],
+        _args_schema.network_security_perimeter_name = AAZStrArg(
+            options=["--network-security-perimeter-name"],
             help="The name of the network security perimeter.",
             required=True,
             id_part="name",
@@ -62,84 +59,53 @@ class Update(AAZCommand):
             required=True,
         )
 
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Parameters",
-            help="Resource location.",
-            nullable=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Parameters",
-            help="Resource tags.",
-            nullable=True,
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
-
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.access_mode = AAZStrArg(
-            options=["--access-mode"],
+        _args_schema.description = AAZStrArg(
+            options=["--description"],
             arg_group="Properties",
-            help="Access mode on the association.",
-            nullable=True,
-            enum={"Audit": "Audit", "Enforced": "Enforced", "Learning": "Learning"},
-        )
-        _args_schema.private_link_resource = AAZObjectArg(
-            options=["--private-link-resource"],
-            arg_group="Properties",
-            help="The PaaS resource to be associated.",
+            help="A message passed to the owner of the remote NSP link resource with this connection request. In case of Auto-approved flow, it is default to 'Auto Approved'. Restricted to 140 chars.",
             nullable=True,
         )
-        cls._build_args_sub_resource_update(_args_schema.private_link_resource)
-        _args_schema.profile = AAZObjectArg(
-            options=["--profile"],
+        _args_schema.local_inbound_profiles = AAZListArg(
+            options=["--local-inbound-profiles"],
             arg_group="Properties",
-            help="Profile id to which the PaaS resource is associated.",
+            help="Local Inbound profile names to which Inbound is allowed. Use ['*'] to allow inbound to all profiles. It's default value is ['*'].",
+            nullable=True,
+            fmt=AAZListArgFormat(
+                unique=True,
+            ),
+        )
+        _args_schema.remote_inbound_profiles = AAZListArg(
+            options=["--remote-inbound-profiles"],
+            arg_group="Properties",
+            help="Remote Inbound profile names to which Inbound is allowed. Use ['*'] to allow inbound to all profiles. This property can only be updated in auto-approval mode. It's default value is ['*'].",
+            nullable=True,
+            fmt=AAZListArgFormat(
+                unique=True,
+            ),
+        )
+
+        local_inbound_profiles = cls._args_schema.local_inbound_profiles
+        local_inbound_profiles.Element = AAZStrArg(
             nullable=True,
         )
-        cls._build_args_sub_resource_update(_args_schema.profile)
+
+        remote_inbound_profiles = cls._args_schema.remote_inbound_profiles
+        remote_inbound_profiles.Element = AAZStrArg(
+            nullable=True,
+        )
         return cls._args_schema
-
-    _args_sub_resource_update = None
-
-    @classmethod
-    def _build_args_sub_resource_update(cls, _schema):
-        if cls._args_sub_resource_update is not None:
-            _schema.id = cls._args_sub_resource_update.id
-            return
-
-        cls._args_sub_resource_update = AAZObjectArg(
-            nullable=True,
-        )
-
-        sub_resource_update = cls._args_sub_resource_update
-        sub_resource_update.id = AAZStrArg(
-            options=["id"],
-            help="Resource ID.",
-            nullable=True,
-        )
-
-        _schema.id = cls._args_sub_resource_update.id
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NspAssociationsGet(ctx=self.ctx)()
+        self.NspLinksGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        self.NspAssociationsCreateOrUpdate(ctx=self.ctx)()
+        self.NspLinksCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -162,7 +128,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class NspAssociationsGet(AAZHttpOperation):
+    class NspLinksGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -176,7 +142,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/resourceAssociations/{associationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/links/{linkName}",
                 **self.url_parameters
             )
 
@@ -192,11 +158,11 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "associationName", self.ctx.args.association_name,
+                    "linkName", self.ctx.args.link_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "networkSecurityPerimeterName", self.ctx.args.perimeter_name,
+                    "networkSecurityPerimeterName", self.ctx.args.network_security_perimeter_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -245,11 +211,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_nsp_association_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_nsp_link_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class NspAssociationsCreateOrUpdate(AAZHttpOperation):
+    class NspLinksCreateOrUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -263,7 +229,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/resourceAssociations/{associationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/links/{linkName}",
                 **self.url_parameters
             )
 
@@ -279,11 +245,11 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "associationName", self.ctx.args.association_name,
+                    "linkName", self.ctx.args.link_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "networkSecurityPerimeterName", self.ctx.args.perimeter_name,
+                    "networkSecurityPerimeterName", self.ctx.args.network_security_perimeter_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -344,7 +310,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_nsp_association_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_nsp_link_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -359,20 +325,21 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("location", AAZStrType, ".location")
-            _builder.set_prop("name", AAZStrType, ".association_name")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("accessMode", AAZStrType, ".access_mode")
-                _UpdateHelper._build_schema_sub_resource_update(properties.set_prop("privateLinkResource", AAZObjectType, ".private_link_resource"))
-                _UpdateHelper._build_schema_sub_resource_update(properties.set_prop("profile", AAZObjectType, ".profile"))
+                properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("localInboundProfiles", AAZListType, ".local_inbound_profiles")
+                properties.set_prop("remoteInboundProfiles", AAZListType, ".remote_inbound_profiles")
 
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
+            local_inbound_profiles = _builder.get(".properties.localInboundProfiles")
+            if local_inbound_profiles is not None:
+                local_inbound_profiles.set_elements(AAZStrType, ".")
+
+            remote_inbound_profiles = _builder.get(".properties.remoteInboundProfiles")
+            if remote_inbound_profiles is not None:
+                remote_inbound_profiles.set_elements(AAZStrType, ".")
 
             return _instance_value
 
@@ -388,84 +355,89 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    @classmethod
-    def _build_schema_sub_resource_update(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("id", AAZStrType, ".id")
-
-    _schema_nsp_association_read = None
+    _schema_nsp_link_read = None
 
     @classmethod
-    def _build_schema_nsp_association_read(cls, _schema):
-        if cls._schema_nsp_association_read is not None:
-            _schema.id = cls._schema_nsp_association_read.id
-            _schema.location = cls._schema_nsp_association_read.location
-            _schema.name = cls._schema_nsp_association_read.name
-            _schema.properties = cls._schema_nsp_association_read.properties
-            _schema.tags = cls._schema_nsp_association_read.tags
-            _schema.type = cls._schema_nsp_association_read.type
+    def _build_schema_nsp_link_read(cls, _schema):
+        if cls._schema_nsp_link_read is not None:
+            _schema.etag = cls._schema_nsp_link_read.etag
+            _schema.id = cls._schema_nsp_link_read.id
+            _schema.name = cls._schema_nsp_link_read.name
+            _schema.properties = cls._schema_nsp_link_read.properties
+            _schema.type = cls._schema_nsp_link_read.type
             return
 
-        cls._schema_nsp_association_read = _schema_nsp_association_read = AAZObjectType()
+        cls._schema_nsp_link_read = _schema_nsp_link_read = AAZObjectType()
 
-        nsp_association_read = _schema_nsp_association_read
-        nsp_association_read.id = AAZStrType(
+        nsp_link_read = _schema_nsp_link_read
+        nsp_link_read.etag = AAZStrType(
             flags={"read_only": True},
         )
-        nsp_association_read.location = AAZStrType()
-        nsp_association_read.name = AAZStrType()
-        nsp_association_read.properties = AAZObjectType(
+        nsp_link_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        nsp_link_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        nsp_link_read.properties = AAZObjectType(
             flags={"client_flatten": True},
         )
-        nsp_association_read.tags = AAZDictType()
-        nsp_association_read.type = AAZStrType(
+        nsp_link_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_nsp_association_read.properties
-        properties.access_mode = AAZStrType(
-            serialized_name="accessMode",
+        properties = _schema_nsp_link_read.properties
+        properties.auto_approved_remote_perimeter_resource_id = AAZStrType(
+            serialized_name="autoApprovedRemotePerimeterResourceId",
         )
-        properties.has_provisioning_issues = AAZStrType(
-            serialized_name="hasProvisioningIssues",
+        properties.description = AAZStrType()
+        properties.local_inbound_profiles = AAZListType(
+            serialized_name="localInboundProfiles",
+        )
+        properties.local_outbound_profiles = AAZListType(
+            serialized_name="localOutboundProfiles",
             flags={"read_only": True},
         )
-        properties.private_link_resource = AAZObjectType(
-            serialized_name="privateLinkResource",
-        )
-        cls._build_schema_sub_resource_read(properties.private_link_resource)
-        properties.profile = AAZObjectType()
-        cls._build_schema_sub_resource_read(properties.profile)
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
+        properties.remote_inbound_profiles = AAZListType(
+            serialized_name="remoteInboundProfiles",
+        )
+        properties.remote_outbound_profiles = AAZListType(
+            serialized_name="remoteOutboundProfiles",
+            flags={"read_only": True},
+        )
+        properties.remote_perimeter_guid = AAZStrType(
+            serialized_name="remotePerimeterGuid",
+            flags={"read_only": True},
+        )
+        properties.remote_perimeter_location = AAZStrType(
+            serialized_name="remotePerimeterLocation",
+            flags={"read_only": True},
+        )
+        properties.status = AAZStrType(
+            flags={"read_only": True},
+        )
 
-        tags = _schema_nsp_association_read.tags
-        tags.Element = AAZStrType()
+        local_inbound_profiles = _schema_nsp_link_read.properties.local_inbound_profiles
+        local_inbound_profiles.Element = AAZStrType()
 
-        _schema.id = cls._schema_nsp_association_read.id
-        _schema.location = cls._schema_nsp_association_read.location
-        _schema.name = cls._schema_nsp_association_read.name
-        _schema.properties = cls._schema_nsp_association_read.properties
-        _schema.tags = cls._schema_nsp_association_read.tags
-        _schema.type = cls._schema_nsp_association_read.type
+        local_outbound_profiles = _schema_nsp_link_read.properties.local_outbound_profiles
+        local_outbound_profiles.Element = AAZStrType()
 
-    _schema_sub_resource_read = None
+        remote_inbound_profiles = _schema_nsp_link_read.properties.remote_inbound_profiles
+        remote_inbound_profiles.Element = AAZStrType()
 
-    @classmethod
-    def _build_schema_sub_resource_read(cls, _schema):
-        if cls._schema_sub_resource_read is not None:
-            _schema.id = cls._schema_sub_resource_read.id
-            return
+        remote_outbound_profiles = _schema_nsp_link_read.properties.remote_outbound_profiles
+        remote_outbound_profiles.Element = AAZStrType()
 
-        cls._schema_sub_resource_read = _schema_sub_resource_read = AAZObjectType()
-
-        sub_resource_read = _schema_sub_resource_read
-        sub_resource_read.id = AAZStrType()
-
-        _schema.id = cls._schema_sub_resource_read.id
+        _schema.etag = cls._schema_nsp_link_read.etag
+        _schema.id = cls._schema_nsp_link_read.id
+        _schema.name = cls._schema_nsp_link_read.name
+        _schema.properties = cls._schema_nsp_link_read.properties
+        _schema.type = cls._schema_nsp_link_read.type
 
 
 __all__ = ["Update"]
