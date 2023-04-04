@@ -2,6 +2,12 @@
 
 Release History
 ===============
+1.3.16
+++++++
+* Adding force delete in connect command in case of stale resources present during onboarding
+* Bug fixes in diagnoser
+* Adding test for connectedk8s proxy command
+
 1.3.15
 ++++++
 
