@@ -47,7 +47,7 @@ class BasicTest(unittest.TestCase):
         return client
 
     def _get_deployment(self, sku='Standard'):
-        deployment = mock.MagicMock()
+        deployment = mock.MagicMock().return_value
         deployment.name = 'default'
         deployment.properties.source.type = 'Jar'
         deployment.properties.source.relative_path = 'my-path'
