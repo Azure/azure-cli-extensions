@@ -3240,7 +3240,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if override_until is not None:
                 try:
                     mc.upgrade_settings.override_settings.until = parse(override_until)
-                except Exception as ex:  # pylint: disable=broad-except # noqa: F841
+                except Exception:  # pylint: disable=broad-except
                     raise InvalidArgumentValueError(
                         f"{override_until} is not a valid datatime format."
                     )
