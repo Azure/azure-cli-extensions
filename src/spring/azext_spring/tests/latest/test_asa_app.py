@@ -47,7 +47,7 @@ class BasicTest(unittest.TestCase):
         return client
 
     def _get_deployment(self, sku='Standard'):
-        deployment = mock.MagicMock().return_value
+        deployment = mock.MagicMock()
         deployment.name = 'default'
         deployment.properties.source.type = 'Jar'
         deployment.properties.source.relative_path = 'my-path'
@@ -110,6 +110,7 @@ class TestAppDeploy_Patch(BasicTest):
     def _get_basic_mock_client(self, sku='Standard'):
         client = super()._get_basic_mock_client(sku=sku)
         client.apps.get_resource_upload_url.return_value = self._get_upload_info()
+        client.deployments.get.return_value = self._get_deployment()
         return client
 
     def _get_upload_info(self):
@@ -229,6 +230,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         client.build_service.create_or_update_build.return_value = self._get_build_resource()
         client.build_service.get_build_result.side_effect = [self._get_result_resource()]
         client.build_service.get_build_result_log.side_effect = ResourceNotFoundError('Log not found')
+        client.deployments.get.return_value = self._get_deployment()
         return client
 
     def _get_result_resource(self, status='Succeeded'):
@@ -365,6 +367,7 @@ class TestAppDeploy_Put(BasicTest):
     def _get_basic_mock_client(self, sku='Standard'):
         client = super()._get_basic_mock_client(sku=sku)
         client.apps.get_resource_upload_url.return_value = self._get_upload_info()
+        client.deployments.get.return_value = self._get_deployment()
         return client
 
     def _get_upload_info(self):
