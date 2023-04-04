@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.3.27
+++++++
+* 'az containerapp secret set': add support for secrets from Key Vault
+* 'az containerapp secret show': add support for secrets from Key Vault
+
 0.3.26
 +++++++
 * 'az containerapp exec': fix bugs for consumption workload based environment
