@@ -11,7 +11,8 @@ from msrestazure.tools import parse_resource_id
 from azure.cli.core.azclierror import (
     AzureConnectionError,
     ValidationError,
-    CLIInternalError
+    CLIInternalError,
+    ResourceNotFoundError
 )
 from azure.cli.core.extension.operations import _install_deps_for_psycopg2, _run_pip
 from azure.cli.core._profile import Profile
@@ -108,14 +109,20 @@ def get_enable_mi_for_db_linker_func(yes=False):
             elif auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.ServicePrincipalSecret]:
                 sp_client_id = auth_info.get('client_id')
                 sp_object_id = auth_info.get('principal_id')
-                sp_info = run_cli_cmd(
-                    'az ad sp show --id {}'.format(sp_client_id))
-                if sp_info is None:
-                    raise Exception(
-                        "No Service Principal found for client id {}".format(sp_client_id))
-                target_handler.identity_object_id = sp_object_id
-                target_handler.identity_client_id = sp_client_id
-                target_handler.identity_name = sp_info.get('displayName')
+                try:
+                    sp_info = run_cli_cmd(
+                        'az ad sp show --id {}'.format(sp_client_id))
+                    if sp_info is None:
+                        raise ResourceNotFoundError(
+                            "No Service Principal found for client id {}".format(sp_client_id))
+                    target_handler.identity_object_id = sp_object_id
+                    target_handler.identity_client_id = sp_client_id
+                    target_handler.identity_name = sp_info.get('displayName')
+                except CLIInternalError as e:
+                    if 'AADSTS530003' in e.error_msg:
+                        logger.warning(
+                            'Please ask your IT department for help to join this device to Azure Active Directory.')
+                    raise e
 
         # enable target aad authentication and set login user as db aad admin
         target_handler.enable_target_aad_auth()
