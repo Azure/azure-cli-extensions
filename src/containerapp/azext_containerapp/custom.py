@@ -1228,7 +1228,6 @@ def create_containerappsjob(cmd,
                             replica_count=None,
                             parallelism=None,
                             cron_expression=None,
-                            target_port=None,
                             secrets=None,
                             env_vars=None,
                             cpu=None,
@@ -1236,7 +1235,6 @@ def create_containerappsjob(cmd,
                             registry_server=None,
                             registry_user=None,
                             registry_pass=None,
-                            revision_suffix=None,
                             startup_command=None,
                             args=None,
                             tags=None,
@@ -1248,7 +1246,6 @@ def create_containerappsjob(cmd,
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name)
     validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
-    validate_revision_suffix(revision_suffix)
 
     if registry_identity and not is_registry_msi_system(registry_identity):
         logger.info("Creating an acrpull role assignment for the registry identity")
@@ -1512,19 +1509,14 @@ def update_containerappsjob_logic(cmd,
                                   remove_all_env_vars=False,
                                   cpu=None,
                                   memory=None,
-                                  revision_suffix=None,
                                   startup_command=None,
                                   args=None,
                                   tags=None,
                                   no_wait=False,
-                                  from_revision=None,
-                                  ingress=None,
-                                  target_port=None,
                                   registry_server=None,
                                   registry_user=None,
                                   registry_pass=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    validate_revision_suffix(revision_suffix)
 
     if yaml:
         if image or replica_timeout or replica_retry_limit or\
@@ -1879,6 +1871,107 @@ def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_w
         handle_raw_exception(e)
 
 
+def update_containerappjob_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
+    yaml_containerappsjob = process_loaded_yaml(load_yaml_file(file_name))
+    if type(yaml_containerappsjob) != dict:  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+
+    if not yaml_containerappsjob.get('name'):
+        yaml_containerappsjob['name'] = name
+    elif yaml_containerappsjob.get('name').lower() != name.lower():
+        logger.warning('The app name provided in the --yaml file "{}" does not match the one provided in the --name flag "{}". The one provided in the --yaml file will be used.'.format(
+            yaml_containerappsjob.get('name'), name))
+    name = yaml_containerappsjob.get('name')
+
+    if not yaml_containerappsjob.get('type'):
+        yaml_containerappsjob['type'] = 'Microsoft.App/jobs'
+    elif yaml_containerappsjob.get('type').lower() != "microsoft.app/jobs":
+        raise ValidationError('Containerapp type must be \"Microsoft.App/jobs\"')
+
+    # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
+    containerappsjob_def = None
+    try:
+        deserializer = create_deserializer()
+        containerappsjob_def = deserializer('ContainerAppsJob', yaml_containerappsjob)
+    except DeserializationError as ex:
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps job YAML spec.') from ex
+
+    # Remove tags before converting from snake case to camel case, then re-add tags. We don't want to change the case of the tags. Need this since we're not using SDK
+    tags = None
+    if yaml_containerappsjob.get('tags'):
+        tags = yaml_containerappsjob.get('tags')
+        del yaml_containerappsjob['tags']
+
+    containerappsjob_def = _convert_object_from_snake_to_camel_case(_object_to_dict(containerappsjob_def))
+    containerappsjob_def['tags'] = tags
+
+    # update configuration
+    config_def = JobConfigurationModel
+    config_def["secrets"] = yaml_containerappsjob.get('properties')['configuration']['secrets']
+    config_def["triggerType"] = yaml_containerappsjob.get('properties')['configuration']['triggerType']
+    config_def["replicaTimeout"] = yaml_containerappsjob.get('properties')['configuration']['replicaTimeout']
+    config_def["replicaRetryLimit"] = yaml_containerappsjob.get('properties')['configuration']['replicaRetryLimit']
+    config_def["manualTriggerConfig"] = yaml_containerappsjob.get('properties')['configuration']['manualTriggerConfig']
+    config_def["scheduleTriggerConfig"] = yaml_containerappsjob.get('properties')['configuration']['scheduleTriggerConfig']
+    config_def["registries"] = yaml_containerappsjob.get('properties')['configuration']['registries']
+    containerappsjob_def['configuration'] = config_def
+
+    # update template
+    template_def = JobTemplateModel
+    template_def["containers"] = yaml_containerappsjob.get('properties')['template']['containers']
+    template_def["initContainers"] = yaml_containerappsjob.get('properties')['template']['initContainers']
+    template_def["volumes"] = yaml_containerappsjob.get('properties')['template']['volumes']
+    containerappsjob_def['template'] = template_def
+
+    # After deserializing, some properties may need to be moved under the "properties" attribute. Need this since we're not using SDK
+    containerappsjob_def = process_loaded_yaml(containerappsjob_def)
+
+    # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
+    _remove_additional_attributes(containerappsjob_def)
+    _remove_readonly_attributes(containerappsjob_def)
+
+    # Validate managed environment
+    if not containerappsjob_def["properties"].get('managedEnvironmentId'):
+        raise RequiredArgumentMissingError('managedEnvironmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+
+    env_id = containerappsjob_def["properties"]['managedEnvironmentId']
+    env_name = None
+    env_rg = None
+    env_info = None
+
+    if is_valid_resource_id(env_id):
+        parsed_managed_env = parse_resource_id(env_id)
+        env_name = parsed_managed_env['name']
+        env_rg = parsed_managed_env['resource_group']
+    else:
+        raise ValidationError('Invalid managedEnvironmentId specified. Environment not found')
+
+    try:
+        env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=env_rg, name=env_name)
+    except:
+        pass
+
+    if not env_info:
+        raise ValidationError("The environment '{}' in resource group '{}' was not found".format(env_name, env_rg))
+
+    # Validate location
+    if not containerappsjob_def.get('location'):
+        containerappsjob_def['location'] = env_info['location']
+
+    try:
+        r = ContainerAppsJobClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappsjob_def, no_wait=no_wait)
+
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+            logger.warning('Containerapps job creation in progress. Please monitor the creation using `az containerapp job show -n {} -g {}`'.format(
+                name, resource_group_name
+            ))
+
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
 def start_containerappsjob(cmd, resource_group_name, name):
     try:
         return ContainerAppsJobClient.start_job(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -1899,7 +1992,10 @@ def stop_containerappsjob(cmd, resource_group_name, name, job_execution_name=Non
 
 def executionhistory_containerappsjob(cmd, resource_group_name, name):
     try:
-        return ContainerAppsJobClient.execution_history(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        print("get execution history")
+        executionHistoryList = []
+        executionHistory = ContainerAppsJobClient.execution_history(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        return executionHistory['value']
     except CLIError as e:
         handle_raw_exception(e)
 
