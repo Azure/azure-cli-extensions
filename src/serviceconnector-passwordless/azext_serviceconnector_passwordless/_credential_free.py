@@ -276,8 +276,8 @@ class MysqlFlexibleHandler(TargetHandler):
         # set user as AAD admin
         if mysql_identity_id is None:
             raise ValidationError(
-                "Provide '{} mysql-identity-id=<resource ID>' to set {} as AAD administrator.".format(
-                    self.get_auth_flag(), self.login_username))
+                "Provide '{} mysql-identity-id=<user-assigned managed identity ID>' to update AAD authentication.".format(
+                    self.get_auth_flag()))
         mysql_umi = run_cli_cmd(
             'az mysql flexible-server identity list -g {} -s {} --subscription {}'.format(self.resource_group, self.server, self.subscription))
         if (not mysql_umi) or (not mysql_umi.get("userAssignedIdentities")) or mysql_identity_id not in mysql_umi.get("userAssignedIdentities"):
