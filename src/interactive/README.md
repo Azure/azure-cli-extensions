@@ -121,6 +121,7 @@ We added the loading bar to show the progress of the initialization. Initializin
 If the initialization is not finished within 150 seconds, the loading bar can be stopped and the initialization will continue in the background.
 
 However, incomplete loading and initialization may result in some command parameters not being updated, some commands not being executed, etc. This can cause unknown errors, which will return to normal after loading is complete.
+![loading_bar.gif](docs%2Floading_bar.gif)
 
 #### **[Optimize]** Optimize the telemetry feedback to adapt to new recommendation function
 In order to collect data and facilitate the optimization and tuning of the cli recommendation model, we have optimized the telemetry feedback function.
@@ -139,6 +140,23 @@ We have added the ability to recommend scenarios based on keywords and natural l
 
 ```bash
 $ az interactive // initialize the az interactive
-$ # app service database // Search for scenario by starting with # and entering keywords
-$ ::1 // Enter a space to get the recommended scenario based on keywords and select the desired scenario
+$ /connect a mongodb to web app // Search for scenario by starting with / and entering keywords
+>>  output
+[1] Connect an app to MongoDB (Cosmos DB). (5 Commands)
+Connect an app to MongoDB (Cosmos DB).
+
+[2] Tutorial to create and connect Web App to Azure Database for MySQL Flexible Server in a virtual network (6 Commands)
+Tutorial to create and connect Web App to Azure Database for MySQL Flexible Server in a virtual network
+
+[3] Connect an app to SQL Database. (7 Commands)
+Connect an app to SQL Database.
+
+[4] Connect an app to a storage account. (5 Commands)
+Connect an app to a storage account.
+
+[5] Deploy an ASP.NET Core web app to Azure App Service and connect to an Azure SQL Database. (8 Commands)
+Deploy an ASP.NET Core web app to Azure App Service and connect to an Azure SQL Database.
+
+ ? Please select your option (if none, enter 0):
+ $ 1 // Select the scenario you want to use
 ```
