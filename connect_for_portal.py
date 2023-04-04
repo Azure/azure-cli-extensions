@@ -41,18 +41,17 @@ def check_mpio():
                 value = input('\033[93m[Y/Yes to terminate; N/No to proceed with rest of the steps]:\033[00m')
 
 def check_connection(target_iqn, target_portal_hostname, target_portal_port):
-    # try to connect, if failed then skip adding new sessions
-    command = f"sudo iscsiadm -m node --targetname {target_iqn} -p {target_portal_hostname}:{target_portal_port} -l".split(' ')
+    command = f"sudo iscsiadm -m session".split(' ')
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    return result.stderr!=''
+    return f"{target_iqn}" in result.stdout
         
-def connect_single_volume(target_iqn, target_portal_hostname, target_portal_port, number_of_sessions):    
+def connect_volume(target_iqn, target_portal_hostname, target_portal_port, number_of_sessions):    
     print(f'Volume name [{target_iqn}]: Connecting to this volume')
     # add target and attempt to register a session
     command = f"sudo iscsiadm -m node --targetname {target_iqn} --portal {target_portal_hostname}:{target_portal_port} -o new".split(' ')
-    subprocess.run(command)
+    subprocess.run(command, stdout=subprocess.DEVNULL)
     command = f"sudo iscsiadm -m node --targetname {target_iqn} -p {target_portal_hostname}:{target_portal_port} -l".split(' ')
-    subprocess.run(command)
+    subprocess.run(command, stdout=subprocess.DEVNULL)
     number_of_sessions-=1
 
     # get session id
@@ -67,14 +66,13 @@ def connect_single_volume(target_iqn, target_portal_hostname, target_portal_port
     # register remaining sessions
     command = f"sudo iscsiadm -m session -r {session_id} --op new".split(' ')
     for i in range(number_of_sessions):
-        subprocess.run(command)
+        subprocess.run(command, stdout=subprocess.DEVNULL)
             
     # maintain persistent connection
     command = f"sudo iscsiadm -m node --targetname {target_iqn} --portal {target_portal_hostname}:{target_portal_port} --op update -n node.session.nr_sessions -v {number_of_sessions}".split(' ')
     subprocess.run(command)
 
 if __name__ == "__main__":
-    # check environment
     # iSCSI initiator
     check_iscsi()
     
@@ -93,12 +91,13 @@ if __name__ == "__main__":
     target_iqns = args.target_iqns if args.target_iqns is not None else ["iqn.2023-03.net.windows.core.blob.ElasticSan.es-4qtreagkjzj0:testvolume1"]
     target_portal_hostnames = args.target_portal_hostnames if args.target_portal_hostnames is not None else ["es-4qtreagkjzj0.z45.blob.storage.azure.net"]
     target_portal_ports = args.target_portal_ports if args.target_portal_ports is not None else [3260]
-    number_of_sessions = args.target_portal_ports if args.target_portal_ports is not None else [32] #default 32
+    number_of_sessions = args.num_of_sessions if args.num_of_sessions is not None else [32] #default 32
     number_of_sessions = [min(32, int(s)) for s in number_of_sessions]
     
     for i, volume_name in enumerate(volume_names):
+        # check connections, if connected, then skip adding new connections
         connected = check_connection(target_iqns[i], target_portal_hostnames[i], target_portal_ports[i])
         if connected:
             print(f'Volume name [{target_iqns[i]}]: Skipped as this volume is already connected')
             continue
-        # connect_single_volume(target_iqns[i], target_portal_hostnames[i], target_portal_ports[i], number_of_sessions)
+        connect_volume(target_iqns[i], target_portal_hostnames[i], target_portal_ports[i], number_of_sessions[i])
