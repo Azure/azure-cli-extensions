@@ -167,7 +167,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env create') as c:
         c.argument('zone_redundant', options_list=["--zone-redundant", "-z"], help="Enable zone redundancy on the environment. Cannot be used without --infrastructure-subnet-resource-id. If used with --location, the subnet's location must match")
-        c.argument('enable_workload_profiles', options_list=["--enable-workload-profiles", "-w"], help="Allow this environment to have workload profiles --infrastructure-subnet-resource-id/-s is required for workload profiles to be enabled", is_preview=True)
+        c.argument('enable_workload_profiles', action='store_true', options_list=["--enable-workload-profiles", "-w"], help="Allow this environment to have workload profiles", is_preview=True)
 
     with self.argument_context('containerapp env update') as c:
         c.argument('name', name_type, help='Name of the Container Apps environment.')
