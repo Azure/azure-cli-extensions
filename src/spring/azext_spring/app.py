@@ -456,7 +456,7 @@ def _log_application(cmd, client, no_wait, poller, resource_group, service, app_
                               since=300, timeout=10, get_app_log=_get_app_log_deploy_phase)
     except Exception:
         # ignore
-        return
+        pass
     if deployment_error:
         raise deployment_error
 

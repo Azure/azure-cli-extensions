@@ -1,5 +1,9 @@
 Release History
 ===============
+1.10.0
+---
+* Print more logs for app deployment
+
 1.9.0
 ---
 * Add new command -- `az spring build-service build create` to create the build resource when using your own container registry.
