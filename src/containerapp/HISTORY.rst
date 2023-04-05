@@ -5,6 +5,7 @@ Release History
 Upcoming
 +++++++
  * 'az containerapp secret set': fix help typo
+ * 'az containerapp secret set': add more format validation for key vault secrets
 
 0.3.27
 ++++++
