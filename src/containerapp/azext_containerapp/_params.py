@@ -279,7 +279,7 @@ def load_arguments(self, _):
         c.argument('label_weights', nargs='+', options_list=['--label-weight'], help="A list of label weight(s) for the container app. Space-separated values in 'label_name=weight' format.")
 
     with self.argument_context('containerapp secret') as c:
-        c.argument('secrets', nargs='+', options_list=['--secrets', '-s'], help="A list of secret(s) for the container app. Space-separated values in 'key=value' format (where 'key' cannot be longer than 20 characters).")
+        c.argument('secrets', nargs='+', options_list=['--secrets', '-s'], help="A list of secret(s) for the container app. Space-separated values in 'key=value' or 'key=keyvaultref:keyvaulturl,identityref:identity' format (where 'key' cannot be longer than 20 characters).")
         c.argument('secret_name', help="The name of the secret to show.")
         c.argument('secret_names', nargs='+', help="A list of secret(s) for the container app. Space-separated secret values names.")
         c.argument('show_values', help='Show the secret values.')

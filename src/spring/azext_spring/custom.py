@@ -243,7 +243,8 @@ def app_append_persistent_storage(cmd, client, resource_group, service, name,
                                   mount_path,
                                   share_name=None,
                                   mount_options=None,
-                                  read_only=None):
+                                  read_only=None,
+                                  enable_sub_path=None):
     resource = client.services.get(resource_group, service)
     storage_id = None
     if resource.sku.tier.upper() == 'STANDARDGEN2':
@@ -264,7 +265,8 @@ def app_append_persistent_storage(cmd, client, resource_group, service, name,
         share_name=share_name,
         mount_path=mount_path,
         mount_options=mount_options,
-        read_only=read_only)
+        read_only=read_only,
+        enable_sub_path=enable_sub_path)
 
     custom_persistent_disks.append(
         models.CustomPersistentDiskResource(
