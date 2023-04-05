@@ -3072,17 +3072,25 @@ class Secret(Model):
     :type name: str
     :param value: Secret Value.
     :type value: str
+    :param keyVaultUrl: Secret KeyVaultUrl.
+    :type keyVaultUrl: str
+    :param identity: Identity talking to keyVault.
+    :type identity: str
     """
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'value': {'key': 'value', 'type': 'str'},
+        'keyVaultUrl': {'key': 'keyVaultUrl', 'type': 'str'},
+        'identity': {'key': 'identity', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
         super(Secret, self).__init__(**kwargs)
         self.name = kwargs.get('name', None)
         self.value = kwargs.get('value', None)
+        self.keyVaultUrl = kwargs.get('keyVaultUrl', None)
+        self.identity = kwargs.get('identity', None)
 
 
 class SecretsCollection(Model):
