@@ -361,6 +361,12 @@ def parse_secret_flags(secret_list):
         identity_Id = ""
 
         kv_identity = value.split(',', 2)
+        if len(kv_identity) == 1:
+            if kv_identity[0].startswith('keyvaultref:'):
+                raise ValidationError("Identityref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\.")
+            if kv_identity[0].startswith('identityref:'):
+                raise ValidationError("Keyvaultref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\.")
+
         if len(kv_identity) == 2:
             kv = kv_identity[0]
             identity = kv_identity[1]
