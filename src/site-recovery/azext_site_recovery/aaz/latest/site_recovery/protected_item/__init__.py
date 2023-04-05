@@ -9,25 +9,14 @@
 # flake8: noqa
 
 from .__cmd_group import *
-from ._add_disk import *
-from ._apply_recovery_point import *
 from ._create import *
 from ._delete import *
 from ._failover_cancel import *
 from ._failover_commit import *
 from ._list import *
-from ._list_target_compute_size import *
 from ._planned_failover import *
 from ._re_protect import *
 from ._remove import *
-from ._remove_disk import *
-from ._repair_replication import *
-from ._resolve_health_error import *
 from ._show import *
-from ._switch_provider import *
-from ._test_failover import *
-from ._test_failover_cleanup import *
 from ._unplanned_failover import *
 from ._update import *
-from ._update_appliance import *
-from ._update_mobility_service import *

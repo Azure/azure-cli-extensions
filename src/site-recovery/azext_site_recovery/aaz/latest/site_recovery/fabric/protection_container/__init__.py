@@ -10,7 +10,6 @@
 
 from .__cmd_group import *
 from ._create import *
-from ._discover_protectable_item import *
 from ._list import *
 from ._remove import *
 from ._show import *
