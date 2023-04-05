@@ -4,10 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import unittest
 
-from knack.util import CLIError
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccountPreparer, record_only)
+from azure.cli.testsdk import (ScenarioTest, StorageAccountPreparer, record_only)
+from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer)
+from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
@@ -23,7 +23,7 @@ class CustomDomainTests(ScenarioTest):
             'cert': 'test-cert',
             'keyVaultUri': 'https://integration-test-prod.vault.azure.net/',
             'KeyVaultCertName': 'cli-unittest',
-            'domain': 'cli.asc-test.net',
+            'domain': 'clitest.asc-test.net',
             'app': 'test-custom-domain',
             'serviceName': 'cli-unittest',
             'rg': 'cli'
@@ -68,9 +68,10 @@ class CustomDomainTests(ScenarioTest):
 
 class ByosTest(ScenarioTest):
 
-    @ResourceGroupPreparer()
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @StorageAccountPreparer()
-    def test_persistent_storage(self, resource_group, storage_account):
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
+    def test_persistent_storage(self, resource_group, storage_account, spring):
         template = 'storage account keys list -n {} -g {} --query "[0].value" -otsv'
         accountkey = self.cmd(template.format(storage_account, resource_group)).output
 
@@ -78,14 +79,12 @@ class ByosTest(ScenarioTest):
             'storageType': 'StorageAccount',
             'storage': 'test-storage-name',
             'app': 'test-app',
-            'serviceName': 'cli-unittest',
+            'serviceName': spring,
             'location': 'centralus',
             'accountKey': accountkey,
             'resource_group': resource_group,
             'storage_account': storage_account,
         })
-
-        self.cmd('spring create -n {serviceName} -g {resource_group} -l {location}')
 
         self.cmd('spring storage add --name {storage} --storage-type {storageType} --account-name {storage_account} --account-key {accountKey} -g {resource_group} -s {serviceName}', checks=[
             self.check('name', '{storage}'),
@@ -103,19 +102,17 @@ class ByosTest(ScenarioTest):
         self.cmd('spring storage remove --name {storage} -g {resource_group} -s {serviceName}')
         self.cmd('spring storage show --name {storage} -g {resource_group} -s {serviceName}', expect_failure=True)
 
-        self.cmd('spring delete -n {serviceName} -g {rg}')
 
 class StartStopAscTest(ScenarioTest):
 
-    def test_stop_and_start_service(self):
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD_START_STOP['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD_START_STOP['spring'])
+    def test_stop_and_start_service(self, resource_group, spring):
         self.kwargs.update({
-            'serviceName': 'cli-unittest-start-stop',
-            'resource_group': 'cli-group',
-            'location': 'eastus2euap'
+            'serviceName': spring,
+            'resource_group': resource_group,
         })
 
-        self.cmd('group create -n {resource_group} -l {location}')
-        self.cmd('spring create -n {serviceName} -g {resource_group} -l {location}')
         self.cmd('spring stop -n {serviceName} -g {resource_group}')
         self.cmd('spring show --name {serviceName} -g {resource_group}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
@@ -128,7 +125,6 @@ class StartStopAscTest(ScenarioTest):
             self.check('properties.powerState', 'Running')
         ])
 
-        self.cmd('spring delete -n {serviceName} -g {resource_group} --no-wait')
 
 class SslTests(ScenarioTest):
 
@@ -195,17 +191,15 @@ class SslTests(ScenarioTest):
 
 class CustomImageTest(ScenarioTest):
 
-    def test_app_deploy_container(self):
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
+    def test_app_deploy_container(self, resource_group, spring):
         self.kwargs.update({
             'app': 'test-container',
-            'serviceName': 'cli-unittest',
+            'serviceName': spring,
             'containerImage': 'springio/gs-spring-boot-docker',
-            'resourceGroup': 'cli',
-            'location': 'centralindia'
+            'resourceGroup': resource_group,
         })
-
-        self.cmd('group create -n {resourceGroup} -l {location}')
-        self.cmd('spring create -n {serviceName} -g {resourceGroup}')
 
         self.cmd('spring app create -s {serviceName} -g {resourceGroup} -n {app}')
 
@@ -230,6 +224,36 @@ class CustomImageTest(ScenarioTest):
             self.check('properties.source.customContainer.containerImage', '{containerImage}'),
             self.check('properties.source.customContainer.languageFramework', 'springboot'),
         ])
+
+
+class RemoteDebuggingTest(ScenarioTest):
+    def test_remote_debugging(self):
+        py_path = os.path.abspath(os.path.dirname(__file__))
+        file_path = os.path.join(py_path, 'files/test.jar').replace("\\", "/")
+        self.kwargs.update({
+            'app': 'test-remote-debugging',
+            'serviceName': 'cli-unittest',
+            'resourceGroup': 'cli',
+            'location': 'centralindia',
+            'deployment': 'default',
+            'file': file_path
+        })
+
+        self.cmd('spring app create -s {serviceName} -g {resourceGroup} -n {app}')
+
+        # remote debugging can only be supported for jar, here will throw exception for default banner
+        self.cmd(
+            'spring app enable-remote-debugging -n {app} -g {resourceGroup} -s {serviceName} -d {deployment}', expect_failure=True)
+
+        self.cmd(
+            'spring app disable-remote-debugging -n {app} -g {resourceGroup} -s {serviceName} -d {deployment}')
+
+        self.cmd(
+            'spring app get-remote-debugging-config -n {app} -g {resourceGroup} -s {serviceName} -d {deployment}',
+            checks=[
+                self.check('enabled', False)
+            ])
+
 
 class AppConnectTest(ScenarioTest):
 

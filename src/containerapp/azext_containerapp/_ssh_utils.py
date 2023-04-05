@@ -13,7 +13,7 @@ import requests
 import websocket
 
 from knack.log import get_logger
-from azure.cli.core.azclierror import CLIInternalError
+from azure.cli.core.azclierror import CLIInternalError, ValidationError
 from azure.cli.core.commands.client_factory import get_subscription_id
 
 from ._clients import ContainerAppClient
@@ -53,7 +53,8 @@ class WebSocketConnection:
     def __init__(self, cmd, resource_group_name, name, revision, replica, container, startup_command):
         token_response = ContainerAppClient.get_auth_token(cmd, resource_group_name, name)
         self._token = token_response["properties"]["token"]
-        self._logstream_endpoint = token_response["properties"]["logStreamEndpoint"]
+        self._logstream_endpoint = self._get_logstream_endpoint(cmd, resource_group_name, name,
+                                                                revision, replica, container)
         self._url = self._get_url(cmd=cmd, resource_group_name=resource_group_name, name=name, revision=revision,
                                   replica=replica, container=container, startup_command=startup_command)
         self._socket = websocket.WebSocket(enable_multithread=True)
@@ -66,6 +67,16 @@ class WebSocketConnection:
         if is_platform_windows():
             self._windows_conout_mode = _get_conout_mode()
             self._windows_conin_mode = _get_conin_mode()
+
+    @classmethod
+    def _get_logstream_endpoint(cls, cmd, resource_group_name, name, revision, replica, container):
+        containers = ContainerAppClient.get_replica(cmd,
+                                                    resource_group_name,
+                                                    name, revision, replica)["properties"]["containers"]
+        container_info = [c for c in containers if c["name"] == container]
+        if not container_info:
+            raise ValidationError(f"No such container: {container}")
+        return container_info[0]["logStreamEndpoint"]
 
     def _get_url(self, cmd, resource_group_name, name, revision, replica, container, startup_command):
         sub = get_subscription_id(cmd.cli_ctx)
@@ -108,6 +119,9 @@ def _decode_and_output_to_terminal(connection: WebSocketConnection, response, en
 
 
 def read_ssh(connection: WebSocketConnection, response_encodings):
+    # We just need to do resize once for the whole session
+    _resize_terminal(connection)
+
     # response_encodings is the ordered list of Unicode encodings to try to decode with before raising an exception
     while connection.is_connected:
         response = connection.recv()
@@ -131,9 +145,7 @@ def read_ssh(connection: WebSocketConnection, response_encodings):
 
 def _send_stdin(connection: WebSocketConnection, getch_fn):
     while connection.is_connected:
-        _resize_terminal(connection)
         ch = getch_fn()
-        _resize_terminal(connection)
         if connection.is_connected:
             connection.send(b"".join([SSH_INPUT_PREFIX, ch]))
 

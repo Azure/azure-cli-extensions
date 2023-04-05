@@ -70,7 +70,7 @@ class HcxEnterpriseSitesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -150,7 +150,7 @@ class HcxEnterpriseSitesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL
@@ -192,6 +192,7 @@ class HcxEnterpriseSitesOperations(object):
         resource_group_name,  # type: str
         private_cloud_name,  # type: str
         hcx_enterprise_site_name,  # type: str
+        hcx_enterprise_site,  # type: "_models.HcxEnterpriseSite"
         **kwargs  # type: Any
     ):
         # type: (...) -> "_models.HcxEnterpriseSite"
@@ -205,6 +206,8 @@ class HcxEnterpriseSitesOperations(object):
         :type private_cloud_name: str
         :param hcx_enterprise_site_name: Name of the HCX Enterprise Site in the private cloud.
         :type hcx_enterprise_site_name: str
+        :param hcx_enterprise_site: The HCX Enterprise Site.
+        :type hcx_enterprise_site: ~avs_client.models.HcxEnterpriseSite
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: HcxEnterpriseSite, or the result of cls(response)
         :rtype: ~avs_client.models.HcxEnterpriseSite
@@ -215,9 +218,7 @@ class HcxEnterpriseSitesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        _hcx_enterprise_site = _models.HcxEnterpriseSite()
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -241,7 +242,7 @@ class HcxEnterpriseSitesOperations(object):
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_hcx_enterprise_site, 'HcxEnterpriseSite')
+        body_content = self._serialize.body(hcx_enterprise_site, 'HcxEnterpriseSite')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = self._client._pipeline.run(request, stream=False, **kwargs)
@@ -291,7 +292,7 @@ class HcxEnterpriseSitesOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL

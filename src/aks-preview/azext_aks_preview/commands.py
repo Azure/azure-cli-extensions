@@ -22,6 +22,7 @@ from azext_aks_preview._format import (
     aks_agentpool_show_table_format,
     aks_list_nodepool_snapshot_table_format,
     aks_list_snapshot_table_format,
+    aks_list_table_format,
     aks_pod_identities_table_format,
     aks_pod_identity_exceptions_table_format,
     aks_show_nodepool_snapshot_table_format,
@@ -29,6 +30,46 @@ from azext_aks_preview._format import (
     aks_show_table_format,
     aks_upgrades_table_format,
 )
+from knack.log import get_logger
+
+logger = get_logger(__name__)
+
+
+def transform_mc_objects_with_custom_cas(result):
+    # convert custom_ca_trust_certificates in bytearray format encoded in utf-8 to string
+    if not result:
+        return result
+    from msrest.paging import Paged
+
+    def _patch_custom_cas_in_security_profile(security_profile):
+        # modify custom_ca_trust_certificates in-place
+        # security_profile shouldn't be None
+        custom_cas = getattr(security_profile, 'custom_ca_trust_certificates', None)
+        if custom_cas:
+            decoded_custom_cas = []
+            for custom_ca in custom_cas:
+                try:
+                    decoded_custom_ca = custom_ca.decode("utf-8")
+                except Exception:  # pylint: disable=broad-except
+                    logger.warning("failed to decode customCaTrustCertificates")
+                    decoded_custom_ca = None
+                decoded_custom_cas.append(decoded_custom_ca)
+            security_profile.custom_ca_trust_certificates = decoded_custom_cas
+
+    singular = False
+    if isinstance(result, Paged):
+        result = list(result)
+
+    if not isinstance(result, list):
+        singular = True
+        result = [result]
+
+    for r in result:
+        if getattr(r, 'security_profile', None):
+            # security_profile shouldn't be None
+            _patch_custom_cas_in_security_profile(r.security_profile)
+
+    return result[0] if singular else result
 
 
 def load_command_table(self, _):
@@ -77,31 +118,29 @@ def load_command_table(self, _):
     )
 
     # AKS managed cluster commands
-    with self.command_group('aks', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
-        g.custom_command('kollect', 'aks_kollect')
-        g.custom_command('kanalyze', 'aks_kanalyze')
+    with self.command_group('aks', managed_clusters_sdk, client_factory=cf_managed_clusters,
+                            transform=transform_mc_objects_with_custom_cas) as g:
         g.custom_command('browse', 'aks_browse')
         g.custom_command('create', 'aks_create', supports_no_wait=True)
         g.custom_command('update', 'aks_update', supports_no_wait=True)
-        g.command('delete', 'begin_delete',
-                  supports_no_wait=True, confirmation=True)
-        g.custom_command('scale', 'aks_scale', supports_no_wait=True)
-        g.custom_command('disable-addons', 'aks_disable_addons',
-                         supports_no_wait=True)
-        g.custom_command('enable-addons', 'aks_enable_addons',
-                         supports_no_wait=True)
-        g.custom_command('get-credentials', 'aks_get_credentials')
-        g.custom_show_command('show', 'aks_show',
-                              table_transformer=aks_show_table_format)
+        g.command('get-upgrades', 'get_upgrade_profile', table_transformer=aks_upgrades_table_format)
         g.custom_command('upgrade', 'aks_upgrade', supports_no_wait=True)
-        g.command('get-upgrades', 'get_upgrade_profile',
-                  table_transformer=aks_upgrades_table_format)
+        g.custom_command('scale', 'aks_scale', supports_no_wait=True)
+        g.command('delete', 'begin_delete', supports_no_wait=True, confirmation=True)
+        g.custom_show_command('show', 'aks_show', table_transformer=aks_show_table_format)
+        g.custom_command('list', 'aks_list', table_transformer=aks_list_table_format)
+        g.custom_command('enable-addons', 'aks_enable_addons', supports_no_wait=True)
+        g.custom_command('disable-addons', 'aks_disable_addons', supports_no_wait=True)
+        g.custom_command('get-credentials', 'aks_get_credentials')
         g.custom_command('rotate-certs', 'aks_rotate_certs', supports_no_wait=True,
                          confirmation='Kubernetes will be unavailable during certificate rotation process.\n' +
                          'Are you sure you want to perform this operation?')
-        g.wait_command('wait')
         g.command('stop', 'begin_stop', supports_no_wait=True)
         g.command('start', 'begin_start', supports_no_wait=True)
+        g.wait_command('wait')
+        # aks-preview only
+        g.custom_command('kollect', 'aks_kollect')
+        g.custom_command('kanalyze', 'aks_kanalyze')
         g.custom_command('get-os-options', 'aks_get_os_options')
         g.custom_command('operation-abort', 'aks_operation_abort', supports_no_wait=True)
 
@@ -204,3 +243,24 @@ def load_command_table(self, _):
         g.custom_command('create', 'aks_trustedaccess_role_binding_create')
         g.custom_command('update', 'aks_trustedaccess_role_binding_update')
         g.custom_command('delete', 'aks_trustedaccess_role_binding_delete', confirmation=True)
+
+    # AKS mesh commands
+    with self.command_group('aks mesh', managed_clusters_sdk, client_factory=cf_managed_clusters) as g:
+        g.custom_command(
+            'enable',
+            'aks_mesh_enable',
+            supports_no_wait=True)
+        g.custom_command(
+            'disable',
+            'aks_mesh_disable',
+            supports_no_wait=True,
+            confirmation=True)
+        g.custom_command(
+            'enable-ingress-gateway',
+            'aks_mesh_enable_ingress_gateway',
+            supports_no_wait=True)
+        g.custom_command(
+            'disable-ingress-gateway',
+            'aks_mesh_disable_ingress_gateway',
+            supports_no_wait=True,
+            confirmation=True)

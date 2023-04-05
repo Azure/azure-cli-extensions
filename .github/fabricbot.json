@@ -207,49 +207,49 @@
             "hours": [
               1
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 1,
             "hours": [
               1
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 2,
             "hours": [
               1
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 3,
             "hours": [
               1
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 4,
             "hours": [
               1
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 5,
             "hours": [
               1
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 6,
             "hours": [
               1
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           }
         ],
         "searchTerms": [
@@ -304,7 +304,7 @@
               13,
               19
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 1,
@@ -314,7 +314,7 @@
               13,
               19
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 2,
@@ -324,7 +324,7 @@
               13,
               19
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 3,
@@ -334,7 +334,7 @@
               13,
               19
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 4,
@@ -344,7 +344,7 @@
               13,
               19
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 5,
@@ -354,7 +354,7 @@
               13,
               19
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 6,
@@ -364,7 +364,7 @@
               13,
               19
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           }
         ],
         "searchTerms": [
@@ -720,6 +720,407 @@
           "operator": "and",
           "operands": [
             {
+              "name": "labelAdded",
+              "parameters": {
+                "label": "issue-addressed"
+              }
+            }
+          ]
+        },
+        "eventType": "issue",
+        "eventNames": [
+          "issues",
+          "project_card"
+        ],
+        "taskName": "[Resolve Workflow] Issue Addressed Label Applied",
+        "actions": [
+          {
+            "name": "addReply",
+            "parameters": {
+              "comment": "Hi @${issueAuthor}.  Thank you for opening this issue and giving us the opportunity to assist.  We believe that this has been addressed.  If you feel that further discussion is needed, please add a comment with the text “`/unresolve`” to remove the “issue-addressed” label and continue the conversation."
+            }
+          },
+          {
+            "name": "removeLabel",
+            "parameters": {
+              "label": "needs-triage"
+            }
+          },
+          {
+            "name": "removeLabel",
+            "parameters": {
+              "label": "needs-team-triage"
+            }
+          },
+          {
+            "name": "removeLabel",
+            "parameters": {
+              "label": "needs-team-attention"
+            }
+          },
+          {
+            "name": "removeLabel",
+            "parameters": {
+              "label": "needs-author-feedback"
+            }
+          },
+          {
+            "name": "removeLabel",
+            "parameters": {
+              "label": "no-recent-activity"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "taskType": "scheduled",
+      "capabilityId": "ScheduledSearch",
+      "subCapability": "ScheduledSearch",
+      "version": "1.1",
+      "config": {
+        "frequency": [
+          {
+            "weekDay": 0,
+            "hours": [
+              0,
+              6,
+              12,
+              18
+            ],
+            "timezoneOffset": 8
+          },
+          {
+            "weekDay": 1,
+            "hours": [
+              0,
+              6,
+              12,
+              18
+            ],
+            "timezoneOffset": 8
+          },
+          {
+            "weekDay": 2,
+            "hours": [
+              0,
+              6,
+              12,
+              18
+            ],
+            "timezoneOffset": 8
+          },
+          {
+            "weekDay": 3,
+            "hours": [
+              0,
+              6,
+              12,
+              18
+            ],
+            "timezoneOffset": 8
+          },
+          {
+            "weekDay": 4,
+            "hours": [
+              0,
+              6,
+              12,
+              18
+            ],
+            "timezoneOffset": 8
+          },
+          {
+            "weekDay": 5,
+            "hours": [
+              0,
+              6,
+              12,
+              18
+            ],
+            "timezoneOffset": 8
+          },
+          {
+            "weekDay": 6,
+            "hours": [
+              0,
+              6,
+              12,
+              18
+            ],
+            "timezoneOffset": 8
+          }
+        ],
+        "searchTerms": [
+          {
+            "name": "isIssue",
+            "parameters": {}
+          },
+          {
+            "name": "isOpen",
+            "parameters": {}
+          },
+          {
+            "name": "hasLabel",
+            "parameters": {
+              "label": "issue-addressed"
+            }
+          },
+          {
+            "name": "noActivitySince",
+            "parameters": {
+              "days": 7
+            }
+          }
+        ],
+        "taskName": "[Resolve Workflow] Close Addressed Issues",
+        "actions": [
+          {
+            "name": "addReply",
+            "parameters": {
+              "comment": "Hi @${issueAuthor}, since you haven’t asked that we “`/unresolve`” the issue, we’ll close this out. If you believe further discussion is needed, please add a comment “`/unresolve`” to reopen the issue."
+            }
+          },
+          {
+            "name": "closeIssue",
+            "parameters": {}
+          }
+        ]
+      }
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "IssueCommentResponder",
+      "version": "1.0",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "name": "hasLabel",
+              "parameters": {
+                "label": "issue-addressed"
+              }
+            },
+            {
+              "name": "commentContains",
+              "parameters": {
+                "commentPattern": "/unresolve"
+              }
+            },
+            {
+              "operator": "or",
+              "operands": [
+                {
+                  "name": "isActivitySender",
+                  "parameters": {
+                    "user": {
+                      "type": "author"
+                    }
+                  }
+                },
+                {
+                  "name": "activitySenderHasPermissions",
+                  "parameters": {
+                    "permissions": "admin"
+                  }
+                },
+                {
+                  "name": "activitySenderHasPermissions",
+                  "parameters": {
+                    "permissions": "write"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "eventType": "issue",
+        "eventNames": [
+          "issue_comment"
+        ],
+        "taskName": "[Resolve Workflow] Unresolve Command by Author",
+        "actions": [
+          {
+            "name": "reopenIssue",
+            "parameters": {}
+          },
+          {
+            "name": "removeLabel",
+            "parameters": {
+              "label": "issue-addressed"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "needs-team-attention"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "IssueCommentResponder",
+      "version": "1.0",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "name": "hasLabel",
+              "parameters": {
+                "label": "issue-addressed"
+              }
+            },
+            {
+              "name": "commentContains",
+              "parameters": {
+                "commentPattern": "/unresolve"
+              }
+            },
+            {
+              "operator": "and",
+              "operands": [
+                {
+                  "operator": "not",
+                  "operands": [
+                    {
+                      "name": "isActivitySender",
+                      "parameters": {
+                        "user": {
+                          "type": "author"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "operator": "not",
+                  "operands": [
+                    {
+                      "name": "activitySenderHasPermissions",
+                      "parameters": {
+                        "permissions": "admin"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "operator": "not",
+                  "operands": [
+                    {
+                      "name": "activitySenderHasPermissions",
+                      "parameters": {
+                        "permissions": "write"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "eventType": "issue",
+        "eventNames": [
+          "issue_comment"
+        ],
+        "taskName": "[Resolve Workflow] Unresolve Command Without Permissions",
+        "actions": [
+          {
+            "name": "addReply",
+            "parameters": {
+              "comment": "Hi ${contextualAuthor}, only the original author of the issue can ask that it be unresolved.  Please open a new issue with your scenario and details if you would like to discuss this topic with the team."
+            }
+          }
+        ]
+      }
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "IssuesOnlyResponder",
+      "version": "1.0",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "name": "isOpen",
+              "parameters": {}
+            },
+            {
+              "name": "hasLabel",
+              "parameters": {
+                "label": "issue-addressed"
+              }
+            },
+            {
+              "operator": "or",
+              "operands": [
+                {
+                  "name": "labelAdded",
+                  "parameters": {
+                    "label": "needs-team-attention"
+                  }
+                },
+                {
+                  "name": "labelAdded",
+                  "parameters": {
+                    "label": "needs-author-feedback"
+                  }
+                },
+                {
+                  "name": "labelAdded",
+                  "parameters": {
+                    "label": "Service Attention"
+                  }
+                },
+                {
+                  "name": "labelAdded",
+                  "parameters": {
+                    "label": "needs-triage"
+                  }
+                },
+                {
+                  "name": "labelAdded",
+                  "parameters": {
+                    "label": "needs-team-triage"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "eventType": "issue",
+        "eventNames": [
+          "issues",
+          "project_card"
+        ],
+        "taskName": "[Resolve Workflow] Unresolve on WIP Labels",
+        "actions": [
+          {
+            "name": "removeLabel",
+            "parameters": {
+              "label": "issue-addressed"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "IssuesOnlyResponder",
+      "version": "1.0",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
               "name": "isOpen",
               "parameters": {}
             },
@@ -772,7 +1173,7 @@
               19,
               22
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 1,
@@ -786,7 +1187,7 @@
               19,
               22
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 2,
@@ -800,7 +1201,7 @@
               19,
               22
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 3,
@@ -814,7 +1215,7 @@
               19,
               22
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 4,
@@ -828,7 +1229,7 @@
               19,
               22
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 5,
@@ -842,7 +1243,7 @@
               19,
               22
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 6,
@@ -856,7 +1257,7 @@
               19,
               22
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           }
         ],
         "searchTerms": [
@@ -911,7 +1312,7 @@
               20,
               23
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 1,
@@ -925,7 +1326,7 @@
               20,
               23
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 2,
@@ -939,7 +1340,7 @@
               20,
               23
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 3,
@@ -953,7 +1354,7 @@
               20,
               23
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 4,
@@ -967,7 +1368,7 @@
               20,
               23
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 5,
@@ -981,7 +1382,7 @@
               20,
               23
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           },
           {
             "weekDay": 6,
@@ -995,7 +1396,7 @@
               20,
               23
             ],
-            "timezoneOffset": -7
+            "timezoneOffset": 8
           }
         ],
         "searchTerms": [
@@ -1489,9 +1890,13 @@
             ],
             "mentionees": [
               "Drewm3",
-              "avirishuv",
-              "vaibhav-agar",
-              "amjads1"
+              "TravisCragg-MSFT",
+              "nikhilpatel909",
+              "sandeepraichura",
+              "hilaryw29",
+              "GabstaMSFT",
+              "ramankumarlive",
+              "ushnaarshadkhan"
             ]
           },
           {
@@ -1500,8 +1905,8 @@
               "Compute - Extensions"
             ],
             "mentionees": [
-              "Drewm3",
-              "amjads1"
+              "TravisCragg-MSFT",
+              "GabstaMSFT"
             ]
           },
           {
@@ -1510,8 +1915,8 @@
               "Compute - Images"
             ],
             "mentionees": [
-              "Drewm3",
-              "vaibhav-agar"
+              "TravisCragg-MSFT",
+              "sandeepraichura"
             ]
           },
           {
@@ -1520,8 +1925,9 @@
               "Compute - Managed Disks"
             ],
             "mentionees": [
-              "Drewm3",
-              "vaibhav-agar"
+              "TravisCragg-MSFT",
+              "ramankumarlive",
+              "ushnaarshadkhan"
             ]
           },
           {
@@ -1531,7 +1937,7 @@
             ],
             "mentionees": [
               "Drewm3",
-              "avirishuv"
+              "TravisCragg-MSFT"
             ]
           },
           {
@@ -1541,7 +1947,11 @@
             ],
             "mentionees": [
               "Drewm3",
-              "avirishuv"
+              "TravisCragg-MSFT",
+              "nikhilpatel909",
+              "sandeepraichura",
+              "hilaryw29",
+              "GabstaMSFT"
             ]
           },
           {
@@ -1550,8 +1960,8 @@
               "Compute - VMSS"
             ],
             "mentionees": [
-              "Drewm3",
-              "avirishuv"
+              "TravisCragg-MSFT",
+              "hilaryw29"
             ]
           },
           {
@@ -3154,7 +3564,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[AKS] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[AKS] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -3223,19 +3633,13 @@
           {
             "name": "requestReviewer",
             "parameters": {
-              "reviewer": "wangzelin007"
+              "reviewer": "yanzhudd"
             }
           },
           {
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -3248,6 +3652,12 @@
             "name": "requestReviewer",
             "parameters": {
               "reviewer": "yonzhan"
+            }
+          },
+          {
+            "name": "requestReviewer",
+            "parameters": {
+              "reviewer": "FumingZhang"
             }
           },
           {
@@ -3305,7 +3715,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[machine learning] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[machine learning] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -3412,12 +3822,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "kairu-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -3640,12 +4044,6 @@
             "parameters": {
               "user": "jiasli"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -3800,12 +4198,6 @@
             }
           },
           {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
-          },
-          {
             "name": "requestReviewer",
             "parameters": {
               "reviewer": "wangzelin007"
@@ -3860,7 +4252,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[spring-cloud] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[spring-cloud] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -3962,12 +4354,6 @@
             "parameters": {
               "user": "zhoxing-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -4018,7 +4404,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[monitor] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[monitor] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -4036,13 +4422,25 @@
             "name": "assignToUser",
             "parameters": {
               "groupId": "",
-              "user": "kairu-ms"
+              "user": "AllyW"
             }
           },
           {
             "name": "addMilestone",
             "parameters": {
               "milestoneName": "Backlog"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "Azure CLI Team"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "question"
             }
           }
         ]
@@ -4069,14 +4467,14 @@
                 {
                   "name": "titleContains",
                   "parameters": {
-                    "titlePattern": "\\b([Mm][Oo][Nn][Ii][Tt][Oo][Rr])\\b",
+                    "titlePattern": "az monitor",
                     "isRegex": true
                   }
                 },
                 {
                   "name": "bodyContains",
                   "parameters": {
-                    "bodyPattern": "\\b([Mm][Oo][Nn][Ii][Tt][Oo][Rr])\\b",
+                    "bodyPattern": "az monitor",
                     "isRegex": true
                   }
                 }
@@ -4123,15 +4521,15 @@
             }
           },
           {
-            "name": "assignToUser",
+            "name": "requestReviewer",
             "parameters": {
-              "user": "kairu-ms"
+              "reviewer": "AllyW"
             }
           },
           {
-            "name": "addMilestone",
+            "name": "assignToUser",
             "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
+              "user": "AllyW"
             }
           }
         ]
@@ -4201,12 +4599,6 @@
           {
             "name": "requestReviewer",
             "parameters": {
-              "reviewer": "wangzelin007"
-            }
-          },
-          {
-            "name": "requestReviewer",
-            "parameters": {
               "reviewer": "necusjz"
             }
           },
@@ -4214,12 +4606,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "necusjz"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -4303,9 +4689,21 @@
             "parameters": {
               "label": "Auto-Assign"
             }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "Azure CLI Team"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "question"
+            }
           }
         ],
-        "taskName": "[Network] auto assign labels and users based on issue description. Please do not delete"
+        "taskName": "[Network] auto assign labels and users based on issue description."
       }
     },
     {
@@ -4323,14 +4721,14 @@
                 {
                   "name": "titleContains",
                   "parameters": {
-                    "titlePattern": "az iot",
+                    "titlePattern": "az \\b(iot|dt)\\b",
                     "isRegex": true
                   }
                 },
                 {
                   "name": "bodyContains",
                   "parameters": {
-                    "bodyPattern": "az iot",
+                    "bodyPattern": "az \\b(iot|dt)\\b",
                     "isRegex": true
                   }
                 }
@@ -4354,7 +4752,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[iot] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[iot] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -4442,12 +4840,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -4609,12 +5001,6 @@
             }
           },
           {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
-          },
-          {
             "name": "assignToUser",
             "parameters": {
               "user": "jsntcy"
@@ -4669,7 +5055,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[Storage] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[Storage] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -4694,6 +5080,18 @@
             "name": "addLabel",
             "parameters": {
               "label": "Auto-Assign"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "Azure CLI Team"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "question"
             }
           }
         ],
@@ -4724,7 +5122,14 @@
                 {
                   "name": "titleContains",
                   "parameters": {
-                    "titlePattern": "\\b([Ss][Tt][Oo][Rr][Aa][Gg][Ee])\\b",
+                    "titlePattern": "az storage",
+                    "isRegex": true
+                  }
+                },
+                {
+                  "name": "bodyContains",
+                  "parameters": {
+                    "bodyPattern": "az storage",
                     "isRegex": true
                   }
                 }
@@ -4738,7 +5143,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[Storage] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[Storage] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "addLabel",
@@ -4768,12 +5173,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "evelyn-ys"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -4847,12 +5246,6 @@
             }
           },
           {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
-          },
-          {
             "name": "addLabel",
             "parameters": {
               "label": "KeyVault"
@@ -4907,7 +5300,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[keyvault] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[keyvault] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -4932,6 +5325,18 @@
             "name": "addMilestone",
             "parameters": {
               "milestoneName": "Backlog"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "Azure CLI Team"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "question"
             }
           }
         ]
@@ -4983,7 +5388,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[cosmosdb] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[cosmosdb] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -5085,12 +5490,6 @@
             "parameters": {
               "user": "evelyn-ys"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -5185,7 +5584,14 @@
                 {
                   "name": "titleContains",
                   "parameters": {
-                    "titlePattern": "\\b(account|Account|ACCOUNT|login|Login|LOGIN)\\b",
+                    "titlePattern": "az login",
+                    "isRegex": true
+                  }
+                },
+                {
+                  "name": "bodyContains",
+                  "parameters": {
+                    "bodyPattern": "az login",
                     "isRegex": true
                   }
                 }
@@ -5226,12 +5632,6 @@
             }
           },
           {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
-          },
-          {
             "name": "addLabel",
             "parameters": {
               "label": "Account"
@@ -5255,14 +5655,14 @@
                 {
                   "name": "titleContains",
                   "parameters": {
-                    "titlePattern": "az \\b(account|login)\\b",
+                    "titlePattern": "az login",
                     "isRegex": true
                   }
                 },
                 {
                   "name": "bodyContains",
                   "parameters": {
-                    "bodyPattern": "az \\b(account|login)\\b",
+                    "bodyPattern": "az login",
                     "isRegex": true
                   }
                 }
@@ -5286,7 +5686,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[account] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[account] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -5311,6 +5711,18 @@
             "name": "addMilestone",
             "parameters": {
               "milestoneName": "Backlog"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "Azure CLI Team"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "question"
             }
           }
         ]
@@ -5369,12 +5781,6 @@
             "parameters": {
               "user": "evelyn-ys"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -5431,12 +5837,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "necusjz"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -5495,12 +5895,6 @@
             "parameters": {
               "user": "evelyn-ys"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -5557,12 +5951,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "necusjz"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -5621,12 +6009,6 @@
             "parameters": {
               "user": "kairu-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -5683,12 +6065,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -5747,12 +6123,6 @@
             "parameters": {
               "user": "zhoxing-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -5809,12 +6179,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -5873,12 +6237,6 @@
             "parameters": {
               "user": "zhoxing-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -5935,12 +6293,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -5999,12 +6351,6 @@
             "parameters": {
               "user": "necusjz"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -6061,12 +6407,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "kairu-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -6125,12 +6465,6 @@
             "parameters": {
               "user": "zhoxing-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -6187,12 +6521,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "kairu-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -6251,12 +6579,6 @@
             "parameters": {
               "user": "zhoxing-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -6313,12 +6635,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -6377,12 +6693,6 @@
             "parameters": {
               "user": "kairu-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -6439,12 +6749,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "evelyn-ys"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -6503,12 +6807,6 @@
             "parameters": {
               "user": "zhoxing-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -6565,12 +6863,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "jsntcy"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -6629,12 +6921,6 @@
             "parameters": {
               "user": "zhoxing-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -6691,12 +6977,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "kairu-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -6755,12 +7035,6 @@
             "parameters": {
               "user": "zhoxing-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -6817,12 +7091,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "evelyn-ys"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -6881,12 +7149,6 @@
             "parameters": {
               "user": "zhoxing-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -6943,12 +7205,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -7007,12 +7263,6 @@
             "parameters": {
               "user": "zhoxing-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -7069,12 +7319,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -7133,12 +7377,6 @@
             "parameters": {
               "user": "kairu-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -7195,12 +7433,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -7259,12 +7491,6 @@
             "parameters": {
               "user": "necusjz"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -7321,12 +7547,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "kairu-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -7385,12 +7605,6 @@
             "parameters": {
               "user": "zhoxing-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -7447,12 +7661,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "kairu-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -7511,12 +7719,6 @@
             "parameters": {
               "user": "jiasli"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -7573,12 +7775,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -7637,12 +7833,6 @@
             "parameters": {
               "user": "kairu-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -7699,12 +7889,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "kairu-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -7763,12 +7947,6 @@
             "parameters": {
               "user": "kairu-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -7825,12 +8003,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -7889,12 +8061,6 @@
             "parameters": {
               "user": "zhoxing-ms"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -7951,12 +8117,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -8015,12 +8175,6 @@
             "parameters": {
               "user": "calvinhzy"
             }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
           }
         ]
       }
@@ -8077,12 +8231,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -8154,12 +8302,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "kairu-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           }
         ]
@@ -8234,12 +8376,6 @@
             }
           },
           {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
-          },
-          {
             "name": "requestReviewer",
             "parameters": {
               "reviewer": "yonzhan"
@@ -8294,7 +8430,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[codegen] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[codegen] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -8399,12 +8535,6 @@
             }
           },
           {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
-          },
-          {
             "name": "requestReviewer",
             "parameters": {
               "reviewer": "yonzhan"
@@ -8488,12 +8618,6 @@
             }
           },
           {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
-          },
-          {
             "name": "requestReviewer",
             "parameters": {
               "reviewer": "yonzhan"
@@ -8529,14 +8653,14 @@
                 {
                   "name": "titleContains",
                   "parameters": {
-                    "titlePattern": "[Aa]z \\b(vm|vmss|image|disk|snapshot)\\b",
+                    "titlePattern": "[Aa]z \\b(vm|vmss|image|disk|snapshot|disk-encryption-set|disk-access|sig|ppg|capacity|restore-point)\\b",
                     "isRegex": true
                   }
                 },
                 {
                   "name": "bodyContains",
                   "parameters": {
-                    "bodyPattern": "[Aa]z \\b(vm|vmss|image|disk|snapshot)\\b",
+                    "bodyPattern": "[Aa]z \\b(vm|vmss|image|disk|snapshot|disk-encryption-set|disk-access|sig|ppg|capacity|restore-point)\\b",
                     "isRegex": true
                   }
                 }
@@ -8560,7 +8684,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[Compute] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[Compute] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -8585,6 +8709,18 @@
             "name": "addLabel",
             "parameters": {
               "label": "Auto-Assign"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "Azure CLI Team"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "question"
             }
           }
         ]
@@ -8611,14 +8747,14 @@
                 {
                   "name": "titleContains",
                   "parameters": {
-                    "titlePattern": "\\b(compute|Compute|COMPUTE|VM|vm)\\b",
+                    "titlePattern": "[Aa]z \\b(vm|vmss|image|disk|snapshot|disk-encryption-set|disk-access|sig|ppg|capacity|restore-point)\\b",
                     "isRegex": true
                   }
                 },
                 {
                   "name": "bodyContains",
                   "parameters": {
-                    "bodyPattern": "\\b(compute|Compute|COMPUTE|VM|vm)\\b",
+                    "bodyPattern": "[Aa]z \\b(vm|vmss|image|disk|snapshot|disk-encryption-set|disk-access|sig|ppg|capacity|restore-point)\\b",
                     "isRegex": true
                   }
                 }
@@ -8632,7 +8768,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[Compute] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[Compute] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -8662,12 +8798,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -8725,7 +8855,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[appservice] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[appservice] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -8817,7 +8947,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[appservice] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[appservice] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -8847,12 +8977,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -8946,7 +9070,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[datamigration] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[datamigration] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -9044,12 +9168,6 @@
             }
           },
           {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
-          },
-          {
             "name": "requestReviewer",
             "parameters": {
               "reviewer": "yonzhan"
@@ -9104,7 +9222,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[grafana] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[grafana] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -9171,7 +9289,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[grafana] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[grafana] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -9195,12 +9313,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "kairu-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -9270,7 +9382,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[functionapp] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[functionapp] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -9335,7 +9447,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[functionapp] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[functionapp] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -9359,12 +9471,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -9424,7 +9530,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[eventgrid] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[eventgrid] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -9442,12 +9548,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "evelyn-ys"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -9517,7 +9617,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[desktopvirtualization] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[desktopvirtualization] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -9534,7 +9634,6 @@
           {
             "name": "assignToUser",
             "parameters": {
-              "label": "Functions",
               "user": "wangzelin007"
             }
           },
@@ -9589,7 +9688,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[desktopvirtualization] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[desktopvirtualization] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -9613,12 +9712,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "wangzelin007"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -9688,7 +9781,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[container app] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[container app] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -9705,8 +9798,7 @@
           {
             "name": "addLabel",
             "parameters": {
-              "label": "CXP Attention",
-              "user": "zhoxing-ms"
+              "label": "CXP Attention"
             }
           }
         ]
@@ -9754,7 +9846,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[container app] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[container app] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -9775,15 +9867,15 @@
             }
           },
           {
-            "name": "assignToUser",
+            "name": "requestReviewer",
             "parameters": {
-              "user": "zhoxing-ms"
+              "reviewer": "yanzhudd"
             }
           },
           {
-            "name": "addMilestone",
+            "name": "assignToUser",
             "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
+              "user": "zhoxing-ms"
             }
           },
           {
@@ -9853,7 +9945,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[Alerts Management] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[Alerts Management] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -9870,8 +9962,7 @@
           {
             "name": "addLabel",
             "parameters": {
-              "label": "CXP Attention",
-              "user": "zhoxing-ms"
+              "label": "CXP Attention"
             }
           }
         ]
@@ -9919,7 +10010,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[Alerts Management] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[Alerts Management] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -9943,12 +10034,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -10018,7 +10103,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[dataprotection] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[dataprotection] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -10035,8 +10120,7 @@
           {
             "name": "addLabel",
             "parameters": {
-              "label": "CXP Attention",
-              "user": "zhoxing-ms"
+              "label": "CXP Attention"
             }
           }
         ]
@@ -10084,7 +10168,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[dataprotection] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[dataprotection] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -10108,12 +10192,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "evelyn-ys"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -10177,7 +10255,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[network bastion] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[network bastion] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -10281,15 +10359,15 @@
             }
           },
           {
-            "name": "assignToUser",
+            "name": "requestReviewer",
             "parameters": {
-              "user": "wangzelin007"
+              "reviewer": "bebound"
             }
           },
           {
-            "name": "addMilestone",
+            "name": "assignToUser",
             "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
+              "user": "wangzelin007"
             }
           }
         ]
@@ -10355,7 +10433,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[NetworkManager] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[NetworkManager] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -10435,7 +10513,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[NetworkManager] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[NetworkManager] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -10459,12 +10537,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "necusjz"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -10528,7 +10600,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[redis enterprise] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[redis enterprise] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -10594,7 +10666,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[redis enterprise] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[redis enterprise] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -10618,12 +10690,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "evelyn-ys"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -10687,7 +10753,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[k8sconfiguration] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[k8sconfiguration] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -10704,8 +10770,7 @@
           {
             "name": "addLabel",
             "parameters": {
-              "label": "CXP Attention",
-              "user": "zhoxing-ms"
+              "label": "CXP Attention"
             }
           }
         ]
@@ -10753,7 +10818,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[k8sconfiguration] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[k8sconfiguration] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -10777,12 +10842,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -10860,7 +10919,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[image-gallery] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[image-gallery] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -10877,8 +10936,7 @@
           {
             "name": "addLabel",
             "parameters": {
-              "label": "CXP Attention",
-              "user": "zhoxing-ms"
+              "label": "CXP Attention"
             }
           }
         ]
@@ -10933,7 +10991,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[image-gallery] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[image-gallery] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -10957,12 +11015,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -11026,7 +11078,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[quantum] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[quantum] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -11043,8 +11095,7 @@
           {
             "name": "addLabel",
             "parameters": {
-              "label": "CXP Attention",
-              "user": "zhoxing-ms"
+              "label": "CXP Attention"
             }
           }
         ]
@@ -11096,7 +11147,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[acrdata] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[acrdata] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -11113,8 +11164,7 @@
           {
             "name": "addLabel",
             "parameters": {
-              "label": "CXP Attention",
-              "user": "zhoxing-ms"
+              "label": "CXP Attention"
             }
           }
         ]
@@ -11162,7 +11212,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[arcdata] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[arcdata] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -11186,12 +11236,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "jsntcy"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -11252,7 +11296,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[sql] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[sql] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -11276,12 +11320,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "evelyn-ys"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -11352,7 +11390,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[sql] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[sql] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -11369,8 +11407,7 @@
           {
             "name": "addLabel",
             "parameters": {
-              "label": "CXP Attention",
-              "user": "zhoxing-ms"
+              "label": "CXP Attention"
             }
           }
         ]
@@ -11418,7 +11455,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[attestation] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[attestation] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -11442,12 +11479,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "kairu-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -11518,7 +11549,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[attestation] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[attestation] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -11535,8 +11566,7 @@
           {
             "name": "addLabel",
             "parameters": {
-              "label": "CXP Attention",
-              "user": "zhoxing-ms"
+              "label": "CXP Attention"
             }
           }
         ]
@@ -11584,7 +11614,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[k8s-extension] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[k8s-extension] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -11608,12 +11638,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -11671,7 +11695,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[stream-analytics] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[stream-analytics] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -11688,7 +11712,6 @@
           {
             "name": "assignToUser",
             "parameters": {
-              "label": "CXP Attention",
               "user": "jsntcy"
             }
           }
@@ -11737,7 +11760,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[stream-analytics] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[stream-analytics] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -11761,12 +11784,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "necusjz"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -11826,7 +11843,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[connectedmachine] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[connectedmachine] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -11850,12 +11867,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -11913,7 +11924,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[healthcareapis] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[healthcareapis] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -11930,7 +11941,6 @@
           {
             "name": "assignToUser",
             "parameters": {
-              "label": "CXP Attention",
               "user": "wangzelin007"
             }
           }
@@ -11979,7 +11989,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[healthcareapis] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[healthcareapis] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -12003,12 +12013,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "wangzelin007"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -12082,15 +12086,8 @@
             }
           },
           {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
-            }
-          },
-          {
             "name": "addReply",
             "parameters": {
-              "reviewer": "calvinhzy",
               "comment": "Hi @wangzelin007,\nPlease review the pull request."
             }
           }
@@ -12161,7 +12158,6 @@
           {
             "name": "addReply",
             "parameters": {
-              "reviewer": "calvinhzy",
               "comment": "Hi @zhoxing-ms,\nPlease review the pull request."
             }
           }
@@ -12210,7 +12206,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[subscription] Auto assign labels and reviewers based on PR title/description. Please do not delete",
+        "taskName": "[subscription] Auto assign labels and reviewers based on PR title/description.",
         "actions": [
           {
             "name": "requestReviewer",
@@ -12234,12 +12230,6 @@
             "name": "assignToUser",
             "parameters": {
               "user": "zhoxing-ms"
-            }
-          },
-          {
-            "name": "addMilestone",
-            "parameters": {
-              "milestoneName": "Oct 2022 (2022-11-01)"
             }
           },
           {
@@ -12297,7 +12287,7 @@
           "issues",
           "project_card"
         ],
-        "taskName": "[subscription] auto assign labels and users based on issue description. Please do not delete",
+        "taskName": "[subscription] auto assign labels and users based on issue description.",
         "actions": [
           {
             "name": "addLabel",
@@ -12314,7 +12304,6 @@
           {
             "name": "assignToUser",
             "parameters": {
-              "label": "CXP Attention",
               "user": "zhoxing-ms"
             }
           }
@@ -12384,6 +12373,140 @@
         ]
       },
       "disabled": false
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "PullRequestResponder",
+      "version": "1.0",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "name": "isAction",
+              "parameters": {
+                "action": "opened"
+              }
+            },
+            {
+              "operator": "or",
+              "operands": [
+                {
+                  "name": "titleContains",
+                  "parameters": {
+                    "titlePattern": "[Ss]erial-[Cc]onsole",
+                    "isRegex": true
+                  }
+                },
+                {
+                  "name": "bodyContains",
+                  "parameters": {
+                    "bodyPattern": "az serial-console",
+                    "isRegex": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "eventType": "pull_request",
+        "eventNames": [
+          "pull_request",
+          "issues",
+          "project_card"
+        ],
+        "taskName": "[Serial-Console] Auto assign labels and reviewers based on PR title/description.",
+        "actions": [
+          {
+            "name": "requestReviewer",
+            "parameters": {
+              "reviewer": "kairu-ms"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "Auto-Assign"
+            }
+          },
+          {
+            "name": "assignToUser",
+            "parameters": {
+              "user": "kairu-ms"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "Serial Console"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "PullRequestResponder",
+      "version": "1.0",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "name": "isAction",
+              "parameters": {
+                "action": "opened"
+              }
+            },
+            {
+              "operator": "or",
+              "operands": [
+                {
+                  "name": "titleContains",
+                  "parameters": {
+                    "titlePattern": "Extension Regression Test for"
+                  }
+                },
+                {
+                  "name": "bodyContains",
+                  "parameters": {
+                    "bodyPattern": "Triggered by CLI Extension Regression Test Pipeline"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "eventType": "pull_request",
+        "eventNames": [
+          "pull_request",
+          "issues",
+          "project_card"
+        ],
+        "taskName": "[Regression-Test] Auto assign labels and reviewers based on PR title/description.",
+        "actions": [
+          {
+            "name": "requestReviewer",
+            "parameters": {
+              "reviewer": "evelyn-ys"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "Auto-Assign"
+            }
+          },
+          {
+            "name": "assignToUser",
+            "parameters": {
+              "user": "evelyn-ys"
+            }
+          }
+        ]
+      }
     }
   ],
   "userGroups": [

@@ -26,10 +26,10 @@ class VmwareScenarioTest(ScenarioTest):
         })
 
         # check quote availability
-        self.cmd('vmware location checkquotaavailability --location {loc}')
+        self.cmd('vmware location check-quota-availability --location {loc}')
 
         # check trial availability
-        self.cmd('vmware location checktrialavailability --location {loc}')
+        self.cmd('vmware location check-trial-availability --location {loc} --sku sku')
 
         # show should throw ResourceNotFound
         # with self.assertRaisesRegexp(CloudError, 'ResourceNotFound'):
@@ -64,7 +64,7 @@ class VmwareScenarioTest(ScenarioTest):
         self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --internet Enabled')
 
         # create authorization
-        self.cmd('vmware authorization create -g {rg} -c {privatecloud} -n myauthname')
+        self.cmd('vmware authorization create -g {rg} -c {privatecloud} -n myauthname --express-route-id id')
 
         # delete authorization
         self.cmd('vmware authorization delete -g {rg} -c {privatecloud} -n myauthname --yes')
@@ -91,6 +91,9 @@ class VmwareScenarioTest(ScenarioTest):
 
         # cluster delete
         self.cmd('vmware cluster delete -g {rg} -c {privatecloud} -n {cluster} --yes')
+
+        # cluster list zone
+        self.cmd('vmware cluster list-zones -g {rg} -c {privatecloud} -n {cluster}')
 
         # delete the private cloud
         self.cmd('vmware private-cloud delete -g {rg} -n {privatecloud} --yes')

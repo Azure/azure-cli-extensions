@@ -100,50 +100,12 @@ aks create:
     assign_kubelet_identity:
       rule_exclusions:
       - option_length_too_long
-aks addon enable:
-  parameters:
-    appgw_watch_namespace:
-      rule_exclusions:
-      - option_length_too_long
-    workspace_resource_id:
-      rule_exclusions:
-      - option_length_too_long
-    enable_msi_auth_for_monitoring:
-      rule_exclusions:
-      - option_length_too_long
-aks addon update:
-  parameters:
-    appgw_watch_namespace:
-      rule_exclusions:
-      - option_length_too_long
-    workspace_resource_id:
-      rule_exclusions:
-      - option_length_too_long
-    enable_msi_auth_for_monitoring:
-      rule_exclusions:
-      - option_length_too_long
-aks enable-addons:
-  parameters:
-    appgw_watch_namespace:
-      rule_exclusions:
-      - option_length_too_long
-    workspace_resource_id:
-      rule_exclusions:
-      - option_length_too_long
-    enable_msi_auth_for_monitoring:
-      rule_exclusions:
-      - option_length_too_long
-aks nodepool add:
-  parameters:
-    enable_node_public_ip:
-      rule_exclusions:
-      - option_length_too_long
-    node_public_ip_prefix_id:
+    node_public_ip_tags:
       rule_exclusions:
         - option_length_too_long
-    enable_encryption_at_host:
+    custom_ca_trust_certificates:
       rule_exclusions:
-      - option_length_too_long
+        - option_length_too_long
 aks update:
   parameters:
     aad_admin_group_object_ids:
@@ -197,6 +159,27 @@ aks update:
     assign_kubelet_identity:
       rule_exclusions:
       - option_length_too_long
+    azure_monitor_workspace_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    disable_azuremonitormetrics:
+      rule_exclusions:
+      - option_length_too_long
+    enable_azuremonitormetrics:
+      rule_exclusions:
+      - option_length_too_long
+    ksm_metric_annotations_allow_list:
+      rule_exclusions:
+      - option_length_too_long
+    ksm_metric_labels_allow_list:
+      rule_exclusions:
+      - option_length_too_long
+    enable_windows_recording_rules:
+      rule_exclusions:
+      - option_length_too_long
+    custom_ca_trust_certificates:
+      rule_exclusions:
+        - option_length_too_long
 arcdata dc create:
   parameters:
     logs_ui_private_key_file:
@@ -339,6 +322,9 @@ codespace plan create:
     default_sku_name:
       rule_exclusions:
       - option_length_too_long
+confidentialledger managedccfs update:
+  rule_exclusions:
+  - missing_command_test_coverage
 containerapp env create:
   parameters:
     infrastructure_subnet_resource_id:
@@ -643,6 +629,11 @@ desktopvirtualization workspace update:
     application_group_references:
       rule_exclusions:
       - option_length_too_long
+devcenter dev environment update:
+  parameters:
+    dev_center:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
 devops project list:
   parameters:
     get_default_team_image_url:
@@ -1092,6 +1083,17 @@ import-export update:
     backup_drive_manifest:
       rule_exclusions:
       - option_length_too_long
+iot central enrollment-group update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    enabled:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
 iot central export destination update:
   parameters:
     api_version:
@@ -1164,6 +1166,20 @@ iot central organization update:
     central_dns_suffix:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot central scheduled-job update:
+  parameters:
+    api_version:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    central_dns_suffix:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    batch_type:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    threshold_type:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
 iot central user update:
   parameters:
     api_version:
@@ -1172,7 +1188,7 @@ iot central user update:
     central_dns_suffix:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
-iot device-update update:
+iot du update:
   rule_exclusions:
     - require_wait_command_if_no_wait
 iot dps enrollment update:
@@ -1205,6 +1221,31 @@ iot hub distributed-tracing update:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot hub message-endpoint create cosmosdb-collection:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint create eventhub:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint create servicebus-queue:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint create servicebus-topic:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
+iot hub message-endpoint create storage-container:
+  parameters:
+    endpoint_resource_group:
+      rule_exclusions:
+      - parameter_should_not_end_in_resource_group
 iot hub module-identity update:
   parameters:
     auth_type_dataplane:
@@ -1215,6 +1256,14 @@ iot hub module-twin update:
     auth_type_dataplane:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
+iot hub state migrate:
+  parameters:
+    orig_resource_group_name:
+      rule exclusions:
+      - parameter_should_not_end_in_resource_group
+    resource_group_name:
+      rule exclusions:
+      - parameter_should_not_end_in_resource_group
 iot edge deployment update:
   parameters:
     auth_type_dataplane:
@@ -2655,3 +2704,8 @@ vmware private-cloud create:
     circuit_secondary_subnet:
       rule_exclusions:
       - option_length_too_long
+scenario guide:
+  parameters:
+    search_keyword:
+      rule_exclusions:
+        - no_positional_parameters

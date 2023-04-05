@@ -49,6 +49,7 @@ class EndpointsOperations(object):
         self,
         resource_group_name,  # type: str
         machine_name,  # type: str
+        resource_type, #type: str
         endpoint_name,  # type: str
         endpoint_resource,  # type: "models.EndpointResource"
         **kwargs  # type: Any
@@ -83,6 +84,7 @@ class EndpointsOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'machineName': self._serialize.url("machine_name", machine_name, 'str'),
+            'resourceType': self._serialize.url("resource_type", resource_type, 'str'),
             'endpointName': self._serialize.url("endpoint_name", endpoint_name, 'str', skip_quote=True),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -114,12 +116,13 @@ class EndpointsOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.HybridConnectivity/endpoints/{endpointName}'}  # type: ignore
+    create_or_update.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceType}/{machineName}/providers/Microsoft.HybridConnectivity/endpoints/{endpointName}'}  # type: ignore
     
     def list_credentials(
         self,
         resource_group_name,  # type: str
         machine_name,  # type: str
+        resource_type, # type: str
         endpoint_name,  # type: str
         expiresin=10800,  # type: Optional[int]
         **kwargs  # type: Any
@@ -153,6 +156,7 @@ class EndpointsOperations(object):
             'subscriptionId': self._serialize.url("self._config.subscription_id", self._config.subscription_id, 'str', min_length=1),
             'resourceGroupName': self._serialize.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
             'machineName': self._serialize.url("machine_name", machine_name, 'str'),
+            'resourceType': self._serialize.url("resource_type", resource_type, 'str', min_length=1),
             'endpointName': self._serialize.url("endpoint_name", endpoint_name, 'str', skip_quote=True),
         }
         url = self._client.format_url(url, **path_format_arguments)
@@ -182,4 +186,4 @@ class EndpointsOperations(object):
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    list_credentials.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/providers/Microsoft.HybridConnectivity/endpoints/{endpointName}/listCredentials'}  # type: ignore
+    list_credentials.metadata = {'url': '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceType}/{machineName}/providers/Microsoft.HybridConnectivity/endpoints/{endpointName}/listCredentials'}  # type: ignore

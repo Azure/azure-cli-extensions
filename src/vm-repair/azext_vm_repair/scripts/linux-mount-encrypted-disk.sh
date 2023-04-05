@@ -95,7 +95,7 @@ data_os_lvm_check () {
 	then
 		#Updaing the below command to use lsblk instead of fdisk for accounting for different distros
 		#export root_part=`fdisk -l ${data_disk} 2>&1 | grep ^/ |awk '$4 > 60000000{print $1}'` >> ${logpath}/${logfile}
-		export root_part=`lsblk ${data_disk} -l -n -p 2>&1 | grep -w -v ${data_disk} |awk '$4 > 60000000{print $1}'` >> ${logpath}/${logfile}
+		export root_part=`lsblk ${data_disk} -l -n -p -b 2>&1 | grep -w -v ${data_disk} |awk '$4 > 600000000{print $1}'` >> ${logpath}/${logfile}
 		echo "`date` LVM not found on the data disk" >> ${logpath}/${logfile}
 		echo "`date` The OS partition on the data drive is ${root_part}" >> ${logpath}/${logfile}
 	else
@@ -154,7 +154,6 @@ mount_lvm () {
 	${mount_cmd} /dev/rootvg/rootlv /investigateroot >> ${logpath}/${logfile}
 	${mount_cmd} /dev/rootvg/varlv /investigateroot/var/ >> ${logpath}/${logfile}
 	${mount_cmd} /dev/rootvg/homelv /investigateroot/home >> ${logpath}/${logfile}
-	${mount_cmd} /dev/rootvg/optlv /investigateroot/opt >> ${logpath}/${logfile}
 	${mount_cmd} /dev/rootvg/usrlv /investigateroot/usr >> ${logpath}/${logfile}
 	${mount_cmd} /dev/rootvg/tmplv /investigateroot/tmp >> ${logpath}/${logfile}
 	lsblk -f >> ${logpath}/${logfile}

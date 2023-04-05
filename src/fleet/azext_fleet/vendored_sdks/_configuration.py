@@ -36,7 +36,11 @@ class ContainerServiceFleetMgmtClientConfiguration(Configuration):
         self,
         credential: "TokenCredential",
         subscription_id: str,
+<<<<<<< HEAD
         **kwargs: Any
+=======
+        **kwargs  # type: Any
+>>>>>>> ed3f463e9ef7980eff196504a8bb29800c123eba
     ):
         if credential is None:
             raise ValueError("Parameter 'credential' must not be None.")

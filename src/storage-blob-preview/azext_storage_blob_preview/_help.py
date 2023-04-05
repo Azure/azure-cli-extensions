@@ -76,15 +76,11 @@ short-summary: Download a blob to a file path, with automatic chunking and progr
 helps['storage blob filter'] = """
 type: command
 short-summary: List blobs across all containers whose tags match a given search expression.
-long-summary: >
-    Filter blobs searches across all containers within a storage account but can be scoped within the expression to
-    a single container.
 parameters:
   - name: --tag-filter
     short-summary: >
             The expression to find blobs whose tags matches the specified condition.
             eg. ""yourtagname"='firsttag' and "yourtagname2"='secondtag'"
-            To specify a container, eg. "@container='containerName' and "Name"='C'"
 """
 
 helps['storage blob list'] = """

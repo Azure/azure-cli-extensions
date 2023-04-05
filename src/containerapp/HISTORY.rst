@@ -2,6 +2,99 @@
 
 Release History
 ===============
+0.3.27
+++++++
+* 'az containerapp secret set': add support for secrets from Key Vault
+* 'az containerapp secret show': add support for secrets from Key Vault
+
+0.3.26
++++++++
+* 'az containerapp exec': fix bugs for consumption workload based environment
+* 'az containerapp env create': fix bug causing --enable-workload-profiles to require an argument
+
+0.3.25
+++++++
+* 'az containerapp create/update': --yaml support properties for api-version 2022-10-01 (e.g. exposedPort,clientCertificateMode,corsPolicy)
+* 'az containerapp env update': fix bugs in update environment.
+* Fix YAML create with user-assigned identity
+* Fix polling logic for long running operations.
+* 'az containerapp env create': add support for workload profiles
+* 'az containerapp env update': add support for workload profiles
+* 'az containerapp create': add support for workload profiles
+* 'az containerapp update': add support for workload profiles
+* Add 'az containerapp env workload-profile delete' to support deleting a workload profile from an environment
+* Add 'az containerapp env workload-profile list' to support listing all workload profiles in an environment
+* Add 'az containerapp env workload-profile list-supported' to support listing all available workload profile types in a region
+* Add 'az containerapp env workload-profile set' to support creating or updating an existing workload profile in an environment
+* Add 'az containerapp env workload-profile show' to support showing details of a single workload profile in an environment
+* Upgrade api-version from 2022-10-01 to 2022-11-01-preview
+* Add `az containerapp ingress update` Command to Update Container App Ingress
+
+0.3.24
+++++++
+* Decouple with the `network` module.
+
+0.3.23
+++++++
+* BREAKING CHANGE: 'az containerapp env certificate list' returns [] if certificate not found, instead of raising an error.
+* Added 'az containerapp env certificate create' to create managed certificate in a container app environment
+* Added 'az containerapp hostname add' to add hostname to a container app without binding
+* 'az containerapp env certificate delete': add support for managed certificate deletion
+* 'az containerapp env certificate list': add optional parameters --managed-certificates-only and --private-key-certificates-only to list certificates by type
+* 'az containerapp hostname bind': change --thumbprint to an optional parameter and add optional parameter --validation-method to support managed certificate bindings
+* 'az containerapp ssl upload': log messages to indicate which step is in progress
+* Upgrade api-version from 2022-06-01-preview to 2022-10-01
+* Fix error when running `az containerapp up` on local source that doesn't contain a Dockerfile
+* Fix the 'TypeError: 'NoneType' object does not support item assignment' error obtained while running the CLI command 'az containerapp dapr enable'
+
+0.3.21
+++++++
+* Fix the PermissionError caused for the Temporary files while running `az containerapp up` command on Windows
+* Fix the empty IP Restrictions object caused running `az containerapp update` command on Windows with a pre existing .yaml file
+* Added model mapping to support add/update of init Containers via `az containerapp create` & `az containerapp update` commands.
+
+0.3.20
+++++++
+* Fix custom domain null issue for `az containerapp hostname list` and `az containerapp hostname delete` command
+
+0.3.19
+++++++
+* Fix "'NoneType' object is not iterable" error in `az containerapp hostname bind` command
+
+0.3.18
+++++++
+* Fix "'NoneType' object has no attribute 'get'" error in `az containerapp up` with no ingress arguments
+
+0.3.17
+++++++
+* Fix polling logic for long running operations.
+
+0.3.16
+++++++
+* Remove quota check for 'az containerapp up' and 'az containerapp env create'.
+
+0.3.15
+++++++
+* Add 'az containerapp containerapp ingress ip-restriction' command group to manage IP restrictions on the ingress of a container app.
+
+0.3.14
+++++++
+* 'az containerapp logs show'/'az containerapp exec': Fix "KeyError" bug
+
+0.3.13
+++++++
+* 'az containerapp compose create': Migrated from containerapp-compose extension
+* Add parameters --logs-destination and --storage-account support for new logs destinations to `az containerapp env create` and `az containerapp env update`
+
+0.3.12
+++++++
+* Add 'az containerapp env update' to update managed environment properties
+* Add custom domains support to 'az containerapp env create' and 'az containerapp env update'
+* 'az containerapp logs show': add new parameter "--type" to allow showing system logs
+* Show system environment logs with new command 'az containerapp env logs show'
+* Add tcp support for ingress transport and scale rules
+* `az containerapp up/github-action add`: Retrieve workflow file name from github actions API
+* 'az containerapp create/update': validate revision suffixes
 
 0.3.11
 ++++++

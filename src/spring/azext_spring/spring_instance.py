@@ -6,18 +6,23 @@
 # pylint: disable=wrong-import-order
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 from ._utils import (wait_till_end, _get_rg_location)
-from .vendored_sdks.appplatform.v2022_09_01_preview import models
+from .vendored_sdks.appplatform.v2023_03_01_preview import models
 from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
-from ._build_service import _update_default_build_agent_pool
+from ._build_service import _update_default_build_agent_pool, create_build_service
 from .buildpack_binding import create_default_buildpack_binding_for_application_insights
 from ._tanzu_component import (create_application_configuration_service,
+                               create_application_live_view,
+                               create_dev_tool_portal,
                                create_service_registry,
                                create_gateway,
-                               create_api_portal)
-
+                               create_api_portal,
+                               create_application_accelerator)
 
 from ._validators import (_parse_sku_name, validate_instance_not_existed)
+from azure.cli.core.commands import LongRunningOperation
 from knack.log import get_logger
+from ._marketplace import _spring_list_marketplace_plan
+from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PUBLISHER_ID)
 
 logger = get_logger(__name__)
 
@@ -39,7 +44,6 @@ class DefaultSpringCloud:
     def before_create(self, **kwargs):
         _warn_enable_java_agent(**kwargs)
         validate_instance_not_existed(self.client,
-                                      self.resource_group,
                                       self.name,
                                       self.location)
 
@@ -62,6 +66,9 @@ class DefaultSpringCloud:
                        sku=None,
                        tags=None,
                        ingress_read_timeout=None,
+                       marketplace_plan_id=None,
+                       managed_environment=None,
+                       infra_resource_group=None,
                        **_):
         properties = models.ClusterResourceProperties(
             zone_redundant=zone_redundant
@@ -73,6 +80,13 @@ class DefaultSpringCloud:
             )
         else:
             properties.vnet_addons = None
+
+        if marketplace_plan_id:
+            properties.marketplace_resource = models.MarketplaceResource(
+                plan=marketplace_plan_id,
+                product=MARKETPLACE_OFFER_ID,
+                publisher=MARKETPLACE_PUBLISHER_ID
+            )
 
         if service_runtime_subnet or app_subnet or reserved_cidr_range:
             properties.network_profile = models.NetworkProfile(
@@ -91,31 +105,42 @@ class DefaultSpringCloud:
             else:
                 properties.network_profile = models.NetworkProfile(ingress_config=ingress_configuration)
 
+        if sku.tier.upper() == 'STANDARDGEN2':
+            properties.managed_environment_id = managed_environment
+            if infra_resource_group is not None:
+                properties.infra_resource_group = infra_resource_group
+
         resource = models.ServiceResource(location=self.location, sku=sku, properties=properties, tags=tags)
         poller = self.client.services.begin_create_or_update(
             self.resource_group, self.name, resource)
         logger.warning(" - Creating Service ..")
-        wait_till_end(self.cmd, poller)
-        return poller
+        return LongRunningOperation(self.cmd.cli_ctx)(poller)
 
 
 class EnterpriseSpringCloud(DefaultSpringCloud):
     def before_create(self, **_):
         validate_instance_not_existed(self.client,
-                                      self.resource_group,
                                       self.name,
                                       self.location)
 
     def after_create(self, no_wait=None, **kwargs):
+        # should create build service before creating build agent pool and app insights
+        if not no_wait and not kwargs['disable_build_service']:
+            poller = create_build_service(self.cmd, self.client, self.resource_group, self.name, kwargs['disable_build_service'],
+                                          kwargs['registry_server'], kwargs['registry_username'], kwargs['registry_password'])
+            LongRunningOperation(self.cmd.cli_ctx)(poller)
         pollers = [
             # create sub components like Service registry, ACS, build service, etc.
             _update_default_build_agent_pool(
                 self.cmd, self.client, self.resource_group, self.name, kwargs['build_pool_size']),
             _enable_app_insights(self.cmd, self.client, self.resource_group, self.name, self.location, **kwargs),
             create_application_configuration_service(self.cmd, self.client, self.resource_group, self.name, **kwargs),
+            create_application_live_view(self.cmd, self.client, self.resource_group, self.name, **kwargs),
+            create_dev_tool_portal(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_service_registry(self.cmd, self.client, self.resource_group, self.name, **kwargs),
             create_gateway(self.cmd, self.client, self.resource_group, self.name, **kwargs),
-            create_api_portal(self.cmd, self.client, self.resource_group, self.name, **kwargs)
+            create_api_portal(self.cmd, self.client, self.resource_group, self.name, **kwargs),
+            create_application_accelerator(self.cmd, self.client, self.resource_group, self.name, **kwargs)
         ]
         pollers = [x for x in pollers if x]
         if not no_wait:
@@ -146,14 +171,23 @@ def spring_create(cmd, client, resource_group, name,
                   tags=None,
                   zone_redundant=False,
                   build_pool_size=None,
+                  disable_build_service=False,
+                  registry_server=None,
+                  registry_username=None,
+                  registry_password=None,
                   enable_application_configuration_service=False,
+                  enable_application_live_view=False,
                   enable_service_registry=False,
                   enable_gateway=False,
                   gateway_instance_count=None,
                   enable_api_portal=False,
                   api_portal_instance_count=None,
+                  enable_application_accelerator=False,
                   enable_log_stream_public_endpoint=None,
                   ingress_read_timeout=None,
+                  marketplace_plan_id=None,
+                  managed_environment=None,
+                  infra_resource_group=None,
                   no_wait=False):
     """
     Because Standard/Basic tier vs. Enterprise tier creation are very different. Here routes the command to different
@@ -177,13 +211,22 @@ def spring_create(cmd, client, resource_group, name,
         'tags': tags,
         'zone_redundant': zone_redundant,
         'build_pool_size': build_pool_size,
+        'disable_build_service': disable_build_service,
+        'registry_server': registry_server,
+        'registry_username': registry_username,
+        'registry_password': registry_password,
         'enable_application_configuration_service': enable_application_configuration_service,
+        'enable_application_live_view': enable_application_live_view,
         'enable_service_registry': enable_service_registry,
         'enable_gateway': enable_gateway,
         'gateway_instance_count': gateway_instance_count,
         'enable_api_portal': enable_api_portal,
         'api_portal_instance_count': api_portal_instance_count,
+        'enable_application_accelerator': enable_application_accelerator,
         'enable_log_stream_public_endpoint': enable_log_stream_public_endpoint,
+        'marketplace_plan_id': marketplace_plan_id,
+        'managed_environment': managed_environment,
+        'infra_resource_group': infra_resource_group,
         'no_wait': no_wait
     }
 
@@ -199,3 +242,7 @@ def _enable_app_insights(cmd, client, resource_group, name, location, app_insigh
     return create_default_buildpack_binding_for_application_insights(cmd, client, resource_group, name,
                                                                      location, app_insights_key, app_insights,
                                                                      sampling_rate)
+
+
+def spring_list_marketplace_plan(cmd, client):
+    return _spring_list_marketplace_plan(cmd, client)

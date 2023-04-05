@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "automation",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Automation Account.
+    """Manage Automation Account
     """
     pass
 

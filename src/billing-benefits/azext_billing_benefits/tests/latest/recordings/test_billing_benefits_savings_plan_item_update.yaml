@@ -1,0 +1,154 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits savings-plan-order savings-plan show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --savings-plan-order-id --savings-plan-id
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.BillingBenefits/savingsPlanOrders/683ae71d-f43a-4b76-bb26-9a6ffef80030/savingsPlans/ce6eaefe-3abe-4961-8455-1e8b1e041a6f?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/microsoft.billingbenefits/savingsPlanOrders/683ae71d-f43a-4b76-bb26-9a6ffef80030/savingsPlans/ce6eaefe-3abe-4961-8455-1e8b1e041a6f","name":"ce6eaefe-3abe-4961-8455-1e8b1e041a6f","type":"microsoft.billingbenefits/savingsPlanOrders/savingsPlans","sku":{"name":"Compute_Savings_Plan"},"properties":{"billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/4973e1de-a829-5c64-4fef-0a692e2b3108:1970c5da-0aa4-46fd-a917-4772f9a17978_2019-05-31","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/4973e1de-a829-5c64-4fef-0a692e2b3108:1970c5da-0aa4-46fd-a917-4772f9a17978_2019-05-31/billingProfiles/KPSV-DWNE-BG7-TGB","billingPlan":"P1M","commitment":{"grain":"Hourly","currencyCode":"USD","amount":0.001},"renew":false,"appliedScopeType":"Shared","displayName":"cliTest","provisioningState":"Succeeded","term":"P3Y","displayProvisioningState":"Succeeded","userFriendlyAppliedScopeType":"Shared","expiryDateTime":"2025-11-13T01:25:42.6202253Z","purchaseDateTime":"2022-11-13T01:23:57.7498407Z","benefitStartTime":"2022-11-13T01:25:42.6202253Z","effectiveDateTime":"2022-12-16T04:13:37.9234018Z","utilization":{"trend":"SAME","aggregates":[{"grain":1.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":7.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":30.0,"grainUnit":"days","value":35.42,"valueUnit":"percentage"}]}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1458'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 04:14:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"appliedScopeProperties": {"subscriptionId": "/subscriptions/00000000-0000-0000-0000-000000000000"},
+      "appliedScopeType": "Single", "displayName": "newName1", "renew": true, "renewProperties":
+      {"purchaseProperties": {"properties": {"appliedScopeType": "Shared", "billingPlan":
+      "P1M", "billingScopeId": "/subscriptions/00000000-0000-0000-0000-000000000000",
+      "commitment": {"amount": 10.0, "currencyCode": "USD", "grain": "Hourly"}, "displayName":
+      "name1", "renew": true, "term": "P1Y"}, "sku": {"name": "Compute_Savings_Plan"}}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits savings-plan-order savings-plan update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '544'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --savings-plan-order-id --savings-plan-id --display-name --renew --renew-properties
+        --applied-scope-type --applied-scope-properties
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: PATCH
+    uri: https://management.azure.com/providers/Microsoft.BillingBenefits/savingsPlanOrders/683ae71d-f43a-4b76-bb26-9a6ffef80030/savingsPlans/ce6eaefe-3abe-4961-8455-1e8b1e041a6f?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/microsoft.billingbenefits/savingsPlanOrders/683ae71d-f43a-4b76-bb26-9a6ffef80030/savingsPlans/ce6eaefe-3abe-4961-8455-1e8b1e041a6f","name":"ce6eaefe-3abe-4961-8455-1e8b1e041a6f","type":"microsoft.billingbenefits/savingsPlanOrders/savingsPlans","sku":{"name":"Compute_Savings_Plan"},"properties":{"billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/4973e1de-a829-5c64-4fef-0a692e2b3108:1970c5da-0aa4-46fd-a917-4772f9a17978_2019-05-31","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/4973e1de-a829-5c64-4fef-0a692e2b3108:1970c5da-0aa4-46fd-a917-4772f9a17978_2019-05-31/billingProfiles/KPSV-DWNE-BG7-TGB","billingPlan":"P1M","appliedScopeProperties":{"subscriptionId":"/subscriptions/00000000-0000-0000-0000-000000000000","displayName":"Azure
+        subscription 1"},"commitment":{"grain":"Hourly","currencyCode":"USD","amount":0.001},"renew":true,"appliedScopeType":"Single","displayName":"newName1","provisioningState":"Succeeded","term":"P3Y","displayProvisioningState":"Succeeded","userFriendlyAppliedScopeType":"Single","expiryDateTime":"2025-11-13T01:25:42.6202253Z","purchaseDateTime":"2022-11-13T01:23:57.7498407Z","benefitStartTime":"2022-11-13T01:25:42.6202253Z","effectiveDateTime":"2022-12-16T04:14:47.606899Z","utilization":{"trend":"SAME","aggregates":[{"grain":1.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":7.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":30.0,"grainUnit":"days","value":35.42,"valueUnit":"percentage"}]}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1592'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 04:14:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits savings-plan-order savings-plan show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --savings-plan-order-id --savings-plan-id --expand
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.BillingBenefits/savingsPlanOrders/683ae71d-f43a-4b76-bb26-9a6ffef80030/savingsPlans/ce6eaefe-3abe-4961-8455-1e8b1e041a6f?$expand=renewProperties&api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/microsoft.billingbenefits/savingsPlanOrders/683ae71d-f43a-4b76-bb26-9a6ffef80030/savingsPlans/ce6eaefe-3abe-4961-8455-1e8b1e041a6f","name":"ce6eaefe-3abe-4961-8455-1e8b1e041a6f","type":"microsoft.billingbenefits/savingsPlanOrders/savingsPlans","sku":{"name":"Compute_Savings_Plan"},"properties":{"billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/4973e1de-a829-5c64-4fef-0a692e2b3108:1970c5da-0aa4-46fd-a917-4772f9a17978_2019-05-31","billingProfileId":"/providers/Microsoft.Billing/billingAccounts/4973e1de-a829-5c64-4fef-0a692e2b3108:1970c5da-0aa4-46fd-a917-4772f9a17978_2019-05-31/billingProfiles/KPSV-DWNE-BG7-TGB","billingPlan":"P1M","appliedScopeProperties":{"subscriptionId":"/subscriptions/00000000-0000-0000-0000-000000000000","displayName":"Azure
+        subscription 1"},"commitment":{"grain":"Hourly","currencyCode":"USD","amount":0.001},"renew":true,"appliedScopeType":"Single","displayName":"newName1","provisioningState":"Succeeded","term":"P3Y","displayProvisioningState":"Succeeded","userFriendlyAppliedScopeType":"Single","expiryDateTime":"2025-11-13T01:25:42.6202253Z","purchaseDateTime":"2022-11-13T01:23:57.7498407Z","benefitStartTime":"2022-11-13T01:25:42.6202253Z","effectiveDateTime":"2022-12-16T04:14:47.606899Z","utilization":{"trend":"SAME","aggregates":[{"grain":1.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":7.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":30.0,"grainUnit":"days","value":35.42,"valueUnit":"percentage"}]},"renewProperties":{"purchaseProperties":{"sku":{"name":"Compute_Savings_Plan"},"properties":{"billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000","term":"P1Y","billingPlan":"Monthly","displayName":"name1","appliedScopeType":"Shared","commitment":{"grain":"Hourly","currencyCode":"USD","amount":10.0}}}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1913'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 04:14:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+version: 1

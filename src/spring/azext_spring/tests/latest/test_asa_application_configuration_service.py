@@ -3,29 +3,54 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
-
-from azure.cli.testsdk import (ScenarioTest, record_only)
+from azure.cli.testsdk import (ScenarioTest)
+from azure.cli.testsdk.reverse_dependency import (
+    get_dummy_cli,
+)
+from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer, SpringAppNamePreparer, SpringSubResourceWrapper)
+from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
+class TearDown(SpringSubResourceWrapper):
+    def __init__(self,
+                 resource_group_parameter_name='resource_group',
+                 spring_parameter_name='spring'):
+        super(TearDown, self).__init__()
+        self.cli_ctx = get_dummy_cli()
+        self.resource_group_parameter_name = resource_group_parameter_name
+        self.spring_parameter_name = spring_parameter_name
 
-@record_only()
+    def create_resource(self, *_, **kwargs):
+        self.resource_group = self._get_resource_group(**kwargs)
+        self.spring = self._get_spring(**kwargs)
+    
+    def remove_resource(self, *_, **__):
+        self.live_only_execute(self.cli_ctx, 'spring application-configuration-service delete -g {}  -s {} --yes'.format(self.resource_group, self.spring))
+        self.live_only_execute(self.cli_ctx, 'spring application-configuration-service create -g {}  -s {}'.format(self.resource_group, self.spring))
+
+
 class ApplicationConfigurationServiceTest(ScenarioTest):
 
-    def test_application_configuration_service(self):
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
+    @SpringAppNamePreparer()
+    @TearDown()
+    def test_application_configuration_service(self, resource_group, spring, app):
         
         self.kwargs.update({
-            'serviceName': 'tx-enterprise',
-            'rg': 'tx',
-            'repo': 'repo1',
-            "label": "master",
+            'serviceName': spring,
+            'rg': resource_group,
+            'repo': "repo1",
+            "label": "main",
             "patterns": "api-gateway,customers-service",
             "uri": "https://github.com/spring-petclinic/spring-petclinic-microservices-config",
-            "app": "app1"
+            "app": app
         })
         
+        self.cmd('spring app create -g {rg} -s {serviceName} -n {app}')
+
         self.cmd('spring application-configuration-service show -g {rg} -s {serviceName}', checks=[
             self.check('properties.provisioningState', "Succeeded")
         ])
@@ -49,8 +74,11 @@ class ApplicationConfigurationServiceTest(ScenarioTest):
 
         self.cmd('spring application-configuration-service bind --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('properties.addonConfigs.applicationConfigurationService.resourceId',
-            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/configurationServices/default")
+            "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/configurationServices/default".format(self.get_subscription_id(), resource_group, spring))
         ])
+
+        self.cmd('spring app show -n {app} -g {rg} -s {serviceName}')
+
         self.cmd('spring application-configuration-service unbind --app {app} -g {rg} -s {serviceName}')
 
         self.cmd('spring application-configuration-service clear -g {rg} -s {serviceName}', checks=[

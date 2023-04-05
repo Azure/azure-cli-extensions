@@ -16,7 +16,11 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
+<<<<<<< HEAD
 VERSION = '0.2.0'
+=======
+VERSION = '0.1.1'
+>>>>>>> ed3f463e9ef7980eff196504a8bb29800c123eba
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers

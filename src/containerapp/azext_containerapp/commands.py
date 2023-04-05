@@ -7,7 +7,7 @@
 # from azure.cli.core.commands import CliCommandType
 # from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azext_containerapp._client_factory import ex_handler_factory
-from ._validators import validate_ssh, validate_create
+from ._validators import validate_ssh
 
 
 def transform_containerapp_output(app):
@@ -60,12 +60,15 @@ def load_command_table(self, _):
 
     with self.command_group('containerapp logs') as g:
         g.custom_show_command('show', 'stream_containerapp_logs', validator=validate_ssh)
+    with self.command_group('containerapp env logs') as g:
+        g.custom_show_command('show', 'stream_environment_logs')
 
     with self.command_group('containerapp env') as g:
         g.custom_show_command('show', 'show_managed_environment')
         g.custom_command('list', 'list_managed_environments')
         g.custom_command('create', 'create_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_managed_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
+        g.custom_command('update', 'update_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp env dapr-component') as g:
         g.custom_command('list', 'list_dapr_components')
@@ -74,9 +77,10 @@ def load_command_table(self, _):
         g.custom_command('remove', 'remove_dapr_component')
 
     with self.command_group('containerapp env certificate') as g:
-        g.custom_command('list', 'list_certificates')
+        g.custom_command('create', 'create_managed_certificate', is_preview=True)
+        g.custom_command('list', 'list_certificates', is_preview=True)
         g.custom_command('upload', 'upload_certificate')
-        g.custom_command('delete', 'delete_certificate', confirmation=True, exception_handler=ex_handler_factory())
+        g.custom_command('delete', 'delete_certificate', confirmation=True, exception_handler=ex_handler_factory(), is_preview=True)
 
     with self.command_group('containerapp env storage', is_preview=True) as g:
         g.custom_show_command('show', 'show_storage')
@@ -111,11 +115,17 @@ def load_command_table(self, _):
     with self.command_group('containerapp ingress') as g:
         g.custom_command('enable', 'enable_ingress', exception_handler=ex_handler_factory())
         g.custom_command('disable', 'disable_ingress', exception_handler=ex_handler_factory())
+        g.custom_command('update', 'update_ingress', exception_handler=ex_handler_factory())
         g.custom_show_command('show', 'show_ingress')
 
     with self.command_group('containerapp ingress traffic') as g:
         g.custom_command('set', 'set_ingress_traffic', exception_handler=ex_handler_factory())
         g.custom_show_command('show', 'show_ingress_traffic')
+
+    with self.command_group('containerapp ingress access-restriction') as g:
+        g.custom_command('set', 'set_ip_restriction', exception_handler=ex_handler_factory())
+        g.custom_command('remove', 'remove_ip_restriction')
+        g.custom_show_command('list', 'show_ip_restrictions')
 
     with self.command_group('containerapp registry') as g:
         g.custom_command('set', 'set_registry', exception_handler=ex_handler_factory())
@@ -171,6 +181,17 @@ def load_command_table(self, _):
         g.custom_command('upload', 'upload_ssl', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp hostname') as g:
+        g.custom_command('add', 'add_hostname', exception_handler=ex_handler_factory(), is_preview=True)
         g.custom_command('bind', 'bind_hostname', exception_handler=ex_handler_factory())
         g.custom_command('list', 'list_hostname')
         g.custom_command('delete', 'delete_hostname', confirmation=True, exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp compose') as g:
+        g.custom_command('create', 'create_containerapps_from_compose')
+
+    with self.command_group('containerapp env workload-profile', is_preview=True) as g:
+        g.custom_command('list-supported', 'list_supported_workload_profiles')
+        g.custom_command('list', 'list_workload_profiles')
+        g.custom_show_command('show', 'show_workload_profile')
+        g.custom_command('set', 'set_workload_profile')
+        g.custom_command('delete', 'delete_workload_profile')

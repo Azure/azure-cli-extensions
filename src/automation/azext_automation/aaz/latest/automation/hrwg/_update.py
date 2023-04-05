@@ -15,13 +15,16 @@ from azure.cli.core.aaz import *
     "automation hrwg update",
 )
 class Update(AAZCommand):
-    """Create a hybrid runbook worker group.
+    """Update a hybrid runbook worker group.
+
+    :example: Update hybrid worker group
+        az automation hrwg update --automation-account-name accountName --resource-group groupName --name hybridrunbookworkergroupName --credential "{name: credentialname}"
     """
 
     _aaz_info = {
-        "version": "2022-02-22",
+        "version": "2022-08-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}", "2022-02-22"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups/{}", "2022-08-08"],
         ]
     }
 
@@ -78,10 +81,30 @@ class Update(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.HybridRunbookWorkerGroupGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
         self.HybridRunbookWorkerGroupCreate(ctx=self.ctx)()
+        self.post_operations()
+
+    # @register_callback
+    def pre_operations(self):
+        pass
+
+    # @register_callback
+    def post_operations(self):
+        pass
+
+    # @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    # @register_callback
+    def post_instance_update(self, instance):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -139,7 +162,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-02-22",
+                    "api-version", "2022-08-08",
                     required=True,
                 ),
             }
@@ -180,8 +203,8 @@ class Update(AAZCommand):
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [200, 201]:
+                return self.on_200_201(session)
 
             return self.on_error(session.http_response)
 
@@ -226,7 +249,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-02-22",
+                    "api-version", "2022-08-08",
                     required=True,
                 ),
             }
@@ -253,25 +276,25 @@ class Update(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_200(self, session):
+        def on_200_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200
+                schema_builder=self._build_schema_on_200_201
             )
 
-        _schema_on_200 = None
+        _schema_on_200_201 = None
 
         @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_200 = AAZObjectType()
-            _build_schema_hybrid_runbook_worker_group_read(cls._schema_on_200)
+            cls._schema_on_200_201 = AAZObjectType()
+            _build_schema_hybrid_runbook_worker_group_read(cls._schema_on_200_201)
 
-            return cls._schema_on_200
+            return cls._schema_on_200_201
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 

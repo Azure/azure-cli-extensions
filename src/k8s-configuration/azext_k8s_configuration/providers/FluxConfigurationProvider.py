@@ -41,24 +41,29 @@ from ..validators import (
     validate_git_url,
     validate_known_hosts,
     validate_repository_ref,
+    validate_azure_blob_auth,
     validate_duration,
     validate_private_key,
     validate_url_with_params,
 )
 from .. import consts
-from ..vendored_sdks.v2022_03_01.models import (
+from ..vendored_sdks.v2022_07_01.models import (
     FluxConfiguration,
     FluxConfigurationPatch,
     GitRepositoryDefinition,
     GitRepositoryPatchDefinition,
     BucketDefinition,
     BucketPatchDefinition,
+    AzureBlobDefinition,
+    AzureBlobPatchDefinition,
+    ServicePrincipalDefinition,
+    ManagedIdentityDefinition,
     RepositoryRefDefinition,
     KustomizationDefinition,
     KustomizationPatchDefinition,
     SourceKindType,
 )
-from ..vendored_sdks.v2022_03_01.models import Extension, Identity
+from ..vendored_sdks.v2022_07_01.models import Extension, Identity
 
 logger = get_logger(__name__)
 
@@ -150,6 +155,16 @@ def create_config(
     suspend=False,
     kustomization=None,
     no_wait=False,
+    container_name=None,
+    sp_tenant_id=None,
+    sp_client_id=None,
+    sp_client_cert=None,
+    sp_client_cert_password=None,
+    sp_client_secret=None,
+    sp_client_cert_send_chain=False,
+    account_key=None,
+    sas_token=None,
+    mi_client_id=None,
     cluster_resource_provider=None,
 ):
 
@@ -179,6 +194,16 @@ def create_config(
         bucket_access_key=bucket_access_key,
         bucket_secret_key=bucket_secret_key,
         bucket_insecure=bucket_insecure,
+        container_name=container_name,
+        account_key=account_key,
+        sas_token=sas_token,
+        sp_tenant_id=sp_tenant_id,
+        sp_client_id=sp_client_id,
+        sp_client_cert=sp_client_cert,
+        sp_client_cert_password=sp_client_cert_password,
+        sp_client_secret=sp_client_secret,
+        sp_client_cert_send_chain=sp_client_cert_send_chain,
+        mi_client_id=mi_client_id,
     )
 
     # This update func is a generated update function that modifies
@@ -264,6 +289,16 @@ def update_config(
     kustomization=None,
     no_wait=False,
     yes=False,
+    container_name=None,
+    sp_tenant_id=None,
+    sp_client_id=None,
+    sp_client_cert=None,
+    sp_client_cert_password=None,
+    sp_client_secret=None,
+    sp_client_cert_send_chain=False,
+    account_key=None,
+    sas_token=None,
+    mi_client_id=None,
     cluster_resource_provider=None,
 ):
 
@@ -298,6 +333,16 @@ def update_config(
         bucket_access_key=bucket_access_key,
         bucket_secret_key=bucket_secret_key,
         bucket_insecure=bucket_insecure,
+        container_name=container_name,
+        account_key=account_key,
+        sas_token=sas_token,
+        sp_tenant_id=sp_tenant_id,
+        sp_client_id=sp_client_id,
+        sp_client_cert=sp_client_cert,
+        sp_client_cert_password=sp_client_cert_password,
+        sp_client_secret=sp_client_secret,
+        sp_client_cert_send_chain=sp_client_cert_send_chain,
+        mi_client_id=mi_client_id,
     )
 
     # This update func is a generated update function that modifies
@@ -772,13 +817,17 @@ def __add_identity(
 def source_kind_generator_factory(kind=consts.GIT, **kwargs):
     if kind == consts.GIT:
         return GitRepositoryGenerator(**kwargs)
-    return BucketGenerator(**kwargs)
+    if kind == consts.BUCKET:
+        return BucketGenerator(**kwargs)
+    return AzureBlobGenerator(**kwargs)
 
 
 def convert_to_cli_source_kind(rp_source_kind):
     if rp_source_kind == consts.GIT_REPOSITORY:
         return consts.GIT
-    return consts.BUCKET
+    elif rp_source_kind == consts.BUCKET_CAPS:
+        return consts.BUCKET
+    return consts.AZBLOB
 
 
 class SourceKindGenerator:
@@ -936,13 +985,8 @@ class GitRepositoryGenerator(SourceKindGenerator):
                 self.validate()
                 config.source_kind = SourceKindType.GIT_REPOSITORY
 
-                # Have to set these things to none otherwise the patch will fail
-                # due to default values
-                config.bucket = BucketDefinition(
-                    insecure=None,
-                    timeout_in_seconds=None,
-                    sync_interval_in_seconds=None,
-                )
+                config.bucket = BucketPatchDefinition()
+                config.azure_blob = AzureBlobPatchDefinition()
             return config
 
         return git_repository_updater
@@ -1025,9 +1069,120 @@ class BucketGenerator(SourceKindGenerator):
                     self.validate()
                     config.source_kind = SourceKindType.BUCKET
                     config.git_repository = GitRepositoryPatchDefinition()
+                    config.azure_blob = AzureBlobPatchDefinition()
             return config
 
         return bucket_patch_updater
+
+
+class AzureBlobGenerator(SourceKindGenerator):
+    def __init__(self, **kwargs):
+        # Common Pre-Validation
+        super().__init__(
+            consts.AZBLOB, consts.AZUREBLOB_REQUIRED_PARAMS, consts.AZUREBLOB_VALID_PARAMS
+        )
+        super().validate_params(**kwargs)
+
+        # Pre-Validations
+        validate_duration("--timeout", kwargs.get("timeout"))
+        validate_duration("--sync-interval", kwargs.get("sync_interval"))
+
+        self.kwargs = kwargs
+        self.url = kwargs.get("url")
+        self.container_name = kwargs.get("container_name")
+        self.timeout = kwargs.get("timeout")
+        self.sync_interval = kwargs.get("sync_interval")
+        self.account_key = kwargs.get("account_key")
+        self.sas_token = kwargs.get("sas_token")
+        self.local_auth_ref = kwargs.get("local_auth_ref")
+
+        self.service_principal = None
+        if any(
+            [
+                kwargs.get("sp_client_id"),
+                kwargs.get("sp_tenant_id"),
+                kwargs.get("sp_client_secret"),
+                kwargs.get("sp_client_cert"),
+                kwargs.get("sp_client_cert_password"),
+                kwargs.get("sp_client_cert_send_chain")
+            ]
+        ):
+            self.service_principal = ServicePrincipalDefinition(
+                client_id=kwargs.get("sp_client_id"),
+                tenant_id=kwargs.get("sp_tenant_id"),
+                client_secret=kwargs.get("sp_client_secret"),
+                client_certificate=kwargs.get("sp_client_cert"),
+                client_certificate_password=kwargs.get("sp_client_cert_password"),
+                client_certificate_send_chain=kwargs.get("sp_client_cert_send_chain")
+            )
+
+        self.managed_identity = None
+        if any(
+            [
+                kwargs.get("mi_client_id"),
+            ]
+        ):
+            self.managed_identity = ManagedIdentityDefinition(
+                client_id=kwargs.get("mi_client_id"),
+            )
+
+    def validate(self):
+        super().validate_required_params(**self.kwargs)
+        validate_bucket_url(self.url)
+        validate_azure_blob_auth(self)
+
+    def generate_update_func(self):
+        """
+        generate_update_func(self) generates a function to add a Azure Blob
+        object to the flux configuration for the PUT case
+        """
+        self.validate()
+
+        def azure_blob_updater(config):
+            config.azure_blob = AzureBlobDefinition(
+                url=self.url,
+                container_name=self.container_name,
+                timeout_in_seconds=parse_duration(self.timeout),
+                sync_interval_in_seconds=parse_duration(self.sync_interval),
+                account_key=self.account_key,
+                sas_token=self.sas_token,
+                service_principal=self.service_principal,
+                managed_identity=self.managed_identity,
+                local_auth_ref=self.local_auth_ref,
+            )
+            config.source_kind = SourceKindType.AZURE_BLOB
+            return config
+
+        return azure_blob_updater
+
+    def generate_patch_update_func(self, swapped_kind):
+        """
+        generate_patch_update_func(self) generates a function update the AzureBlob
+        object to the flux configuration for the PATCH case.
+        If the source kind has been changed, we also set the GitRepository and Bucket to null
+        """
+
+        def azure_blob_patch_updater(config):
+            if any(kwarg is not None for kwarg in self.kwargs.values()):
+                config.azure_blob = AzureBlobPatchDefinition(
+                    url=self.url,
+                    container_name=self.container_name,
+                    timeout_in_seconds=parse_duration(self.timeout),
+                    sync_interval_in_seconds=parse_duration(self.sync_interval),
+                    account_key=self.account_key,
+                    sas_token=self.sas_token,
+                    local_auth_ref=self.local_auth_ref,
+                    service_principal=self.service_principal,
+                    managed_identity=self.managed_identity,
+                )
+                if swapped_kind:
+                    self.validate()
+                    config.source_kind = SourceKindType.AZURE_BLOB
+                    config.bucket = BucketPatchDefinition()
+                    config.git_repository = GitRepositoryPatchDefinition()
+            return config
+
+        return azure_blob_patch_updater
 
 
 def get_protected_settings(

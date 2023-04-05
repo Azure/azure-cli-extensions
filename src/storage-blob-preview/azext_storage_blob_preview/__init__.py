@@ -14,7 +14,7 @@ from ._help import helps  # pylint: disable=unused-import
 class StorageCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        register_resource_type('latest', CUSTOM_DATA_STORAGE_BLOB, '2020-10-02')
+        register_resource_type('latest', CUSTOM_DATA_STORAGE_BLOB, '2021-12-02')
         storage_custom = CliCommandType(operations_tmpl='azure.cli.command_modules.storage.custom#{}')
         super(StorageCommandsLoader, self).__init__(cli_ctx=cli_ctx,
                                                     resource_type=CUSTOM_DATA_STORAGE_BLOB,
@@ -62,7 +62,9 @@ class StorageArgumentContext(AzArgumentContext):
         self.extra('content_disposition', default=None, arg_group=arg_group,
                    help='Conveys additional information about how to process the response payload, and can also be '
                         'used to attach additional metadata.')
-        self.extra('content_cache_control', default=None, help='The cache control string.', arg_group=arg_group)
+        self.extra('content_cache_control', options_list=['--content-cache-control', '--content-cache'],
+                   default=None, help='The cache control string.',
+                   arg_group=arg_group)
         self.extra('content_md5', default=None, help='The content\'s MD5 hash.', arg_group=arg_group)
         if update:
             self.extra('clear_content_settings', help='If this flag is set, then if any one or more of the '
@@ -113,16 +115,16 @@ class StorageArgumentContext(AzArgumentContext):
                    help="Commence only if modified since supplied UTC datetime (Y-m-d'T'H:M'Z').",
                    type=get_datetime_type(False))
         self.extra('{}if_unmodified_since'.format(prefix), arg_group='Precondition',
-                   help="Commence only if modified since supplied UTC datetime (Y-m-d'T'H:M'Z').",
+                   help="Commence only if unmodified since supplied UTC datetime (Y-m-d'T'H:M'Z').",
                    type=get_datetime_type(False))
         self.extra('{}if_match'.format(prefix), arg_group='Precondition',
                    help="An ETag value, or the wildcard character (*). Specify this header to perform the "
-                   "operation only if the resource's ETag matches the value specified.")
+                        "operation only if the resource's ETag matches the value specified.")
         self.extra('{}if_none_match'.format(prefix), arg_group='Precondition',
                    help="An ETag value, or the wildcard character (*). Specify this header to perform "
-                   "the operation only if the resource's ETag does not match the value specified. Specify the wildcard "
-                   "character (*) to perform the operation only if the resource does not exist, and fail the operation "
-                   "if it does exist.")
+                        "the operation only if the resource's ETag does not match the value specified. Specify the wildcard "
+                        "character (*) to perform the operation only if the resource does not exist, and fail the operation "
+                        "if it does exist.")
         self.extra('{}if_tags_match_condition'.format(prefix), arg_group='Precondition',
                    options_list=['--{}tags-condition'.format(prefix.replace('_', '-'))],
                    help='Specify a SQL where clause on blob tags to operate only on blobs with a matching value.')
@@ -225,6 +227,12 @@ Authentication failure. This may be caused by either invalid account key, connec
                                   'present, the command will try to query the storage account key using the '
                                   'authenticated Azure account. If a large number of storage commands are executed the '
                                   'API quota may be hit')
+        command.add_argument('account_url', '--blob-endpoint',
+                             required=False, default=None, arg_group=group_name,
+                             help='Storage data service endpoint. Must be used in conjunction with either '
+                                  'storage account key or a SAS token. You can find each service primary endpoint '
+                                  'with `az storage account show`. '
+                                  'Environment variable: AZURE_STORAGE_SERVICE_ENDPOINT')
         command.add_argument('account_key', '--account-key', required=False, default=None,
                              arg_group=group_name,
                              help='Storage account key. Must be used in conjunction with storage account name. '

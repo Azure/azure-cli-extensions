@@ -7,7 +7,6 @@
 
 VnetConfiguration = {
     "infrastructureSubnetId": None,
-    "runtimeSubnetId": None,
     "dockerBridgeCidr": None,
     "platformReservedCidr": None,
     "platformReservedDnsIP": None
@@ -16,15 +15,19 @@ VnetConfiguration = {
 ManagedEnvironment = {
     "location": None,
     "tags": None,
-    "sku": {
-        "name": "Consumption",
-    },
     "properties": {
         "daprAIInstrumentationKey": None,
         "vnetConfiguration": None,  # VnetConfiguration
-        "internalLoadBalancerEnabled": None,
-        "appLogsConfiguration": None
+        "appLogsConfiguration": None,
+        "customDomainConfiguration": None,  # CustomDomainConfiguration,
+        "workloadProfiles": None
     }
+}
+
+CustomDomainConfiguration = {
+    "dnsSuffix": None,
+    "certificateValue": None,
+    "certificatePassword": None
 }
 
 AppLogsConfiguration = {
@@ -113,7 +116,9 @@ ScaleRule = {
 
 Secret = {
     "name": None,
-    "value": None
+    "value": None,
+    "keyVaultUrl": None,
+    "identity": None
 }
 
 Scale = {
@@ -142,9 +147,11 @@ Ingress = {
     "fqdn": None,
     "external": False,
     "targetPort": None,
-    "transport": None,  # 'auto', 'http', 'http2'
+    "transport": None,  # 'auto', 'http', 'http2', 'tcp'
+    "exposedPort": None,
     "traffic": None,  # TrafficWeight
-    "customDomains": None  # [CustomDomain]
+    "customDomains": None,  # [CustomDomain]
+    "ipSecurityRestrictions": None  # [IPSecurityRestrictions]
 }
 
 RegistryCredentials = {
@@ -156,6 +163,7 @@ RegistryCredentials = {
 Template = {
     "revisionSuffix": None,
     "containers": None,  # [Container]
+    "initContainers": None,  # [Container]
     "scale": Scale,
     "volumes": None  # [Volume]
 }
@@ -181,7 +189,7 @@ ContainerApp = {
     "location": None,
     "identity": None,  # ManagedServiceIdentity
     "properties": {
-        "managedEnvironmentId": None,
+        "environmentId": None,
         "configuration": None,  # Configuration
         "template": None  # Template
     },
@@ -268,4 +276,12 @@ AzureFileProperties = {
     "accountKey": None,
     "accessMode": None,
     "shareName": None
+}
+
+ManagedCertificateEnvelop = {
+    "location": None,  # str
+    "properties": {
+        "subjectName": None,  # str
+        "validationMethod": None  # str
+    }
 }

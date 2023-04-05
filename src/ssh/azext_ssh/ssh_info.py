@@ -41,17 +41,20 @@ class SSHSession():
         self.credentials_folder = os.path.abspath(credentials_folder) if credentials_folder else None
 
     def is_arc(self):
-        if self.resource_type == "Microsoft.HybridCompute":
+        if self.resource_type in ["Microsoft.HybridCompute/machines",
+                                  "Microsoft.ConnectedVMwarevSphere/virtualMachines",
+                                  "Microsoft.ScVmm/virtualMachines",
+                                  "Microsoft.AzureStackHCI/virtualMachines"]:
             return True
         return False
 
     def get_host(self):
-        if not self.is_arc():
-            if self.local_user and self.ip:
-                return self.local_user + "@" + self.ip
-        else:
-            if self.local_user and self.vm_name:
-                return self.local_user + "@" + self.vm_name
+        if not self.is_arc() and self.ip:
+            return self.ip
+
+        if self.is_arc() and self.vm_name:
+            return self.vm_name
+
         raise azclierror.BadRequestError("Unable to determine host.")
 
     # build args behaves different depending on the resource type
@@ -100,7 +103,8 @@ class ConfigSession():
         self.credentials_folder = os.path.abspath(credentials_folder) if credentials_folder else None
 
     def is_arc(self):
-        if self.resource_type == "Microsoft.HybridCompute":
+        if self.resource_type in ["Microsoft.HybridCompute/machines",
+                                  "Microsoft.ConnectedVMwarevSphere/virtualMachines"]:
             return True
         return False
 

@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.4
+++++++
++ Update mycli and pgcli versions
+
 1.0.3
 ++++++
 + Add support to read UTF-8 files with and without BOM

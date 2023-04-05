@@ -15,13 +15,16 @@ from azure.cli.core.aaz import *
     "automation hrwg list",
 )
 class List(AAZCommand):
-    """Retrieve a list of hybrid runbook worker groups.
+    """List all hybrid runbook worker groups
+
+    :example: List all hybrid runbook worker groups
+        az automation hrwg list --automation-account-name accountName --resource-group groupName
     """
 
     _aaz_info = {
-        "version": "2022-02-22",
+        "version": "2022-08-08",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups", "2022-02-22"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.automation/automationaccounts/{}/hybridrunbookworkergroups", "2022-08-08"],
         ]
     }
 
@@ -55,7 +58,17 @@ class List(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.HybridRunbookWorkerGroupListByAutomationAccount(ctx=self.ctx)()
+        self.post_operations()
+
+    # @register_callback
+    def pre_operations(self):
+        pass
+
+    # @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
@@ -113,7 +126,7 @@ class List(AAZCommand):
                     "$filter", self.ctx.args.filter,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-02-22",
+                    "api-version", "2022-08-08",
                     required=True,
                 ),
             }

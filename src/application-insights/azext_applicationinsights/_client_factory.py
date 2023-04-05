@@ -59,4 +59,4 @@ def cf_export_configuration(cli_ctx, _):
 
 
 def cf_web_test(cli_ctx, _):
-    return applicationinsights_mgmt_plane_client(cli_ctx, api_version='2018-05-01-preview').web_tests
+    return applicationinsights_mgmt_plane_client(cli_ctx, api_version='2022-06-15').web_tests

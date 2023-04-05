@@ -17,7 +17,7 @@ except ImportError:
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 
-VERSION = '1.3.3'
+VERSION = '1.3.15'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -35,7 +35,7 @@ CLASSIFIERS = [
 
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
-    'kubernetes==11.0.0',
+    'kubernetes==24.2.0',
     'pycryptodome==3.14.1',
     'azure-mgmt-hybridcompute==7.0.0'
 ]

@@ -1,0 +1,76 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "variables": {
+    "container1name": "aci-test",
+    "container1image": "rust:1.52.1"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2022-10-01-preview",
+      "name": "secret-volume-demo",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "confidentialComputeProperties": {
+          "ccePolicy": "cGFja2FnZSBwb2xpY3kKCmltcG9ydCBmdXR1cmUua2V5d29yZHMuZXZlcnkKaW1wb3J0IGZ1dHVyZS5rZXl3b3Jkcy5pbgoKYXBpX3N2biA6PSAiMC4xMC4wIgpmcmFtZXdvcmtfc3ZuIDo9ICIwLjEuMCIKCmZyYWdtZW50cyA6PSBbCiAgewogICAgImZlZWQiOiAibWNyLm1pY3Jvc29mdC5jb20vYWNpL2FjaS1jYy1pbmZyYS1mcmFnbWVudCIsCiAgICAiaW5jbHVkZXMiOiBbCiAgICAgICJjb250YWluZXJzIgogICAgXSwKICAgICJpc3N1ZXIiOiAiZGlkOng1MDk6MDpzaGEyNTY6SV9faXVMMjVvWEVWRmRUUF9hQkx4X2VUMVJQSGJDUV9FQ0JRZllacHQ5czo6ZWt1OjEuMy42LjEuNC4xLjMxMS43Ni41OS4xLjMiLAogICAgIm1pbmltdW1fc3ZuIjogIjEuMC4wIgogIH0KXQoKY29udGFpbmVycyA6PSBbeyJhbGxvd19lbGV2YXRlZCI6dHJ1ZSwiYWxsb3dfc3RkaW9fYWNjZXNzIjp0cnVlLCJjb21tYW5kIjpbImJhc2giXSwiZW52X3J1bGVzIjpbeyJwYXR0ZXJuIjoiUEFUSD0vY3VzdG9taXplZC9wYXRoL3ZhbHVlIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InN0cmluZyJ9LHsicGF0dGVybiI6IlRFU1RfUkVHRVhQX0VOVj10ZXN0X3JlZ2V4cF9lbnYiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5Ijoic3RyaW5nIn0seyJwYXR0ZXJuIjoiUlVTVFVQX0hPTUU9L3Vzci9sb2NhbC9ydXN0dXAiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5Ijoic3RyaW5nIn0seyJwYXR0ZXJuIjoiQ0FSR09fSE9NRT0vdXNyL2xvY2FsL2NhcmdvIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InN0cmluZyJ9LHsicGF0dGVybiI6IlJVU1RfVkVSU0lPTj0xLjUyLjEiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5Ijoic3RyaW5nIn0seyJwYXR0ZXJuIjoiVEVSTT14dGVybSIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJzdHJpbmcifSx7InBhdHRlcm4iOiIoKD9pKUZBQlJJQylfLis9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiSE9TVE5BTUU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiVChFKT9NUD0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSx7InBhdHRlcm4iOiJGYWJyaWNQYWNrYWdlRmlsZU5hbWU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiSG9zdGVkU2VydmljZU5hbWU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiSURFTlRJVFlfQVBJX1ZFUlNJT049LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiSURFTlRJVFlfSEVBREVSPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6IklERU5USVRZX1NFUlZFUl9USFVNQlBSSU5UPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6ImF6dXJlY29udGFpbmVyaW5zdGFuY2VfcmVzdGFydGVkX2J5PS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9XSwiZXhlY19wcm9jZXNzZXMiOltdLCJpZCI6InJ1c3Q6MS41Mi4xIiwibGF5ZXJzIjpbImZlODRjOWQ1YmZkZGQwN2EyNjI0ZDAwMzMzY2YxM2MxYTljOTQxZjNhMjYxZjEzZWFkNDRmYzZhOTNiYzBlN2EiLCI0ZGVkYWU0Mjg0N2M3MDRkYTg5MWEyOGMyNWQzMjIwMWExYWU0NDBiY2UyYWVjY2NmYThlNmYwM2I5N2E2YTZjIiwiNDFkNjRjZGViMzQ3YmYyMzZiNGMxM2I3NDAzYjYzM2ZmMTFmMWNmOTRkYmM3Y2Y4ODFhNDRkNmRhODhjNTE1NiIsImViMzY5MjFlMWY4MmFmNDZkZmUyNDhlZjhmMWIzYWZiNmE1MjMwYTY0MTgxZDk2MGQxMDIzN2EwOGNkNzNjNzkiLCJlNzY5ZDc0ODdjYzMxNGQzZWU3NDhhNDQ0MDgwNTMxN2MxOTI2MmM3YWNkMmZkYmRiMGQ0N2QyZTQ2MTNhMTVjIiwiMWI4MGYxMjBkYmQ4OGU0MzU1ZDYyNDFiNTE5YzNlMjUyOTAyMTVjNDY5NTE2YjQ5ZGVjZTljZjA3MTc1YTc2NiJdLCJtb3VudHMiOlt7ImRlc3RpbmF0aW9uIjoiL21vdW50L2F6dXJlZmlsZSIsIm9wdGlvbnMiOlsicmJpbmQiLCJyc2hhcmVkIiwicnciXSwic291cmNlIjoic2FuZGJveDovLy90bXAvYXRsYXMvYXp1cmVGaWxlVm9sdW1lLy4rIiwidHlwZSI6ImJpbmQifSx7ImRlc3RpbmF0aW9uIjoiL2V0Yy9yZXNvbHYuY29uZiIsIm9wdGlvbnMiOlsicmJpbmQiLCJyc2hhcmVkIiwicnciXSwic291cmNlIjoic2FuZGJveDovLy90bXAvYXRsYXMvcmVzb2x2Y29uZi8uKyIsInR5cGUiOiJiaW5kIn1dLCJzaWduYWxzIjpbXSwid29ya2luZ19kaXIiOiIvIn0seyJhbGxvd19lbGV2YXRlZCI6ZmFsc2UsImFsbG93X3N0ZGlvX2FjY2VzcyI6dHJ1ZSwiY29tbWFuZCI6WyIvcGF1c2UiXSwiZW52X3J1bGVzIjpbeyJwYXR0ZXJuIjoiUEFUSD0vdXNyL2xvY2FsL3NiaW46L3Vzci9sb2NhbC9iaW46L3Vzci9zYmluOi91c3IvYmluOi9zYmluOi9iaW4iLCJyZXF1aXJlZCI6dHJ1ZSwic3RyYXRlZ3kiOiJzdHJpbmcifSx7InBhdHRlcm4iOiJURVJNPXh0ZXJtIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InN0cmluZyJ9XSwiZXhlY19wcm9jZXNzZXMiOltdLCJsYXllcnMiOlsiMTZiNTE0MDU3YTA2YWQ2NjVmOTJjMDI4NjNhY2EwNzRmZDU5NzZjNzU1ZDI2YmZmMTYzNjUyOTkxNjllODQxNSJdLCJtb3VudHMiOltdLCJzaWduYWxzIjpbXSwid29ya2luZ19kaXIiOiIvIn1dCgphbGxvd19wcm9wZXJ0aWVzX2FjY2VzcyA6PSBmYWxzZQphbGxvd19kdW1wX3N0YWNrcyA6PSBmYWxzZQphbGxvd19ydW50aW1lX2xvZ2dpbmcgOj0gZmFsc2UKYWxsb3dfZW52aXJvbm1lbnRfdmFyaWFibGVfZHJvcHBpbmcgOj0gdHJ1ZQphbGxvd191bmVuY3J5cHRlZF9zY3JhdGNoIDo9IGZhbHNlCgoKCm1vdW50X2RldmljZSA6PSBkYXRhLmZyYW1ld29yay5tb3VudF9kZXZpY2UKdW5tb3VudF9kZXZpY2UgOj0gZGF0YS5mcmFtZXdvcmsudW5tb3VudF9kZXZpY2UKbW91bnRfb3ZlcmxheSA6PSBkYXRhLmZyYW1ld29yay5tb3VudF9vdmVybGF5CnVubW91bnRfb3ZlcmxheSA6PSBkYXRhLmZyYW1ld29yay51bm1vdW50X292ZXJsYXkKY3JlYXRlX2NvbnRhaW5lciA6PSBkYXRhLmZyYW1ld29yay5jcmVhdGVfY29udGFpbmVyCmV4ZWNfaW5fY29udGFpbmVyIDo9IGRhdGEuZnJhbWV3b3JrLmV4ZWNfaW5fY29udGFpbmVyCmV4ZWNfZXh0ZXJuYWwgOj0gZGF0YS5mcmFtZXdvcmsuZXhlY19leHRlcm5hbApzaHV0ZG93bl9jb250YWluZXIgOj0gZGF0YS5mcmFtZXdvcmsuc2h1dGRvd25fY29udGFpbmVyCnNpZ25hbF9jb250YWluZXJfcHJvY2VzcyA6PSBkYXRhLmZyYW1ld29yay5zaWduYWxfY29udGFpbmVyX3Byb2Nlc3MKcGxhbjlfbW91bnQgOj0gZGF0YS5mcmFtZXdvcmsucGxhbjlfbW91bnQKcGxhbjlfdW5tb3VudCA6PSBkYXRhLmZyYW1ld29yay5wbGFuOV91bm1vdW50CmdldF9wcm9wZXJ0aWVzIDo9IGRhdGEuZnJhbWV3b3JrLmdldF9wcm9wZXJ0aWVzCmR1bXBfc3RhY2tzIDo9IGRhdGEuZnJhbWV3b3JrLmR1bXBfc3RhY2tzCnJ1bnRpbWVfbG9nZ2luZyA6PSBkYXRhLmZyYW1ld29yay5ydW50aW1lX2xvZ2dpbmcKbG9hZF9mcmFnbWVudCA6PSBkYXRhLmZyYW1ld29yay5sb2FkX2ZyYWdtZW50CnNjcmF0Y2hfbW91bnQgOj0gZGF0YS5mcmFtZXdvcmsuc2NyYXRjaF9tb3VudApzY3JhdGNoX3VubW91bnQgOj0gZGF0YS5mcmFtZXdvcmsuc2NyYXRjaF91bm1vdW50CgpyZWFzb24gOj0geyJlcnJvcnMiOiBkYXRhLmZyYW1ld29yay5lcnJvcnN9"
+        },
+        "containers": [
+          {
+            "name": "[variables('container1name')]",
+            "properties": {
+              "image": "[variables('container1image')]",
+              "resources": {
+                "requests": {
+                  "cpu": 1,
+                  "memoryInGb": 1.5
+                }
+              },
+              "ports": [
+                {
+                  "port": 80
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefile",
+                  "mountPath": "/mount/azurefile"
+                }
+              ],
+              "environmentVariables": [
+                {
+                  "name": "PATH",
+                  "value": "/customized/path/value"
+                },
+                {
+                  "name": "TEST_REGEXP_ENV",
+                  "value": "test_regexp_env"
+                }
+              ]
+            }
+          }
+        ],
+        "sku": "Confidential",
+        "osType": "Linux",
+        "ipAddress": {
+          "type": "Public",
+          "ports": [
+            {
+              "protocol": "tcp",
+              "port": "80"
+            }
+          ]
+        },
+        "volumes": [
+          {
+            "name": "azurefile",
+            "azureFile": {
+              "key1": "key-1",
+              "key2": "key-2"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

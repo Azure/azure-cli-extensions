@@ -2,13 +2,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from time import time
 import unittest
 import os
 from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.util import CLIError
 from msrestazure.tools import resource_id
-from ...vendored_sdks.appplatform.v2022_09_01_preview import models
+from ...vendored_sdks.appplatform.v2023_03_01_preview import models
 from ..._utils import _get_sku_name
 from ...app import (app_create, app_update, app_deploy, deployment_create)
 from ...custom import (app_set_deployment, app_unset_deployment)
@@ -84,29 +83,23 @@ class TestSetActiveDeploy(BasicTest):
         request = call_args[0][0][3]
         self.assertEqual(0, len(request.active_deployment_names))
 
-    @mock.patch('azext_spring.custom.cf_spring', autospec=True)
-    def test_blue_green_standard(self, client_mock_factory):
-        client_mock = self._get_basic_mock_client(sku='Standard')
-        client_mock_factory.return_value = client_mock
+    def test_blue_green_standard(self):
         client = self._get_basic_mock_client(sku='Standard')
         app_set_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app', 'default')
-        call_args = client_mock.apps.begin_update.call_args_list
+        call_args = client.apps.begin_set_active_deployments.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(4, len(call_args[0][0]))
-        request = call_args[0][0][3]
-        self.assertEqual('default', request.properties.active_deployment_name)
+        active_deployment_collection = call_args[0][0][3]
+        self.assertEqual('default', active_deployment_collection.active_deployment_names[0])
 
-    @mock.patch('azext_spring.custom.cf_spring', autospec=True)
-    def test_unset_active_standard(self, client_mock_factory):
-        client_mock = self._get_basic_mock_client(sku='Standard')
-        client_mock_factory.return_value = client_mock
+    def test_unset_active_standard(self):
         client = self._get_basic_mock_client(sku='Standard')
         app_unset_deployment(_get_test_cmd(), client, 'rg', 'asc', 'app')
-        call_args = client_mock.apps.begin_update.call_args_list
+        call_args = client.apps.begin_set_active_deployments.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(4, len(call_args[0][0]))
-        request = call_args[0][0][3]
-        self.assertEqual('', request.properties.active_deployment_name)
+        active_deployment_collection = call_args[0][0][3]
+        self.assertEqual(0, len(active_deployment_collection.active_deployment_names))
 
 
 class TestAppDeploy_Patch(BasicTest):
@@ -360,7 +353,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
             self._get_result_resource(status='Failed')
         ]
         deployment=self._get_deployment()
-        with self.assertRaisesRegexp(CLIError, 'Failed to build docker image'):
+        with self.assertRaisesRegexp(CLIError, 'Failed to build container image'):
             self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path', client=client)
 
 
@@ -414,7 +407,7 @@ class TestAppDeploy_Put(BasicTest):
         self.assertEqual('Jar', resource.properties.source.type)
         self.assertEqual('my-relative-path', resource.properties.source.relative_path)
         self.assertIsNone(resource.properties.source.version)
-        self.assertEqual('Java_8', resource.properties.source.runtime_version)
+        self.assertEqual('Java_11', resource.properties.source.runtime_version)
         self.assertEqual('2', resource.properties.deployment_settings.resource_requests.cpu)
         self.assertEqual('2Gi', resource.properties.deployment_settings.resource_requests.memory)
         self.assertEqual(2, resource.sku.capacity)
@@ -598,8 +591,8 @@ class TestAppCreate(BasicTest):
         call_args = client.deployments.begin_create_or_update.call_args_list
         self.assertEqual(1, len(call_args))
         self.assertEqual(5, len(call_args[0][0]))
-        self.assertEqual(args[0:3] + ('default',), call_args[0][0][0:4])
         self.put_deployment_resource = call_args[0][0][4]
+        self.put_deployment_resource.name = call_args[0][0][3]
 
         call_args = client.apps.begin_update.call_args_list
         self.assertEqual(1, len(call_args))
@@ -611,7 +604,7 @@ class TestAppCreate(BasicTest):
         self._execute('rg', 'asc', 'app', cpu='1', memory='1Gi', instance_count=1)
         resource = self.put_deployment_resource
         self.assertEqual('Jar', resource.properties.source.type)
-        self.assertEqual('Java_8', resource.properties.source.runtime_version)
+        self.assertEqual('Java_11', resource.properties.source.runtime_version)
         self.assertEqual('<default>', resource.properties.source.relative_path)
 
     def test_app_create_with_netcore(self):
@@ -679,6 +672,24 @@ class TestAppCreate(BasicTest):
         self.assertEqual("Cookie", resource.properties.ingress_settings.session_affinity)
         self.assertEqual(1000, resource.properties.ingress_settings.session_cookie_max_age)
         self.assertEqual('Default', resource.properties.ingress_settings.backend_protocol)
+
+    def test_app_with_client_auth(self):
+        self._execute('rg', 'asc', 'app', instance_count=1, client_auth_certs=[])
+        resource = self.put_app_resource
+        self.assertIsNotNone(resource.properties.ingress_settings.client_auth.certificates)
+        self.assertEqual(0, len(resource.properties.ingress_settings.client_auth.certificates))
+        self._execute('rg', 'asc', 'app', instance_count=1, client_auth_certs=['cert1', 'cert2'])
+        resource = self.patch_app_resource
+        self.assertIsNotNone(resource.properties.ingress_settings.client_auth.certificates)
+        self.assertEqual(2, len(resource.properties.ingress_settings.client_auth.certificates))
+        self._execute('rg', 'asc', 'app', instance_count=1)
+        resource = self.patch_app_resource
+        self.assertIsNone(resource.properties.ingress_settings)
+
+    def test_app_create_with_deployment_name(self):
+        self._execute('rg', 'asc', 'app', cpu='1', memory='1Gi', instance_count=1, deployment_name='hello')
+        resource = self.put_deployment_resource
+        self.assertEqual('hello', resource.name)
 
 class TestDeploymentCreate(BasicTest):
     def __init__(self, methodName: str = ...):

@@ -18,9 +18,9 @@ from .action import RadiusServerAddAction
 def load_arguments(self, _):
 
     (IpsecEncryption, IpsecIntegrity, IkeEncryption, IkeIntegrity, DhGroup, PfsGroup,
-     VirtualNetworkGatewayConnectionProtocol, AuthenticationMethod, HubRoutingPreference) = self.get_models(
+     VirtualNetworkGatewayConnectionProtocol, AuthenticationMethod) = self.get_models(
          'IpsecEncryption', 'IpsecIntegrity', 'IkeEncryption', 'IkeIntegrity', 'DhGroup', 'PfsGroup',
-         'VirtualNetworkGatewayConnectionProtocol', 'AuthenticationMethod', 'HubRoutingPreference')
+         'VirtualNetworkGatewayConnectionProtocol', 'AuthenticationMethod')
 
     (VpnGatewayTunnelingProtocol, VpnAuthenticationType) = self.get_models('VpnGatewayTunnelingProtocol', 'VpnAuthenticationType')
 
@@ -48,20 +48,13 @@ def load_arguments(self, _):
     # endregion
 
     # region VirtualHub
-    with self.argument_context('network vhub') as c:
-        c.argument('virtual_hub_name', vhub_name_type, options_list=['--name', '-n'])
-        c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
-        c.argument('virtual_wan', options_list='--vwan', help='Name or ID of the virtual WAN.', validator=get_network_resource_name_or_id('virtual_wan', 'virtualWans'))
-        c.argument('address_prefix', help='CIDR address prefix for the virtual hub.')
-        c.argument('sku', arg_type=get_enum_type(['Basic', 'Standard']), help='The sku of the VirtualHub.')
-        c.argument('hub_routing_preference', arg_type=get_enum_type(HubRoutingPreference), help='The hub routing preference gateway types')
-
     with self.argument_context('network vhub', arg_group='Gateway') as c:
         c.argument('express_route_gateway', help='Name or ID of an ExpressRoute gateway.', validator=get_network_resource_name_or_id('express_route_gateway', 'expressRouteGateways'))
         c.argument('p2s_vpn_gateway', help='Name or ID of a P2S VPN gateway.', validator=get_network_resource_name_or_id('p2s_vpn_gateway', 'P2sVpnGateways'))
         c.argument('vpn_gateway', help='Name or ID of a VPN gateway.', validator=get_network_resource_name_or_id('vpn_gateway', 'vpnGateways'))
 
     with self.argument_context('network vhub get-effective-routes') as c:
+        c.argument('virtual_hub_name', vhub_name_type, options_list=['--name', '-n'])
         c.argument('virtual_wan_resource_type', options_list='--resource-type', help='The type of the specified resource like RouteTable, ExpressRouteConnection, HubVirtualNetworkConnection, VpnConnection and P2SConnection.')
         c.argument('resource_id', options_list='--resource-id', help='The resource whose effective routes are being requested')
 
@@ -72,6 +65,11 @@ def load_arguments(self, _):
         c.argument('allow_hub_to_remote_vnet_transit', arg_type=get_three_state_flag(), options_list='--remote-vnet-transit', deprecate_info=c.deprecate(target='--remote-vnet-transit'), help='Enable hub to remote VNet transit.')
         c.argument('allow_remote_vnet_to_use_hub_vnet_gateways', arg_type=get_three_state_flag(), options_list='--use-hub-vnet-gateways', deprecate_info=c.deprecate(target='--use-hub-vnet-gateways'), help='Allow remote VNet to use hub\'s VNet gateways.')
         c.argument('enable_internet_security', arg_type=get_three_state_flag(), options_list='--internet-security', help='Enable internet security and default is enabled.', default=True)
+
+    for item in ['network vhub connection create', 'network vhub connection update']:
+        with self.argument_context(item) as c:
+            c.argument('associated_inbound_routemap', help='Resource uri of inbound routemap for this connection’s routing configuration')
+            c.argument('associated_outbound_routemap', help='Resource uri of outbound routemap for this connection’s routing configuration')
 
     with self.argument_context('network vhub connection list') as c:
         c.argument('virtual_hub_name', vhub_name_type, id_part=None)
@@ -100,24 +98,16 @@ def load_arguments(self, _):
     with self.argument_context('network vhub route-table') as c:
         c.argument('virtual_hub_name', vhub_name_type, id_part=None)
         c.argument('route_table_name', options_list=['--name', '-n'], help='Name of the virtual hub route table.')
-        c.argument('attached_connections', options_list='--connections', nargs='+', arg_type=get_enum_type(['All_Vnets', 'All_Branches']), help='List of all connections attached to this route table', arg_group="route table v2", deprecate_info=c.deprecate(hide=False))
         c.argument('destination_type', arg_type=get_enum_type(['Service', 'CIDR', 'ResourceId']), help='The type of destinations')
         c.argument('destinations', nargs='+', help='Space-separated list of all destinations.')
-        c.argument('next_hop_type', arg_type=get_enum_type(['IPAddress', 'ResourceId']), help='The type of next hop. If --next-hops (v2) is provided, it should be IPAddress; if --next-hop (v3) is provided, it should be ResourceId.')
-        c.argument('next_hops', nargs='+', help='Space-separated list of IP address of the next hop. Currently only one next hop is allowed for every route.', arg_group="route table v2", deprecate_info=c.deprecate(hide=False))
+        c.argument('next_hop_type', arg_type=get_enum_type(['ResourceId']), help='The type of next hop.')
         c.argument('index', type=int, help='List index of the item (starting with 1).')
-        c.argument('next_hop', help='The resource ID of the next hop.', arg_group="route table v3", min_api='2020-04-01')
-        c.argument('route_name', help='The name of the route.', arg_group="route table v3", min_api='2020-04-01')
-        c.argument('labels', nargs='+', help='Space-separated list of all labels associated with this route table.', arg_group="route table v3", min_api='2020-04-01')
+        c.argument('next_hop', help='The resource ID of the next hop.', min_api='2020-04-01')
+        c.argument('route_name', help='The name of the route.', min_api='2020-04-01')
+        c.argument('labels', nargs='+', help='Space-separated list of all labels associated with this route table.', min_api='2020-04-01')
     # endregion
 
     # region VpnGateways
-    with self.argument_context('network vpn-gateway') as c:
-        c.argument('virtual_hub', options_list='--vhub', help='Name or ID of a virtual hub.', validator=get_network_resource_name_or_id('virtual_hub', 'virtualHubs'))
-        c.argument('scale_unit', type=int, help='The scale unit for this VPN gateway.')
-        c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
-        c.argument('gateway_name', vpn_gateway_name_type, options_list=['--name', '-n'])
-
     with self.argument_context('network vpn-gateway connection') as c:
         for dest in ['gateway_name', 'resource_name']:
             c.argument(dest, vpn_gateway_name_type)
@@ -133,6 +123,11 @@ def load_arguments(self, _):
         c.argument('shared_key', help='Shared key.')
         c.argument("vpn_site_link", help='The resource ID of VPN Site Link.')
         c.argument('with_link', help='Create VpnConnection with default link.', arg_type=get_three_state_flag())
+
+    for item in ['network vpn-gateway connection create', 'network vpn-gateway connection update']:
+        with self.argument_context(item) as c:
+            c.argument('associated_inbound_routemap', help='Resource uri of inbound routemap for this connection’s routing configuration')
+            c.argument('associated_outbound_routemap', help='Resource uri of outbound routemap for this connection’s routing configuration')
 
     with self.argument_context('network vpn-gateway connection list') as c:
         # List commands cannot use --ids flag
@@ -258,6 +253,11 @@ def load_arguments(self, _):
         c.argument('virtual_hub', options_list='--vhub', help='Name or ID of a virtual hub.', validator=get_network_resource_name_or_id('virtual_hub', 'virtualHubs'))
         c.argument('vpn_server_config', help='Name or ID of a vpn server configuration.', validator=get_network_resource_name_or_id('vpn_server_config', 'vpnServerConfigurations'))
         c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
+
+    for item in ['network p2s-vpn-gateway create', 'network p2s-vpn-gateway update']:
+        with self.argument_context(item) as c:
+            c.argument('associated_inbound_routemap', help='Resource uri of inbound routemap for this connection’s routing configuration')
+            c.argument('associated_outbound_routemap', help='Resource uri of outbound routemap for this connection’s routing configuration')
 
     with self.argument_context('network p2s-vpn-gateway connection') as c:
         for dest in ['gateway_name', 'resource_name']:

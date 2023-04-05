@@ -1,0 +1,1825 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --identifier
+      User-Agent:
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_mobile_network000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001","name":"cli_test_mobile_network000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2023-01-05T07:57:14Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '379'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 07:57:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"publicLandMobileNetworkIdentifier":
+      {"mcc": "001", "mnc": "01"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '104'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --identifier
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002","name":"mobile_network_000002","type":"microsoft.mobilenetwork/mobilenetworks","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T07:57:30.5296389Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T07:57:30.5296389Z"},"properties":{"provisioningState":"Succeeded","publicLandMobileNetworkIdentifier":{"mcc":"001","mnc":"01"},"serviceKey":"181cb935-4766-4ca9-aff1-833e9efa7fea"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '679'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 07:57:32 GMT
+      etag:
+      - '"9d002ee3-0000-0100-0000-63b682eb0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 3d37455d-edff-41b4-a215-4ed83418ea35
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network site create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --mobile-network-name -n -g
+      User-Agent:
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_mobile_network000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001","name":"cli_test_mobile_network000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2023-01-05T07:57:14Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '379'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 07:57:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network site create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --mobile-network-name -n -g
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003","name":"site_000003","type":"microsoft.mobilenetwork/mobilenetworks/sites","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T07:57:37.2333504Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T07:57:37.2333504Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '580'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 07:57:38 GMT
+      etag:
+      - '"1e0112da-0000-0100-0000-63b682f20000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 676bfd36-7684-4fd0-9b34-2483d18064e5
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network pccp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --access-interface --local-diagnostics --platform --sites --sku
+      User-Agent:
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_mobile_network000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001","name":"cli_test_mobile_network000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2023-01-05T07:57:14Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '379'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 07:57:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"controlPlaneAccessInterface": {"ipv4Address":
+      "10.28.128.2", "ipv4Gateway": "10.28.128.1", "ipv4Subnet": "10.28.128.0/24",
+      "name": "N2"}, "coreNetworkTechnology": "5GC", "localDiagnosticsAccess": {"authenticationType":
+      "AAD"}, "platform": {"type": "AKS-HCI"}, "sites": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],
+      "sku": "G0", "ueMtu": 1440}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network pccp create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '535'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --access-interface --local-diagnostics --platform --sites --sku
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004","name":"pccp000004","type":"microsoft.mobilenetwork/packetcorecontrolplanes","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T07:57:44.8183457Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T07:57:44.8183457Z"},"properties":{"controlPlaneAccessInterface":{"ipv4Address":"10.28.128.2","ipv4Gateway":"10.28.128.1","ipv4Subnet":"10.28.128.0/24","name":"N2"},"coreNetworkTechnology":"5GC","localDiagnosticsAccess":{"authenticationType":"AAD"},"platform":{"type":"AKS-HCI"},"sites":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],"sku":"G0","ueMtu":1440,"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2a6f5241-5f14-4e38-8166-0a03573e349f*77AECCCD2D0CF5B287267BD55A2FF6521E9ADFBDEA284DD6ACC331B1CBA4F604?api-version=2022-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1034'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 07:57:48 GMT
+      etag:
+      - '"4d01fdcc-0000-0100-0000-63b682fb0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network pccp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --access-interface --local-diagnostics --platform --sites --sku
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2a6f5241-5f14-4e38-8166-0a03573e349f*77AECCCD2D0CF5B287267BD55A2FF6521E9ADFBDEA284DD6ACC331B1CBA4F604?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2a6f5241-5f14-4e38-8166-0a03573e349f*77AECCCD2D0CF5B287267BD55A2FF6521E9ADFBDEA284DD6ACC331B1CBA4F604","name":"2a6f5241-5f14-4e38-8166-0a03573e349f*77AECCCD2D0CF5B287267BD55A2FF6521E9ADFBDEA284DD6ACC331B1CBA4F604","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004","status":"Accepted","startTime":"2023-01-05T07:57:46.8856644Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '535'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 07:58:18 GMT
+      etag:
+      - '"9d00356e-0000-0100-0000-63b682fa0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network pccp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --access-interface --local-diagnostics --platform --sites --sku
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2a6f5241-5f14-4e38-8166-0a03573e349f*77AECCCD2D0CF5B287267BD55A2FF6521E9ADFBDEA284DD6ACC331B1CBA4F604?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2a6f5241-5f14-4e38-8166-0a03573e349f*77AECCCD2D0CF5B287267BD55A2FF6521E9ADFBDEA284DD6ACC331B1CBA4F604","name":"2a6f5241-5f14-4e38-8166-0a03573e349f*77AECCCD2D0CF5B287267BD55A2FF6521E9ADFBDEA284DD6ACC331B1CBA4F604","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004","status":"Accepted","startTime":"2023-01-05T07:57:46.8856644Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '535'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 07:58:48 GMT
+      etag:
+      - '"9d00356e-0000-0100-0000-63b682fa0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network pccp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --access-interface --local-diagnostics --platform --sites --sku
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2a6f5241-5f14-4e38-8166-0a03573e349f*77AECCCD2D0CF5B287267BD55A2FF6521E9ADFBDEA284DD6ACC331B1CBA4F604?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/2a6f5241-5f14-4e38-8166-0a03573e349f*77AECCCD2D0CF5B287267BD55A2FF6521E9ADFBDEA284DD6ACC331B1CBA4F604","name":"2a6f5241-5f14-4e38-8166-0a03573e349f*77AECCCD2D0CF5B287267BD55A2FF6521E9ADFBDEA284DD6ACC331B1CBA4F604","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004","status":"Succeeded","startTime":"2023-01-05T07:57:46.8856644Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '554'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 07:59:18 GMT
+      etag:
+      - '"14008629-0000-0600-0000-63b6833e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network pccp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --access-interface --local-diagnostics --platform --sites --sku
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004","name":"pccp000004","type":"microsoft.mobilenetwork/packetcorecontrolplanes","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T07:57:44.8183457Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T07:57:44.8183457Z"},"properties":{"provisioningState":"Succeeded","sites":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/sites/site_000003"}],"platform":{"type":"AKS-HCI"},"coreNetworkTechnology":"5GC","controlPlaneAccessInterface":{"name":"N2","ipv4Address":"10.28.128.2","ipv4Subnet":"10.28.128.0/24","ipv4Gateway":"10.28.128.1"},"sku":"G0","ueMtu":1440,"localDiagnosticsAccess":{"authenticationType":"AAD"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1035'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 07:59:19 GMT
+      etag:
+      - '"4d0120cd-0000-0100-0000-63b683040000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network pcdp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --pccp-name --access-interface
+      User-Agent:
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_mobile_network000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001","name":"cli_test_mobile_network000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2023-01-05T07:57:14Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '379'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 07:59:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"userPlaneAccessInterface": {"ipv4Address":
+      "10.28.128.2", "ipv4Gateway": "10.28.128.1", "ipv4Subnet": "10.28.128.0/24",
+      "name": "N2"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network pcdp create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '174'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --pccp-name --access-interface
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005","name":"pcdp000005","type":"microsoft.mobilenetwork/packetcorecontrolplanes/packetcoredataplanes","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T07:59:24.0760404Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T07:59:24.0760404Z"},"properties":{"userPlaneAccessInterface":{"ipv4Address":"10.28.128.2","ipv4Gateway":"10.28.128.1","ipv4Subnet":"10.28.128.0/24","name":"N2"},"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c62ff57e-b938-4fe8-9567-46183bf368b8*6FD96829EB16803DAC1FD86D8EF53C770FEFF14AA9CEF671986A1A223EC40D91?api-version=2022-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '741'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 07:59:25 GMT
+      etag:
+      - '"1900afd4-0000-0100-0000-63b6835c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network pcdp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --pccp-name --access-interface
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c62ff57e-b938-4fe8-9567-46183bf368b8*6FD96829EB16803DAC1FD86D8EF53C770FEFF14AA9CEF671986A1A223EC40D91?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c62ff57e-b938-4fe8-9567-46183bf368b8*6FD96829EB16803DAC1FD86D8EF53C770FEFF14AA9CEF671986A1A223EC40D91","name":"c62ff57e-b938-4fe8-9567-46183bf368b8*6FD96829EB16803DAC1FD86D8EF53C770FEFF14AA9CEF671986A1A223EC40D91","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005","status":"Accepted","startTime":"2023-01-05T07:59:24.3958742Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '567'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:00:15 GMT
+      etag:
+      - '"9d00df6f-0000-0100-0000-63b6835c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network pcdp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --pccp-name --access-interface
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c62ff57e-b938-4fe8-9567-46183bf368b8*6FD96829EB16803DAC1FD86D8EF53C770FEFF14AA9CEF671986A1A223EC40D91?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c62ff57e-b938-4fe8-9567-46183bf368b8*6FD96829EB16803DAC1FD86D8EF53C770FEFF14AA9CEF671986A1A223EC40D91","name":"c62ff57e-b938-4fe8-9567-46183bf368b8*6FD96829EB16803DAC1FD86D8EF53C770FEFF14AA9CEF671986A1A223EC40D91","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005","status":"Succeeded","startTime":"2023-01-05T07:59:24.3958742Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '586'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:00:47 GMT
+      etag:
+      - '"1400872a-0000-0600-0000-63b683a10000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network pcdp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --pccp-name --access-interface
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005","name":"pcdp000005","type":"microsoft.mobilenetwork/packetcorecontrolplanes/packetcoredataplanes","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T07:59:24.0760404Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T07:59:24.0760404Z"},"properties":{"userPlaneAccessInterface":{"ipv4Address":"10.28.128.2","ipv4Gateway":"10.28.128.1","ipv4Subnet":"10.28.128.0/24","name":"N2"},"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '742'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:00:48 GMT
+      etag:
+      - '"1900b6d4-0000-0100-0000-63b683680000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network data-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --mobile-network-name
+      User-Agent:
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_mobile_network000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001","name":"cli_test_mobile_network000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2023-01-05T07:57:14Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '379'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:00:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network data-network create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --mobile-network-name
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/dataNetworks/dn000006?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/dataNetworks/dn000006","name":"dn000006","type":"microsoft.mobilenetwork/mobilenetworks/datanetworks","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T08:00:54.4957198Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T08:00:54.4957198Z"},"properties":{"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c843c711-c178-44a5-8349-34b79edfaf9b*6533B225606A20519BD3DB5630DD7948B9CA989416FAC7C32E3B9CD26625C81E?api-version=2022-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:00:56 GMT
+      etag:
+      - '"24008e4a-0000-0100-0000-63b683b80000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network data-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --mobile-network-name
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c843c711-c178-44a5-8349-34b79edfaf9b*6533B225606A20519BD3DB5630DD7948B9CA989416FAC7C32E3B9CD26625C81E?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c843c711-c178-44a5-8349-34b79edfaf9b*6533B225606A20519BD3DB5630DD7948B9CA989416FAC7C32E3B9CD26625C81E","name":"c843c711-c178-44a5-8349-34b79edfaf9b*6533B225606A20519BD3DB5630DD7948B9CA989416FAC7C32E3B9CD26625C81E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/dataNetworks/dn000006","status":"Succeeded","startTime":"2023-01-05T08:00:55.7953131Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '578'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:01:28 GMT
+      etag:
+      - '"14008d2a-0000-0600-0000-63b683be0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network data-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --mobile-network-name
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/dataNetworks/dn000006?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/mobileNetworks/mobile_network_000002/dataNetworks/dn000006","name":"dn000006","type":"microsoft.mobilenetwork/mobilenetworks/datanetworks","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T08:00:54.4957198Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T08:00:54.4957198Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '588'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:01:29 GMT
+      etag:
+      - '"1d00ed03-0000-0600-0000-63b683be0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --pccp-name --pcdp-name --dns-addresses --data-interface
+      User-Agent:
+      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_mobile_network000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001","name":"cli_test_mobile_network000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2023-01-05T07:57:14Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '379'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:01:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"dnsAddresses": ["1.1.1.1"], "userPlaneDataInterface":
+      {"ipv4Address": "10.28.128.2", "ipv4Gateway": "10.28.128.1", "ipv4Subnet": "10.28.128.0/24",
+      "name": "N2"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '201'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --pccp-name --pcdp-name --dns-addresses --data-interface
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","name":"dn000006","type":"microsoft.mobilenetwork/packetcorecontrolplanes/packetcoredataplanes/attacheddatanetworks","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T08:01:34.8597484Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T08:01:34.8597484Z"},"properties":{"dnsAddresses":["1.1.1.1"],"userPlaneDataInterface":{"ipv4Address":"10.28.128.2","ipv4Gateway":"10.28.128.1","ipv4Subnet":"10.28.128.0/24","name":"N2"},"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c17637d0-46e2-46d3-baf3-a2d5d70dc751*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5?api-version=2022-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '815'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:01:37 GMT
+      etag:
+      - '"6e01feae-0000-0100-0000-63b683e00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --pccp-name --pcdp-name --dns-addresses --data-interface
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c17637d0-46e2-46d3-baf3-a2d5d70dc751*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c17637d0-46e2-46d3-baf3-a2d5d70dc751*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","name":"c17637d0-46e2-46d3-baf3-a2d5d70dc751*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","status":"Accepted","startTime":"2023-01-05T08:01:36.5247872Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:02:08 GMT
+      etag:
+      - '"9d00a470-0000-0100-0000-63b683e00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --pccp-name --pcdp-name --dns-addresses --data-interface
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c17637d0-46e2-46d3-baf3-a2d5d70dc751*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c17637d0-46e2-46d3-baf3-a2d5d70dc751*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","name":"c17637d0-46e2-46d3-baf3-a2d5d70dc751*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","status":"Accepted","startTime":"2023-01-05T08:01:36.5247872Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:02:39 GMT
+      etag:
+      - '"9d00a470-0000-0100-0000-63b683e00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --pccp-name --pcdp-name --dns-addresses --data-interface
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c17637d0-46e2-46d3-baf3-a2d5d70dc751*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/c17637d0-46e2-46d3-baf3-a2d5d70dc751*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","name":"c17637d0-46e2-46d3-baf3-a2d5d70dc751*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","status":"Succeeded","startTime":"2023-01-05T08:01:36.5247872Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '616'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:03:10 GMT
+      etag:
+      - '"1400912a-0000-0600-0000-63b684230000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --pccp-name --pcdp-name --dns-addresses --data-interface
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","name":"dn000006","type":"microsoft.mobilenetwork/packetcorecontrolplanes/packetcoredataplanes/attacheddatanetworks","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T08:01:34.8597484Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T08:01:34.8597484Z"},"properties":{"provisioningState":"Succeeded","userPlaneDataInterface":{"name":"N2","ipv4Address":"10.28.128.2","ipv4Subnet":"10.28.128.0/24","ipv4Gateway":"10.28.128.1"},"dnsAddresses":["1.1.1.1"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '816'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:03:11 GMT
+      etag:
+      - '"6e01e3af-0000-0100-0000-63b683ee0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --pccp-name --pcdp-name --tags
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","name":"dn000006","type":"microsoft.mobilenetwork/packetcorecontrolplanes/packetcoredataplanes/attacheddatanetworks","location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T08:01:34.8597484Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T08:01:34.8597484Z"},"properties":{"provisioningState":"Succeeded","userPlaneDataInterface":{"name":"N2","ipv4Address":"10.28.128.2","ipv4Subnet":"10.28.128.0/24","ipv4Gateway":"10.28.128.1"},"dnsAddresses":["1.1.1.1"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '816'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:03:13 GMT
+      etag:
+      - '"6e01e3af-0000-0100-0000-63b683ee0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"dnsAddresses": ["1.1.1.1"], "userPlaneDataInterface":
+      {"ipv4Address": "10.28.128.2", "ipv4Gateway": "10.28.128.1", "ipv4Subnet": "10.28.128.0/24",
+      "name": "N2"}}, "tags": {"tag": "test", "tag2": "test2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '243'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --pccp-name --pcdp-name --tags
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","name":"dn000006","type":"microsoft.mobilenetwork/packetcorecontrolplanes/packetcoredataplanes/attacheddatanetworks","location":"eastus","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T08:01:34.8597484Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T08:03:13.7861149Z"},"properties":{"provisioningState":"Accepted","dnsAddresses":["1.1.1.1"],"userPlaneDataInterface":{"ipv4Address":"10.28.128.2","ipv4Gateway":"10.28.128.1","ipv4Subnet":"10.28.128.0/24","name":"N2"}}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/b1517833-0b52-4d12-b8b5-9602380641dc*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5?api-version=2022-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '852'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:03:16 GMT
+      etag:
+      - '"6e0126b8-0000-0100-0000-63b684420000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --pccp-name --pcdp-name --tags
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/b1517833-0b52-4d12-b8b5-9602380641dc*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/b1517833-0b52-4d12-b8b5-9602380641dc*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","name":"b1517833-0b52-4d12-b8b5-9602380641dc*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","status":"Accepted","startTime":"2023-01-05T08:03:14.40152Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '595'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:03:47 GMT
+      etag:
+      - '"9d00d170-0000-0100-0000-63b684420000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --pccp-name --pcdp-name --tags
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/b1517833-0b52-4d12-b8b5-9602380641dc*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/b1517833-0b52-4d12-b8b5-9602380641dc*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","name":"b1517833-0b52-4d12-b8b5-9602380641dc*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","status":"Accepted","startTime":"2023-01-05T08:03:14.40152Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '595'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:04:18 GMT
+      etag:
+      - '"9d00d170-0000-0100-0000-63b684420000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --pccp-name --pcdp-name --tags
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/b1517833-0b52-4d12-b8b5-9602380641dc*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/b1517833-0b52-4d12-b8b5-9602380641dc*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","name":"b1517833-0b52-4d12-b8b5-9602380641dc*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","status":"Succeeded","startTime":"2023-01-05T08:03:14.40152Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '614'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:04:49 GMT
+      etag:
+      - '"1400a12a-0000-0600-0000-63b684850000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --pccp-name --pcdp-name --tags
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","name":"dn000006","type":"microsoft.mobilenetwork/packetcorecontrolplanes/packetcoredataplanes/attacheddatanetworks","location":"eastus","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T08:01:34.8597484Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T08:03:13.7861149Z"},"properties":{"provisioningState":"Succeeded","userPlaneDataInterface":{"name":"N2","ipv4Address":"10.28.128.2","ipv4Subnet":"10.28.128.0/24","ipv4Gateway":"10.28.128.1"},"dnsAddresses":["1.1.1.1"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '853'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:04:50 GMT
+      etag:
+      - '"6e0153b9-0000-0100-0000-63b6844d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --pccp-name --pcdp-name
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks?api-version=2022-11-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","name":"dn000006","type":"microsoft.mobilenetwork/packetcorecontrolplanes/packetcoredataplanes/attacheddatanetworks","location":"eastus","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T08:01:34.8597484Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T08:03:13.7861149Z"},"properties":{"provisioningState":"Succeeded","userPlaneDataInterface":{"name":"N2","ipv4Address":"10.28.128.2","ipv4Subnet":"10.28.128.0/24","ipv4Gateway":"10.28.128.1"},"dnsAddresses":["1.1.1.1"]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '865'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:04:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 17b9c58e-b014-4add-973a-0cc87e5b1d4e
+      - a644d06b-593d-4180-947a-942ab703cf85
+      - 82ae713b-9d2d-4e6d-bbf3-2cf88923c0d0
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --pccp-name --pcdp-name -g
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","name":"dn000006","type":"microsoft.mobilenetwork/packetcorecontrolplanes/packetcoredataplanes/attacheddatanetworks","location":"eastus","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-01-05T08:01:34.8597484Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-01-05T08:03:13.7861149Z"},"properties":{"provisioningState":"Succeeded","userPlaneDataInterface":{"name":"N2","ipv4Address":"10.28.128.2","ipv4Subnet":"10.28.128.0/24","ipv4Gateway":"10.28.128.1"},"dnsAddresses":["1.1.1.1"]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '853'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:04:54 GMT
+      etag:
+      - '"6e0153b9-0000-0100-0000-63b6844d0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -n --pccp-name --pcdp-name -g -y
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006?api-version=2022-11-01
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/e799e5c0-1fd6-4ef5-8703-3742aa91ad57*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5?api-version=2022-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:04:57 GMT
+      etag:
+      - '"6e018fc2-0000-0100-0000-63b684aa0000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/e799e5c0-1fd6-4ef5-8703-3742aa91ad57*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5?api-version=2022-11-01
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-build-version:
+      - 1.0.1
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --pccp-name --pcdp-name -g -y
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/e799e5c0-1fd6-4ef5-8703-3742aa91ad57*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/e799e5c0-1fd6-4ef5-8703-3742aa91ad57*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","name":"e799e5c0-1fd6-4ef5-8703-3742aa91ad57*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","status":"Deleting","startTime":"2023-01-05T08:04:57.5747127Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:05:28 GMT
+      etag:
+      - '"9d00f070-0000-0100-0000-63b684a90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --pccp-name --pcdp-name -g -y
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/e799e5c0-1fd6-4ef5-8703-3742aa91ad57*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/e799e5c0-1fd6-4ef5-8703-3742aa91ad57*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","name":"e799e5c0-1fd6-4ef5-8703-3742aa91ad57*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","status":"Deleting","startTime":"2023-01-05T08:04:57.5747127Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:06:00 GMT
+      etag:
+      - '"9d00f070-0000-0100-0000-63b684a90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --pccp-name --pcdp-name -g -y
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/e799e5c0-1fd6-4ef5-8703-3742aa91ad57*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/e799e5c0-1fd6-4ef5-8703-3742aa91ad57*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","name":"e799e5c0-1fd6-4ef5-8703-3742aa91ad57*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","status":"Succeeded","startTime":"2023-01-05T08:04:57.5747127Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '616'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:06:30 GMT
+      etag:
+      - '"9d002b71-0000-0100-0000-63b684ec0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mobile-network attached-data-network delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --pccp-name --pcdp-name -g -y
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/e799e5c0-1fd6-4ef5-8703-3742aa91ad57*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.MobileNetwork/locations/EASTUS/operationStatuses/e799e5c0-1fd6-4ef5-8703-3742aa91ad57*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","name":"e799e5c0-1fd6-4ef5-8703-3742aa91ad57*1D657F73320CA6833F54C07C2B5E78AA8F885AC9DB904C14539E7379CB674CF5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_mobile_network000001/providers/Microsoft.MobileNetwork/packetCoreControlPlanes/pccp000004/packetCoreDataPlanes/pcdp000005/attachedDataNetworks/dn000006","status":"Succeeded","startTime":"2023-01-05T08:04:57.5747127Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '616'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 05 Jan 2023 08:06:31 GMT
+      etag:
+      - '"9d002b71-0000-0100-0000-63b684ec0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
