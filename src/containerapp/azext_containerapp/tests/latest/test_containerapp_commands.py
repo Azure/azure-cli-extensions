@@ -11,7 +11,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 from msrestazure.tools import parse_resource_id
 
-from azext_containerapp.tests.latest.common import write_test_file
+from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
 from .common import TEST_LOCATION
 from .utils import create_containerapp_env
 
@@ -696,7 +696,7 @@ class ContainerappRevisionTests(ScenarioTest):
 
         create_containerapp_env(self, env_name, resource_group)
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
 
         self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
             JMESPathCheck('external', True),
@@ -981,7 +981,7 @@ class ContainerappScaleTests(ScenarioTest):
               userAssignedIdentities:
                 {user_identity_id}: {{}}
             """
-        containerapp_file_name = "containerapp.yml"
+        containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
 
         write_test_file(containerapp_file_name, containerapp_yaml_text)
         self.cmd(f'containerapp create -n {app} -g {resource_group} --environment {env} --yaml {containerapp_file_name}')
@@ -1051,6 +1051,7 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3)
         ])
+        clean_up_test_file(containerapp_file_name)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
@@ -1118,7 +1119,7 @@ class ContainerappScaleTests(ScenarioTest):
           userAssignedIdentities:
             {user_identity_id}: {{}}
         """
-        containerapp_file_name = "containerapp.yml"
+        containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
 
         write_test_file(containerapp_file_name, containerapp_yaml_text)
         self.cmd(f'containerapp create -n {app} -g {resource_group} --environment {env} --yaml {containerapp_file_name}')
@@ -1257,3 +1258,4 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3)
         ])
+        clean_up_test_file(containerapp_file_name)
