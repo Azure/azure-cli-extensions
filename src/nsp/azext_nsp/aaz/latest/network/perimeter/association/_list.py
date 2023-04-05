@@ -184,9 +184,7 @@ class List(AAZCommand):
             )
             _element.location = AAZStrType()
             _element.name = AAZStrType()
-            _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _element.properties = AAZObjectType()
             _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},

@@ -325,7 +325,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -379,9 +379,7 @@ class _UpdateHelper:
         nsp_link_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        nsp_link_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
+        nsp_link_read.properties = AAZObjectType()
         nsp_link_read.type = AAZStrType(
             flags={"read_only": True},
         )

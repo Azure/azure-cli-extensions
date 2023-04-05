@@ -420,7 +420,7 @@ class Update(AAZCommand):
             )
             _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("name", AAZStrType, ".access_rule_name")
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -504,9 +504,7 @@ class _UpdateHelper:
         )
         nsp_access_rule_read.location = AAZStrType()
         nsp_access_rule_read.name = AAZStrType()
-        nsp_access_rule_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
+        nsp_access_rule_read.properties = AAZObjectType()
         nsp_access_rule_read.tags = AAZDictType()
         nsp_access_rule_read.type = AAZStrType(
             flags={"read_only": True},

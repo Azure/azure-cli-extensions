@@ -6,7 +6,8 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *
-
+import random
+import string
 
 class NspScenario(ScenarioTest):
 
@@ -81,6 +82,8 @@ class NspScenario(ScenarioTest):
             'ip_accessrule_name': 'TestNspAccessRule_ip',
             'sub_accessrule_name': 'TestNspAccessRule_subscription',
             'nsp_accessrule_name': 'TestNspAccessRule_nsp',
+            'sms_accessrule_name': 'TestNspAccessRule_sms',
+            'email_accessrule_name': 'TestNspAccessRule_email',
             'sub': self.get_subscription_id()
         })
 
@@ -99,17 +102,32 @@ class NspScenario(ScenarioTest):
 
         # NSP based access rule
         self.cmd('network perimeter create --name nsp_for_rule -l eastus2euap --resource-group {rg}')
+        
         self.cmd('az network perimeter profile access-rule create --name {nsp_accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --nsp [0].id="/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkSecurityPerimeters/nsp_for_rule"', checks=[
             self.check('properties.networkSecurityPerimeters[0].id', "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkSecurityPerimeters/nsp_for_rule")
         ])
 
+        # Email based access rule
+        self.cmd('az network perimeter profile access-rule create --name {email_accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --email-addresses "[\'abc@microsoft.com\', \'bcd@microsoft.com\']" --direction "Outbound"')
+        
+        # SMS based access rule
+        self.cmd('az network perimeter profile access-rule create --name {sms_accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --phone-numbers "[\'+919898989898\', \'+929898989898\']" --direction "Outbound"')
+
     @ResourceGroupPreparer(name_prefix='test_nsp_association_crud', location='eastus2euap')
     def test_nsp_association_crud(self, resource_group):
+        # Define the length of the random string
+        length = 4
+
+        # Generate a random string
+        random_string = ''.join(random.choice(string.ascii_letters) for i in range(length))
+
+        kv_name = "kvnspcli" + random_string
+
         self.kwargs.update({
             'nsp_name': 'TestNetworkSecurityPerimeter',
             'profile_name': 'TestNspProfile',
             'association_name': 'TestNspAssociation',
-            'resource_name': 'kvnspclitest5',
+            'resource_name': kv_name,
             'sub': self.get_subscription_id()
         })
 
