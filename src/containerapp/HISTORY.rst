@@ -2,10 +2,13 @@
 
 Release History
 ===============
+Upcoming
++++++++
+* Add CLI support for containerapp ingress sticky-sessions'
+
 0.3.26
 +++++++
 * 'az containerapp exec': fix bugs for consumption workload based environment
-* Add CLI support for ingress sticky-sessions'
 * 'az containerapp env create': fix bug causing --enable-workload-profiles to require an argument
 
 0.3.25

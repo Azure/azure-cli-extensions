@@ -131,10 +131,6 @@ TrafficWeight = {
     "latestRevision": False
 }
 
-StickySessions = {
-    "affinity": None
-}
-
 BindingType = {
 
 }
