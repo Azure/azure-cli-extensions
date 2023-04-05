@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the specified NSP linkReference resource.
+
+    :example: Get a link reference
+        az network perimeter link-reference show --perimeter-name nsp2 --resource-group rg1 --name linkref2
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create NSP link resource.
+
+    :example: Create NSP Link
+        az network perimeter link create --name link1 --perimeter-name nsp1 --resource-group rg1 --auto-approved-remote-perimeter-resource-id <NspId> --local-inbound-profiles "[\'*\']" --remote-inbound-profiles "[\'*\']" '
     """
 
     _aaz_info = {

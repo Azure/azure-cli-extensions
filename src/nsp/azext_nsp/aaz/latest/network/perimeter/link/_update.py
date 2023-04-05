@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update NSP link resource.
+
+    :example: Update NSP Link
+        az network perimeter link update --name link1 --perimeter-name nsp1 --resource-group rg1 --local-inbound-profiles "[\'*\']"
     """
 
     _aaz_info = {

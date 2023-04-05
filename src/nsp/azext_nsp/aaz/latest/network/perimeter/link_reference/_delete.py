@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete an NSP LinkReference resource.
+
+    :example: Delete a link reference
+        az network perimeter link-reference delete --perimeter-name nsp2 --resource-group rg1 --name linkref2
     """
 
     _aaz_info = {

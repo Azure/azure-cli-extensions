@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete an NSP Link resource.
+
+    :example: Delete NSP link
+        az network perimeter link delete --name link1 --perimeter-name nsp1 --resource-group rg1
     """
 
     _aaz_info = {

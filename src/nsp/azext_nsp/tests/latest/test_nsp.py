@@ -181,13 +181,12 @@ class NspScenario(ScenarioTest):
 
         # show link
         link1_obj = self.cmd('az network perimeter link show --name {link1_name} --perimeter-name {nsp1_name} --resource-group {rg}').get_output_in_json()
-
-        print(link1_obj)
         
         # get list of links
         link1_obj = self.cmd('az network perimeter link list --perimeter-name {nsp1_name} --resource-group {rg}').get_output_in_json()
 
-        print(link1_obj)
+        # update link
+        self.cmd('az network perimeter link update --name {link1_name} --perimeter-name {nsp1_name} --resource-group {rg} --local-inbound-profiles "[\'*\']"')
 
         # delete link
         self.cmd('az network perimeter link delete --name {link1_name} --perimeter-name {nsp1_name} --resource-group {rg} --yes')

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the NSP Link resources in the specified network security perimeter.
+
+    :example: Lists NSP links in a parameter
+        az network perimeter link list --perimeter-name nsp1 --resource-group rg1
     """
 
     _aaz_info = {
