@@ -46,8 +46,8 @@ class Wait(AAZWaitCommand):
             required=True,
             id_part="child_name_1",
         )
-        _args_schema.network_security_perimeter_name = AAZStrArg(
-            options=["--network-security-perimeter-name"],
+        _args_schema.perimeter_name = AAZStrArg(
+            options=["--perimeter-name"],
             help="The name of the network security perimeter.",
             required=True,
             id_part="name",
@@ -108,7 +108,7 @@ class Wait(AAZWaitCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "networkSecurityPerimeterName", self.ctx.args.network_security_perimeter_name,
+                    "networkSecurityPerimeterName", self.ctx.args.perimeter_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

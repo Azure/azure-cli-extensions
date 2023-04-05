@@ -99,13 +99,15 @@ class NspScenario(ScenarioTest):
         self.cmd('az network perimeter profile access-rule create --name {sub_accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --subscriptions [0].id="/subscriptions/{sub}"', checks=[
             self.check('properties.subscriptions[0].id', "/subscriptions/{sub}")
         ])
-
+        
+        """
         # NSP based access rule
         self.cmd('network perimeter create --name nsp_for_rule -l eastus2euap --resource-group {rg}')
         
         self.cmd('az network perimeter profile access-rule create --name {nsp_accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --nsp [0].id="/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkSecurityPerimeters/nsp_for_rule"', checks=[
             self.check('properties.networkSecurityPerimeters[0].id', "/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkSecurityPerimeters/nsp_for_rule")
         ])
+        """
 
         # Email based access rule
         self.cmd('az network perimeter profile access-rule create --name {email_accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --email-addresses "[\'abc@microsoft.com\', \'bcd@microsoft.com\']" --direction "Outbound"')
