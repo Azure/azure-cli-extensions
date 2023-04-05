@@ -4,6 +4,11 @@ Release History
 ---
 * Print more logs for app deployment
 
+1.9.1
+---
+* Support subPath for bring your own persistent storage feature.
+* Add new parameter `--enable-sub-path` into `az spring append-persistent-storage` to enable subPath feature.
+
 1.9.0
 ---
 * Add new command -- `az spring build-service build create` to create the build resource when using your own container registry.

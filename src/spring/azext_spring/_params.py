@@ -324,6 +324,7 @@ def load_arguments(self, _):
         c.argument('mount_path', type=str, help='The path for the persistent storage volume to be mounted.')
         c.argument('mount_options', nargs='+', help='[optional] The mount options for the persistent storage volume.', default=None)
         c.argument('read_only', arg_type=get_three_state_flag(), help='[optional] If true, the persistent storage volume will be read only.', default=False)
+        c.argument('enable_sub_path', arg_type=get_three_state_flag(), help='[optional] If true, will mount in separate subdirectories with the same path for each app instance .', default=False)
 
     for scope in ['spring app start', 'spring app stop', 'spring app restart', 'spring app deploy', 'spring app scale', 'spring app set-deployment', 'spring app show-deploy-log']:
         with self.argument_context(scope) as c:

@@ -118,7 +118,8 @@ class DefaultApp:
                 share_name=item['customPersistentDiskProperties']['shareName'] if 'shareName' in item['customPersistentDiskProperties'] else None,
                 mount_path=item['customPersistentDiskProperties']['mountPath'],
                 mount_options=item['customPersistentDiskProperties']['mountOptions'] if 'mountOptions' in item['customPersistentDiskProperties'] else None,
-                read_only=item['customPersistentDiskProperties']['readOnly'] if 'readOnly' in item['customPersistentDiskProperties'] else None)
+                read_only=item['customPersistentDiskProperties']['readOnly'] if 'readOnly' in item['customPersistentDiskProperties'] else None,
+                enable_sub_path=item['customPersistentDiskProperties']['enableSubPath'] if 'enableSubPath' in item['customPersistentDiskProperties'] else None)
 
             custom_persistent_disks.append(
                 models.CustomPersistentDiskResource(

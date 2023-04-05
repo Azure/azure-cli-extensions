@@ -344,21 +344,36 @@ def parse_env_var_flags(env_list, is_update_containerapp=False):
 
 
 def parse_secret_flags(secret_list):
-    secret_pairs = {}
-
-    for pair in secret_list:
-        key_val = pair.split('=', 1)
-        if len(key_val) != 2:
-            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\".")
-        if key_val[0] in secret_pairs:
-            raise ValidationError("Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
-        secret_pairs[key_val[0]] = key_val[1]
-
+    secret_entries = []
     secret_var_def = []
-    for key, value in secret_pairs.items():
+
+    for secret in secret_list:
+        key_val = secret.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\.")
+        if key_val[0] in secret_entries:
+            raise ValidationError("Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
+        secret_entries.append(key_val[0])
+
+        name = key_val[0]
+        value = key_val[1]
+        kv_url = ""
+        identity_Id = ""
+
+        kv_identity = value.split(',', 2)
+        if len(kv_identity) == 2:
+            kv = kv_identity[0]
+            identity = kv_identity[1]
+            if kv.startswith('keyvaultref:') and identity.startswith('identityref:'):
+                kv_url = kv.split('keyvaultref:', 1)[1]
+                identity_Id = identity.split('identityref:', 1)[1]
+                value = ""
+
         secret_var_def.append({
-            "name": key,
-            "value": value
+            "name": name,
+            "value": value,
+            "keyVaultUrl": kv_url,
+            "identity": identity_Id
         })
 
     return secret_var_def
@@ -665,13 +680,14 @@ def _ensure_identity_resource_id(subscription_id, resource_group, resource):
 def _add_or_update_secrets(containerapp_def, add_secrets):
     if "secrets" not in containerapp_def["properties"]["configuration"]:
         containerapp_def["properties"]["configuration"]["secrets"] = []
-
     for new_secret in add_secrets:
         is_existing = False
         for existing_secret in containerapp_def["properties"]["configuration"]["secrets"]:
             if existing_secret["name"].lower() == new_secret["name"].lower():
                 is_existing = True
                 existing_secret["value"] = new_secret["value"]
+                existing_secret["keyVaultUrl"] = new_secret["keyVaultUrl"]
+                existing_secret["identity"] = new_secret["identity"]
                 break
 
         if not is_existing:
