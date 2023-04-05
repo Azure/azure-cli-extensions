@@ -15,7 +15,7 @@ from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-#@record_only()
+@record_only()
 class CustomDomainTests(ScenarioTest):
 
     def test_bind_cert_to_domain(self):
