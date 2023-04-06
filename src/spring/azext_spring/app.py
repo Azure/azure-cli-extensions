@@ -476,8 +476,8 @@ def _print_deploy_process(client, poller, resource_group, service, app_name, dep
             else:
                 instance_desc = str(instance_count) + " instance"
                 rounds_desc = str(rounds) + " round"
-            logger.warning('ASA will use rolling upgrade to update your deployment, you have {}, '
-                           'ASA will update the deployment in {}'.format(instance_desc, rounds_desc))
+            logger.warning('Azure Spring Apps will use rolling upgrade to update your deployment, you have {}, '
+                           'Azure Spring Apps will update the deployment in {}'.format(instance_desc, rounds_desc))
             last_round = 0
 
             deployment_time = datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S%z")
