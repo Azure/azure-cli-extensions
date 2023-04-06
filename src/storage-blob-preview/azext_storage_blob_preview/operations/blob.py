@@ -169,26 +169,6 @@ def set_blob_tier_v2(client, blob_type='block', rehydrate_priority=None, **kwarg
     raise ValueError('Blob tier is only applicable to block or page blob.')
 
 
-def snapshot_blob(client, metadata=None, **kwargs):
-    client.snapshot = client.create_snapshot(metadata=metadata, **kwargs)['snapshot']
-    return client.get_blob_properties()
-
-
-# pylint: disable=protected-access
-def _adjust_block_blob_size(client, blob_type, length):
-    if not blob_type or blob_type != 'block' or length is None:
-        return
-    # increase the block size to 100MB when the block list will contain more than 50,000 blocks(each block 4MB)
-    if length > 50000 * 4 * 1024 * 1024:
-        client._config.max_block_size = 100 * 1024 * 1024
-        client._config.max_single_put_size = 256 * 1024 * 1024
-
-    # increase the block size to 4000MB when the block list will contain more than 50,000 blocks(each block 100MB)
-    if length > 50000 * 100 * 1024 * 1024:
-        client._config.max_block_size = 4000 * 1024 * 1024
-        client._config.max_single_put_size = 5000 * 1024 * 1024
-
-
 def find_blobs_by_tags(client, filter_expression, container_name=None):
     if container_name:
         client = client.get_container_client(container_name)
