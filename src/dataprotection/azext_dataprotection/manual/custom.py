@@ -172,7 +172,7 @@ def data_protection_backup_instance_validate_for_backup(cmd, vault_name, resourc
             self.ctx.set_var(
                 "instance",
                 backup_instance,
-                schema_builder=self.BackupInstancesCreateOrUpdate._build_schema_on_200_201
+                schema_builder=_Create.BackupInstancesCreateOrUpdate._build_schema_on_200_201
             )
 
         class BackupInstancesValidateForBackup(_Validate.BackupInstancesValidateForBackup):

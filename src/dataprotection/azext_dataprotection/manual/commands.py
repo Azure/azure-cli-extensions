@@ -20,6 +20,11 @@ def load_command_table(self, _):
     with self.command_group('data-protection backup-instance') as g:
         g.custom_command('create', 'data_protection_backup_instance_create', supports_no_wait=True)
         g.custom_command('validate-for-backup', 'data_protection_backup_instance_validate_for_backup', supports_no_wait=True)
+        
+    with self.command_group('data-protection backup-instance restore') as g:
+        g.custom_command('initialize-for-data-recovery', 'restore_initialize_for_data_recovery')
+        # g.custom_command('initialize-for-data-recovery-as-files', 'restore_initialize_for_data_recovery_as_files')
+        # g.custom_command('initialize-for-item-recovery', 'restore_initialize_for_item_recovery')
 
     with self.command_group('dataprotection backup-instance', client_factory=cf_backup_instance, exception_handler=exception_handler) as g:
         g.custom_command('initialize', "dataprotection_backup_instance_initialize")
