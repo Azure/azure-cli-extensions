@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Refactor: use decorator mode in pod_cidr and network_plugin_mode getters to read from mc only during CREATE
 
 0.5.135
 +++++++
