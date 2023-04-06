@@ -826,20 +826,20 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
     
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_cross_region_restore', location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_cross_region_restore', location='westcentralus')
     def test_cosmosdb_xrr(self, resource_group):
         col = self.create_random_name(prefix='cli-xrr', length=15)
         db_name = self.create_random_name(prefix='cli-xrr', length=15)
         source_acc = self.create_random_name(prefix='cli-xrr-', length=25)
         target_acc = source_acc + "-restored"
-        loc = 'eastus'
+        loc = 'westcentralus'
 
         # This is a multi region account cross region test, for this test account will also exist in the target region
-        target_loc = 'westus'
+        target_loc = 'northcentralus'
 
         # For this new parameter source_backup_location we need to wired in the handler to understand `eastus` means `East US`.
         # Until that fix is added we have to send the location in this way for a clean run.
-        source_loc_for_xrr = 'East US'
+        source_loc_for_xrr = 'West Central US'
 
         self.kwargs.update({
             'acc': source_acc,
@@ -889,22 +889,22 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
 
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
-        assert restored_account['writeLocations'][0]['locationName'] == 'West US'
+        assert restored_account['writeLocations'][0]['locationName'] == 'North Central US'
 
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_cross_region_restore', location='eastus')
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_cross_region_restore', location='westcentralus')
     def test_cosmosdb_xrr_single_region_account(self, resource_group):
         col = self.create_random_name(prefix='cli-xrr', length=15)
         db_name = self.create_random_name(prefix='cli-xrr', length=15)
         source_acc = self.create_random_name(prefix='cli-xrr-', length=25)
         target_acc = source_acc + "-restored"
-        loc = 'eastus'
-        target_loc = 'westus'
+        loc = 'westcentralus'
+        target_loc = 'northcentralus'
 
         # For this new parameter source_backup_location we need to wired in the handler to understand `eastus` means `East US`.
         # Until that fix is added we have to send the location in this way for a clean run.
-        source_loc_for_xrr = 'East US'
+        source_loc_for_xrr = 'West Central US'
 
         self.kwargs.update({
             'acc': source_acc,
@@ -955,4 +955,4 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
         assert restored_account['restoreParameters']['restoreSource'] == restorable_database_account['id']
         assert restored_account['restoreParameters']['restoreTimestampInUtc'] == restore_ts_string
         assert restored_account['restoreParameters']['sourceBackupLocation'] == source_loc_for_xrr
-        assert restored_account['writeLocations'][0]['locationName'] == 'West US'
+        assert restored_account['writeLocations'][0]['locationName'] == 'North Central US'
