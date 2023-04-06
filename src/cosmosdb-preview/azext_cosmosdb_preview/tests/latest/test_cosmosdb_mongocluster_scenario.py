@@ -59,6 +59,13 @@ class MongoClusterScenarioTest(ScenarioTest):
         cluster = self.cmd('az cosmosdb mongocluster update --cluster-name {c_new} --resource-group {rg_new} --location {loc} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-tier {shard_node_tier_update} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb} --shard-node-count {shard_node_count}').get_output_in_json()
         assert cluster['provisioningState'] == 'Succeeded'
         
+        # delete non existent cluster, NoContent response
+        try: 
+            delete = self.cmd('az cosmosdb mongocluster delete -c blah -g {rg} --yes')
+            assert delete==None
+        except Exception as e:
+            print(e)
+
         # Delete Clusters
         try:
             self.cmd('az cosmosdb mongocluster delete -c {c} -g {rg} --yes')
@@ -112,6 +119,13 @@ class MongoClusterScenarioTest(ScenarioTest):
 
         firewall_list = self.cmd('az cosmosdb mongocluster firewall rule list --cluster-name {c} --resource-group {rg}').get_output_in_json()
         assert len(firewall_list) == 1
+
+        # delete non existent rule, NoContent response
+        try: 
+            delete = self.cmd('az cosmosdb mongocluster firewall rule delete -c {c} -g {rg} --rule-name blah --yes')
+            assert delete==None
+        except Exception as e:
+            print(e)
         
         # Delete Clusters
         try:

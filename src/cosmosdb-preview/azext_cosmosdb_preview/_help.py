@@ -7,21 +7,21 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-helps['cosmosdb mongocluster firewall rule'] = """
+helps['cosmosdb mongocluster firewall'] = """
 type: group
-short-summary: CosmosDB for Mongo cluster firewall.
+short-summary: Mongo cluster firewall.
 """
 
 helps['cosmosdb mongocluster firewall rule'] = """
 type: group
-short-summary: CosmosDB for Mongo cluster firewall rule.
+short-summary: Mongo cluster firewall rule.
 """
 
 helps['cosmosdb mongocluster firewall rule create'] = """
 type: command
-short-summary: Create a CosmosDB for Mongo cluster firewall rule.
+short-summary: Create a Mongo cluster firewall rule.
 examples:
-  - name: Create a CosmosDB for Mongo cluster firewall rule.
+  - name: Create a Mongo cluster firewall rule.
     text: |
       az cosmosdb mongocluster firewall rule create \\
       --cluster-name MyCluster \\
@@ -33,9 +33,9 @@ examples:
 
 helps['cosmosdb mongocluster firewall rule update'] = """
 type: command
-short-summary: Create a CosmosDB for Mongo cluster firewall rule.
+short-summary: Create a Mongo cluster firewall rule.
 examples:
-  - name: Update a CosmosDB for Mongo cluster firewall rule.
+  - name: Update a Mongo cluster firewall rule.
     text: |
       az cosmosdb mongocluster firewall rule update \\
       --cluster-name MyCluster \\
@@ -74,27 +74,14 @@ examples:
 
 helps['cosmosdb mongocluster'] = """
 type: group
-short-summary: CosmosDB for Mongo cluster.
+short-summary: Mongo cluster.
 """
 
 helps['cosmosdb mongocluster create'] = """
 type: command
-short-summary: Create a CosmosDB for Mongo cluster.
+short-summary: Create a Mongo cluster.
 examples:
-  - name: Create a CosmosDB for Mongo cluster.
-    text: |
-      az cosmosdb mongocluster create \\
-      --cluster-name MyCluster \\
-      --resource-group MyResourceGroup \\
-      --location MyLocation \\
-      --administrator-login MyAdminUser \\
-      --administrator-login-password MyAdminPassword \\
-      --server-version 5.0 \\
-      --shard-node-tier "M30" \\
-      --shard-node-ha true \\
-      --shard-node-disk-size-gb 128 \\
-      --shard-node-count 2
-  - name: Create a CosmosDB for Mongo cluster with PITR option.
+  - name: Create a Mongo cluster.
     text: |
       az cosmosdb mongocluster create \\
       --cluster-name MyCluster \\
@@ -111,9 +98,9 @@ examples:
 
 helps['cosmosdb mongocluster update'] = """
 type: command
-short-summary: Update a CosmosDB for Mongo cluster.
+short-summary: Update a Mongo cluster.
 examples:
-  - name: Create a CosmosDB for Mongo cluster with PITR option.
+  - name: Update a Mongo cluster.
     text: |
       az cosmosdb mongocluster update \\
       --cluster-name MyCluster \\

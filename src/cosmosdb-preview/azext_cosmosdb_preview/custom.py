@@ -54,7 +54,6 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     AnalyticalStorageConfiguration,
     ManagedServiceIdentityUserAssignedIdentity,
     MongoCluster,
-    MongoClusterRestoreParameters,
     NodeGroupSpec,
     NodeKind,
     FirewallRule
@@ -148,12 +147,10 @@ def cli_cosmosdb_mongocluster_create(client,
                                      administrator_login_password,
                                      location,
                                      tags=None,
-                                     create_mode=CreateMode.DEFAULT.value,
                                      server_version="5.0",
                                      shard_node_tier=None,
                                      shard_node_disk_size_gb=None,
                                      shard_node_ha=None,
-                                     shard_kind=NodeKind.SHARD.value,
                                      shard_node_count=1):
 
     '''Creates an Azure Cosmos DB Mongo Cluster '''
@@ -165,7 +162,7 @@ def cli_cosmosdb_mongocluster_create(client,
         sku=shard_node_tier,
         disk_size_gb=shard_node_disk_size_gb,
         enable_ha=shard_node_ha,
-        kind=shard_kind,
+        kind=NodeKind.SHARD.value,
         node_count=shard_node_count
     )
 
@@ -173,7 +170,7 @@ def cli_cosmosdb_mongocluster_create(client,
     mongodb_cluster = MongoCluster(
         location=location,
         tags=tags,
-        create_mode=create_mode,
+        create_mode=CreateMode.DEFAULT.value,
         administrator_login=administrator_login,
         administrator_login_password=administrator_login_password,
         server_version=server_version,
@@ -188,12 +185,10 @@ def cli_cosmosdb_mongocluster_update(client,
                                      administrator_login=None,
                                      administrator_login_password=None,
                                      tags=None,
-                                     create_mode=CreateMode.DEFAULT.value,
-                                     server_version="5.0",
+                                     server_version=None,
                                      shard_node_tier=None,
                                      shard_node_ha=None,
-                                     shard_node_disk_size_gb=None,
-                                     shard_kind=NodeKind.SHARD.value):
+                                     shard_node_disk_size_gb=None):
 
     '''Updates an Azure Cosmos DB Mongo Cluster '''
 
@@ -214,8 +209,6 @@ def cli_cosmosdb_mongocluster_update(client,
         server_version = mongo_cluster_resource.server_version
     if tags is None:
         tags = mongo_cluster_resource.tags
-    if create_mode is None:
-        create_mode = mongo_cluster_resource.create_mode
 
     # Shard info update.
     if shard_node_tier is None:
@@ -224,14 +217,12 @@ def cli_cosmosdb_mongocluster_update(client,
         shard_node_disk_size_gb = mongo_cluster_resource.node_group_specs[0].disk_size_gb
     if shard_node_ha is None:
         shard_node_ha = mongo_cluster_resource.node_group_specs[0].enable_ha
-    if shard_kind is None:
-        shard_kind = mongo_cluster_resource.node_group_specs[0].kind
 
     node_group_spec = NodeGroupSpec(
         sku=shard_node_tier,
         disk_size_gb=shard_node_disk_size_gb,
         enable_ha=shard_node_ha,
-        kind=shard_kind,
+        kind=NodeKind.SHARD.value,
         node_count=None,
     )
 
@@ -239,7 +230,7 @@ def cli_cosmosdb_mongocluster_update(client,
     mongodb_cluster = MongoCluster(
         location=location,
         tags=tags,
-        create_mode=create_mode,
+        create_mode=CreateMode.DEFAULT.value,
         administrator_login=administrator_login,
         administrator_login_password=administrator_login_password,
         server_version=server_version,
