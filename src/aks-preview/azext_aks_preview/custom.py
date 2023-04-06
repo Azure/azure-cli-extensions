@@ -596,6 +596,7 @@ def aks_create(
     network_plugin=None,
     network_plugin_mode=None,
     network_policy=None,
+    network_dataplane=None,
     kube_proxy_config=None,
     auto_upgrade_channel=None,
     node_os_upgrade_channel=None,
@@ -718,6 +719,8 @@ def aks_create(
     nodepool_allowed_host_ports=None,
     nodepool_asg_ids=None,
     node_public_ip_tags=None,
+    # azure service mesh
+    enable_azure_service_mesh=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -775,6 +778,8 @@ def aks_update(
     kube_proxy_config=None,
     auto_upgrade_channel=None,
     node_os_upgrade_channel=None,
+    upgrade_settings=None,
+    upgrade_override_until=None,
     cluster_autoscaler_profile=None,
     uptime_sla=False,
     no_uptime_sla=False,
@@ -838,6 +843,8 @@ def aks_update(
     ssh_key_value=None,
     load_balancer_managed_outbound_ipv6_count=None,
     outbound_type=None,
+    network_plugin_mode=None,
+    pod_cidr=None,
     enable_pod_security_policy=False,
     disable_pod_security_policy=False,
     enable_pod_identity=False,
@@ -2482,3 +2489,86 @@ def aks_trustedaccess_role_binding_update(cmd, client, resource_group_name, clus
 
 def aks_trustedaccess_role_binding_delete(cmd, client, resource_group_name, cluster_name, role_binding_name):
     return client.delete(resource_group_name, cluster_name, role_binding_name)
+
+
+def aks_mesh_enable(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+):
+    return _aks_mesh_update(cmd, client, resource_group_name, name, enable_azure_service_mesh=True)
+
+
+def aks_mesh_disable(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+):
+    return _aks_mesh_update(cmd, client, resource_group_name, name, disable_azure_service_mesh=True)
+
+
+def aks_mesh_enable_ingress_gateway(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        ingress_gateway_type,
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_azure_service_mesh=True,
+        enable_ingress_gateway=True,
+        ingress_gateway_type=ingress_gateway_type)
+
+
+def aks_mesh_disable_ingress_gateway(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        ingress_gateway_type,
+):
+    return _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        disable_ingress_gateway=True,
+        ingress_gateway_type=ingress_gateway_type)
+
+
+def _aks_mesh_update(
+        cmd,
+        client,
+        resource_group_name,
+        name,
+        enable_azure_service_mesh=None,
+        disable_azure_service_mesh=None,
+        enable_ingress_gateway=None,
+        disable_ingress_gateway=None,
+        ingress_gateway_type=None,
+):
+    raw_parameters = locals()
+
+    from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
+    from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator
+
+    aks_update_decorator = AKSPreviewManagedClusterUpdateDecorator(
+        cmd=cmd,
+        client=client,
+        raw_parameters=raw_parameters,
+        resource_type=CUSTOM_MGMT_AKS_PREVIEW,
+    )
+
+    try:
+        mc = aks_update_decorator.update_mc_profile_default()
+        mc = aks_update_decorator.update_azure_service_mesh_profile(mc)
+    except DecoratorEarlyExitException:
+        return None
+
+    return aks_update_decorator.update_mc(mc)

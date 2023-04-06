@@ -6,9 +6,9 @@
 # pylint: disable=wrong-import-order
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 from ._utils import (wait_till_end, _get_rg_location)
-from .vendored_sdks.appplatform.v2023_01_01_preview import models
+from .vendored_sdks.appplatform.v2023_03_01_preview import models
 from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
-from ._build_service import _update_default_build_agent_pool
+from ._build_service import _update_default_build_agent_pool, create_build_service
 from .buildpack_binding import create_default_buildpack_binding_for_application_insights
 from ._tanzu_component import (create_application_configuration_service,
                                create_application_live_view,
@@ -124,6 +124,11 @@ class EnterpriseSpringCloud(DefaultSpringCloud):
                                       self.location)
 
     def after_create(self, no_wait=None, **kwargs):
+        # should create build service before creating build agent pool and app insights
+        if not no_wait and not kwargs['disable_build_service']:
+            poller = create_build_service(self.cmd, self.client, self.resource_group, self.name, kwargs['disable_build_service'],
+                                          kwargs['registry_server'], kwargs['registry_username'], kwargs['registry_password'])
+            LongRunningOperation(self.cmd.cli_ctx)(poller)
         pollers = [
             # create sub components like Service registry, ACS, build service, etc.
             _update_default_build_agent_pool(
@@ -166,6 +171,10 @@ def spring_create(cmd, client, resource_group, name,
                   tags=None,
                   zone_redundant=False,
                   build_pool_size=None,
+                  disable_build_service=False,
+                  registry_server=None,
+                  registry_username=None,
+                  registry_password=None,
                   enable_application_configuration_service=False,
                   enable_application_live_view=False,
                   enable_service_registry=False,
@@ -202,6 +211,10 @@ def spring_create(cmd, client, resource_group, name,
         'tags': tags,
         'zone_redundant': zone_redundant,
         'build_pool_size': build_pool_size,
+        'disable_build_service': disable_build_service,
+        'registry_server': registry_server,
+        'registry_username': registry_username,
+        'registry_password': registry_password,
         'enable_application_configuration_service': enable_application_configuration_service,
         'enable_application_live_view': enable_application_live_view,
         'enable_service_registry': enable_service_registry,
