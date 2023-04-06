@@ -1117,11 +1117,13 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
             logger.warning("Please enable auto_upgrade to upgrade to latest agent version in order to enable the oidc issuer feature")
         else:
             cmd_helm_upgrade.extend(["--set", "systemDefaultValues.signingkeycontroller.oidcenabled={}".format(True)])
+            cmd_helm_install.extend(["--set", "global.enableOidcIssuer={}".format(True)])
     else:
         if existing_values.get('systemDefaultValues').get('azureArcAgents').get('autoUpdate') is False:
             logger.warning("Please enable auto_upgrade to upgrade to latest agent version in order to explicitly disable the oidc issuer feature")
         else:
             cmd_helm_upgrade.extend(["--set", "systemDefaultValues.signingkeycontroller.oidcenabled={}".format(False)])
+            cmd_helm_install.extend(["--set", "global.enableOidcIssuer={}".format(False)])
     if kube_config:
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:

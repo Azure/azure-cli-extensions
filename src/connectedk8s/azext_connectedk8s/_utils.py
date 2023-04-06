@@ -569,6 +569,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
         cmd_helm_install.extend(["--set", "systemDefaultValues.fluent-bit.containerLogPath={}".format(container_log_path)])
     if enable_oidc_issuer:
         cmd_helm_install.extend(["--set", "systemDefaultValues.signingkeycontroller.oidcenabled={}".format(True)])
+        cmd_helm_install.extend(["--set", "global.enableOidcIssuer={}".format(True)])
     if kube_config:
         cmd_helm_install.extend(["--kubeconfig", kube_config])
     if kube_context:
