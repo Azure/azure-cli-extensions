@@ -212,7 +212,6 @@ class AzureFirewallCreate(_AzureFirewallCreate):
             # Reference to the PublicIP resource. This field is a mandatory input if subnet is not null.
             # Reference to the subnet resource. This resource must be named 'AzureFirewallSubnet' or 'AzureFirewallManagementSubnet'.
 
-
         if has_value(args.tier) and has_value(args.sku):
             if tier.lower() == 'basic' and sku.lower() == 'azfw_vnet':
                 management_subnet_id = resource_id(
