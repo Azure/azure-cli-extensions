@@ -911,5 +911,5 @@ helps['cosmosdb table restore'] = """
     examples:
       - name: Restore a deleted table within the same account.
         text: |-
-               az cosmosdb table restore --resource-group resource_group --account-name database_account_name --name name_of_table_needs_to_be_restored --restore-timestamp 2020-07-13T16:03:41+0000
+               az cosmosdb table restore --resource-group resource_group --account-name database_account_name --table-name name_of_table_needs_to_be_restored --restore-timestamp 2020-07-13T16:03:41+0000
 """
