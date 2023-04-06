@@ -21,6 +21,7 @@ def show_directory(client, container_name, directory_name, snapshot=None, lease_
 
     return directory
 
+
 # pylint: disable=unused-variable,logging-format-interpolation
 def delete_directory(client, container_name, directory_name):
 
