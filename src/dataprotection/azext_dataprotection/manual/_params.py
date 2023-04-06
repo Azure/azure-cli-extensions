@@ -90,6 +90,15 @@ def load_arguments(self, _):
     with self.argument_context('dataprotection backup-policy get-default-policy-template') as c:
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
 
+    with self.argument_context('data-protection backup-instance list-from-resourcegraph') as c:
+        c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
+        c.argument('resource_groups', type=str, nargs='+', help="List of resource groups.")
+        c.argument('vaults', type=str, nargs='+', help="List of vault names.")
+        c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type")
+        c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
+        c.argument('protection_status', arg_type=get_enum_type(get_protection_status_values()), nargs='+', help="specify protection status.")
+        c.argument('datasource_id', type=str, nargs='+', help="specify datasource id filter to apply.")
+
     with self.argument_context('dataprotection backup-instance list-from-resourcegraph') as c:
         c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
         c.argument('resource_groups', type=str, nargs='+', help="List of resource groups.")

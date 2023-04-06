@@ -972,3 +972,137 @@ def restore_initialize_for_item_recovery(client, datasource_type, source_datasto
         restore_request["restore_target_info"]["datasource_set_info"] = helper.get_datasourceset_info(datasource_type, datasource_id, restore_location)
 
     return restore_request
+
+def restore_initialize_for_item_recovery_dp(cmd, datasource_type, source_datastore, restore_location, backup_instance_id,
+                                         recovery_point_id=None, point_in_time=None, container_list=None,
+                                         from_prefix_pattern=None, to_prefix_pattern=None):
+
+    restore_request = {}
+    restore_mode = None
+    if recovery_point_id is not None and point_in_time is not None:
+        raise CLIError("Please provide either recovery point id or point in time parameter, not both.")
+
+    if recovery_point_id is not None:
+        restore_request["object_type"] = "AzureBackupRecoveryPointBasedRestoreRequest"
+        restore_request["recovery_point_id"] = recovery_point_id
+        restore_mode = "RecoveryPointBased"
+
+    if point_in_time is not None:
+        restore_request["object_type"] = "AzureBackupRecoveryTimeBasedRestoreRequest"
+        restore_request["recovery_point_time"] = point_in_time
+        restore_mode = "PointInTimeBased"
+
+    if recovery_point_id is None and point_in_time is None:
+        raise CLIError("Please provide either recovery point id or point in time parameter.")
+
+    manifest = helper.load_manifest(datasource_type)
+    if manifest is not None and manifest["allowedRestoreModes"] is not None and restore_mode not in manifest["allowedRestoreModes"]:
+        raise CLIError(restore_mode + " restore mode is not supported for datasource type " + datasource_type +
+                       ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
+
+    if manifest is not None and not manifest["itemLevelRecoveyEnabled"]:
+        raise CLIError("Specified DatasourceType " + datasource_type + " doesn't support Item Level Recovery")
+
+    restore_request["source_data_store_type"] = source_datastore
+    restore_request["restore_target_info"] = {}
+    restore_request["restore_target_info"]["object_type"] = "ItemLevelRestoreTargetInfo"
+    restore_request["restore_target_info"]["restore_location"] = restore_location
+    restore_request["restore_target_info"]["recovery_option"] = "FailIfExists"
+
+    restore_criteria_list = []
+    if container_list is not None and (from_prefix_pattern is not None or to_prefix_pattern is not None):
+        raise CLIError("Please specify either container list or prefix pattern.")
+
+    if container_list is not None:
+        if len(container_list) > 10:
+            raise CLIError("A maximum of 10 containers can be restored. Please choose up to 10 containers.")
+        for container in container_list:
+            if container[0] == '$':
+                raise CLIError("container name can not start with '$'. Please retry with different sets of containers.")
+            restore_criteria = {}
+            restore_criteria["object_type"] = "RangeBasedItemLevelRestoreCriteria"
+            restore_criteria["min_matching_value"] = container
+            restore_criteria["max_matching_value"] = container + "-0"
+
+            restore_criteria_list.append(restore_criteria)
+
+    if from_prefix_pattern is not None or to_prefix_pattern is not None:
+        if from_prefix_pattern is None or to_prefix_pattern is None or \
+           len(from_prefix_pattern) != len(to_prefix_pattern) or len(from_prefix_pattern) > 10:
+            raise CLIError(
+                "from-prefix-pattern and to-prefix-pattern should not be null, both of them should have "
+                "equal length and can have a maximum of 10 patterns."
+            )
+
+        for index, _ in enumerate(from_prefix_pattern):
+            if from_prefix_pattern[index][0] == '$' or to_prefix_pattern[index][0] == '$':
+                raise CLIError(
+                    "Prefix patterns should not start with '$'. Please provide valid prefix patterns and try again."
+                )
+
+            if not 3 <= len(from_prefix_pattern[index]) <= 63 or not 3 <= len(to_prefix_pattern[index]) <= 63:
+                raise CLIError(
+                    "Prefix patterns needs to be between 3 to 63 characters."
+                )
+
+            if from_prefix_pattern[index] >= to_prefix_pattern[index]:
+                raise CLIError(
+                    "From prefix pattern must be less than to prefix pattern."
+                )
+
+            regex_pattern = r"^[a-z0-9](?!.*--)[a-z0-9-]{1,61}[a-z0-9](\/.{1,60})*$"
+            if re.match(regex_pattern, from_prefix_pattern[index]) is None:
+                raise CLIError(
+                    "prefix patterns must start or end with a letter or number,"
+                    "and can contain only lowercase letters, numbers, and the dash (-) character. "
+                    "consecutive dashes are not permitted."
+                    "Given pattern " + from_prefix_pattern[index] + " violates the above rule."
+                )
+
+            if re.match(regex_pattern, to_prefix_pattern[index]) is None:
+                raise CLIError(
+                    "prefix patterns must start or end with a letter or number,"
+                    "and can contain only lowercase letters, numbers, and the dash (-) character. "
+                    "consecutive dashes are not permitted."
+                    "Given pattern " + to_prefix_pattern[index] + " violates the above rule."
+                )
+
+            for compareindex in range(index + 1, len(from_prefix_pattern)):
+                if (from_prefix_pattern[index] <= from_prefix_pattern[compareindex] and to_prefix_pattern[index] >= from_prefix_pattern[compareindex]) or \
+                   (from_prefix_pattern[index] >= from_prefix_pattern[compareindex] and from_prefix_pattern[index] <= to_prefix_pattern[compareindex]):
+                    raise CLIError(
+                        "overlapping ranges are not allowed."
+                    )
+
+        for index, _ in enumerate(from_prefix_pattern):
+            restore_criteria = {}
+            restore_criteria["object_type"] = "RangeBasedItemLevelRestoreCriteria"
+            restore_criteria["min_matching_value"] = from_prefix_pattern[index]
+            restore_criteria["max_matching_value"] = to_prefix_pattern[index]
+
+            restore_criteria_list.append(restore_criteria)
+
+    if container_list is None and from_prefix_pattern is None and to_prefix_pattern is None:
+        raise CLIError("Provide ContainersList or Prefixes for Item Level Recovery")
+
+    restore_request["restore_target_info"]["restore_criteria"] = restore_criteria_list
+
+    vault_resource_group = backup_instance_id.split('/')[4]
+    vault_name = backup_instance_id.split('/')[8]
+    backup_instance_name = backup_instance_id.split('/')[-1]
+
+    from azext_dataprotection.aaz.latest.data_protection.backup_instance import Show as _Show
+    backup_instance = _Show(cli_ctx=cmd.cli_ctx)(command_args={
+        "vault_name": vault_name,
+        "resource_group": vault_resource_group,
+        "backup_instance_name": backup_instance_name
+    })
+    # datasource_id = backup_instance.properties.data_source_info.resource_id
+    datasource_id = backup_instance['properties']['dataSourceInfo']['resourceId']
+
+    restore_request["restore_target_info"]["datasource_info"] = helper.get_datasource_info(datasource_type, datasource_id, restore_location)
+
+    if manifest["isProxyResource"]:
+        restore_request["restore_target_info"]["datasource_set_info"] = helper.get_datasourceset_info(datasource_type, datasource_id, restore_location)
+
+    return restore_request
