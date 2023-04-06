@@ -912,7 +912,7 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy delete -g {rg} --name {policy}')
 
-    @ResourceGroupPreparer(name_prefix='test_firewall_with_dns_proxy')
+    @ResourceGroupPreparer(name_prefix='test_firewall_with_dns_proxy_')
     def test_firewall_with_dns_proxy(self, resource_group):
         self.kwargs.update({
             'rg': resource_group,
@@ -920,25 +920,31 @@ class AzureFirewallScenario(ScenarioTest):
             'dns_servers': '10.0.0.2 10.0.0.3'
         })
 
-        creation_data = self.cmd('network firewall create -g {rg} -n {fw} '
-                                 '--dns-servers {dns_servers} '
-                                 '--enable-dns-proxy false ').get_output_in_json()
-        self.assertEqual(creation_data['name'], self.kwargs['fw'])
-        self.assertEqual(creation_data['additionalProperties."Network.DNS.Servers"'], "10.0.0.2,10.0.0.3")
-        self.assertEqual(creation_data['additionalProperties."Network.DNS.EnableProxy"'], 'false')
+        self.cmd('network firewall create -g {rg} -n {fw} '
+                 '--dns-servers {dns_servers} '
+                 '--enable-dns-proxy false',
+                 checks=[
+                     self.check('name', '{fw}'),
+                     self.check('additionalProperties."Network.DNS.Servers"', "10.0.0.2,10.0.0.3"),
+                     self.check('additionalProperties."Network.DNS.EnableProxy"', 'false'),
+                 ])
 
-        show_data = self.cmd('network firewall show -g {rg} -n {fw}').get_output_in_json()
-        self.assertEqual(show_data['name'], self.kwargs['fw'])
-        self.assertEqual(show_data['Network.DNS.Servers'], "10.0.0.2,10.0.0.3")
-        self.assertEqual(show_data['Network.DNS.EnableProxy'], 'false')
+        self.cmd('network firewall show -g {rg} -n {fw}',
+                 checks=[
+                     self.check('name', '{fw}'),
+                     self.check('additionalProperties."Network.DNS.Servers"', "10.0.0.2,10.0.0.3"),
+                     self.check('additionalProperties."Network.DNS.EnableProxy"', 'false'),
+                 ])
 
         self.cmd('network firewall update -g {rg} -n {fw} '
                  '--enable-dns-proxy true').get_output_in_json()
 
-        show_data = self.cmd('network firewall show -g {rg} -n {fw}').get_output_in_json()
-        self.assertEqual(show_data['name'], self.kwargs['fw'])
-        self.assertEqual(show_data['Network.DNS.Servers'], "10.0.0.2,10.0.0.3")
-        self.assertEqual(show_data['Network.DNS.EnableProxy'], 'true')
+        self.cmd('network firewall show -g {rg} -n {fw}',
+                 checks=[
+                     self.check('name', '{fw}'),
+                     self.check('additionalProperties."Network.DNS.Servers"', "10.0.0.2,10.0.0.3"),
+                     self.check('additionalProperties."Network.DNS.EnableProxy"', 'true'),
+                 ])
 
         self.cmd('network firewall delete -g {rg} --name {fw}')
 
