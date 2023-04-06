@@ -2,6 +2,10 @@
 
 Release History
 ===============
+Upcoming
++++++++
+* Add CLI support for containerapp ingress sticky-sessions'
+
 0.3.27
 ++++++
 * 'az containerapp secret set': add support for secrets from Key Vault
