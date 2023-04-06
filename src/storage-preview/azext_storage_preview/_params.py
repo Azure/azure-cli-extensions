@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.commands.parameters import (get_enum_type, get_three_state_flag, file_type, get_location_type,
+from azure.cli.core.commands.parameters import (get_enum_type, get_three_state_flag, get_location_type,
                                                 tags_type, edge_zone_type)
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction, ALL
@@ -13,14 +13,12 @@ from ._validators import (get_datetime_type, validate_metadata, validate_bypass,
                           validate_azcopy_target_url, validate_included_datasets, validate_custom_domain,
                           validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
                           validate_storage_data_plane_list, validate_immutability_arguments,
-                          process_resource_group, add_upload_progress_callback, validate_encryption_source,
-                          PermissionScopeAddAction, SshPublicKeyAddAction)
+                          process_resource_group, validate_encryption_source)
 
-from .profiles import CUSTOM_MGMT_STORAGE, CUSTOM_DATA_STORAGE_FILEDATALAKE
+from .profiles import CUSTOM_MGMT_STORAGE
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
-    from argcomplete.completers import FilesCompleter
     from knack.arguments import CLIArgumentType
     from azure.cli.core.commands.parameters import get_resource_name_completion_list
 

@@ -7,7 +7,6 @@ from azure.cli.testsdk import (ScenarioTest, JMESPathCheck, JMESPathCheckExists,
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .storage_test_util import StorageScenarioMixin
 from ...profiles import CUSTOM_MGMT_STORAGE
-from knack.util import CLIError
 
 
 class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
