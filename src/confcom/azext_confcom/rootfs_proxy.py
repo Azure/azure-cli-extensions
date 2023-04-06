@@ -17,6 +17,9 @@ arch = platform.architecture()[0]
 
 
 class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
+    # static variable to cache layer hashes between container groups
+    layer_cache = {}
+
     def __init__(self):
         script_directory = os.path.dirname(os.path.realpath(__file__))
         DEFAULT_LIB = "./bin/dmverity-vhd"
@@ -49,9 +52,12 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
     def get_policy_image_layers(
         self, image: str, tag: str, tar_location: str = ""
     ) -> List[str]:
-        policy_bin_str = str(self.policy_bin)
+        image_name = f"{image}:{tag}"
+        # populate layer info
+        if self.layer_cache.get(image_name):
+            return self.layer_cache.get(image_name)
 
-        img = image + ":" + tag
+        policy_bin_str = str(self.policy_bin)
 
         arg_list = [
             f"{policy_bin_str}",
@@ -64,7 +70,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             arg_list += ["-d"]
 
         # add the image to the end of the parameter list
-        arg_list += ["roothash", "-i", f"{img}"]
+        arg_list += ["roothash", "-i", f"{image_name}"]
 
         outputlines = None
         err = None
@@ -85,11 +91,14 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             output = [output[j * 2 + 1] for j in range(len(output) // 2)]
             output = [i.rstrip("\n").split(": ", 1)[1] for i in output]
         else:
-            eprint(
-                "Cannot get layer hashes. Please check whether the image exists in local repository/daemon."
-            )
+            output = []
+            # eprint(
+            #     "Cannot get layer hashes. Please check whether the image exists in local repository/daemon."
+            # )
 
         if err.decode("utf8") != "":
-            eprint(err.decode("utf8"))
-
+            output = []
+            # eprint(err.decode("utf8"))
+        # cache output layers
+        self.layer_cache[image_name] = output
         return output

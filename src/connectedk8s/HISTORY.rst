@@ -2,6 +2,13 @@
 
 Release History
 ===============
+1.3.15
+++++++
+
+* Diagnoser Enhancements - storing metadata and KAP CR snapshots , azure-arc helm values , azure-arc ns secret list
+* Removing circular imports of 1. custom from precheckutils and 2.(precheckutils and troubleshootutils) from utils
+* Adding back heuristics detection in connect command
+
 1.3.14
 ++++++
 

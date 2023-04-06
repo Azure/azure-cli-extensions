@@ -279,6 +279,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         registry_user=None,
         registry_pass=None,
         env_vars=None,
+        workload_profile_name=None,
         ingress=None,
     ):
 
@@ -291,6 +292,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         self.registry_pass = registry_pass
         self.env_vars = env_vars
         self.ingress = ingress
+        self.workload_profile_name = workload_profile_name
 
         self.should_create_acr = False
         self.acr: "AzureContainerRegistry" = None
@@ -320,6 +322,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             registry_pass=None if no_registry else self.registry_pass,
             registry_user=None if no_registry else self.registry_user,
             env_vars=self.env_vars,
+            workload_profile_name=self.workload_profile_name,
             ingress=self.ingress,
         )
 
@@ -377,7 +380,6 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 logger.warning("Created ACR task %s in registry %s", task_name, registry_name)
             finally:
                 task_file.close()
-                os.unlink(task_file.name)
 
             from time import sleep
             sleep(10)
@@ -387,9 +389,11 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 acr_task_run(self.cmd, run_client, task_name, registry_name, file=task_file.name, context_path=source)
             except CLIError as e:
                 logger.error("Failed to automatically generate a docker container from your source. \n"
-                             "See the ACR logs above for more error information. \nPlease check the supported langauges for autogenerating docker containers (https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md), "
+                             "See the ACR logs above for more error information. \nPlease check the supported languages for autogenerating docker containers (https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md), "
                              "or consider using a Dockerfile for your app.")
                 raise e
+            finally:
+                os.unlink(task_file.name)
 
         for k, v in old_command_kwargs.items():
             self.cmd.command_kwargs[k] = v
@@ -603,14 +607,14 @@ def _get_app_env_and_group(
     if not resource_group.name and not resource_group.exists:
         matched_apps = [c for c in list_containerapp(cmd) if c["name"].lower() == name.lower()]
         if env.name:
-            matched_apps = [c for c in matched_apps if parse_resource_id(c["properties"]["managedEnvironmentId"])["name"].lower() == env.name.lower()]
+            matched_apps = [c for c in matched_apps if parse_resource_id(c["properties"]["environmentId"])["name"].lower() == env.name.lower()]
         if location:
             matched_apps = [c for c in matched_apps if c["location"].lower() == location.lower()]
         if len(matched_apps) == 1:
             resource_group.name = parse_resource_id(matched_apps[0]["id"])[
                 "resource_group"
             ]
-            env.set_name(matched_apps[0]["properties"]["managedEnvironmentId"])
+            env.set_name(matched_apps[0]["properties"]["environmentId"])
         elif len(matched_apps) > 1:
             raise ValidationError(
                 f"There are multiple containerapps with name {name} on the subscription. "

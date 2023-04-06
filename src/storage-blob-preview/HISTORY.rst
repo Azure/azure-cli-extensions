@@ -2,6 +2,14 @@
 
 Release History
 ===============
+0.7.1
+++++++
+* `az storage blob copy start`: Fix auth issue
+
+0.7.0
+++++++
+* `az storage blob upload/set-tier/copy start`: Support `Cold` for `--tier`
+
 0.6.2
 ++++++
 * `az storage blob filter`: Add `--container-name` to support filter blobs in specific container
