@@ -729,6 +729,69 @@ def dataprotection_backup_policy_tag_remove_in_policy(name, policy):
 
     return policy
 
+def data_protection_backup_instance_validate_for_restore(cmd, vault_name, resource_group_name, backup_instance_name,
+                                                         restore_request_object, no_wait=False):
+    from azext_dataprotection.aaz.latest.data_protection.backup_instance import ValidateForRestore as _Validate, Update as _Update
+    from azext_dataprotection.aaz.latest.data_protection.backup_instance.restore import Trigger as _Trigger
+    
+    class Validate(_Update):
+
+        def _execute_operations(self):
+            self.pre_operations()
+            yield self.BackupInstancesValidateForRestore(ctx=self.ctx)()
+            self.post_operations()
+
+        def pre_operations(self):
+            self.ctx.set_var(
+                "restore_request_object",
+                restore_request_object,
+                schema_builder=_Trigger.BackupInstancesTriggerRestore._build_schema_on_200
+            )
+        
+        class BackupInstancesValidateForRestore(_Validate.BackupInstancesValidateForRestore):
+
+            @property
+            def content(self):
+                _content_value, _builder = self.new_content_builder(
+                    self.ctx.args,
+                    value=self.ctx.vars.restore_request_object,
+                )
+
+                return {
+                    "filler": self.serialize_content(_content_value)
+                }
+
+            def on_200(self, session):
+                pass
+            
+            class BackupInstancesTriggerRestore(_Trigger.BackupInstancesTriggerRestore):
+
+                def build_schema_on_200(cls):
+                    if cls._schema_on_200 is not None:
+                        return cls._schema_on_200
+
+                    cls._schema_on_200 = AAZObjectType()
+
+                    _schema_on_200 = cls._schema_on_200
+                    _schema_on_200.job_id = AAZStrType(
+                        serialized_name="jobId",
+                    )
+                    _schema_on_200.object_type = AAZStrType(
+                        serialized_name="objectType",
+                        flags={"required": True},
+                    )
+
+
+    return Validate(cli_ctx=cmd.cli_ctx)(command_args={
+        "vault_name": vault_name,
+        "resource_group": resource_group_name,
+        "backup_instance_name": backup_instance_name,
+        "no_wait": no_wait,
+    })
+
+
+def data_protection_backup_instance_restore_trigger():
+    pass
 
 def restore_initialize_for_data_recovery(target_resource_id, datasource_type, source_datastore, restore_location,
                                          recovery_point_id=None, point_in_time=None, secret_store_type=None,

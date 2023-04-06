@@ -21,6 +21,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'data_protection_backup_instance_create', supports_no_wait=True)
         g.custom_command('validate-for-backup', 'data_protection_backup_instance_validate_for_backup', supports_no_wait=True)
         g.custom_command('list-from-resourcegraph', 'dataprotection_backup_instance_list_from_resourcegraph', client_factory=cf_resource_graph_client)
+        g.custom_command('validate-for-restore', 'data_protection_backup_instance_validate_for_restore', supports_no_wait=True)
         
     with self.command_group('data-protection backup-instance restore') as g:
         g.custom_command('initialize-for-data-recovery', 'restore_initialize_for_data_recovery')

@@ -59,37 +59,40 @@ class Trigger(AAZCommand):
             id_part="name",
         )
 
-        # define Arg Group "Parameters"
+        # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
         _args_schema.azure_backup_recovery_point_based_restore_request = AAZObjectArg(
             options=["--azure-backup-recovery-point-based-restore-request"],
-            arg_group="Parameters",
+            arg_group="Properties",
+            help="-",
         )
         _args_schema.azure_backup_recovery_time_based_restore_request = AAZObjectArg(
             options=["--azure-backup-recovery-time-based-restore-request"],
-            arg_group="Parameters",
+            arg_group="Properties",
+            help="-",
         )
         _args_schema.azure_backup_restore_with_rehydration_request = AAZObjectArg(
             options=["--azure-backup-restore-with-rehydration-request"],
-            arg_group="Parameters",
+            arg_group="Properties",
+            help="-",
         )
         _args_schema.restore_target_info = AAZObjectArg(
             options=["--restore-target-info"],
-            arg_group="Parameters",
+            arg_group="Properties",
             help="Gets or sets the restore target information.",
             required=True,
         )
         _args_schema.source_data_store_type = AAZStrArg(
             options=["--source-data-store-type"],
-            arg_group="Parameters",
+            arg_group="Properties",
             help="Gets or sets the type of the source data store.",
             required=True,
             enum={"ArchiveStore": "ArchiveStore", "OperationalStore": "OperationalStore", "SnapshotStore": "SnapshotStore", "VaultStore": "VaultStore"},
         )
         _args_schema.source_resource_id = AAZStrArg(
             options=["--source-resource-id"],
-            arg_group="Parameters",
+            arg_group="Properties",
             help="Fully qualified Azure Resource Manager ID of the datasource which is being recovered.",
         )
 
