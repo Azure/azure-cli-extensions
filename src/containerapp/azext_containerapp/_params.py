@@ -278,6 +278,9 @@ def load_arguments(self, _):
         c.argument('revision_weights', nargs='+', options_list=['--revision-weight', c.deprecate(target='--traffic-weight', redirect='--revision-weight')], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
         c.argument('label_weights', nargs='+', options_list=['--label-weight'], help="A list of label weight(s) for the container app. Space-separated values in 'label_name=weight' format.")
 
+    with self.argument_context('containerapp ingress sticky-sessions') as c:
+        c.argument('affinity', arg_type=get_enum_type(['sticky', 'none']), help='Whether the affinity for the container app is Sticky or None.')
+
     with self.argument_context('containerapp secret') as c:
         c.argument('secrets', nargs='+', options_list=['--secrets', '-s'], help="A list of secret(s) for the container app. Space-separated values in 'key=value' or 'key=keyvaultref:keyvaulturl,identityref:identity' format (where 'key' cannot be longer than 20 characters).")
         c.argument('secret_name', help="The name of the secret to show.")

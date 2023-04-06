@@ -778,6 +778,32 @@ helps['containerapp ingress access-restriction list'] = """
           az containerapp ingress access-restriction list -n MyContainerapp -g MyResourceGroup
 """
 
+helps['containerapp ingress sticky-sessions'] = """
+    type: group
+    short-summary: Commands to set Sticky session affinity for a container app.
+"""
+
+helps['containerapp ingress sticky-sessions set'] = """
+    type: command
+    short-summary: Configure Sticky session for a container app.
+    examples:
+    - name: Set affinity to sticky for a container app.
+      text: |
+          az containerapp ingress sticky-sessions set -n MyContainerapp -g MyResourceGroup --affinity sticky
+    - name: Set affinity to none for a container app.
+      text: |
+          az containerapp ingress sticky-sessions set -n MyContainerapp -g MyResourceGroup --affinity none
+"""
+
+helps['containerapp ingress sticky-sessions show'] = """
+    type: command
+    short-summary: Show the Affinity for a container app.
+    examples:
+    - name: Show a container app's Sticky affinity configuration.
+      text: |
+          az containerapp ingress sticky-sessions show -n MyContainerapp -g MyResourceGroup
+"""
+
 # Registry Commands
 helps['containerapp registry'] = """
     type: group

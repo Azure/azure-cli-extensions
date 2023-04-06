@@ -6,6 +6,7 @@ Release History
 ++++++
 * 'az containerapp secret set': fix help typo
 * 'az containerapp secret set': add more format validation for key vault secrets
+* Add CLI support for containerapp ingress sticky-sessions'
 
 0.3.27
 ++++++
