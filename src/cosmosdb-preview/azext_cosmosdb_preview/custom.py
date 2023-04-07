@@ -996,51 +996,56 @@ def cli_cosmosdb_restore(cmd,
         restorable_resources = None
         api_type = target_restorable_account.api_type.lower()
         arm_location_normalized = target_restorable_account.location.lower().replace(" ", "")
+        source_location = location
+
+        if source_backup_location is not None:
+            source_location = source_backup_location
+
         if api_type == "sql":
             try:
                 restorable_sql_resources_client = cf_restorable_sql_resources(cmd.cli_ctx, [])
                 restorable_resources = restorable_sql_resources_client.list(
                     arm_location_normalized,
                     target_restorable_account.name,
-                    location,
+                    source_location,
                     restore_timestamp_datetime_utc)
             except ResourceNotFoundError:
-                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, location))
+                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, source_location))
         elif api_type == "mongodb":
             try:
                 restorable_mongodb_resources_client = cf_restorable_mongodb_resources(cmd.cli_ctx, [])
                 restorable_resources = restorable_mongodb_resources_client.list(
                     arm_location_normalized,
                     target_restorable_account.name,
-                    location,
+                    source_location,
                     restore_timestamp_datetime_utc)
             except ResourceNotFoundError:
-                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, location))
+                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, source_location))
         elif "sql" in api_type and "gremlin" in api_type:
             try:
                 restorable_gremlin_resources_client = cf_restorable_gremlin_resources(cmd.cli_ctx, [])
                 restorable_resources = restorable_gremlin_resources_client.list(
                     arm_location_normalized,
                     target_restorable_account.name,
-                    location,
+                    source_location,
                     restore_timestamp_datetime_utc)
             except ResourceNotFoundError:
-                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, location))
+                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, source_location))
         elif "sql" in api_type and "table" in api_type:
             try:
                 restorable_table_resources_client = cf_restorable_table_resources(cmd.cli_ctx, [])
                 restorable_resources = restorable_table_resources_client.list(
                     arm_location_normalized,
                     target_restorable_account.name,
-                    location,
+                    source_location,
                     restore_timestamp_datetime_utc)
             except ResourceNotFoundError:
-                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, location))
+                raise CLIError("Cannot find a database account with name {} that is online at {} in location {}".format(account_name, restore_timestamp, source_location))
         else:
             raise CLIError("Provided API Type {} is not supported for account {}".format(target_restorable_account.api_type, account_name))
 
         if restorable_resources is None or not any(restorable_resources):
-            raise CLIError("Database account {} contains no restorable resources in location {} at given restore timestamp {}".format(target_restorable_account, location, restore_timestamp_datetime_utc))
+            raise CLIError("Database account {} contains no restorable resources in location {} at given restore timestamp {}".format(target_restorable_account, source_location, restore_timestamp_datetime_utc))
 
     # Trigger restore
     locations = []
