@@ -567,6 +567,18 @@ helps['cosmosdb dts copy'] = """
             Usage: --dest-sql-container database=XX container=XX'
             database: Database name of CosmosDB Sql.
             container: Container name of CosmosDB Sql.
+      - name: --source-mongo
+        short-summary: "Source mongo collection"
+        long-summary: |
+            Usage: --source-mongo database=XX collection=XX'
+            database: Database name of CosmosDB Mongo.
+            collection: Collection name of CosmosDB Mongo.
+      - name: --dest-mongo
+        short-summary: "Destination mongo collection"
+        long-summary: |
+            Usage: --dest-mongo database=XX collection=XX'
+            database: Database name of CosmosDB Mongo.
+            collection: Collection name of CosmosDB Mongo.
 
     examples:
       - name: Copy sql container
@@ -574,7 +586,10 @@ helps['cosmosdb dts copy'] = """
           az cosmosdb dts copy -g "rg1" --job-name "j1" --account-name "db1" --source-sql-container database=db1 container=c1 --dest-sql-container database=db2 container=c2
       - name: Copy cassandra table
         text: |-
-          az cosmosdb dts copy -g "rg1" --job-name "j1" --account-name "db1" --source-cassandra-table keyspace=k1 table=t1 --dest-cassandra-table keyspace=k1 table=t1
+          az cosmosdb dts copy -g "rg1" --job-name "j1" --account-name "db1" --source-cassandra-table keyspace=k1 table=t1 --dest-cassandra-table keyspace=k2 table=t2
+      - name: Copy mongo collection
+        text: |-
+          az cosmosdb dts copy -g "rg1" --job-name "j1" --account-name "db1" --source-mongo database=d1 collection=c1 --dest-mongo database=d2 collection=c2
 """
 
 helps['cosmosdb dts'] = """
@@ -691,4 +706,44 @@ helps['cosmosdb mongodb collection redistribute-partition-throughput'] = """
       - name: Redistributes the partition throughput for a mongodb collection from source partitions to target partitions
         text: |-
                az cosmosdb mongodb collection redistribute-partition-throughput --account-name account_name --database-name db_name --name container_name  --resource-group rg_name --target-partition-info 8=1200 6=1200' --source-partition-info 9'
+"""
+
+# in-account restore of a deleted sql database
+helps['cosmosdb sql database restore'] = """
+    type: command
+    short-summary: "Restore a deleted sql database within the same account."
+    examples:
+      - name: Restore a deleted sql database within the same account.
+        text: |-
+               az cosmosdb sql database restore --resource-group resource_group --account-name database_account_name --name name_of_database_needs_to_be_restored --restore-timestamp 2020-07-13T16:03:41+0000
+"""
+
+# in-account restore of a deleted sql container
+helps['cosmosdb sql container restore'] = """
+    type: command
+    short-summary: "Restore a deleted sql container within the same account."
+    examples:
+      - name: Restore a deleted sql container within the same account.
+        text: |-
+               az cosmosdb sql container restore --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_container_needs_to_be_restored --restore-timestamp 2020-07-13T16:03:41+0000
+"""
+
+# in-account restore of a deleted mongodb database
+helps['cosmosdb mongodb database restore'] = """
+    type: command
+    short-summary: "Restore a deleted mongodb database within the same account."
+    examples:
+      - name: Restore a deleted mongodb database within the same account.
+        text: |-
+               az cosmosdb mongodb database restore --resource-group resource_group --account-name database_account_name --name name_of_database_needs_to_be_restored --restore-timestamp 2020-07-13T16:03:41+0000
+"""
+
+# in-account restore of a deleted mongodb collection
+helps['cosmosdb mongodb collection restore'] = """
+    type: command
+    short-summary: "Restore a deleted mongodb collection within the same account."
+    examples:
+      - name: Restore a deleted mongodb collection within the same account.
+        text: |-
+               az cosmosdb mongodb collection restore --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_collection_needs_to_be_restored --restore-timestamp 2020-07-13T16:03:41+0000
 """

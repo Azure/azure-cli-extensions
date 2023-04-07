@@ -2,6 +2,19 @@
 
 Release History
 ===============
+0.1.19
+++++++++++++++++++
+* `az monitor app-insights web-test`: Upgrade api-version to 2022-06-15.
+
+0.1.18
+++++++++++++++++++
+* `az monitor app-insights web-test`: Fix issue for header property create and display.
+
+0.1.17
+++++++++++++++++++
+* `az monitor app-insights component connect-webapp`: Support cross resource groups.
+* `az monitor app-insights component connect-function`: Support cross resource groups.
+
 0.1.16
 ++++++++++++++++++
 * `az monitor app-insights query`: Fix application could not be found.

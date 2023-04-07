@@ -5,7 +5,9 @@
 
 # pylint: disable=too-few-public-methods, unused-argument, redefined-builtin
 
+import os
 from re import match
+from azure.cli.core import telemetry
 from azure.cli.core.commands.validators import validate_tag
 from azure.core.exceptions import ResourceNotFoundError
 from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
@@ -13,6 +15,7 @@ from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        MutuallyExclusiveArgumentError)
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
+from .vendored_sdks.appplatform.v2023_03_01_preview.models._app_platform_management_client_enums import ApmType
 
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
 from ._resource_quantity import \
@@ -20,7 +23,7 @@ from ._resource_quantity import \
 from ._util_enterprise import (
     is_enterprise_tier, get_client
 )
-from ._validators import (validate_instance_count, _parse_sku_name)
+from ._validators import (validate_instance_count, _parse_sku_name, _parse_jar_file)
 from .buildpack_binding import (DEFAULT_BUILD_SERVICE_NAME)
 
 logger = get_logger(__name__)
@@ -43,7 +46,17 @@ def validate_build_env(cmd, namespace):
         if isinstance(namespace.build_env, list):
             env_dict = {}
             for item in namespace.build_env:
-                env_dict.update(validate_tag(item))
+                if item:
+                    comps = item.split('=', 1)
+                    if len(comps) <= 1:
+                        raise ArgumentUsageError("The value of env {} should not be empty.".format(item))
+                    else:
+                        if match(r"^[-._a-zA-Z][-._a-zA-Z0-9]*$", comps[0]):
+                            result = {}
+                            result = {comps[0]: comps[1]}
+                            env_dict.update(result)
+                        else:
+                            raise ArgumentUsageError("The env name {} is not allowed. The valid env name should follow the pattern '[-._a-zA-Z][-._a-zA-Z0-9]*'(For example, BP_JVM_VERSION).".format(comps[0]))
             namespace.build_env = env_dict
 
 
@@ -90,11 +103,152 @@ def validate_builder_resource(namespace):
 
 def validate_build_pool_size(namespace):
     if _parse_sku_name(namespace.sku) == 'enterprise':
-        if namespace.build_pool_size is None:
+        if namespace.build_pool_size is None and not namespace.disable_build_service:
             namespace.build_pool_size = 'S1'
+        elif namespace.build_pool_size is not None and namespace.disable_build_service:
+            raise InvalidArgumentValueError("Conflict detected: '--build-pool-size' can not be set with '--disable-build-service'.")
     else:
         if namespace.build_pool_size is not None:
             raise ClientRequestError("You can only specify --build-pool-size with enterprise tier.")
+
+
+def validate_build_service(namespace):
+    if _parse_sku_name(namespace.sku) == 'enterprise':
+        if (namespace.registry_server or namespace.registry_username or namespace.registry_password is not None) \
+                and ((namespace.registry_server is None) or (namespace.registry_username is None) or (namespace.registry_password is None)):
+            raise InvalidArgumentValueError(
+                "The'--registry-server', '--registry-username' and '--registry-password' should be specified together.")
+        if (namespace.registry_server or namespace.registry_username or namespace.registry_password is not None) \
+                and namespace.disable_build_service:
+            raise InvalidArgumentValueError(
+                "Conflict detected: '--registry-server', '--registry-username' and '--registry-password' "
+                "can not be set with '--disable-build-service'.")
+        if namespace.disable_build_service:
+            namespace.disable_app_insights = True
+            if namespace.app_insights or namespace.app_insights_key:
+                raise InvalidArgumentValueError(
+                    "Conflict detected: '--app-insights' or '--app-insights-key' "
+                    "can not be set with '--disable-build-service'.")
+    else:
+        if namespace.disable_build_service or namespace.registry_server or namespace.registry_username or namespace.registry_password is not None:
+            raise InvalidArgumentValueError("The build service is only supported with enterprise tier.")
+
+
+def validate_build_create(cmd, namespace):
+    client = get_client(cmd)
+    try:
+        build = client.build_service.get_build(namespace.resource_group,
+                                               namespace.service,
+                                               DEFAULT_BUILD_SERVICE_NAME,
+                                               namespace.name)
+        if build is not None:
+            raise ClientRequestError('Build {} already exists.'.format(namespace.name))
+    except ResourceNotFoundError:
+        pass
+
+
+def validate_build_update(cmd, namespace):
+    client = get_client(cmd)
+    try:
+        build = client.build_service.get_build(namespace.resource_group,
+                                               namespace.service,
+                                               DEFAULT_BUILD_SERVICE_NAME,
+                                               namespace.name)
+        if namespace.builder is None:
+            namespace.builder = build.properties.builder.split("/")[-1]
+        if namespace.build_cpu is None:
+            namespace.build_cpu = build.properties.resource_requests.cpu
+        if namespace.build_memory is None:
+            namespace.build_memory = build.properties.resource_requests.memory
+        if namespace.build_env is None:
+            namespace.build_env = build.properties.env
+    except ResourceNotFoundError:
+        raise ClientRequestError('Build {} does not exist.'.format(namespace.name))
+
+
+def validate_central_build_instance(cmd, namespace):
+    only_support_enterprise(cmd, namespace)
+    client = get_client(cmd)
+    try:
+        build_service = client.build_service.get_build_service(namespace.resource_group,
+                                                               namespace.service,
+                                                               DEFAULT_BUILD_SERVICE_NAME)
+        if not build_service.properties.container_registry:
+            raise ClientRequestError('The command is only supported when using your own container registry.')
+    except ResourceNotFoundError:
+        raise ClientRequestError('Build Service is not enabled.')
+
+
+def validate_source_path(namespace):
+    arguments = [namespace.artifact_path, namespace.source_path]
+    if all(not x for x in arguments):
+        raise InvalidArgumentValueError('One of --artifact-path, --source-path must be provided.')
+    valued_args = [x for x in arguments if x]
+    if len(valued_args) > 1:
+        raise InvalidArgumentValueError('At most one of --artifact-path, --source-path must be provided.')
+
+
+def validate_artifact_path(namespace):
+    if namespace.disable_validation:
+        telemetry.set_user_fault("jar validation is disabled")
+        return
+    if namespace.artifact_path is None or os.path.splitext(namespace.artifact_path)[-1] != "jar":
+        return
+    values = _parse_jar_file(namespace.artifact_path)
+    if values is None:
+        # ignore jar_file check
+        return
+    file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, ms_sdk_version, jdk_version = values
+
+    tips = ", if you choose to ignore these errors, turn validation off with --disable-validation"
+    if not has_jar and not has_class:
+        telemetry.set_user_fault("invalid_jar_no_class_jar")
+        raise InvalidArgumentValueError(
+            "Do not find any class or jar file, please check if your artifact is a valid fat jar" + tips)
+    if not has_manifest:
+        telemetry.set_user_fault("invalid_jar_no_manifest")
+        raise InvalidArgumentValueError(
+            "Do not find MANIFEST.MF, please check if your artifact is a valid fat jar" + tips)
+    if file_size / 1024 / 1024 < 10:
+        telemetry.set_user_fault("invalid_jar_thin_jar")
+        raise InvalidArgumentValueError("Thin jar detected, please check if your artifact is a valid fat jar" + tips)
+
+    # validate spring boot version
+    if spring_boot_version and spring_boot_version.startswith('1'):
+        telemetry.set_user_fault("old_spring_boot_version")
+        raise InvalidArgumentValueError(
+            "The spring boot {} you are using is not supported. To get the latest supported "
+            "versions please refer to: https://aka.ms/ascspringversion".format(spring_boot_version) + tips)
+
+    # old spring cloud version, need to import ms sdk <= 2.2.1
+    if spring_cloud_version:
+        if spring_cloud_version < "2.2.5":
+            if not ms_sdk_version or ms_sdk_version > "2.2.1":
+                telemetry.set_user_fault("old_spring_cloud_version")
+                raise InvalidArgumentValueError(
+                    "The spring cloud {} you are using is not supported. To get the latest supported "
+                    "versions please refer to: https://aka.ms/ascspringversion".format(spring_cloud_version) + tips)
+        else:
+            if ms_sdk_version and ms_sdk_version <= "2.2.1":
+                telemetry.set_user_fault("old_ms_sdk_version")
+                raise InvalidArgumentValueError(
+                    "The spring-cloud-starter-azure-spring-cloud-client version {} is no longer "
+                    "supported, please remove it or upgrade to a higher version, to get the latest "
+                    "supported versions please refer to: "
+                    "https://mvnrepository.com/artifact/com.microsoft.azure/spring-cloud-starter-azure"
+                    "-spring-cloud-client".format(ms_sdk_version) + tips)
+
+    if not has_actuator:
+        telemetry.set_user_fault("no_spring_actuator")
+        logger.warning(
+            "Seems you do not import spring actuator, thus metrics are not enabled, please refer to "
+            "https://aka.ms/ascdependencies for more details")
+
+
+def validate_container_registry(cmd, namespace):
+    if not namespace.name or not namespace.username or not namespace.password or not namespace.server:
+        raise InvalidArgumentValueError('The --name, --server, --username and --password must be provided.')
+    validate_central_build_instance(cmd, namespace)
 
 
 def validate_cpu(namespace):
@@ -109,6 +263,36 @@ def validate_git_uri(namespace):
     uri = namespace.uri
     if uri and (not uri.startswith("https://")) and (not uri.startswith("git@")):
         raise InvalidArgumentValueError("Git URI should start with \"https://\" or \"git@\"")
+
+
+def validate_acc_git_url(namespace):
+    url = namespace.git_url
+    if not url:
+        raise ArgumentUsageError("Git Repository configurations '--git-url' should be all provided.")
+    if url and (not url.startswith("https://")) and (not url.startswith("ssh://")):
+        raise InvalidArgumentValueError("Git URL should start with \"https://\" or \"ssh://\"")
+
+
+def validate_acc_git_refs(namespace):
+    args = [namespace.git_branch, namespace.git_commit, namespace.git_tag]
+    if all(x is None for x in args):
+        raise ArgumentUsageError("Git Repository configurations at least one of '--git-branch --git-commit --git-tag' should be all provided.")
+
+
+def validate_git_interval(namespace):
+    if namespace.git_interval is not None:
+        if namespace.git_interval < 1:
+            raise InvalidArgumentValueError("--git-interval must be greater than 0")
+
+
+def validate_acs_ssh_or_warn(namespace):
+    private_key = namespace.private_key
+    host_key = namespace.host_key
+    host_key_algorithm = namespace.host_key_algorithm
+    host_key_check = namespace.host_key_check
+    if private_key or host_key or host_key_algorithm or host_key_check:
+        logger.warning("SSH authentication only supports SHA-1 signature under ACS restriction. "
+                       "Please refer to https://aka.ms/asa-acs-ssh to understand how to use SSH under this restriction.")
 
 
 def validate_config_file_patterns(namespace):
@@ -151,11 +335,22 @@ def validate_gateway_update(namespace):
     validate_cpu(namespace)
     validate_memory(namespace)
     validate_instance_count(namespace)
+    _validate_gateway_apm_types(namespace)
+    _validate_gateway_envs(namespace)
+    _validate_gateway_secrets(namespace)
 
 
 def validate_api_portal_update(namespace):
     _validate_sso(namespace)
     validate_instance_count(namespace)
+
+
+def validate_dev_tool_portal(namespace):
+    args = [namespace.scopes, namespace.client_id, namespace.client_secret, namespace.metadata_url]
+    if not all(args) and not all(x is None for x in args):
+        raise ArgumentUsageError("Single Sign On configurations '--scopes --client-id --client-secret --metadata-url' should be all provided or none provided.")
+    if namespace.scopes is not None:
+        namespace.scopes = namespace.scopes.split(",") if namespace.scopes else []
 
 
 def _validate_sso(namespace):
@@ -165,6 +360,32 @@ def _validate_sso(namespace):
         raise ArgumentUsageError("Single Sign On configurations '--scope --client-id --client-secret --issuer-uri' should be all provided or none provided.")
     if namespace.scope is not None:
         namespace.scope = namespace.scope.split(",") if namespace.scope else []
+
+
+def _validate_gateway_apm_types(namespace):
+    if namespace.apm_types is None:
+        return
+    for type in namespace.apm_types:
+        if (type not in list(ApmType)):
+            raise InvalidArgumentValueError("Allowed APM types are: " + ', '.join(list(ApmType)))
+
+
+def _validate_gateway_envs(namespace):
+    """ Extracts multiple space-separated properties in key[=value] format """
+    if isinstance(namespace.properties, list):
+        properties_dict = {}
+        for item in namespace.properties:
+            properties_dict.update(validate_tag(item))
+        namespace.properties = properties_dict
+
+
+def _validate_gateway_secrets(namespace):
+    """ Extracts multiple space-separated secrets in key[=value] format """
+    if isinstance(namespace.secrets, list):
+        secrets_dict = {}
+        for item in namespace.secrets:
+            secrets_dict.update(validate_tag(item))
+        namespace.secrets = secrets_dict
 
 
 def validate_routes(namespace):
@@ -231,3 +452,10 @@ def validate_buildpack_binding_exist(cmd, namespace):
                                  DEFAULT_BUILD_SERVICE_NAME,
                                  namespace.builder_name,
                                  namespace.name)
+
+
+def validate_customized_accelerator(namespace):
+    validate_acc_git_url(namespace)
+    validate_acc_git_refs(namespace)
+    if namespace.accelerator_tags is not None:
+        namespace.accelerator_tags = namespace.accelerator_tags.split(",") if namespace.accelerator_tags else []

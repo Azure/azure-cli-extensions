@@ -16,7 +16,7 @@ class RDPUtilsTest(unittest.TestCase):
     @mock.patch('azext_ssh.custom.connectivity_utils.format_relay_info_string')
     @mock.patch("subprocess.Popen")
     def test_start_ssh_tunnel(self, mock_popen, mock_relay, mock_path, mock_env):
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, ['arg1', 'arg2', '-v'], False, "Microsoft.HybridCompute", None, None, True)
+        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, ['arg1', 'arg2', '-v'], False, "Microsoft.HybridCompute/machines", None, None, True)
         op_info.public_key_file = "pub"
         op_info.private_key_file = "priv"
         op_info.cert_file = "cert"
@@ -29,7 +29,7 @@ class RDPUtilsTest(unittest.TestCase):
         mock_relay.return_value = 'relay_string'
         mock_popen.return_value = 'ssh_process'
 
-        expected_command = ['ssh', "user@vm", '-o', 'ProxyCommand=\"proxy\" -p port', '-i', 'priv', '-o', 'CertificateFile=\"cert\"', 'arg1', 'arg2', '-v']
+        expected_command = ['ssh', "vm", '-l', 'user', '-o', 'ProxyCommand=\"proxy\" -p port', '-i', 'priv', '-o', 'CertificateFile=\"cert\"', 'arg1', 'arg2', '-v']
         expected_env = {'var1':'value1', 'var2':'value2', 'var3':'value3', 'SSHPROXY_RELAY_INFO':'relay_string'}
 
         ssh_sub, print_logs = rdp_utils.start_ssh_tunnel(op_info)
@@ -70,7 +70,7 @@ class RDPUtilsTest(unittest.TestCase):
     @mock.patch.object(rdp_utils, 'call_rdp')
     @mock.patch.object(rdp_utils, 'terminate_ssh')
     def test_start_rdp_connection(self, mock_terminate, mock_rdp, mock_wait, mock_tunnel, mock_isopen, mock_getport):
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, ['arg1', 'arg2'], False, "Microsoft.HybridCompute", None, None, True)
+        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, ['arg1', 'arg2'], False, "Microsoft.HybridCompute/machines", None, None, True)
         op_info.public_key_file = "pub"
         op_info.private_key_file = "priv"
         op_info.cert_file = "cert"

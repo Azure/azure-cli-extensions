@@ -10,9 +10,8 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '1.2.2'
 try:
-    from azext_communication.manual.version import VERSION
+    from azext_communication.version import VERSION
 except ImportError:
     pass
 
@@ -29,9 +28,14 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = ['azure-core', 'azure-communication-identity>=1.1.0',
-                'azure-communication-phonenumbers', 'azure-communication-sms',
-                'azure-communication-chat']
+DEPENDENCIES = ['azure-core',
+                'azure-communication-identity >= 1.2.0',
+                'azure-communication-phonenumbers',
+                'azure-communication-sms',
+                'azure-communication-chat',
+                'azure-communication-rooms',
+                'azure-communication-email == 1.0.0b1',
+                ]
 
 try:
     from azext_communication.manual.dependency import DEPENDENCIES

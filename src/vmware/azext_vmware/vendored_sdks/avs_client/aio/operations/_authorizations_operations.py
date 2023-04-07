@@ -67,7 +67,7 @@ class AuthorizationsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -146,7 +146,7 @@ class AuthorizationsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL
@@ -188,7 +188,7 @@ class AuthorizationsOperations:
         resource_group_name: str,
         private_cloud_name: str,
         authorization_name: str,
-        express_route_id: Optional[str] = None,
+        authorization: "_models.ExpressRouteAuthorization",
         **kwargs: Any
     ) -> "_models.ExpressRouteAuthorization":
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.ExpressRouteAuthorization"]
@@ -196,9 +196,7 @@ class AuthorizationsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-
-        _authorization = _models.ExpressRouteAuthorization(express_route_id=express_route_id)
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -222,7 +220,7 @@ class AuthorizationsOperations:
         header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
 
         body_content_kwargs = {}  # type: Dict[str, Any]
-        body_content = self._serialize.body(_authorization, 'ExpressRouteAuthorization')
+        body_content = self._serialize.body(authorization, 'ExpressRouteAuthorization')
         body_content_kwargs['content'] = body_content
         request = self._client.put(url, query_parameters, header_parameters, **body_content_kwargs)
         pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
@@ -249,7 +247,7 @@ class AuthorizationsOperations:
         resource_group_name: str,
         private_cloud_name: str,
         authorization_name: str,
-        express_route_id: Optional[str] = None,
+        authorization: "_models.ExpressRouteAuthorization",
         **kwargs: Any
     ) -> AsyncLROPoller["_models.ExpressRouteAuthorization"]:
         """Create or update an ExpressRoute Circuit Authorization in a private cloud.
@@ -262,8 +260,8 @@ class AuthorizationsOperations:
         :type private_cloud_name: str
         :param authorization_name: Name of the ExpressRoute Circuit Authorization in the private cloud.
         :type authorization_name: str
-        :param express_route_id: The ID of the ExpressRoute Circuit.
-        :type express_route_id: str
+        :param authorization: An ExpressRoute Circuit Authorization.
+        :type authorization: ~avs_client.models.ExpressRouteAuthorization
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be AsyncARMPolling.
@@ -286,7 +284,7 @@ class AuthorizationsOperations:
                 resource_group_name=resource_group_name,
                 private_cloud_name=private_cloud_name,
                 authorization_name=authorization_name,
-                express_route_id=express_route_id,
+                authorization=authorization,
                 cls=lambda x,y,z: x,
                 **kwargs
             )
@@ -334,7 +332,7 @@ class AuthorizationsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2021-12-01"
+        api_version = "2022-05-01"
         accept = "application/json"
 
         # Construct URL

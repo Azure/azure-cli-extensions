@@ -1,0 +1,54 @@
+interactions:
+- request:
+    body: '{"benefits": [{"appliedScopeType": "Shared", "displayName": "newName2"}]}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing-benefits savings-plan-order savings-plan validate-update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '73'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --savings-plan-order-id --savings-plan-id --benefits
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.BillingBenefits/savingsPlanOrders/683ae71d-f43a-4b76-bb26-9a6ffef80030/savingsPlans/ce6eaefe-3abe-4961-8455-1e8b1e041a6f/validate?api-version=2022-11-01
+  response:
+    body:
+      string: '{"benefits":[{"valid":true}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 16 Dec 2022 04:20:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-ms-version:
+      - 1.0.2169.1444
+    status:
+      code: 200
+      message: OK
+version: 1

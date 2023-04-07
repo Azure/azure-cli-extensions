@@ -19,7 +19,7 @@ def load_arguments(self, _):
 
     with self.argument_context('fleet') as c:
         c.argument('name', options_list=['--name', '-n'], help='Specify the fleet name.')
-        c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group, help='aaa')
+        c.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
 
     with self.argument_context('fleet create') as c:
         c.argument('tags', tags_type)

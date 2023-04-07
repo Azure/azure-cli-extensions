@@ -13,6 +13,7 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     DatabaseRestoreResource,
     GremlinDatabaseRestoreResource,
     CosmosCassandraDataTransferDataSourceSink,
+    CosmosMongoDataTransferDataSourceSink,
     CosmosSqlDataTransferDataSourceSink,
     PhysicalPartitionThroughputInfoResource,
     PhysicalPartitionId
@@ -136,6 +137,45 @@ class AddCassandraTableAction(argparse._AppendAction):
             namespace.dest_cassandra_table = cassandra_table
         else:
             namespace.cassandra_table = cassandra_table
+
+
+class AddMongoCollectionAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if not values:
+            # pylint: disable=line-too-long
+            raise CLIError(f'usage error: {option_string} [KEY=VALUE ...]')
+
+        database_name = None
+        collection_name = None
+
+        for (k, v) in (x.split('=', 1) for x in values):
+            kl = k.lower()
+            if kl == 'database':
+                database_name = v
+
+            elif kl == 'collection':
+                collection_name = v
+
+            else:
+                raise CLIError(
+                    f'Unsupported Key {k} is provided for {option_string} component. All'
+                    ' possible keys are: database, collection'
+                )
+
+        if database_name is None:
+            raise CLIError(f'usage error: missing key database in {option_string} component')
+
+        if collection_name is None:
+            raise CLIError(f'usage error: missing key table in {option_string} component')
+
+        mongo_collection = CosmosMongoDataTransferDataSourceSink(database_name=database_name, collection_name=collection_name)
+
+        if option_string == "--source-mongo":
+            namespace.source_mongo = mongo_collection
+        elif option_string == "--dest-mongo":
+            namespace.dest_mongo = mongo_collection
+        else:
+            namespace.mongo_collection = mongo_collection
 
 
 class AddSqlContainerAction(argparse._AppendAction):

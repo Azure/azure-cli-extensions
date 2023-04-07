@@ -12,7 +12,7 @@ from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 from msrestazure.tools import resource_id
 
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
+from .vendored_sdks.appplatform.v2023_03_01_preview import models
 
 APPLICATION_CONFIGURATION_SERVICE_NAME = "applicationConfigurationService"
 RESOURCE_ID = "resourceId"
@@ -21,6 +21,15 @@ RESOURCE_TYPE = "configurationServices"
 DEFAULT_NAME = "default"
 
 logger = get_logger(__name__)
+
+
+def application_configuration_service_create(cmd, client, service, resource_group):
+    acs_resource = models.ConfigurationServiceResource()
+    return client.configuration_services.begin_create_or_update(resource_group, service, DEFAULT_NAME, acs_resource)
+
+
+def application_configuration_service_delete(cmd, client, service, resource_group):
+    return client.configuration_services.begin_delete(resource_group, service, DEFAULT_NAME)
 
 
 def application_configuration_service_show(cmd, client, service, resource_group):
@@ -148,6 +157,8 @@ def _replace_repo_with_input(repo, patterns, uri, label, search_paths, username,
         patterns = patterns.split(",")
     if search_paths:
         search_paths = search_paths.split(",")
+    if private_key:
+        private_key = private_key.replace('\\n', '\n')
 
     repo.patterns = patterns or repo.patterns
     repo.uri = uri or repo.uri

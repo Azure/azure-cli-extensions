@@ -12,112 +12,11 @@
 # pylint: disable=bad-continuation
 # pylint: disable=line-too-long
 
-from azure.cli.core.commands import CliCommandType
-from azext_dnsresolver.generated._client_factory import (
-    cf_dns_resolver,
-    cf_inbound_endpoint,
-    cf_outbound_endpoint,
-    cf_dns_forwarding_ruleset,
-    cf_forwarding_rule,
-    cf_virtual_network_link,
-)
-
-
-dns_resolver_dns_resolver = CliCommandType(
-    operations_tmpl=(
-        'azext_dnsresolver.vendored_sdks.dnsresolver.operations._dns_resolvers_operations#DnsResolversOperations.{}'
-    ),
-    client_factory=cf_dns_resolver,
-)
-
-
-dns_resolver_forwarding_rule = CliCommandType(
-    operations_tmpl='azext_dnsresolver.vendored_sdks.dnsresolver.operations._forwarding_rules_operations#ForwardingRulesOperations.{}',
-    client_factory=cf_forwarding_rule,
-)
-
-
-dns_resolver_dns_forwarding_ruleset = CliCommandType(
-    operations_tmpl='azext_dnsresolver.vendored_sdks.dnsresolver.operations._dns_forwarding_rulesets_operations#DnsForwardingRulesetsOperations.{}',
-    client_factory=cf_dns_forwarding_ruleset,
-)
-
-
-dns_resolver_inbound_endpoint = CliCommandType(
-    operations_tmpl='azext_dnsresolver.vendored_sdks.dnsresolver.operations._inbound_endpoints_operations#InboundEndpointsOperations.{}',
-    client_factory=cf_inbound_endpoint,
-)
-
-
-dns_resolver_outbound_endpoint = CliCommandType(
-    operations_tmpl='azext_dnsresolver.vendored_sdks.dnsresolver.operations._outbound_endpoints_operations#OutboundEndpointsOperations.{}',
-    client_factory=cf_outbound_endpoint,
-)
-
-
-dns_resolver_virtual_network_link = CliCommandType(
-    operations_tmpl='azext_dnsresolver.vendored_sdks.dnsresolver.operations._virtual_network_links_operations#VirtualNetworkLinksOperations.{}',
-    client_factory=cf_virtual_network_link,
-)
-
 
 def load_command_table(self, _):
 
-    with self.command_group(
-        'dns-resolver', dns_resolver_dns_resolver, client_factory=cf_dns_resolver, is_preview=True
-    ) as g:
+    with self.command_group('dns-resolver') as g:
         g.custom_command('list', 'dns_resolver_list')
-        g.custom_show_command('show', 'dns_resolver_show')
-        g.custom_command('create', 'dns_resolver_create', supports_no_wait=True)
-        g.custom_command('update', 'dns_resolver_update', supports_no_wait=True)
-        g.custom_command('delete', 'dns_resolver_delete', supports_no_wait=True, confirmation=True)
-        g.custom_wait_command('wait', 'dns_resolver_show')
 
-    with self.command_group(
-        'dns-resolver forwarding-rule', dns_resolver_forwarding_rule, client_factory=cf_forwarding_rule
-    ) as g:
-        g.custom_command('list', 'dns_resolver_forwarding_rule_list')
-        g.custom_show_command('show', 'dns_resolver_forwarding_rule_show')
-        g.custom_command('create', 'dns_resolver_forwarding_rule_create')
-        g.custom_command('update', 'dns_resolver_forwarding_rule_update')
-        g.custom_command('delete', 'dns_resolver_forwarding_rule_delete', confirmation=True)
-
-    with self.command_group(
-        'dns-resolver forwarding-ruleset', dns_resolver_dns_forwarding_ruleset, client_factory=cf_dns_forwarding_ruleset
-    ) as g:
+    with self.command_group('dns-resolver forwarding-ruleset') as g:
         g.custom_command('list', 'dns_resolver_forwarding_ruleset_list')
-        g.custom_show_command('show', 'dns_resolver_forwarding_ruleset_show')
-        g.custom_command('create', 'dns_resolver_forwarding_ruleset_create', supports_no_wait=True)
-        g.custom_command('update', 'dns_resolver_forwarding_ruleset_update', supports_no_wait=True)
-        g.custom_command('delete', 'dns_resolver_forwarding_ruleset_delete', supports_no_wait=True, confirmation=True)
-        g.custom_wait_command('wait', 'dns_resolver_forwarding_ruleset_show')
-
-    with self.command_group(
-        'dns-resolver inbound-endpoint', dns_resolver_inbound_endpoint, client_factory=cf_inbound_endpoint
-    ) as g:
-        g.custom_command('list', 'dns_resolver_inbound_endpoint_list')
-        g.custom_show_command('show', 'dns_resolver_inbound_endpoint_show')
-        g.custom_command('create', 'dns_resolver_inbound_endpoint_create', supports_no_wait=True)
-        g.custom_command('update', 'dns_resolver_inbound_endpoint_update', supports_no_wait=True)
-        g.custom_command('delete', 'dns_resolver_inbound_endpoint_delete', supports_no_wait=True, confirmation=True)
-        g.custom_wait_command('wait', 'dns_resolver_inbound_endpoint_show')
-
-    with self.command_group(
-        'dns-resolver outbound-endpoint', dns_resolver_outbound_endpoint, client_factory=cf_outbound_endpoint
-    ) as g:
-        g.custom_command('list', 'dns_resolver_outbound_endpoint_list')
-        g.custom_show_command('show', 'dns_resolver_outbound_endpoint_show')
-        g.custom_command('create', 'dns_resolver_outbound_endpoint_create', supports_no_wait=True)
-        g.custom_command('update', 'dns_resolver_outbound_endpoint_update', supports_no_wait=True)
-        g.custom_command('delete', 'dns_resolver_outbound_endpoint_delete', supports_no_wait=True, confirmation=True)
-        g.custom_wait_command('wait', 'dns_resolver_outbound_endpoint_show')
-
-    with self.command_group(
-        'dns-resolver vnet-link', dns_resolver_virtual_network_link, client_factory=cf_virtual_network_link
-    ) as g:
-        g.custom_command('list', 'dns_resolver_vnet_link_list')
-        g.custom_show_command('show', 'dns_resolver_vnet_link_show')
-        g.custom_command('create', 'dns_resolver_vnet_link_create', supports_no_wait=True)
-        g.custom_command('update', 'dns_resolver_vnet_link_update', supports_no_wait=True)
-        g.custom_command('delete', 'dns_resolver_vnet_link_delete', supports_no_wait=True, confirmation=True)
-        g.custom_wait_command('wait', 'dns_resolver_vnet_link_show')

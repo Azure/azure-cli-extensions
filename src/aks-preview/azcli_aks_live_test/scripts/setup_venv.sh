@@ -48,7 +48,7 @@ setupAZ(){
 # need to be executed in a venv
 installTestPackages(){
     # install pytest plugins
-    pip install pytest-json-report pytest-rerunfailures pytest-cov --upgrade
+    pip install pytest-json-report==1.5.0 pytest-rerunfailures==11.0 pytest-cov==4.0.0 pytest-forked==1.6.0
 
     # install coverage for measuring code coverage
     pip install coverage
@@ -145,7 +145,7 @@ if [[ -n ${setup_option} ]]; then
         echo "Start to setup az-aks-tool!"
         local_setup=${3:-"n"}
         if [[ ${local_setup} == "y" ]]; then
-            wheel_file=${4}
+            wheel_file=${4:-"/az_aks_tool-latest-py3-none-any.whl"}
             installAZAKSTOOLFromLocal "${wheel_file}"
         else
             installAZAKSTOOL

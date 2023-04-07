@@ -2,6 +2,15 @@
 
 Release History
 ===============
+
+0.14.5
+++++++
+* Fix `az network firewall create`: Creation fails with AZFW_Hub SKU
+
+0.14.4
+++++++
+* `az network firewall create/update`: Add parameter `--udp-log-optimization`
+
 0.14.3
 ++++++
 * `az network firewall create`: Support Basic SKU creation with management IP configuration

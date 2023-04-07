@@ -1,0 +1,164 @@
+interactions:
+- request:
+    body: '{"id": "/providers/microsoft.capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876",
+      "properties": {"reservationToReturn": {"quantity": 1, "reservationId": "/providers/microsoft.capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/9cb27776-afb6-43f6-8493-70dd3cd9321f"},
+      "scope": "Reservation"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation-order calculate-refund
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '329'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --reservation-order-id --id --scope --quantity --reservation-id
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/calculateRefund?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/9cb27776-afb6-43f6-8493-70dd3cd9321f","properties":{"sessionId":"d2dff20e-169e-4ab8-968f-6289be776dc0","quantity":1,"billingRefundAmount":{"currencyCode":"GBP","amount":1.83},"pricingRefundAmount":{"currencyCode":"USD","amount":2.18},"policyResult":{"properties":{"consumedRefundsTotal":{"currencyCode":"USD","amount":431.93},"maxRefundLimit":{"currencyCode":"USD","amount":50000.0},"policyErrors":[]}},"billingInformation":{"billingPlan":"Monthly","completedTransactions":1,"totalTransactions":12,"billingCurrencyTotalPaidAmount":{"currencyCode":"GBP","amount":5.49},"billingCurrencyProratedAmount":{"currencyCode":"GBP","amount":3.66},"billingCurrencyRemainingCommitmentAmount":{"currencyCode":"GBP","amount":20.13}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '825'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Mar 2023 23:26:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-ms-test:
+      - '{"contact":"sornaks","scenarios":"MultiCurrencyTesting","retention":"6/2/2023
+        3:29:09 AM"}'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"reservationToReturn": {"quantity": 1, "reservationId":
+      "/providers/microsoft.capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/9cb27776-afb6-43f6-8493-70dd3cd9321f"},
+      "returnReason": "testing", "scope": "Reservation", "sessionId": "d2dff20e-169e-4ab8-968f-6289be776dc0"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation-order return
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '315'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --reservation-order-id --return-reason --scope --session-id --quantity --reservation-id
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/return?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/9cb27776-afb6-43f6-8493-70dd3cd9321f","properties":{"sessionId":"d2dff20e-169e-4ab8-968f-6289be776dc0","quantity":1,"billingRefundAmount":{"currencyCode":"GBP","amount":1.83},"pricingRefundAmount":{"currencyCode":"USD","amount":2.18},"policyResult":{"properties":{"consumedRefundsTotal":{"currencyCode":"USD","amount":431.93},"maxRefundLimit":{"currencyCode":"USD","amount":50000.0},"policyErrors":[]}},"billingInformation":{"billingPlan":"Monthly","completedTransactions":1,"totalTransactions":12,"billingCurrencyTotalPaidAmount":{"currencyCode":"GBP","amount":5.49},"billingCurrencyProratedAmount":{"currencyCode":"GBP","amount":3.66},"billingCurrencyRemainingCommitmentAmount":{"currencyCode":"GBP","amount":20.13}}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '825'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Mar 2023 23:26:56 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876?api-version=2022-11-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-ms-test:
+      - '{"contact":"sornaks","scenarios":"MultiCurrencyTesting","retention":"6/2/2023
+        3:29:09 AM"}'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation-order return
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-id --return-reason --scope --session-id --quantity --reservation-id
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/microsoft.capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876","name":"62069b8a-8f84-49ab-9a4a-f69009390876","type":"microsoft.capacity/reservationOrders","etag":18,"properties":{"originalQuantity":3,"requestDateTime":"2023-03-04T03:29:14.6367316Z","billingPlan":"Monthly","reservations":[{"id":"/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/8f4acb58-cca9-4b54-847e-791694079fab"},{"id":"/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/0d86ee3f-1b88-4a2b-8d71-2a27eb25da66"},{"id":"/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/8bae2e8e-c4b9-48f1-b43e-03514f0d7f34"},{"id":"/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/21eae555-c406-47d5-a178-98cf422be361"},{"id":"/providers/Microsoft.Capacity/reservationOrders/62069b8a-8f84-49ab-9a4a-f69009390876/reservations/9cb27776-afb6-43f6-8493-70dd3cd9321f"}],"term":"P1Y","displayName":"VM_RI_03-03-2023_19-28","createdDateTime":"2023-03-04T03:37:37.2333829Z","benefitStartTime":"2023-03-04T03:37:33.9364708Z","provisioningState":"Pending","billingAccountId":"/providers/Microsoft.Billing/billingAccounts/61e667a1-0558-45a2-b21a-57fa7893951d","expiryDateTime":"2024-03-04T03:37:33.9364708Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1373'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Mar 2023 23:28:57 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 1.0.2251.115
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -14,7 +14,7 @@ helps['fleet'] = """
 
 helps['fleet create'] = """
     type: command
-    short-summary: Create a new fleet.
+    short-summary: Creates or updates a Fleet.
     parameters:
         - name: --tags
           type: string
@@ -27,7 +27,7 @@ helps['fleet create'] = """
 
 helps['fleet update'] = """
     type: command
-    short-summary: Update an existing fleet.
+    short-summary: Patches a fleet resource.
     parameters:
         - name: --tags
           type: string
@@ -36,22 +36,22 @@ helps['fleet update'] = """
 
 helps['fleet show'] = """
     type: command
-    short-summary: Get an existing fleet.
+    short-summary: Gets a Fleet.
 """
 
 helps['fleet list'] = """
     type: command
-    short-summary: List fleet by resource group & subscription id.
+    short-summary: Lists fleets in the specified subscription and resource group.
 """
 
 helps['fleet delete'] = """
     type: command
-    short-summary: Delete an existing fleet.
+    short-summary: Deletes a Fleet.
 """
 
 helps['fleet get-credentials'] = """
     type: command
-    short-summary: List fleet kubeconfig credentials
+    short-summary: Lists the user credentials of a Fleet.
     parameters:
     - name: --overwrite-existing
       type: bool
@@ -74,7 +74,7 @@ helps['fleet member'] = """
 
 helps['fleet member create'] = """
     type: command
-    short-summary: Join member cluster to a fleet.
+    short-summary: Creates or updates a fleet member.
     parameters:
         - name: --member-cluster-id
           type: string
@@ -83,17 +83,17 @@ helps['fleet member create'] = """
 
 helps['fleet member list'] = """
     type: command
-    short-summary: List member cluster(s) of a fleet.
+    short-summary: Lists the members of a fleet.
 """
 
 helps['fleet member show'] = """
     type: command
-    short-summary: Get member cluster of a fleet.
+    short-summary: Gets a Fleet member.
 """
 
 helps['fleet member delete'] = """
     type: command
-    short-summary: Remove member cluster from a fleet
+    short-summary: Deletes a fleet member.
 """
 
 helps['fleet member wait'] = """

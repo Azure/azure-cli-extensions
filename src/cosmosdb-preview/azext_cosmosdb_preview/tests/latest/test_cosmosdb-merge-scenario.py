@@ -23,11 +23,11 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
         db_name = self.create_random_name(prefix='cli', length=15)
         # Assumption: There exists a canary-sdk-test rg with the account mergetest. This test only creates the database and collection
         self.kwargs.update({
-            'rg' : 'canary-sdk-test',
-            'acc': 'mergetest',            
+            'rg' : 'cosmosTest',
+            'acc': 'mergetest2',
             'db_name': db_name,
             'col': col,
-            'loc': 'eastus2'
+            'loc': 'westus'
         })
 
         # Create database
@@ -50,11 +50,11 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
         db_name = self.create_random_name(prefix='cli', length=15)
 
         self.kwargs.update({
-            'rg':'canary-sdk-test',
-            'acc': 'mongomergeaccount',            
+            'rg':'cosmosTest',
+            'acc': 'mergetest3',
             'db_name': db_name,
             'col': col,
-            'loc': 'eastus2',
+            'loc': 'westus',
             'shard_key': "theShardKey",
             'throughput': "20000"
         })

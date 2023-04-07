@@ -35,7 +35,7 @@ def build_list_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -93,7 +93,7 @@ class Operations(object):
         :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.OperationsList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2020-10-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2022-01-10-preview")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.OperationsList"]
         error_map = {

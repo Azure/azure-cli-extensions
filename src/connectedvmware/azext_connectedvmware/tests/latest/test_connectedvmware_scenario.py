@@ -28,15 +28,21 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
                 'cluster_name': 'azcli-test-cluster',
                 'datastore_inventory_item': 'datastore-563660',
                 'datastore_name': 'azcli-test-datastore',
-                'host_inventory_item': 'host-713902',
+                'host_inventory_item': 'host-1147546',
                 'host_name': 'azcli-test-host',
                 'vnet_inventory_item': 'network-563661',
                 'vnet_name': 'azcli-test-virtual-network',
-                'vmtpl_inventory_item': 'vmtpl-vm-651858',
+                'vmtpl_inventory_item': 'vmtpl-vm-1184288',
                 'vmtpl_name': 'azcli-test-vm-template',
                 'vm_name': 'azcli-test-vm',
+                'guest_username': 'azcli-user',
+                'guest_password': 'azcli-password',
                 'nic_name': 'nic_1',
                 'disk_name': 'disk_1',
+                'extension_name': 'AzureMonitorLinuxAgent',
+                'extension_type': 'AzureMonitorLinuxAgent',
+                'type_handler_version': '1.15.3',
+                'publisher': 'Microsoft.Azure.Monitor',
             }
         )
 
@@ -53,7 +59,7 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
             self.cmd('az connectedvmware vcenter list -g {rg}').get_output_in_json()
         )
         # vcenter count list should report 1
-        self.assertEqual(count, 1, 'vcenter resource count expected to be 1')
+        self.assertGreaterEqual(count, 1, 'vcenter resource count expected to be at least 1')
 
         # Create resource-pool resource.
         self.cmd(
@@ -189,12 +195,16 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         )
 
         # Validate the show command output with vm name.
-        self.cmd(
+        vm = self.cmd(
             'az connectedvmware vm show -g {rg} --name {vm_name}',
             checks=[
                 self.check('name', '{vm_name}'),
             ],
-        )
+        ).get_output_in_json()
+        vm_moRefId = vm['moRefId']
+        self.kwargs.update({ 'vm_moRefId': vm_moRefId })
+        self.assertIsNotNone(vm_moRefId)
+        self.assertNotEqual(len(vm_moRefId), 0, 'moRefId of the VM should not be empty')
 
         # List the VM resources in this resource group.
         resource_list = self.cmd(
@@ -233,6 +243,32 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
         # At least 1 disk should be there for the vm resource.
         assert len(resource_list) >= 1
 
+        # Enable guest agent on the vm resource.
+        self.cmd(
+            'az connectedvmware vm guest-agent enable -g {rg} --vm-name {vm_name} --username {guest_username} --password {guest_password}',
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+            ],
+        )
+
+        # Create VM extension.
+        self.cmd(
+            'az connectedvmware vm extension create -l {loc} -g {rg} --vm-name {vm_name} --name {extension_name} --type {extension_type} --publisher {publisher} --type-handler-version {type_handler_version}',
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+                self.check('typeHandlerVersion', '{type_handler_version}'),
+            ],
+        )
+
+        # Update VM extension.
+        self.cmd(
+            'az connectedvmware vm extension update -g {rg} --vm-name {vm_name} --name {extension_name} --enable-auto-upgrade false',
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+                self.check('enableAutomaticUpgrade', False),
+            ],
+        )
+
         # Update VM.
         self.cmd(
             'az connectedvmware vm update -g {rg} --name {vm_name} --memory-size 2048 --num-CPUs 2',
@@ -246,6 +282,14 @@ class ConnectedvmwareScenarioTest(ScenarioTest):
 
         # Start VM.
         self.cmd('az connectedvmware vm start -g {rg} --name {vm_name}')
+
+        # Disable the VM from azure; delete the ARM resource, retain the VM in vCenter.
+        self.cmd('az connectedvmware vm delete -g {rg} --name {vm_name} --retain -y')
+
+        # Enable the VM to azure again.
+        self.cmd(
+            'az connectedvmware vm create -g {rg} -l {loc} --custom-location {cus_loc} --vcenter {vc_name} -i {vm_moRefId} --name {vm_name}'
+        )
 
         # Delete the created VM.
         self.cmd('az connectedvmware vm delete -g {rg} --name {vm_name} -y')

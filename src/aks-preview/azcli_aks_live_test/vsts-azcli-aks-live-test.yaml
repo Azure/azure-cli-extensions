@@ -54,7 +54,7 @@ jobs:
       condition: succeeded()
       displayName: "Start Container"
     - bash: |
-        docker exec $(ContainerName) /opt/scripts/setup_venv.sh setup-tool y
+        docker exec $(ContainerName) /opt/scripts/setup_venv.sh setup-tool y y /az_aks_tool-latest-py3-none-any.whl
         docker exec $(ContainerName) /opt/scripts/setup_venv.sh setup-az n azure-cli/ azure-cli-extensions/
       condition: succeeded()
       displayName: "Set up Virtual Environment"

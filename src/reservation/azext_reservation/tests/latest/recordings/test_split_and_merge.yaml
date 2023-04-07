@@ -1,0 +1,278 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-id --reservation-id
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/7d1acf3c-3fb0-4240-9a75-d158f112adfe?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/7d1acf3c-3fb0-4240-9a75-d158f112adfe","name":"7d1acf3c-3fb0-4240-9a75-d158f112adfe","type":"microsoft.capacity/reservationOrders/reservations","location":"uksouth","etag":2,"sku":{"name":"Standard_B1s"},"properties":{"mergeProperties":{"mergeSources":["4a83560e-0600-4c84-aa87-141b1396b7c0","dfcbf829-758e-480e-959b-1a7a49df35af"]},"reservedResourceType":"VirtualMachines","userFriendlyRenewState":"Off","skuDescription":"Reserved
+        VM Instance, Standard_B1s, UK South, 1 Year","renew":false,"archived":false,"quantity":2,"appliedScopeType":"Shared","displayName":"VM_RI_03-03-2023_20-17","provisioningState":"Succeeded","term":"P1Y","displayProvisioningState":"Succeeded","userFriendlyAppliedScopeType":"Shared","expiryDateTime":"2024-03-04T04:56:13.6635617Z","purchaseDateTime":"2023-03-04T04:17:26.4266716Z","benefitStartTime":"2023-03-04T04:56:13.6635617Z","lastUpdatedDateTime":"2023-03-06T22:46:45.3575553Z","expiryDate":"2024-03-04","purchaseDate":"2023-03-04","effectiveDateTime":"2023-03-06T22:46:45.3575553Z","instanceFlexibility":"On","utilization":{"aggregates":[]},"billingPlan":"Monthly","billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1277'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Mar 2023 22:58:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 1.0.2251.115
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"quantities": [1, 1], "reservationId": "/providers/Microsoft.Capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/7d1acf3c-3fb0-4240-9a75-d158f112adfe"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation split
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '193'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --reservation-order-id --reservation-id --quantities
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/split?api-version=2022-11-01
+  response:
+    body:
+      string: '[{"sku":{"name":"Standard_B1s"},"id":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/82b192fe-6bad-4647-99ad-aa134638b789/revisions/2","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"2","etag":2,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Succeeded","expiryDateTime":"2024-03-04T04:56:13.6635617Z","benefitStartTime":"2023-03-04T04:56:13.6635617Z","displayName":"VM_RI_03-03-2023_20-17","effectiveDateTime":"2023-03-06T22:59:02.8648438Z","lastUpdatedDateTime":"2023-03-06T22:59:08.8857069Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1s, UK South, 1 Year","splitProperties":{"splitSource":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/7d1acf3c-3fb0-4240-9a75-d158f112adfe"},"renew":false,"archived":false}},{"sku":{"name":"Standard_B1s"},"id":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/202ab6ea-b020-4f51-a03f-505937546183/revisions/2","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"2","etag":2,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Succeeded","expiryDateTime":"2024-03-04T04:56:13.6635617Z","benefitStartTime":"2023-03-04T04:56:13.6635617Z","displayName":"VM_RI_03-03-2023_20-17","effectiveDateTime":"2023-03-06T22:59:02.8648438Z","lastUpdatedDateTime":"2023-03-06T22:59:08.8857069Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1s, UK South, 1 Year","splitProperties":{"splitSource":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/7d1acf3c-3fb0-4240-9a75-d158f112adfe"},"renew":false,"archived":false}},{"sku":{"name":"Standard_B1s"},"id":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/7d1acf3c-3fb0-4240-9a75-d158f112adfe/revisions/5","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"5","etag":5,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":2,"provisioningState":"Cancelled","expiryDateTime":"2024-03-04T04:56:13.6635617Z","benefitStartTime":"2023-03-04T04:56:13.6635617Z","displayName":"VM_RI_03-03-2023_20-17","effectiveDateTime":"2023-03-06T22:59:02.8648438Z","extendedStatusInfo":{"statusCode":"Split","message":"This
+        reservation was split and is no longer active"},"lastUpdatedDateTime":"2023-03-06T22:59:08.8857069Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1s, UK South, 1 Year","splitProperties":{"splitDestinations":["/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/82b192fe-6bad-4647-99ad-aa134638b789","/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/202ab6ea-b020-4f51-a03f-505937546183"]},"mergeProperties":{"mergeSources":["/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/4a83560e-0600-4c84-aa87-141b1396b7c0","/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/dfcbf829-758e-480e-959b-1a7a49df35af"]},"renew":false,"archived":false}}]'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3465'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Mar 2023 22:59:11 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/reservationorders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/splitoperationresults/7d1acf3c-3fb0-4240-9a75-d158f112adfe_3?api-version=2022-11-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-ms-test:
+      - '{"contact":"sornaks","scenarios":"MultiCurrencyTesting","retention":"6/2/2023
+        4:17:21 AM"}'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation split
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-id --reservation-id --quantities
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationorders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/splitoperationresults/7d1acf3c-3fb0-4240-9a75-d158f112adfe_3?api-version=2022-11-01
+  response:
+    body:
+      string: '[{"sku":{"name":"Standard_B1s"},"id":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/82b192fe-6bad-4647-99ad-aa134638b789","type":"Microsoft.Capacity/reservationOrders/reservations","name":"66c42073-5bd1-475d-87d9-e9e6ac95cce7/82b192fe-6bad-4647-99ad-aa134638b789","etag":2,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Succeeded","expiryDate":"2024-03-04","benefitStartTime":"2023-03-04T04:56:13.6635617Z","displayName":"VM_RI_03-03-2023_20-17","effectiveDateTime":"2023-03-06T22:59:02.8648438Z","lastUpdatedDateTime":"2023-03-06T22:59:08.8857069Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1s, UK South, 1 Year","splitProperties":{"splitSource":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/7d1acf3c-3fb0-4240-9a75-d158f112adfe"},"renew":false,"archived":false}},{"sku":{"name":"Standard_B1s"},"id":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/202ab6ea-b020-4f51-a03f-505937546183","type":"Microsoft.Capacity/reservationOrders/reservations","name":"66c42073-5bd1-475d-87d9-e9e6ac95cce7/202ab6ea-b020-4f51-a03f-505937546183","etag":2,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Succeeded","expiryDate":"2024-03-04","benefitStartTime":"2023-03-04T04:56:13.6635617Z","displayName":"VM_RI_03-03-2023_20-17","effectiveDateTime":"2023-03-06T22:59:02.8648438Z","lastUpdatedDateTime":"2023-03-06T22:59:08.8857069Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1s, UK South, 1 Year","splitProperties":{"splitSource":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/7d1acf3c-3fb0-4240-9a75-d158f112adfe"},"renew":false,"archived":false}},{"sku":{"name":"Standard_B1s"},"id":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/7d1acf3c-3fb0-4240-9a75-d158f112adfe","type":"Microsoft.Capacity/reservationOrders/reservations","name":"66c42073-5bd1-475d-87d9-e9e6ac95cce7/7d1acf3c-3fb0-4240-9a75-d158f112adfe","etag":5,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":2,"provisioningState":"Cancelled","expiryDate":"2024-03-04","benefitStartTime":"2023-03-04T04:56:13.6635617Z","displayName":"VM_RI_03-03-2023_20-17","effectiveDateTime":"2023-03-06T22:59:02.8648438Z","extendedStatusInfo":{"statusCode":"Split","message":"This
+        reservation was split and is no longer active"},"lastUpdatedDateTime":"2023-03-06T22:59:08.8857069Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1s, UK South, 1 Year","splitProperties":{"splitDestinations":["/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/82b192fe-6bad-4647-99ad-aa134638b789","/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/202ab6ea-b020-4f51-a03f-505937546183"]},"mergeProperties":{"mergeSources":["/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/4a83560e-0600-4c84-aa87-141b1396b7c0","/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/dfcbf829-758e-480e-959b-1a7a49df35af"]},"renew":false,"archived":false}}]'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3549'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Mar 2023 22:59:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 1.0.2251.115
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"sources": ["/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/82b192fe-6bad-4647-99ad-aa134638b789",
+      "/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/202ab6ea-b020-4f51-a03f-505937546183"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation merge
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '305'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --reservation-order-id --sources
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/merge?api-version=2022-11-01
+  response:
+    body:
+      string: '[{"sku":{"name":"Standard_B1s"},"id":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/82b192fe-6bad-4647-99ad-aa134638b789/revisions/5","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"5","etag":5,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Cancelled","expiryDateTime":"2024-03-04T04:56:13.6635617Z","benefitStartTime":"2023-03-04T04:56:13.6635617Z","displayName":"VM_RI_03-03-2023_20-17","effectiveDateTime":"2023-03-06T22:59:33.4148533Z","extendedStatusInfo":{"statusCode":"Merged","message":"This
+        reservation was merged and is no longer active"},"lastUpdatedDateTime":"2023-03-06T22:59:33.4148533Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1s, UK South, 1 Year","splitProperties":{"splitSource":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/7d1acf3c-3fb0-4240-9a75-d158f112adfe"},"mergeProperties":{"mergeDestination":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/257c402b-3c6f-4979-9ab7-31f88d0ce1fe"},"renew":false,"archived":false}},{"sku":{"name":"Standard_B1s"},"id":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/202ab6ea-b020-4f51-a03f-505937546183/revisions/4","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"4","etag":4,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Cancelled","expiryDateTime":"2024-03-04T04:56:13.6635617Z","benefitStartTime":"2023-03-04T04:56:13.6635617Z","displayName":"VM_RI_03-03-2023_20-17","effectiveDateTime":"2023-03-06T22:59:33.4148533Z","extendedStatusInfo":{"statusCode":"Merged","message":"This
+        reservation was merged and is no longer active"},"lastUpdatedDateTime":"2023-03-06T22:59:33.4148533Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1s, UK South, 1 Year","splitProperties":{"splitSource":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/7d1acf3c-3fb0-4240-9a75-d158f112adfe"},"mergeProperties":{"mergeDestination":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/257c402b-3c6f-4979-9ab7-31f88d0ce1fe"},"renew":false,"archived":false}},{"sku":{"name":"Standard_B1s"},"id":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/257c402b-3c6f-4979-9ab7-31f88d0ce1fe/revisions/2","type":"Microsoft.Capacity/reservationOrders/reservations/revisions","name":"2","etag":2,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":2,"provisioningState":"Succeeded","expiryDateTime":"2024-03-04T04:56:13.6635617Z","benefitStartTime":"2023-03-04T04:56:13.6635617Z","displayName":"VM_RI_03-03-2023_20-17","effectiveDateTime":"2023-03-06T22:59:33.4148533Z","lastUpdatedDateTime":"2023-03-06T22:59:33.4148533Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1s, UK South, 1 Year","mergeProperties":{"mergeSources":["/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/82b192fe-6bad-4647-99ad-aa134638b789","/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/202ab6ea-b020-4f51-a03f-505937546183"]},"renew":false,"archived":false}}]'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3612'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Mar 2023 22:59:37 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Capacity/reservationorders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/mergeoperationresults/82b192fe-6bad-4647-99ad-aa134638b789_3?api-version=2022-11-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-aspnet-version:
+      - 4.0.30319
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-ms-test:
+      - '{"contact":"sornaks","scenarios":"MultiCurrencyTesting","retention":"6/2/2023
+        4:17:21 AM"}'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - reservations reservation merge
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --reservation-order-id --sources
+      User-Agent:
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationorders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/mergeoperationresults/82b192fe-6bad-4647-99ad-aa134638b789_3?api-version=2022-11-01
+  response:
+    body:
+      string: '[{"sku":{"name":"Standard_B1s"},"id":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/82b192fe-6bad-4647-99ad-aa134638b789","type":"Microsoft.Capacity/reservationOrders/reservations","name":"66c42073-5bd1-475d-87d9-e9e6ac95cce7/82b192fe-6bad-4647-99ad-aa134638b789","etag":5,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Cancelled","expiryDate":"2024-03-04","benefitStartTime":"2023-03-04T04:56:13.6635617Z","displayName":"VM_RI_03-03-2023_20-17","effectiveDateTime":"2023-03-06T22:59:33.4148533Z","extendedStatusInfo":{"statusCode":"Merged","message":"This
+        reservation was merged and is no longer active"},"lastUpdatedDateTime":"2023-03-06T22:59:33.4148533Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1s, UK South, 1 Year","splitProperties":{"splitSource":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/7d1acf3c-3fb0-4240-9a75-d158f112adfe"},"mergeProperties":{"mergeDestination":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/257c402b-3c6f-4979-9ab7-31f88d0ce1fe"},"renew":false,"archived":false}},{"sku":{"name":"Standard_B1s"},"id":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/202ab6ea-b020-4f51-a03f-505937546183","type":"Microsoft.Capacity/reservationOrders/reservations","name":"66c42073-5bd1-475d-87d9-e9e6ac95cce7/202ab6ea-b020-4f51-a03f-505937546183","etag":4,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":1,"provisioningState":"Cancelled","expiryDate":"2024-03-04","benefitStartTime":"2023-03-04T04:56:13.6635617Z","displayName":"VM_RI_03-03-2023_20-17","effectiveDateTime":"2023-03-06T22:59:33.4148533Z","extendedStatusInfo":{"statusCode":"Merged","message":"This
+        reservation was merged and is no longer active"},"lastUpdatedDateTime":"2023-03-06T22:59:33.4148533Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1s, UK South, 1 Year","splitProperties":{"splitSource":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/7d1acf3c-3fb0-4240-9a75-d158f112adfe"},"mergeProperties":{"mergeDestination":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/257c402b-3c6f-4979-9ab7-31f88d0ce1fe"},"renew":false,"archived":false}},{"sku":{"name":"Standard_B1s"},"id":"/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/257c402b-3c6f-4979-9ab7-31f88d0ce1fe","type":"Microsoft.Capacity/reservationOrders/reservations","name":"66c42073-5bd1-475d-87d9-e9e6ac95cce7/257c402b-3c6f-4979-9ab7-31f88d0ce1fe","etag":2,"location":"uksouth","properties":{"appliedScopeType":"Shared","quantity":2,"provisioningState":"Succeeded","expiryDate":"2024-03-04","benefitStartTime":"2023-03-04T04:56:13.6635617Z","displayName":"VM_RI_03-03-2023_20-17","effectiveDateTime":"2023-03-06T22:59:33.4148533Z","lastUpdatedDateTime":"2023-03-06T22:59:33.4148533Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"On","skuDescription":"Reserved
+        VM Instance, Standard_B1s, UK South, 1 Year","mergeProperties":{"mergeSources":["/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/82b192fe-6bad-4647-99ad-aa134638b789","/providers/microsoft.capacity/reservationOrders/66c42073-5bd1-475d-87d9-e9e6ac95cce7/reservations/202ab6ea-b020-4f51-a03f-505937546183"]},"renew":false,"archived":false}}]'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3696'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 06 Mar 2023 22:59:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-version:
+      - 1.0.2251.115
+    status:
+      code: 200
+      message: OK
+version: 1

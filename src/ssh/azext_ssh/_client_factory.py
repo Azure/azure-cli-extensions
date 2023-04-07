@@ -29,3 +29,13 @@ def cf_connectedmachine_cl(cli_ctx, *_):
 
 def cf_machine(cli_ctx, *_):
     return cf_connectedmachine_cl(cli_ctx).machines
+
+
+def cf_connectedvmware_cl(cli_ctx, *_):
+    from azext_ssh.vendored_sdks.connectedvmware import AzureArcVMwareManagementServiceAPI
+    return get_mgmt_service_client(cli_ctx,
+                                   AzureArcVMwareManagementServiceAPI)
+
+
+def cf_vmware(cli_ctx, *_):
+    return cf_connectedvmware_cl(cli_ctx).virtual_machines

@@ -31,8 +31,9 @@ class TestLoadBalancer(unittest.TestCase):
         outbound_ip_prefixes = None
         outbound_ports = 80
         idle_timeout = 3600
+        backend_pool_type = "nodeIP"
 
-         # store all the models used by load balancer
+        # store all the models used by load balancer
         ManagedClusterLoadBalancerProfile = (
             self.load_balancer_models.ManagedClusterLoadBalancerProfile
         )
@@ -66,6 +67,7 @@ class TestLoadBalancer(unittest.TestCase):
             outbound_ip_prefixes,
             outbound_ports,
             idle_timeout,
+            backend_pool_type,
             profile,
             self.load_balancer_models,
         )
@@ -76,6 +78,7 @@ class TestLoadBalancer(unittest.TestCase):
         self.assertEqual(p.outbound_ip_prefixes, None)
         self.assertEqual(p.allocated_outbound_ports, 80)
         self.assertEqual(p.idle_timeout_in_minutes, 3600)
+        self.assertEqual(p.backend_pool_type, "nodeIP")
 
 
 if __name__ == '__main__':

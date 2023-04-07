@@ -5,7 +5,7 @@
 ```powershell
 rm ..\azure-cli-extensions\src\vmware\azext_vmware\vendored_sdks -Recurse
 
-autorest --python --output-folder=..\azure-cli-extensions\src\vmware\azext_vmware\vendored_sdks --use=@autorest/python@5.9.3 --tag=package-2021-06-01 --azure-arm=true --namespace=avs_client --override-client-name=AVSClient specification\vmware\resource-manager\readme.md
+autorest --python --output-folder=..\azure-cli-extensions\src\vmware\azext_vmware\vendored_sdks\avs_client --use=@autorest/python@5.8.0 --tag=package-2022-05-01 --azure-arm=true --namespace=avs_client --override-client-name=AVSClient specification\vmware\resource-manager\readme.md
 ```
 
 It was run from a git clone of [azure-rest-api-specs](https://github.com/Azure/azure-rest-api-specs) within the python virtual environment (env\scripts\Activate.ps1). Ensure that no proxy has been set.

@@ -13,19 +13,19 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --cluster-name
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_virtual_machines000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines?api-version=2021-12-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_virtual_machines000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines?api-version=2022-05-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-209","name":"vm-209","type":"Microsoft.AVS/privateClouds/clusters/virtualMachines","properties":{"displayName":"contoso-vm1","moRefId":"vm-209","folderPath":"vm/folder-1","restrictMovement":"Disabled"}},{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-128","name":"vm-128","type":"Microsoft.AVS/privateClouds/clusters/virtualMachines","properties":{"displayName":"contoso-vm2","moRefId":"vm-128","folderPath":"vm","restrictMovement":"Enabled"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-209","name":"vm-209","type":"Microsoft.AVS/privateClouds/clusters/virtualMachines","properties":{"displayName":"contoso-vm1","moRefId":"vm-209","folderPath":"vm/folder-1","restrictMovement":"Disabled"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-128","name":"vm-128","type":"Microsoft.AVS/privateClouds/clusters/virtualMachines","properties":{"displayName":"contoso-vm2","moRefId":"vm-128","folderPath":"vm","restrictMovement":"Enabled"}}]}'
     headers:
       content-length:
-      - '695'
+      - '733'
       content-type:
       - application/json
       date:
-      - Mon, 25 Jul 2022 16:07:18 GMT
+      - Mon, 17 Oct 2022 15:53:47 GMT
       server:
       - Rocket
     status:
@@ -45,19 +45,19 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --cluster-name --virtual-machine
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_virtual_machines000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-209?api-version=2021-12-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_virtual_machines000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-209?api-version=2022-05-01
   response:
     body:
-      string: '{"id":"/subscriptions/{subscription-id}/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-209","name":"vm-209","type":"Microsoft.AVS/privateClouds/clusters/virtualMachines","properties":{"displayName":"contoso-vm","moRefId":"vm-209","folderPath":"vm/folder-1","restrictMovement":"Disabled"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-209","name":"vm-209","type":"Microsoft.AVS/privateClouds/clusters/virtualMachines","properties":{"displayName":"contoso-vm","moRefId":"vm-209","folderPath":"vm/folder-1","restrictMovement":"Disabled"}}'
     headers:
       content-length:
-      - '345'
+      - '364'
       content-type:
       - application/json
       date:
-      - Mon, 25 Jul 2022 16:07:22 GMT
+      - Mon, 17 Oct 2022 15:53:49 GMT
       server:
       - Rocket
     status:
@@ -81,9 +81,9 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --cluster-name --virtual-machine --restrict-movement
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/0.1.0 Python/3.8.10 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: POST
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_virtual_machines000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-209/restrictMovement?api-version=2021-12-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_virtual_machines000001/providers/Microsoft.AVS/privateClouds/cloud1/clusters/cluster1/virtualMachines/vm-209/restrictMovement?api-version=2022-05-01
   response:
     body:
       string: ''
@@ -91,7 +91,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 25 Jul 2022 16:07:26 GMT
+      - Mon, 17 Oct 2022 15:53:51 GMT
       server:
       - Rocket
     status:

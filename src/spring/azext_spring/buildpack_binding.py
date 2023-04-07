@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=wrong-import-order
-from .vendored_sdks.appplatform.v2022_01_01_preview import models
+from .vendored_sdks.appplatform.v2023_03_01_preview import models
 from azure.cli.core.util import sdk_no_wait
 from ._utils import get_portal_uri
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
@@ -23,6 +23,9 @@ DEFAULT_BUILD_SERVICE_NAME = "default"
 
 def create_or_update_buildpack_binding(cmd, client, resource_group, service,
                                        name, type, builder_name=None, properties=None, secrets=None):
+    logger.warning('Editing bindings will regenerate images for all app deployments using this builder. These new images will ' +
+                   'be used after app restart either manually by yourself or automatically by Azure Spring Apps in regular maintenance tasks. ' +
+                   'Use CLI command --"az spring build-service builder show-deployments" to view the app deployment list of the builder.')
     if not builder_name:
         builder_name = DEFAULT_BUILDER_NAME
         logger.warning('Option --builder-name is not provided, will use default builder name "{}".'.format(builder_name))
@@ -52,6 +55,9 @@ def buildpack_binding_list(cmd, client, resource_group, service, builder_name=No
 
 
 def buildpack_binding_delete(cmd, client, resource_group, service, name, builder_name=None):
+    logger.warning('Deleting bindings will regenerate images for all app deployments using this builder. These new images will ' +
+                   'be used after app restart either manually by yourself or automatically by Azure Spring Apps in regular maintenance tasks. ' +
+                   'Use CLI command --"az spring build-service builder show-deployments" to view the app deployment list of the builder.')
     if not builder_name:
         builder_name = DEFAULT_BUILDER_NAME
         logger.warning('Option --builder-name is not provided, will use default builder name "{}".'.format(builder_name))
