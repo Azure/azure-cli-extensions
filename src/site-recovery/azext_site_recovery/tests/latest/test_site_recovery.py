@@ -296,8 +296,8 @@ class SiteRecoveryScenario(ScenarioTest):
 
         #
         # # # create two storage accounts for caching
-        self.cmd('az storage account create -n {storage_src_name} -g {vm_rg} --sku Premium_LRS -l {source_loc}')
-        self.cmd('az storage account create -n {storage_recovery_name} -g {rg} --sku Premium_LRS -l {recovery_loc}')
+        self.cmd('az storage account create -n {storage_src_name} -g {vm_rg} --sku Standard_LRS -l {source_loc}')
+        self.cmd('az storage account create -n {storage_recovery_name} -g {rg} --sku Standard_LRS -l {recovery_loc}')
         #
         sa_src_id = self.cmd('az storage account show -n {storage_src_name} -g {vm_rg}').get_output_in_json()["id"]
         sa_recovery_id = self.cmd('az storage account show -n {storage_recovery_name} -g {rg}').get_output_in_json()["id"]

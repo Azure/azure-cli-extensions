@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the list of ASR replication protected items in the protection container.
+
+    :example: protected-item list
+        az site-recovery protected-item list -g {rg} --fabric-name {fabric_recovery_name} --protection-container {container_recovery_name} --vault-name {vault_name}
     """
 
     _aaz_info = {
