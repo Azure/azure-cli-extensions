@@ -301,7 +301,7 @@ class ContainerappScenarioTest(ScenarioTest):
 
         # Update existing Container App that has a single container
 
-        update_string = 'containerapp update -g {} -n {} --image {} --cpu 0.5 --memory 1.0Gi --args mycommand mycommand2 --command "mycommand" --revision-suffix suffix --min-replicas 2 --max-replicas 4'.format(
+        update_string = 'containerapp update -g {} -n {} --image {} --cpu 0.5 --memory 1.0Gi --args mycommand mycommand2 --command "mycommand" --revision-suffix suffix --min-replicas 2 --max-replicas 34'.format(
             resource_group, containerapp_name, 'nginx')
         self.cmd(update_string, checks=[
             JMESPathCheck('name', containerapp_name),
@@ -311,7 +311,7 @@ class ContainerappScenarioTest(ScenarioTest):
             JMESPathCheck('properties.template.containers[0].resources.cpu', '0.5'),
             JMESPathCheck('properties.template.containers[0].resources.memory', '1Gi'),
             JMESPathCheck('properties.template.scale.minReplicas', '2'),
-            JMESPathCheck('properties.template.scale.maxReplicas', '4'),
+            JMESPathCheck('properties.template.scale.maxReplicas', '34'),
             JMESPathCheck('properties.template.containers[0].command[0]', "mycommand"),
             JMESPathCheck('length(properties.template.containers[0].args)', 2)
         ])

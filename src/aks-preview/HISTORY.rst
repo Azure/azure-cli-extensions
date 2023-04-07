@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.136
++++++++
+* fix: remove uneeded location check for DCR, DCRA in azure monitor metrics addon (aks)
+* Refactor: use decorator mode in pod_cidr and network_plugin_mode getters to read from mc only during CREATE
+
 0.5.135
 +++++++
 * Add `--network-dataplane` flag to `az aks create`.
