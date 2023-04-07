@@ -111,6 +111,42 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('socket_timeout', deprecate_info=c.deprecate(hide=True),
                    help='The socket timeout(secs), used by the service to regulate data flow.')
 
+    with self.argument_context('storage blob copy start', resource_type=CUSTOM_DATA_STORAGE_BLOB) as c:
+        from ._validators import validate_source_url
+
+        c.register_blob_arguments()
+        c.register_precondition_options()
+        c.register_precondition_options(prefix='source_')
+        c.register_source_uri_arguments(validator=validate_source_url)
+
+        c.ignore('incremental_copy')
+        c.argument('if_match', options_list=['--destination-if-match'])
+        c.argument('if_modified_since', options_list=['--destination-if-modified-since'])
+        c.argument('if_none_match', options_list=['--destination-if-none-match'])
+        c.argument('if_unmodified_since', options_list=['--destination-if-unmodified-since'])
+        c.argument('if_tags_match_condition', options_list=['--destination-tags-condition'])
+
+        c.ignore('blob_url')
+        c.argument('blob_name', options_list=['--destination-blob', '-b'], required=True,
+                   help='Name of the destination blob. If it exists, it will be overwritten.')
+        c.argument('container_name', options_list=['--destination-container', '-c'], required=True,
+                   help='The container name.')
+        c.extra('destination_lease', options_list='--destination-lease-id',
+                help='The lease ID specified for this header must match the lease ID of the estination blob. '
+                     'If the request does not include the lease ID or it is not valid, the operation fails with status '
+                     'code 412 (Precondition Failed).')
+        c.extra('source_lease', options_list='--source-lease-id', arg_group='Copy Source',
+                help='Specify this to perform the Copy Blob operation only if the lease ID given matches the '
+                     'active lease ID of the source blob.')
+        c.extra('rehydrate_priority', rehydrate_priority_type)
+        c.extra('requires_sync', arg_type=get_three_state_flag(),
+                help='Enforce that the service will not return a response until the copy is complete.')
+        c.extra('tier', tier_type)
+        c.extra('tags', tags_type)
+        c.extra('destination_blob_type', arg_type=get_enum_type(['Detect', 'BlockBlob', 'PageBlob', 'AppendBlob']),
+                help='Defines the type of blob at the destination. '
+                     'Value of "Detect" determines the type based on source blob type.')
+
     with self.argument_context('storage blob delete') as c:
         c.register_blob_arguments()
         c.register_precondition_options()

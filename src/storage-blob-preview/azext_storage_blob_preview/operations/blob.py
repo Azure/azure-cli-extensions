@@ -5,21 +5,13 @@
 
 from __future__ import print_function
 
-import os
 from datetime import datetime, timedelta
 
 from azure.cli.core.profiles import get_sdk
-from azure.cli.core.util import sdk_no_wait
-from azure.cli.command_modules.storage.url_quote_util import make_encoded_file_url_and_params
 from knack.log import get_logger
 from knack.util import CLIError
 
 from .._transformers import transform_response_with_bytearray
-from ..util import (create_file_share_from_storage_client,
-                    create_short_lived_share_sas,
-                    filter_none, collect_blobs, collect_blob_objects, collect_files,
-                    mkdir_p, guess_content_type, normalize_blob_file_path,
-                    check_precondition_success)
 from ..profiles import CUSTOM_DATA_STORAGE_BLOB
 
 logger = get_logger(__name__)
@@ -71,6 +63,64 @@ def _get_datetime_from_string(dt_str):
         except ValueError:
             continue
     raise ValueError("datetime string '{}' not valid. Valid example: 2000-12-31T12:59:59Z".format(dt_str))
+
+
+def copy_blob(cmd, client, source_url, metadata=None, **kwargs):
+    if not kwargs['requires_sync']:
+        kwargs.pop('requires_sync')
+    blob_type = kwargs.pop('destination_blob_type', None)
+    src_client = kwargs.pop('source_client', None)
+    if src_client is None:
+        src_client = client.from_blob_url(source_url)
+        if src_client.account_name == client.account_name:
+            src_client = client.from_blob_url(source_url, credential=client.credential)
+    StandardBlobTier = cmd.get_models('_models#StandardBlobTier', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+    if blob_type is not None and blob_type != 'Detect':
+        blob_service_client = src_client._get_container_client()._get_blob_service_client()
+        if blob_service_client.credential is not None:
+            as_user = True
+            if hasattr(blob_service_client.credential, 'account_key'):
+                as_user = False
+            expiry = (datetime.utcnow() + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%MZ')
+            source_url = generate_sas_blob_uri(cmd, blob_service_client, full_uri=True, blob_url=source_url,
+                                               blob_name=None, container_name=None, as_user=as_user,
+                                               expiry=expiry, permission='r')
+
+        params = {"source_if_modified_since": kwargs.get("source_if_modified_since"),
+                  "source_if_unmodified_since": kwargs.get("source_if_unmodified_since"),
+                  "if_modified_since": kwargs.get("if_modified_since"),
+                  "if_unmodified_since": kwargs.get("if_unmodified_since"),
+                  "timeout": kwargs.get("timeout")}
+
+        if blob_type == 'AppendBlob':
+            params.update({"lease": kwargs.get("destination_lease")})
+            client.create_append_blob()
+            res = client.append_block_from_url(copy_source_url=source_url, **params)
+            return transform_response_with_bytearray(res)
+        if blob_type == 'BlockBlob':
+            standard_blob_tier = getattr(StandardBlobTier, (kwargs.get("tier"))) if (kwargs.get("tier")) else None
+            params.update({"overwrite": True, "tags": kwargs.get("tags"),
+                           "destination_lease": kwargs.get("destination_lease"),
+                           "standard_blob_tier": standard_blob_tier})
+            return client.upload_blob_from_url(source_url=source_url, **params)
+        if blob_type == 'PageBlob':
+            params.update({"lease": kwargs.get("destination_lease")})
+            source_blob_client = client.from_blob_url(source_url)
+            blob_length = source_blob_client.get_blob_properties().size
+            if blob_length % 512 != 0:
+                raise ValueError("Source blob size must be an integer that aligns with 512 page size")
+            client.create_page_blob(size=blob_length)
+            res = client.upload_pages_from_url(source_url=source_url, offset=0, length=blob_length,
+                                               source_offset=0, **params)
+            return transform_response_with_bytearray(res)
+    if kwargs.get('tier') is not None:
+        tier = kwargs.pop('tier')
+        try:
+            kwargs["standard_blob_tier"] = getattr(StandardBlobTier, tier)
+        except AttributeError:
+            PremiumPageBlobTier = cmd.get_models('_models#PremiumPageBlobTier', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+            kwargs["premium_page_blob_tier"] = getattr(PremiumPageBlobTier, tier)
+    return client.start_copy_from_url(source_url=source_url, metadata=metadata, incremental_copy=False, **kwargs)
 
 
 def generate_sas_blob_uri(cmd, client, container_name, blob_name, permission=None,
