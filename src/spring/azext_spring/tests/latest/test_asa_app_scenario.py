@@ -161,6 +161,16 @@ class AppCRUD(ScenarioTest):
 
         self.cmd('spring app show -n {app} -g {rg} -s {serviceName}')
 
+        # ingress only set session affinity
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --session-affinity Cookie --session-max-age 1800', checks=[
+            self.check('name', '{app}'),
+            self.check('properties.ingressSettings.readTimeoutInSeconds', '300'),
+            self.check('properties.ingressSettings.sendTimeoutInSeconds', '60'),
+            self.check('properties.ingressSettings.backendProtocol', 'Default'),
+            self.check('properties.ingressSettings.sessionAffinity', 'Cookie'),
+            self.check('properties.ingressSettings.sessionCookieMaxAge', '1800'),
+        ])
+
         # green deployment copy settings from active, but still accept input as highest priority
         self.cmd('spring app deployment create -n green --app {app} -g {rg} -s {serviceName} --instance-count 2', checks=[
             self.check('name', 'green'),

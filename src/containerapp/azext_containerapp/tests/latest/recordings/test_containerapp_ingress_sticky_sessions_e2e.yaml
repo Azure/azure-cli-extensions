@@ -1,0 +1,2622 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"retentionInDays": 30, "sku": {"name":
+      "PerGB2018"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor log-analytics workspace create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '91'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000004?api-version=2021-12-01-preview
+  response:
+    body:
+      string: '{"properties":{"customerId":"5cd84a21-1752-4238-be28-ee1a0f541b26","provisioningState":"Creating","sku":{"name":"PerGB2018","lastSkuUpdate":"2023-04-04T17:35:31.2445965Z"},"retentionInDays":30,"features":{"legacy":0,"searchVersion":1,"enableLogAccessUsingOnlyResourcePermissions":true},"workspaceCapping":{"dailyQuotaGb":-1.0,"quotaNextResetTime":"2023-04-05T08:00:00Z","dataIngestionStatus":"RespectQuota"},"publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled","createdDate":"2023-04-04T17:35:31.2445965Z","modifiedDate":"2023-04-04T17:35:31.2445965Z"},"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000004","name":"containerapp-env000004","type":"Microsoft.OperationalInsights/workspaces"}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      api-supported-versions:
+      - 2021-12-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '851'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:35:31 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000004?api-version=2021-12-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:e6336c63-aab2-45f0-996a-e5dbab2a1508
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor log-analytics workspace create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000004?api-version=2021-12-01-preview
+  response:
+    body:
+      string: '{"properties":{"customerId":"5cd84a21-1752-4238-be28-ee1a0f541b26","provisioningState":"Succeeded","sku":{"name":"PerGB2018","lastSkuUpdate":"2023-04-04T17:35:31.2445965Z"},"retentionInDays":30,"features":{"legacy":0,"searchVersion":1,"enableLogAccessUsingOnlyResourcePermissions":true},"workspaceCapping":{"dailyQuotaGb":-1.0,"quotaNextResetTime":"2023-04-05T08:00:00Z","dataIngestionStatus":"RespectQuota"},"publicNetworkAccessForIngestion":"Enabled","publicNetworkAccessForQuery":"Enabled","createdDate":"2023-04-04T17:35:31.2445965Z","modifiedDate":"2023-04-04T17:35:31.2445965Z"},"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000004","name":"containerapp-env000004","type":"Microsoft.OperationalInsights/workspaces"}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      api-supported-versions:
+      - 2021-12-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '852'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:e6336c63-aab2-45f0-996a-e5dbab2a1508
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor log-analytics workspace get-shared-keys
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000004/sharedKeys?api-version=2020-08-01
+  response:
+    body:
+      string: '{"primarySharedKey":"OfYsaGdWJX7n5/ZUxV4ej6LEAJjitPbD6PCq1ULR/VWCmQNbRiqhEf62pgx6sLhqiHyUt3WgOQsK2CyNT0tEsA==","secondarySharedKey":"GH3LgxKraZVZctv4rMzlwLsRbhDUCLKMgmvJqgfajC/1bUZRBasOrEVzoHKVMHvK1g4iBoyCzcRfoo/2p0gcbQ=="}'
+    headers:
+      access-control-allow-origin:
+      - '*'
+      api-supported-versions:
+      - 2015-03-20, 2020-08-01, 2020-10-01, 2021-06-01, 2022-10-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '223'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:e6336c63-aab2-45f0-996a-e5dbab2a1508
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"}],"resourceTypes":[{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","East US 2 EUAP","West US 2","Southeast
+        Asia","Sweden Central","Canada Central","West Europe","North Europe","East
+        US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"managedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/managedCertificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"jobs","locations":["Central US EUAP","East
+        US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North Central US
+        (Stage)","Canada Central","West Europe","North Europe","East US","East US
+        2","East Asia","Australia East","Germany West Central","Japan East","UK South","West
+        US","Central US","North Central US","South Central US","Korea Central","Brazil
+        South","West US 3","France Central","South Africa North","Norway East","Switzerland
+        North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"connectedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"connectedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/connectedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/connectedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/billingMeters","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/availableManagedEnvironmentsWorkloadProfileTypes","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9689'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"}],"resourceTypes":[{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","East US 2 EUAP","West US 2","Southeast
+        Asia","Sweden Central","Canada Central","West Europe","North Europe","East
+        US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"managedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/managedCertificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"jobs","locations":["Central US EUAP","East
+        US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North Central US
+        (Stage)","Canada Central","West Europe","North Europe","East US","East US
+        2","East Asia","Australia East","Germany West Central","Japan East","UK South","West
+        US","Central US","North Central US","South Central US","Korea Central","Brazil
+        South","West US 3","France Central","South Africa North","Norway East","Switzerland
+        North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"connectedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"connectedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/connectedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/connectedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/billingMeters","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/availableManagedEnvironmentsWorkloadProfileTypes","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9689'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"}],"resourceTypes":[{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","East US 2 EUAP","West US 2","Southeast
+        Asia","Sweden Central","Canada Central","West Europe","North Europe","East
+        US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"managedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/managedCertificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"jobs","locations":["Central US EUAP","East
+        US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North Central US
+        (Stage)","Canada Central","West Europe","North Europe","East US","East US
+        2","East Asia","Australia East","Germany West Central","Japan East","UK South","West
+        US","Central US","North Central US","South Central US","Korea Central","Brazil
+        South","West US 3","France Central","South Africa North","Norway East","Switzerland
+        North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"connectedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"connectedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/connectedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/connectedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/billingMeters","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/availableManagedEnvironmentsWorkloadProfileTypes","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9689'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"}],"resourceTypes":[{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","East US 2 EUAP","West US 2","Southeast
+        Asia","Sweden Central","Canada Central","West Europe","North Europe","East
+        US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"managedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/managedCertificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"jobs","locations":["Central US EUAP","East
+        US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North Central US
+        (Stage)","Canada Central","West Europe","North Europe","East US","East US
+        2","East Asia","Australia East","Germany West Central","Japan East","UK South","West
+        US","Central US","North Central US","South Central US","Korea Central","Brazil
+        South","West US 3","France Central","South Africa North","Norway East","Switzerland
+        North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"connectedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"connectedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/connectedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/connectedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/billingMeters","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/availableManagedEnvironmentsWorkloadProfileTypes","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9689'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "tags": null, "properties": {"daprAIInstrumentationKey":
+      null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
+      "logAnalyticsConfiguration": {"customerId": "5cd84a21-1752-4238-be28-ee1a0f541b26",
+      "sharedKey": "OfYsaGdWJX7n5/ZUxV4ej6LEAJjitPbD6PCq1ULR/VWCmQNbRiqhEf62pgx6sLhqiHyUt3WgOQsK2CyNT0tEsA=="}},
+      "customDomainConfiguration": null, "workloadProfiles": null, "zoneRedundant":
+      false}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '446'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002?api-version=2022-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","name":"env000002","type":"Microsoft.App/managedEnvironments","location":"eastus","systemData":{"createdBy":"tdarolywala@microsoft.com","createdByType":"User","createdAt":"2023-04-04T17:36:06.6834985Z","lastModifiedBy":"tdarolywala@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-04T17:36:06.6834985Z"},"properties":{"provisioningState":"Waiting","daprAIInstrumentationKey":null,"daprAIConnectionString":null,"vnetConfiguration":null,"defaultDomain":"happyfield-fdeafcc3.eastus.azurecontainerapps.io","staticIp":"20.124.79.151","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"5cd84a21-1752-4238-be28-ee1a0f541b26","sharedKey":null}},"zoneRedundant":false,"kedaConfiguration":{"version":"2.9.2"},"daprConfiguration":{"version":"1.10.4"},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/managedEnvironments/env000002/eventstream","customDomainConfiguration":{"customDomainVerificationId":"A8FB737A09707B23D72A0FFB9028A890DA8B5B3E845E5F94704EF6DF3A192C6A","dnsSuffix":null,"certificateValue":null,"certificatePassword":null,"thumbprint":null,"subjectName":null,"expirationDateUtc":null},"workloadProfiles":null,"firstPartyConfiguration":null,"infrastructureResourceGroup":null}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/5cb75ec4-7308-40e2-8c84-1d64d2372fb8?api-version=2022-11-01-preview&azureAsyncOperation=true
+      cache-control:
+      - no-cache
+      content-length:
+      - '1486'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT15M
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/5cb75ec4-7308-40e2-8c84-1d64d2372fb8?api-version=2022-11-01-preview&azureAsyncOperation=true
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/5cb75ec4-7308-40e2-8c84-1d64d2372fb8","name":"5cb75ec4-7308-40e2-8c84-1d64d2372fb8","status":"InProgress","startTime":"2023-04-04T17:36:07.5000949"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/5cb75ec4-7308-40e2-8c84-1d64d2372fb8?api-version=2022-11-01-preview&azureAsyncOperation=true
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/5cb75ec4-7308-40e2-8c84-1d64d2372fb8","name":"5cb75ec4-7308-40e2-8c84-1d64d2372fb8","status":"InProgress","startTime":"2023-04-04T17:36:07.5000949"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/5cb75ec4-7308-40e2-8c84-1d64d2372fb8?api-version=2022-11-01-preview&azureAsyncOperation=true
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/5cb75ec4-7308-40e2-8c84-1d64d2372fb8","name":"5cb75ec4-7308-40e2-8c84-1d64d2372fb8","status":"InProgress","startTime":"2023-04-04T17:36:07.5000949"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/5cb75ec4-7308-40e2-8c84-1d64d2372fb8?api-version=2022-11-01-preview&azureAsyncOperation=true
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/5cb75ec4-7308-40e2-8c84-1d64d2372fb8","name":"5cb75ec4-7308-40e2-8c84-1d64d2372fb8","status":"InProgress","startTime":"2023-04-04T17:36:07.5000949"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/5cb75ec4-7308-40e2-8c84-1d64d2372fb8?api-version=2022-11-01-preview&azureAsyncOperation=true
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/5cb75ec4-7308-40e2-8c84-1d64d2372fb8","name":"5cb75ec4-7308-40e2-8c84-1d64d2372fb8","status":"InProgress","startTime":"2023-04-04T17:36:07.5000949"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '284'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/5cb75ec4-7308-40e2-8c84-1d64d2372fb8?api-version=2022-11-01-preview&azureAsyncOperation=true
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/managedEnvironmentOperationStatuses/5cb75ec4-7308-40e2-8c84-1d64d2372fb8","name":"5cb75ec4-7308-40e2-8c84-1d64d2372fb8","status":"Succeeded","startTime":"2023-04-04T17:36:07.5000949"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '283'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --logs-workspace-id --logs-workspace-key
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002?api-version=2022-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","name":"env000002","type":"Microsoft.App/managedEnvironments","location":"eastus","systemData":{"createdBy":"tdarolywala@microsoft.com","createdByType":"User","createdAt":"2023-04-04T17:36:06.6834985","lastModifiedBy":"tdarolywala@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-04T17:36:06.6834985"},"properties":{"provisioningState":"Succeeded","daprAIInstrumentationKey":null,"daprAIConnectionString":null,"vnetConfiguration":null,"defaultDomain":"happyfield-fdeafcc3.eastus.azurecontainerapps.io","staticIp":"20.124.79.151","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"5cd84a21-1752-4238-be28-ee1a0f541b26","sharedKey":null}},"zoneRedundant":false,"kedaConfiguration":{"version":"2.9.2"},"daprConfiguration":{"version":"1.10.4"},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/managedEnvironments/env000002/eventstream","customDomainConfiguration":{"customDomainVerificationId":"A8FB737A09707B23D72A0FFB9028A890DA8B5B3E845E5F94704EF6DF3A192C6A","dnsSuffix":null,"certificateValue":null,"certificatePassword":null,"thumbprint":null,"subjectName":null,"expirationDateUtc":null},"workloadProfiles":null,"firstPartyConfiguration":null,"infrastructureResourceGroup":null}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1486'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"}],"resourceTypes":[{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","East US 2 EUAP","West US 2","Southeast
+        Asia","Sweden Central","Canada Central","West Europe","North Europe","East
+        US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"managedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/managedCertificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"jobs","locations":["Central US EUAP","East
+        US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North Central US
+        (Stage)","Canada Central","West Europe","North Europe","East US","East US
+        2","East Asia","Australia East","Germany West Central","Japan East","UK South","West
+        US","Central US","North Central US","South Central US","Korea Central","Brazil
+        South","West US 3","France Central","South Africa North","Norway East","Switzerland
+        North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"connectedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"connectedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/connectedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/connectedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/billingMeters","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/availableManagedEnvironmentsWorkloadProfileTypes","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9689'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002?api-version=2022-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","name":"env000002","type":"Microsoft.App/managedEnvironments","location":"eastus","systemData":{"createdBy":"tdarolywala@microsoft.com","createdByType":"User","createdAt":"2023-04-04T17:36:06.6834985","lastModifiedBy":"tdarolywala@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-04T17:36:06.6834985"},"properties":{"provisioningState":"Succeeded","daprAIInstrumentationKey":null,"daprAIConnectionString":null,"vnetConfiguration":null,"defaultDomain":"happyfield-fdeafcc3.eastus.azurecontainerapps.io","staticIp":"20.124.79.151","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"5cd84a21-1752-4238-be28-ee1a0f541b26","sharedKey":null}},"zoneRedundant":false,"kedaConfiguration":{"version":"2.9.2"},"daprConfiguration":{"version":"1.10.4"},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/managedEnvironments/env000002/eventstream","customDomainConfiguration":{"customDomainVerificationId":"A8FB737A09707B23D72A0FFB9028A890DA8B5B3E845E5F94704EF6DF3A192C6A","dnsSuffix":null,"certificateValue":null,"certificatePassword":null,"thumbprint":null,"subjectName":null,"expirationDateUtc":null},"workloadProfiles":null,"firstPartyConfiguration":null,"infrastructureResourceGroup":null}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1486'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"}],"resourceTypes":[{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","East US 2 EUAP","West US 2","Southeast
+        Asia","Sweden Central","Canada Central","West Europe","North Europe","East
+        US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"managedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/managedCertificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"jobs","locations":["Central US EUAP","East
+        US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North Central US
+        (Stage)","Canada Central","West Europe","North Europe","East US","East US
+        2","East Asia","Australia East","Germany West Central","Japan East","UK South","West
+        US","Central US","North Central US","South Central US","Korea Central","Brazil
+        South","West US 3","France Central","South Africa North","Norway East","Switzerland
+        North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"connectedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"connectedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/connectedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/connectedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/billingMeters","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/availableManagedEnvironmentsWorkloadProfileTypes","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9689'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp env show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002?api-version=2022-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","name":"env000002","type":"Microsoft.App/managedEnvironments","location":"eastus","systemData":{"createdBy":"tdarolywala@microsoft.com","createdByType":"User","createdAt":"2023-04-04T17:36:06.6834985","lastModifiedBy":"tdarolywala@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-04T17:36:06.6834985"},"properties":{"provisioningState":"Succeeded","daprAIInstrumentationKey":null,"daprAIConnectionString":null,"vnetConfiguration":null,"defaultDomain":"happyfield-fdeafcc3.eastus.azurecontainerapps.io","staticIp":"20.124.79.151","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"5cd84a21-1752-4238-be28-ee1a0f541b26","sharedKey":null}},"zoneRedundant":false,"kedaConfiguration":{"version":"2.9.2"},"daprConfiguration":{"version":"1.10.4"},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/managedEnvironments/env000002/eventstream","customDomainConfiguration":{"customDomainVerificationId":"A8FB737A09707B23D72A0FFB9028A890DA8B5B3E845E5F94704EF6DF3A192C6A","dnsSuffix":null,"certificateValue":null,"certificatePassword":null,"thumbprint":null,"subjectName":null,"expirationDateUtc":null},"workloadProfiles":null,"firstPartyConfiguration":null,"infrastructureResourceGroup":null}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1486'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --target-port --ingress --image --environment -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"}],"resourceTypes":[{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","East US 2 EUAP","West US 2","Southeast
+        Asia","Sweden Central","Canada Central","West Europe","North Europe","East
+        US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"managedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/managedCertificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"jobs","locations":["Central US EUAP","East
+        US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North Central US
+        (Stage)","Canada Central","West Europe","North Europe","East US","East US
+        2","East Asia","Australia East","Germany West Central","Japan East","UK South","West
+        US","Central US","North Central US","South Central US","Korea Central","Brazil
+        South","West US 3","France Central","South Africa North","Norway East","Switzerland
+        North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"connectedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"connectedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/connectedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/connectedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/billingMeters","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/availableManagedEnvironmentsWorkloadProfileTypes","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9689'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --target-port --ingress --image --environment -n
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002?api-version=2022-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","name":"env000002","type":"Microsoft.App/managedEnvironments","location":"eastus","systemData":{"createdBy":"tdarolywala@microsoft.com","createdByType":"User","createdAt":"2023-04-04T17:36:06.6834985","lastModifiedBy":"tdarolywala@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-04T17:36:06.6834985"},"properties":{"provisioningState":"Succeeded","daprAIInstrumentationKey":null,"daprAIConnectionString":null,"vnetConfiguration":null,"defaultDomain":"happyfield-fdeafcc3.eastus.azurecontainerapps.io","staticIp":"20.124.79.151","appLogsConfiguration":{"destination":"log-analytics","logAnalyticsConfiguration":{"customerId":"5cd84a21-1752-4238-be28-ee1a0f541b26","sharedKey":null}},"zoneRedundant":false,"kedaConfiguration":{"version":"2.9.2"},"daprConfiguration":{"version":"1.10.4"},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/managedEnvironments/env000002/eventstream","customDomainConfiguration":{"customDomainVerificationId":"A8FB737A09707B23D72A0FFB9028A890DA8B5B3E845E5F94704EF6DF3A192C6A","dnsSuffix":null,"certificateValue":null,"certificatePassword":null,"thumbprint":null,"subjectName":null,"expirationDateUtc":null},"workloadProfiles":null,"firstPartyConfiguration":null,"infrastructureResourceGroup":null}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1486'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --target-port --ingress --image --environment -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"}],"resourceTypes":[{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","East US 2 EUAP","West US 2","Southeast
+        Asia","Sweden Central","Canada Central","West Europe","North Europe","East
+        US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"managedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/managedCertificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"jobs","locations":["Central US EUAP","East
+        US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North Central US
+        (Stage)","Canada Central","West Europe","North Europe","East US","East US
+        2","East Asia","Australia East","Germany West Central","Japan East","UK South","West
+        US","Central US","North Central US","South Central US","Korea Central","Brazil
+        South","West US 3","France Central","South Africa North","Norway East","Switzerland
+        North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"connectedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"connectedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/connectedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/connectedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/billingMeters","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/availableManagedEnvironmentsWorkloadProfileTypes","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9689'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "identity": {"type": "None", "userAssignedIdentities":
+      null}, "properties": {"environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002",
+      "configuration": {"secrets": null, "activeRevisionsMode": "single", "ingress":
+      {"fqdn": null, "external": true, "targetPort": 80, "transport": "auto", "exposedPort":
+      null, "traffic": null, "customDomains": null, "ipSecurityRestrictions": null,
+      "stickySessions": null}, "dapr": null, "registries": null}, "template": {"revisionSuffix":
+      null, "containers": [{"image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+      "name": "app2000003", "command": null, "args": null, "env": null, "resources":
+      null, "volumeMounts": null}], "initContainers": null, "scale": null, "volumes":
+      null}}, "tags": null}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '867'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --target-port --ingress --image --environment -n
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/app2000003?api-version=2022-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/app2000003","name":"app2000003","type":"Microsoft.App/containerApps","location":"East
+        US","systemData":{"createdBy":"tdarolywala@microsoft.com","createdByType":"User","createdAt":"2023-04-04T17:36:28.3187224Z","lastModifiedBy":"tdarolywala@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-04T17:36:28.3187224Z"},"properties":{"provisioningState":"InProgress","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","workloadProfileName":null,"outboundIpAddresses":["20.124.77.65"],"latestRevisionName":"","latestReadyRevisionName":"","latestRevisionFqdn":"","customDomainVerificationId":"A8FB737A09707B23D72A0FFB9028A890DA8B5B3E845E5F94704EF6DF3A192C6A","configuration":{"secrets":null,"activeRevisionsMode":"Single","ingress":{"fqdn":"app2000003.happyfield-fdeafcc3.eastus.azurecontainerapps.io","external":true,"targetPort":80,"exposedPort":0,"transport":"Auto","traffic":[{"weight":100,"latestRevision":true}],"customDomains":null,"allowInsecure":false,"ipSecurityRestrictions":null,"corsPolicy":null,"clientCertificateMode":null,"stickySessions":null},"registries":null,"dapr":null,"maxInactiveRevisions":null,"service":null},"template":{"revisionSuffix":"","containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"app2000003","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"scale":{"minReplicas":null,"maxReplicas":10,"rules":null},"volumes":null,"serviceBinds":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/app2000003/eventstream"},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/55b181ea-0775-402a-8dfa-acec644ac623?api-version=2022-11-01-preview&azureAsyncOperation=true
+      cache-control:
+      - no-cache
+      content-length:
+      - '2072'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-async-operation-timeout:
+      - PT15M
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '699'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --target-port --ingress --image --environment -n
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/55b181ea-0775-402a-8dfa-acec644ac623?api-version=2022-11-01-preview&azureAsyncOperation=true
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/55b181ea-0775-402a-8dfa-acec644ac623","name":"55b181ea-0775-402a-8dfa-acec644ac623","status":"InProgress","startTime":"2023-04-04T17:36:28.6274396"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '278'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --target-port --ingress --image --environment -n
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/55b181ea-0775-402a-8dfa-acec644ac623?api-version=2022-11-01-preview&azureAsyncOperation=true
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/55b181ea-0775-402a-8dfa-acec644ac623","name":"55b181ea-0775-402a-8dfa-acec644ac623","status":"InProgress","startTime":"2023-04-04T17:36:28.6274396"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '278'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --target-port --ingress --image --environment -n
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/55b181ea-0775-402a-8dfa-acec644ac623?api-version=2022-11-01-preview&azureAsyncOperation=true
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/55b181ea-0775-402a-8dfa-acec644ac623","name":"55b181ea-0775-402a-8dfa-acec644ac623","status":"InProgress","startTime":"2023-04-04T17:36:28.6274396"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '278'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --target-port --ingress --image --environment -n
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/55b181ea-0775-402a-8dfa-acec644ac623?api-version=2022-11-01-preview&azureAsyncOperation=true
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationStatuses/55b181ea-0775-402a-8dfa-acec644ac623","name":"55b181ea-0775-402a-8dfa-acec644ac623","status":"Succeeded","startTime":"2023-04-04T17:36:28.6274396"}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '277'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --target-port --ingress --image --environment -n
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/app2000003?api-version=2022-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/app2000003","name":"app2000003","type":"Microsoft.App/containerApps","location":"East
+        US","systemData":{"createdBy":"tdarolywala@microsoft.com","createdByType":"User","createdAt":"2023-04-04T17:36:28.3187224","lastModifiedBy":"tdarolywala@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-04T17:36:28.3187224"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","workloadProfileName":null,"outboundIpAddresses":["20.124.77.65"],"latestRevisionName":"app2000003--u1avj5x","latestReadyRevisionName":"app2000003--u1avj5x","latestRevisionFqdn":"app2000003--u1avj5x.happyfield-fdeafcc3.eastus.azurecontainerapps.io","customDomainVerificationId":"A8FB737A09707B23D72A0FFB9028A890DA8B5B3E845E5F94704EF6DF3A192C6A","configuration":{"secrets":null,"activeRevisionsMode":"Single","ingress":{"fqdn":"app2000003.happyfield-fdeafcc3.eastus.azurecontainerapps.io","external":true,"targetPort":80,"exposedPort":0,"transport":"Auto","traffic":[{"weight":100,"latestRevision":true}],"customDomains":null,"allowInsecure":false,"ipSecurityRestrictions":null,"corsPolicy":null,"clientCertificateMode":null,"stickySessions":null},"registries":null,"dapr":null,"maxInactiveRevisions":null,"service":null},"template":{"revisionSuffix":"","containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"app2000003","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"scale":{"minReplicas":null,"maxReplicas":10,"rules":null},"volumes":null,"serviceBinds":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/app2000003/eventstream"},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '2175'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp ingress sticky-sessions set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --affinity
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"}],"resourceTypes":[{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","East US 2 EUAP","West US 2","Southeast
+        Asia","Sweden Central","Canada Central","West Europe","North Europe","East
+        US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"managedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/managedCertificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"jobs","locations":["Central US EUAP","East
+        US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North Central US
+        (Stage)","Canada Central","West Europe","North Europe","East US","East US
+        2","East Asia","Australia East","Germany West Central","Japan East","UK South","West
+        US","Central US","North Central US","South Central US","Korea Central","Brazil
+        South","West US 3","France Central","South Africa North","Norway East","Switzerland
+        North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"connectedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"connectedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/connectedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/connectedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/billingMeters","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/availableManagedEnvironmentsWorkloadProfileTypes","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9689'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp ingress sticky-sessions set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --affinity
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/app2000003?api-version=2022-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/app2000003","name":"app2000003","type":"Microsoft.App/containerApps","location":"East
+        US","systemData":{"createdBy":"tdarolywala@microsoft.com","createdByType":"User","createdAt":"2023-04-04T17:36:28.3187224","lastModifiedBy":"tdarolywala@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-04T17:36:28.3187224"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","workloadProfileName":null,"outboundIpAddresses":["20.124.77.65"],"latestRevisionName":"app2000003--u1avj5x","latestReadyRevisionName":"app2000003--u1avj5x","latestRevisionFqdn":"app2000003--u1avj5x.happyfield-fdeafcc3.eastus.azurecontainerapps.io","customDomainVerificationId":"A8FB737A09707B23D72A0FFB9028A890DA8B5B3E845E5F94704EF6DF3A192C6A","configuration":{"secrets":null,"activeRevisionsMode":"Single","ingress":{"fqdn":"app2000003.happyfield-fdeafcc3.eastus.azurecontainerapps.io","external":true,"targetPort":80,"exposedPort":0,"transport":"Auto","traffic":[{"weight":100,"latestRevision":true}],"customDomains":null,"allowInsecure":false,"ipSecurityRestrictions":null,"corsPolicy":null,"clientCertificateMode":null,"stickySessions":null},"registries":null,"dapr":null,"maxInactiveRevisions":null,"service":null},"template":{"revisionSuffix":"","containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"app2000003","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"scale":{"minReplicas":null,"maxReplicas":10,"rules":null},"volumes":null,"serviceBinds":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/app2000003/eventstream"},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '2175'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"configuration": {"ingress": {"stickySessions": {"affinity":
+      "sticky"}}}}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp ingress sticky-sessions set
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '90'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --affinity
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/app2000003?api-version=2022-11-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 04 Apr 2023 17:36:42 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationResults/2e991781-12ff-446f-a402-54904494686c?api-version=2022-11-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '699'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp ingress sticky-sessions set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --affinity
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationResults/2e991781-12ff-446f-a402-54904494686c?api-version=2022-11-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 04 Apr 2023 17:36:42 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationResults/2e991781-12ff-446f-a402-54904494686c?api-version=2022-11-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp ingress sticky-sessions set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --affinity
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationResults/2e991781-12ff-446f-a402-54904494686c?api-version=2022-11-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 04 Apr 2023 17:36:48 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationResults/2e991781-12ff-446f-a402-54904494686c?api-version=2022-11-01-preview
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp ingress sticky-sessions set
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --affinity
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App/locations/eastus/containerappOperationResults/2e991781-12ff-446f-a402-54904494686c?api-version=2022-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/app2000003","name":"app2000003","type":"Microsoft.App/containerApps","location":"East
+        US","systemData":{"createdBy":"tdarolywala@microsoft.com","createdByType":"User","createdAt":"2023-04-04T17:36:28.3187224","lastModifiedBy":"tdarolywala@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-04T17:36:41.7187131"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","workloadProfileName":null,"outboundIpAddresses":["20.124.77.65"],"latestRevisionName":"app2000003--u1avj5x","latestReadyRevisionName":"app2000003--u1avj5x","latestRevisionFqdn":"app2000003--u1avj5x.happyfield-fdeafcc3.eastus.azurecontainerapps.io","customDomainVerificationId":"A8FB737A09707B23D72A0FFB9028A890DA8B5B3E845E5F94704EF6DF3A192C6A","configuration":{"secrets":null,"activeRevisionsMode":"Single","ingress":{"fqdn":"app2000003.happyfield-fdeafcc3.eastus.azurecontainerapps.io","external":true,"targetPort":80,"exposedPort":0,"transport":"Auto","traffic":[{"weight":100,"latestRevision":true}],"customDomains":null,"allowInsecure":false,"ipSecurityRestrictions":null,"corsPolicy":null,"clientCertificateMode":null,"stickySessions":{"affinity":"sticky"}},"registries":null,"dapr":null,"maxInactiveRevisions":null,"service":null},"template":{"revisionSuffix":"","containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"app2000003","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"scale":{"minReplicas":null,"maxReplicas":10,"rules":null},"volumes":null,"serviceBinds":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/app2000003/eventstream"},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '2192'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App?api-version=2021-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.App","namespace":"Microsoft.App","authorizations":[{"applicationId":"7e3bc4fd-85a3-4192-b177-5b8bfc87f42c","roleDefinitionId":"39a74f72-b40f-4bdc-b639-562fe2260bf0"},{"applicationId":"3734c1a4-2bed-4998-a37a-ff1a9e7bf019","roleDefinitionId":"5c779a4f-5cb2-4547-8c41-478d9be8ba90"},{"applicationId":"55ebbb62-3b9c-49fd-9b87-9595226dd4ac","roleDefinitionId":"e49ca620-7992-4561-a7df-4ed67dad77b5","managedByRoleDefinitionId":"9e3af657-a8ff-583c-a75c-2fe7c4bcb635"}],"resourceTypes":[{"resourceType":"operations","locations":["North
+        Central US (Stage)","Central US EUAP","East US 2 EUAP","West US 2","Southeast
+        Asia","Sweden Central","Canada Central","West Europe","North Europe","East
+        US","East US 2","East Asia","Australia East","Germany West Central","Japan
+        East","UK South","West US","Central US","North Central US","South Central
+        US","Korea Central","Brazil South","West US 3","France Central","South Africa
+        North","Norway East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"managedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"managedEnvironments/managedCertificates","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"containerApps","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"jobs","locations":["Central US EUAP","East
+        US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North Central US
+        (Stage)","Canada Central","West Europe","North Europe","East US","East US
+        2","East Asia","Australia East","Germany West Central","Japan East","UK South","West
+        US","Central US","North Central US","South Central US","Korea Central","Brazil
+        South","West US 3","France Central","South Africa North","Norway East","Switzerland
+        North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SystemAssignedResourceIdentity, SupportsTags,
+        SupportsLocation"},{"resourceType":"locations","locations":[],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/managedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"locations/containerappOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","West US 2","Southeast Asia","Sweden Central","North
+        Central US (Stage)","Canada Central","West Europe","North Europe","East US","East
+        US 2","East Asia","Australia East","Germany West Central","Japan East","UK
+        South","West US","Central US","North Central US","South Central US","Korea
+        Central","Brazil South","West US 3","France Central","South Africa North","Norway
+        East","Switzerland North","UAE North"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview","2022-03-01","2022-01-01-preview"],"capabilities":"None"},{"resourceType":"connectedEnvironments","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"connectedEnvironments/certificates","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"CrossResourceGroupResourceMove,
+        CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"},{"resourceType":"locations/connectedEnvironmentOperationResults","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/connectedEnvironmentOperationStatuses","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","North Central US","East
+        US","East Asia","West Europe"],"apiVersions":["2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/billingMeters","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"},{"resourceType":"locations/availableManagedEnvironmentsWorkloadProfileTypes","locations":["Central
+        US EUAP","East US 2 EUAP","North Central US (Stage)","Australia East","North
+        Central US","East US 2","West Europe","Central US","East US","North Europe","South
+        Central US","UK South","West US 3"],"apiVersions":["2023-02-01","2022-11-01-preview","2022-10-01","2022-06-01-preview"],"capabilities":"None"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9689'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - containerapp show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - python/3.10.5 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerApps/app2000003?api-version=2022-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/containerapps/app2000003","name":"app2000003","type":"Microsoft.App/containerApps","location":"East
+        US","systemData":{"createdBy":"tdarolywala@microsoft.com","createdByType":"User","createdAt":"2023-04-04T17:36:28.3187224","lastModifiedBy":"tdarolywala@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-04T17:36:41.7187131"},"properties":{"provisioningState":"Succeeded","managedEnvironmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","environmentId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/managedEnvironments/env000002","workloadProfileName":null,"outboundIpAddresses":["20.124.77.65"],"latestRevisionName":"app2000003--u1avj5x","latestReadyRevisionName":"app2000003--u1avj5x","latestRevisionFqdn":"app2000003--u1avj5x.happyfield-fdeafcc3.eastus.azurecontainerapps.io","customDomainVerificationId":"A8FB737A09707B23D72A0FFB9028A890DA8B5B3E845E5F94704EF6DF3A192C6A","configuration":{"secrets":null,"activeRevisionsMode":"Single","ingress":{"fqdn":"app2000003.happyfield-fdeafcc3.eastus.azurecontainerapps.io","external":true,"targetPort":80,"exposedPort":0,"transport":"Auto","traffic":[{"weight":100,"latestRevision":true}],"customDomains":null,"allowInsecure":false,"ipSecurityRestrictions":null,"corsPolicy":null,"clientCertificateMode":null,"stickySessions":{"affinity":"sticky"}},"registries":null,"dapr":null,"maxInactiveRevisions":null,"service":null},"template":{"revisionSuffix":"","containers":[{"image":"mcr.microsoft.com/azuredocs/containerapps-helloworld:latest","name":"app2000003","resources":{"cpu":0.5,"memory":"1Gi","ephemeralStorage":"2Gi"}}],"initContainers":null,"scale":{"minReplicas":null,"maxReplicas":10,"rules":null},"volumes":null,"serviceBinds":null},"eventStreamEndpoint":"https://eastus.azurecontainerapps.dev/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/containerApps/app2000003/eventstream"},"identity":{"type":"None"}}'
+    headers:
+      api-supported-versions:
+      - 2022-01-01-preview, 2022-03-01, 2022-06-01-preview, 2022-10-01, 2022-11-01-preview,
+        2023-02-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '2192'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Apr 2023 17:36:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1
