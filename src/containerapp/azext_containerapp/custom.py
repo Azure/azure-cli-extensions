@@ -628,10 +628,10 @@ def update_containerapp_logic(cmd,
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     validate_revision_suffix(revision_suffix)
 
-    # Validate that max_replicas is set to 0-30
+    # Validate that max_replicas is set to 0-1000
     if max_replicas is not None:
-        if max_replicas < 1 or max_replicas > 30:
-            raise ArgumentUsageError('--max-replicas must be in the range [1,30]')
+        if max_replicas < 1 or max_replicas > 1000:
+            raise ArgumentUsageError('--max-replicas must be in the range [1,1000]')
 
     if yaml:
         if image or min_replicas or max_replicas or\

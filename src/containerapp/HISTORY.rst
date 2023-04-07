@@ -4,6 +4,8 @@ Release History
 ===============
 Upcoming
 +++++++
+* 'az containerapp up': fix --location comparison logic
+* 'az containerapp update': change --max-replicas limit
 * Add CLI support for containerapp ingress sticky-sessions'
 
 0.3.27

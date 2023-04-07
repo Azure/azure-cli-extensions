@@ -35,3 +35,6 @@ class ContainerAppUpImageTest(ScenarioTest):
         url = url if url.startswith("http") else f"http://{url}"
         resp = requests.get(url)
         self.assertTrue(resp.ok)
+
+        self.cmd(f"containerapp up --image {image} --environment {env_name} -g {resource_group} -n {app_name} -l {TEST_LOCATION.upper()}")
+
