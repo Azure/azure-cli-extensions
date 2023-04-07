@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the protection container mappings for a protection container.
+
+    :example: protection-container mapping list
+        az site-recovery fabric protection-container mapping list -g {rg} --fabric-name {fabric_source_name} --protection-container {container_source_name} --vault-name {vault_name}
     """
 
     _aaz_info = {

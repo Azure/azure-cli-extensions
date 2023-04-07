@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all ASR network mappings for the specified network.
+
+    :example: network-mapping list
+        az site-recovery fabric network-mapping list -g {rg} --fabric-name {fabric_source_name} --network-name azureNetwork --vault-name {vault_name}
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update operation to create a protection container mapping.
+
+    :example: protection-container mapping update
+        az site-recovery fabric protection-container mapping update -g {rg} --fabric-name {fabric_source_name} -n {container_mapping_source_name} --protection-container {container_source_name} --vault-name {vault_name} --policy-id {policy_id} --provider-input '{a2a:{agent-auto-update-status:Enabled}}' --target-container {container_recovery_id}
     """
 
     _aaz_info = {

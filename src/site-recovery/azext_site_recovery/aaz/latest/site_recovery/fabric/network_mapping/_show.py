@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the details of an ASR network mapping.
+
+    :example: network-mapping show
+        az site-recovery fabric network-mapping show -g {rg} --fabric-name {fabric_source_name} -n {network_mapping_src_to_recovery_name} --network-name azureNetwork --vault-name {vault_name}
     """
 
     _aaz_info = {
