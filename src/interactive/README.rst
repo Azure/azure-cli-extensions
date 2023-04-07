@@ -4,18 +4,21 @@ Azure CLI Interactive Shell
 The interactive shell for Microsoft Azure CLI (Command Line Interface)
 ######################################################################
 
-* Interactive Tutorials
-* Lightweight Drop Down Completions 
-* Auto Cached Suggestions 
-* Dynamic parameter completion 
-* Defaulting scopes of commands
-* On the fly descriptions of the commands AND parameters 
-* On the fly examples of how to utilize each command 
-* Optional "az" component 
-* Query the previous command
-* Navigation of example pane 
-* Optional layout configurations 
-* Fun Colors 
+-  Recommend Commands and Scenarios Based on Previous Commands
+-  Search for Scenarios
+-  Value Completion in Scenario Mode
+-  Interactive Tutorials
+-  Lightweight Drop Down Completions
+-  Auto Cached Suggestions
+-  Dynamic parameter completion
+-  Defaulting scopes of commands
+-  On the fly descriptions of the commands AND parameters
+-  On the fly examples of how to utilize each command
+-  Query the previous command
+-  Navigation of example pane
+-  Optional layout configurations
+-  Optional “az” component
+-  Fun Colors
 
 
 Running
@@ -60,6 +63,11 @@ To undefault a value
 
    $ %% ..
 
+To Search for a scenario
+
+.. code-block:: console
+
+    $ / [keywords]
 
 Use Examples
 ############
@@ -108,3 +116,119 @@ Only clears the appended suggestion when you restart the shell
 
    $ clear-history
 
+Intelligent AZ Interactive(Revolutionary Change)
+------------------------------------------------
+
+Recommendation
+~~~~~~~~~~~~~~
+
+We have integrated the cli recommendation to make the completion ability
+more intelligent and provide the scenario completion. This is a
+revolutionary change. Users can enable or disable the recommendation
+feature by running the following commands:
+
+::
+
+   $ az config set interactive.enable_recommender=True # Default, try the new recommendation feature
+   $ az config set interactive.enable_recommender=False # Disable the recommendation feature
+
+Command Recommendation
+^^^^^^^^^^^^^^^^^^^^^^
+
+Command recommendation uses an intelligent algorithm to suggest the most
+relevant and frequently used command for the user based on their
+historical command inputs. By analyzing the user’s input history and
+matching it with the highest relevant commands, Intelligent Az
+Interactive can assist Azure CLI beginners in making quick and informed
+decisions, saving them time and effort.
+
+The command recommendation feature can also be a good way to broaden
+users’ knowledge boundaries and help them recognize and learn commands
+that are related to their common commands but never used before.
+
+Scenario Identification
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Scenario identification is another powerful feature that automatically
+recognizes the user’s current scenario and recommends a set of commands
+that are most relevant to the user’s needs. This feature is based on our
+extensive database of over 600+ business scenarios, which cover a wide
+range of use cases across various scenes. By analyzing the user’s input
+history, Intelligent Az Interactive can identify the relevant scenario
+and suggest the most appropriate command set, helping new CLI users to
+quickly accomplish their tasks with confidence and ease.
+
+Search for Scenarios
+~~~~~~~~~~~~~~~~~~~~
+
+We have added the ability to help users search for scenarios based on
+keywords. When the user enters some keywords or descriptions, we will
+recommend the scenarios that are most likely to be used based on the
+keywords and descriptions of the functions the user wants to implement.
+
+::
+
+   $ az interactive // initialize the az interactive
+   $ /connect a mongodb to web app // Search for scenario by starting with / and entering keywords
+   >>  output
+   [1] Connect an app to MongoDB (Cosmos DB). (5 Commands)
+   Connect an app to MongoDB (Cosmos DB).
+
+   [2] Tutorial to create and connect Web App to Azure Database for MySQL Flexible Server in a virtual network (6 Commands)
+   Tutorial to create and connect Web App to Azure Database for MySQL Flexible Server in a virtual network
+
+   [3] Connect an app to SQL Database. (7 Commands)
+   Connect an app to SQL Database.
+
+   [4] Connect an app to a storage account. (5 Commands)
+   Connect an app to a storage account.
+
+   [5] Deploy an ASP.NET Core web app to Azure App Service and connect to an Azure SQL Database. (8 Commands)
+   Deploy an ASP.NET Core web app to Azure App Service and connect to an Azure SQL Database.
+
+    ? Please select your option (if none, enter 0):
+    $ 1 // Select the scenario you want to use
+
+Loading Bar
+~~~~~~~~~~~
+
+The loading bar is a feature that we have implemented to provide users
+with a more stable and predictable experience while using our platform.
+Its primary function is to prevent command parameter detection errors
+that may occur due to incomplete loading. By displaying the progress of
+initialization through the loading bar, users can be assured that the
+initialization process is ongoing and they can expect to see a fully
+loaded interface once the bar reaches 100%.
+
+Additionally, the loading bar helps prevent user interface lagging or
+freezing due to insufficient memory. By preloading the necessary
+resources and data, users can avoid encountering these issues when
+inputting commands.
+
+The loading bar is an essential tool that improves the user experience
+by ensuring that all necessary components are loaded before usage,
+thereby reducing the risk of encountering errors and providing a
+smoother, more stable platform.
+
+Please refer to the following gif to see the loading bar in action:
+
+.. container::
+
+Memory and Completion Mechanism for Param Value in Scenarios
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We added a completion mechanism for param value in scenarios to improve
+the completion ability of param value in scenarios. In multiple commands
+of the same scenario, once the user enters a param value, we store the
+value entered by the user based on the scenario sample value and some
+special global params, and automatically recommend the completion of
+these param values in subsequent commands.
+
+Telemetry Feedback Optimization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To collect data and facilitate the optimization and tuning of the cli
+recommendation model, we have optimized the telemetry feedback function.
+We have added ``CLIRecommendation`` to the ``properties`` of telemetry
+feedback. For details, please refer to
+`cli-recommendation <https://github.com/hackathon-cli-recommendation/cli-recommendation/blob/master/Docs/feedback_design.md>`__.
