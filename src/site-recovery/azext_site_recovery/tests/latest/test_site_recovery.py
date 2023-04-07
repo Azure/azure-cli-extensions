@@ -137,7 +137,7 @@ class SiteRecoveryScenario(ScenarioTest):
                  checks=[self.check('length(@)', 0)])
 
     # pylint: disable=line-too-long
-    @record_only()
+    # @record_only()
     def test_siterecovery_A2A_selfcreated_scenarios(self):
         self.kwargs.update({
             'rg': 'cli.test.rg.SRVault',
@@ -164,7 +164,7 @@ class SiteRecoveryScenario(ScenarioTest):
         })
 
         # create two fabrics and one container in each, create a policy
-        self.cmd('az account set -n {subscription}')
+        # self.cmd('az account set -n {subscription}')
         self.cmd('az group create -l {recovery_loc} -n {rg}')
         self.cmd('az group create -l {source_loc} -n {vm_rg}')
         self.cmd('az vm create -n {vm_name} -g {vm_rg} --image Win2012Datacenter --public-ip-sku Standard '
