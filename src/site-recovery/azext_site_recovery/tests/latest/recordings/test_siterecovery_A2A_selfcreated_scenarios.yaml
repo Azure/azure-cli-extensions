@@ -1,5 +1,1926 @@
 interactions:
 - request:
+    body: '{"location": "eastus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -l -n
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli.test.rg.SRVault?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault","name":"cli.test.rg.SRVault","type":"Microsoft.Resources/resourceGroups","location":"eastus","properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '235'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:54:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -l -n
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli.test.rg.SRVM?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM","name":"cli.test.rg.SRVM","type":"Microsoft.Resources/resourceGroups","location":"eastus2","properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '230'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:54:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --image --public-ip-sku --admin-password
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli.test.rg.SRVM?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM","name":"cli.test.rg.SRVM","type":"Microsoft.Resources/resourceGroups","location":"eastus2","properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '230'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:54:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.26.0
+    method: GET
+    uri: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/arm-compute/quickstart-templates/aliases.json
+  response:
+    body:
+      string: "{\n  \"$schema\": \"http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json\",\n
+        \ \"contentVersion\": \"1.0.0.0\",\n  \"parameters\": {},\n  \"variables\":
+        {},\n  \"resources\": [],\n  \"outputs\": {\n    \"aliases\": {\n      \"type\":
+        \"object\",\n      \"value\": {\n        \"Linux\": {\n          \"CentOS\":
+        {\n            \"publisher\": \"OpenLogic\",\n            \"offer\": \"CentOS\",\n
+        \           \"sku\": \"7.5\",\n            \"version\": \"latest\",\n            \"architecture\":
+        \"x64\"\n          },\n          \"CentOS85Gen2\": {\n            \"publisher\":
+        \ \"OpenLogic\",\n            \"offer\":  \"CentOS\",\n            \"sku\":
+        \ \"8_5-gen2\",\n            \"version\":  \"latest\",\n            \"architecture\":
+        \"x64\"\n          },\n          \"Debian\": {\n            \"publisher\":
+        \"Debian\",\n            \"offer\": \"debian-10\",\n            \"sku\": \"10\",\n
+        \           \"version\": \"latest\",\n            \"architecture\": \"x64\"\n
+        \         },\n          \"Debian11\":  {\n            \"publisher\":  \"Debian\",\n
+        \           \"offer\":  \"debian-11\",\n            \"sku\":  \"11-backports-gen2\",\n
+        \           \"version\":  \"latest\",\n            \"architecture\": \"x64\"\n
+        \         },\n          \"Flatcar\": {\n            \"publisher\": \"kinvolk\",\n
+        \           \"offer\": \"flatcar-container-linux-free\",\n            \"sku\":
+        \"stable\",\n            \"version\": \"latest\",\n            \"architecture\":
+        \"x64\"\n          },\n          \"FlatcarLinuxFreeGen2\":  {\n            \"publisher\":
+        \ \"kinvolk\",\n            \"offer\":  \"flatcar-container-linux-free\",\n
+        \           \"sku\":  \"stable-gen2\",\n            \"version\":  \"latest\",\n
+        \           \"architecture\": \"x64\"\n          },\n          \"openSUSE-Leap\":
+        {\n            \"publisher\": \"SUSE\",\n            \"offer\": \"opensuse-leap-15-3\",\n
+        \           \"sku\": \"gen2\",\n            \"version\": \"latest\",\n            \"architecture\":
+        \"x64\"\n          },\n          \"OpenSuseLeap154Gen2\":  {\n            \"publisher\":
+        \ \"SUSE\",\n            \"offer\":  \"openSUSE-leap-15-4\",\n            \"sku\":
+        \ \"gen2\",\n            \"version\":  \"latest\",\n            \"architecture\":
+        \"x64\"\n          },\n          \"RHEL\": {\n            \"publisher\": \"RedHat\",\n
+        \           \"offer\": \"RHEL\",\n            \"sku\": \"7-LVM\",\n            \"version\":
+        \"latest\",\n            \"architecture\": \"x64\"\n          },\n          \"RHELRaw8LVMGen2\":
+        \ {\n            \"publisher\":  \"RedHat\",\n            \"offer\":  \"RHEL\",\n
+        \           \"sku\":  \"8-lvm-gen2\",\n            \"version\":  \"latest\",\n
+        \           \"architecture\": \"x64\"\n          },\n          \"SLES\": {\n
+        \           \"publisher\": \"SUSE\",\n            \"offer\": \"sles-15-sp3\",\n
+        \           \"sku\": \"gen2\",\n            \"version\": \"latest\",\n            \"architecture\":
+        \"x64\"\n          },\n          \"UbuntuLTS\": {\n            \"publisher\":
+        \"Canonical\",\n            \"offer\": \"UbuntuServer\",\n            \"sku\":
+        \"18.04-LTS\",\n            \"version\": \"latest\",\n            \"architecture\":
+        \"x64\"\n          },\n          \"Ubuntu2204\":  {\n            \"publisher\":
+        \ \"Canonical\",\n            \"offer\":  \"0001-com-ubuntu-server-jammy\",\n
+        \           \"sku\":  \"22_04-lts-gen2\",\n            \"version\":  \"latest\",\n
+        \           \"architecture\": \"x64\"\n          }\n        },\n        \"Windows\":
+        {\n          \"Win2022Datacenter\": {\n            \"publisher\": \"MicrosoftWindowsServer\",\n
+        \           \"offer\": \"WindowsServer\",\n            \"sku\": \"2022-Datacenter\",\n
+        \           \"version\": \"latest\",\n            \"architecture\": \"x64\"\n
+        \         },\n          \"Win2022AzureEditionCore\": {\n            \"publisher\":
+        \"MicrosoftWindowsServer\",\n            \"offer\": \"WindowsServer\",\n            \"sku\":
+        \"2022-datacenter-azure-edition-core\",\n            \"version\": \"latest\",\n
+        \           \"architecture\": \"x64\"\n          },\n          \"Win2019Datacenter\":
+        {\n            \"publisher\": \"MicrosoftWindowsServer\",\n            \"offer\":
+        \"WindowsServer\",\n            \"sku\": \"2019-Datacenter\",\n            \"version\":
+        \"latest\",\n            \"architecture\": \"x64\"\n          },\n          \"Win2016Datacenter\":
+        {\n            \"publisher\": \"MicrosoftWindowsServer\",\n            \"offer\":
+        \"WindowsServer\",\n            \"sku\": \"2016-Datacenter\",\n            \"version\":
+        \"latest\",\n            \"architecture\": \"x64\"\n          },\n          \"Win2012R2Datacenter\":
+        {\n            \"publisher\": \"MicrosoftWindowsServer\",\n            \"offer\":
+        \"WindowsServer\",\n            \"sku\": \"2012-R2-Datacenter\",\n            \"version\":
+        \"latest\",\n            \"architecture\": \"x64\"\n          },\n          \"Win2012Datacenter\":
+        {\n            \"publisher\": \"MicrosoftWindowsServer\",\n            \"offer\":
+        \"WindowsServer\",\n            \"sku\": \"2012-Datacenter\",\n            \"version\":
+        \"latest\",\n            \"architecture\": \"x64\"\n          },\n          \"Win2008R2SP1\":
+        {\n            \"publisher\": \"MicrosoftWindowsServer\",\n            \"offer\":
+        \"WindowsServer\",\n            \"sku\": \"2008-R2-SP1\",\n            \"version\":
+        \"latest\",\n            \"architecture\": \"x64\"\n          }\n        }\n
+        \     }\n    }\n  }\n}\n"
+    headers:
+      accept-ranges:
+      - bytes
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=300
+      connection:
+      - keep-alive
+      content-length:
+      - '4813'
+      content-security-policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:54:13 GMT
+      etag:
+      - W/"7298e22031c19603efeacd7c6d414e8a6440da9719a7667ec308696559a1f0ba"
+      expires:
+      - Fri, 07 Apr 2023 06:59:13 GMT
+      source-age:
+      - '102'
+      strict-transport-security:
+      - max-age=31536000
+      vary:
+      - Authorization,Accept-Encoding,Origin
+      via:
+      - 1.1 varnish
+      x-cache:
+      - HIT
+      x-cache-hits:
+      - '1'
+      x-content-type-options:
+      - nosniff
+      x-fastly-request-id:
+      - 6c046ee7ed6085fb756e1ad5dae5da758131f4f5
+      x-frame-options:
+      - deny
+      x-github-request-id:
+      - 5BB8:18F8:43EE1:55CEF:64276CDB
+      x-served-by:
+      - cache-qpg1242-QPG
+      x-timer:
+      - S1680850454.884432,VS0,VE4
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --image --public-ip-sku --admin-password
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-compute/29.1.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2/publishers/MicrosoftWindowsServer/artifacttypes/vmimage/offers/WindowsServer/skus/2012-Datacenter/versions?$top=1&$orderby=name%20desc&api-version=2022-11-01
+  response:
+    body:
+      string: "[\r\n  {\r\n    \"location\": \"eastus2\",\r\n    \"name\": \"9200.24168.230311\",\r\n
+        \   \"id\": \"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/MicrosoftWindowsServer/ArtifactTypes/VMImage/Offers/WindowsServer/Skus/2012-Datacenter/Versions/9200.24168.230311\"\r\n
+        \ }\r\n]"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '312'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:54:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/ListVMImagesVersionsFromLocation3Min;15999,Microsoft.Compute/ListVMImagesVersionsFromLocation30Min;43996
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --image --public-ip-sku --admin-password
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-compute/29.1.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2/publishers/MicrosoftWindowsServer/artifacttypes/vmimage/offers/WindowsServer/skus/2012-Datacenter/versions/9200.24168.230311?api-version=2022-11-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"hyperVGeneration\": \"V1\",\r\n    \"architecture\":
+        \"x64\",\r\n    \"replicaType\": \"Unmanaged\",\r\n    \"disallowed\": {\r\n
+        \     \"vmDiskType\": \"None\"\r\n    },\r\n    \"automaticOSUpgradeProperties\":
+        {\r\n      \"automaticOSUpgradeSupported\": false\r\n    },\r\n    \"imageDeprecationStatus\":
+        {\r\n      \"imageState\": \"Active\"\r\n    },\r\n    \"features\": [\r\n
+        \     {\r\n        \"name\": \"IsAcceleratedNetworkSupported\",\r\n        \"value\":
+        \"False\"\r\n      },\r\n      {\r\n        \"name\": \"DiskControllerTypes\",\r\n
+        \       \"value\": \"SCSI\"\r\n      },\r\n      {\r\n        \"name\": \"IsHibernateSupported\",\r\n
+        \       \"value\": \"False\"\r\n      }\r\n    ],\r\n    \"osDiskImage\":
+        {\r\n      \"operatingSystem\": \"Windows\",\r\n      \"sizeInGb\": 128,\r\n
+        \     \"sizeInBytes\": 136367309312\r\n    },\r\n    \"dataDiskImages\": []\r\n
+        \ },\r\n  \"location\": \"eastus2\",\r\n  \"name\": \"9200.24168.230311\",\r\n
+        \ \"id\": \"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/MicrosoftWindowsServer/ArtifactTypes/VMImage/Offers/WindowsServer/Skus/2012-Datacenter/Versions/9200.24168.230311\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1075'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:54:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetVMImageFromLocation3Min;12999,Microsoft.Compute/GetVMImageFromLocation30Min;73996
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --image --public-ip-sku --admin-password
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/virtualNetworks?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"value\": [\r\n    {\r\n      \"name\": \"SRsourcevmVNET\",\r\n
+        \     \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/virtualNetworks/SRsourcevmVNET\",\r\n
+        \     \"etag\": \"W/\\\"ec682e4a-172f-43a3-a0f3-a697841a2221\\\"\",\r\n      \"type\":
+        \"Microsoft.Network/virtualNetworks\",\r\n      \"location\": \"eastus2\",\r\n
+        \     \"tags\": {},\r\n      \"properties\": {\r\n        \"provisioningState\":
+        \"Succeeded\",\r\n        \"resourceGuid\": \"2cc33ffb-d63e-4f91-af82-ddd3100d388d\",\r\n
+        \       \"addressSpace\": {\r\n          \"addressPrefixes\": [\r\n            \"10.0.0.0/16\"\r\n
+        \         ]\r\n        },\r\n        \"subnets\": [\r\n          {\r\n            \"name\":
+        \"SRsourcevmSubnet\",\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/virtualNetworks/SRsourcevmVNET/subnets/SRsourcevmSubnet\",\r\n
+        \           \"etag\": \"W/\\\"ec682e4a-172f-43a3-a0f3-a697841a2221\\\"\",\r\n
+        \           \"properties\": {\r\n              \"provisioningState\": \"Succeeded\",\r\n
+        \             \"addressPrefix\": \"10.0.0.0/24\",\r\n              \"ipConfigurations\":
+        [\r\n                {\r\n                  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkInterfaces/SRsourcevmVMNic/ipConfigurations/ipconfigSRsourcevm\"\r\n
+        \               }\r\n              ],\r\n              \"delegations\": [],\r\n
+        \             \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n              \"privateLinkServiceNetworkPolicies\":
+        \"Enabled\"\r\n            },\r\n            \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n
+        \         }\r\n        ],\r\n        \"virtualNetworkPeerings\": [],\r\n        \"enableDdosProtection\":
+        false\r\n      }\r\n    }\r\n  ]\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1743'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:54:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 8d6425ef-cb78-43fc-9e8d-28a5b70a332d
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.26.0
+    method: GET
+    uri: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/arm-compute/quickstart-templates/aliases.json
+  response:
+    body:
+      string: "{\n  \"$schema\": \"http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json\",\n
+        \ \"contentVersion\": \"1.0.0.0\",\n  \"parameters\": {},\n  \"variables\":
+        {},\n  \"resources\": [],\n  \"outputs\": {\n    \"aliases\": {\n      \"type\":
+        \"object\",\n      \"value\": {\n        \"Linux\": {\n          \"CentOS\":
+        {\n            \"publisher\": \"OpenLogic\",\n            \"offer\": \"CentOS\",\n
+        \           \"sku\": \"7.5\",\n            \"version\": \"latest\",\n            \"architecture\":
+        \"x64\"\n          },\n          \"CentOS85Gen2\": {\n            \"publisher\":
+        \ \"OpenLogic\",\n            \"offer\":  \"CentOS\",\n            \"sku\":
+        \ \"8_5-gen2\",\n            \"version\":  \"latest\",\n            \"architecture\":
+        \"x64\"\n          },\n          \"Debian\": {\n            \"publisher\":
+        \"Debian\",\n            \"offer\": \"debian-10\",\n            \"sku\": \"10\",\n
+        \           \"version\": \"latest\",\n            \"architecture\": \"x64\"\n
+        \         },\n          \"Debian11\":  {\n            \"publisher\":  \"Debian\",\n
+        \           \"offer\":  \"debian-11\",\n            \"sku\":  \"11-backports-gen2\",\n
+        \           \"version\":  \"latest\",\n            \"architecture\": \"x64\"\n
+        \         },\n          \"Flatcar\": {\n            \"publisher\": \"kinvolk\",\n
+        \           \"offer\": \"flatcar-container-linux-free\",\n            \"sku\":
+        \"stable\",\n            \"version\": \"latest\",\n            \"architecture\":
+        \"x64\"\n          },\n          \"FlatcarLinuxFreeGen2\":  {\n            \"publisher\":
+        \ \"kinvolk\",\n            \"offer\":  \"flatcar-container-linux-free\",\n
+        \           \"sku\":  \"stable-gen2\",\n            \"version\":  \"latest\",\n
+        \           \"architecture\": \"x64\"\n          },\n          \"openSUSE-Leap\":
+        {\n            \"publisher\": \"SUSE\",\n            \"offer\": \"opensuse-leap-15-3\",\n
+        \           \"sku\": \"gen2\",\n            \"version\": \"latest\",\n            \"architecture\":
+        \"x64\"\n          },\n          \"OpenSuseLeap154Gen2\":  {\n            \"publisher\":
+        \ \"SUSE\",\n            \"offer\":  \"openSUSE-leap-15-4\",\n            \"sku\":
+        \ \"gen2\",\n            \"version\":  \"latest\",\n            \"architecture\":
+        \"x64\"\n          },\n          \"RHEL\": {\n            \"publisher\": \"RedHat\",\n
+        \           \"offer\": \"RHEL\",\n            \"sku\": \"7-LVM\",\n            \"version\":
+        \"latest\",\n            \"architecture\": \"x64\"\n          },\n          \"RHELRaw8LVMGen2\":
+        \ {\n            \"publisher\":  \"RedHat\",\n            \"offer\":  \"RHEL\",\n
+        \           \"sku\":  \"8-lvm-gen2\",\n            \"version\":  \"latest\",\n
+        \           \"architecture\": \"x64\"\n          },\n          \"SLES\": {\n
+        \           \"publisher\": \"SUSE\",\n            \"offer\": \"sles-15-sp3\",\n
+        \           \"sku\": \"gen2\",\n            \"version\": \"latest\",\n            \"architecture\":
+        \"x64\"\n          },\n          \"UbuntuLTS\": {\n            \"publisher\":
+        \"Canonical\",\n            \"offer\": \"UbuntuServer\",\n            \"sku\":
+        \"18.04-LTS\",\n            \"version\": \"latest\",\n            \"architecture\":
+        \"x64\"\n          },\n          \"Ubuntu2204\":  {\n            \"publisher\":
+        \ \"Canonical\",\n            \"offer\":  \"0001-com-ubuntu-server-jammy\",\n
+        \           \"sku\":  \"22_04-lts-gen2\",\n            \"version\":  \"latest\",\n
+        \           \"architecture\": \"x64\"\n          }\n        },\n        \"Windows\":
+        {\n          \"Win2022Datacenter\": {\n            \"publisher\": \"MicrosoftWindowsServer\",\n
+        \           \"offer\": \"WindowsServer\",\n            \"sku\": \"2022-Datacenter\",\n
+        \           \"version\": \"latest\",\n            \"architecture\": \"x64\"\n
+        \         },\n          \"Win2022AzureEditionCore\": {\n            \"publisher\":
+        \"MicrosoftWindowsServer\",\n            \"offer\": \"WindowsServer\",\n            \"sku\":
+        \"2022-datacenter-azure-edition-core\",\n            \"version\": \"latest\",\n
+        \           \"architecture\": \"x64\"\n          },\n          \"Win2019Datacenter\":
+        {\n            \"publisher\": \"MicrosoftWindowsServer\",\n            \"offer\":
+        \"WindowsServer\",\n            \"sku\": \"2019-Datacenter\",\n            \"version\":
+        \"latest\",\n            \"architecture\": \"x64\"\n          },\n          \"Win2016Datacenter\":
+        {\n            \"publisher\": \"MicrosoftWindowsServer\",\n            \"offer\":
+        \"WindowsServer\",\n            \"sku\": \"2016-Datacenter\",\n            \"version\":
+        \"latest\",\n            \"architecture\": \"x64\"\n          },\n          \"Win2012R2Datacenter\":
+        {\n            \"publisher\": \"MicrosoftWindowsServer\",\n            \"offer\":
+        \"WindowsServer\",\n            \"sku\": \"2012-R2-Datacenter\",\n            \"version\":
+        \"latest\",\n            \"architecture\": \"x64\"\n          },\n          \"Win2012Datacenter\":
+        {\n            \"publisher\": \"MicrosoftWindowsServer\",\n            \"offer\":
+        \"WindowsServer\",\n            \"sku\": \"2012-Datacenter\",\n            \"version\":
+        \"latest\",\n            \"architecture\": \"x64\"\n          },\n          \"Win2008R2SP1\":
+        {\n            \"publisher\": \"MicrosoftWindowsServer\",\n            \"offer\":
+        \"WindowsServer\",\n            \"sku\": \"2008-R2-SP1\",\n            \"version\":
+        \"latest\",\n            \"architecture\": \"x64\"\n          }\n        }\n
+        \     }\n    }\n  }\n}\n"
+    headers:
+      accept-ranges:
+      - bytes
+      access-control-allow-origin:
+      - '*'
+      cache-control:
+      - max-age=300
+      connection:
+      - keep-alive
+      content-length:
+      - '4813'
+      content-security-policy:
+      - default-src 'none'; style-src 'unsafe-inline'; sandbox
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:54:17 GMT
+      etag:
+      - W/"7298e22031c19603efeacd7c6d414e8a6440da9719a7667ec308696559a1f0ba"
+      expires:
+      - Fri, 07 Apr 2023 06:59:17 GMT
+      source-age:
+      - '106'
+      strict-transport-security:
+      - max-age=31536000
+      vary:
+      - Authorization,Accept-Encoding,Origin
+      via:
+      - 1.1 varnish
+      x-cache:
+      - HIT
+      x-cache-hits:
+      - '1'
+      x-content-type-options:
+      - nosniff
+      x-fastly-request-id:
+      - 05c7c1c0a112f244276d2f33dbd05ae40f648aaa
+      x-frame-options:
+      - deny
+      x-github-request-id:
+      - 5BB8:18F8:43EE1:55CEF:64276CDB
+      x-served-by:
+      - cache-qpg1280-QPG
+      x-timer:
+      - S1680850458.855914,VS0,VE1
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --image --public-ip-sku --admin-password
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-compute/29.1.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2/publishers/MicrosoftWindowsServer/artifacttypes/vmimage/offers/WindowsServer/skus/2012-Datacenter/versions?$top=1&$orderby=name%20desc&api-version=2022-11-01
+  response:
+    body:
+      string: "[\r\n  {\r\n    \"location\": \"eastus2\",\r\n    \"name\": \"9200.24168.230311\",\r\n
+        \   \"id\": \"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/MicrosoftWindowsServer/ArtifactTypes/VMImage/Offers/WindowsServer/Skus/2012-Datacenter/Versions/9200.24168.230311\"\r\n
+        \ }\r\n]"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '312'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:54:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/ListVMImagesVersionsFromLocation3Min;15998,Microsoft.Compute/ListVMImagesVersionsFromLocation30Min;43995
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --image --public-ip-sku --admin-password
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-compute/29.1.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2/publishers/MicrosoftWindowsServer/artifacttypes/vmimage/offers/WindowsServer/skus/2012-Datacenter/versions/9200.24168.230311?api-version=2022-11-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"hyperVGeneration\": \"V1\",\r\n    \"architecture\":
+        \"x64\",\r\n    \"replicaType\": \"Unmanaged\",\r\n    \"disallowed\": {\r\n
+        \     \"vmDiskType\": \"None\"\r\n    },\r\n    \"automaticOSUpgradeProperties\":
+        {\r\n      \"automaticOSUpgradeSupported\": false\r\n    },\r\n    \"imageDeprecationStatus\":
+        {\r\n      \"imageState\": \"Active\"\r\n    },\r\n    \"features\": [\r\n
+        \     {\r\n        \"name\": \"IsAcceleratedNetworkSupported\",\r\n        \"value\":
+        \"False\"\r\n      },\r\n      {\r\n        \"name\": \"DiskControllerTypes\",\r\n
+        \       \"value\": \"SCSI\"\r\n      },\r\n      {\r\n        \"name\": \"IsHibernateSupported\",\r\n
+        \       \"value\": \"False\"\r\n      }\r\n    ],\r\n    \"osDiskImage\":
+        {\r\n      \"operatingSystem\": \"Windows\",\r\n      \"sizeInGb\": 128,\r\n
+        \     \"sizeInBytes\": 136367309312\r\n    },\r\n    \"dataDiskImages\": []\r\n
+        \ },\r\n  \"location\": \"eastus2\",\r\n  \"name\": \"9200.24168.230311\",\r\n
+        \ \"id\": \"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/MicrosoftWindowsServer/ArtifactTypes/VMImage/Offers/WindowsServer/Skus/2012-Datacenter/Versions/9200.24168.230311\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1075'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:54:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetVMImageFromLocation3Min;12998,Microsoft.Compute/GetVMImageFromLocation30Min;73995
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --image --public-ip-sku --admin-password
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-compute/29.1.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2/publishers/MicrosoftWindowsServer/artifacttypes/vmimage/offers/WindowsServer/skus/2012-Datacenter/versions?$top=1&$orderby=name%20desc&api-version=2022-11-01
+  response:
+    body:
+      string: "[\r\n  {\r\n    \"location\": \"eastus2\",\r\n    \"name\": \"9200.24168.230311\",\r\n
+        \   \"id\": \"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/MicrosoftWindowsServer/ArtifactTypes/VMImage/Offers/WindowsServer/Skus/2012-Datacenter/Versions/9200.24168.230311\"\r\n
+        \ }\r\n]"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '312'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:54:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/ListVMImagesVersionsFromLocation3Min;15997,Microsoft.Compute/ListVMImagesVersionsFromLocation30Min;43994
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --image --public-ip-sku --admin-password
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-compute/29.1.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/eastus2/publishers/MicrosoftWindowsServer/artifacttypes/vmimage/offers/WindowsServer/skus/2012-Datacenter/versions/9200.24168.230311?api-version=2022-11-01
+  response:
+    body:
+      string: "{\r\n  \"properties\": {\r\n    \"hyperVGeneration\": \"V1\",\r\n    \"architecture\":
+        \"x64\",\r\n    \"replicaType\": \"Unmanaged\",\r\n    \"disallowed\": {\r\n
+        \     \"vmDiskType\": \"None\"\r\n    },\r\n    \"automaticOSUpgradeProperties\":
+        {\r\n      \"automaticOSUpgradeSupported\": false\r\n    },\r\n    \"imageDeprecationStatus\":
+        {\r\n      \"imageState\": \"Active\"\r\n    },\r\n    \"features\": [\r\n
+        \     {\r\n        \"name\": \"IsAcceleratedNetworkSupported\",\r\n        \"value\":
+        \"False\"\r\n      },\r\n      {\r\n        \"name\": \"DiskControllerTypes\",\r\n
+        \       \"value\": \"SCSI\"\r\n      },\r\n      {\r\n        \"name\": \"IsHibernateSupported\",\r\n
+        \       \"value\": \"False\"\r\n      }\r\n    ],\r\n    \"osDiskImage\":
+        {\r\n      \"operatingSystem\": \"Windows\",\r\n      \"sizeInGb\": 128,\r\n
+        \     \"sizeInBytes\": 136367309312\r\n    },\r\n    \"dataDiskImages\": []\r\n
+        \ },\r\n  \"location\": \"eastus2\",\r\n  \"name\": \"9200.24168.230311\",\r\n
+        \ \"id\": \"/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/MicrosoftWindowsServer/ArtifactTypes/VMImage/Offers/WindowsServer/Skus/2012-Datacenter/Versions/9200.24168.230311\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1075'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:54:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetVMImageFromLocation3Min;12997,Microsoft.Compute/GetVMImageFromLocation30Min;73994
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"template": {"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+      "contentVersion": "1.0.0.0", "parameters": {"adminPassword": {"type": "securestring",
+      "metadata": {"description": "Secure adminPassword"}}}, "variables": {}, "resources":
+      [{"type": "Microsoft.Network/networkSecurityGroups", "name": "SRsourcevmNSG",
+      "apiVersion": "2015-06-15", "location": "eastus2", "tags": {}, "dependsOn":
+      [], "properties": {"securityRules": [{"name": "rdp", "properties": {"protocol":
+      "Tcp", "sourcePortRange": "*", "destinationPortRange": "3389", "sourceAddressPrefix":
+      "*", "destinationAddressPrefix": "*", "access": "Allow", "priority": 1000, "direction":
+      "Inbound"}}]}}, {"apiVersion": "2022-01-01", "type": "Microsoft.Network/publicIPAddresses",
+      "name": "SRsourcevmPublicIP", "location": "eastus2", "tags": {}, "dependsOn":
+      [], "properties": {"publicIPAllocationMethod": "Static"}, "sku": {"name": "Standard"}},
+      {"apiVersion": "2015-06-15", "type": "Microsoft.Network/networkInterfaces",
+      "name": "SRsourcevmVMNic", "location": "eastus2", "tags": {}, "dependsOn": ["Microsoft.Network/networkSecurityGroups/SRsourcevmNSG",
+      "Microsoft.Network/publicIpAddresses/SRsourcevmPublicIP"], "properties": {"ipConfigurations":
+      [{"name": "ipconfigSRsourcevm", "properties": {"privateIPAllocationMethod":
+      "Dynamic", "subnet": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/virtualNetworks/SRsourcevmVNET/subnets/SRsourcevmSubnet"},
+      "publicIPAddress": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/publicIPAddresses/SRsourcevmPublicIP"}}}],
+      "networkSecurityGroup": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkSecurityGroups/SRsourcevmNSG"}}},
+      {"apiVersion": "2022-11-01", "type": "Microsoft.Compute/virtualMachines", "name":
+      "SRsourcevm", "location": "eastus2", "tags": {}, "dependsOn": ["Microsoft.Network/networkInterfaces/SRsourcevmVMNic"],
+      "properties": {"hardwareProfile": {"vmSize": "Standard_DS1_v2"}, "networkProfile":
+      {"networkInterfaces": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkInterfaces/SRsourcevmVMNic",
+      "properties": {"deleteOption": null}}]}, "storageProfile": {"osDisk": {"createOption":
+      "fromImage", "name": null, "caching": "ReadWrite", "managedDisk": {"storageAccountType":
+      null}}, "imageReference": {"publisher": "MicrosoftWindowsServer", "offer": "WindowsServer",
+      "sku": "2012-Datacenter", "version": "latest"}}, "osProfile": {"computerName":
+      "SRsourcevm", "adminUsername": "zhiyihuang", "adminPassword": "[parameters(''adminPassword'')]"}}}],
+      "outputs": {}}, "parameters": {"adminPassword": {"value": "!q2w3e4R5t6y"}},
+      "mode": "incremental"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vm create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2914'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --image --public-ip-sku --admin-password
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli.test.rg.SRVM/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Resources/deployments/vm_deploy_3Rw8sK2e45xjLdx9bcUR4OikM7Vmb9TR","name":"vm_deploy_3Rw8sK2e45xjLdx9bcUR4OikM7Vmb9TR","type":"Microsoft.Resources/deployments","properties":{"templateHash":"5562513979576193955","parameters":{"adminPassword":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Accepted","timestamp":"2023-04-07T06:54:31.3247954Z","duration":"PT0.000982S","correlationId":"14d5ee45-92b9-40ff-be88-a6b38de12ae0","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"networkSecurityGroups","locations":["eastus2"]},{"resourceType":"publicIPAddresses","locations":["eastus2"]},{"resourceType":"networkInterfaces","locations":["eastus2"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus2"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkSecurityGroups/SRsourcevmNSG","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"SRsourcevmNSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/publicIPAddresses/SRsourcevmPublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"SRsourcevmPublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkInterfaces/SRsourcevmVMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"SRsourcevmVMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkInterfaces/SRsourcevmVMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"SRsourcevmVMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Compute/virtualMachines/SRsourcevm","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"SRsourcevm"}]}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli.test.rg.SRVM/providers/Microsoft.Resources/deployments/vm_deploy_3Rw8sK2e45xjLdx9bcUR4OikM7Vmb9TR/operationStatuses/08585207564178265915?api-version=2022-09-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '2162'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:54:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --image --public-ip-sku --admin-password
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli.test.rg.SRVM/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08585207564178265915?api-version=2022-09-01
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:55:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --image --public-ip-sku --admin-password
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli.test.rg.SRVM/providers/Microsoft.Resources/deployments/mock-deployment?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Resources/deployments/vm_deploy_3Rw8sK2e45xjLdx9bcUR4OikM7Vmb9TR","name":"vm_deploy_3Rw8sK2e45xjLdx9bcUR4OikM7Vmb9TR","type":"Microsoft.Resources/deployments","properties":{"templateHash":"5562513979576193955","parameters":{"adminPassword":{"type":"SecureString"}},"mode":"Incremental","provisioningState":"Succeeded","timestamp":"2023-04-07T06:54:41.2769092Z","duration":"PT9.9530958S","correlationId":"14d5ee45-92b9-40ff-be88-a6b38de12ae0","providers":[{"namespace":"Microsoft.Network","resourceTypes":[{"resourceType":"networkSecurityGroups","locations":["eastus2"]},{"resourceType":"publicIPAddresses","locations":["eastus2"]},{"resourceType":"networkInterfaces","locations":["eastus2"]}]},{"namespace":"Microsoft.Compute","resourceTypes":[{"resourceType":"virtualMachines","locations":["eastus2"]}]}],"dependencies":[{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkSecurityGroups/SRsourcevmNSG","resourceType":"Microsoft.Network/networkSecurityGroups","resourceName":"SRsourcevmNSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/publicIPAddresses/SRsourcevmPublicIP","resourceType":"Microsoft.Network/publicIPAddresses","resourceName":"SRsourcevmPublicIP"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkInterfaces/SRsourcevmVMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"SRsourcevmVMNic"},{"dependsOn":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkInterfaces/SRsourcevmVMNic","resourceType":"Microsoft.Network/networkInterfaces","resourceName":"SRsourcevmVMNic"}],"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Compute/virtualMachines/SRsourcevm","resourceType":"Microsoft.Compute/virtualMachines","resourceName":"SRsourcevm"}],"outputs":{},"outputResources":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Compute/virtualMachines/SRsourcevm"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkInterfaces/SRsourcevmVMNic"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkSecurityGroups/SRsourcevmNSG"},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/publicIPAddresses/SRsourcevmPublicIP"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2815'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:55:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --image --public-ip-sku --admin-password
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-compute/29.1.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Compute/virtualMachines/SRsourcevm?$expand=instanceView&api-version=2022-11-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"SRsourcevm\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Compute/virtualMachines/SRsourcevm\",\r\n
+        \ \"type\": \"Microsoft.Compute/virtualMachines\",\r\n  \"location\": \"eastus2\",\r\n
+        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"vmId\": \"acdf3c6d-7689-416f-8704-12ac6c5ad128\",\r\n
+        \   \"hardwareProfile\": {\r\n      \"vmSize\": \"Standard_DS1_v2\"\r\n    },\r\n
+        \   \"storageProfile\": {\r\n      \"imageReference\": {\r\n        \"publisher\":
+        \"MicrosoftWindowsServer\",\r\n        \"offer\": \"WindowsServer\",\r\n        \"sku\":
+        \"2012-Datacenter\",\r\n        \"version\": \"latest\",\r\n        \"exactVersion\":
+        \"9200.24168.230311\"\r\n      },\r\n      \"osDisk\": {\r\n        \"osType\":
+        \"Windows\",\r\n        \"name\": \"SRsourcevm_OsDisk_1_66896902bcec4ddda7c8cb0122eca269\",\r\n
+        \       \"createOption\": \"FromImage\",\r\n        \"caching\": \"ReadWrite\",\r\n
+        \       \"managedDisk\": {\r\n          \"storageAccountType\": \"Premium_LRS\",\r\n
+        \         \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Compute/disks/SRsourcevm_OsDisk_1_66896902bcec4ddda7c8cb0122eca269\"\r\n
+        \       },\r\n        \"deleteOption\": \"Detach\",\r\n        \"diskSizeGB\":
+        127\r\n      },\r\n      \"dataDisks\": []\r\n    },\r\n    \"osProfile\":
+        {\r\n      \"computerName\": \"SRsourcevm\",\r\n      \"adminUsername\": \"zhiyihuang\",\r\n
+        \     \"windowsConfiguration\": {\r\n        \"provisionVMAgent\": true,\r\n
+        \       \"enableAutomaticUpdates\": true,\r\n        \"patchSettings\": {\r\n
+        \         \"patchMode\": \"AutomaticByOS\",\r\n          \"assessmentMode\":
+        \"ImageDefault\"\r\n        },\r\n        \"enableVMAgentPlatformUpdates\":
+        false\r\n      },\r\n      \"secrets\": [],\r\n      \"allowExtensionOperations\":
+        true,\r\n      \"requireGuestProvisionSignal\": true\r\n    },\r\n    \"networkProfile\":
+        {\"networkInterfaces\":[{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkInterfaces/SRsourcevmVMNic\"}]},\r\n
+        \   \"provisioningState\": \"Succeeded\",\r\n    \"instanceView\": {\r\n      \"computerName\":
+        \"SRsourcevm\",\r\n      \"osName\": \"Windows Server 2012 Datacenter\",\r\n
+        \     \"osVersion\": \"Microsoft Windows NT 6.2.9200.0\",\r\n      \"vmAgent\":
+        {\r\n        \"vmAgentVersion\": \"2.7.41491.1083\",\r\n        \"statuses\":
+        [\r\n          {\r\n            \"code\": \"ProvisioningState/succeeded\",\r\n
+        \           \"level\": \"Info\",\r\n            \"displayStatus\": \"Ready\",\r\n
+        \           \"message\": \"GuestAgent is running and processing the extensions.\",\r\n
+        \           \"time\": \"2023-04-07T06:54:46.411+00:00\"\r\n          }\r\n
+        \       ]\r\n      },\r\n      \"disks\": [\r\n        {\r\n          \"name\":
+        \"SRsourcevm_OsDisk_1_66896902bcec4ddda7c8cb0122eca269\",\r\n          \"statuses\":
+        [\r\n            {\r\n              \"code\": \"ProvisioningState/succeeded\",\r\n
+        \             \"level\": \"Info\",\r\n              \"displayStatus\": \"Provisioning
+        succeeded\",\r\n              \"time\": \"2023-04-07T06:13:30.2619719+00:00\"\r\n
+        \           }\r\n          ]\r\n        }\r\n      ],\r\n      \"hyperVGeneration\":
+        \"V1\",\r\n      \"statuses\": [\r\n        {\r\n          \"code\": \"ProvisioningState/succeeded\",\r\n
+        \         \"level\": \"Info\",\r\n          \"displayStatus\": \"Provisioning
+        succeeded\",\r\n          \"time\": \"2023-04-07T06:54:37.9631246+00:00\"\r\n
+        \       },\r\n        {\r\n          \"code\": \"PowerState/running\",\r\n
+        \         \"level\": \"Info\",\r\n          \"displayStatus\": \"VM running\"\r\n
+        \       }\r\n      ]\r\n    },\r\n    \"timeCreated\": \"2023-04-07T06:13:27.5431676+00:00\"\r\n
+        \ }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '3404'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:55:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/LowCostGet3Min;3997,Microsoft.Compute/LowCostGet30Min;31992
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --image --public-ip-sku --admin-password
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkInterfaces/SRsourcevmVMNic?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"SRsourcevmVMNic\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkInterfaces/SRsourcevmVMNic\",\r\n
+        \ \"etag\": \"W/\\\"2216f3da-b725-4505-8afc-30bf58a45ec7\\\"\",\r\n  \"tags\":
+        {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
+        \   \"resourceGuid\": \"76b8d98b-6624-4a78-ae12-bd508b0cd95f\",\r\n    \"ipConfigurations\":
+        [\r\n      {\r\n        \"name\": \"ipconfigSRsourcevm\",\r\n        \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkInterfaces/SRsourcevmVMNic/ipConfigurations/ipconfigSRsourcevm\",\r\n
+        \       \"etag\": \"W/\\\"2216f3da-b725-4505-8afc-30bf58a45ec7\\\"\",\r\n
+        \       \"type\": \"Microsoft.Network/networkInterfaces/ipConfigurations\",\r\n
+        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
+        \         \"privateIPAddress\": \"10.0.0.4\",\r\n          \"privateIPAllocationMethod\":
+        \"Dynamic\",\r\n          \"publicIPAddress\": {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/publicIPAddresses/SRsourcevmPublicIP\"\r\n
+        \         },\r\n          \"subnet\": {\r\n            \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/virtualNetworks/SRsourcevmVNET/subnets/SRsourcevmSubnet\"\r\n
+        \         },\r\n          \"primary\": true,\r\n          \"privateIPAddressVersion\":
+        \"IPv4\"\r\n        }\r\n      }\r\n    ],\r\n    \"dnsSettings\": {\r\n      \"dnsServers\":
+        [],\r\n      \"appliedDnsServers\": [],\r\n      \"internalDomainNameSuffix\":
+        \"5m52glb400iu5l2c1xjradjyrf.cx.internal.cloudapp.net\"\r\n    },\r\n    \"macAddress\":
+        \"00-0D-3A-E4-DD-35\",\r\n    \"enableAcceleratedNetworking\": false,\r\n
+        \   \"vnetEncryptionSupported\": false,\r\n    \"enableIPForwarding\": false,\r\n
+        \   \"networkSecurityGroup\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkSecurityGroups/SRsourcevmNSG\"\r\n
+        \   },\r\n    \"primary\": true,\r\n    \"virtualMachine\": {\r\n      \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Compute/virtualMachines/SRsourcevm\"\r\n
+        \   },\r\n    \"hostedWorkloads\": [],\r\n    \"tapConfigurations\": [],\r\n
+        \   \"nicType\": \"Standard\",\r\n    \"allowPort25Out\": true\r\n  },\r\n
+        \ \"type\": \"Microsoft.Network/networkInterfaces\",\r\n  \"location\": \"eastus2\",\r\n
+        \ \"kind\": \"Regular\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2461'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:55:08 GMT
+      etag:
+      - W/"2216f3da-b725-4505-8afc-30bf58a45ec7"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 2091459e-8c89-4309-896b-1c9c8615346e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --image --public-ip-sku --admin-password
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/publicIPAddresses/SRsourcevmPublicIP?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"SRsourcevmPublicIP\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/publicIPAddresses/SRsourcevmPublicIP\",\r\n
+        \ \"etag\": \"W/\\\"8b906f6b-c602-4d22-9d25-db43a4bfe913\\\"\",\r\n  \"location\":
+        \"eastus2\",\r\n  \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\":
+        \"Succeeded\",\r\n    \"resourceGuid\": \"ccbb18b4-5f9f-49ed-9f0f-a581c3e5df31\",\r\n
+        \   \"ipAddress\": \"20.94.84.212\",\r\n    \"publicIPAddressVersion\": \"IPv4\",\r\n
+        \   \"publicIPAllocationMethod\": \"Static\",\r\n    \"idleTimeoutInMinutes\":
+        4,\r\n    \"ipTags\": [],\r\n    \"ipConfiguration\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkInterfaces/SRsourcevmVMNic/ipConfigurations/ipconfigSRsourcevm\"\r\n
+        \   }\r\n  },\r\n  \"type\": \"Microsoft.Network/publicIPAddresses\",\r\n
+        \ \"sku\": {\r\n    \"name\": \"Standard\",\r\n    \"tier\": \"Regional\"\r\n
+        \ }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '934'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:55:09 GMT
+      etag:
+      - W/"8b906f6b-c602-4d22-9d25-db43a4bfe913"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - b1f41873-4cb9-4d6b-b8ce-d5591ad8517b
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - backup vault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-mgmt-recoveryservices/2.2.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault?api-version=2022-10-01
+  response:
+    body:
+      string: '{"location":"eastus","name":"SRCliVault","etag":"W/\"datetime''2023-04-07T06%3A47%3A50.1559194Z''\"","properties":{"provisioningState":"Succeeded","privateEndpointStateForBackup":"None","privateEndpointStateForSiteRecovery":"None","monitoringSettings":{"azureMonitorAlertSettings":{"alertsForAllJobFailures":"Enabled"},"classicAlertSettings":{"alertsForCriticalOperations":"Enabled"}},"publicNetworkAccess":"Enabled"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault","type":"Microsoft.RecoveryServices/vaults","sku":{"name":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '634'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:55:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"publicNetworkAccess": "Enabled",
+      "monitoringSettings": {"azureMonitorAlertSettings": {"alertsForAllJobFailures":
+      "Enabled"}, "classicAlertSettings": {"alertsForCriticalOperations": "Enabled"}}},
+      "sku": {"name": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - backup vault create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '262'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-mgmt-recoveryservices/2.2.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault?api-version=2022-10-01
+  response:
+    body:
+      string: '{"location":"eastus","name":"SRCliVault","etag":"W/\"datetime''2023-04-07T06%3A55%3A13.161038Z''\"","properties":{"provisioningState":"Succeeded","privateEndpointStateForBackup":"None","privateEndpointStateForSiteRecovery":"None","monitoringSettings":{"azureMonitorAlertSettings":{"alertsForAllJobFailures":"Enabled"},"classicAlertSettings":{"alertsForCriticalOperations":"Enabled"}},"publicNetworkAccess":"Enabled"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault","type":"Microsoft.RecoveryServices/vaults","sku":{"name":"Standard"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '633'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:55:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '209'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"customDetails": {"instanceType": "Azure", "location":
+      "eastus2"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '83'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --vault-name --custom-details
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/db838f1b-21f2-484a-8c99-2ecc2e79902e?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 Apr 2023 06:55:14 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/operationresults/db838f1b-21f2-484a-8c99-2ecc2e79902e?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --vault-name --custom-details
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/db838f1b-21f2-484a-8c99-2ecc2e79902e?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"db838f1b-21f2-484a-8c99-2ecc2e79902e","properties":null,"status":"InProgress","startTime":"2023-04-07T06:55:15.0663642Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:55:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --vault-name --custom-details
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/db838f1b-21f2-484a-8c99-2ecc2e79902e?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"db838f1b-21f2-484a-8c99-2ecc2e79902e","properties":null,"status":"InProgress","startTime":"2023-04-07T06:55:15.0663642Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:56:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --vault-name --custom-details
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/db838f1b-21f2-484a-8c99-2ecc2e79902e?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"db838f1b-21f2-484a-8c99-2ecc2e79902e","properties":null,"status":"Succeeded","startTime":"2023-04-07T06:55:15.0663642Z","endTime":"2023-04-07T06:56:20.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:56:46 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --vault-name --custom-details
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1?api-version=2022-08-01
+  response:
+    body:
+      string: '{"name":"cli-test-fabric-A2A-1","type":"Microsoft.RecoveryServices/vaults/replicationFabrics","id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1","properties":{"friendlyName":"East
+        US 2","encryptionDetails":{"kekState":"None","kekCertThumbprint":null},"rolloverEncryptionDetails":{"kekState":"None","kekCertThumbprint":null},"internalIdentifier":"d37f9e0f-2493-5420-b84f-29e23660b3fa","bcdrState":"Valid","customDetails":{"instanceType":"Azure","location":"eastus2","containerIds":["/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationProtectionContainers/25a3962c-f6dd-524e-9e8f-a86c5872606e"],"zones":[]},"healthErrorDetails":[],"health":"Normal"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '930'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:56:47 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"customDetails": {"instanceType": "Azure", "location":
+      "eastus"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '82'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --vault-name --custom-details
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/04917920-9140-477d-bbf8-3e7d9faa3888?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 Apr 2023 06:56:49 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2/operationresults/04917920-9140-477d-bbf8-3e7d9faa3888?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --vault-name --custom-details
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/04917920-9140-477d-bbf8-3e7d9faa3888?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"04917920-9140-477d-bbf8-3e7d9faa3888","properties":null,"status":"InProgress","startTime":"2023-04-07T06:56:50.0257574Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:57:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --vault-name --custom-details
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/04917920-9140-477d-bbf8-3e7d9faa3888?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"04917920-9140-477d-bbf8-3e7d9faa3888","properties":null,"status":"InProgress","startTime":"2023-04-07T06:56:50.0257574Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:57:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --vault-name --custom-details
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/04917920-9140-477d-bbf8-3e7d9faa3888?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"04917920-9140-477d-bbf8-3e7d9faa3888","properties":null,"status":"Succeeded","startTime":"2023-04-07T06:56:50.0257574Z","endTime":"2023-04-07T06:57:55.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:58:21 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --vault-name --custom-details
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2?api-version=2022-08-01
+  response:
+    body:
+      string: '{"name":"cli-test-fabric-A2A-2","type":"Microsoft.RecoveryServices/vaults/replicationFabrics","id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2","properties":{"friendlyName":"East
+        US","encryptionDetails":{"kekState":"None","kekCertThumbprint":null},"rolloverEncryptionDetails":{"kekState":"None","kekCertThumbprint":null},"internalIdentifier":"f6a2f9f6-ba68-577b-8910-a537d4d472f2","bcdrState":"Valid","customDetails":{"instanceType":"Azure","location":"eastus","containerIds":["/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2/replicationProtectionContainers/1970dff1-16b8-51d8-92cf-622fc4fb79b1"],"zones":[]},"healthErrorDetails":[],"health":"Normal"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '927'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:58:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"providerSpecificInput": {"instanceType": "A2A", "multiVmSyncStatus":
+      "Enable"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault policy create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '97'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationPolicies/cli-test-vault-policy-A2A-1?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/8263dce1-c0da-4658-9e94-44e72815e7c9?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 Apr 2023 06:58:24 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationPolicies/cli-test-vault-policy-A2A-1/operationresults/8263dce1-c0da-4658-9e94-44e72815e7c9?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/8263dce1-c0da-4658-9e94-44e72815e7c9?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"8263dce1-c0da-4658-9e94-44e72815e7c9","properties":null,"status":"Succeeded","startTime":"2023-04-07T06:58:25.0096590Z","endTime":"2023-04-07T06:58:25.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:58:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery vault policy create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name -n --provider-specific-input
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationPolicies/cli-test-vault-policy-A2A-1?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationPolicies/cli-test-vault-policy-A2A-1","name":"cli-test-vault-policy-A2A-1","type":"Microsoft.RecoveryServices/vaults/replicationPolicies","properties":{"friendlyName":"cli-test-vault-policy-A2A-1","providerSpecificDetails":{"instanceType":"A2A","recoveryPointThresholdInMinutes":0,"recoveryPointHistory":0,"appConsistentFrequencyInMinutes":0,"multiVmSyncStatus":"Enabled","crashConsistentFrequencyInMinutes":5}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '572'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:58:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
     body: null
     headers:
       Accept:
@@ -27,7 +1948,293 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Apr 2023 04:48:00 GMT
+      - Fri, 07 Apr 2023 06:58:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"providerSpecificInput": [{"instanceType": "A2A"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric protection-container create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '68'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --fabric-name -n --vault-name --provider-input
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationProtectionContainers/cli-test-container-A2A-1?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/52f637a7-b894-40fe-a782-12d4c92f91bb?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 Apr 2023 06:58:59 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationProtectionContainers/cli-test-container-A2A-1/operationresults/52f637a7-b894-40fe-a782-12d4c92f91bb?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric protection-container create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --vault-name --provider-input
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/52f637a7-b894-40fe-a782-12d4c92f91bb?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"52f637a7-b894-40fe-a782-12d4c92f91bb","properties":null,"status":"Succeeded","startTime":"2023-04-07T06:59:00.4785529Z","endTime":"2023-04-07T06:59:01.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:59:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric protection-container create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --vault-name --provider-input
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationProtectionContainers/cli-test-container-A2A-1?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationProtectionContainers/cli-test-container-A2A-1","name":"cli-test-container-A2A-1","type":"Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers","properties":{"fabricFriendlyName":"East
+        US 2","friendlyName":"cli-test-container-A2A-1","fabricType":"Azure","protectedItemCount":0,"pairingStatus":"Paired","role":"Primary","fabricSpecificDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '581'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 06:59:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"providerSpecificInput": [{"instanceType": "A2A"}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric protection-container create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '68'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --fabric-name -n --vault-name --provider-input
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2/replicationProtectionContainers/cli-test-container-A2A-2?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/fb2b22dd-78e7-4b90-97a6-364027f90c22?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 Apr 2023 06:59:33 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2/replicationProtectionContainers/cli-test-container-A2A-2/operationresults/fb2b22dd-78e7-4b90-97a6-364027f90c22?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric protection-container create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --vault-name --provider-input
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/fb2b22dd-78e7-4b90-97a6-364027f90c22?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"fb2b22dd-78e7-4b90-97a6-364027f90c22","properties":null,"status":"Succeeded","startTime":"2023-04-07T06:59:34.1519284Z","endTime":"2023-04-07T06:59:35.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:00:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric protection-container create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --vault-name --provider-input
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2/replicationProtectionContainers/cli-test-container-A2A-2?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2/replicationProtectionContainers/cli-test-container-A2A-2","name":"cli-test-container-A2A-2","type":"Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers","properties":{"fabricFriendlyName":"East
+        US","friendlyName":"cli-test-container-A2A-2","fabricType":"Azure","protectedItemCount":0,"pairingStatus":"Paired","role":"Primary","fabricSpecificDetails":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '579'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:00:04 GMT
       expires:
       - '-1'
       pragma:
@@ -74,7 +2281,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Apr 2023 04:48:01 GMT
+      - Fri, 07 Apr 2023 07:00:07 GMT
       expires:
       - '-1'
       pragma:
@@ -121,7 +2328,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Apr 2023 04:48:03 GMT
+      - Fri, 07 Apr 2023 07:00:09 GMT
       expires:
       - '-1'
       pragma:
@@ -136,6 +2343,489 @@ interactions:
       - Accept-Encoding
       x-content-type-options:
       - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"policyId": "/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationPolicies/cli-test-vault-policy-A2A-1",
+      "providerSpecificInput": {"instanceType": "A2A", "agentAutoUpdateStatus": "Disabled"},
+      "targetProtectionContainerId": "/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2/replicationProtectionContainers/cli-test-container-A2A-2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric protection-container mapping create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '582'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --fabric-name -n --protection-container --vault-name --policy-id --provider-input
+        --target-container
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationProtectionContainers/cli-test-container-A2A-1/replicationProtectionContainerMappings/cli-test-container-mapping-A2A-1?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/e2f71641-d9fc-4510-8e9f-e01528e32172?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 Apr 2023 07:00:11 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationProtectionContainers/cli-test-container-A2A-1/replicationProtectionContainerMappings/cli-test-container-mapping-A2A-1/operationresults/e2f71641-d9fc-4510-8e9f-e01528e32172?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric protection-container mapping create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --protection-container --vault-name --policy-id --provider-input
+        --target-container
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/e2f71641-d9fc-4510-8e9f-e01528e32172?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"e2f71641-d9fc-4510-8e9f-e01528e32172","properties":null,"status":"Succeeded","startTime":"2023-04-07T07:00:11.4217330Z","endTime":"2023-04-07T07:00:12.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:00:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric protection-container mapping create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --protection-container --vault-name --policy-id --provider-input
+        --target-container
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationProtectionContainers/cli-test-container-A2A-1/replicationProtectionContainerMappings/cli-test-container-mapping-A2A-1?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationProtectionContainers/cli-test-container-A2A-1/replicationProtectionContainerMappings/cli-test-container-mapping-A2A-1","name":"cli-test-container-mapping-A2A-1","type":"Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings","properties":{"targetProtectionContainerId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2/replicationProtectionContainers/cli-test-container-A2A-2","targetProtectionContainerFriendlyName":"cli-test-container-A2A-2","providerSpecificDetails":{"instanceType":"A2A","agentAutoUpdateStatus":"Disabled","automationAccountAuthenticationType":"RunAsAccount","automationAccountArmId":null,"scheduleName":null,"jobScheduleName":null},"health":"Normal","healthErrorDetails":[],"policyId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationPolicies/cli-test-vault-policy-A2A-1","state":"Paired","sourceProtectionContainerFriendlyName":"cli-test-container-A2A-1","sourceFabricFriendlyName":"East
+        US 2","targetFabricFriendlyName":"East US","policyFriendlyName":"cli-test-vault-policy-A2A-1"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1515'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:00:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"policyId": "/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationPolicies/cli-test-vault-policy-A2A-1",
+      "providerSpecificInput": {"instanceType": "A2A", "agentAutoUpdateStatus": "Disabled"},
+      "targetProtectionContainerId": "/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationProtectionContainers/cli-test-container-A2A-1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric protection-container mapping create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '582'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --fabric-name -n --protection-container --vault-name --policy-id --provider-input
+        --target-container
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2/replicationProtectionContainers/cli-test-container-A2A-2/replicationProtectionContainerMappings/cli-test-container-mapping-A2A-2?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/03f547d7-5455-44f5-ada8-10fc92d160cb?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 Apr 2023 07:00:45 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2/replicationProtectionContainers/cli-test-container-A2A-2/replicationProtectionContainerMappings/cli-test-container-mapping-A2A-2/operationresults/03f547d7-5455-44f5-ada8-10fc92d160cb?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric protection-container mapping create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --protection-container --vault-name --policy-id --provider-input
+        --target-container
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/03f547d7-5455-44f5-ada8-10fc92d160cb?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"03f547d7-5455-44f5-ada8-10fc92d160cb","properties":null,"status":"Succeeded","startTime":"2023-04-07T07:00:45.7977335Z","endTime":"2023-04-07T07:00:46.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:01:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric protection-container mapping create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --protection-container --vault-name --policy-id --provider-input
+        --target-container
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2/replicationProtectionContainers/cli-test-container-A2A-2/replicationProtectionContainerMappings/cli-test-container-mapping-A2A-2?api-version=2022-08-01
+  response:
+    body:
+      string: '{"id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2/replicationProtectionContainers/cli-test-container-A2A-2/replicationProtectionContainerMappings/cli-test-container-mapping-A2A-2","name":"cli-test-container-mapping-A2A-2","type":"Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings","properties":{"targetProtectionContainerId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationProtectionContainers/cli-test-container-A2A-1","targetProtectionContainerFriendlyName":"cli-test-container-A2A-1","providerSpecificDetails":{"instanceType":"A2A","agentAutoUpdateStatus":"Disabled","automationAccountAuthenticationType":"RunAsAccount","automationAccountArmId":null,"scheduleName":null,"jobScheduleName":null},"health":"Normal","healthErrorDetails":[],"policyId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationPolicies/cli-test-vault-policy-A2A-1","state":"Paired","sourceProtectionContainerFriendlyName":"cli-test-container-A2A-2","sourceFabricFriendlyName":"East
+        US","targetFabricFriendlyName":"East US 2","policyFriendlyName":"cli-test-vault-policy-A2A-1"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1515'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:01:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"addressSpace": {"addressPrefixes":
+      ["10.0.0.0/16"]}, "enableDdosProtection": false, "enableVmProtection": false,
+      "subnets": [{"name": "MySubnet", "properties": {"addressPrefix": "10.0.0.0/24"}}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '235'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --subnet-name --subnet-prefix
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.Network/virtualNetworks/cli-test-vnet-A2A-2?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"cli-test-vnet-A2A-2\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.Network/virtualNetworks/cli-test-vnet-A2A-2\",\r\n
+        \ \"etag\": \"W/\\\"63c53412-64bd-467b-8562-b5a08fc3b5c5\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus\",\r\n
+        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
+        \"0ed1d127-a05b-46c9-992d-6d6b682d9325\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
+        \     {\r\n        \"name\": \"MySubnet\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.Network/virtualNetworks/cli-test-vnet-A2A-2/subnets/MySubnet\",\r\n
+        \       \"etag\": \"W/\\\"63c53412-64bd-467b-8562-b5a08fc3b5c5\\\"\",\r\n
+        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
+        \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
+        [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
+        \"Enabled\"\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n
+        \     }\r\n    ],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
+        false\r\n  }\r\n}"
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/3575c474-9151-4daf-8b23-610f437a123a?api-version=2022-01-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '1269'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:01:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 65ee6190-67ab-48ba-b0d3-6454768bb588
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --subnet-name --subnet-prefix
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/3575c474-9151-4daf-8b23-610f437a123a?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:01:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 0621c16f-b5a0-4f55-b8b4-60a979d4dbe9
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --subnet-name --subnet-prefix
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.Network/virtualNetworks/cli-test-vnet-A2A-2?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"name\": \"cli-test-vnet-A2A-2\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.Network/virtualNetworks/cli-test-vnet-A2A-2\",\r\n
+        \ \"etag\": \"W/\\\"63c53412-64bd-467b-8562-b5a08fc3b5c5\\\"\",\r\n  \"type\":
+        \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus\",\r\n
+        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
+        \"0ed1d127-a05b-46c9-992d-6d6b682d9325\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
+        \     {\r\n        \"name\": \"MySubnet\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.Network/virtualNetworks/cli-test-vnet-A2A-2/subnets/MySubnet\",\r\n
+        \       \"etag\": \"W/\\\"63c53412-64bd-467b-8562-b5a08fc3b5c5\\\"\",\r\n
+        \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
+        \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
+        [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
+        \"Enabled\"\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n
+        \     }\r\n    ],\r\n    \"virtualNetworkPeerings\": [],\r\n    \"enableDdosProtection\":
+        false\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1269'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:01:54 GMT
+      etag:
+      - W/"63c53412-64bd-467b-8562-b5a08fc3b5c5"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 1b722d51-c5e1-422b-8196-04176632d664
     status:
       code: 200
       message: OK
@@ -159,13 +2849,13 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"cli-test-vnet-A2A-2\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.Network/virtualNetworks/cli-test-vnet-A2A-2\",\r\n
-        \ \"etag\": \"W/\\\"ad0632e1-1a8a-4d83-ae13-d5a61bdb729b\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"63c53412-64bd-467b-8562-b5a08fc3b5c5\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
-        \"a788fdcf-8b81-4877-a752-a3bff9366ace\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        \"0ed1d127-a05b-46c9-992d-6d6b682d9325\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
         [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
         \     {\r\n        \"name\": \"MySubnet\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.Network/virtualNetworks/cli-test-vnet-A2A-2/subnets/MySubnet\",\r\n
-        \       \"etag\": \"W/\\\"ad0632e1-1a8a-4d83-ae13-d5a61bdb729b\\\"\",\r\n
+        \       \"etag\": \"W/\\\"63c53412-64bd-467b-8562-b5a08fc3b5c5\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -180,9 +2870,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Apr 2023 04:48:05 GMT
+      - Fri, 07 Apr 2023 07:01:55 GMT
       etag:
-      - W/"ad0632e1-1a8a-4d83-ae13-d5a61bdb729b"
+      - W/"63c53412-64bd-467b-8562-b5a08fc3b5c5"
       expires:
       - '-1'
       pragma:
@@ -199,7 +2889,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 15d415a5-7fb1-4ed4-ae99-4d11a0a17fce
+      - a77f114b-22a3-4a6d-a962-9b99fc872035
     status:
       code: 200
       message: OK
@@ -225,16 +2915,16 @@ interactions:
     body:
       string: "{\r\n  \"name\": \"SRsourcevm\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Compute/virtualMachines/SRsourcevm\",\r\n
         \ \"type\": \"Microsoft.Compute/virtualMachines\",\r\n  \"location\": \"eastus2\",\r\n
-        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"vmId\": \"2582fc81-0648-4e57-8959-6cf0bb786f05\",\r\n
+        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"vmId\": \"acdf3c6d-7689-416f-8704-12ac6c5ad128\",\r\n
         \   \"hardwareProfile\": {\r\n      \"vmSize\": \"Standard_DS1_v2\"\r\n    },\r\n
         \   \"storageProfile\": {\r\n      \"imageReference\": {\r\n        \"publisher\":
         \"MicrosoftWindowsServer\",\r\n        \"offer\": \"WindowsServer\",\r\n        \"sku\":
         \"2012-Datacenter\",\r\n        \"version\": \"latest\",\r\n        \"exactVersion\":
         \"9200.24168.230311\"\r\n      },\r\n      \"osDisk\": {\r\n        \"osType\":
-        \"Windows\",\r\n        \"name\": \"SRsourcevm_disk1_b54379b322c44d1db2348e6799ff6215\",\r\n
+        \"Windows\",\r\n        \"name\": \"SRsourcevm_OsDisk_1_66896902bcec4ddda7c8cb0122eca269\",\r\n
         \       \"createOption\": \"FromImage\",\r\n        \"caching\": \"ReadWrite\",\r\n
         \       \"managedDisk\": {\r\n          \"storageAccountType\": \"Premium_LRS\",\r\n
-        \         \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Compute/disks/SRsourcevm_disk1_b54379b322c44d1db2348e6799ff6215\"\r\n
+        \         \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Compute/disks/SRsourcevm_OsDisk_1_66896902bcec4ddda7c8cb0122eca269\"\r\n
         \       },\r\n        \"deleteOption\": \"Detach\",\r\n        \"diskSizeGB\":
         127\r\n      },\r\n      \"dataDisks\": []\r\n    },\r\n    \"osProfile\":
         {\r\n      \"computerName\": \"SRsourcevm\",\r\n      \"adminUsername\": \"zhiyihuang\",\r\n
@@ -245,17 +2935,17 @@ interactions:
         false\r\n      },\r\n      \"secrets\": [],\r\n      \"allowExtensionOperations\":
         true,\r\n      \"requireGuestProvisionSignal\": true\r\n    },\r\n    \"networkProfile\":
         {\"networkInterfaces\":[{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkInterfaces/SRsourcevmVMNic\"}]},\r\n
-        \   \"provisioningState\": \"Succeeded\",\r\n    \"timeCreated\": \"2023-04-06T16:23:30.0669163+00:00\"\r\n
+        \   \"provisioningState\": \"Succeeded\",\r\n    \"timeCreated\": \"2023-04-07T06:13:27.5431676+00:00\"\r\n
         \ }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2034'
+      - '2040'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Apr 2023 04:48:07 GMT
+      - Fri, 07 Apr 2023 07:01:56 GMT
       expires:
       - '-1'
       pragma:
@@ -272,7 +2962,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-resource:
-      - Microsoft.Compute/LowCostGet3Min;3999,Microsoft.Compute/LowCostGet30Min;31997
+      - Microsoft.Compute/LowCostGet3Min;3999,Microsoft.Compute/LowCostGet30Min;31991
     status:
       code: 200
       message: OK
@@ -296,12 +2986,12 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"SRsourcevmVMNic\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkInterfaces/SRsourcevmVMNic\",\r\n
-        \ \"etag\": \"W/\\\"138cbfd0-48ac-450e-adac-1127a9bc04c5\\\"\",\r\n  \"tags\":
+        \ \"etag\": \"W/\\\"2216f3da-b725-4505-8afc-30bf58a45ec7\\\"\",\r\n  \"tags\":
         {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"resourceGuid\": \"113a25b6-e8ac-4040-bf40-46335a3dbb6d\",\r\n    \"ipConfigurations\":
+        \   \"resourceGuid\": \"76b8d98b-6624-4a78-ae12-bd508b0cd95f\",\r\n    \"ipConfigurations\":
         [\r\n      {\r\n        \"name\": \"ipconfigSRsourcevm\",\r\n        \"id\":
         \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkInterfaces/SRsourcevmVMNic/ipConfigurations/ipconfigSRsourcevm\",\r\n
-        \       \"etag\": \"W/\\\"138cbfd0-48ac-450e-adac-1127a9bc04c5\\\"\",\r\n
+        \       \"etag\": \"W/\\\"2216f3da-b725-4505-8afc-30bf58a45ec7\\\"\",\r\n
         \       \"type\": \"Microsoft.Network/networkInterfaces/ipConfigurations\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"privateIPAddress\": \"10.0.0.4\",\r\n          \"privateIPAllocationMethod\":
@@ -310,8 +3000,8 @@ interactions:
         \         },\r\n          \"primary\": true,\r\n          \"privateIPAddressVersion\":
         \"IPv4\"\r\n        }\r\n      }\r\n    ],\r\n    \"dnsSettings\": {\r\n      \"dnsServers\":
         [],\r\n      \"appliedDnsServers\": [],\r\n      \"internalDomainNameSuffix\":
-        \"fwvuq0rx4ztelj4fqcloeidg3e.cx.internal.cloudapp.net\"\r\n    },\r\n    \"macAddress\":
-        \"60-45-BD-82-B9-2E\",\r\n    \"enableAcceleratedNetworking\": false,\r\n
+        \"5m52glb400iu5l2c1xjradjyrf.cx.internal.cloudapp.net\"\r\n    },\r\n    \"macAddress\":
+        \"00-0D-3A-E4-DD-35\",\r\n    \"enableAcceleratedNetworking\": false,\r\n
         \   \"vnetEncryptionSupported\": false,\r\n    \"enableIPForwarding\": false,\r\n
         \   \"networkSecurityGroup\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkSecurityGroups/SRsourcevmNSG\"\r\n
         \   },\r\n    \"primary\": true,\r\n    \"virtualMachine\": {\r\n      \"id\":
@@ -328,9 +3018,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Apr 2023 04:48:09 GMT
+      - Fri, 07 Apr 2023 07:01:58 GMT
       etag:
-      - W/"138cbfd0-48ac-450e-adac-1127a9bc04c5"
+      - W/"2216f3da-b725-4505-8afc-30bf58a45ec7"
       expires:
       - '-1'
       pragma:
@@ -347,7 +3037,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - c5121e4e-837f-47f0-a8bb-82a3135f396a
+      - b349b63f-d36c-4e87-a9ae-bbebec7164e6
     status:
       code: 200
       message: OK
@@ -371,14 +3061,14 @@ interactions:
   response:
     body:
       string: "{\r\n  \"name\": \"SRsourcevmVNET\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/virtualNetworks/SRsourcevmVNET\",\r\n
-        \ \"etag\": \"W/\\\"4ffaa631-8865-4439-870d-a3539cc9bf30\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"ec682e4a-172f-43a3-a0f3-a697841a2221\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2\",\r\n
         \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"resourceGuid\": \"6a48ab2d-f637-4566-a7c5-8096e22066ec\",\r\n    \"addressSpace\":
+        \   \"resourceGuid\": \"2cc33ffb-d63e-4f91-af82-ddd3100d388d\",\r\n    \"addressSpace\":
         {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
         \   },\r\n    \"subnets\": [\r\n      {\r\n        \"name\": \"SRsourcevmSubnet\",\r\n
         \       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/virtualNetworks/SRsourcevmVNET/subnets/SRsourcevmSubnet\",\r\n
-        \       \"etag\": \"W/\\\"4ffaa631-8865-4439-870d-a3539cc9bf30\\\"\",\r\n
+        \       \"etag\": \"W/\\\"ec682e4a-172f-43a3-a0f3-a697841a2221\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"ipConfigurations\":
         [\r\n            {\r\n              \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/networkInterfaces/SRsourcevmVMNic/ipConfigurations/ipconfigSRsourcevm\"\r\n
@@ -395,9 +3085,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Apr 2023 04:48:11 GMT
+      - Fri, 07 Apr 2023 07:01:59 GMT
       etag:
-      - W/"4ffaa631-8865-4439-870d-a3539cc9bf30"
+      - W/"ec682e4a-172f-43a3-a0f3-a697841a2221"
       expires:
       - '-1'
       pragma:
@@ -414,7 +3104,383 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 1cd31e25-e2f2-408a-9aa1-39fa0ca8ea6e
+      - 4c4cf3ea-0bc4-4954-9eca-789a8a31aadc
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"fabricSpecificDetails": {"instanceType": "AzureToAzure",
+      "primaryNetworkId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/virtualNetworks/SRsourcevmVNET"},
+      "recoveryFabricName": "cli-test-fabric-A2A-2", "recoveryNetworkId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.Network/virtualNetworks/cli-test-vnet-A2A-2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric network-mapping create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '463'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --fabric-name -n --network-name --vault-name --recovery-network-id --fabric-details
+        --recovery-fabric-name
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationNetworks/azureNetwork/replicationNetworkMappings/cli-test-network-mapping-A2A-1?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/3f0b2a24-5dad-4558-ad0e-bee7bb9e0647?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 Apr 2023 07:02:01 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationNetworks/azureNetwork/replicationNetworkMappings/cli-test-network-mapping-A2A-1/operationresults/3f0b2a24-5dad-4558-ad0e-bee7bb9e0647?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric network-mapping create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --network-name --vault-name --recovery-network-id --fabric-details
+        --recovery-fabric-name
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/3f0b2a24-5dad-4558-ad0e-bee7bb9e0647?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"3f0b2a24-5dad-4558-ad0e-bee7bb9e0647","properties":null,"status":"InProgress","startTime":"2023-04-07T07:02:01.5264683Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:02:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric network-mapping create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --network-name --vault-name --recovery-network-id --fabric-details
+        --recovery-fabric-name
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/3f0b2a24-5dad-4558-ad0e-bee7bb9e0647?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"3f0b2a24-5dad-4558-ad0e-bee7bb9e0647","properties":null,"status":"InProgress","startTime":"2023-04-07T07:02:01.5264683Z","endTime":null,"percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '191'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:03:02 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric network-mapping create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --network-name --vault-name --recovery-network-id --fabric-details
+        --recovery-fabric-name
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/3f0b2a24-5dad-4558-ad0e-bee7bb9e0647?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"3f0b2a24-5dad-4558-ad0e-bee7bb9e0647","properties":null,"status":"Succeeded","startTime":"2023-04-07T07:02:01.5264683Z","endTime":"2023-04-07T07:03:04.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:03:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric network-mapping create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --network-name --vault-name --recovery-network-id --fabric-details
+        --recovery-fabric-name
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationNetworks/azureNetwork/replicationNetworkMappings/cli-test-network-mapping-A2A-1?api-version=2022-08-01
+  response:
+    body:
+      string: '{"type":"Microsoft.RecoveryServices/vaults/replicationFabrics/replicationNetworks/replicationNetworkMappings","id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationNetworks/azureNetwork/replicationNetworkMappings/cli-test-network-mapping-A2A-1","name":"cli-test-network-mapping-A2A-1","properties":{"state":"Paired","primaryNetworkFriendlyName":"srsourcevmvnet","primaryNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli.test.rg.srvm/providers/microsoft.network/virtualnetworks/srsourcevmvnet","primaryFabricFriendlyName":"East
+        US 2","recoveryNetworkFriendlyName":"cli-test-vnet-a2a-2","recoveryNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli.test.rg.srvault/providers/microsoft.network/virtualnetworks/cli-test-vnet-a2a-2","recoveryFabricArmId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2","recoveryFabricFriendlyName":"East
+        US","fabricSpecificSettings":{"instanceType":"AzureToAzure","primaryFabricLocation":"eastus2","recoveryFabricLocation":"eastus"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1309'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:03:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"fabricSpecificDetails": {"instanceType": "AzureToAzure",
+      "primaryNetworkId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.Network/virtualNetworks/cli-test-vnet-A2A-2"},
+      "recoveryFabricName": "cli-test-fabric-A2A-1", "recoveryNetworkId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Network/virtualNetworks/SRsourcevmVNET"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric network-mapping create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '463'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --fabric-name -n --network-name --vault-name --recovery-network-id --fabric-details
+        --recovery-fabric-name
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2/replicationNetworks/azureNetwork/replicationNetworkMappings/cli-test-network-mapping-A2A-2?api-version=2022-08-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/25bcd488-5c85-4524-8bb2-5060c6fe72c3?api-version=2022-08-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 07 Apr 2023 07:03:36 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2/replicationNetworks/azureNetwork/replicationNetworkMappings/cli-test-network-mapping-A2A-2/operationresults/25bcd488-5c85-4524-8bb2-5060c6fe72c3?api-version=2022-08-01
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric network-mapping create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --network-name --vault-name --recovery-network-id --fabric-details
+        --recovery-fabric-name
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/25bcd488-5c85-4524-8bb2-5060c6fe72c3?api-version=2022-08-01
+  response:
+    body:
+      string: '{"error":null,"id":null,"name":"25bcd488-5c85-4524-8bb2-5060c6fe72c3","properties":null,"status":"Succeeded","startTime":"2023-04-07T07:03:36.7123824Z","endTime":"2023-04-07T07:03:40.0000000Z","percentComplete":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '216'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:04:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - site-recovery fabric network-mapping create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --fabric-name -n --network-name --vault-name --recovery-network-id --fabric-details
+        --recovery-fabric-name
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2/replicationNetworks/azureNetwork/replicationNetworkMappings/cli-test-network-mapping-A2A-2?api-version=2022-08-01
+  response:
+    body:
+      string: '{"type":"Microsoft.RecoveryServices/vaults/replicationFabrics/replicationNetworks/replicationNetworkMappings","id":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-2/replicationNetworks/azureNetwork/replicationNetworkMappings/cli-test-network-mapping-A2A-2","name":"cli-test-network-mapping-A2A-2","properties":{"state":"Paired","primaryNetworkFriendlyName":"cli-test-vnet-a2a-2","primaryNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli.test.rg.srvault/providers/microsoft.network/virtualnetworks/cli-test-vnet-a2a-2","primaryFabricFriendlyName":"East
+        US","recoveryNetworkFriendlyName":"srsourcevmvnet","recoveryNetworkId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli.test.rg.srvm/providers/microsoft.network/virtualnetworks/srsourcevmvnet","recoveryFabricArmId":"/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1","recoveryFabricFriendlyName":"East
+        US 2","fabricSpecificSettings":{"instanceType":"AzureToAzure","primaryFabricLocation":"eastus","recoveryFabricLocation":"eastus2"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1309'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:04:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
     status:
       code: 200
       message: OK
@@ -448,7 +3514,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Apr 2023 04:48:12 GMT
+      - Fri, 07 Apr 2023 07:04:10 GMT
       expires:
       - '-1'
       pragma:
@@ -496,7 +3562,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Apr 2023 04:48:14 GMT
+      - Fri, 07 Apr 2023 07:04:12 GMT
       expires:
       - '-1'
       pragma:
@@ -545,7 +3611,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Apr 2023 04:48:15 GMT
+      - Fri, 07 Apr 2023 07:04:19 GMT
       expires:
       - '-1'
       pragma:
@@ -599,17 +3665,17 @@ interactions:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/bc80620c-7247-4b75-8968-006fa72d9196?api-version=2022-08-01
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/2f5c1d56-c7f1-44df-a442-e0952fabe100?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Fri, 07 Apr 2023 04:48:16 GMT
+      - Fri, 07 Apr 2023 07:04:20 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationNetworks/azureNetwork/replicationNetworkMappings/cli-test-network-mapping-A2A-1/operationresults/bc80620c-7247-4b75-8968-006fa72d9196?api-version=2022-08-01
+      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationNetworks/azureNetwork/replicationNetworkMappings/cli-test-network-mapping-A2A-1/operationresults/2f5c1d56-c7f1-44df-a442-e0952fabe100?api-version=2022-08-01
       pragma:
       - no-cache
       server:
@@ -619,7 +3685,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 202
       message: Accepted
@@ -640,10 +3706,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/bc80620c-7247-4b75-8968-006fa72d9196?api-version=2022-08-01
+    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/2f5c1d56-c7f1-44df-a442-e0952fabe100?api-version=2022-08-01
   response:
     body:
-      string: '{"error":null,"id":null,"name":"bc80620c-7247-4b75-8968-006fa72d9196","properties":null,"status":"Succeeded","startTime":"2023-04-07T04:48:16.8992268Z","endTime":"2023-04-07T04:48:21.0000000Z","percentComplete":null}'
+      string: '{"error":null,"id":null,"name":"2f5c1d56-c7f1-44df-a442-e0952fabe100","properties":null,"status":"Succeeded","startTime":"2023-04-07T07:04:20.5888563Z","endTime":"2023-04-07T07:04:23.0000000Z","percentComplete":null}'
     headers:
       cache-control:
       - no-cache
@@ -652,7 +3718,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Apr 2023 04:48:47 GMT
+      - Fri, 07 Apr 2023 07:04:51 GMT
       expires:
       - '-1'
       pragma:
@@ -701,7 +3767,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 07 Apr 2023 04:48:48 GMT
+      - Fri, 07 Apr 2023 07:04:51 GMT
       expires:
       - '-1'
       pragma:
@@ -720,50 +3786,54 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: null
+    body: '{"sku": {"name": "Premium_LRS"}, "kind": "StorageV2", "location": "eastus2",
+      "properties": {"encryption": {"services": {"blob": {}}, "keySource": "Microsoft.Storage"}}}'
     headers:
       Accept:
-      - '*/*'
+      - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - site-recovery fabric network-mapping delete
+      - storage account create
       Connection:
       - keep-alive
       Content-Length:
-      - '0'
+      - '168'
+      Content-Type:
+      - application/json
       ParameterSetName:
-      - -g --fabric-name -n --network-name --vault-name -y
+      - -n -g --sku -l
       User-Agent:
-      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationNetworks/azureNetwork/replicationNetworkMappings/cli-test-network-mapping-A2A-1?api-version=2022-08-01
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-storage/21.0.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Storage/storageAccounts/clitestsaa2a1?api-version=2022-09-01
   response:
     body:
       string: ''
     headers:
-      azure-asyncoperation:
-      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/7c385468-89d1-4ae3-9008-afd43aefcc16?api-version=2022-08-01
       cache-control:
       - no-cache
       content-length:
       - '0'
+      content-type:
+      - text/plain; charset=utf-8
       date:
-      - Fri, 07 Apr 2023 04:48:50 GMT
+      - Fri, 07 Apr 2023 07:04:57 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationFabrics/cli-test-fabric-A2A-1/replicationNetworks/azureNetwork/replicationNetworkMappings/cli-test-network-mapping-A2A-1/operationresults/7c385468-89d1-4ae3-9008-afd43aefcc16?api-version=2022-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2/asyncoperations/bebe7dda-55df-4594-a774-a4cd8d9287a9?monitor=true&api-version=2022-09-01
       pragma:
       - no-cache
       server:
-      - Kestrel
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1197'
     status:
       code: 202
       message: Accepted
@@ -775,37 +3845,317 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - site-recovery fabric network-mapping delete
+      - storage account create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g --fabric-name -n --network-name --vault-name -y
+      - -n -g --sku -l
       User-Agent:
-      - AZURECLI/2.47.0 (PIP) (AAZ) azsdk-python-core/1.24.0 Python/3.9.6 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-storage/21.0.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/Subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.RecoveryServices/vaults/SRCliVault/replicationOperationStatus/7c385468-89d1-4ae3-9008-afd43aefcc16?api-version=2022-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus2/asyncoperations/bebe7dda-55df-4594-a774-a4cd8d9287a9?monitor=true&api-version=2022-09-01
   response:
     body:
-      string: '{"error":null,"id":null,"name":"7c385468-89d1-4ae3-9008-afd43aefcc16","properties":null,"status":"Succeeded","startTime":"2023-04-07T04:48:50.3634191Z","endTime":"2023-04-07T04:48:51.0000000Z","percentComplete":null}'
+      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Storage/storageAccounts/clitestsaa2a1","name":"clitestsaa2a1","type":"Microsoft.Storage/storageAccounts","location":"eastus2","tags":{},"properties":{"keyCreationTime":{"key1":"2023-04-07T07:04:56.9115405Z","key2":"2023-04-07T07:04:56.9115405Z"},"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-04-07T07:04:57.1615441Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-04-07T07:04:57.1615441Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2023-04-07T07:04:56.7709087Z","primaryEndpoints":{"web":"https://clitestsaa2a1.z20.web.core.windows.net/","blob":"https://clitestsaa2a1.blob.core.windows.net/"},"primaryLocation":"eastus2","statusOfPrimary":"available"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '216'
+      - '1180'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 07 Apr 2023 04:49:20 GMT
+      - Fri, 07 Apr 2023 07:05:15 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       server:
-      - Kestrel
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"sku": {"name": "Premium_LRS"}, "kind": "StorageV2", "location": "eastus",
+      "properties": {"encryption": {"services": {"blob": {}}, "keySource": "Microsoft.Storage"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '167'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g --sku -l
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-storage/21.0.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.Storage/storageAccounts/clitestsaa2a2?api-version=2022-09-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:05:23 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus/asyncoperations/54e1f70a-2b3f-41cf-99a2-9f1d2d5fd747?monitor=true&api-version=2022-09-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --sku -l
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-storage/21.0.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Storage/locations/eastus/asyncoperations/54e1f70a-2b3f-41cf-99a2-9f1d2d5fd747?monitor=true&api-version=2022-09-01
+  response:
+    body:
+      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.Storage/storageAccounts/clitestsaa2a2","name":"clitestsaa2a2","type":"Microsoft.Storage/storageAccounts","location":"eastus","tags":{},"properties":{"keyCreationTime":{"key1":"2023-04-07T07:05:22.3637544Z","key2":"2023-04-07T07:05:22.3637544Z"},"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-04-07T07:05:22.3793787Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-04-07T07:05:22.3793787Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2023-04-07T07:05:22.1762551Z","primaryEndpoints":{"web":"https://clitestsaa2a2.z13.web.core.windows.net/","blob":"https://clitestsaa2a2.blob.core.windows.net/"},"primaryLocation":"eastus","statusOfPrimary":"available"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1181'
+      content-type:
+      - application/json
+      date:
+      - Fri, 07 Apr 2023 07:05:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-storage/21.0.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Storage/storageAccounts/clitestsaa2a1?api-version=2022-09-01
+  response:
+    body:
+      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM/providers/Microsoft.Storage/storageAccounts/clitestsaa2a1","name":"clitestsaa2a1","type":"Microsoft.Storage/storageAccounts","location":"eastus2","tags":{},"properties":{"keyCreationTime":{"key1":"2023-04-07T07:04:56.9115405Z","key2":"2023-04-07T07:04:56.9115405Z"},"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-04-07T07:04:57.1615441Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-04-07T07:04:57.1615441Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2023-04-07T07:04:56.7709087Z","primaryEndpoints":{"web":"https://clitestsaa2a1.z20.web.core.windows.net/","blob":"https://clitestsaa2a1.blob.core.windows.net/"},"primaryLocation":"eastus2","statusOfPrimary":"available"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1180'
+      content-type:
+      - application/json
+      date:
+      - Fri, 07 Apr 2023 07:05:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-storage/21.0.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.Storage/storageAccounts/clitestsaa2a2?api-version=2022-09-01
+  response:
+    body:
+      string: '{"sku":{"name":"Premium_LRS","tier":"Premium"},"kind":"StorageV2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault/providers/Microsoft.Storage/storageAccounts/clitestsaa2a2","name":"clitestsaa2a2","type":"Microsoft.Storage/storageAccounts","location":"eastus","tags":{},"properties":{"keyCreationTime":{"key1":"2023-04-07T07:05:22.3637544Z","key2":"2023-04-07T07:05:22.3637544Z"},"privateEndpointConnections":[],"minimumTlsVersion":"TLS1_0","allowBlobPublicAccess":true,"networkAcls":{"bypass":"AzureServices","virtualNetworkRules":[],"ipRules":[],"defaultAction":"Allow"},"supportsHttpsTrafficOnly":true,"encryption":{"services":{"file":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-04-07T07:05:22.3793787Z"},"blob":{"keyType":"Account","enabled":true,"lastEnabledTime":"2023-04-07T07:05:22.3793787Z"}},"keySource":"Microsoft.Storage"},"accessTier":"Hot","provisioningState":"Succeeded","creationTime":"2023-04-07T07:05:22.1762551Z","primaryEndpoints":{"web":"https://clitestsaa2a2.z13.web.core.windows.net/","blob":"https://clitestsaa2a2.blob.core.windows.net/"},"primaryLocation":"eastus","statusOfPrimary":"available"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1181'
+      content-type:
+      - application/json
+      date:
+      - Fri, 07 Apr 2023 07:05:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli.test.rg.SRVault?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVault","name":"cli.test.rg.SRVault","type":"Microsoft.Resources/resourceGroups","location":"eastus","properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '235'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:05:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - group show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n
+      User-Agent:
+      - AZURECLI/2.47.0 (PIP) azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.6
+        (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli.test.rg.SRVM?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli.test.rg.SRVM","name":"cli.test.rg.SRVM","type":"Microsoft.Resources/resourceGroups","location":"eastus2","properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '230'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 07 Apr 2023 07:05:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
       vary:
       - Accept-Encoding
       x-content-type-options:

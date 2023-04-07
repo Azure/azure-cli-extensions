@@ -137,6 +137,7 @@ class SiteRecoveryScenario(ScenarioTest):
                  checks=[self.check('length(@)', 0)])
 
     # pylint: disable=line-too-long
+    @record_only()
     def test_siterecovery_A2A_selfcreated_scenarios(self):
         self.kwargs.update({
             'rg': 'cli.test.rg.SRVault',
@@ -282,16 +283,16 @@ class SiteRecoveryScenario(ScenarioTest):
                  '--recovery-fabric-name {fabric_source_name}')
 
         # crud for network-mapping
-        self.cmd('az site-recovery fabric network-mapping list -g {rg} --fabric-name {fabric_source_name} '
-                 '--network-name azureNetwork --vault-name {vault_name}', checks=[self.check('length(@)', 1)])
-        self.cmd('az site-recovery fabric network-mapping show -g {rg} --fabric-name {fabric_source_name} '
-                 '-n {network_mapping_src_to_recovery_name} --network-name azureNetwork --vault-name {vault_name}',
-                 checks=[self.check('properties.recoveryNetworkId', vnet_recovery["id"].lower())])
-        self.cmd('az site-recovery fabric network-mapping update -g {rg} --fabric-name {fabric_source_name} '
-                 '-n {network_mapping_src_to_recovery_name} --network-name azureNetwork --vault-name {vault_name} '
-                 '--recovery-network-id {vnet_recovery_id} '
-                 '--fabric-details {{azure-to-azure:{{primary-network-id:{vnetvm_id}}}}} '
-                 '--recovery-fabric-name {fabric_recovery_name}')
+        # self.cmd('az site-recovery fabric network-mapping list -g {rg} --fabric-name {fabric_source_name} '
+        #          '--network-name azureNetwork --vault-name {vault_name}', checks=[self.check('length(@)', 1)])
+        # self.cmd('az site-recovery fabric network-mapping show -g {rg} --fabric-name {fabric_source_name} '
+        #          '-n {network_mapping_src_to_recovery_name} --network-name azureNetwork --vault-name {vault_name}',
+        #          checks=[self.check('properties.recoveryNetworkId', vnet_recovery["id"].lower())])
+        # self.cmd('az site-recovery fabric network-mapping update -g {rg} --fabric-name {fabric_source_name} '
+        #          '-n {network_mapping_src_to_recovery_name} --network-name azureNetwork --vault-name {vault_name} '
+        #          '--recovery-network-id {vnet_recovery_id} '
+        #          '--fabric-details {{azure-to-azure:{{primary-network-id:{vnetvm_id}}}}} '
+        #          '--recovery-fabric-name {fabric_recovery_name}')
 
         #
         # # # create two storage accounts for caching
@@ -309,137 +310,137 @@ class SiteRecoveryScenario(ScenarioTest):
                             "rg_id": rg_id, "vm_rg_id": vm_rg_id})
         # #
         # # # # # enable protection
-        # self.cmd('az site-recovery protected-item create -g {rg} '
-        #          '--fabric-name {fabric_source_name} -n {protected_item_name} '
-        #          '--protection-container {container_source_name} '
-        #          '--vault-name {vault_name} --policy-id {policy_id} '
-        #          '--provider-details {{a2a:{{fabric-object-id:{vm_id},'
-        #          'vm-managed-disks:[{{disk-id:{os_disk},'
-        #          'primary-staging-azure-storage-account-id:{sa_src_id},'
-        #          'recovery-resource-group-id:{rg_id}}}],recovery-azure-network-id:{vnet_recovery_id},'
-        #          'recovery-container-id:{container_recovery_id},'
-        #          'recovery-resource-group-id:{rg_id},'
-        #          'recovery-subnet-name:{vnet_recovery_subnet}}}}}')
-        # # # #
-        # # # # wait for protection to fully enabled
-        # while True:
-        #     protected_item = self.cmd('az site-recovery protected-item show -g {rg} '
-        #                               '--fabric-name {fabric_source_name} -n {protected_item_name} '
-        #                               '--protection-container {container_source_name} '
-        #                               '--vault-name {vault_name}').get_output_in_json()
-        #     if protected_item["properties"]["protectionState"] == "Protected":
-        #         self.kwargs.update({"protected_item_id": protected_item["id"]})
-        #         break
-        #     time.sleep(300)
-        # #
-        # # # # recovery-plan
-        # fabric1_id = self.cmd('az site-recovery fabric show -n {fabric_source_name} -g {rg} '
-        #                       '--vault-name {vault_name}').get_output_in_json()["id"]
-        # fabric2_id = self.cmd('az site-recovery fabric show -n {fabric_recovery_name} -g {rg} '
-        #                       '--vault-name {vault_name}').get_output_in_json()["id"]
-        # self.kwargs.update({"fabric1_id": fabric1_id, "fabric2_id": fabric2_id})
-        #
-        # self.cmd('az site-recovery vault recovery-plan create -n {recovery_plan_name} -g {rg} '
-        #          '--vault-name {vault_name} --groups [{{group-type:Boot,'
-        #          'replication-protected-items:[{{id:{protected_item_id},virtual-machine-id:{vm_id}}}]}}] '
-        #          '--primary-fabric-id {fabric1_id} '
-        #          '--recovery-fabric-id {fabric2_id} '
-        #          '--failover-deployment-model ResourceManager')
-        # self.cmd('az site-recovery vault recovery-plan show -n {recovery_plan_name} -g {rg} --vault-name {vault_name}',
-        #          checks=[self.check('properties.failoverDeploymentModel', 'ResourceManager'),
-        #                  self.check('properties.primaryFabricId', fabric1_id),
-        #                  self.check('properties.recoveryFabricId', fabric2_id)])
-        # self.cmd('az site-recovery vault recovery-plan list -g {rg} --vault-name {vault_name}',
-        #          checks=[self.check('length(@)', 1)])
-        # self.cmd('az site-recovery vault recovery-plan update -n {recovery_plan_name} -g {rg} '
-        #          '--vault-name {vault_name} --groups [{{group-type:Boot,'
-        #          'replication-protected-items:[{{id:{protected_item_id},virtual-machine-id:{vm_id}}}]}}] '
-        #          '--primary-fabric-id {fabric2_id} '
-        #          '--recovery-fabric-id {fabric1_id} '
-        #          '--failover-deployment-model ResourceManager')
-        # self.cmd('az site-recovery vault recovery-plan delete -n {recovery_plan_name} -g {rg} '
-        #          '--vault-name {vault_name} -y')
-        # self.cmd('az site-recovery vault recovery-plan list -g {rg} --vault-name {vault_name}',
-        #          checks=[self.check('length(@)', 0)])
-        # #
-        # # # # failover
-        # self.cmd('az site-recovery protected-item unplanned-failover --fabric-name {fabric_source_name} '
-        #          '--protection-container {container_source_name} -n {protected_item_name} -g {rg} --vault-name {vault_name} '
-        #          '--failover-direction PrimaryToRecovery --provider-details {{a2a:{{}}}} '
-        #          '--source-site-operations NotRequired')
-        # #
-        # # # failover commit
-        # self.cmd('az site-recovery protected-item failover-commit --fabric-name {fabric_source_name} '
-        #          '--protection-container {container_source_name} -n {protected_item_name} -g {rg} --vault-name {vault_name}')
-        # #
-        # recovery_vm = self.cmd('az vm show -n {vm_name} -g {rg}').get_output_in_json()
-        # self.kwargs.update({"recovery_vm_id": recovery_vm["id"],
-        #                     "recovery_os_disk": recovery_vm["storageProfile"]["osDisk"]["managedDisk"]["id"]})
-        # #
-        # # # switch protection
-        # self.cmd('az site-recovery fabric protection-container switch-protection --fabric-name {fabric_source_name} '
-        #          '-n {container_source_name} --protected-item {protected_item_name} -g {rg} '
-        #          '--vault-name {vault_name} --provider-details {{a2a:{{policy-id:{policy_id},'
-        #          'recovery-container-id:{container_source_id},'
-        #          'recovery-resource-group-id:{vm_rg_id},'
-        #          'vm-managed-disks:[{{disk-id:{recovery_os_disk},'
-        #          'primary-staging-azure-storage-account-id:{sa_recovery_id},'
-        #          'recovery-resource-group-id:{vm_rg_id}}}]}}}}')
-        # #
+        self.cmd('az site-recovery protected-item create -g {rg} '
+                 '--fabric-name {fabric_source_name} -n {protected_item_name} '
+                 '--protection-container {container_source_name} '
+                 '--vault-name {vault_name} --policy-id {policy_id} '
+                 '--provider-details {{a2a:{{fabric-object-id:{vm_id},'
+                 'vm-managed-disks:[{{disk-id:{os_disk},'
+                 'primary-staging-azure-storage-account-id:{sa_src_id},'
+                 'recovery-resource-group-id:{rg_id}}}],recovery-azure-network-id:{vnet_recovery_id},'
+                 'recovery-container-id:{container_recovery_id},'
+                 'recovery-resource-group-id:{rg_id},'
+                 'recovery-subnet-name:{vnet_recovery_subnet}}}}}')
+        # # #
         # # # wait for protection to fully enabled
-        # while True:
-        #     protected_item = self.cmd('az site-recovery protected-item show -g {rg} '
-        #                               '--fabric-name {fabric_recovery_name} -n {protected_item_name} '
-        #                               '--protection-container {container_recovery_name} '
-        #                               '--vault-name {vault_name}').get_output_in_json()
-        #     if protected_item["properties"]["protectionState"] == "Protected":
-        #         break
-        #     time.sleep(300)
-        # #
-        # # # failback
-        # self.cmd('az site-recovery protected-item unplanned-failover --fabric-name {fabric_recovery_name} '
-        #          '--protection-container {container_recovery_name} -n {protected_item_name} -g {rg} --vault-name {vault_name} '
-        #          '--failover-direction PrimaryToRecovery --provider-details {{a2a:{{}}}} '
-        #          '--source-site-operations NotRequired')
-        # #
-        # #  disable protection
-        # self.cmd('az site-recovery protected-item remove -g {rg} '
-        #          '--fabric-name {fabric_recovery_name} -n {protected_item_name} --protection-container {container_recovery_name} '
-        #          '--vault-name {vault_name}')
+        while True:
+            protected_item = self.cmd('az site-recovery protected-item show -g {rg} '
+                                      '--fabric-name {fabric_source_name} -n {protected_item_name} '
+                                      '--protection-container {container_source_name} '
+                                      '--vault-name {vault_name}').get_output_in_json()
+            if protected_item["properties"]["protectionState"] == "Protected":
+                self.kwargs.update({"protected_item_id": protected_item["id"]})
+                break
+            time.sleep(300)
+        #
+        # # # recovery-plan
+        fabric1_id = self.cmd('az site-recovery fabric show -n {fabric_source_name} -g {rg} '
+                              '--vault-name {vault_name}').get_output_in_json()["id"]
+        fabric2_id = self.cmd('az site-recovery fabric show -n {fabric_recovery_name} -g {rg} '
+                              '--vault-name {vault_name}').get_output_in_json()["id"]
+        self.kwargs.update({"fabric1_id": fabric1_id, "fabric2_id": fabric2_id})
 
-        # self.cmd('az site-recovery protected-item delete -g {rg} '
-        #          '--fabric-name {fabric_recovery_name} -n {protected_item_name} --protection-container {container_recovery_name} '
-        #          '--vault-name {vault_name} -y')
+        self.cmd('az site-recovery vault recovery-plan create -n {recovery_plan_name} -g {rg} '
+                 '--vault-name {vault_name} --groups [{{group-type:Boot,'
+                 'replication-protected-items:[{{id:{protected_item_id},virtual-machine-id:{vm_id}}}]}}] '
+                 '--primary-fabric-id {fabric1_id} '
+                 '--recovery-fabric-id {fabric2_id} '
+                 '--failover-deployment-model ResourceManager')
+        self.cmd('az site-recovery vault recovery-plan show -n {recovery_plan_name} -g {rg} --vault-name {vault_name}',
+                 checks=[self.check('properties.failoverDeploymentModel', 'ResourceManager'),
+                         self.check('properties.primaryFabricId', fabric1_id),
+                         self.check('properties.recoveryFabricId', fabric2_id)])
+        self.cmd('az site-recovery vault recovery-plan list -g {rg} --vault-name {vault_name}',
+                 checks=[self.check('length(@)', 1)])
+        self.cmd('az site-recovery vault recovery-plan update -n {recovery_plan_name} -g {rg} '
+                 '--vault-name {vault_name} --groups [{{group-type:Boot,'
+                 'replication-protected-items:[{{id:{protected_item_id},virtual-machine-id:{vm_id}}}]}}] '
+                 '--primary-fabric-id {fabric2_id} '
+                 '--recovery-fabric-id {fabric1_id} '
+                 '--failover-deployment-model ResourceManager')
+        self.cmd('az site-recovery vault recovery-plan delete -n {recovery_plan_name} -g {rg} '
+                 '--vault-name {vault_name} -y')
+        self.cmd('az site-recovery vault recovery-plan list -g {rg} --vault-name {vault_name}',
+                 checks=[self.check('length(@)', 0)])
         #
-        # self.cmd('az site-recovery fabric network-mapping delete -g {rg} --fabric-name {fabric_source_name} '
-        #          '-n {network_mapping_src_to_recovery_name} --network-name azureNetwork --vault-name {vault_name} -y')
+        # # # failover
+        self.cmd('az site-recovery protected-item unplanned-failover --fabric-name {fabric_source_name} '
+                 '--protection-container {container_source_name} -n {protected_item_name} -g {rg} --vault-name {vault_name} '
+                 '--failover-direction PrimaryToRecovery --provider-details {{a2a:{{}}}} '
+                 '--source-site-operations NotRequired')
         #
-        # # delete container mappings
-        # self.cmd('az site-recovery fabric protection-container mapping delete -g {rg} '
-        #          '--fabric-name {fabric_source_name} -n {container_mapping_source_name} --protection-container {container_source_name} '
-        #          '--vault-name {vault_name} -y')
-        # self.cmd('az site-recovery fabric protection-container mapping delete -g {rg} '
-        #          '--fabric-name {fabric_recovery_name} -n {container_mapping_recovery_name} --protection-container {container_recovery_name} '
-        #          '--vault-name {vault_name} -y')
-        # #
-        # # # delete containers
-        # self.cmd('az site-recovery fabric protection-container remove -g {rg} '
-        #          '--fabric-name {fabric_source_name} -n {container_source_name} --vault-name {vault_name}')
-        # self.cmd('az site-recovery fabric protection-container remove -g {rg} '
-        #          '--fabric-name {fabric_recovery_name} -n {container_recovery_name} --vault-name {vault_name}')
-        # #
-        # # # delete policy
-        # self.cmd('az site-recovery vault policy delete -g {rg} '
-        #          '--vault-name {vault_name} -n {policy_name} -y')
-        # #
-        # # # delete fabrics
-        # self.cmd('az site-recovery fabric delete -n {fabric_source_name} -g {rg} '
-        #          '--vault-name {vault_name} -y')
-        # self.cmd('az site-recovery fabric delete -n {fabric_recovery_name} -g {rg} '
-        #          '--vault-name {vault_name} -y')
+        # # failover commit
+        self.cmd('az site-recovery protected-item failover-commit --fabric-name {fabric_source_name} '
+                 '--protection-container {container_source_name} -n {protected_item_name} -g {rg} --vault-name {vault_name}')
         #
-        # self.cmd('az group delete -g {rg} -y')
-        # self.cmd('az group delete -g {vm_rg} -y')
+        recovery_vm = self.cmd('az vm show -n {vm_name} -g {rg}').get_output_in_json()
+        self.kwargs.update({"recovery_vm_id": recovery_vm["id"],
+                            "recovery_os_disk": recovery_vm["storageProfile"]["osDisk"]["managedDisk"]["id"]})
+        #
+        # # switch protection
+        self.cmd('az site-recovery fabric protection-container switch-protection --fabric-name {fabric_source_name} '
+                 '-n {container_source_name} --protected-item {protected_item_name} -g {rg} '
+                 '--vault-name {vault_name} --provider-details {{a2a:{{policy-id:{policy_id},'
+                 'recovery-container-id:{container_source_id},'
+                 'recovery-resource-group-id:{vm_rg_id},'
+                 'vm-managed-disks:[{{disk-id:{recovery_os_disk},'
+                 'primary-staging-azure-storage-account-id:{sa_recovery_id},'
+                 'recovery-resource-group-id:{vm_rg_id}}}]}}}}')
+        #
+        # # wait for protection to fully enabled
+        while True:
+            protected_item = self.cmd('az site-recovery protected-item show -g {rg} '
+                                      '--fabric-name {fabric_recovery_name} -n {protected_item_name} '
+                                      '--protection-container {container_recovery_name} '
+                                      '--vault-name {vault_name}').get_output_in_json()
+            if protected_item["properties"]["protectionState"] == "Protected":
+                break
+            time.sleep(300)
+        #
+        # # failback
+        self.cmd('az site-recovery protected-item unplanned-failover --fabric-name {fabric_recovery_name} '
+                 '--protection-container {container_recovery_name} -n {protected_item_name} -g {rg} --vault-name {vault_name} '
+                 '--failover-direction PrimaryToRecovery --provider-details {{a2a:{{}}}} '
+                 '--source-site-operations NotRequired')
+        #
+        #  disable protection
+        self.cmd('az site-recovery protected-item remove -g {rg} '
+                 '--fabric-name {fabric_recovery_name} -n {protected_item_name} --protection-container {container_recovery_name} '
+                 '--vault-name {vault_name}')
+
+        self.cmd('az site-recovery protected-item delete -g {rg} '
+                 '--fabric-name {fabric_recovery_name} -n {protected_item_name} --protection-container {container_recovery_name} '
+                 '--vault-name {vault_name} -y')
+
+        self.cmd('az site-recovery fabric network-mapping delete -g {rg} --fabric-name {fabric_source_name} '
+                 '-n {network_mapping_src_to_recovery_name} --network-name azureNetwork --vault-name {vault_name} -y')
+
+        # delete container mappings
+        self.cmd('az site-recovery fabric protection-container mapping delete -g {rg} '
+                 '--fabric-name {fabric_source_name} -n {container_mapping_source_name} --protection-container {container_source_name} '
+                 '--vault-name {vault_name} -y')
+        self.cmd('az site-recovery fabric protection-container mapping delete -g {rg} '
+                 '--fabric-name {fabric_recovery_name} -n {container_mapping_recovery_name} --protection-container {container_recovery_name} '
+                 '--vault-name {vault_name} -y')
+        #
+        # # delete containers
+        self.cmd('az site-recovery fabric protection-container remove -g {rg} '
+                 '--fabric-name {fabric_source_name} -n {container_source_name} --vault-name {vault_name}')
+        self.cmd('az site-recovery fabric protection-container remove -g {rg} '
+                 '--fabric-name {fabric_recovery_name} -n {container_recovery_name} --vault-name {vault_name}')
+        #
+        # # delete policy
+        self.cmd('az site-recovery vault policy delete -g {rg} '
+                 '--vault-name {vault_name} -n {policy_name} -y')
+        #
+        # # delete fabrics
+        self.cmd('az site-recovery fabric delete -n {fabric_source_name} -g {rg} '
+                 '--vault-name {vault_name} -y')
+        self.cmd('az site-recovery fabric delete -n {fabric_recovery_name} -g {rg} '
+                 '--vault-name {vault_name} -y')
+
+        self.cmd('az group delete -g {rg} -y')
+        self.cmd('az group delete -g {vm_rg} -y')
 
     @record_only()
     def test_siterecovery_A2A_scenarios(self):
