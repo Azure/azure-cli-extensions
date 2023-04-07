@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import logging
 from datetime import datetime
 
 # pylint: disable=wrong-import-order
@@ -476,7 +477,7 @@ def _print_deploy_process(client, poller, resource_group, service, app_name, dep
                            'Azure Spring Apps will update the deployment in {}.'.format(instance_desc, rounds_desc))
             last_round = 0
 
-            deployment_time = datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S%z")
+            deployment_time = deployment_resource.system_data.last_modified_at.strftime("%Y-%m-%dT%H:%M:%S%z")
             while not poller.done():
                 deployment_resource = _get_deployment_ignore_exception(client, resource_group, service, app_name,
                                                                        deployment_name)
@@ -502,6 +503,7 @@ def _print_deploy_process(client, poller, resource_group, service, app_name, dep
                             'started/starting'.format(int(current_round), old_desc, new_desc))
                         last_round = current_round
                 sleep(5)
+            logger.warning("Your application is successfully deployed.")
     except Exception:
         pass
 
