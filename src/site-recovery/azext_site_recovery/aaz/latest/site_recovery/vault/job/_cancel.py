@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Cancel(AAZCommand):
     """The operation to cancel an Azure Site Recovery job.
+
+    :example: job cancel
+        az site-recovery vault job cancel --job-name {id} -g {rg} --resource-name {vault_name}
     """
 
     _aaz_info = {

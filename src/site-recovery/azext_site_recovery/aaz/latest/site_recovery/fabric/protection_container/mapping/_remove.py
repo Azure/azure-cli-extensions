@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "site-recovery protected-item remove",
+    "site-recovery fabric protection-container mapping remove",
 )
 class Remove(AAZCommand):
-    """The operation to disable replication on a replication protected item. This will also remove the item.
+    """The operation to delete or remove a protection container mapping.
     """
 
     _aaz_info = {
         "version": "2022-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotecteditems/{}/remove", "2022-08-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.recoveryservices/vaults/{}/replicationfabrics/{}/replicationprotectioncontainers/{}/replicationprotectioncontainermappings/{}/remove", "2022-08-01"],
         ]
     }
 
@@ -48,17 +48,17 @@ class Remove(AAZCommand):
             required=True,
             id_part="child_name_1",
         )
+        _args_schema.mapping_name = AAZStrArg(
+            options=["-n", "--name", "--mapping-name"],
+            help="Protection container mapping name.",
+            required=True,
+            id_part="child_name_3",
+        )
         _args_schema.protection_container_name = AAZStrArg(
             options=["--protection-container", "--protection-container-name"],
             help="Protection container name.",
             required=True,
             id_part="child_name_2",
-        )
-        _args_schema.replicated_protected_item_name = AAZStrArg(
-            options=["-n", "--name", "--replicated-protected-item-name"],
-            help="Replication protected item name.",
-            required=True,
-            id_part="child_name_3",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -73,33 +73,22 @@ class Remove(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.disable_protection_reason = AAZStrArg(
-            options=["--disable-reason", "--disable-protection-reason"],
+        _args_schema.provider_specific_input = AAZObjectArg(
+            options=["--provider-input", "--provider-specific-input"],
             arg_group="Properties",
-            help="Disable protection reason. It can have values NotSpecified/MigrationComplete.",
-            enum={"MigrationComplete": "MigrationComplete", "NotSpecified": "NotSpecified"},
-        )
-        _args_schema.replication_provider_input = AAZObjectArg(
-            options=["--provider-input", "--replication-provider-input"],
-            arg_group="Properties",
-            help="Replication provider specific input.",
+            help="Provider specific input for unpairing.",
         )
 
-        replication_provider_input = cls._args_schema.replication_provider_input
-        replication_provider_input.in_mage = AAZObjectArg(
-            options=["in-mage"],
-        )
-
-        in_mage = cls._args_schema.replication_provider_input.in_mage
-        in_mage.replica_vm_deletion_status = AAZStrArg(
-            options=["replica-vm-deletion-status"],
-            help="A value indicating whether the replica VM should be destroyed or retained. Values from Delete and Retain.",
+        provider_specific_input = cls._args_schema.provider_specific_input
+        provider_specific_input.instance_type = AAZStrArg(
+            options=["instance-type"],
+            help="The class type.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ReplicationProtectedItemsDelete(ctx=self.ctx)()
+        yield self.ReplicationProtectionContainerMappingsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -110,7 +99,7 @@ class Remove(AAZCommand):
     def post_operations(self):
         pass
 
-    class ReplicationProtectedItemsDelete(AAZHttpOperation):
+    class ReplicationProtectionContainerMappingsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -149,7 +138,7 @@ class Remove(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectedItems/{replicatedProtectedItemName}/remove",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.RecoveryServices/vaults/{resourceName}/replicationFabrics/{fabricName}/replicationProtectionContainers/{protectionContainerName}/replicationProtectionContainerMappings/{mappingName}/remove",
                 **self.url_parameters
             )
 
@@ -169,11 +158,11 @@ class Remove(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "protectionContainerName", self.ctx.args.protection_container_name,
+                    "mappingName", self.ctx.args.mapping_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "replicatedProtectedItemName", self.ctx.args.replicated_protected_item_name,
+                    "protectionContainerName", self.ctx.args.protection_container_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -217,21 +206,15 @@ class Remove(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("disableProtectionReason", AAZStrType, ".disable_protection_reason")
-                properties.set_prop("replicationProviderInput", AAZObjectType, ".replication_provider_input")
+                properties.set_prop("providerSpecificInput", AAZObjectType, ".provider_specific_input")
 
-            replication_provider_input = _builder.get(".properties.replicationProviderInput")
-            if replication_provider_input is not None:
-                replication_provider_input.set_const("instanceType", "InMage", AAZStrType, ".in_mage", typ_kwargs={"flags": {"required": True}})
-                replication_provider_input.discriminate_by("instanceType", "InMage")
-
-            disc_in_mage = _builder.get(".properties.replicationProviderInput{instanceType:InMage}")
-            if disc_in_mage is not None:
-                disc_in_mage.set_prop("replicaVmDeletionStatus", AAZStrType, ".in_mage.replica_vm_deletion_status")
+            provider_specific_input = _builder.get(".properties.providerSpecificInput")
+            if provider_specific_input is not None:
+                provider_specific_input.set_prop("instanceType", AAZStrType, ".instance_type")
 
             return self.serialize_content(_content_value)
 
