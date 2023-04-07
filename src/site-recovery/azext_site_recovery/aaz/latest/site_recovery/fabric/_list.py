@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List a list of the Azure Site Recovery fabrics in the vault.
+
+    :example: fabric list
+        az site-recovery fabric list -g {rg} --vault-name {vault_name}
     """
 
     _aaz_info = {
