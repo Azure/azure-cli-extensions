@@ -416,26 +416,22 @@ def app_deploy(cmd, client, resource_group, service, name,
                          resource_group, service, name, deployment.name,
                          deployment_resource)
     if not disable_app_log:
+        # We will wait for the poller to be done to print the deploy process
+        _print_deploy_process(client, poller, resource_group, service, name, deployment.name)
         _log_application(cmd, client, no_wait, poller, resource_group, service, name, deployment.name)
     if "succeeded" != poller.status().lower():
         return poller
     return client.deployments.get(resource_group, service, name, deployment.name)
 
 
-def _log_application(cmd, client, no_wait, poller, resource_group, service, app_name, deployment_name,
-                     print_deploy_process=True):
+def _log_application(cmd, client, no_wait, poller, resource_group, service, app_name, deployment_name):
     if no_wait:
         return
     deployment_error = None
-    # We will wait for the poller to be done to print the deploy process
-    if print_deploy_process:
-        deployment_error = _print_deploy_process(client, poller, resource_group, service, app_name, deployment_name)
-    # If we do not print deploy process, we should wait for the poller to be done here
-    else:
-        try:
-            poller.result()
-        except Exception as err:
-            deployment_error = err
+    try:
+        poller.result()
+    except Exception as err:
+        deployment_error = err
     try:
         deployment_resource = client.deployments.get(resource_group, service, app_name, deployment_name)
         instances = deployment_resource.properties.instances
@@ -476,11 +472,11 @@ def _print_deploy_process(client, poller, resource_group, service, app_name, dep
             else:
                 instance_desc = str(instance_count) + " instance"
                 rounds_desc = str(rounds) + " round"
-            logger.warning('ASA will use rolling upgrade to update your deployment, you have {}, '
-                           'ASA will update the deployment in {}'.format(instance_desc, rounds_desc))
+            logger.warning('Azure Spring Apps will use rolling upgrade to update your deployment, you have {}, '
+                           'Azure Spring Apps will update the deployment in {}.'.format(instance_desc, rounds_desc))
             last_round = 0
 
-            deployment_time = datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S%z")
+            deployment_time = deployment_resource.system_data.last_modified_at.strftime("%Y-%m-%dT%H:%M:%S%z")
             while not poller.done():
                 deployment_resource = _get_deployment_ignore_exception(client, resource_group, service, app_name,
                                                                        deployment_name)
@@ -506,8 +502,9 @@ def _print_deploy_process(client, poller, resource_group, service, app_name, dep
                             'started/starting'.format(int(current_round), old_desc, new_desc))
                         last_round = current_round
                 sleep(5)
-    except Exception as err:
-        return err
+            logger.warning("Your application is successfully deployed.")
+    except Exception:
+        pass
 
 
 def _get_deployment_ignore_exception(client, resource_group, service, app_name, deployment_name):
@@ -643,7 +640,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                          resource_group, service, app, name,
                          deployment_resource)
     if not disable_app_log:
-        _log_application(cmd, client, no_wait, poller, resource_group, service, app, name, print_deploy_process=False)
+        _log_application(cmd, client, no_wait, poller, resource_group, service, app, name)
     if "succeeded" != poller.status().lower():
         return poller
     return client.deployments.get(resource_group, service, app, name)
