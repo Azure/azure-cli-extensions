@@ -83,8 +83,8 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck("properties.workloadProfileType", "D4"),
         ])
 
-        self.cmd("az containerapp create -g {} --target-port 80 --ingress external --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest --environment {} -n {} --workload-profile-name consumption".format(resource_group, env, app1))
-        self.cmd("az containerapp create -g {} --target-port 80 --ingress external --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest --environment {} -n {} --workload-profile-name my-d4".format(resource_group, env, app2))
+        self.cmd("az containerapp create -g {} --target-port 80 --ingress external --image mcr.microsoft.com/k8se/quickstart:latest --environment {} -n {} --workload-profile-name consumption".format(resource_group, env, app1))
+        self.cmd("az containerapp create -g {} --target-port 80 --ingress external --image mcr.microsoft.com/k8se/quickstart:latest --environment {} -n {} --workload-profile-name my-d4".format(resource_group, env, app2))
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
