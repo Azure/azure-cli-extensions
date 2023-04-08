@@ -236,14 +236,14 @@ def validate_remote_debugging_port(namespace):
 
 
 def validate_ingress_send_timeout(namespace):
-    if namespace.ingress_send_timeout is not None and (namespace.ingress_read_timeout < 1 or
-                                                       namespace.ingress_read_timeout > 1800):
+    if namespace.ingress_send_timeout is not None and (namespace.ingress_send_timeout < 1 or
+                                                       namespace.ingress_send_timeout > 1800):
         raise InvalidArgumentValueError("Invalid value: Ingress send timeout must be in the range [1,1800].")
 
 
 def validate_ingress_session_max_age(namespace):
     if namespace.session_max_age is not None \
-            and (namespace.ingress_read_timeout < 0 or namespace.ingress_read_timeout > 7 * 24 * 3600):
+            and (namespace.session_max_age < 0 or namespace.session_max_age > 7 * 24 * 3600):
         raise InvalidArgumentValueError("Invalid value: Ingress session max-age must between 0 seconds and 7 days.")
 
 

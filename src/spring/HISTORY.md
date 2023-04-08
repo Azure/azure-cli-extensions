@@ -4,6 +4,10 @@ Release History
 ---
 * Print more logs for app deployment
 
+1.9.2
+---
+* Fix `ingress_read_timeout` and `session_max_age` validation error
+
 1.9.1
 ---
 * Support subPath for bring your own persistent storage feature.
