@@ -101,8 +101,6 @@ class AppCRUD(ScenarioTest):
             self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
 
-        self.cmd('spring app show -n {app} -g {rg} -s {serviceName}')
-
         # ingress only set session affinity
         self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --session-affinity Cookie --session-max-age 1800', checks=[
             self.check('name', '{app}'),
