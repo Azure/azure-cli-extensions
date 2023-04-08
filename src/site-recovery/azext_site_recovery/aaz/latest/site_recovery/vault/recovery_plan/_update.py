@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update operation to create a recovery plan.
 
     :example: recovery-plan update
-        az site-recovery vault recovery-plan update -n {recovery_plan_name} -g {rg} --vault-name {vault_name} --groups '[{group-type:Boot,replication-protected-items:[{id:{protected_item_id},virtual-machine-id:{vm_id}}]}]' --primary-fabric-id {fabric1_id} --recovery-fabric-id {fabric2_id} --failover-deployment-model ResourceManager
+        az site-recovery vault recovery-plan update -n recovery_plan_name -g rg --vault-name vault_name --groups '[{group-type:Boot,replication-protected-items:[{id:protected_item_id,virtual-machine-id:vm_id}]}]' --primary-fabric-id fabric1_id --recovery-fabric-id fabric2_id --failover-deployment-model ResourceManager
     """
 
     _aaz_info = {

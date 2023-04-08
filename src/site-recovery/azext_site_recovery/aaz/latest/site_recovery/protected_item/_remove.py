@@ -18,7 +18,7 @@ class Remove(AAZCommand):
     """The operation to disable replication on a replication protected item. This will also remove the item.
 
     :example: protected-item remove
-        az site-recovery protected-item remove -g {rg} --fabric-name {fabric_recovery_name} -n {protected_item_name} --protection-container {container_recovery_name} --vault-name {vault_name}
+        az site-recovery protected-item remove -g rg --fabric-name fabric_recovery_name -n protected_item_name --protection-container container_recovery_name --vault-name vault_name
     """
 
     _aaz_info = {

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "site-recovery fabric network-mapping",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Vault Fabric Network Mapping
+    """Manage Network Mapping
     """
     pass
 

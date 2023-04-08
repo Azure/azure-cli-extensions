@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get the details of a replication policy.
 
     :example: policy show
-        az site-recovery vault policy show -g {rg} --resource-name {vault_name} -n {policy_name_rcm}
+        az site-recovery vault policy show -g rg --vault-name vault_name -n policy_name_rcm
     """
 
     _aaz_info = {

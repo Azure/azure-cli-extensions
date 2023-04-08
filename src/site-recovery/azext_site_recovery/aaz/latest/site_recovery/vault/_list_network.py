@@ -18,7 +18,7 @@ class ListNetwork(AAZCommand):
     """List the networks available in a vault.
 
     :example: list-network
-        az site-recovery vault list-network -g {rg} --resource-name {vault_name}
+        az site-recovery vault list-network -g rg --vault-name vault_name
     """
 
     _aaz_info = {

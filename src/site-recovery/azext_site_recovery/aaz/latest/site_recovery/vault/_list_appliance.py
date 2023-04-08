@@ -18,7 +18,7 @@ class ListAppliance(AAZCommand):
     """List the list of Azure Site Recovery appliances for the vault.
 
     :example: list-appliance for vault
-        az site-recovery vault list-appliance -g {rg} --resource-name {vault_name}
+        az site-recovery vault list-appliance -g rg --vault-name vault_name
     """
 
     _aaz_info = {

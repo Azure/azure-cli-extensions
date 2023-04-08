@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete operation to delete a replication policy.
 
     :example: policy delete
-        az site-recovery vault policy delete -g {rg} --resource-name {vault_name} -n {policy_name_rcm}
+        az site-recovery vault policy delete -g rg --vault-name vault_name -n policy_name_rcm
     """
 
     _aaz_info = {

@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create an email notification(alert) configuration.
 
     :example: alert-setting create
-        az site-recovery vault alert-setting create -n defaultAlertSetting -g {rg} --resource-name {vault_name} --custom-email-addresses email@address.com --locale en_US --send-to-owners Send
+        az site-recovery vault alert-setting create -n defaultAlertSetting -g rg --vault-name vault_name --custom-email-addresses email@address.com --locale en_US --send-to-owners Send
     """
 
     _aaz_info = {

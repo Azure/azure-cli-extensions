@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete operation to delete or purge a replication protected item. This operation will force delete the replication protected item. Use the remove operation on replication protected item to perform a clean disable replication for the item.
 
     :example: protected-item delete
-        az site-recovery protected-item delete -g {rg} --fabric-name {fabric2_name} -n {protected_item_name} --protection-container {container2_name} --vault-name {vault_name}
+        az site-recovery protected-item delete -g rg --fabric-name fabric2_name -n protected_item_name --protection-container container2_name --vault-name vault_name
     """
 
     _aaz_info = {

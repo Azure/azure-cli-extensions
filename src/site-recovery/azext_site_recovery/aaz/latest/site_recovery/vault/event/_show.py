@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get operation to get the details of an Azure Site recovery event.
 
     :example: event show
-        az site-recovery vault event show -g {rg} --resource-name {vault_name} -n {event_name}
+        az site-recovery vault event show -g rg --vault-name vault_name -n event_name
     """
 
     _aaz_info = {

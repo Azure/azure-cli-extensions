@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update an email notification(alert) configuration.
 
     :example: alert-setting update
-        az site-recovery vault alert-setting update -n defaultAlertSetting -g {rg} --resource-name {vault_name} --custom-email-addresses email2@address.com --locale fr_FR --send-to-owners DoNotSend
+        az site-recovery vault alert-setting update -n defaultAlertSetting -g rg --vault-name vault_name --custom-email-addresses email2@address.com --locale fr_FR --send-to-owners DoNotSend
     """
 
     _aaz_info = {

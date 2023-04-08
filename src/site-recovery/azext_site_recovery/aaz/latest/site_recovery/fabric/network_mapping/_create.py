@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create operation to create an ASR network mapping.
 
     :example: network-mapping create for A2A fabric
-        az site-recovery fabric network-mapping create -g {rg} --fabric-name {fabric1_name} -n {network_mapping1_name} --network-name azureNetwork --vault-name {vault_name} --recovery-network-id {vnet2_id} --fabric-details '{azure-to-azure:{primary-network-id:{vnetvm_id}}}' --recovery-fabric-name {fabric2_name}
+        az site-recovery fabric network-mapping create -g rg --fabric-name fabric1_name -n network_mapping1_name --network-name azureNetwork --vault-name vault_name --recovery-network-id vnet2_id --fabric-details '{azure-to-azure:{primary-network-id:vnetvm_id}}' --recovery-fabric-name fabric2_name
     """
 
     _aaz_info = {

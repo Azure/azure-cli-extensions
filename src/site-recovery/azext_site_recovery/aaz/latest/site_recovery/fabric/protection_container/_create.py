@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create to create a protection container.
 
     :example: protection-container create for A2A
-        az site-recovery fabric protection-container create -g {rg} --fabric-name {fabric1_name} -n {container1_name} --vault-name {vault_name} --provider-input '[{instance-type:A2A}]'
+        az site-recovery fabric protection-container create -g rg --fabric-name fabric1_name -n container1_name --vault-name vault_name --provider-input '[{instance-type:A2A}]'
     """
 
     _aaz_info = {

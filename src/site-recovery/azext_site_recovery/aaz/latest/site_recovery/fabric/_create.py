@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create operation to create an Azure Site Recovery fabric (for e.g. Hyper-V site).
 
     :example: fabric create for A2A
-        az site-recovery fabric create -n {fabric1_name} -g {rg} --vault-name {vault_name} --custom-details '{azure:{location:eastus}}'
+        az site-recovery fabric create -n fabric1_name -g rg --vault-name vault_name --custom-details '{azure:{location:eastus}}'
     """
 
     _aaz_info = {

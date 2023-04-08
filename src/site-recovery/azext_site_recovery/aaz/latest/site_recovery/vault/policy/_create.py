@@ -18,10 +18,13 @@ class Create(AAZCommand):
     """Create operation to create a replication policy.
 
     :example: policy create of type in-mage-rcm
-        az site-recovery vault policy create -g {rg} --resource-name {vault_name} -n {policy_name_rcm} --provider-specific-input '{in-mage-rcm:{app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:5,enable-multi-vm-sync:true,recovery-point-history-in-minutes:2880}}'
+        az site-recovery vault policy create -g rg --vault-name vault_name -n policy_name_rcm --provider-specific-input '{in-mage-rcm:{app-consistent-frequency-in-minutes:0,crash-consistent-frequency-in-minutes:5,enable-multi-vm-sync:true,recovery-point-history-in-minutes:2880}}'
 
     :example: policy create for type in-mage-rcm-failback
-        az site-recovery vault policy create -g {rg} --resource-name {vault_name} -n {policy_name_rcm_failback} --provider-specific-input '{in-mage-rcm-failback:{app-consistent-frequency-in-minutes:60,crash-consistent-frequency-in-minutes:5}}'
+        az site-recovery vault policy create -g rg --vault-name vault_name -n policy_name_rcm_failback --provider-specific-input '{in-mage-rcm-failback:{app-consistent-frequency-in-minutes:60,crash-consistent-frequency-in-minutes:5}}'
+
+    :example: policy create for A2A
+        az site-recovery vault policy create -g rg --vault-name vault_name -n policy_name --provider-specific-input {a2a:{multi-vm-sync-status:Enable}}
     """
 
     _aaz_info = {

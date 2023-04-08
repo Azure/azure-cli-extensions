@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "site-recovery protected-item",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Vault Fabric Protection Container Protected Item
+    """Manage Protected Item
     """
     pass
 

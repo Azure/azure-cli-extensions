@@ -18,7 +18,7 @@ class ListVCenter(AAZCommand):
     """List the vCenter servers registered in the vault.
 
     :example: list-v-center
-        az site-recovery vault list-v-center -g {rg} --resource-name {vault_name}
+        az site-recovery vault list-v-center -g rg --vault-name vault_name
     """
 
     _aaz_info = {

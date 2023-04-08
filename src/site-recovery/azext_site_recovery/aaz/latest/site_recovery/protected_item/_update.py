@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update operation to create an ASR replication protected item (Enable replication).
 
     :example: protected-item update
-        az site-recovery protected-item update -g {rg} --fabric-name {fabric1_name} -n {protected_item_name} --protection-container {container1_name} --vault-name {vault_name} --policy-id {policy_id} --provider-details '{a2a:{fabric-object-id:{vm_id},vm-managed-disks:[{disk-id:{os_disk},primary-staging-azure-storage-account-id:{storage1_id},recovery-resource-group-id:{rg_id}}],recovery-azure-network-id:{vnet2_id},recovery-container-id:{container2_id},recovery-resource-group-id:{rg_id},recovery-subnet-name:{vnet2_subnet}}}'
+        az site-recovery protected-item update -g rg --fabric-name fabric1_name -n protected_item_name --protection-container container1_name --vault-name vault_name --policy-id policy_id --provider-details '{a2a:{fabric-object-id:vm_id,vm-managed-disks:[{disk-id:os_disk,primary-staging-azure-storage-account-id:storage1_id,recovery-resource-group-id:rg_id}],recovery-azure-network-id:vnet2_id,recovery-container-id:container2_id,recovery-resource-group-id:rg_id,recovery-subnet-name:vnet2_subnet}}'
     """
 
     _aaz_info = {

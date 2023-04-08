@@ -18,7 +18,7 @@ class ListProtectionContainer(AAZCommand):
     """List the protection containers in a vault.
 
     :example: list-protection-container
-        az site-recovery vault list-protection-container -g {rg} --resource-name {vault_name}
+        az site-recovery vault list-protection-container -g rg --vault-name vault_name
     """
 
     _aaz_info = {

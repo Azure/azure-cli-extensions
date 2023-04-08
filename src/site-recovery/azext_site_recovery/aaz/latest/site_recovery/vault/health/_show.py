@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get the health details of the vault.
 
     :example: health show
-        az site-recovery vault health show -g {rg} --resource-name {vault_name}
+        az site-recovery vault health show -g rg --vault-name vault_name
     """
 
     _aaz_info = {

@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete operation to purge(force delete) a protection container mapping.
 
     :example: protection-container mapping delete
-        az site-recovery fabric protection-container mapping delete -g {rg} --fabric-name {fabric1_name} -n {container_mapping1_name} --protection-container {container1_name} --vault-name {vault_name}
+        az site-recovery fabric protection-container mapping delete -g rg --fabric-name fabric1_name -n container_mapping1_name --protection-container container1_name --vault-name vault_name
     """
 
     _aaz_info = {

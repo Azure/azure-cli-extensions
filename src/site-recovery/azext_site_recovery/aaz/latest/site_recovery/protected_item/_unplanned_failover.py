@@ -18,10 +18,10 @@ class UnplannedFailover(AAZCommand):
     """Operation to initiate a failover of the replication protected item.
 
     :example: protected-item unplanned-failover for A2A
-        az site-recovery protected-item unplanned-failover --fabric-name {fabric1_name} --protection-container {container1_name} -n {protected_item_name} -g {rg} --vault-name {vault_name} --failover-direction PrimaryToRecovery --provider-details '{a2a:{}}' --source-site-operations NotRequired
+        az site-recovery protected-item unplanned-failover --fabric-name fabric1_name --protection-container container1_name -n protected_item_name -g rg --vault-name vault_name --failover-direction PrimaryToRecovery --provider-details '{a2a:{}}' --source-site-operations NotRequired
 
     :example: protected-item failback for A2A
-        az site-recovery protected-item unplanned-failover --fabric-name {fabric2_name} --protection-container {container2_name} -n {protected_item_name} -g {rg} --vault-name {vault_name} --failover-direction PrimaryToRecovery --provider-details '{a2a:{}}' --source-site-operations NotRequired
+        az site-recovery protected-item unplanned-failover --fabric-name fabric2_name --protection-container container2_name -n protected_item_name -g rg --vault-name vault_name --failover-direction PrimaryToRecovery --provider-details '{a2a:{}}' --source-site-operations NotRequired
     """
 
     _aaz_info = {

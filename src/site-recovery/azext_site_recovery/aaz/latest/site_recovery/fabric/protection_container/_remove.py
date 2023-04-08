@@ -18,7 +18,7 @@ class Remove(AAZCommand):
     """Operation to remove a protection container.
 
     :example: protection-container remove
-        az site-recovery fabric protection-container remove -g {rg} --fabric-name {fabric1_name} -n {container1_name} --vault-name {vault_name}
+        az site-recovery fabric protection-container remove -g rg --fabric-name fabric1_name -n container1_name --vault-name vault_name
     """
 
     _aaz_info = {

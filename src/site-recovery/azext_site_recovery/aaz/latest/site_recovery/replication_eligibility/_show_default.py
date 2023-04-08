@@ -18,7 +18,7 @@ class ShowDefault(AAZCommand):
     """Get whether a given VM can be protected or not in which case returns list of errors.
 
     :example: Show default replication-eligibility
-        az site-recovery replication-eligibility show-default -g {rg} --virtual-machine-name {vm_name}
+        az site-recovery replication-eligibility show-default -g rg --virtual-machine-name vm_name
     """
 
     _aaz_info = {

@@ -18,7 +18,7 @@ class Restart(AAZCommand):
     """The operation to restart an Azure Site Recovery job.
 
     :example: job restart
-        az site-recovery vault job restart --job-name {id} -g {rg} --resource-name {vault_name}
+        az site-recovery vault job restart --job-name job_id -g rg --vault-name vault_name
     """
 
     _aaz_info = {

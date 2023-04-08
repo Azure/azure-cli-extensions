@@ -18,7 +18,7 @@ class Export(AAZCommand):
     """The operation to export the details of the Azure Site Recovery jobs of the vault.
 
     :example: job export
-        az site-recovery vault job export -g {rg} --resource-name {vault_name}
+        az site-recovery vault job export -g rg --vault-name vault_name
     """
 
     _aaz_info = {

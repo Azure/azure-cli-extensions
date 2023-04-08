@@ -18,7 +18,7 @@ class ShowSupportedOperatingSystem(AAZCommand):
     """Show the supported operating system for the vault.
 
     :example: show-supported-operating-system
-        az site-recovery vault show-supported-operating-system -g {rg} --resource-name {vault_name}
+        az site-recovery vault show-supported-operating-system -g rg --vault-name vault_name
     """
 
     _aaz_info = {

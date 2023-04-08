@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List the list of email notification(alert) configurations for the vault.
 
     :example: alert-setting list
-        az site-recovery vault alert-setting list -g {rg} --resource-name {vault_name}
+        az site-recovery vault alert-setting list -g rg --vault-name vault_name
     """
 
     _aaz_info = {

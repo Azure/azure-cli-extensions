@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get the details of the specified email notification(alert) configuration.
 
     :example: alert-setting show
-        az site-recovery vault alert-setting show -n defaultAlertSetting -g {rg} --resource-name {vault_name}
+        az site-recovery vault alert-setting show -n defaultAlertSetting -g rg --vault-name vault_name
     """
 
     _aaz_info = {

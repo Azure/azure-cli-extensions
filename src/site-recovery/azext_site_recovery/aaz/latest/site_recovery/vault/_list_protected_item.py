@@ -18,7 +18,7 @@ class ListProtectedItem(AAZCommand):
     """List the list of ASR replication protected items in the vault.
 
     :example: list-protected-item
-        az site-recovery vault list-protected-item -g {rg} --resource-name {vault_name}
+        az site-recovery vault list-protected-item -g rg --vault-name vault_name
     """
 
     _aaz_info = {

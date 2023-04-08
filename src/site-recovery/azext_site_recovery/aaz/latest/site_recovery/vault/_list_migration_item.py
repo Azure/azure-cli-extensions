@@ -18,7 +18,7 @@ class ListMigrationItem(AAZCommand):
     """Get the list of ASR replication migration items in the vault.
 
     :example: list-migration-item
-        az site-recovery vault list-migration-item -g {rg} --resource-name {vault_name}
+        az site-recovery vault list-migration-item -g rg --vault-name vault_name
     """
 
     _aaz_info = {

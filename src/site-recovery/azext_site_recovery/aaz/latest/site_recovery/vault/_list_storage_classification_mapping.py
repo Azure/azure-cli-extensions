@@ -18,7 +18,7 @@ class ListStorageClassificationMapping(AAZCommand):
     """List the storage classification mappings in the vault.
 
     :example: list-storage-classification-mapping
-        az site-recovery vault list-storage-classification-mapping -g {rg} --resource-name {vault_name}
+        az site-recovery vault list-storage-classification-mapping -g rg --vault-name vault_name
     """
 
     _aaz_info = {

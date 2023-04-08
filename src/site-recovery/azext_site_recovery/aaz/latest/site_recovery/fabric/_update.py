@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update operation to create an Azure Site Recovery fabric (for e.g. Hyper-V site).
 
     :example: fabric update
-        az site-recovery fabric update -n {fabric_source_name} -g {rg} --vault-name {vault_name} --custom-details '{azure:{location:eastus}}'
+        az site-recovery fabric update -n fabric_source_name -g rg --vault-name vault_name --custom-details '{azure:{location:eastus}}'
     """
 
     _aaz_info = {

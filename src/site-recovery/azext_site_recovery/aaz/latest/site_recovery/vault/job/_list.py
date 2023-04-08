@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List the list of Azure Site Recovery Jobs for the vault.
 
     :example: job list
-        az site-recovery vault job list -g {rg} --resource-name {vault_name}
+        az site-recovery vault job list -g rg --vault-name vault_name
     """
 
     _aaz_info = {

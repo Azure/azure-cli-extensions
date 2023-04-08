@@ -18,7 +18,7 @@ class SwitchProtection(AAZCommand):
     """Operation to switch protection from one container to another or one replication provider to another.
 
     :example: protection-container switch-protection for A2A
-        az site-recovery fabric protection-container switch-protection --fabric-name {fabric1_name} -n {container1_name} --protected-item {protected_item_name} -g {rg} --vault-name {vault_name} --provider-details '{a2a:{policy-id:{policy_id},recovery-container-id:{container1_id},recovery-resource-group-id:{vm_rg_id},vm-managed-disks:[{disk-id:{recovery_os_disk},primary-staging-azure-storage-account-id:{storage2_id},recovery-resource-group-id:{vm_rg_id}}]}}'
+        az site-recovery fabric protection-container switch-protection --fabric-name fabric1_name -n container1_name --protected-item protected_item_name -g rg --vault-name vault_name --provider-details '{a2a:{policy-id:policy_id,recovery-container-id:container1_id,recovery-resource-group-id:vm_rg_id,vm-managed-disks:[{disk-id:recovery_os_disk,primary-staging-azure-storage-account-id:storage2_id,recovery-resource-group-id:vm_rg_id}]}}'
     """
 
     _aaz_info = {

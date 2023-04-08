@@ -18,7 +18,7 @@ class RefreshDefault(AAZCommand):
     """Refresh default for the health of the vault.
 
     :example: health refresh-default
-        az site-recovery vault health refresh-default -g {rg} --resource-name {vault_name}
+        az site-recovery vault health refresh-default -g rg --vault-name vault_name
     """
 
     _aaz_info = {

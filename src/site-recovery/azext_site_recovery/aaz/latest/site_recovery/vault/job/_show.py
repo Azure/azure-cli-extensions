@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get the details of an Azure Site Recovery job.
 
     :example: job show
-        az site-recovery vault job show -g {rg} --resource-name {vault_name} --job-name {job_name}
+        az site-recovery vault job show -g rg --vault-name vault_name --job-name job_id
     """
 
     _aaz_info = {

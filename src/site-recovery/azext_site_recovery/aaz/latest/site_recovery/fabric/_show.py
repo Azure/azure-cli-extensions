@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get the details of an Azure Site Recovery fabric.
 
     :example: fabric show
-        az site-recovery fabric show -n {fabric1_name} -g {rg} --vault-name {vault_name}
+        az site-recovery fabric show -n fabric1_name -g rg --vault-name vault_name
     """
 
     _aaz_info = {

@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete operation to purge(force delete) an Azure Site Recovery fabric.
 
     :example: fabric delete
-        az site-recovery fabric delete -n {fabric1_name} -g {rg} --vault-name {vault_name}
+        az site-recovery fabric delete -n fabric1_name -g rg --vault-name vault_name
     """
 
     _aaz_info = {

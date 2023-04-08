@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get the details of the recovery plan.
 
     :example: recovery-plan show
-        az site-recovery vault recovery-plan show -n {recovery_plan_name} -g {rg} --vault-name {vault_name}
+        az site-recovery vault recovery-plan show -n recovery_plan_name -g rg --vault-name vault_name
     """
 
     _aaz_info = {

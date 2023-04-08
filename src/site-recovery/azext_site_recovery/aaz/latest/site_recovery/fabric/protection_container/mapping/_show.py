@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get the details of a protection container mapping.
 
     :example: protection-container mapping show
-        az site-recovery fabric protection-container mapping show -g {rg} --fabric-name {fabric_source_name} -n {container_mapping_source_name} --protection-container {container_source_name} --vault-name {vault_name}
+        az site-recovery fabric protection-container mapping show -g rg --fabric-name fabric_source_name -n container_mapping_source_name --protection-container container_source_name --vault-name vault_name
     """
 
     _aaz_info = {

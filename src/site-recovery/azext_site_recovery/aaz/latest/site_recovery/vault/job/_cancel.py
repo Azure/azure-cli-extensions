@@ -18,7 +18,7 @@ class Cancel(AAZCommand):
     """The operation to cancel an Azure Site Recovery job.
 
     :example: job cancel
-        az site-recovery vault job cancel --job-name {id} -g {rg} --resource-name {vault_name}
+        az site-recovery vault job cancel --job-name job_id -g rg --vault-name vault_name
     """
 
     _aaz_info = {

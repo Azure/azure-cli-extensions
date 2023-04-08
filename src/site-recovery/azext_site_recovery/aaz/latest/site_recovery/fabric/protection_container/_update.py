@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update to create a protection container.
 
     :example: protection-container update
-        az site-recovery fabric protection-container update -g {rg} --fabric-name {fabric_source_name} -n {container_source_name} --vault-name {vault_name} --provider-input [{{instance-type:A2ACrossClusterMigration}}
+        az site-recovery fabric protection-container update -g rg --fabric-name fabric_source_name -n container_source_name --vault-name vault_name --provider-input '[{instance-type:A2ACrossClusterMigration}]'
     """
 
     _aaz_info = {

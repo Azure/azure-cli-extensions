@@ -18,7 +18,7 @@ class Remove(AAZCommand):
     """The operation to delete or remove an Azure Site Recovery fabric.
 
     :example: fabric remove
-        az site-recovery fabric remove -n {fabric_source_name} -g {rg} --vault-name {vault_name}
+        az site-recovery fabric remove -n fabric_source_name -g rg --vault-name vault_name
     """
 
     _aaz_info = {

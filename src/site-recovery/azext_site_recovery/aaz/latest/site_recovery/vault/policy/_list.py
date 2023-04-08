@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List the replication policies for a vault.
 
     :example: policy list
-        az site-recovery vault policy list -g {rg} --resource-name {vault_name}
+        az site-recovery vault policy list -g rg --vault-name vault_name
     """
 
     _aaz_info = {
