@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create NSP link resource.
 
     :example: Create NSP Link
-        az network perimeter link create --name link1 --perimeter-name nsp1 --resource-group rg1 --auto-approved-remote-perimeter-resource-id <NspId> --local-inbound-profiles "[\'*\']" --remote-inbound-profiles "[\'*\']" '
+        az network perimeter link create --name link1 --perimeter-name nsp1 --resource-group rg1 --auto-remote-nsp-id <NspId> --local-inbound-profile "[\'*\']" --remote-inbound-profile "[\'*\']" '
     """
 
     _aaz_info = {
