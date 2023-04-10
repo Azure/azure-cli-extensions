@@ -13,13 +13,11 @@ class LoadCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        custom_command_type = CliCommandType(
-            operations_tmpl='azext_load.custom#{}')
-        super().__init__(cli_ctx=cli_ctx,
-                         custom_command_type=custom_command_type)
+        super().__init__(cli_ctx=cli_ctx)
 
     def load_command_table(self, args):
         from azext_load.commands import load_command_table
+        from azext_load.data_plane.test.commands_test import load_test_commands
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -32,11 +30,11 @@ class LoadCommandsLoader(AzCommandsLoader):
                 args=args
             )
         load_command_table(self, args)
+        load_test_commands(self, args)
         return self.command_table
 
     def load_arguments(self, command):
         from azext_load._params import load_arguments
         load_arguments(self, command)
-
 
 COMMAND_LOADER_CLS = LoadCommandsLoader

@@ -9,3 +9,25 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+helps['az load test create'] = """Create a new test or update an existing test.
+
+        Create a new test or update an existing test.
+
+        :param test_id: Unique name for the load test, must contain only lower-case alphabetic,
+         numeric, underscore or hyphen characters. Required.
+        :type test_id: str
+        :param body: Load test model. Required.
+        :type body: JSON
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/merge-patch+json".
+        :paramtype content_type: str
+        :return: JSON object
+        :rtype: JSON
+        :raises ~azure.core.exceptions.HttpResponseError:"""
+
+helps['az load test delete'] = """Create a new test or update an existing test.
+
+        :param test_id: Unique name for the load test, must contain only lower-case alphabetic,
+         numeric, underscore or hyphen characters. Required.
+        :type test_id: str"""

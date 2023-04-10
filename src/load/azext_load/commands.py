@@ -8,12 +8,14 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-# from azure.cli.core.commands import CliCommandType
-
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
+    from azure.cli.core.commands import CliCommandType
     from .operations.create import LoadTestCreate
     self.command_table['load create'] = LoadTestCreate(loader=self)
 
     from .operations.update import LoadTestUpdate
     self.command_table['load update'] = LoadTestUpdate(loader=self)
+
+    
+    
