@@ -536,9 +536,9 @@ def app_tail_log_internal(cmd, client, resource_group, service, name,
 
     if timeout:
         t.join(timeout=timeout)
-
-    while t.is_alive():
-        sleep(5)  # so that ctrl+c can stop the command
+    else:
+        while t.is_alive():
+            sleep(5)  # so that ctrl+c can stop the command
 
     if exceptions:
         raise exceptions[0]

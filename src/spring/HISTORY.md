@@ -1,5 +1,9 @@
 Release History
 ===============
+1.10.0
+---
+* Print more logs for app deployment
+
 1.9.2
 ---
 * Fix `ingress_read_timeout` and `session_max_age` validation error
