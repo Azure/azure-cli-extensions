@@ -40,15 +40,15 @@ def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connected
     disk_usage = psutil.disk_usage('/')
     if disk_usage.total < consts.Disk_Threshold * 1024 * 1024 * 1024:
         all_validations_passed = False
-        telemetry.set_exception(exception="Machine doesn't meet min {} disk space requirement".format(consts.Disk_Threshold), fault_type=consts.DiskSpace_Validation_Failed, summary="Machine doesn't meen min disk space threshold")
-        logger.warning("This program requires at least {} of disk space".format(consts.Disk_Threshold))
+        telemetry.set_exception(exception="Machine doesn't meet min {}GB disk space requirement".format(consts.Disk_Threshold), fault_type=consts.DiskSpace_Validation_Failed, summary="Machine doesn't meen min disk space threshold")
+        logger.warning("This program requires at least {}GB of disk space".format(consts.Disk_Threshold))
 
     # Check if the memory is at least 4GB
     memory = psutil.virtual_memory()
     if memory.total < consts.Memory_Threshold * 1024 * 1024 * 1024:
         all_validations_passed = False
-        telemetry.set_exception(exception="Machine doesn't meet min {} memory requirement".format(consts.Memory_Threshold), fault_type=consts.Memory_Validation_Failed, summary="Machine doesn't meet min memory threshold")
-        logger.warning("This program requires at least {} of memory".format(consts.Memory_Threshold))
+        telemetry.set_exception(exception="Machine doesn't meet min {}GB memory requirement".format(consts.Memory_Threshold), fault_type=consts.Memory_Validation_Failed, summary="Machine doesn't meet min memory threshold")
+        logger.warning("This program requires at least {}GB of memory".format(consts.Memory_Threshold))
     
     # Check if pre-req endpoints are reachable
     endpoints = ["{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name), consts.Snap_Pull_Public_Api_Endpoint, consts.Snap_Pull_Public_Storage_Endpoint, consts.App_Insights_Endpoint, consts.MCR_Endpoint]
