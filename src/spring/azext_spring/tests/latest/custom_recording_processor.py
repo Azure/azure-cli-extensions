@@ -14,11 +14,14 @@ class RegexSingleValueReplacer(RecordingProcessor):
         self.moniker = moniker
         self.anchor = anchor
 
+    def _replace(self, val):
+        return self.pattern.sub(self.moniker, val)
+
     # pylint: disable=no-member
     def process_request(self, request):
         from urllib.parse import quote_plus
         if self.anchor in request.uri:
-            request.uri = self.pattern.sub(self.moniker, request.uri)
+            request.uri = self._replace(request.uri)
         elif quote_plus(self.anchor) in request.uri:
             request.uri = request.uri.replace(quote_plus(self.anchor),
                                               quote_plus(self.moniker))
@@ -26,14 +29,14 @@ class RegexSingleValueReplacer(RecordingProcessor):
         if is_text_payload(request) and request.body:
             body = str(request.body, 'utf-8') if isinstance(request.body, bytes) else str(request.body)
             if self.anchor in body:
-                request.body = self.pattern.sub(self.moniker, request.body)
+                request.body = self._replace(body)
         return request
 
     def process_response(self, response):
         if is_text_payload(response) and response['body']['string']:
             response['body']['string'] = self.pattern.sub(self.moniker, response['body']['string'])
-        self.replace_header(response, 'location', self.anchor, self.moniker)
-        self.replace_header(response, 'azure-asyncoperation', self.anchor, self.moniker)
+        self.replace_header_fn(response, 'location', self._replace)
+        self.replace_header_fn(response, 'azure-asyncoperation', self._replace)
 
         return response
 

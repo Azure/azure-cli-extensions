@@ -25,7 +25,7 @@ from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
-from ._clients import ContainerAppClient, ManagedEnvironmentClient, ContainerAppsJobClient
+from ._clients import ContainerAppClient, ManagedEnvironmentClient, WorkloadProfileClient, ContainerAppsJobClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
                          LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
@@ -306,9 +306,9 @@ def _ensure_location_allowed(cmd, location, resource_provider, resource_type):
             if res and getattr(res, 'resource_type', "") == resource_type:
                 res_locations = getattr(res, 'locations', [])
 
-        res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+        res_locations = [format_location(res_loc) for res_loc in res_locations if res_loc.strip()]
 
-        location_formatted = location.lower().replace(" ", "")
+        location_formatted = format_location(location)
         if location_formatted not in res_locations:
             raise ValidationError(f"Location '{location}' is not currently supported. To get list of supported locations, run `az provider show -n {resource_provider} --query \"resourceTypes[?resourceType=='{resource_type}'].locations\"`")
 
@@ -344,21 +344,36 @@ def parse_env_var_flags(env_list, is_update_containerapp=False):
 
 
 def parse_secret_flags(secret_list):
-    secret_pairs = {}
-
-    for pair in secret_list:
-        key_val = pair.split('=', 1)
-        if len(key_val) != 2:
-            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\".")
-        if key_val[0] in secret_pairs:
-            raise ValidationError("Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
-        secret_pairs[key_val[0]] = key_val[1]
-
+    secret_entries = []
     secret_var_def = []
-    for key, value in secret_pairs.items():
+
+    for secret in secret_list:
+        key_val = secret.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\.")
+        if key_val[0] in secret_entries:
+            raise ValidationError("Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
+        secret_entries.append(key_val[0])
+
+        name = key_val[0]
+        value = key_val[1]
+        kv_url = ""
+        identity_Id = ""
+
+        kv_identity = value.split(',', 2)
+        if len(kv_identity) == 2:
+            kv = kv_identity[0]
+            identity = kv_identity[1]
+            if kv.startswith('keyvaultref:') and identity.startswith('identityref:'):
+                kv_url = kv.split('keyvaultref:', 1)[1]
+                identity_Id = identity.split('identityref:', 1)[1]
+                value = ""
+
         secret_var_def.append({
-            "name": key,
-            "value": value
+            "name": name,
+            "value": value,
+            "keyVaultUrl": kv_url,
+            "identity": identity_Id
         })
 
     return secret_var_def
@@ -674,13 +689,14 @@ def _ensure_identity_resource_id(subscription_id, resource_group, resource):
 def _add_or_update_secrets(containerapp_def, add_secrets):
     if "secrets" not in containerapp_def["properties"]["configuration"]:
         containerapp_def["properties"]["configuration"]["secrets"] = []
-
     for new_secret in add_secrets:
         is_existing = False
         for existing_secret in containerapp_def["properties"]["configuration"]["secrets"]:
             if existing_secret["name"].lower() == new_secret["name"].lower():
                 is_existing = True
                 existing_secret["value"] = new_secret["value"]
+                existing_secret["keyVaultUrl"] = new_secret["keyVaultUrl"]
+                existing_secret["identity"] = new_secret["identity"]
                 break
 
         if not is_existing:
@@ -1574,6 +1590,40 @@ def list_environment_locations(cmd):
     return res_locations
 
 
+# normalizes workload profile type
+def get_workload_profile_type(cmd, name, location):
+    return name.upper()
+
+
+def get_default_workload_profile(cmd, location):
+    return "Consumption"
+
+
+def get_default_workload_profile_name_from_env(cmd, env_def, resource_group):
+    location = env_def["location"]
+    api_default = get_default_workload_profile(cmd, location)
+    env_profiles = WorkloadProfileClient.list(cmd, resource_group, env_def["name"])
+    if api_default in [p["name"] for p in env_profiles]:
+        return api_default
+    return env_profiles[0]["name"]
+
+
+def get_default_workload_profiles(cmd, location):
+    profiles = [
+        {
+            "workloadProfileType": "Consumption",
+            "Name": "Consumption"
+        }
+    ]
+    return profiles
+
+
+def ensure_workload_profile_supported(cmd, env_name, env_rg, workload_profile_name, managed_env_info):
+    profile_names = [p["name"] for p in safe_get(managed_env_info, "properties", "workloadProfiles", default=[])]
+    if workload_profile_name not in profile_names:
+        raise ValidationError(f"Not a valid workload profile name: '{workload_profile_name}'. Run 'az containerapp env workload-profile list -n myEnv -g myResourceGroup' to see options.")
+
+
 def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, action):
     updated = False
     for e in ip_restrictions:
@@ -1632,3 +1682,9 @@ def certificate_thumbprint_matches(certificate_object, thumbprint=None):
 
 def certificate_matches(certificate_object, location=None, thumbprint=None):
     return certificate_location_matches(certificate_object, location) and certificate_thumbprint_matches(certificate_object, thumbprint)
+
+
+def format_location(location=None):
+    if location:
+        return location.lower().replace(" ", "").replace("(", "").replace(")", "")
+    return location

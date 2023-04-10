@@ -1420,6 +1420,23 @@ class IPSecurityRestrictions(Model):
         self.description = kwargs.get('description', None)
 
 
+class StickySessions(Model):
+    """Sticky Sessions of a Container App.
+
+    :param name: affinity
+    :type name: str
+
+    """
+
+    _attribute_map = {
+        'affinity': {'key': 'affinity', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(StickySessions, self).__init__(**kwargs)
+        self.affinity = kwargs.get('affinity', None)
+
+
 class CustomHostnameAnalysisResult(ProxyResource):
     """Custom domain analysis.
 
@@ -2170,6 +2187,8 @@ class Ingress(Model):
      If set to false HTTP connections are automatically redirected to HTTPS
      connections
     :type allow_insecure: bool
+    :type sticky_sessions: sticky session affinity for Container App. Possible values include:
+    'none', 'Sticky'
     """
 
     _validation = {
@@ -2188,6 +2207,7 @@ class Ingress(Model):
         'ip_security_restrictions': {'key': 'ipSecurityRestrictions', 'type': '[IPSecurityRestrictions]'},
         'client_certificate_mode': {'key': 'clientCertificateMode', 'type': 'str'},
         'cors_policy': {'key': 'corsPolicy', 'type': 'CorsPolicy'},
+        'sticky_sessions': {'key': 'stickySessions', 'type': 'StickySessions'},
     }
 
     def __init__(self, **kwargs):
@@ -2203,6 +2223,7 @@ class Ingress(Model):
         self.ipSecurityRestrictions = kwargs.get('ip_security_restrictions', None)
         self.clientCertificateMode = kwargs.get('client_certificate_mode', None)
         self.corsPolicy = kwargs.get('cors_policy', None)
+        self.stickySessions = kwargs.get('sticky_sessions', None)
 
 
 class LegacyMicrosoftAccount(Model):
@@ -3125,17 +3146,25 @@ class Secret(Model):
     :type name: str
     :param value: Secret Value.
     :type value: str
+    :param keyVaultUrl: Secret KeyVaultUrl.
+    :type keyVaultUrl: str
+    :param identity: Identity talking to keyVault.
+    :type identity: str
     """
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'value': {'key': 'value', 'type': 'str'},
+        'keyVaultUrl': {'key': 'keyVaultUrl', 'type': 'str'},
+        'identity': {'key': 'identity', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
         super(Secret, self).__init__(**kwargs)
         self.name = kwargs.get('name', None)
         self.value = kwargs.get('value', None)
+        self.keyVaultUrl = kwargs.get('keyVaultUrl', None)
+        self.identity = kwargs.get('identity', None)
 
 
 class SecretsCollection(Model):

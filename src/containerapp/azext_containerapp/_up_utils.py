@@ -48,7 +48,8 @@ from ._utils import (
     _ensure_location_allowed,
     register_provider_if_needed,
     validate_environment_location,
-    list_environment_locations
+    list_environment_locations,
+    format_location
 )
 
 from ._constants import (MAXIMUM_SECRET_LENGTH,
@@ -354,6 +355,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         registry_user=None,
         registry_pass=None,
         env_vars=None,
+        workload_profile_name=None,
         ingress=None,
     ):
 
@@ -366,6 +368,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         self.registry_pass = registry_pass
         self.env_vars = env_vars
         self.ingress = ingress
+        self.workload_profile_name = workload_profile_name
 
         self.should_create_acr = False
         self.acr: "AzureContainerRegistry" = None
@@ -395,6 +398,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             registry_pass=None if no_registry else self.registry_pass,
             registry_user=None if no_registry else self.registry_user,
             env_vars=self.env_vars,
+            workload_profile_name=self.workload_profile_name,
             ingress=self.ingress,
         )
 
@@ -681,7 +685,7 @@ def _get_app_env_and_group(
         if env.name:
             matched_apps = [c for c in matched_apps if parse_resource_id(c["properties"]["environmentId"])["name"].lower() == env.name.lower()]
         if location:
-            matched_apps = [c for c in matched_apps if c["location"].lower() == location.lower()]
+            matched_apps = [c for c in matched_apps if format_location(c["location"]) == format_location(location)]
         if len(matched_apps) == 1:
             resource_group.name = parse_resource_id(matched_apps[0]["id"])[
                 "resource_group"
@@ -724,7 +728,7 @@ def _get_env_and_group_from_log_analytics(
                     == logs_customer_id
                 ]
             if location:
-                env_list = [e for e in env_list if e["location"] == location]
+                env_list = [e for e in env_list if format_location(e["location"]) == format_location(location)]
             if env_list:
                 # TODO check how many CA in env
                 env_details = parse_resource_id(env_list[0]["id"])
@@ -876,7 +880,7 @@ def _set_up_defaults(
         if not location:
             env_list = [e for e in list_managed_environments(cmd=cmd) if e["name"] == env.name]
         else:
-            env_list = [e for e in list_managed_environments(cmd=cmd) if e["name"] == env.name and e["location"] == location]
+            env_list = [e for e in list_managed_environments(cmd=cmd) if e["name"] == env.name and format_location(e["location"]) == format_location(location)]
         if len(env_list) == 1:
             resource_group.name = parse_resource_id(env_list[0]["id"])["resource_group"]
         if len(env_list) > 1:
@@ -993,7 +997,7 @@ def check_env_name_on_rg(cmd, managed_env, resource_group_name, location):
         except:  # pylint: disable=bare-except
             pass
         if env_def:
-            if location != env_def["location"]:
+            if format_location(location) != format_location(env_def["location"]):
                 raise ValidationError("Environment {} already exists in resource group {} on location {}, cannot change location of existing environment to {}.".format(parse_resource_id(managed_env)["name"], resource_group_name, env_def["location"], location))
 
 

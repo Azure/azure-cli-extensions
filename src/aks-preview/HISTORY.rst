@@ -9,6 +9,23 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
+Pending
++++++++
+
+0.5.136
++++++++
+* fix: remove uneeded location check for DCR, DCRA in azure monitor metrics addon (aks)
+* Refactor: use decorator mode in pod_cidr and network_plugin_mode getters to read from mc only during CREATE
+
+0.5.135
++++++++
+* Add `--network-dataplane` flag to `az aks create`.
+* Allow updating the pod CIDR and network plugin mode to migrate clusters to Azure CNI Overlay.
+
+0.5.134
++++++++
+* Add cluster upgrade settings options `--upgrade-settings`, and `--upgrade-override-until`.
+
 0.5.133
 +++++++
 * Add `az aks mesh` commands for Azure Service Mesh.

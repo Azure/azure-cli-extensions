@@ -94,6 +94,9 @@ CONST_NODE_OS_CHANNEL_NONE = "None"
 CONST_NODE_OS_CHANNEL_SECURITY_PATCH = "SecurityPatch"
 CONST_NODE_OS_CHANNEL_UNMANAGED = "Unmanaged"
 
+# consts for cluster upgrade settings
+CONST_IGNORE_KUBERNETES_DEPRECATIONS = "IgnoreKubernetesDeprecations"
+
 # consts for nrg-lockdown restriction level
 CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY = "ReadOnly"
 CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED = "Unrestricted"
@@ -106,8 +109,9 @@ CONST_NETWORK_PLUGIN_NONE = "none"
 # network plugin mode
 CONST_NETWORK_PLUGIN_MODE_OVERLAY = "overlay"
 
-# networkprofile eBPF dataplane
-CONST_EBPF_DATAPLANE_CILIUM = "cilium"
+# network dataplane
+CONST_NETWORK_DATAPLANE_AZURE = "azure"
+CONST_NETWORK_DATAPLANE_CILIUM = "cilium"
 
 # disk driver versions
 CONST_DISK_DRIVER_V1 = "v1"

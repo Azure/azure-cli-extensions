@@ -17,7 +17,7 @@ from json import dumps
 from knack.util import CLIError, todict
 from knack.log import get_logger
 from azure.cli.core.azclierror import ValidationError
-from .vendored_sdks.appplatform.v2023_01_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
+from .vendored_sdks.appplatform.v2023_03_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
 from ._client_factory import cf_resource_groups
 
 
@@ -289,7 +289,7 @@ def wait_till_end(cmd, *pollers):
     progress_bar = cmd.cli_ctx.get_progress_controller()
     progress_bar.add(message='Running')
     progress_bar.begin()
-    while any(x and not x.done() for x in pollers):
+    while any(x for x in pollers if not x.done()):
         progress_bar.add(message='Running')
         sleep(5)
     progress_bar.end()
