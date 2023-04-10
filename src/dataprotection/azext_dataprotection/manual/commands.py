@@ -24,6 +24,7 @@ def load_command_table(self, _):
         g.custom_command('validate-for-restore', 'data_protection_backup_instance_validate_for_restore', supports_no_wait=True)
         
     with self.command_group('data-protection backup-instance restore') as g:
+        g.custom_command('trigger', 'data_protection_backup_instance_restore_trigger')
         g.custom_command('initialize-for-data-recovery', 'restore_initialize_for_data_recovery')
         # g.custom_command('initialize-for-data-recovery-as-files', 'restore_initialize_for_data_recovery_as_files')
         g.custom_command('initialize-for-item-recovery', 'restore_initialize_for_item_recovery_dp')

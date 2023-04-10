@@ -179,13 +179,13 @@ def data_protection_backup_instance_validate_for_backup(cmd, vault_name, resourc
 
             @property
             def content(self):
-                _content_value, _builder = self.new_content_builder(
-                    self.ctx.args,
-                    value=self.ctx.vars.instance.properties,
-                )
+                # _content_value, _builder = self.new_content_builder(
+                #     self.ctx.args,
+                #     value=self.ctx.vars.instance.properties,
+                # )
 
                 return {
-                    "backupInstance": self.serialize_content(_content_value)
+                    # "backupInstance": self.serialize_content(_content_value)
                 }
 
             def on_200(self, session):
@@ -732,6 +732,7 @@ def dataprotection_backup_policy_tag_remove_in_policy(name, policy):
 def data_protection_backup_instance_validate_for_restore(cmd, vault_name, resource_group_name, backup_instance_name,
                                                          restore_request_object, no_wait=False):
     from azext_dataprotection.aaz.latest.data_protection.backup_instance import ValidateForRestore as _Validate
+    from azext_dataprotection.aaz.latest.data_protection.backup_instance.restore import Trigger as _Trigger
 
     class ValidateForRestore(_Validate):
 
@@ -743,12 +744,10 @@ def data_protection_backup_instance_validate_for_restore(cmd, vault_name, resour
 
             return args_schema
 
-
         class BackupInstancesValidateForRestore(_Validate.BackupInstancesValidateForRestore):
             
             @property
             def content(self):
-
                 return {
                     "restoreRequestObject": helper.convert_dict_keys_snake_to_camel(restore_request_object)
                 }
@@ -762,8 +761,40 @@ def data_protection_backup_instance_validate_for_restore(cmd, vault_name, resour
     })
 
 
-def data_protection_backup_instance_restore_trigger():
-    pass
+def data_protection_backup_instance_restore_trigger(cmd, vault_name, resource_group_name, backup_instance_name,
+                                                         restore_request_object, no_wait=False):
+    from azext_dataprotection.aaz.latest.data_protection.backup_instance import ValidateForRestore as _Validate
+    from azext_dataprotection.aaz.latest.data_protection.backup_instance.restore import Trigger as _Trigger
+
+    class Trigger(_Trigger):
+
+        @classmethod
+        def _build_arguments_schema(cls, *args, **kwargs):
+            args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+            args_schema.restore_target_info._required = False
+            args_schema.source_data_store_type._required = False
+
+            return args_schema
+
+        def _execute_operations(self):
+            self.pre_operations()
+            yield self.BackupInstancesTriggerRestore(ctx=self.ctx)()
+            self.post_operations()
+
+        class BackupInstancesTriggerRestore(_Trigger.BackupInstancesTriggerRestore):
+            
+            @property
+            def content(self):
+                return helper.convert_dict_keys_snake_to_camel(restore_request_object)
+
+    return Trigger(cli_ctx=cmd.cli_ctx)(command_args={
+        "vault_name": vault_name,
+        "resource_group": resource_group_name,
+        "backup_instance_name": backup_instance_name,
+        "restore_request_object": restore_request_object,
+        "no_wait": no_wait
+    })
 
 def restore_initialize_for_data_recovery(target_resource_id, datasource_type, source_datastore, restore_location,
                                          recovery_point_id=None, point_in_time=None, secret_store_type=None,

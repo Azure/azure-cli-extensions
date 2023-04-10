@@ -181,6 +181,14 @@ def load_arguments(self, _):
         c.argument('restore_request_object', type=validate_file_or_dict, help='Gets or sets the restore request '
                    'object. Expected value: json-string/@json-file.')
 
+    with self.argument_context('data-protection backup-instance restore trigger') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault. experimental code.', id_part='name')
+        c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
+                   help='The name of the backup instance', id_part='child_name_1')
+        c.argument('restore_request_object', type=validate_file_or_dict, help='Gets or sets the restore request '
+                   'object. Expected value: json-string/@json-file.')
+
     with self.argument_context('data-protection backup-instance restore initialize-for-data-recovery') as c:
         c.argument('target_resource_id', type=str, help="specify the resource ID to which the data will be restored.")
         c.argument('recovery_point_id', type=str, help="specify the recovery point ID which will be used for restoring the data.")
