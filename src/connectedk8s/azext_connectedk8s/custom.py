@@ -313,7 +313,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                          "is already onboarded to the resource group" +
                                          " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
         else:
-            logger.warning("Cleaning up the stale arc agents present on the cluster so that a fresh onboarding can be started.")
+            logger.warning("Cleaning up the stale arc agents present on the cluster before starting new onboarding.")
             # Explicit CRD Deletion
             crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
             # Cleaning up the cluster
