@@ -32,6 +32,7 @@ Upgrade_RG_Cluster_Name_Conflict = 'The provided cluster name and rg correspond 
 MicroK8s_Upgrade_Failed = "MicroK8s cluster upgrade failed"
 Entries_Not_Found_In_ConfigMap = "Name and RG entries not found in configmap"
 Unsupported_K8s_Version = "K8s version greater than latest supported"
+Failed_To_Change_Telemetry_Push_Interval = "Failed_To_Change_Telemetry_Push_Interval"
 Read_ConfigMap_Fault_Type = 'configmap-read-error'
 MicroK8s_Unhealthy_Post_Upgrade = "Microk8s unhealthy after upgrade"
 Resource_Already_Exists_Fault_Type = "There already exists a resource with the given resource ID."

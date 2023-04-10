@@ -22,7 +22,13 @@ from kubernetes import client as kube_client, config
 logger = get_logger(__name__)
 
 
-def validate_hybrid_appliance(resource_group_name, name, validate_connectedk8s_exists=True):
+def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connectedk8s_exists=True):
+    # changing cli config to push telemetry in 1 hr interval
+    try:
+        if cmd.cli_ctx and hasattr(cmd.cli_ctx, 'config'):
+            cmd.cli_ctx.config.set_value('telemetry', 'push_interval_in_hours', '1')
+    except Exception as e:
+        telemetry.set_exception(exception=e, fault_type=consts.Failed_To_Change_Telemetry_Push_Interval, summary="Failed to change the telemetry push interval to 1 hr")
 
     all_validations_passed = True
 
@@ -36,15 +42,15 @@ def validate_hybrid_appliance(resource_group_name, name, validate_connectedk8s_e
     disk_usage = psutil.disk_usage('/')
     if disk_usage.total < consts.Disk_Threshold * 1024 * 1024 * 1024:
         all_validations_passed = False
-        telemetry.set_exception(exception="Machine doesn't meet min {} disk space requirement".format(consts.Disk_Threshold), fault_type=consts.DiskSpace_Validation_Failed, summary="Machine doesn't meen min disk space threshold")
-        logger.warning("This program requires at least {} of disk space".format(consts.Disk_Threshold))
+        telemetry.set_exception(exception="Machine doesn't meet min {}GB disk space requirement".format(consts.Disk_Threshold), fault_type=consts.DiskSpace_Validation_Failed, summary="Machine doesn't meen min disk space threshold")
+        logger.warning("This program requires at least {}GB of disk space".format(consts.Disk_Threshold))
 
     # Check if the memory is at least 4GB
     memory = psutil.virtual_memory()
     if memory.total < consts.Memory_Threshold * 1024 * 1024 * 1024:
         all_validations_passed = False
-        telemetry.set_exception(exception="Machine doesn't meet min {} memory requirement".format(consts.Memory_Threshold), fault_type=consts.Memory_Validation_Failed, summary="Machine doesn't meet min memory threshold")
-        logger.warning("This program requires at least {} of memory".format(consts.Memory_Threshold))
+        telemetry.set_exception(exception="Machine doesn't meet min {}GB memory requirement".format(consts.Memory_Threshold), fault_type=consts.Memory_Validation_Failed, summary="Machine doesn't meet min memory threshold")
+        logger.warning("This program requires at least {}GB of memory".format(consts.Memory_Threshold))
     
     # Check if pre-req endpoints are reachable
     endpoints = ["{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name), consts.Snap_Pull_Public_Api_Endpoint, consts.Snap_Pull_Public_Storage_Endpoint, consts.App_Insights_Endpoint, consts.MCR_Endpoint]
@@ -231,7 +237,8 @@ def delete_hybrid_appliance(resource_group_name, name):
     try:
         azure_clusterconfig_cm = utils.get_azure_clusterconfig_cm()
     except Exception as ex:
-        logger.warning("Failed to get the configmap from the cluster.")
+        telemetry.set_exception(exception=e, fault_type=consts.ConfigMap_Not_Found, summary="Config Map 'azure-clusterconfig' not found on the k8s cluster")
+        raise CLIInternalError("Unable to find the required config map on the kubernetes cluster. Please delete the appliance and create it again.")
         delete_cc = False
 
     if delete_cc:
