@@ -2438,13 +2438,23 @@ def install_kubectl_client():
         raise CLIInternalError("Unable to install kubectl. Error: ", str(e))
 
 def get_issuer_url():
-    # Get the Issuer Url from the signingkey CR in the cluster specified
-    kubectl_client_location = install_kubectl_client()
+    # Load the kubeconfig
+    config.load_kube_config()
 
-    kubectl_cmd = [kubectl_client_location, "get", "signingkeys.clusterconfig.azure.com", "-n", "azure-arc", "signingkey", "-o=jsonpath={.status.clusterIssuerUrl}"]
-    cmd_output = Popen(kubectl_cmd, stdout=PIPE, stderr=PIPE)
-    output, error_helm_delete = cmd_output.communicate()
+    # Create an instance of the Kubernetes API client
+    api_instance = kube_client.CustomObjectsApi()
 
-    if(cmd_output.returncode == 0):
-        issuer_url = output.decode("utf-8").strip()
+    # Define the required parameters for the API call
+    group = "clusterconfig.azure.com"
+    version = "v1beta1"
+    namespace = "azure-arc"
+    plural = "signingkeys"
+    name = "signingkey"
+
+    # Get the signing key custom resource
+    signing_key_cr = api_instance.get_namespaced_custom_object(group, version, namespace, plural, name)
+
+    # Get the Issuer URL from the CR
+    issuer_url = signing_key_cr.get('status', {}).get('clusterIssuerUrl', '')
+
     return issuer_url
