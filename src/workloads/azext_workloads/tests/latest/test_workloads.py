@@ -226,3 +226,23 @@ class WorkloadsScenario(ScenarioTest):
             self.check('configuration.configurationType', 'Discovery')
         ])
 
+    def test_invoke_commands(self):
+        self.kwargs.update({
+            'databasetype': 'HANA',
+            'sapproduct': 'S4HANA'
+        })
+        count = len(self.cmd('workloads sap-availability-zone-detail --app-location northeurope --database-type {databasetype} --sap-product {sapproduct} --location northeurope').get_output_in_json())
+        self.assertTrue(count >= 1)
+
+        count = len(self.cmd('workloads sap-disk-configuration --app-location eastus --database-type {databasetype} --db-vm-sku Standard_M32ts --deployment-type SingleServer --environment NonProd --sap-product {sapproduct} --location eastus').get_output_in_json())
+        self.assertTrue(count >= 1)
+
+        self.cmd('workloads sap-sizing-recommendation --database-type {databasetype} --app-location eastus --location eastus --sap-product {sapproduct} --deployment-type SingleServer --environment NonProd --saps 10000 --db-memory 256 --db-scale-method ScaleUp', checks=[
+            self.check('deploymentType', 'SingleServer')
+        ])
+
+        count = len(self.cmd('workloads sap-supported-sku --database-type {databasetype} --app-location eastus --location eastus --sap-product {sapproduct} --deployment-type ThreeTier --environment Prod').get_output_in_json())
+        self.assertTrue(count >= 1)
+
+
+
