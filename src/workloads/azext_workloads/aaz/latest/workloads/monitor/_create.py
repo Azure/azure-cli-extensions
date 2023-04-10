@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a SAP monitor for the specified subscription, resource group, and resource name.
+
+    :example: Create workloads monitor
+        az workloads monitor create -n monitor-name -g rg --app-location westus --managed-rg-name rg-name
     """
 
     _aaz_info = {
@@ -49,6 +52,15 @@ class Create(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+
+        # define Arg Group "ManagedResourceGroupConfiguration"
+
+        _args_schema = cls._args_schema
+        _args_schema.managed_rg_name = AAZStrArg(
+            options=["--managed-rg-name"],
+            arg_group="ManagedResourceGroupConfiguration",
+            help="Managed resource group name",
         )
 
         # define Arg Group "MonitorParameter"
@@ -106,11 +118,6 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The ARM ID of the Log Analytics Workspace that is used for SAP monitoring.",
         )
-        _args_schema.managed_resource_group_configuration = AAZObjectArg(
-            options=["--managed-resource-group-configuration"],
-            arg_group="Properties",
-            help="Managed resource group configuration",
-        )
         _args_schema.monitor_subnet = AAZStrArg(
             options=["--monitor-subnet"],
             arg_group="Properties",
@@ -126,12 +133,6 @@ class Create(AAZCommand):
             options=["--zone-redundancy-preference"],
             arg_group="Properties",
             help="Sets the preference for zone redundancy on resources created for the SAP monitor. By default resources will be created which do not support zone redundancy.",
-        )
-
-        managed_resource_group_configuration = cls._args_schema.managed_resource_group_configuration
-        managed_resource_group_configuration.name = AAZStrArg(
-            options=["name"],
-            help="Managed resource group name",
         )
         return cls._args_schema
 
@@ -259,14 +260,14 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("appLocation", AAZStrType, ".app_location")
                 properties.set_prop("logAnalyticsWorkspaceArmId", AAZStrType, ".log_analytics_workspace_arm_id")
-                properties.set_prop("managedResourceGroupConfiguration", AAZObjectType, ".managed_resource_group_configuration")
+                properties.set_prop("managedResourceGroupConfiguration", AAZObjectType)
                 properties.set_prop("monitorSubnet", AAZStrType, ".monitor_subnet")
                 properties.set_prop("routingPreference", AAZStrType, ".routing_preference")
                 properties.set_prop("zoneRedundancyPreference", AAZStrType, ".zone_redundancy_preference")
 
             managed_resource_group_configuration = _builder.get(".properties.managedResourceGroupConfiguration")
             if managed_resource_group_configuration is not None:
-                managed_resource_group_configuration.set_prop("name", AAZStrType, ".name")
+                managed_resource_group_configuration.set_prop("name", AAZStrType, ".managed_rg_name")
 
             tags = _builder.get(".tags")
             if tags is not None:

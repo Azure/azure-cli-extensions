@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "workloads sap-availability-zone-detail",
 )
 class SapAvailabilityZoneDetail(AAZCommand):
-    """Get the recommended SAP Availability Zone Pair Details for your region.
+    """Show the recommended SAP Availability Zone Pair Details for your region.
 
     :example: Show the sap availability zone detail
         az workloads sap-availability-zone-detail --app-location "northeurope" --database-type "HANA" --sap-product "S4HANA" --location "northeurope"

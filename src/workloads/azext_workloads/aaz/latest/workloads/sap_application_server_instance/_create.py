@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "workloads sap-application-server-instance create",
 )
 class Create(AAZCommand):
-    """Create the SAP Application Server Instance resource. <br><br>This will be used by service only. PUT by end user will return a Bad Request error.
+    """Create the SAP Application Server Instance resource. This will be used by service only. PUT by end user will return a Bad Request error.
+
+    :example: Create workloads sap application server instance
+        az workloads sap-application-server-instance create -g rg -n instance-name --vis-name name
     """
 
     _aaz_info = {

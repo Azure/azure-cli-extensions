@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Virtual Instance for SAP solutions (VIS) resource
+
+    :example: Create workloads sap-virtual-instance
+        az workloads sap-virtual-instance create -g rg -n instance-name --environment Nonprod --sap-product s4hana --configuration D:\create_infra_distributed_non_ha_config.json
     """
 
     _aaz_info = {

@@ -6,7 +6,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=too-many-lines
-# pylint: disable=too-many-statements
+# pylint: disable=too-many-statements, protected-access
 
 from knack.log import get_logger
 
@@ -97,4 +97,4 @@ class SVICreate(_SVICreate):
                         'configurationType': 'Discovery'
                     }
                 })
-                return output
+            return output

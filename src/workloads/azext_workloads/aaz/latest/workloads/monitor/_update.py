@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a SAP monitor for the specified subscription, resource group, and resource name.
+
+    :example: Update monitor tags
+        az workloads monitor update -g rg -n monitor-name --tags "{tag:tag1}"
     """
 
     _aaz_info = {
@@ -53,6 +56,8 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "ManagedResourceGroupConfiguration"
 
         # define Arg Group "MonitorParameter"
 
@@ -94,52 +99,6 @@ class Update(AAZCommand):
         )
 
         # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.app_location = AAZStrArg(
-            options=["--app-location"],
-            arg_group="Properties",
-            help="The SAP monitor resources will be deployed in the SAP monitoring region. The subnet region should be same as the SAP monitoring region.",
-            nullable=True,
-        )
-        _args_schema.log_analytics_workspace_arm_id = AAZStrArg(
-            options=["--log-analytics-workspace-arm-id"],
-            arg_group="Properties",
-            help="The ARM ID of the Log Analytics Workspace that is used for SAP monitoring.",
-            nullable=True,
-        )
-        _args_schema.managed_resource_group_configuration = AAZObjectArg(
-            options=["--managed-resource-group-configuration"],
-            arg_group="Properties",
-            help="Managed resource group configuration",
-            nullable=True,
-        )
-        _args_schema.monitor_subnet = AAZStrArg(
-            options=["--monitor-subnet"],
-            arg_group="Properties",
-            help="The subnet which the SAP monitor will be deployed in",
-            nullable=True,
-        )
-        _args_schema.routing_preference = AAZStrArg(
-            options=["--routing-preference"],
-            arg_group="Properties",
-            help="Sets the routing preference of the SAP monitor. By default only RFC1918 traffic is routed to the customer VNET.",
-            nullable=True,
-            enum={"Default": "Default", "RouteAll": "RouteAll"},
-        )
-        _args_schema.zone_redundancy_preference = AAZStrArg(
-            options=["--zone-redundancy-preference"],
-            arg_group="Properties",
-            help="Sets the preference for zone redundancy on resources created for the SAP monitor. By default resources will be created which do not support zone redundancy.",
-            nullable=True,
-        )
-
-        managed_resource_group_configuration = cls._args_schema.managed_resource_group_configuration
-        managed_resource_group_configuration.name = AAZStrArg(
-            options=["name"],
-            help="Managed resource group name",
-            nullable=True,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -392,16 +351,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("appLocation", AAZStrType, ".app_location")
-                properties.set_prop("logAnalyticsWorkspaceArmId", AAZStrType, ".log_analytics_workspace_arm_id")
-                properties.set_prop("managedResourceGroupConfiguration", AAZObjectType, ".managed_resource_group_configuration")
-                properties.set_prop("monitorSubnet", AAZStrType, ".monitor_subnet")
-                properties.set_prop("routingPreference", AAZStrType, ".routing_preference")
-                properties.set_prop("zoneRedundancyPreference", AAZStrType, ".zone_redundancy_preference")
-
-            managed_resource_group_configuration = _builder.get(".properties.managedResourceGroupConfiguration")
-            if managed_resource_group_configuration is not None:
-                managed_resource_group_configuration.set_prop("name", AAZStrType, ".name")
+                properties.set_prop("managedResourceGroupConfiguration", AAZObjectType)
 
             tags = _builder.get(".tags")
             if tags is not None:

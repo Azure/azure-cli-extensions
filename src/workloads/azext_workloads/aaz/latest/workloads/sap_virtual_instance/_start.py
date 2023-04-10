@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Start(AAZCommand):
     """Starts the SAP application, that is the Central Services instance and Application server instances.
+
+    :example: Start workloads sap-virtual-instance
+        az workloads sap-virtual-instance start -g rg --vis-name name
     """
 
     _aaz_info = {

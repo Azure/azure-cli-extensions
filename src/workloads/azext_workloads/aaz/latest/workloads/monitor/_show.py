@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "workloads monitor show",
 )
 class Show(AAZCommand):
-    """Get properties of a SAP monitor for the specified subscription, resource group, and resource name.
+    """Show properties of a SAP monitor for the specified subscription, resource group, and resource name.
+
+    :example: Show wokloads monitor
+        az workloads monitor show -g rg -n monitor-name
     """
 
     _aaz_info = {

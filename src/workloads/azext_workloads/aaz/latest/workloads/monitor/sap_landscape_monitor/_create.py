@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a SAP Landscape Monitor Dashboard for the specified subscription, resource group, and resource name.
+
+    :example: Create workloads monitor sap landscape monitor
+        az workloads monitor sap-landscape-monitor create -g rg --monitor-name name --grouping "{landscape:[{name:Prod,topSid:[SID1,SID2]}],sapApplication:[{name:ERP1,topSid:[SID1,SID2]}]}" --top-metrics-thresholds "[{name:Inscane, green:90,yellow:75,red:50}]"
     """
 
     _aaz_info = {

@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "workloads monitor provider-instance show",
 )
 class Show(AAZCommand):
-    """Get properties of a provider instance for the specified subscription, resource group, SAP monitor name, and resource name.
+    """Show properties of a provider instance for the specified subscription, resource group, SAP monitor name, and resource name.
+
+    :example: Show workloads monitor provider instance
+        az workloads monitor provider-instance show -g rg --monitor-name name -n instance-name
     """
 
     _aaz_info = {

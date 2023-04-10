@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Start(AAZCommand):
     """Starts the database instance of the SAP system.
+
+    :example: Start workloads sap-database-instance
+        az workloads sap-database-instance start -g rg -n instance-name --vis-name name
     """
 
     _aaz_info = {
@@ -43,7 +46,7 @@ class Start(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.database_instance_name = AAZStrArg(
-            options=["--database-instance-name"],
+            options=["-n", "--name", "--database-instance-name"],
             help="Database resource name string modeled as parameter for auto generation to work correctly.",
             required=True,
             id_part="child_name_1",

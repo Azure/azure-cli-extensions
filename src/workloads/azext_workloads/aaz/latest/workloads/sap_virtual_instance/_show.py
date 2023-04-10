@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "workloads sap-virtual-instance show",
 )
 class Show(AAZCommand):
-    """Get a Virtual Instance for SAP solutions resource
+    """Show a Virtual Instance for SAP solutions resource
+
+    :example: Show workloads sap-virtual-instance
+        az workloads sap-virtual-instance show -g rg -n instance-name
     """
 
     _aaz_info = {

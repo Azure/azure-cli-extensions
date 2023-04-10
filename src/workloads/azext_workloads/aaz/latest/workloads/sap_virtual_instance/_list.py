@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all Virtual Instances for SAP solutions resources in a Resource Group.
+
+    :example: List workloads sap-virtual-instance
+        az workloads sap-virtual-instance list -g rg
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Virtual Instance for SAP solutions (VIS) resource
+
+    :example: Update sap-virtual-instance tags
+        az workloads sap-virtual-instance update -g rg -n instance-name --tags "{tag:tag}"
     """
 
     _aaz_info = {
@@ -94,14 +97,6 @@ class Update(AAZCommand):
         )
 
         # define Arg Group "ManagedResourceGroupConfiguration"
-
-        _args_schema = cls._args_schema
-        _args_schema.managed_rg_name = AAZStrArg(
-            options=["--managed-rg-name"],
-            arg_group="ManagedResourceGroupConfiguration",
-            help="Managed resource group name",
-            nullable=True,
-        )
 
         # define Arg Group "Properties"
         return cls._args_schema
@@ -1081,10 +1076,6 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("managedResourceGroupConfiguration", AAZObjectType)
-
-            managed_resource_group_configuration = _builder.get(".properties.managedResourceGroupConfiguration")
-            if managed_resource_group_configuration is not None:
-                managed_resource_group_configuration.set_prop("name", AAZStrType, ".managed_rg_name")
 
             tags = _builder.get(".tags")
             if tags is not None:

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a provider instance for the specified subscription, resource group, SAP monitor name, and resource name.
+
+    :example: Create workloads monitor provider instance
+        az workloads monitor provider-instance create -g rg --mointor-name name -n instance-name
     """
 
     _aaz_info = {

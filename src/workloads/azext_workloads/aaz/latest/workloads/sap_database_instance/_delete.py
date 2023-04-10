@@ -16,7 +16,10 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete the Database resource corresponding to a Virtual Instance for SAP solutions resource. <br><br>This will be used by service only. Delete by end user will return a Bad Request error.
+    """Delete the Database resource corresponding to a Virtual Instance for SAP solutions resource. This will be used by service only. Delete by end user will return a Bad Request error.
+
+    :example: Delete workloads sap database instance
+        az workloads sap-database-instance delete -g rg -n instance-name --vis-name name -y
     """
 
     _aaz_info = {

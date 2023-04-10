@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "workloads sap-central-instance show",
 )
 class Show(AAZCommand):
-    """Get the SAP Central Services Instance resource.
+    """Show the SAP Central Services Instance resource.
+
+    :example: Show workloads sap central instance
+        az workloads sap-central-instance show -g rg -n instance-name --vis-name name
     """
 
     _aaz_info = {

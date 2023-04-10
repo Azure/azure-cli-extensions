@@ -16,7 +16,10 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete the SAP Application Server Instance resource. <br><br>This operation will be used by service only. Delete by end user will return a Bad Request error.
+    """Delete the SAP Application Server Instance resource. This operation will be used by service only. Delete by end user will return a Bad Request error.
+
+    :example: Delete workloads sap application server instance
+        az workloads sap-application-server-instance delete -g rg -n instance-name --vis-name name -y
     """
 
     _aaz_info = {

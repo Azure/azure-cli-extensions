@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a provider instance for the specified subscription, resource group, SAP monitor name, and resource name.
+
+    :example: Delete workloads monitor provider instance
+        az workloads monitor provider-instance delete -g rg --monitor-name name -n instance-name -y
     """
 
     _aaz_info = {

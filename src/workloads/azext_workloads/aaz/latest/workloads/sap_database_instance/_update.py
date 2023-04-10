@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "workloads sap-database-instance update",
 )
 class Update(AAZCommand):
-    """Update the Database resource corresponding to the Virtual Instance for SAP solutions resource. <br><br>This will be used by service only. PUT by end user will return a Bad Request error.
+    """Update the Database resource corresponding to the Virtual Instance for SAP solutions resource. This will be used by service only. PUT by end user will return a Bad Request error.
+
+    :example: Update workloads sap database instance tags
+        az workloads sap-database-instance update -g rg -n instance-name --vis-name name --tags "{tag:tag}"
     """
 
     _aaz_info = {

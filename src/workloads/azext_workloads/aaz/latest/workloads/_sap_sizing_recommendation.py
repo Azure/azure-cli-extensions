@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "workloads sap-sizing-recommendation",
 )
 class SapSizingRecommendation(AAZCommand):
-    """Get SAP sizing recommendations by providing input SAPS for application tier and memory required for database tier
+    """Show SAP sizing recommendations by providing input SAPS for application tier and memory required for database tier
+
+    :example: Show SAP sizing recommendations
+        az workloads sap-sizing-recommendation --app-location "northeurope" --database-type "HANA" --db-memory 2000 --deployment-type "SingleServer" --environment "NonProd" --sap-product "S4HANA" --saps 60000 --location "northeurope"
     """
 
     _aaz_info = {

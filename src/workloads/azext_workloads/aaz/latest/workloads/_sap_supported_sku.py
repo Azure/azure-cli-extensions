@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "workloads sap-supported-sku",
 )
 class SapSupportedSku(AAZCommand):
-    """Get a list of SAP supported SKUs for ASCS, Application and Database tier.
+    """Show a list of SAP supported SKUs for ASCS, Application and Database tier.
+
+    :example: Show a list of SAP supported SKUs for ASCS
+        az workloads sap-supported-sku --app-location "eastus2" --database-type "HANA" --deployment-type "SingleServer" --environment "NonProd" --sap-product "S4HANA" --location "eastus2"
     """
 
     _aaz_info = {

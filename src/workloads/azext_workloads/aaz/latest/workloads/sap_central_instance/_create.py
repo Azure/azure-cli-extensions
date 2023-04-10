@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "workloads sap-central-instance create",
 )
 class Create(AAZCommand):
-    """Create the SAP Central Services Instance resource. <br><br>This will be used by service only. PUT operation on this resource by end user will return a Bad Request error.
+    """Create the SAP Central Services Instance resource. This will be used by service only. PUT operation on this resource by end user will return a Bad Request error.
+
+    :example: Create workloads sap-central-instance
+        az workloads sap-central-instance create -g rg -n instance-name --vis-name name
     """
 
     _aaz_info = {

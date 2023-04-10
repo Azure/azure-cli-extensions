@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Start(AAZCommand):
     """Starts the SAP Application Server Instance.
+
+    :example: Start workloads sap application server instance
+        az workloads sap-application-server-instance start -g rg -n instance-name --vis-name name
     """
 
     _aaz_info = {
@@ -43,7 +46,7 @@ class Start(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.application_instance_name = AAZStrArg(
-            options=["--application-instance-name"],
+            options=["-n", "--name", "--application-instance-name"],
             help="The name of SAP Application Server instance resource.",
             required=True,
             id_part="child_name_1",

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a SAP Landscape Monitor Dashboard with the specified subscription, resource group, and SAP monitor name.
+
+    :example: Delete workloads monitor sap landscape monitor
+        az workloads monitor sap-landscape-monitor delete -g rg --monitor-name name -y
     """
 
     _aaz_info = {

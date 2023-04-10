@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "workloads sap-database-instance create",
 )
 class Create(AAZCommand):
-    """Create the Database resource corresponding to the Virtual Instance for SAP solutions resource. <br><br>This will be used by service only. PUT by end user will return a Bad Request error.
+    """Create the Database resource corresponding to the Virtual Instance for SAP solutions resource. This will be used by service only. PUT by end user will return a Bad Request error.
+
+    :example: Create workloads sap database instance
+        az workloads sap-database-instance create -g rg --vis-name name -n instance-name
     """
 
     _aaz_info = {

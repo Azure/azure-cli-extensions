@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Stop(AAZCommand):
     """Stops the SAP Central Services Instance.
+
+    :example: Stop workloads sap central instance
+        az workloads sap-central-instance stop -g rg -n instance-name --vis-name name
     """
 
     _aaz_info = {
@@ -43,7 +46,7 @@ class Stop(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.central_instance_name = AAZStrArg(
-            options=["--central-instance-name"],
+            options=["-n", "--name", "--central-instance-name"],
             help="Central Services Instance resource name string modeled as parameter for auto generation to work correctly.",
             required=True,
             id_part="child_name_1",
