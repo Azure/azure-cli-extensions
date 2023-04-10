@@ -240,6 +240,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
+    resource_id = f'/subscriptions/{subscription_id}/resourcegroups/{resource_group_name}/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}'
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.resourceid': resource_id})
+
     # Checking if it is an AKS cluster
     is_aks_cluster = check_aks_cluster(kube_config, kube_context)
     if is_aks_cluster:
