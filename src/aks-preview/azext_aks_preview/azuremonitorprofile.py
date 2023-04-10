@@ -19,7 +19,6 @@ from enum import Enum
 from six import with_metaclass
 from azure.core import CaseInsensitiveEnumMeta
 from azure.core.exceptions import HttpResponseError
-from azure.cli.core.util import get_az_user_agent
 
 AKS_CLUSTER_API = "2022-07-02-preview"
 MAC_API = "2021-06-03-preview"
@@ -296,7 +295,7 @@ def get_default_dcra_name(cluster_region, cluster_name):
     return sanitize_name(default_dcra_name, DC_TYPE.DCRA)
 
 
-def get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, cluster_region):
+def get_mac_region(cmd, azure_monitor_workspace_resource_id):
     from azure.cli.core.util import send_raw_request
     from azure.core.exceptions import HttpResponseError
     # region of MAC can be different from region of RG so find the location of the azure_monitor_workspace_resource_id
@@ -305,55 +304,9 @@ def get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, c
     try:
         resource = resources.get_by_id(
             azure_monitor_workspace_resource_id, MAC_API)
-        mac_location = resource.location
+        mac_location = resource.location.lower()
     except HttpResponseError as ex:
         raise ex
-    # first get the association between region display names and region IDs (because for some reason
-    # the "which RPs are available in which regions" check returns region display names)
-    region_names_to_id = {}
-    # retry the request up to two times
-    for _ in range(3):
-        try:
-            headers = ['User-Agent=azuremonitormetrics.get_mac_region_and_check_support.mac_subscription_location_support_check']
-            location_list_url = f"https://management.azure.com/subscriptions/{mac_subscription_id}/locations?api-version=2019-11-01"
-            r = send_raw_request(cmd.cli_ctx, "GET", location_list_url, headers=headers)
-
-            # this is required to fool the static analyzer. The else statement will only run if an exception
-            # is thrown, but flake8 will complain that e is undefined if we don"t also define it here.
-            error = None
-            break
-        except CLIError as e:
-            error = e
-    else:
-        # This will run if the above for loop was not broken out of. This means all three requests failed
-        raise error
-    json_response = json.loads(r.text)
-    for region_data in json_response["value"]:
-        region_names_to_id[region_data["displayName"]
-                           ] = region_data["name"]
-    # check if region supports DCR and DCRA
-    for _ in range(3):
-        try:
-            feature_check_url = f"https://management.azure.com/subscriptions/{mac_subscription_id}/providers/Microsoft.Insights?api-version=2020-10-01"
-            headers = ['User-Agent=azuremonitormetrics.get_mac_region_and_check_support.mac_subscription_dcr_dcra_regions_support_check']
-            r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url, headers=headers)
-            error = None
-            break
-        except CLIError as e:
-            error = e
-    else:
-        raise error
-    json_response = json.loads(r.text)
-    for resource in json_response["resourceTypes"]:
-        region_ids = map(lambda x: region_names_to_id[x],
-                         resource["locations"])  # map is lazy, so doing this for every region isn"t slow
-        if resource["resourceType"].lower() == "datacollectionrules" and mac_location not in region_ids:
-            raise ClientRequestError(
-                f"Data Collection Rules are not supported for MAC region {mac_location}")
-        elif resource[
-                "resourceType"].lower() == "datacollectionruleassociations" and cluster_region not in region_ids:
-            raise ClientRequestError(
-                f"Data Collection Rule Associations are not supported for cluster region {cluster_region}")
     return mac_location
 
 
@@ -508,7 +461,37 @@ def link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_
     return GrafanaLink.SUCCESS
 
 
-def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, azure_monitor_workspace_resource_id, mac_region):
+def put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, i):
+    from azure.cli.core.util import send_raw_request
+    body = json.dumps({
+        "id": default_rule_group_id,
+        "name": default_rule_group_name,
+        "type": "Microsoft.AlertsManagement/prometheusRuleGroups",
+        "location": mac_region,
+        "properties": {
+            "scopes": [
+                azure_monitor_workspace_resource_id
+            ],
+            "enabled": True,
+            "clusterName": cluster_name,
+            "interval": "PT1M",
+            "rules": default_rules_template["resources"][i]["properties"]["rules"]
+        }
+    })
+    for _ in range(3):
+        try:
+            headers = ['User-Agent=azuremonitormetrics.put_rules.' + default_rule_group_name]
+            send_raw_request(cmd.cli_ctx, "PUT", url,
+                             body=body, headers=headers)
+            error = None
+            break
+        except CLIError as e:
+            error = e
+    else:
+        raise error
+
+
+def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, azure_monitor_workspace_resource_id, mac_region, raw_parameters):
     from azure.cli.core.util import send_raw_request
     with urllib.request.urlopen("https://defaultrulessc.blob.core.windows.net/defaultrules/ManagedPrometheusDefaultRecordingRules.json") as url:
         default_rules_template = json.loads(url.read().decode())
@@ -522,31 +505,8 @@ def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster
         default_rule_group_id,
         RULES_API
     )
-    body = json.dumps({
-        "id": default_rule_group_id,
-        "name": default_rule_group_name,
-        "type": "Microsoft.AlertsManagement/prometheusRuleGroups",
-        "location": mac_region,
-        "properties": {
-            "scopes": [
-                azure_monitor_workspace_resource_id
-            ],
-            "clusterName": cluster_name,
-            "interval": "PT1M",
-            "rules": default_rules_template["resources"][0]["properties"]["rules"]
-        }
-    })
-    for _ in range(3):
-        try:
-            headers = ['User-Agent=azuremonitormetrics.create_rules_node']
-            send_raw_request(cmd.cli_ctx, "PUT", url,
-                             body=body, headers=headers)
-            error = None
-            break
-        except CLIError as e:
-            error = e
-    else:
-        raise error
+    put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, 0)
+
     default_rule_group_name = "KubernetesRecordingRulesRuleGroup-{0}".format(cluster_name)
     default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
         cluster_subscription,
@@ -557,31 +517,34 @@ def create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster
         default_rule_group_id,
         RULES_API
     )
-    body = json.dumps({
-        "id": default_rule_group_id,
-        "name": default_rule_group_name,
-        "type": "Microsoft.AlertsManagement/prometheusRuleGroups",
-        "location": mac_region,
-        "properties": {
-            "scopes": [
-                azure_monitor_workspace_resource_id
-            ],
-            "clusterName": cluster_name,
-            "rules": default_rules_template["resources"][1]["properties"]["rules"]
-        }
-    })
-    for _ in range(3):
-        try:
-            headers = ['User-Agent=azuremonitormetrics.create_rules_kubernetes']
-            send_raw_request(cmd.cli_ctx, "PUT", url,
-                             body=body, headers=headers)
-            error = None
-            break
-        except CLIError as e:
-            print(e)
-            error = e
-    else:
-        raise error
+    put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, 1)
+
+    enable_windows_recording_rules = raw_parameters.get("enable_windows_recording_rules")
+
+    if enable_windows_recording_rules is True:
+        default_rule_group_name = "NodeRecordingRulesRuleGroup-Win-{0}".format(cluster_name)
+        default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
+            cluster_subscription,
+            cluster_resource_group_name,
+            default_rule_group_name
+        )
+        url = "https://management.azure.com{0}?api-version={1}".format(
+            default_rule_group_id,
+            RULES_API
+        )
+        put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, 2)
+
+        default_rule_group_name = "NodeAndKubernetesRecordingRulesRuleGroup-Win-{0}".format(cluster_name)
+        default_rule_group_id = "/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.AlertsManagement/prometheusRuleGroups/{2}".format(
+            cluster_subscription,
+            cluster_resource_group_name,
+            default_rule_group_name
+        )
+        url = "https://management.azure.com{0}?api-version={1}".format(
+            default_rule_group_id,
+            RULES_API
+        )
+        put_rules(cmd, default_rule_group_id, default_rule_group_name, mac_region, azure_monitor_workspace_resource_id, cluster_name, default_rules_template, url, 3)
 
 
 def delete_dcra(cmd, cluster_region, cluster_subscription, cluster_resource_group_name, cluster_name):
@@ -657,7 +620,7 @@ def link_azure_monitor_profile_artifacts(cmd, cluster_subscription, cluster_reso
     # MAC creation if required
     azure_monitor_workspace_resource_id = get_azure_monitor_workspace_resource_id(cmd, cluster_subscription, cluster_region, raw_parameters)
     # Get MAC region (required for DCE, DCR creation) and check support for DCE,DCR creation
-    mac_region = get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, cluster_region)
+    mac_region = get_mac_region(cmd, azure_monitor_workspace_resource_id)
     # DCE creation
     dce_resource_id = create_dce(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, mac_region)
     # DCR creation
@@ -667,7 +630,7 @@ def link_azure_monitor_profile_artifacts(cmd, cluster_subscription, cluster_reso
     # Link grafana
     link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_id)
     # create recording rules and alerts
-    create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, azure_monitor_workspace_resource_id, mac_region)
+    create_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, azure_monitor_workspace_resource_id, mac_region, raw_parameters)
 
 
 def unlink_azure_monitor_profile_artifacts(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region):
