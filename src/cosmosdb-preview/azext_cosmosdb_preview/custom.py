@@ -12,7 +12,6 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     DataCenterResource,
     DataCenterResourceProperties,
     ManagedCassandraManagedServiceIdentity,
-    AuthenticationMethodLdapProperties,
     ServiceResourceCreateUpdateParameters,
     MongoRoleDefinitionCreateUpdateParameters,
     MongoUserDefinitionCreateUpdateParameters,
@@ -242,26 +241,9 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
                                                      sku=None,
                                                      disk_sku=None,
                                                      disk_capacity=None,
-                                                     availability_zone=None,
-                                                     server_hostname=None,
-                                                     server_port=None,
-                                                     service_user_distinguished_name=None,
-                                                     service_user_password=None,
-                                                     search_base_distinguished_name=None,
-                                                     search_filter_template=None,
-                                                     server_certificates=None):
+                                                     availability_zone=None):
 
     """Creates an Azure Managed Cassandra Datacenter"""
-
-    authentication_method_ldap_properties = AuthenticationMethodLdapProperties(
-        server_hostname=server_hostname,
-        server_port=server_port,
-        service_user_distinguished_name=service_user_distinguished_name,
-        service_user_password=service_user_password,
-        search_base_distinguished_name=search_base_distinguished_name,
-        search_filter_template=search_filter_template,
-        server_certificates=server_certificates
-    )
 
     data_center_properties = DataCenterResourceProperties(
         data_center_location=data_center_location,
@@ -273,8 +255,7 @@ def cli_cosmosdb_managed_cassandra_datacenter_create(client,
         disk_capacity=disk_capacity,
         availability_zone=availability_zone,
         managed_disk_customer_key_uri=managed_disk_customer_key_uri,
-        backup_storage_customer_key_uri=backup_storage_customer_key_uri,
-        authentication_method_ldap_properties=authentication_method_ldap_properties
+        backup_storage_customer_key_uri=backup_storage_customer_key_uri
     )
 
     data_center_resource = DataCenterResource(
@@ -291,14 +272,7 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client,
                                                      node_count=None,
                                                      base64_encoded_cassandra_yaml_fragment=None,
                                                      managed_disk_customer_key_uri=None,
-                                                     backup_storage_customer_key_uri=None,
-                                                     server_hostname=None,
-                                                     server_port=None,
-                                                     service_user_distinguished_name=None,
-                                                     service_user_password=None,
-                                                     search_base_distinguished_name=None,
-                                                     search_filter_template=None,
-                                                     server_certificates=None):
+                                                     backup_storage_customer_key_uri=None):
 
     """Updates an Azure Managed Cassandra Datacenter"""
 
@@ -316,41 +290,6 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client,
     if backup_storage_customer_key_uri is None:
         backup_storage_customer_key_uri = data_center_resource.properties.backup_storage_customer_key_uri
 
-    is_ldap_properties_none = False
-    if data_center_resource.properties.authentication_method_ldap_properties is None:
-        is_ldap_properties_none = True
-
-    if server_hostname is None and is_ldap_properties_none is False:
-        server_hostname = data_center_resource.properties.authentication_method_ldap_properties.server_hostname
-
-    if server_port is None and is_ldap_properties_none is False:
-        server_port = data_center_resource.properties.authentication_method_ldap_properties.server_port
-
-    if service_user_password is None and is_ldap_properties_none is False:
-        service_user_password = data_center_resource.properties.authentication_method_ldap_properties.service_user_password
-
-    if service_user_distinguished_name is None and is_ldap_properties_none is False:
-        service_user_distinguished_name = data_center_resource.properties.authentication_method_ldap_properties.service_user_distinguished_name
-
-    if search_base_distinguished_name is None and is_ldap_properties_none is False:
-        search_base_distinguished_name = data_center_resource.properties.authentication_method_ldap_properties.search_base_distinguished_name
-
-    if search_filter_template is None and is_ldap_properties_none is False:
-        search_filter_template = data_center_resource.properties.authentication_method_ldap_properties.search_filter_template
-
-    if server_certificates is None and is_ldap_properties_none is False:
-        server_certificates = data_center_resource.properties.authentication_method_ldap_properties.server_certificates
-
-    authentication_method_ldap_properties = AuthenticationMethodLdapProperties(
-        server_hostname=server_hostname,
-        server_port=server_port,
-        service_user_distinguished_name=service_user_distinguished_name,
-        service_user_password=service_user_password,
-        search_base_distinguished_name=search_base_distinguished_name,
-        search_filter_template=search_filter_template,
-        server_certificates=server_certificates
-    )
-
     data_center_properties = DataCenterResourceProperties(
         data_center_location=data_center_resource.properties.data_center_location,
         delegated_subnet_id=data_center_resource.properties.delegated_subnet_id,
@@ -358,8 +297,7 @@ def cli_cosmosdb_managed_cassandra_datacenter_update(client,
         seed_nodes=data_center_resource.properties.seed_nodes,
         base64_encoded_cassandra_yaml_fragment=base64_encoded_cassandra_yaml_fragment,
         managed_disk_customer_key_uri=managed_disk_customer_key_uri,
-        backup_storage_customer_key_uri=backup_storage_customer_key_uri,
-        authentication_method_ldap_properties=authentication_method_ldap_properties
+        backup_storage_customer_key_uri=backup_storage_customer_key_uri
     )
 
     data_center_resource = DataCenterResource(
@@ -428,11 +366,11 @@ def cli_cosmosdb_managed_cassandra_repair_create(client,
         blacklisted_tables=bList,
         repair_thread_count=repair_thread_count
     )
-
+    
     repair_resource = CassandraClusterRepairPublicResource(
         properties=repair_properties
     )
-    
+
     return client.begin_create(resource_group_name, cluster_name, repair_resource)
 
 def cli_cosmosdb_managed_cassandra_repair_list(client,
