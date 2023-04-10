@@ -9,6 +9,7 @@ import time
 import psutil
 import requests
 import subprocess
+import shutil
 from knack.log import get_logger
 from azure.cli.core import get_default_cli
 from azure.cli.core import telemetry
@@ -16,6 +17,7 @@ from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 from azext_hybrid_appliance import _constants as consts
 from azext_hybrid_appliance import _utils as utils
 from azure.cli.core.azclierror import ValidationError, CLIInternalError
+from azure.cli.core.commands.client_factory import get_subscription_id
 from kubernetes import client as kube_client, config
 logger = get_logger(__name__)
 
@@ -87,15 +89,32 @@ def validate_hybrid_appliance(resource_group_name, name, validate_connectedk8s_e
     else:
         print("All pre-requisite validations have passed successfully")
 
-def create_hybrid_appliance(resource_group_name, name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None, tags=None):
+def create_hybrid_appliance(cmd, resource_group_name, name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None, tags=None):
     kubeconfig_path = utils.get_kubeconfig_path()
     kubectl_client_location = utils.install_kubectl_client()
+    
+    home_dir = os.path.expanduser('~')
+
+    current_path = os.path.abspath(os.path.dirname(__file__))
+    out_path = os.path.join(home_dir, ".azure", "hybrid_appliance")
+    os.makedirs(out_path, exist_ok=True)
+
+    subscription_id = get_subscription_id(cmd.cli_ctx)
+    cc_arm_id = consts.cc_arm_id_format.format(subscription_id, resource_group_name, name)
+
+    try:
+        kms_replacements = {"__KUBECONFIG_PATH__": kubeconfig_path, "__CC_ARM_ID__": cc_arm_id, "__KMS_IMAGE_PATH__": consts.kms_image_path}
+        utils.replace_string_in_file(os.path.join(current_path, "kms.yaml"), os.path.join(out_path, "kms.yaml"), kms_replacements)
+        
+        utils.replace_string_in_file(os.path.join(current_path, "kubeletconfig.yaml"), os.path.join(out_path, "kubeletconfig.yaml"), {"__STATIC_POD_PATH__": "/etc/kubernetes/manifests"})
+    except Exception as ex:
+        raise CLIInternalError("Failed to edit supporting files: {}".format(str(ex)))
+    
     latestMajorVersion, latestMinorVersion = utils.get_latest_tested_microk8s_version()
     os.environ["MICROK8S_VERSION"] = "{}.{}".format(latestMajorVersion, latestMinorVersion)
     os.environ["KUBECTL_CLIENT_LOCATION"] = "{}".format(kubectl_client_location)
     os.environ["KUBECONFIG_PATH"]=kubeconfig_path
 
-    current_path = os.path.abspath(os.path.dirname(__file__))
     script_file_path = os.path.join(current_path, "microk8sbootstrap.sh")
     cmd = ["sh", script_file_path]
 
@@ -145,12 +164,11 @@ def create_hybrid_appliance(resource_group_name, name, correlation_id=None, http
         print("The k8s cluster has been onboarded to Arc successfully")
 
 def upgrade_hybrid_appliance(resource_group_name, name):
-    config.load_kube_config(utils.get_kubeconfig_path())
-    api_instance = kube_client.CoreV1Api()
     try:
-        azure_clusterconfig_cm = api_instance.read_namespaced_config_map("azure-clusterconfig", "azure-arc")
-    except Exception as e:
-        utils.kubernetes_exception_handler(e, fault_type=consts.Read_ConfigMap_Fault_Type, summary="Unable to read ConfigMap")
+        azure_clusterconfig_cm = utils.get_azure_clusterconfig_cm()
+    except:
+        raise ValidationError("Failed to get config map from the cluster. Please make sure you are running this on the machine where the hybrid appliance is running.")
+
             
     try:
         if azure_clusterconfig_cm.data["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm.data["AZURE_RESOURCE_NAME"] != name:
@@ -219,8 +237,11 @@ def delete_hybrid_appliance(resource_group_name, name):
     if delete_cc:
         try:
             utils.validate_cluster_resource_group_and_name(azure_clusterconfig_cm, resource_group_name, name)
-        except Exception as ex:
+        except ValidationError as ex:
             raise ValidationError("Failed to validate the configmap: {}.".format(str(ex)))
+        except KeyError as ex:
+            logger.warning("Failed to find the required entries in the configmap.")
+            delete_cc = False
 
     if delete_cc:
         utils.set_no_proxy_from_helm_values()
@@ -257,6 +278,12 @@ def collect_logs(resource_group_name, name):
         troubleshoot_connectedk8s = False
 
     if troubleshoot_connectedk8s:
+        try:
+            utils.set_no_proxy_from_helm_values()
+        except:
+            logger.warning("Failed to get proxy values for connected cluster")
+            troubleshoot_connectedk8s = False
+
         try:
             utils.validate_cluster_resource_group_and_name(azure_clusterconfig_cm, resource_group_name, name)    
         except Exception as ex:

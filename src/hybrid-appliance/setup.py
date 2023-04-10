@@ -53,5 +53,5 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_hybrid_appliance': ['azext_metadata.json', 'microk8sbootstrap.sh', 'microk8s_inspect.sh', 'connectedk8s_troubleshoot.sh']}
+    package_data={'azext_hybrid_appliance': ['azext_metadata.json', 'microk8sbootstrap.sh', 'microk8s_inspect.sh', 'connectedk8s_troubleshoot.sh', 'kms.yaml', 'encryption_config.yaml']}
 )

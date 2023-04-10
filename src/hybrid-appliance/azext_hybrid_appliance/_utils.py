@@ -146,6 +146,17 @@ def check_if_microk8s_is_running():
 
     return True
 
+def replace_string_in_file(filepath, fileout, replacements: dict):
+    f = open(filepath, "rt")
+    data = f.read()
+    for pattern in replacements:
+        data = data.replace(pattern, replacements[pattern])
+    f.close()
+
+    f = open(fileout, "w+")
+    f.write(data)
+    f.close()
+
 def get_azure_clusterconfig_cm():
     config.load_kube_config(get_kubeconfig_path())
     api_instance = kube_client.CoreV1Api()
@@ -161,7 +172,7 @@ def validate_cluster_resource_group_and_name(azure_clusterconfig_cm, resource_gr
             telemetry.set_exception()
             raise ValidationError("The parameters passed do not correspond to this appliance. Please check the resource group name and appliance name")
     except KeyError:
-        raise ValidationError("The required entries were not found in the config map")
+        raise KeyError("The required entries were not found in the config map")
         
 
 def troubleshoot_connectedk8s(resource_group_name, name, filepath):
@@ -169,7 +180,7 @@ def troubleshoot_connectedk8s(resource_group_name, name, filepath):
     os.environ["RESOURCE_GROUP"] = resource_group_name
     os.environ["APPLIANCE_NAME"] = name
     os.environ["KUBECONFIG_PATH"] = get_kubeconfig_path()
-    
+
     current_path = os.path.abspath(os.path.dirname(__file__))
     script_file_path = os.path.join(current_path, "connectedk8s_troubleshoot.sh")
     cmd = ["bash", script_file_path]
