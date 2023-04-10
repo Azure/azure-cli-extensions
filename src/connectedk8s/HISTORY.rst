@@ -6,6 +6,7 @@ Release History
 ++++++
 * Adding force delete in connect command in case of stale resources present during onboarding
 * Bug fixes in diagnoser
+* Pushing armd id to telemetry
 * Adding test for connectedk8s proxy command
 
 1.3.15
