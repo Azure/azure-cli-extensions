@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import re
 import json
 from importlib import import_module
 from knack.util import CLIError
@@ -221,3 +222,19 @@ def get_permission_object_from_keyvault(keyvault):
         permission_object['Properties'] = keyvault.properties
 
     return permission_object
+
+def convert_dict_keys_snake_to_camel(dictionary):
+    '''
+    Recursively converts all dictionary and nested dictionary keys from snake case to camel case
+    '''
+    if not isinstance(dictionary, dict):
+        return dictionary
+
+    new_dictionary = {}
+    for key, value in dictionary.items():
+        new_dictionary[convert_string_snake_to_camel(key)] = convert_dict_keys_snake_to_camel(value)
+    return new_dictionary
+
+def convert_string_snake_to_camel(string):
+    new_string = re.sub(r'_([a-z])', lambda m: m.group(1).upper(), string)
+    return new_string
