@@ -114,7 +114,7 @@ def get_enable_mi_for_db_linker_func(yes=False):
                         'az ad sp show --id {}'.format(sp_client_id))
                     if sp_info is None:
                         raise ResourceNotFoundError(
-                            "No Service Principal found for client id {}".format(sp_client_id))
+                            "Not found the service principal with client id {}".format(sp_client_id))
                     target_handler.identity_object_id = sp_object_id
                     target_handler.identity_client_id = sp_client_id
                     target_handler.identity_name = sp_info.get('displayName')
@@ -431,7 +431,6 @@ class SqlHandler(TargetHandler):
         # pylint: disable=not-an-iterable
         admins = run_cli_cmd(
             'az sql server ad-admin list --ids {}'.format(self.target_id))
-        print(admins)
         is_admin = any(ad.get('sid') == user_object_id for ad in admins)
         if not is_admin:
             logger.warning('Setting current user as database server AAD admin:'
