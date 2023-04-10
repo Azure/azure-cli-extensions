@@ -2,8 +2,9 @@
 
 Release History
 ===============
-Upcoming
+0.3.28
 +++++++
+* 'az containerapp hostname bind': fix bug where the prompt for validation method didn't take value in
 * 'az containerapp up': fix --location comparison logic
 * 'az containerapp update': change --max-replicas limit
 * Add CLI support for containerapp ingress sticky-sessions'
