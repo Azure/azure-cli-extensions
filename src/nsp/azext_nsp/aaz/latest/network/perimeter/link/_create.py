@@ -61,8 +61,8 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.auto_approved_remote_perimeter_resource_id = AAZStrArg(
-            options=["--auto-approved-remote-perimeter-resource-id"],
+        _args_schema.auto_remote_nsp_id = AAZStrArg(
+            options=["--auto-remote-nsp-id"],
             arg_group="Properties",
             help="Perimeter ARM Id for the remote NSP with which the link gets created in Auto-approval mode. It should be used when the NSP admin have Microsoft.Network/networkSecurityPerimeters/linkPerimeter/action permission on the remote NSP resource.",
         )
@@ -71,28 +71,28 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="A message passed to the owner of the remote NSP link resource with this connection request. In case of Auto-approved flow, it is default to 'Auto Approved'. Restricted to 140 chars.",
         )
-        _args_schema.local_inbound_profiles = AAZListArg(
-            options=["--local-inbound-profiles"],
+        _args_schema.local_inbound_profile = AAZListArg(
+            options=["--local-inbound-profile"],
             arg_group="Properties",
-            help="Local Inbound profile names to which Inbound is allowed. Use ['*'] to allow inbound to all profiles. It's default value is ['*'].",
+            help="List of local Inbound profile names to which Inbound is allowed. Use ['*'] to allow inbound to all profiles. It's default value is ['*'].",
             fmt=AAZListArgFormat(
                 unique=True,
             ),
         )
-        _args_schema.remote_inbound_profiles = AAZListArg(
-            options=["--remote-inbound-profiles"],
+        _args_schema.remote_inbound_profile = AAZListArg(
+            options=["--remote-inbound-profile"],
             arg_group="Properties",
-            help="Remote Inbound profile names to which Inbound is allowed. Use ['*'] to allow inbound to all profiles. This property can only be updated in auto-approval mode. It's default value is ['*'].",
+            help="List of remote Inbound profile names to which Inbound is allowed. Use ['*'] to allow inbound to all profiles. This property can only be updated in auto-approval mode. It's default value is ['*'].",
             fmt=AAZListArgFormat(
                 unique=True,
             ),
         )
 
-        local_inbound_profiles = cls._args_schema.local_inbound_profiles
-        local_inbound_profiles.Element = AAZStrArg()
+        local_inbound_profile = cls._args_schema.local_inbound_profile
+        local_inbound_profile.Element = AAZStrArg()
 
-        remote_inbound_profiles = cls._args_schema.remote_inbound_profiles
-        remote_inbound_profiles.Element = AAZStrArg()
+        remote_inbound_profile = cls._args_schema.remote_inbound_profile
+        remote_inbound_profile.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -193,10 +193,10 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("autoApprovedRemotePerimeterResourceId", AAZStrType, ".auto_approved_remote_perimeter_resource_id")
+                properties.set_prop("autoApprovedRemotePerimeterResourceId", AAZStrType, ".auto_remote_nsp_id")
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("localInboundProfiles", AAZListType, ".local_inbound_profiles")
-                properties.set_prop("remoteInboundProfiles", AAZListType, ".remote_inbound_profiles")
+                properties.set_prop("localInboundProfiles", AAZListType, ".local_inbound_profile")
+                properties.set_prop("remoteInboundProfiles", AAZListType, ".remote_inbound_profile")
 
             local_inbound_profiles = _builder.get(".properties.localInboundProfiles")
             if local_inbound_profiles is not None:
