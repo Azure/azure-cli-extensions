@@ -5,10 +5,10 @@
 #
 # --------------------------------------------------------------------------
 import json
+from datetime import timedelta
 from azure.cli.core.azclierror import ResourceNotFoundError
 from azure.cli.core.util import send_raw_request
 from azure.cli.core._profile import Profile
-from datetime import timedelta
 
 
 def get_project_arg(cli_ctx, dev_center_name, project_name=None):
@@ -43,10 +43,9 @@ def get_project_arg(cli_ctx, dev_center_name, project_name=None):
 
 def get_project_data(cli_ctx, dev_center_name, project_name=None):
     profile = Profile()
-    tenant_id = profile.get_subscription()['tenantId']
+    tenant_id = profile.get_subscription()["tenantId"]
 
-    resource_graph_data = get_project_arg(
-        cli_ctx, dev_center_name, project_name)
+    resource_graph_data = get_project_arg(cli_ctx, dev_center_name, project_name)
 
     error_help = f"""under the current tenant '{tenant_id}'. \
 Please contact your admin to gain access to specific projects or \
@@ -64,7 +63,7 @@ use a different tenant where you have access to projects."""
     return resource_graph_data[0]
 
 
-def get_earliest_time(action_iterator): 
+def get_earliest_time(action_iterator):
     earliest_time = None
     for action in action_iterator:
         action_time = action.next.scheduled_time
@@ -72,10 +71,9 @@ def get_earliest_time(action_iterator):
             earliest_time = action_time
     return earliest_time
 
+
 def get_delayed_time(delay_time, action_time):
     split_time = delay_time.split(":")
     hours = int(split_time[0])
     minutes = int(split_time[1])
-    return action_time + timedelta(
-        hours=hours, minutes=minutes
-    )
+    return action_time + timedelta(hours=hours, minutes=minutes)
