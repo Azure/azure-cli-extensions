@@ -636,12 +636,6 @@ class AzInteractiveShell(object):
         while self.recommender.cur_thread.is_alive():
             try:
                 time.sleep(0.1)
-                time_spent_on_loading = time.time() - start_time
-                if time_spent_on_loading > prompt_timeout_limit and not already_prompted:
-                    print_styled_text([(Style.WARNING, 'Timeout to get search results. '
-                                                       'You can use Ctrl + C to exit search.')])
-                    # Only prompt once
-                    already_prompted = True
                 if self.recommender.cur_thread.result:
                     break
             except (KeyboardInterrupt, ValueError):
