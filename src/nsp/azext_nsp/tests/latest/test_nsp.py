@@ -6,8 +6,6 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *
-import random
-import string
 
 class NspScenario(ScenarioTest):
 
@@ -117,19 +115,12 @@ class NspScenario(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='test_nsp_association_crud', location='eastus2euap')
     def test_nsp_association_crud(self, resource_group):
-        # Define the length of the random string
-        length = 4
-
-        # Generate a random string
-        random_string = ''.join(random.choice(string.ascii_letters) for i in range(length))
-
-        kv_name = "kvnspcli" + random_string
 
         self.kwargs.update({
             'nsp_name': 'TestNetworkSecurityPerimeter',
             'profile_name': 'TestNspProfile',
             'association_name': 'TestNspAssociation',
-            'resource_name': kv_name,
+            'resource_name': 'kvclinsp7',
             'sub': self.get_subscription_id()
         })
 
