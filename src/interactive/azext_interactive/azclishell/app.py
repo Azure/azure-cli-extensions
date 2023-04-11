@@ -700,7 +700,6 @@ class AzInteractiveShell(object):
         elif SELECT_SYMBOL['example'] in cmd:
             cmd, continue_flag = self.handle_example(cmd, continue_flag)
             telemetry.track_ran_tutorial()
-            telemetry.track_ran_tutorial()
         elif SELECT_SYMBOL['scope'] == cmd_stripped[0:2]:
             continue_flag, cmd = self.handle_scoping_input(continue_flag, cmd, cmd_stripped)
             telemetry.track_scope_changes()
