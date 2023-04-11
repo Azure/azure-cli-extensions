@@ -1045,6 +1045,16 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
                                     summary='Error while doing helm get values azure-arc')
             raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_get_values.decode("ascii")))
 
+    response_helm_values = response_helm_values.decode("ascii")
+    existing_values = None
+
+    try:
+        existing_values = yaml.safe_load(response_helm_values)
+    except Exception as e:
+        telemetry.set_exception(exception=e, fault_type=consts.Helm_Existing_User_Supplied_Value_Get_Fault,
+                                summary='Problem loading the helm existing values')
+        raise CLIInternalError("Problem loading the helm existing values: " + str(e))
+
     cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "-f",
                         user_values_location, "--wait", "--output", "json"]
@@ -1071,14 +1081,12 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         if existing_values.get('systemDefaultValues').get('azureArcAgents').get('autoUpdate') is False:
             logger.warning("Please enable auto_upgrade to upgrade to latest agent version in order to enable the oidc issuer feature")
         else:
-            cmd_helm_upgrade.extend(["--set", "systemDefaultValues.signingkeycontroller.oidcenabled={}".format(True)])
-            cmd_helm_install.extend(["--set", "global.enableOidcIssuer={}".format(True)])
+            cmd_helm_upgrade.extend(["--set", "global.enableOidcIssuer={}".format(True)])
     else:
         if existing_values.get('systemDefaultValues').get('azureArcAgents').get('autoUpdate') is False:
             logger.warning("Please enable auto_upgrade to upgrade to latest agent version in order to explicitly disable the oidc issuer feature")
         else:
-            cmd_helm_upgrade.extend(["--set", "systemDefaultValues.signingkeycontroller.oidcenabled={}".format(False)])
-            cmd_helm_install.extend(["--set", "global.enableOidcIssuer={}".format(False)])
+            cmd_helm_upgrade.extend(["--set", "global.enableOidcIssuer={}".format(False)])
     if kube_config:
         cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
     if kube_context:
