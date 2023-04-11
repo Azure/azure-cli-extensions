@@ -1,5 +1,14 @@
 Release History
 ===============
+1.11.0
+---
+* Deprecate parameter `--enable-log-stream-public-endpoint` when creating/updating service 
+* Add new parameter `--enable-dataplane-public-endpoint` when creating/updating service 
+
+1.10.0
+---
+* Print more logs for app deployment
+
 1.9.2
 ---
 * Fix `ingress_read_timeout` and `session_max_age` validation error

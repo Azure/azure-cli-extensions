@@ -240,6 +240,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
 
+    resource_id = f'/subscriptions/{subscription_id}/resourcegroups/{resource_group_name}/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}/location/{location}'
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.resourceid': resource_id})
+
     # Checking if it is an AKS cluster
     is_aks_cluster = check_aks_cluster(kube_config, kube_context)
     if is_aks_cluster:
@@ -310,8 +313,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                          "is already onboarded to the resource group" +
                                          " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
         else:
-            # Cleanup agents and continue with put
-            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster)
+            logger.warning("Cleaning up the stale arc agents present on the cluster before starting new onboarding.")
+            # Explicit CRD Deletion
+            crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
+            # Cleaning up the cluster
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster, True)
 
     else:
         if connected_cluster_exists(client, resource_group_name, cluster_name):
@@ -824,48 +830,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
 
         # Explicit CRD Deletion
-
-        timeout_for_crd_deletion = "20s"
-        for crds in consts.CRD_FOR_FORCE_DELETE:
-            cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found", "--wait", "--timeout", "{}".format(timeout_for_crd_deletion)]
-            if kube_config:
-                cmd_helm_delete.extend(["--kubeconfig", kube_config])
-            if kube_context:
-                cmd_helm_delete.extend(["--context", kube_context])
-            response_helm_delete = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
-            _, error_helm_delete = response_helm_delete.communicate()
-
-        # Timer added to have sufficient time after CRD deletion
-        # to check the status of the CRD ( deleted or terminating )
-        time.sleep(3)
-
-        # patching yaml file path for removing CRD finalizer
-        current_path = os.path.abspath(os.path.dirname(__file__))
-        yaml_file_path = os.path.join(current_path, "remove_crd_finalizer.yaml")
-
-        # Patch if CRD is in Terminating state
-        for crds in consts.CRD_FOR_FORCE_DELETE:
-
-            cmd = [kubectl_client_location, "get", "crd", crds, "-ojson"]
-            if kube_config:
-                cmd.extend(["--kubeconfig", kube_config])
-            if kube_context:
-                cmd.extend(["--context", kube_context])
-            cmd_output = Popen(cmd, stdout=PIPE, stderr=PIPE)
-            _, error_helm_delete = cmd_output.communicate()
-
-            if(cmd_output.returncode == 0):
-                changed_cmd = json.loads(cmd_output.communicate()[0].strip())
-                status = changed_cmd['status']['conditions'][-1]['type']
-
-                if(status == "Terminating"):
-                    patch_cmd = [kubectl_client_location, "patch", "crd", crds, "--type=merge", "--patch-file", yaml_file_path]
-                    if kube_config:
-                        patch_cmd.extend(["--kubeconfig", kube_config])
-                    if kube_context:
-                        patch_cmd.extend(["--context", kube_context])
-                    output_patch_cmd = Popen(patch_cmd, stdout=PIPE, stderr=PIPE)
-                    _, error_helm_delete = output_patch_cmd.communicate()
+        crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
 
         if(release_namespace):
             utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster, True)
@@ -2364,8 +2329,9 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # saving metadata CR sanpshot
         storage_space_available = troubleshootutils.get_metadata_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
 
-        # saving kube-aad-proxy CR snapshot
-        storage_space_available = troubleshootutils.get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
+        # saving kube-aad-proxy CR snapshot only in the case private link is disabled
+        if connected_cluster.private_link_state == "Disabled":
+            storage_space_available = troubleshootutils.get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
 
         # checking cluster connectivity status
         cluster_connectivity_status = connected_cluster.connectivity_status
@@ -2458,3 +2424,47 @@ def get_issuer_url():
     issuer_url = signing_key_cr.get('status', {}).get('clusterIssuerUrl', '')
 
     return issuer_url
+
+def crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context):
+
+        timeout_for_crd_deletion = "20s"
+        for crds in consts.CRD_FOR_FORCE_DELETE:
+            cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found", "--wait", "--timeout", "{}".format(timeout_for_crd_deletion)]
+            if kube_config:
+                cmd_helm_delete.extend(["--kubeconfig", kube_config])
+            if kube_context:
+                cmd_helm_delete.extend(["--context", kube_context])
+            response_helm_delete = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
+            _, error_helm_delete = response_helm_delete.communicate()
+
+        # Timer added to have sufficient time after CRD deletion
+        # to check the status of the CRD ( deleted or terminating )
+        time.sleep(3)
+
+        # patching yaml file path for removing CRD finalizer
+        current_path = os.path.abspath(os.path.dirname(__file__))
+        yaml_file_path = os.path.join(current_path, "remove_crd_finalizer.yaml")
+
+        # Patch if CRD is in Terminating state
+        for crds in consts.CRD_FOR_FORCE_DELETE:
+
+            cmd = [kubectl_client_location, "get", "crd", crds, "-ojson"]
+            if kube_config:
+                cmd.extend(["--kubeconfig", kube_config])
+            if kube_context:
+                cmd.extend(["--context", kube_context])
+            cmd_output = Popen(cmd, stdout=PIPE, stderr=PIPE)
+            _, error_helm_delete = cmd_output.communicate()
+
+            if(cmd_output.returncode == 0):
+                changed_cmd = json.loads(cmd_output.communicate()[0].strip())
+                status = changed_cmd['status']['conditions'][-1]['type']
+
+                if(status == "Terminating"):
+                    patch_cmd = [kubectl_client_location, "patch", "crd", crds, "--type=merge", "--patch-file", yaml_file_path]
+                    if kube_config:
+                        patch_cmd.extend(["--kubeconfig", kube_config])
+                    if kube_context:
+                        patch_cmd.extend(["--context", kube_context])
+                    output_patch_cmd = Popen(patch_cmd, stdout=PIPE, stderr=PIPE)
+                    _, error_helm_delete = output_patch_cmd.communicate()

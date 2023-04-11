@@ -23,12 +23,12 @@ class ManagedCassandraScenarioTest(ScenarioTest):
         self.kwargs.update({
             'c': self.create_random_name(prefix='cli', length=10),
             'subnet_id': self.create_subnet(resource_group),
-            'seed_nodes': '127.0.0.1 127.0.0.2',
-            'certs': './test.pem'
+            'seed_nodes': '127.0.0.1 127.0.0.2'
+            #'certs': './test.pem'
         })
 
         # Create Cluster
-        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -s {subnet_id} -e {certs} --external-seed-nodes {seed_nodes}')
+        self.cmd('az managed-cassandra cluster create -c {c} -l eastus2 -g {rg} -s {subnet_id} -i cassandra')
         cluster = self.cmd('az managed-cassandra cluster show -c {c} -g {rg}').get_output_in_json()
         assert cluster['properties']['provisioningState'] == 'Succeeded'
 

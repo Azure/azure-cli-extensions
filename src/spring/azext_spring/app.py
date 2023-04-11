@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from datetime import datetime
 
 # pylint: disable=wrong-import-order
 from knack.log import get_logger
@@ -17,6 +18,8 @@ from ._app_factory import app_selector
 from ._deployment_deployable_factory import deployable_selector
 from ._app_validator import _get_active_deployment
 from .custom import app_tail_log_internal
+import datetime
+from time import sleep
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -413,6 +416,8 @@ def app_deploy(cmd, client, resource_group, service, name,
                          resource_group, service, name, deployment.name,
                          deployment_resource)
     if not disable_app_log:
+        # We will wait for the poller to be done to print the deploy process
+        _print_deploy_process(client, poller, resource_group, service, name, deployment.name)
         _log_application(cmd, client, no_wait, poller, resource_group, service, name, deployment.name)
     if "succeeded" != poller.status().lower():
         return poller
@@ -447,9 +452,66 @@ def _log_application(cmd, client, no_wait, poller, resource_group, service, app_
                               since=300, timeout=10, get_app_log=_get_app_log_deploy_phase)
     except Exception:
         # ignore
-        return
+        pass
     if deployment_error:
         raise deployment_error
+
+
+def _print_deploy_process(client, poller, resource_group, service, app_name, deployment_name):
+    try:
+        deployment_resource = _get_deployment_ignore_exception(client, resource_group, service, app_name,
+                                                               deployment_name)
+        if deployment_resource is not None:
+            instance_count = deployment_resource.sku.capacity
+            rolling_number = max(1, instance_count // 4)
+            rounds = int(instance_count // rolling_number + 0 if instance_count % rolling_number == 0 else 1)
+
+            if instance_count > 1:
+                instance_desc = str(instance_count) + " instances"
+                rounds_desc = str(rounds) + " rounds"
+            else:
+                instance_desc = str(instance_count) + " instance"
+                rounds_desc = str(rounds) + " round"
+            logger.warning('Azure Spring Apps will use rolling upgrade to update your deployment, you have {}, '
+                           'Azure Spring Apps will update the deployment in {}.'.format(instance_desc, rounds_desc))
+            last_round = 0
+
+            deployment_time = deployment_resource.system_data.last_modified_at.strftime("%Y-%m-%dT%H:%M:%S%z")
+            while not poller.done():
+                deployment_resource = _get_deployment_ignore_exception(client, resource_group, service, app_name,
+                                                                       deployment_name)
+                if deployment_resource is not None:
+                    instances = deployment_resource.properties.instances
+                    new_instance_count = 0
+                    for temp_instance in instances:
+                        if temp_instance.start_time > deployment_time:
+                            new_instance_count += 1
+                    instance_round = instance_count // rounds
+                    current_round = new_instance_count // instance_round + (0 if new_instance_count % instance_round == 0 else 1)
+                    if current_round != last_round:
+                        if int(current_round) > 1:
+                            old_desc = "{} old instances are".format(int(new_instance_count))
+                        else:
+                            old_desc = "{} old instance is".format(int(new_instance_count))
+                        if int(new_instance_count) > 1:
+                            new_desc = "{} new instances are".format(int(new_instance_count))
+                        else:
+                            new_desc = "{} new instance is".format(int(new_instance_count))
+                        logger.warning(
+                            'The deployment is in round {}, {} deleted/deleting and {} '
+                            'started/starting'.format(int(current_round), old_desc, new_desc))
+                        last_round = current_round
+                sleep(5)
+            logger.warning("Your application is successfully deployed.")
+    except Exception:
+        pass
+
+
+def _get_deployment_ignore_exception(client, resource_group, service, app_name, deployment_name):
+    try:
+        return client.deployments.get(resource_group, service, app_name, deployment_name)
+    except Exception:
+        pass
 
 
 def _get_app_log_deploy_phase(url, auth, format_json, exceptions):

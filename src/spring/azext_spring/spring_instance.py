@@ -62,6 +62,7 @@ class DefaultSpringCloud:
                        app_network_resource_group=None,
                        outbound_type=None,
                        enable_log_stream_public_endpoint=None,
+                       enable_dataplane_public_endpoint=None,
                        zone_redundant=False,
                        sku=None,
                        tags=None,
@@ -74,9 +75,12 @@ class DefaultSpringCloud:
             zone_redundant=zone_redundant
         )
 
-        if enable_log_stream_public_endpoint is not None:
+        if enable_log_stream_public_endpoint is not None or enable_dataplane_public_endpoint is not None:
+            val = enable_log_stream_public_endpoint if enable_log_stream_public_endpoint is not None else \
+                enable_dataplane_public_endpoint
             properties.vnet_addons = models.ServiceVNetAddons(
-                log_stream_public_endpoint=enable_log_stream_public_endpoint
+                data_plane_public_endpoint=val,
+                log_stream_public_endpoint=val
             )
         else:
             properties.vnet_addons = None
@@ -184,6 +188,7 @@ def spring_create(cmd, client, resource_group, name,
                   api_portal_instance_count=None,
                   enable_application_accelerator=False,
                   enable_log_stream_public_endpoint=None,
+                  enable_dataplane_public_endpoint=None,
                   ingress_read_timeout=None,
                   marketplace_plan_id=None,
                   managed_environment=None,
@@ -224,6 +229,7 @@ def spring_create(cmd, client, resource_group, name,
         'api_portal_instance_count': api_portal_instance_count,
         'enable_application_accelerator': enable_application_accelerator,
         'enable_log_stream_public_endpoint': enable_log_stream_public_endpoint,
+        'enable_dataplane_public_endpoint': enable_dataplane_public_endpoint,
         'marketplace_plan_id': marketplace_plan_id,
         'managed_environment': managed_environment,
         'infra_resource_group': infra_resource_group,
