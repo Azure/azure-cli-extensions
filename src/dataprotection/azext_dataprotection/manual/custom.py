@@ -103,7 +103,7 @@ def dataprotection_backup_instance_create(client, vault_name, resource_group_nam
 
 
 def data_protection_backup_instance_create(cmd, vault_name, resource_group_name, backup_instance, no_wait=False):
-    from azext_dataprotection.aaz.latest.data_protection.backup_instance import Create as _Create, ValidateForBackup as _Validate, Update as _Update
+    from azext_dataprotection.aaz.latest.data_protection.backup_instance import Create as _Create, ValidateForBackup as _ValidateForBackup, Update as _Update
 
     class ValidateAndCreate(_Update):
 
@@ -120,7 +120,7 @@ def data_protection_backup_instance_create(cmd, vault_name, resource_group_name,
                 schema_builder=self.BackupInstancesCreateOrUpdate._build_schema_on_200_201
             )
 
-        class BackupInstancesValidateForBackup(_Validate.BackupInstancesValidateForBackup):
+        class BackupInstancesValidateForBackup(_ValidateForBackup.BackupInstancesValidateForBackup):
 
             @property
             def content(self):
@@ -159,7 +159,7 @@ def data_protection_backup_instance_create(cmd, vault_name, resource_group_name,
 def data_protection_backup_instance_validate_for_backup(cmd, vault_name, resource_group_name, backup_instance,
                                                         no_wait=False):
     
-    from azext_dataprotection.aaz.latest.data_protection.backup_instance import Create as _Create, ValidateForBackup as _Validate, Update as _Update
+    from azext_dataprotection.aaz.latest.data_protection.backup_instance import Create as _Create, ValidateForBackup as _ValidateForBackup, Update as _Update
 
     class Validate(_Update):
 
@@ -175,17 +175,17 @@ def data_protection_backup_instance_validate_for_backup(cmd, vault_name, resourc
                 schema_builder=_Create.BackupInstancesCreateOrUpdate._build_schema_on_200_201
             )
 
-        class BackupInstancesValidateForBackup(_Validate.BackupInstancesValidateForBackup):
+        class BackupInstancesValidateForBackup(_ValidateForBackup.BackupInstancesValidateForBackup):
 
             @property
             def content(self):
-                # _content_value, _builder = self.new_content_builder(
-                #     self.ctx.args,
-                #     value=self.ctx.vars.instance.properties,
-                # )
+                _content_value, _builder = self.new_content_builder(
+                    self.ctx.args,
+                    value=self.ctx.vars.instance.properties,
+                )
 
                 return {
-                    # "backupInstance": self.serialize_content(_content_value)
+                    "backupInstance": self.serialize_content(_content_value)
                 }
 
             def on_200(self, session):
@@ -731,10 +731,16 @@ def dataprotection_backup_policy_tag_remove_in_policy(name, policy):
 
 def data_protection_backup_instance_validate_for_restore(cmd, vault_name, resource_group_name, backup_instance_name,
                                                          restore_request_object, no_wait=False):
-    from azext_dataprotection.aaz.latest.data_protection.backup_instance import ValidateForRestore as _Validate
-    from azext_dataprotection.aaz.latest.data_protection.backup_instance.restore import Trigger as _Trigger
+    from azext_dataprotection.aaz.latest.data_protection.backup_instance import ValidateForRestore as _ValidateForRestore
 
-    class ValidateForRestore(_Validate):
+    class ValidateForRestore(_ValidateForRestore):
+
+        def pre_operations(self):
+            self.ctx.set_var(
+                "instance",
+                restore_request_object,
+                schema_builder=self.BackupInstancesValidateForRestore._build_schema_on_200
+            )
 
         @classmethod
         def _build_arguments_schema(cls, *args, **kwargs):
@@ -744,7 +750,7 @@ def data_protection_backup_instance_validate_for_restore(cmd, vault_name, resour
 
             return args_schema
 
-        class BackupInstancesValidateForRestore(_Validate.BackupInstancesValidateForRestore):
+        class BackupInstancesValidateForRestore(_ValidateForRestore.BackupInstancesValidateForRestore):
             
             @property
             def content(self):
@@ -763,7 +769,6 @@ def data_protection_backup_instance_validate_for_restore(cmd, vault_name, resour
 
 def data_protection_backup_instance_restore_trigger(cmd, vault_name, resource_group_name, backup_instance_name,
                                                          restore_request_object, no_wait=False):
-    from azext_dataprotection.aaz.latest.data_protection.backup_instance import ValidateForRestore as _Validate
     from azext_dataprotection.aaz.latest.data_protection.backup_instance.restore import Trigger as _Trigger
 
     class Trigger(_Trigger):
@@ -787,6 +792,15 @@ def data_protection_backup_instance_restore_trigger(cmd, vault_name, resource_gr
             @property
             def content(self):
                 return helper.convert_dict_keys_snake_to_camel(restore_request_object)
+
+            def on_200(self, session):
+                data = self.deserialize_http_content(session)
+                print('fancy data', data)
+                self.ctx.set_var(
+                    "instance",
+                    data["properties"],
+                    schema_builder=self._build_schema_on_200
+                )
 
     return Trigger(cli_ctx=cmd.cli_ctx)(command_args={
         "vault_name": vault_name,
