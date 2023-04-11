@@ -10,6 +10,7 @@ import yaml
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
 
+from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
 from .common import TEST_LOCATION
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -30,10 +31,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
 
         location = "northcentralus"
 
-        self.cmd("az network vnet create -l {} --address-prefixes '14.0.0.0/16' -g {} -n {}".format(location, resource_group, vnet))
-        sub_id = self.cmd("az network vnet subnet create --address-prefixes '14.0.0.0/22' --delegations Microsoft.App/environments -n sub -g {} --vnet-name {}".format(resource_group, vnet)).get_output_in_json()["id"]
-
-        self.cmd('containerapp env create -g {} -n {} -s {} --location {} --enable-workload-profiles'.format(resource_group, env, sub_id, location))
+        self.cmd('containerapp env create -g {} -n {} --location {}  --logs-destination none --enable-workload-profiles'.format(resource_group, env, location))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
@@ -83,7 +81,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck("properties.workloadProfileType", "D4"),
         ])
 
-        self.cmd("az containerapp create -g {} --target-port 80 --ingress external --image mcr.microsoft.com/k8se/quickstart:latest --environment {} -n {} --workload-profile-name consumption".format(resource_group, env, app1))
+        self.cmd("az containerapp create -g {} --target-port 80 --ingress external --image mcr.microsoft.com/k8se/quickstart:latest --environment {} -n {} --workload-profile-name Consumption".format(resource_group, env, app1))
         self.cmd("az containerapp create -g {} --target-port 80 --ingress external --image mcr.microsoft.com/k8se/quickstart:latest --environment {} -n {} --workload-profile-name my-d4".format(resource_group, env, app2))
 
     @AllowLargeResponse(8192)
@@ -100,7 +98,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         self.cmd("az network vnet create -l {} --address-prefixes '14.0.0.0/16' -g {} -n {}".format(location, resource_group, vnet))
         sub_id = self.cmd("az network vnet subnet create --address-prefixes '14.0.0.0/22' --delegations Microsoft.App/environments -n sub -g {} --vnet-name {}".format(resource_group, vnet)).get_output_in_json()["id"]
 
-        self.cmd('containerapp env create -g {} -n {} -s {} --location {} --enable-workload-profiles'.format(resource_group, env, sub_id, location))
+        self.cmd('containerapp env create -g {} -n {} -s {} --location {}  --logs-destination none --enable-workload-profiles'.format(resource_group, env, sub_id, location))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
@@ -130,3 +128,132 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
 
         profiles = self.cmd("az containerapp env workload-profile list -g {} -n {}".format(resource_group, env)).get_output_in_json()
         self.assertEqual(len(profiles), 1)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus")
+    def test_containerapp_create_with_workloadprofile_yaml(self, resource_group):
+
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='yaml', length=24)
+
+        location = "northcentralus"
+
+        self.cmd('containerapp env create -g {} -n {} --location {}  --logs-destination none --enable-workload-profiles'.format(resource_group, env, location))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+
+        # test managedEnvironmentId
+        containerapp_yaml_text = f"""
+            location: {location}
+            type: Microsoft.App/containerApps
+            tags:
+                tagname: value
+            properties:
+              managedEnvironmentId: {containerapp_env["id"]}
+              configuration:
+                activeRevisionsMode: Multiple
+                ingress:
+                  external: true
+                  allowInsecure: false
+                  targetPort: 80
+                  traffic:
+                    - latestRevision: true
+                      weight: 100
+                  transport: Auto
+                  ipSecurityRestrictions:
+                    - name: name
+                      ipAddressRange: "1.1.1.1/10"
+                      action: "Allow"
+              template:
+                revisionSuffix: myrevision
+                containers:
+                  - image: nginx
+                    name: nginx
+                    env:
+                      - name: HTTP_PORT
+                        value: 80
+                    command:
+                      - npm
+                      - start
+                    resources:
+                      cpu: 0.5
+                      memory: 1Gi
+                scale:
+                  minReplicas: 1
+                  maxReplicas: 3
+              workloadProfileName: Consumption
+            """
+        containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
+
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+        self.cmd(f'containerapp create -n {app} -g {resource_group} --environment {env} --yaml {containerapp_file_name}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.ingress.external", True),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
+            JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
+            JMESPathCheck("properties.template.containers[0].name", "nginx"),
+            JMESPathCheck("properties.template.scale.minReplicas", 1),
+            JMESPathCheck("properties.template.scale.maxReplicas", 3),
+            JMESPathCheck("properties.workloadProfileName", "Consumption")
+        ])
+
+        # test environmentId
+        containerapp_yaml_text = f"""
+                    location: {location}
+                    type: Microsoft.App/containerApps
+                    tags:
+                        tagname: value
+                    properties:
+                      environmentId: {containerapp_env["id"]}
+                      configuration:
+                        activeRevisionsMode: Multiple
+                        ingress:
+                          external: true
+                          allowInsecure: false
+                          targetPort: 80
+                          traffic:
+                            - latestRevision: true
+                              weight: 100
+                          transport: Auto
+                      template:
+                        revisionSuffix: myrevision
+                        containers:
+                          - image: nginx
+                            name: nginx
+                            env:
+                              - name: HTTP_PORT
+                                value: 80
+                            command:
+                              - npm
+                              - start
+                            resources:
+                              cpu: 0.5
+                              memory: 1Gi
+                        scale:
+                          minReplicas: 1
+                          maxReplicas: 3
+                      workloadProfileName: Consumption
+                    """
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+
+        self.cmd(f'containerapp update -n {app} -g {resource_group} --yaml {containerapp_file_name}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.ingress.external", True),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
+            JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
+            JMESPathCheck("properties.template.containers[0].name", "nginx"),
+            JMESPathCheck("properties.template.scale.minReplicas", 1),
+            JMESPathCheck("properties.template.scale.maxReplicas", 3),
+            JMESPathCheck("properties.workloadProfileName", "Consumption")
+        ])
+        clean_up_test_file(containerapp_file_name)

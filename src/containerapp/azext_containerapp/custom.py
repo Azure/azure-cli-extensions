@@ -95,7 +95,7 @@ def process_loaded_yaml(yaml_containerapp):
             yaml_containerapp['identity']['userAssignedIdentities'][identity] = {}
 
     nested_properties = ["provisioningState", "managedEnvironmentId", "environmentId", "latestRevisionName", "latestRevisionFqdn",
-                         "customDomainVerificationId", "configuration", "template", "outboundIPAddresses"]
+                         "customDomainVerificationId", "configuration", "template", "outboundIPAddresses", "workloadProfileName"]
     for nested_property in nested_properties:
         tmp = yaml_containerapp.get(nested_property)
         if tmp:
