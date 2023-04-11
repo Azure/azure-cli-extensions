@@ -24,7 +24,7 @@ class Cosmosdb_previewMergeScenarioTest(ScenarioTest):
         # Assumption: There exists a canary-sdk-test rg with the account mergetest. This test only creates the database and collection
         self.kwargs.update({
             'rg' : 'cosmosTest',
-            'acc': 'mergetest2',
+            'acc': 'mergetest1',
             'db_name': db_name,
             'col': col,
             'loc': 'westus'
