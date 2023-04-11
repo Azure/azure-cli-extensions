@@ -18,6 +18,7 @@ import platform
 import subprocess
 import time
 import urllib.request
+import re
 from zipfile import ZipFile
 from azure.cli.core.azclierror import CLIInternalError
 from azure.cli.core.azclierror import FileOperationError
@@ -111,9 +112,11 @@ def tdeMigration_console_app_setup():
 
     defaultOutputFolder = get_tdeMigration_default_output_folder()
 
-    # Assigning base folder path
-    baseFolder = os.path.join(defaultOutputFolder, "Downloads")
-    exePath = os.path.join(baseFolder, "Microsoft.SqlServer.Migration.Tde.ConsoleApp.csproj", "Microsoft.SqlServer.Migration.Tde.ConsoleApp.exe")
+    # Assigning base folder path\TdeConsoleApp\console
+    baseFolder = os.path.join(defaultOutputFolder, "Downloads", "TdeConsoleApp")
+    exePath = os.path.join(baseFolder, "console", "Microsoft.SqlServer.Migration.Tde.ConsoleApp.exe")
+    # check and download console app
+    check_and_download_tdeMigration_console_app(baseFolder)
 
     # Creating base folder structure
     create_dir_path(baseFolder)
@@ -206,6 +209,34 @@ def check_and_download_loginMigration_console_app(exePath, baseFolder):
         urllib.request.urlretrieve(zipSource, filename=zipDestination)
         with ZipFile(zipDestination, 'r') as zipFile:
             zipFile.extractall(path=baseFolder)
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# TdeMigration helper function to check if console app exists, if not download it.
+# -----------------------------------------------------------------------------------------------------------------
+def check_and_download_tdeMigration_console_app(baseFolder):
+
+    # TODO: Check if there is a more recent NuGet on nuget.org
+    #       If so, download new version.
+    #       If download is successful delete old files
+
+    itemsInFolder = os.listdir(baseFolder)
+    consoleFolderExists = itemsInFolder.__contains__('console');
+
+    if consoleFolderExists == False:
+        nugets = []
+        for item in itemsInFolder:
+            if re.match(r"Microsoft\.SqlServer\.Migration\.TdeConsoleApp\..*\.nupkg", item):
+                nugets.append(item)
+
+        nugets.sort(reverse=True)
+        avaiFile = nugets[0]
+        zipDestination = os.path.join(baseFolder, avaiFile)
+        nuget = ZipFile(zipDestination, "r")
+        nuget.extractall(path=baseFolder)
+        consoleFolderExists = True
+
+    return consoleFolderExists
 
 
 # -----------------------------------------------------------------------------------------------------------------
