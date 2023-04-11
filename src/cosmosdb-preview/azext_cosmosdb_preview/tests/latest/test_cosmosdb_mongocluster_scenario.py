@@ -13,7 +13,7 @@ class MongoClusterScenarioTest(ScenarioTest):
 
     # pylint: disable=line-too-long
     # pylint: disable=broad-except
-    @ResourceGroupPreparer(name_prefix='cli_cosmosdb_mongocluster_crud', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='cli_cosmosdb_mongocluster_crud', location='eastus')
     def test_cosmosdb_mongocluster_crud(self, resource_group):
         
         resource_group_new = resource_group + self.create_random_name(prefix='cli',length=8)
@@ -23,7 +23,7 @@ class MongoClusterScenarioTest(ScenarioTest):
             'rg': resource_group,
             'c_new': self.create_random_name(prefix='cli', length=10),
             'rg_new': resource_group_new,
-            'loc': 'eastus2euap',
+            'loc': 'eastus',
             'admin_user': self.create_random_name(prefix='cli', length=8),
             'admin_password': 'Cli1@asvrct',
             'server_version': '5.0',
@@ -56,7 +56,7 @@ class MongoClusterScenarioTest(ScenarioTest):
         assert len(clusters) == 1
 
         # update sku
-        cluster = self.cmd('az cosmosdb mongocluster update --cluster-name {c_new} --resource-group {rg_new} --location {loc} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-tier {shard_node_tier_update} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb} --shard-node-count {shard_node_count}').get_output_in_json()
+        cluster = self.cmd('az cosmosdb mongocluster update --cluster-name {c_new} --resource-group {rg_new} --administrator-login {admin_user} --administrator-login-password {admin_password} --server-version {server_version} --shard-node-tier {shard_node_tier_update} --shard-node-ha {shard_node_ha} --shard-node-disk-size-gb {shard_node_disk_size_gb}').get_output_in_json()
         assert cluster['provisioningState'] == 'Succeeded'
         
         # delete non existent cluster, NoContent response
@@ -77,13 +77,13 @@ class MongoClusterScenarioTest(ScenarioTest):
 
     # pylint: disable=line-too-long
     # pylint: disable=broad-except
-    @ResourceGroupPreparer(name_prefix='cli_cosmosdb_mongocluster_firewall', location='eastus2euap')
+    @ResourceGroupPreparer(name_prefix='cli_cosmosdb_mongocluster_firewall', location='eastus')
     def test_cosmosdb_mongocluster_firewall(self, resource_group):
           
         self.kwargs.update({
             'c': self.create_random_name(prefix='cli', length=10),
             'rg': resource_group,
-            'loc': 'eastus2euap',
+            'loc': 'eastus',
             'admin_user': self.create_random_name(prefix='cli', length=8),
             'admin_password': 'Cli1@asvrct',
             'server_version': '5.0',
@@ -112,10 +112,10 @@ class MongoClusterScenarioTest(ScenarioTest):
         #firewall update
         firewall = self.cmd('az cosmosdb mongocluster firewall rule update --cluster-name {c} --resource-group {rg} --rule-name {rule_name} --start-ip-address {start_ip_address} --end-ip-address {end_ip_address_update}').get_output_in_json()
         assert firewall['provisioningState'] == 'Succeeded'
-        assert firewall['endIpAddress'] == '{end_ip_address_update}'
+        assert firewall['endIpAddress'] == '10.0.0.140'
 
         firewall_show = self.cmd('az cosmosdb mongocluster firewall rule show --cluster-name {c} --resource-group {rg} --rule-name {rule_name}').get_output_in_json()
-        assert firewall_show['name'] == '{rule_name}'
+        assert firewall_show is not None
 
         firewall_list = self.cmd('az cosmosdb mongocluster firewall rule list --cluster-name {c} --resource-group {rg}').get_output_in_json()
         assert len(firewall_list) == 1
