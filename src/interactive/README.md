@@ -176,7 +176,7 @@ Please refer to the following gif to see the loading bar in action:
 </div>
 
 
-## Memory and Completion Mechanism for Param Value in Scenarios
+## Value Completion in Scenarios
 
 We added a completion mechanism for param value in scenarios to improve the completion ability of param value in
 scenarios. In multiple commands of the same scenario, once the user enters a param value, we store the value entered by
