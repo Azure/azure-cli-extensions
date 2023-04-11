@@ -142,14 +142,33 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
-        # test managedEnvironmentId
-        containerapp_yaml_text = f"""
+        workload_profile_name = "my-e16"
+
+        self.cmd("az containerapp env workload-profile set -g {} -n {} --workload-profile-name {} --workload-profile-type E16 --min-nodes 1 --max-nodes 3".format(resource_group, env, workload_profile_name))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+        time.sleep(30)
+
+        self.cmd("az containerapp env workload-profile show -g {} -n {} --workload-profile-name my-e16 ".format(resource_group, env), checks=[
+            JMESPathCheck("properties.name", workload_profile_name),
+            JMESPathCheck("properties.maximumCount", 3),
+            JMESPathCheck("properties.minimumCount", 1),
+            JMESPathCheck("properties.workloadProfileType", "E16"),
+        ])
+
+        revision_01 = "revision01"
+        containerapp_yaml_text_01 = f"""
             location: {location}
             type: Microsoft.App/containerApps
             tags:
                 tagname: value
             properties:
               managedEnvironmentId: {containerapp_env["id"]}
+              workloadProfileName: {workload_profile_name}
               configuration:
                 activeRevisionsMode: Multiple
                 ingress:
@@ -165,7 +184,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
                       ipAddressRange: "1.1.1.1/10"
                       action: "Allow"
               template:
-                revisionSuffix: myrevision
+                revisionSuffix: {revision_01}
                 containers:
                   - image: nginx
                     name: nginx
@@ -176,84 +195,51 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
                       - npm
                       - start
                     resources:
-                      cpu: 0.5
-                      memory: 1Gi
+                      cpu: 3
+                      memory: 5Gi
                 scale:
                   minReplicas: 1
                   maxReplicas: 3
-              workloadProfileName: Consumption
             """
-        containerapp_file_name = f"{self._testMethodName}_containerapp.yml"
+        containerapp_file_name_01 = f"{self._testMethodName}_containerapp_01.yml"
 
-        write_test_file(containerapp_file_name, containerapp_yaml_text)
-        self.cmd(f'containerapp create -n {app} -g {resource_group} --environment {env} --yaml {containerapp_file_name}')
+        write_test_file(containerapp_file_name_01, containerapp_yaml_text_01)
+        self.cmd(f'containerapp create -n {app} -g {resource_group} --environment {env} --yaml {containerapp_file_name_01}')
 
-        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+        self.assertContainerappProperties(containerapp_env, resource_group, app, workload_profile_name, revision_01)
+
+        revision_02 = "revision02"
+        containerapp_yaml_text_02 = containerapp_yaml_text_01.replace(workload_profile_name, "Consumption")
+        containerapp_yaml_text_02 = containerapp_yaml_text_02.replace("cpu: 3", "cpu: 0.5")
+        containerapp_yaml_text_02 = containerapp_yaml_text_02.replace("memory: 5Gi", "memory: 1Gi")
+        containerapp_yaml_text_02 = containerapp_yaml_text_02.replace(revision_01, revision_02)
+
+        containerapp_file_name_02 = f"{self._testMethodName}_containerapp_02.yml"
+        write_test_file(containerapp_file_name_02, containerapp_yaml_text_02)
+
+        self.cmd(f'containerapp update -n {app} -g {resource_group} --yaml {containerapp_file_name_02}')
+
+        while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+        time.sleep(30)
+
+        self.assertContainerappProperties(containerapp_env, resource_group, app, "Consumption", revision_02)
+
+        clean_up_test_file(containerapp_file_name_01)
+        clean_up_test_file(containerapp_file_name_02)
+
+    def assertContainerappProperties(self, containerapp_env, rg, app, workload_profile_name, revision):
+        self.cmd(f'containerapp show -g {rg} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.configuration.ingress.external", True),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
-            JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
+            JMESPathCheck("properties.template.revisionSuffix", revision),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
-            JMESPathCheck("properties.workloadProfileName", "Consumption")
+            JMESPathCheck("properties.workloadProfileName", workload_profile_name)
         ])
-
-        # test environmentId
-        containerapp_yaml_text = f"""
-                    location: {location}
-                    type: Microsoft.App/containerApps
-                    tags:
-                        tagname: value
-                    properties:
-                      environmentId: {containerapp_env["id"]}
-                      configuration:
-                        activeRevisionsMode: Multiple
-                        ingress:
-                          external: true
-                          allowInsecure: false
-                          targetPort: 80
-                          traffic:
-                            - latestRevision: true
-                              weight: 100
-                          transport: Auto
-                      template:
-                        revisionSuffix: myrevision
-                        containers:
-                          - image: nginx
-                            name: nginx
-                            env:
-                              - name: HTTP_PORT
-                                value: 80
-                            command:
-                              - npm
-                              - start
-                            resources:
-                              cpu: 0.5
-                              memory: 1Gi
-                        scale:
-                          minReplicas: 1
-                          maxReplicas: 3
-                      workloadProfileName: Consumption
-                    """
-        write_test_file(containerapp_file_name, containerapp_yaml_text)
-
-        self.cmd(f'containerapp update -n {app} -g {resource_group} --yaml {containerapp_file_name}')
-
-        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
-            JMESPathCheck("properties.provisioningState", "Succeeded"),
-            JMESPathCheck("properties.configuration.ingress.external", True),
-            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
-            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
-            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
-            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
-            JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
-            JMESPathCheck("properties.template.containers[0].name", "nginx"),
-            JMESPathCheck("properties.template.scale.minReplicas", 1),
-            JMESPathCheck("properties.template.scale.maxReplicas", 3),
-            JMESPathCheck("properties.workloadProfileName", "Consumption")
-        ])
-        clean_up_test_file(containerapp_file_name)
