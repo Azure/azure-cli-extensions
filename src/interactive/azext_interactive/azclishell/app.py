@@ -609,11 +609,14 @@ class AzInteractiveShell(object):
 
     def handle_search(self, text):
         """ parses for the scenario search """
+        # \ connect a momgodb -> connect a mongodb
         keywords = text.partition(SELECT_SYMBOL['search'])[2].strip()
         if not keywords:
             print_styled_text([(Style.WARNING, 'Please input search keywords')])
             return
+        # Max time wait for the search thread to finish
         prompt_timeout_limit = 10
+        already_prompted = False
         start_time = time.time()
         self.recommender.cur_thread = SearchThread(self.recommender.cli_ctx, keywords,
                                                    self.recommender.recommendation_path,
@@ -622,17 +625,30 @@ class AzInteractiveShell(object):
         self.recommender.cur_thread.start()
         # Wait for the search thread to finish
         while self.recommender.cur_thread.is_alive():
-            time.sleep(0.1)
-            time_spent_on_loading = time.time() - start_time
-            if time_spent_on_loading > prompt_timeout_limit:
-                print_styled_text([(Style.WARNING, 'Timeout to get search results.')])
-                break
-            if self.recommender.cur_thread.result:
+            try:
+                time.sleep(0.1)
+                time_spent_on_loading = time.time() - start_time
+                if time_spent_on_loading > prompt_timeout_limit and not already_prompted:
+                    print_styled_text([(Style.WARNING, 'Timeout to get search results. '
+                                                       'You can use Ctrl + C to exit search.')])
+                    # Only prompt once
+                    already_prompted = True
+                if self.recommender.cur_thread.result:
+                    break
+            except (KeyboardInterrupt, ValueError):
+                # CTRL C
                 break
         if self.recommender.cur_thread.result is not None:
             results = self.recommender.cur_thread.result
+            # If the result is a string, it means the search thread has encountered an error
+            if type(results) is str:
+                print_styled_text([(Style.WARNING, results)])
+                self.recommender.cur_thread.result = []
+                return
             if len(results) == 0:
-                print_styled_text([(Style.WARNING, 'No search results.')])
+                print_styled_text([(Style.WARNING, "We currently can't find the scenario you need. \n"
+                                                   "You can try to change the search keywords or "
+                                                   "submit an issue to ask for the scenario you need.")])
                 # -1 means no result, since the idx+1 in feedback function, so passed -2
                 self.recommender.feedback_search(-2, keywords)
             else:

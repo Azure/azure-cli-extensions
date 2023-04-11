@@ -63,7 +63,7 @@ class SearchThread(threading.Thread):
                                                                                          fallback=5))
             self.result = search_result_to_scenario_list(self.result)
         except ScenarioSearchError:
-            self.result = []
+            self.result = "Connection Error. Please check your network connection."
 
 
 def online_search(keyword, scope=SearchScope.All, match_rule=MatchRule.All, top=5):
