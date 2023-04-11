@@ -7,7 +7,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-from .data_plane_endpoint_helper import get_project_data
+from .utils import get_project_data
 
 # Data plane
 

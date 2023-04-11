@@ -249,7 +249,7 @@ helps[
       - name: DevBoxes_DelayActions
         text: |-
                az devcenter dev dev-box delay-all-actions --dev-center-name "{devCenterName}" \
---project-name "{projectName}" --until "2022-09-30T17:00:00Z" --name "myDevBox" \
+--project-name "{projectName}" --delay-time "04:30" --name "myDevBox" \
 --user-id "00000000-0000-0000-0000-000000000000"
 """
 

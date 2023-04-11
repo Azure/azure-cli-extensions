@@ -6,6 +6,7 @@ import re
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     InvalidArgumentValueError,
+    ResourceNotFoundError
 )
 from azure.cli.core.aaz import has_value
 
@@ -32,3 +33,6 @@ def validate_time(namespace):
     validation = pattern.match(namespace.delay_time)
     if validation is None:
         raise InvalidArgumentValueError("--delay-time should be in the format HH:MM")
+
+def validate_actions():
+    raise ResourceNotFoundError("There are no scheduled actions for this dev box.")

@@ -4,11 +4,10 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=protected-access
 
-from datetime import timedelta
 from azure.cli.core.aaz import register_callback
 from azure.cli.core.util import sdk_no_wait
 from ._client_factory import cf_devcenter_dataplane
-from .data_plane_endpoint_helper import get_project_arg
+from .utils import (get_project_arg, get_earliest_time, get_delayed_time)
 from .aaz.latest.devcenter.admin.attached_network import (
     Create as _AttachedNetworkCreate,
     Delete as _AttachedNetworkDelete,
@@ -82,7 +81,7 @@ from .aaz.latest.devcenter.admin.schedule import (
     Update as _ScheduleUpdate,
     Wait as _ScheduleWait,
 )
-from ._validators import validate_attached_network_or_dev_box_def
+from ._validators import (validate_attached_network_or_dev_box_def, validate_actions)
 
 # Control plane
 
@@ -648,18 +647,16 @@ def devcenter_dev_box_stop(
 def devcenter_dev_box_delay_action(
     cmd, dev_center, project_name, dev_box_name, delay_time, action_name, user_id="me"
 ):
-    split_time = delay_time.split(":")
-    hours = int(split_time[0])
-    minutes = int(split_time[1])
+
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     upcoming_action = cf_dataplane.dev_box.get_action(
         user_id=user_id,
         dev_box_name=dev_box_name,
-        upcoming_action_id=action_name,
+        action_name=action_name,
     )
-    delayed_time = upcoming_action.scheduled_time + timedelta(
-        hours=hours, minutes=minutes
-    )
+
+    delayed_time = get_delayed_time(delay_time, upcoming_action.next.scheduled_time)
+
     return cf_dataplane.dev_box.delay_action(
         user_id=user_id,
         dev_box_name=dev_box_name,
@@ -669,13 +666,21 @@ def devcenter_dev_box_delay_action(
 
 
 def devcenter_dev_box_delay_all_actions(
-    cmd, dev_center, project_name, dev_box_name, until, user_id="me"
+    cmd, dev_center, project_name, dev_box_name, delay_time, user_id="me"
 ):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
+
+    actions = cf_dataplane.dev_box.list_actions(user_id=user_id, dev_box_name=dev_box_name)
+    earliest_time = get_earliest_time(actions)
+    if earliest_time is None:
+        validate_actions()
+
+    delayed_time = get_delayed_time(delay_time, earliest_time)
+
     return cf_dataplane.dev_box.delay_actions(
         user_id=user_id,
         dev_box_name=dev_box_name,
-        until=until,
+        until=delayed_time,
     )
 
 

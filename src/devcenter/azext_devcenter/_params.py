@@ -340,7 +340,7 @@ def load_arguments(self, _):
             help="The delayed timespan from the most recent scheduled time. Format HH:MM",
         )
 
-    with self.argument_context("devcenter dev dev-box delay-all-actions") as c:
+    with self.argument_context("devcenter dev dev-box delay-all-actions", validator=validate_time) as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
@@ -362,7 +362,8 @@ def load_arguments(self, _):
             help="The name of a Dev " "Box.",
         )
         c.argument(
-            "until", help="The time to delay the Dev Box action or actions until."
+            "delay_time",
+            help="The delayed timespan from the most recent scheduled time. Format HH:MM",
         )
 
     with self.argument_context("devcenter dev dev-box list-action") as c:
