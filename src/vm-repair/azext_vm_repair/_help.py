@@ -92,3 +92,8 @@ helps['vm repair reset-nic'] = """
           text: >
             az vm repair reset-nic -g MyResourceGroup -n MyVM --yes --verbose
 """
+
+helps['vm repair repair-and-restore'] = """
+    type: command
+    short-summary: Repair and restore the VM.
+"""

@@ -709,6 +709,16 @@ def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux):
 
 
 def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=False):
+    
+    # logging all parameters of the function individually
+
+    logger.info('Creating repair VM with command: {}'.format(create_repair_vm_command))
+    logger.info('copy_disk_id: {}'.format(copy_disk_id))
+    logger.info('repair_password: {}'.format(repair_password))
+    logger.info('repair_username: {}'.format(repair_username))
+    logger.info('fix_uuid: {}'.format(fix_uuid))
+    
+
     if not fix_uuid:
         create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
     logger.info('Validating VM template before continuing...')
