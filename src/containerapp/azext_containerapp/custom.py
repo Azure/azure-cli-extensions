@@ -2912,9 +2912,9 @@ def create_managed_certificate(cmd, name, resource_group_name, hostname, validat
         cert_name = generate_randomized_managed_cert_name(hostname, resource_group_name)
         if not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
             cert_name = None
-    certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method)
+    certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method.upper())
     try:
-        r = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, True, validation_method == 'TXT')
+        r = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, True, validation_method.upper() == 'TXT')
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -3139,9 +3139,9 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
                     cert_name = random_name
             logger.warning("Creating managed certificate '%s' for %s.\nIt may take up to 20 minutes to create and issue a managed certificate.", cert_name, standardized_hostname)
 
-            validation = validation_method
+            validation = validation_method.upper()
             while validation not in ["TXT", "CNAME", "HTTP"]:
-                validation = prompt_str('\nPlease choose one of the following domain validation methods: TXT, CNAME, HTTP\nYour answer: ')
+                validation = prompt_str('\nPlease choose one of the following domain validation methods: TXT, CNAME, HTTP\nYour answer: ').upper()
 
             certificate_envelop = prepare_managed_certificate_envelop(cmd, env_name, resource_group_name, standardized_hostname, validation, location)
             try:
