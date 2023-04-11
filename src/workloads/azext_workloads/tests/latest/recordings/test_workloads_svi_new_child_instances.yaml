@@ -1,0 +1,299 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-application-server-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sap-virtual-instance-name -g -n
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CLI-TESTING?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING","name":"CLI-TESTING","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"Created":"20230330"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '249'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 10:02:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-application-server-instance create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --sap-virtual-instance-name -g -n
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36/applicationInstances/c36appvm0-1?api-version=2023-04-01
+  response:
+    body:
+      string: '{"error":{"code":"OperationNotAllowed","message":"This operation is
+        not allowed."}}'
+    headers:
+      api-supported-versions:
+      - 2021-12-01-preview, 2022-10-15-preview, 2022-11-01-preview, 2023-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '83'
+      content-type:
+      - application/json
+      date:
+      - Mon, 10 Apr 2023 10:02:35 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 297c4822-d56b-4f27-9b6d-ce5141ab5c3c
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-database-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sap-virtual-instance-name -g -n
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CLI-TESTING?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING","name":"CLI-TESTING","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"Created":"20230330"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '249'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 10:02:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-database-instance create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --sap-virtual-instance-name -g -n
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36/databaseInstances/C36-0?api-version=2023-04-01
+  response:
+    body:
+      string: '{"error":{"code":"OperationNotAllowed","message":"This operation is
+        not allowed."}}'
+    headers:
+      api-supported-versions:
+      - 2021-12-01-preview, 2022-10-15-preview, 2022-11-01-preview, 2023-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '83'
+      content-type:
+      - application/json
+      date:
+      - Mon, 10 Apr 2023 10:02:42 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 3e2e5119-660b-4e3c-adec-c9b60510bf26
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-central-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --sap-virtual-instance-name -g -n
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/CLI-TESTING?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING","name":"CLI-TESTING","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"Created":"20230330"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '249'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 10 Apr 2023 10:02:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads sap-central-instance create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --sap-virtual-instance-name -g -n
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/sapVirtualInstances/C36/centralInstances/c36ascsvm-1?api-version=2023-04-01
+  response:
+    body:
+      string: '{"error":{"code":"OperationNotAllowed","message":"This operation is
+        not allowed."}}'
+    headers:
+      api-supported-versions:
+      - 2021-12-01-preview, 2022-10-15-preview, 2022-11-01-preview, 2023-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '83'
+      content-type:
+      - application/json
+      date:
+      - Mon, 10 Apr 2023 10:02:50 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 3f1ff54f-e64e-4b04-aae5-cd8c66f7549c
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 400
+      message: Bad Request
+version: 1
