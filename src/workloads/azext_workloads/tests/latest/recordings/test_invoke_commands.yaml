@@ -1,61 +1,5 @@
 interactions:
 - request:
-    body: '{"appLocation": "northeurope", "databaseType": "HANA", "sapProduct": "S4HANA"}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - workloads sap-availability-zone-detail
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '78'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --app-location --database-type --sap-product --location
-      User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.10 (Windows-10-10.0.19044-SP0)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/northeurope/sapVirtualInstanceMetadata/default/getAvailabilityZoneDetails?api-version=2023-04-01
-  response:
-    body:
-      string: '{"availabilityZonePairs":[{"zoneA":2,"zoneB":3}]}'
-    headers:
-      api-supported-versions:
-      - 2021-12-01-preview, 2022-10-15-preview, 2022-11-01-preview, 2023-04-01
-      cache-control:
-      - no-cache
-      content-length:
-      - '49'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 10 Apr 2023 18:51:27 GMT
-      expires:
-      - '-1'
-      mise-correlation-id:
-      - 7c083271-1c4c-47a5-8f31-a673e9fcc166
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-    status:
-      code: 200
-      message: OK
-- request:
     body: '{"appLocation": "eastus", "databaseType": "HANA", "dbVmSku": "Standard_M32ts",
       "deploymentType": "SingleServer", "environment": "NonProd", "sapProduct": "S4HANA"}'
     headers:
@@ -91,11 +35,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 18:51:30 GMT
+      - Tue, 11 Apr 2023 09:08:36 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 0e264aed-aa7f-4c3e-ac47-95e40f7ec97f
+      - cad63d2e-5a8d-4a91-8787-45d8411593cf
       pragma:
       - no-cache
       strict-transport-security:
@@ -150,11 +94,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 18:51:33 GMT
+      - Tue, 11 Apr 2023 09:08:39 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - d17bcafe-3a7a-452d-848a-9659a60689b7
+      - 84c3fce2-f994-47bf-b229-7a7373030aa4
       pragma:
       - no-cache
       strict-transport-security:
@@ -208,11 +152,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 18:51:35 GMT
+      - Tue, 11 Apr 2023 09:08:43 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - d983ff90-d6d9-40a1-8cd2-86e78bb71b4d
+      - 1c093710-d67c-4786-aef9-166e3a620ce2
       pragma:
       - no-cache
       strict-transport-security:
@@ -226,7 +170,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK

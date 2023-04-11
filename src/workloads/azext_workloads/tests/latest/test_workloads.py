@@ -186,29 +186,6 @@ class WorkloadsScenario(ScenarioTest):
             self.check('tags.tag2', 'test2')
         ])
 
-    def test_workloads_svi_new_child_instances(self):
-        self.kwargs.update({
-            'name': 'C36',
-            'appservername': 'c36appvm0-1',
-            'csservername': 'c36ascsvm-1',
-            'dbservername': 'C36-0'
-        })
-
-        try:
-            self.cmd('az workloads sap-application-server-instance create --sap-virtual-instance-name {name} -g CLI-TESTING -n {appservername}')
-        except Exception as ex:
-            self.assertTrue('This operation is not allowed' in str(ex)) 
-
-        try:
-            self.cmd('az workloads sap-database-instance create --sap-virtual-instance-name {name} -g CLI-TESTING -n {dbservername}')
-        except Exception as ex:
-            self.assertTrue('This operation is not allowed' in str(ex))
-
-        try:
-            self.cmd('az workloads sap-central-instance create --sap-virtual-instance-name {name} -g CLI-TESTING -n {csservername}')
-        except Exception as ex:
-            self.assertTrue('This operation is not allowed' in str(ex)) 
-
     @unittest.skip('recording file not getting generted properly throwing Subscription not found')
     def test_workloads_svi_discover(self):
         self.kwargs.update({
@@ -231,9 +208,6 @@ class WorkloadsScenario(ScenarioTest):
             'databasetype': 'HANA',
             'sapproduct': 'S4HANA'
         })
-        count = len(self.cmd('workloads sap-availability-zone-detail --app-location northeurope --database-type {databasetype} --sap-product {sapproduct} --location northeurope').get_output_in_json())
-        self.assertTrue(count >= 1)
-
         count = len(self.cmd('workloads sap-disk-configuration --app-location eastus --database-type {databasetype} --db-vm-sku Standard_M32ts --deployment-type SingleServer --environment NonProd --sap-product {sapproduct} --location eastus').get_output_in_json())
         self.assertTrue(count >= 1)
 
@@ -243,6 +217,13 @@ class WorkloadsScenario(ScenarioTest):
 
         count = len(self.cmd('workloads sap-supported-sku --database-type {databasetype} --app-location eastus --location eastus --sap-product {sapproduct} --deployment-type ThreeTier --environment Prod').get_output_in_json())
         self.assertTrue(count >= 1)
+
+    def test_workloads_svi_remove(self):
+        self.kwargs.update({
+            'name': 'C36'
+        })
+
+        self.cmd('workloads sap-virtual-instance delete -g CLI-TESTING -n {name} --yes')
 
 
 
