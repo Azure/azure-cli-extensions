@@ -1044,16 +1044,6 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
             telemetry.set_exception(exception=error_helm_get_values.decode("ascii"), fault_type=consts.Get_Helm_Values_Failed,
                                     summary='Error while doing helm get values azure-arc')
             raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_get_values.decode("ascii")))
-        
-    response_helm_values_get = response_helm_values_get.decode("ascii")
-    existing_values = None
-
-    try:
-        existing_values = yaml.safe_load(response_helm_values_get)
-    except Exception as e:
-        telemetry.set_exception(exception=e, fault_type=consts.Helm_Existing_User_Supplied_Value_Get_Fault,
-                                summary='Problem loading the helm existing values')
-        raise CLIInternalError("Problem loading the helm existing values: " + str(e))
 
     cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
                         "-f",
