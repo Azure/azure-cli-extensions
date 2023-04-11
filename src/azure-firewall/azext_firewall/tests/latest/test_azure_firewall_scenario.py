@@ -313,6 +313,7 @@ class AzureFirewallScenario(ScenarioTest):
         # ])
         # self.cmd('network firewall show -g {rg} -n {af}')
 
+    @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_with_firewall_policy', location='westus2')
     def test_azure_firewall_with_firewall_policy(self, resource_group, resource_group_location):
         self.kwargs.update({
@@ -487,6 +488,7 @@ class AzureFirewallScenario(ScenarioTest):
                      self.check('length(signatureOverrides)', 1),
                      self.check('length(privateRanges)', 2)
                  ])
+
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='centralus')
     def test_azure_firewall_policy(self, resource_group, resource_group_location):
@@ -971,6 +973,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall policy update -g {rg} -n {policy} --sql False',
                  checks=self.check('sql.allowSqlRedirect', False))
 
+    @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix="cli_test_firewall_basic_sku_", location="westus")
     def test_firewall_basic_sku(self):
         self.kwargs.update({
@@ -979,6 +982,8 @@ class AzureFirewallScenario(ScenarioTest):
             "conf_name": self.create_random_name("ipconfig-", 16),
             "m_conf_name": self.create_random_name("ipconfig-", 16),
             "m_public_ip_name": self.create_random_name("public-ip-", 16),
+            "vwan": self.create_random_name("vwan-", 12),
+            "vhub": self.create_random_name("vhub-", 12),
         })
 
         with self.assertRaisesRegex(ValidationError, "When creating Basic SKU firewall, both --m-conf-name and --m-public-ip-address should be provided."):
@@ -994,5 +999,17 @@ class AzureFirewallScenario(ScenarioTest):
             checks=[
                 self.check("name", "{firewall_name}"),
                 self.check("sku.tier", "Basic")
+            ]
+        )
+        self.cmd("network firewall delete -n {firewall_name} -g {rg}")
+
+        self.cmd("extension add -n virtual-wan")
+        self.cmd("network vwan create -n {vwan} -g {rg} --type Standard")
+        self.cmd('network vhub create -n {vhub} -g {rg} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l westus --sku Standard')
+        self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} --vhub {vhub} --public-ip-count 2 --sku AZFW_Hub --tier Basic",
+            checks=[
+                self.check("name", "{firewall_name}"),
+                self.check("sku.name", "AZFW_Hub")
             ]
         )

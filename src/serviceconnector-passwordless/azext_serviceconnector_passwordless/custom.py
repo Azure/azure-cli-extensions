@@ -16,15 +16,17 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                           private_endpoint=None,
                           store_in_connection_string=False,
                           new_addon=False, no_wait=False,
+                          yes=False,
                           # Resource.KubernetesCluster
                           cluster=None, scope=None, enable_csi=False,
                           site=None,                                             # Resource.WebApp
                           spring=None, app=None, deployment='default',           # Resource.SpringCloud
                           # Resource.*Postgres, Resource.*Sql*
                           server=None, database=None,
+                          **kwargs,
                           ):
     from azure.cli.command_modules.serviceconnector.custom import connection_create_func
-    from ._credential_free import enable_mi_for_db_linker
+    from ._credential_free import get_enable_mi_for_db_linker_func
     return connection_create_func(cmd, client, connection_name, client_type,
                                   source_resource_group, source_id,
                                   target_resource_group, target_id,
@@ -41,7 +43,8 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                                   site,
                                   spring, app, deployment,
                                   server, database,
-                                  enable_mi_for_db_linker=enable_mi_for_db_linker)
+                                  enable_mi_for_db_linker=get_enable_mi_for_db_linker_func(yes),
+                                  **kwargs)
 
 
 def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-many-statements
@@ -54,11 +57,13 @@ def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,
                                 user_account_auth_info=None,                      # new auth info
                                 service_principal_auth_info_secret=None,
                                 no_wait=False,
+                                yes=False,
                                 # Resource.*Postgres, Resource.*Sql*
                                 server=None, database=None,
+                                **kwargs
                                 ):
     from azure.cli.command_modules.serviceconnector.custom import local_connection_create_func
-    from ._credential_free import enable_mi_for_db_linker
+    from ._credential_free import get_enable_mi_for_db_linker_func
     return local_connection_create_func(cmd, client,
                                         resource_group_name,
                                         connection_name,
@@ -71,4 +76,5 @@ def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,
                                         no_wait,
                                         # Resource.*Postgres, Resource.*Sql*
                                         server, database,
-                                        enable_mi_for_db_linker=enable_mi_for_db_linker)
+                                        enable_mi_for_db_linker=get_enable_mi_for_db_linker_func(yes),
+                                        **kwargs)

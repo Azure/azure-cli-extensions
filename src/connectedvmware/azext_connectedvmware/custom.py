@@ -40,6 +40,7 @@ from .vmware_constants import (
     VM_SYSTEM_ASSIGNED_INDENTITY_TYPE,
     DEFAULT_GUEST_AGENT_NAME,
     GUEST_AGENT_PROVISIONING_ACTION_INSTALL,
+    MACHINE_RESOURCE_TYPE,
 )
 
 from .vendored_sdks.models import (
@@ -75,6 +76,7 @@ from .vendored_sdks.models import (
     GuestCredential,
     PlacementProfile,
     HttpProxyConfiguration,
+    MachineExtension,
 )
 
 from .vendored_sdks.operations import (
@@ -1687,6 +1689,7 @@ def connectedvmware_extension_show(
 
 
 def connectedvmware_extension_create(
+    cmd,
     client: MachineExtensionsOperations,
     resource_group_name,
     vm_name,
@@ -1697,38 +1700,47 @@ def connectedvmware_extension_create(
     publisher=None,
     type_=None,
     type_handler_version=None,
+    enable_auto_upgrade=None,
     auto_upgrade_minor=None,
     settings=None,
     protected_settings=None,
-    instance_view_type=None,
-    inst_handler_version=None,
     no_wait=False
 ):
     """
     Create the vm extension of a given vm.
     """
 
-    extension_parameters = {}
-    extension_parameters['tags'] = tags
-    extension_parameters['location'] = location
-    extension_parameters['properties'] = {}
-    extension_parameters['properties']['force_update_tag'] = force_update_tag
-    extension_parameters['properties']['publisher'] = publisher
-    extension_parameters['properties']['type'] = type_
-    extension_parameters['properties']['type_handler_version'] = type_handler_version
-    extension_parameters['properties']['auto_upgrade_minor_version'] = auto_upgrade_minor
-    extension_parameters['properties']['settings'] = settings
-    extension_parameters['properties']['protected_settings'] = protected_settings
-    extension_parameters['properties']['instance_view'] = {}
-    extension_parameters['properties']['instance_view']['name'] = name
-    extension_parameters['properties']['instance_view']['type'] = instance_view_type
-    extension_parameters['properties']['instance_view']['type_handler_version'] = inst_handler_version
+    resource_id = get_resource_id(
+        cmd,
+        resource_group_name,
+        VMWARE_NAMESPACE,
+        VIRTUALMACHINE_RESOURCE_TYPE,
+        vm_name,
+        MACHINE_RESOURCE_TYPE,
+        name
+    )
+
+    machine_extension = MachineExtension(
+        location=location,
+        tags=tags,
+        name=name,
+        id=resource_id,
+        force_update_tag=force_update_tag,
+        publisher=publisher,
+        type_properties_type=type_,
+        type_handler_version=type_handler_version,
+        enable_automatic_upgrade=enable_auto_upgrade,
+        auto_upgrade_minor_version=auto_upgrade_minor,
+        settings=settings,
+        protected_settings=protected_settings,
+    )
+
     return sdk_no_wait(no_wait,
                        client.begin_create_or_update,
                        resource_group_name=resource_group_name,
                        name=vm_name,
                        extension_name=name,
-                       extension_parameters=extension_parameters)
+                       extension_parameters=machine_extension)
 
 
 def connectedvmware_extension_update(
@@ -1741,6 +1753,7 @@ def connectedvmware_extension_update(
     publisher=None,
     type_=None,
     type_handler_version=None,
+    enable_auto_upgrade=None,
     auto_upgrade_minor=None,
     settings=None,
     protected_settings=None,
@@ -1750,22 +1763,24 @@ def connectedvmware_extension_update(
     Update the vm extension of a given vm.
     """
 
-    extension_parameters = {}
-    extension_parameters['tags'] = tags
-    extension_parameters['properties'] = {}
-    extension_parameters['properties']['force_update_tag'] = force_update_tag
-    extension_parameters['properties']['publisher'] = publisher
-    extension_parameters['properties']['type'] = type_
-    extension_parameters['properties']['type_handler_version'] = type_handler_version
-    extension_parameters['properties']['auto_upgrade_minor_version'] = auto_upgrade_minor
-    extension_parameters['properties']['settings'] = settings
-    extension_parameters['properties']['protected_settings'] = protected_settings
+    machine_extension = MachineExtension(
+        tags=tags,
+        force_update_tag=force_update_tag,
+        publisher=publisher,
+        type=type_,
+        type_handler_version=type_handler_version,
+        enable_automatic_upgrade=enable_auto_upgrade,
+        auto_upgrade_minor_version=auto_upgrade_minor,
+        settings=settings,
+        protected_settings=protected_settings,
+    )
+
     return sdk_no_wait(no_wait,
                        client.begin_update,
                        resource_group_name=resource_group_name,
-                       machine_name=vm_name,
+                       name=vm_name,
                        extension_name=name,
-                       extension_parameters=extension_parameters)
+                       extension_parameters=machine_extension)
 
 
 def connectedvmware_extension_delete(

@@ -2,6 +2,27 @@
 
 Release History
 ===============
+1.3.16
+++++++
+* Adding force delete in connect command in case of stale resources present during onboarding
+* Bug fixes in diagnoser
+* Pushing armd id and location to telemetry
+* Adding test for connectedk8s proxy command
+
+1.3.15
+++++++
+
+* Diagnoser Enhancements - storing metadata and KAP CR snapshots , azure-arc helm values , azure-arc ns secret list
+* Removing circular imports of 1. custom from precheckutils and 2.(precheckutils and troubleshootutils) from utils
+* Adding back heuristics detection in connect command
+
+1.3.14
+++++++
+
+* Changing telemetry push interval to 1 hr
+* Adding two new supported infra values - Windows 10 IoT Enterprise, LTSCWindows 10 Enterprise LTSC
+* Saving cluster diagnostic checks pod and job logs
+
 1.3.13
 ++++++
 

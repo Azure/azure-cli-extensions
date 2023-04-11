@@ -7,7 +7,7 @@ import os
 from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.util import CLIError
 from msrestazure.tools import resource_id
-from ...vendored_sdks.appplatform.v2022_11_01_preview import models
+from ...vendored_sdks.appplatform.v2023_03_01_preview import models
 from ..._utils import _get_sku_name
 from ...app import (app_create, app_update, app_deploy, deployment_create)
 from ...custom import (app_set_deployment, app_unset_deployment)
@@ -110,6 +110,7 @@ class TestAppDeploy_Patch(BasicTest):
     def _get_basic_mock_client(self, sku='Standard'):
         client = super()._get_basic_mock_client(sku=sku)
         client.apps.get_resource_upload_url.return_value = self._get_upload_info()
+        client.deployments.get.return_value = self._get_deployment()
         return client
 
     def _get_upload_info(self):
@@ -229,6 +230,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         client.build_service.create_or_update_build.return_value = self._get_build_resource()
         client.build_service.get_build_result.side_effect = [self._get_result_resource()]
         client.build_service.get_build_result_log.side_effect = ResourceNotFoundError('Log not found')
+        client.deployments.get.return_value = self._get_deployment()
         return client
 
     def _get_result_resource(self, status='Succeeded'):
@@ -365,6 +367,7 @@ class TestAppDeploy_Put(BasicTest):
     def _get_basic_mock_client(self, sku='Standard'):
         client = super()._get_basic_mock_client(sku=sku)
         client.apps.get_resource_upload_url.return_value = self._get_upload_info()
+        client.deployments.get.return_value = self._get_deployment()
         return client
 
     def _get_upload_info(self):
@@ -407,7 +410,7 @@ class TestAppDeploy_Put(BasicTest):
         self.assertEqual('Jar', resource.properties.source.type)
         self.assertEqual('my-relative-path', resource.properties.source.relative_path)
         self.assertIsNone(resource.properties.source.version)
-        self.assertEqual('Java_8', resource.properties.source.runtime_version)
+        self.assertEqual('Java_11', resource.properties.source.runtime_version)
         self.assertEqual('2', resource.properties.deployment_settings.resource_requests.cpu)
         self.assertEqual('2Gi', resource.properties.deployment_settings.resource_requests.memory)
         self.assertEqual(2, resource.sku.capacity)
@@ -604,7 +607,7 @@ class TestAppCreate(BasicTest):
         self._execute('rg', 'asc', 'app', cpu='1', memory='1Gi', instance_count=1)
         resource = self.put_deployment_resource
         self.assertEqual('Jar', resource.properties.source.type)
-        self.assertEqual('Java_8', resource.properties.source.runtime_version)
+        self.assertEqual('Java_11', resource.properties.source.runtime_version)
         self.assertEqual('<default>', resource.properties.source.relative_path)
 
     def test_app_create_with_netcore(self):

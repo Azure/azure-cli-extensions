@@ -13,6 +13,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 from copy import deepcopy
 from knack.log import get_logger
 from knack.prompting import prompt, prompt_y_n
+from packaging import version as packaging_version
 
 from ..vendored_sdks.models import Extension, PatchExtension, Scope, ScopeCluster
 from .DefaultExtension import DefaultExtension
@@ -173,7 +174,7 @@ class Dapr(DefaultExtension):
             logger.debug("Auto-upgrade is disabled and version is pinned to %s. Setting '%s' to false.",
                          version, self.APPLY_CRDS_HOOK_ENABLED_KEY)
             configuration_settings[self.APPLY_CRDS_HOOK_ENABLED_KEY] = 'false'
-        elif original_version and version and version < original_version:
+        elif original_version and version and Dapr._is_downgrade(version, original_version):
             logger.debug("Downgrade detected from %s to %s. Setting %s to false.",
                          original_version, version, self.APPLY_CRDS_HOOK_ENABLED_KEY)
             configuration_settings[self.APPLY_CRDS_HOOK_ENABLED_KEY] = 'false'
@@ -196,3 +197,14 @@ class Dapr(DefaultExtension):
                               version=version,
                               configuration_settings=configuration_settings,
                               configuration_protected_settings=configuration_protected_settings)
+
+    @staticmethod
+    def _is_downgrade(v1: str, v2: str) -> bool:
+        """
+        Returns True if version v1 is less than version v2.
+        """
+        try:
+            return packaging_version.Version(v1) < packaging_version.Version(v2)
+        except packaging_version.InvalidVersion:
+            logger.debug("Warning: Unable to compare versions %s and %s.", v1, v2)
+            return True  # This will cause the apply-CRDs hook to be disabled, which is safe.

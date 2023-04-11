@@ -2,6 +2,21 @@
 
 Release History
 ===============
+0.2.13
+* fixing bug where you could not pull by sha value if a tag was not specified
+* fixing error message when attempting to use sha value with tar files
+* making image caching template-wide instead of container group-wide
+
+0.2.12
+* adding ability for mixed-mode OCI image pulling, e.g. using tar files and remote registries in the same template
+* adding option to use allow-all regex for environment variables
+* tar file bug fixes
+
+0.2.11
+* bug fix for clean room scenario where non-existent docker client connection attempted to be closed
+* adding ability for ARM Template workflows to use regex for environment variables
+* fixing linux permissions for dmverity-vhd tool
+
 0.2.10
 * dmverity-vhd tool fixes
 * changing startup checks to errors rather than warnings
