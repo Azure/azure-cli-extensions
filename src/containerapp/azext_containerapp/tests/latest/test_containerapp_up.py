@@ -26,7 +26,7 @@ class ContainerAppUpImageTest(ScenarioTest):
 
         env_name = self.create_random_name(prefix='env', length=24)
         self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
-        image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+        image = "mcr.microsoft.com/k8se/quickstart:latest"
         app_name = self.create_random_name(prefix='containerapp', length=24)
         self.cmd(f"containerapp up --image {image} --environment {env_name} -g {resource_group} -n {app_name}")
 

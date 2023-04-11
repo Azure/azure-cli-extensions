@@ -7,6 +7,7 @@ Upcoming
 * 'az containerapp up': fix --location comparison logic
 * 'az containerapp update': change --max-replicas limit
 * Add CLI support for containerapp ingress sticky-sessions'
+* Change quickstart image
 
 0.3.27
 ++++++

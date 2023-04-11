@@ -29,7 +29,7 @@ class ContainerAppIngressStickySessionsTest(ScenarioTest):
             JMESPathCheck('name', env)            
         ])
 
-        self.cmd("az containerapp create -g {} --target-port 80 --ingress external --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest --environment {} -n {} ".format(resource_group, env, app))        
+        self.cmd("az containerapp create -g {} --target-port 80 --ingress external --image mcr.microsoft.com/k8se/quickstart:latest --environment {} -n {} ".format(resource_group, env, app))        
         self.cmd("az containerapp ingress sticky-sessions set -n {} -g {} --affinity sticky".format(app, resource_group))        
         self.cmd('containerapp show -g {} -n {}'.format(resource_group, app), checks=[
             JMESPathCheck('properties.configuration.ingress.stickySessions.affinity', "sticky"),        
