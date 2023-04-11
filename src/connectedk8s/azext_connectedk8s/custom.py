@@ -1037,7 +1037,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     user_values_location = os.path.join(os.path.expanduser('~'), '.azure', 'userValues.txt')
     existing_user_values = open(user_values_location, 'w+')
     response_helm_values_get = Popen(cmd_helm_values, stdout=existing_user_values, stderr=PIPE)
-    _, error_helm_get_values = response_helm_values_get.communicate()
+    output_helm_values, error_helm_get_values = response_helm_values_get.communicate()
     if response_helm_values_get.returncode != 0:
         if ('forbidden' in error_helm_get_values.decode("ascii") or 'timed out waiting for the condition' in error_helm_get_values.decode("ascii")):
             telemetry.set_user_fault()
@@ -1045,11 +1045,11 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
                                     summary='Error while doing helm get values azure-arc')
             raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_get_values.decode("ascii")))
 
-    response_helm_values = response_helm_values.decode("ascii")
+    output_helm_values = output_helm_values.decode("ascii")
     existing_values = None
 
     try:
-        existing_values = yaml.safe_load(response_helm_values)
+        existing_values = yaml.safe_load(output_helm_values)
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Helm_Existing_User_Supplied_Value_Get_Fault,
                                 summary='Problem loading the helm existing values')
