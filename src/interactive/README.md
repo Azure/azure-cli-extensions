@@ -114,7 +114,7 @@ Only clears the appended suggestion when you restart the interactive shell
 
 The color option will be saved.
 
-# Intelligent AZ Interactive(Revolutionary Change)
+# Intelligent AZ Interactive (Revolutionary Change)
 ## Recommendation
 
 We have integrated the cli recommendation to make the completion ability more intelligent and provide the scenario completion. This is a revolutionary change. Users can enable or disable the recommendation feature by running the following commands:
