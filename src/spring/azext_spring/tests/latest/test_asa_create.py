@@ -316,4 +316,4 @@ class TestSpringAppCreateWithLogStreamConfig(BasicTest):
     def test_asa_create_enterprise_with_log_stream_config(self):
         self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), enable_dataplane_public_endpoint=True, disable_app_insights=True)
         resource = self.created_resource
-        self.assertEqual(True, resource.properties.vnet_addons.enable_dataplane_public_endpoint)
+        self.assertEqual(True, resource.properties.vnet_addons.data_plane_public_endpoint)
