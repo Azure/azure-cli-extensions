@@ -14,7 +14,6 @@ import subprocess
 import sys
 import time
 
-
 from threading import Thread
 from six.moves import configparser
 from knack.log import get_logger
@@ -56,8 +55,6 @@ from .threads import LoadCommandTableThread
 from .util import get_window_dim, parse_quotes, get_os_clear_screen_word, get_yes_or_no_option, select_option
 from .scenario_search import SearchThread, show_search_item
 
-
-
 NOTIFICATIONS = ""
 PART_SCREEN_EXAMPLE = .3
 START_TIME = datetime.datetime.utcnow()
@@ -88,6 +85,16 @@ def space_toolbar(settings_items, empty_space):
 
     empty_space = empty_space[len(NOTIFICATIONS) + len(settings) + 1:]
     return settings, empty_space
+
+
+def whether_continue_module_loading():
+    """ whether continue loading the command table, return True/False """
+    step_msg = [(Style.PRIMARY, "Do you want to continue loading?"), (Style.SECONDARY, "(y/n)\n"),
+                (Style.PRIMARY,
+                 "If you choose n, it will start the shell immediately,"
+                 "but it may cause unknown errors due to incomplete module loading.\n")]
+    continue_loading = get_yes_or_no_option(step_msg)
+    return continue_loading
 
 
 # pylint: disable=too-many-instance-attributes
@@ -162,8 +169,9 @@ class AzInteractiveShell(object):
             print("\nAny comments or concerns? You can use the \'feedback\' command!" +
                   " We would greatly appreciate it.\n")
         if self.cli_ctx.config.getboolean("interactive", "enable_recommender", fallback=True):
-            print("\nA new Recommender is added which can make the completion ability more intelligent and provide the scenario completion!\n"
-                  "If you want to disable this feature, you can use 'az config set interactive.enable_recommender=False' to disable it.\n")
+            print(
+                "\nA new Recommender is added which can make the completion ability more intelligent and provide the scenario completion!\n"
+                "If you want to disable this feature, you can use 'az config set interactive.enable_recommender=False' to disable it.\n")
 
         self.cli_ctx.data["az_interactive_active"] = True
         self.run()
@@ -313,6 +321,7 @@ class AzInteractiveShell(object):
             "[F2]Defaults",
             "[F3]Keys",
             "[Space]Predict",
+            "[Ctrl+C]Clear Screen",
             "[Ctrl+D]Quit",
             tool_val
         ]
@@ -883,41 +892,49 @@ class AzInteractiveShell(object):
         self.cli_ctx.progress_controller.init_progress(ShellProgressView())
         return self.cli_ctx.progress_controller
 
-    def run(self):
-        """ starts the REPL """
-
+    def load_command_table(self):
+        """ loads the command table """
+        # initialize some variables
+        # whether the customer has been prompted to choose continue loading
+        # unable to use continue_loading to check this because the customer may choose to continue loading
+        already_prompted = False
+        continue_loading = True
         # load command table
         self.command_table_thread = LoadCommandTableThread(self.restart_completer, self)
         self.command_table_thread.start()
         self.command_table_thread.start_time = time.time()
         print_styled_text([(Style.ACTION, "Loading command table... Expected time around 1 minute.")])
         progress_bar = IndeterminateProgressBar(cli_ctx=self.cli_ctx, message="Loading command table")
-        # initialize some variables
-        # whether the customer has been prompted to choose continue loading
-        # unable to use continue_loading to check this because the customer may choose to continue loading
-        already_prompted = False
         progress_bar.begin()
 
         # still loading commands, show the time of loading
         while self.command_table_thread.is_alive():
-            time_spent_on_loading = time.time() - self.command_table_thread.start_time
-            progress_bar = IndeterminateProgressBar(cli_ctx=self.cli_ctx, message="Already spent {} seconds on loading.".format(round(time_spent_on_loading, 1)))
-            progress_bar.update_progress()
-            time.sleep(0.1)
-            # setup how long to wait before prompting the customer to continue loading
-            # whether the loading time is too long(>150s)
-            prompt_timeout_limit = 150
-            if time_spent_on_loading > prompt_timeout_limit and already_prompted == False:
-                print_styled_text([(Style.WARNING, '\nLoading command table takes too long, please contact the Azure CLI team for help.')])
-                step_msg = [(Style.PRIMARY, "Do you want to continue loading?"), (Style.SECONDARY, "(y/n)\n"),
-                            (Style.PRIMARY, "If you choose n, it will start the shell immediately, but it may cause unknown errors due to incomplete module loading.\n")]
-                continue_loading = get_yes_or_no_option(step_msg)
+            try:
+                time_spent_on_loading = time.time() - self.command_table_thread.start_time
+                progress_bar = IndeterminateProgressBar(cli_ctx=self.cli_ctx,
+                                                        message="Already spent {} seconds on loading.".format(
+                                                            round(time_spent_on_loading, 1)))
+                progress_bar.update_progress()
+                time.sleep(0.1)
+                # setup how long to wait before prompting the customer to continue loading
+                # whether the loading time is too long(>150s)
+                prompt_timeout_limit = 150
+            except KeyboardInterrupt:
+                # if the customer presses Ctrl+C, break the loading loop
+                continue_loading = whether_continue_module_loading()
+            if time_spent_on_loading > prompt_timeout_limit and not already_prompted:
+                print_styled_text([(Style.WARNING,
+                                    '\nLoading command table takes too long, please contact the Azure CLI team for help.')])
+                continue_loading = whether_continue_module_loading()
                 already_prompted = True
-                # if the customer chooses not to continue loading, break the loading loop
-                if continue_loading == False:
-                    break
+            # if the customer chooses not to continue loading, break the loading loop
+            if not continue_loading:
+                break
         progress_bar.stop()
 
+    def run(self):
+        """ starts the REPL """
+        self.load_command_table()
         # init customized processing bar
         from .progress import ShellProgressView
         self.cli_ctx.get_progress_controller().init_progress(ShellProgressView())
@@ -950,8 +967,10 @@ class AzInteractiveShell(object):
                 break
             except (KeyboardInterrupt, ValueError):
                 # CTRL C
+                # Clear the Screen and refresh interface
+                cmd = CLEAR_WORD
                 self.set_prompt()
-                continue
+                subprocess.Popen(cmd, shell=True).communicate()
             else:
                 self.history.append(text)
                 b_flag, c_flag, outside, cmd = self._special_cases(cmd, outside)
@@ -976,6 +995,7 @@ class AzInteractiveShell(object):
                     else:
                         telemetry.set_success()
                     # Update execution result of previous command, fetch recommendation if command failed
-                    self.recommender.update_exec_result(self.last_exit_code, telemetry.get_error_info()['result_summary'])
+                    self.recommender.update_exec_result(self.last_exit_code,
+                                                        telemetry.get_error_info()['result_summary'])
                     telemetry.flush()
         telemetry.conclude()
