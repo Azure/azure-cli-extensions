@@ -297,6 +297,9 @@ def load_command_table(self, _):
             "create", "devcenter_environment_create", supports_no_wait=True
         )
         g.custom_command(
+            "update", "devcenter_environment_update", supports_no_wait=True
+        )
+        g.custom_command(
             "delete",
             "devcenter_environment_delete",
             supports_no_wait=True,

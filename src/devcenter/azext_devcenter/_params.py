@@ -515,6 +515,35 @@ def load_arguments(self, _):
             help="Name of the environment definition.",
         )
 
+    with self.argument_context("devcenter dev environment update") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "environment_name",
+            options_list=["--name", "-n", "--environment-name"],
+            type=str,
+            help="The name " "of the environment.",
+        )
+        c.argument(
+            "parameters",
+            type=validate_file_or_dict,
+            help="Parameters object for the environment. Expected "
+            "value: json-string/json-file/@json-file.",
+        )
+
+
     with self.argument_context("devcenter dev environment delete") as c:
         c.argument(
             "dev_center",

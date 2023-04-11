@@ -328,6 +328,19 @@ helps[
 """
 
 helps[
+    "devcenter dev environment update"
+] = """
+    type: command
+    short-summary: "Updates an environment."
+    examples:
+      - name: Environments_UpdateByEnvironmentDefinition
+        text: |-
+               az devcenter dev environment update --dev-center-name "{devCenterName}" --project-name "{projectName}" \
+--name "mydevenv" --user-id "me" --parameters "{\\"functionAppRuntime\\":\\"node\
+\\",\\"storageAccountType\\":\\"Standard_LRS\\"}"
+"""
+
+helps[
     "devcenter dev environment delete"
 ] = """
     type: command
