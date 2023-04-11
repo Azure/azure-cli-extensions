@@ -9,12 +9,6 @@ az extension add --name workloads
 
 ### Included Features ###
 #### workloads ####
-##### sap-availability-zone-detail #####
-```
-az workloads sap-availability-zone-detail --app-location "northeurope" --database-type "HANA" --sap-product "S4HANA" --location "northeurope"
-
-```
-
 ##### sap-disk-configuration #####
 ```
 az workloads sap-disk-configuration --app-location "northeurope" --database-type "HANA" --db-vm-sku "Standard_M32ts" --deployment-type "SingleServer" --environment "NonProd" --sap-product "S4HANA" --location "northeurope"
@@ -76,18 +70,6 @@ az workloads sap-virtual-instance update -g rg -n instance-name --tags "{tag:tag
 ```
 
 #### sap-database-instance ####
-##### Create #####
-```
-az workloads sap-database-instance create -g rg --vis-name name -n instance-name
-
-```
-
-##### Delete #####
-```
-az workloads sap-database-instance delete -g rg -n instance-name --vis-name name -y
-
-```
-
 ##### List #####
 ```
 az workloads sap-database-instance list -g rg --vis-name name
@@ -119,18 +101,6 @@ az workloads sap-database-instance update -g rg -n instance-name --vis-name name
 ```
 
 #### sap-central-instance ####
-##### Create #####
-```
-az workloads sap-central-instance create -g rg -n instance-name --vis-name name
-
-```
-
-##### Delete #####
-```
-az workloads sap-central-instance delete -g rg -n instance-name --vis-name name -y
-
-```
-
 ##### List #####
 ```
 az workloads sap-central-instance list -g rg --vis-name name
@@ -162,18 +132,6 @@ az workloads sap-central-instance update -g rg -n instace-name --vis-name name -
 ```
 
 #### sap-application-server-instance ####
-##### Create #####
-```
-az workloads sap-application-server-instance create -g rg -n instance-name --vis-name name
-
-```
-
-##### Delete #####
-```
-az workloads sap-application-server-instance delete -g rg -n instance-name --vis-name name -y
-
-```
-
 ##### List #####
 ```
 az workloads sap-application-server-instance list -g rg --vis-name name
