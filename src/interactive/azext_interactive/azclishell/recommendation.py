@@ -321,7 +321,7 @@ def send_feedback(option_idx, latest_commands, processed_exception=None, recomme
     if accepted_recommend:
         feedback_data["accepted_recommend_source"] = accepted_recommend['source']
         feedback_data["accepted_recommend_type"] = accepted_recommend['type']
-        if accepted_recommend['type'] == RecommendType.Scenario or accepted_recommend['type'] == RecommendType.Search:
+        if accepted_recommend['type'] in [RecommendType.Scenario, RecommendType.Search]:
             feedback_data['accepted_recommend'] = accepted_recommend['scenario']
         else:
             feedback_data['accepted_recommend'] = accepted_recommend['command']
