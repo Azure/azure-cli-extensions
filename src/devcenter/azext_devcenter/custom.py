@@ -708,7 +708,7 @@ def devcenter_dev_box_skip_action(
     )
 
 
-def devcenter_environment_list(cmd, dev_center, project_name, user_id="me"):
+def devcenter_environment_list(cmd, dev_center, project_name, user_id=None):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     if user_id is not None:
         return cf_dataplane.environments.list_by_project_by_user(user_id=user_id)
@@ -743,6 +743,34 @@ def devcenter_environment_create(
     body["environment_type"] = environment_type
     body["catalog_name"] = catalog_name
     body["environment_definition_name"] = environment_definition_name
+    return sdk_no_wait(
+        no_wait,
+        cf_dataplane.environments.begin_create_or_update,
+        user_id=user_id,
+        environment_name=environment_name,
+        body=body,
+    )
+
+
+def devcenter_environment_update(
+    cmd,
+    dev_center,
+    project_name,
+    environment_name,
+    parameters=None,
+    no_wait=False,
+    user_id="me",
+):
+    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
+    environment = cf_dataplane.environments.get(
+        user_id=user_id, environment_name=environment_name
+    )
+    body = {}
+    if parameters is not None:
+        body["parameters"] = parameters
+    body["environment_type"] = environment.environment_type
+    body["catalog_name"] = environment.catalog_name
+    body["environment_definition_name"] = environment.environment_definition_name
     return sdk_no_wait(
         no_wait,
         cf_dataplane.environments.begin_create_or_update,
