@@ -15,7 +15,7 @@ def register_fleet_resource_type():
     register_resource_type(
         "latest",
         CUSTOM_MGMT_FLEET,
-        SDKProfile("2023-03-15-preview", {"container_services": "2017-07-01"}),
+        SDKProfile("2023-03-15-preview"),
     )
 
 
