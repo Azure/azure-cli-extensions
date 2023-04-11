@@ -16,7 +16,7 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 PREVIEW_API_VERSION = "2022-11-01-preview"
-CURRENT_API_VERSION = "2022-10-01"
+CURRENT_API_VERSION = "2022-11-01-preview"
 POLLING_TIMEOUT = 600  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -88,7 +88,7 @@ def poll_status(cmd, request_url):  # pylint: disable=inconsistent-return-statem
     r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
     while r.status_code in [200] and start < end:
-        time.sleep(POLLING_SECONDS)
+        time.sleep(_extract_delay(r))
         animation.tick()
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         response_body = json.loads(r.text)
@@ -121,7 +121,7 @@ def poll_results(cmd, request_url):  # pylint: disable=inconsistent-return-state
     r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
     while r.status_code in [202] and start < end:
-        time.sleep(POLLING_SECONDS)
+        time.sleep(_extract_delay(r))
         animation.tick()
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         start = time.time()
@@ -129,6 +129,21 @@ def poll_results(cmd, request_url):  # pylint: disable=inconsistent-return-state
     animation.flush()
     if r.text:
         return json.loads(r.text)
+
+
+def _extract_delay(response):
+    try:
+        retry_after = response.headers.get("retry-after")
+        if retry_after:
+            return int(retry_after)
+        for ms_header in ["retry-after-ms", "x-ms-retry-after-ms"]:
+            retry_after = response.headers.get(ms_header)
+            if retry_after:
+                parsed_retry_after = int(retry_after)
+                return parsed_retry_after / 1000.0
+    except ValueError:
+        pass
+    return POLLING_SECONDS
 
 
 class ContainerAppClient():
@@ -505,13 +520,6 @@ class ManagedEnvironmentClient():
         elif r.status_code == 201:
             operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
             poll_status(cmd, operation_url)
-            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/managedEnvironments/{}?api-version={}"
-            request_url = url_fmt.format(
-                management_hostname.strip('/'),
-                sub_id,
-                resource_group_name,
-                name,
-                api_version)
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
         return r.json()
@@ -533,13 +541,19 @@ class ManagedEnvironmentClient():
 
         if no_wait:
             return r.json()
-        elif r.status_code == 201:
+        elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
-            response = poll_results(cmd, operation_url)
-            if response is None:
-                raise ResourceNotFoundError("Could not find a managed environment")
+            if "managedEnvironmentOperationStatuses" in operation_url:
+                poll_status(cmd, operation_url)
+                r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+            elif "managedEnvironmentOperationResults" in operation_url:
+                response = poll_results(cmd, operation_url)
+                if response is None:
+                    raise ResourceNotFoundError("Could not find a managed environment")
+                else:
+                    return response
             else:
-                return response
+                raise AzureResponseError(f"Invalid operation URL: '{operation_url}'")
 
         return r.json()
 
@@ -843,6 +857,39 @@ class ManagedEnvironmentClient():
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
+
+
+class WorkloadProfileClient():
+    @classmethod
+    def list_supported(cls, cmd, location):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = CURRENT_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/providers/Microsoft.App/locations/{}/availableManagedEnvironmentsWorkloadProfileTypes?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            location,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        return r.json().get("value")
+
+    @classmethod
+    def list(cls, cmd, resource_group_name, env_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = CURRENT_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourcegroups/{}/providers/Microsoft.App/managedEnvironments/{}/workloadProfileStates?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            env_name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        return r.json().get("value")
 
 
 class GitHubActionClient():

@@ -89,6 +89,18 @@ def fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster,
         connected_cluster.last_connectivity_time = last_connectivity_time_str
         managed_identity_certificate_expiration_time_str = str(connected_cluster.managed_identity_certificate_expiration_time)
         connected_cluster.managed_identity_certificate_expiration_time = managed_identity_certificate_expiration_time_str
+
+        # Formatting system_data
+        created_at = str(connected_cluster.system_data.created_at)
+        connected_cluster.system_data.created_at = created_at
+        last_modified_at = str(connected_cluster.system_data.last_modified_at)
+        connected_cluster.system_data.last_modified_at = last_modified_at
+        system_data = str(connected_cluster.system_data)
+        connected_cluster.system_data = system_data
+        # Formatting identity
+        identity = str(connected_cluster.identity)
+        connected_cluster.identity = identity
+
         if storage_space_available:
             # If storage space is available then only store the connected cluster resource
             with open(connected_cluster_resource_file_path, 'w+') as cc:
@@ -868,3 +880,259 @@ def describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, a
             diagnoser_output.append("An exception has occured while storing stuck agent logs in the user local machine. Exception: {}".format(str(e)) + "\n")
 
     return storage_space_available
+
+
+def get_secrets_azure_arc(corev1_api_instance, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available):
+
+    try:
+        if storage_space_available:
+            command = [kubectl_client_location, "get", "secrets", "-n", "azure-arc"]
+            if kube_config:
+                command.extend(["--kubeconfig", kube_config])
+            if kube_context:
+                command.extend(["--context", kube_context])
+            # Using Popen to execute the command and fetching the output
+            response_kubectl_get_secrets = Popen(command, stdout=PIPE, stderr=PIPE)
+            output_kubectl_get_secrets, error_kubectl_get_secrets = response_kubectl_get_secrets.communicate()
+            if response_kubectl_get_secrets.returncode != 0:
+                telemetry.set_exception(exception=error_kubectl_get_secrets.decode("ascii"), fault_type=consts.Kubectl_Get_Secrets_Failed_Fault_Type, summary='Error while doing kubectl get secrets')
+                logger.warning("Error while doing kubectl get secrets for azure-arc namespace. We were not able to capture this log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_secrets.decode("ascii"))
+                diagnoser_output.append("Error while doing kubectl get secrets in azure-arc namespace. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_secrets.decode("ascii"))
+                return storage_space_available
+
+            # Converting output obtained in json format
+            secrets_json = output_kubectl_get_secrets.decode()
+            # Path to add the azure-arc secrets
+            secrets_logs_path = os.path.join(filepath_with_timestamp, "azure-arc-secrets.txt")
+
+            with open(secrets_logs_path, 'w+') as secrets_log:
+                    secrets_log.write(secrets_json)
+
+            return storage_space_available
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+        else:
+            logger.warning("An exception has occured while storing list of secrets in azure arc namespace in the user local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Kubectl_Get_Secrets_Fault_Type, summary="Exception occured while storing azure arc secrets")
+            diagnoser_output.append("An exception has occured while storing azure arc secrets in the user local machine. Exception: {}".format(str(e)) + "\n")
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+            logger.warning("An exception has occured while storing list of secrets in azure arc namespace in the user local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Kubectl_Get_Secrets_Fault_Type, summary="Exception occured while storing azure arc secrets")
+            diagnoser_output.append("An exception has occured while storing azure arc secrets in the user local machine. Exception: {}".format(str(e)) + "\n")
+
+    return storage_space_available
+
+
+def get_helm_values_azure_arc(corev1_api_instance, helm_client_location, release_namespace, kube_config, kube_context, filepath_with_timestamp, storage_space_available):
+
+    try:
+        if storage_space_available:
+            command = [helm_client_location, "get", "values", "azure-arc", "-n", release_namespace, "--output", "json"]
+            if kube_config:
+                command.extend(["--kubeconfig", kube_config])
+            if kube_context:
+                command.extend(["--kube-context", kube_context])
+            # Using Popen to execute the command and fetching the output
+            response_kubectl_get_helmvalues = Popen(command, stdout=PIPE, stderr=PIPE)
+            output_kubectl_get_helmvalues, error_kubectl_get_helmvalues = response_kubectl_get_helmvalues.communicate()
+            if response_kubectl_get_helmvalues.returncode != 0:
+                telemetry.set_exception(exception=error_kubectl_get_helmvalues.decode("ascii"), fault_type=consts.Helm_Values_Save_Failed_Fault_Type, summary='Error while doing helm get values for azure-arc release')
+                logger.warning("Error while doing helm get values for azure-arc release. We were not able to capture this log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_helmvalues.decode("ascii"))
+                diagnoser_output.append("Error while doing helm get values for azure-arc release. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_helmvalues.decode("ascii"))
+                return storage_space_available
+
+            # Converting output obtained in json format
+            helmvalues_json = output_kubectl_get_helmvalues.decode("ascii")
+            helmvalues_json = json.loads(helmvalues_json)
+
+            # removing onboarding private key
+            try:
+                if(helmvalues_json['global']['onboardingPrivateKey']):
+                    del helmvalues_json['global']['onboardingPrivateKey']
+            except Exception as e:
+                pass
+
+            # removing azure-rbac client id and client secret, if present
+            try:
+                if(helmvalues_json['systemDefaultValues']['guard']['clientId']):
+                    del helmvalues_json['systemDefaultValues']['guard']['clientId']
+                if(helmvalues_json['systemDefaultValues']['guard']['clientSecret']):
+                    del helmvalues_json['systemDefaultValues']['guard']['clientSecret']
+            except Exception as e:
+                pass
+
+            helmvalues_json = yaml.dump(helmvalues_json)
+            # Path to add the helm values of azure-arc release
+            helmvalues_logs_path = os.path.join(filepath_with_timestamp, "helm_values_azure_arc.txt")
+
+            with open(helmvalues_logs_path, 'w') as helmvalues_log:
+                helmvalues_log.write(helmvalues_json)
+
+            return storage_space_available
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+        else:
+            logger.warning("An exception has occured while storing helm values of azure-arc release in the user local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Helm_Values_Save_Failed_Fault_Type, summary="Exception occured while storing helm values of azure-arc release")
+            diagnoser_output.append("An exception has occured while storing helm values of azure-arc release in the user local machine. Exception: {}".format(str(e)) + "\n")
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+            logger.warning("An exception has occured while storing helm values of azure-arc release in the user local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Helm_Values_Save_Failed_Fault_Type, summary="Exception occured while storing helm values of azure-arc release")
+            diagnoser_output.append("An exception has occured while storing helm values of azure-arc release in the user local machine. Exception: {}".format(str(e)) + "\n")
+
+    return storage_space_available
+
+
+def get_metadata_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available):
+
+    try:
+        if storage_space_available:
+            command = [kubectl_client_location, "describe", "connectedclusters.arc.azure.com/clustermetadata", "-n", "azure-arc"]
+            if kube_config:
+                command.extend(["--kubeconfig", kube_config])
+            if kube_context:
+                command.extend(["--context", kube_context])
+            # Using Popen to execute the command and fetching the output
+            response_kubectl_get_metadata_cr = Popen(command, stdout=PIPE, stderr=PIPE)
+            output_kubectl_get_metadata_cr, error_kubectl_get_metadata_cr = response_kubectl_get_metadata_cr.communicate()
+            if response_kubectl_get_metadata_cr.returncode != 0:
+                telemetry.set_exception(exception=error_kubectl_get_metadata_cr.decode("ascii"), fault_type=consts.Metadata_CR_Save_Failed_Fault_Type, summary='Error occured while fetching metadata CR details')
+                logger.warning("Error while doing kubectl describe for clustermetadata CR. We were not able to capture this log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_metadata_cr.decode("ascii"))
+                diagnoser_output.append("Error occured while fetching metadata CR details. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_metadata_cr.decode("ascii"))
+                return storage_space_available
+
+            # Converting output obtained in json format
+            metadata_cr_json = output_kubectl_get_metadata_cr.decode()
+            # Path to add the metadata CR details
+            metadata_cr_logs_path = os.path.join(filepath_with_timestamp, "metadata_cr_snapshot.txt")
+
+            with open(metadata_cr_logs_path, 'w+') as metadata_cr_log:
+                    metadata_cr_log.write(metadata_cr_json)
+
+            return storage_space_available
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+        else:
+            logger.warning("An exception has occured while storing metadata CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Metadata_CR_Save_Failed_Fault_Type, summary="Error occured while storing metadata CR details")
+            diagnoser_output.append("An exception has occured while storing metadata CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+            logger.warning("An exception has occured while storing metadata CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_Metadata_CR_Save_Failed_Fault_Type, summary="Error occured while storing metadata CR details")
+            diagnoser_output.append("An exception has occured while storing metadata CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
+
+    return storage_space_available
+
+
+def get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available):
+
+    try:
+        if storage_space_available:
+            command = [kubectl_client_location, "describe", "arccertificates.clusterconfig.azure.com/kube-aad-proxy", "-n", "azure-arc"]
+            if kube_config:
+                command.extend(["--kubeconfig", kube_config])
+            if kube_context:
+                command.extend(["--context", kube_context])
+            # Using Popen to execute the command and fetching the output
+            response_kubectl_get_kap_cr = Popen(command, stdout=PIPE, stderr=PIPE)
+            output_kubectl_get_kap_cr, error_kubectl_get_kap_cr = response_kubectl_get_kap_cr.communicate()
+            if response_kubectl_get_kap_cr.returncode != 0:
+                telemetry.set_exception(exception=error_kubectl_get_kap_cr.decode("ascii"), fault_type=consts.KAP_CR_Save_Failed_Fault_Type, summary='Error occured while fetching KAP CR details')
+                logger.warning("Error while doing kubectl describe for kube-aad-proxy CR. We were not able to capture this log in arc_diganostic_logs folder. Exception: ", error_kubectl_get_kap_cr.decode("ascii"))
+                diagnoser_output.append("Error occured while fetching kube-aad-proxy CR details. We were not able to capture this log in arc_diganostic_logs folder. Exception: " + error_kubectl_get_kap_cr.decode("ascii"))
+                return storage_space_available
+
+            # Converting output obtained in json format
+            kap_cr_json = output_kubectl_get_kap_cr.decode()
+            # Path to add the kube-aad-proxy CR details
+            kap_cr_logs_path = os.path.join(filepath_with_timestamp, "kube_aad_proxy_cr_snapshot.txt")
+
+            with open(kap_cr_logs_path, 'w+') as kap_cr_log:
+                    kap_cr_log.write(kap_cr_json)
+
+            return storage_space_available
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+        else:
+            logger.warning("An exception has occured while storing kube-aad-proxy CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_KAP_CR_Save_Failed_Fault_Type, summary="Exception occured while storing kube-aad-proxy CR details")
+            diagnoser_output.append("An exception has occured while storing kube-aad-proxy CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+            logger.warning("An exception has occured while storing kube-aad-proxy CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(exception=e, fault_type=consts.Fetch_KAP_CR_Save_Failed_Fault_Type, summary="Exception occured while storing kube-aad-proxy CR details")
+            diagnoser_output.append("An exception has occured while storing kube-aad-proxy CR details in the user local machine. Exception: {}".format(str(e)) + "\n")
+
+    return storage_space_available
+
+
+def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag):
+
+    # This function is used to store the output that is obtained throughout the Diagnoser process
+
+    global diagnoser_output
+    try:
+        # If storage space is available then only we store the output
+        if storage_space_available:
+            # Path to store the diagnoser results
+            cli_output_logger_path = os.path.join(filepath_with_timestamp, consts.Diagnoser_Results)
+            # If any results are obtained during the process than we will add it to the text file.
+            if len(diagnoser_output) > 0:
+                with open(cli_output_logger_path, 'w+') as cli_output_writer:
+                    for output in diagnoser_output:
+                        cli_output_writer.write(output + "\n")
+                    # If flag is 0 that means that process was terminated using the Keyboard Interrupt so adding that also to the text file
+                    if flag == 0:
+                        cli_output_writer.write("Process terminated externally.\n")
+
+            # If no issues was found during the whole troubleshoot execution
+            elif flag:
+                with open(cli_output_logger_path, 'w+') as cli_output_writer:
+                    cli_output_writer.write("The diagnoser didn't find any issues on the cluster.\n")
+            # If process was terminated by user
+            else:
+                with open(cli_output_logger_path, 'w+') as cli_output_writer:
+                    cli_output_writer.write("Process terminated externally.\n")
+
+        return consts.Diagnostic_Check_Passed
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+        logger.warning("An exception has occured while trying to store the diagnoser results. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Result_Fault_Type, summary="Error while storing the diagnoser results")
+
+    return consts.Diagnostic_Check_Failed

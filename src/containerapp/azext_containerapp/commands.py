@@ -115,11 +115,16 @@ def load_command_table(self, _):
     with self.command_group('containerapp ingress') as g:
         g.custom_command('enable', 'enable_ingress', exception_handler=ex_handler_factory())
         g.custom_command('disable', 'disable_ingress', exception_handler=ex_handler_factory())
+        g.custom_command('update', 'update_ingress', exception_handler=ex_handler_factory())
         g.custom_show_command('show', 'show_ingress')
 
     with self.command_group('containerapp ingress traffic') as g:
         g.custom_command('set', 'set_ingress_traffic', exception_handler=ex_handler_factory())
         g.custom_show_command('show', 'show_ingress_traffic')
+
+    with self.command_group('containerapp ingress sticky-sessions') as g:
+        g.custom_command('set', 'set_ingress_sticky_session', exception_handler=ex_handler_factory())
+        g.custom_show_command('show', 'show_ingress_sticky_session')
 
     with self.command_group('containerapp ingress access-restriction') as g:
         g.custom_command('set', 'set_ip_restriction', exception_handler=ex_handler_factory())
@@ -187,3 +192,10 @@ def load_command_table(self, _):
 
     with self.command_group('containerapp compose') as g:
         g.custom_command('create', 'create_containerapps_from_compose')
+
+    with self.command_group('containerapp env workload-profile', is_preview=True) as g:
+        g.custom_command('list-supported', 'list_supported_workload_profiles')
+        g.custom_command('list', 'list_workload_profiles')
+        g.custom_show_command('show', 'show_workload_profile')
+        g.custom_command('set', 'set_workload_profile')
+        g.custom_command('delete', 'delete_workload_profile')

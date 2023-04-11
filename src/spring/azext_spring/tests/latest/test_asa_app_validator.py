@@ -71,39 +71,43 @@ class TestCpuAndMemoryValidator(unittest.TestCase):
         ns = Namespace(cpu='invalid')
         with self.assertRaises(InvalidArgumentValueError) as context:
             validate_cpu(ns)
-        self.assertEqual('CPU quantity should be millis (500m) or integer (1, 2, ...)', str(context.exception))
+        self.assertEqual('CPU quantity should be millis (250m, 500m, 750m, 1250m) or integer (1, 2, ...)', str(context.exception))
 
 
 class TestDeployPath(unittest.TestCase):
-    def test_no_deploy_path_provided_when_create(self):
-        ns = Namespace(source_path=None, artifact_path=None, container_image=None)
-        validate_deloyment_create_path(ns)
+    @mock.patch('azext_spring._app_validator.cf_spring', autospec=True)
+    def test_no_deploy_path_provided_when_create(self, client_factory_mock):
+        ns = Namespace(source_path=None, artifact_path=None, container_image=None, resource_group='rg', service='test')
+        client = mock.MagicMock()
+        client.buildservices.get.return_value = []
+        client_factory_mock.return_value = client
+        validate_deloyment_create_path(_get_test_cmd(), ns)
 
     def test_no_deploy_path_when_deploy(self):
         ns = Namespace(source_path=None, artifact_path=None, container_image=None)
         with self.assertRaises(InvalidArgumentValueError):
-            validate_deloy_path(ns)
+            validate_deloy_path(_get_test_cmd(), ns)
 
     def test_more_than_one_path(self):
         ns = Namespace(source_path='test', artifact_path='test', container_image=None)
         with self.assertRaises(InvalidArgumentValueError):
-            validate_deloy_path(ns)
+            validate_deloy_path(_get_test_cmd(), ns)
         with self.assertRaises(InvalidArgumentValueError):
-            validate_deloyment_create_path(ns)
+            validate_deloyment_create_path(_get_test_cmd(), ns)
 
     def test_more_than_one_path_1(self):
         ns = Namespace(source_path='test', artifact_path='test', container_image='test')
         with self.assertRaises(InvalidArgumentValueError):
-            validate_deloy_path(ns)
+            validate_deloy_path(_get_test_cmd(), ns)
         with self.assertRaises(InvalidArgumentValueError):
-            validate_deloyment_create_path(ns)
+            validate_deloyment_create_path(_get_test_cmd(), ns)
 
     def test_more_than_one_path_2(self):
         ns = Namespace(source_path='test', artifact_path=None, container_image='test')
         with self.assertRaises(InvalidArgumentValueError):
-            validate_deloy_path(ns)
+            validate_deloy_path(_get_test_cmd(), ns)
         with self.assertRaises(InvalidArgumentValueError):
-            validate_deloyment_create_path(ns)
+            validate_deloyment_create_path(_get_test_cmd(), ns)
 
 
 class TestActiveDeploymentExist(unittest.TestCase):

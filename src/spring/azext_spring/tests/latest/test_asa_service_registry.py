@@ -3,22 +3,28 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.testsdk import (ScenarioTest, record_only)
+from azure.cli.testsdk import (ScenarioTest)
+from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer, SpringAppNamePreparer)
+from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
 
-@record_only()
 class ServiceRegistryTest(ScenarioTest):
 
-    def test_service_registry(self):
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
+    @SpringAppNamePreparer()
+    def test_service_registry(self, resource_group, spring, app):
         
         self.kwargs.update({
-            'serviceName': 'tx-enterprise',
-            'rg': 'tx',
-            "app": "app1"
+            'serviceName': spring,
+            'rg': resource_group,
+            "app": app
         })
+
+        self.cmd('spring app create -g {rg} -s {serviceName} -n {app}')
         
         self.cmd('spring service-registry show -g {rg} -s {serviceName}', checks=[
             self.check('properties.provisioningState', "Succeeded")
@@ -26,8 +32,9 @@ class ServiceRegistryTest(ScenarioTest):
 
         self.cmd('spring service-registry bind --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('properties.addonConfigs.serviceRegistry.resourceId',
-            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default")
+            "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/serviceRegistries/default".format(self.get_subscription_id(), resource_group, spring))
         ])
+        self.cmd('spring app show -n {app} -g {rg} -s {serviceName}')
         self.cmd('spring service-registry unbind --app {app} -g {rg} -s {serviceName}')
 
         self.cmd('spring service-registry delete -g {rg} -s {serviceName} --yes')
