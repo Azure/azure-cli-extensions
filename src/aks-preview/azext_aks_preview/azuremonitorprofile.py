@@ -295,7 +295,7 @@ def get_default_dcra_name(cluster_region, cluster_name):
     return sanitize_name(default_dcra_name, DC_TYPE.DCRA)
 
 
-def get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, cluster_region):
+def get_mac_region(cmd, azure_monitor_workspace_resource_id):
     from azure.cli.core.util import send_raw_request
     from azure.core.exceptions import HttpResponseError
     # region of MAC can be different from region of RG so find the location of the azure_monitor_workspace_resource_id
@@ -304,55 +304,9 @@ def get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, c
     try:
         resource = resources.get_by_id(
             azure_monitor_workspace_resource_id, MAC_API)
-        mac_location = resource.location
+        mac_location = resource.location.lower()
     except HttpResponseError as ex:
         raise ex
-    # first get the association between region display names and region IDs (because for some reason
-    # the "which RPs are available in which regions" check returns region display names)
-    region_names_to_id = {}
-    # retry the request up to two times
-    for _ in range(3):
-        try:
-            headers = ['User-Agent=azuremonitormetrics.get_mac_region_and_check_support.mac_subscription_location_support_check']
-            location_list_url = f"https://management.azure.com/subscriptions/{mac_subscription_id}/locations?api-version=2019-11-01"
-            r = send_raw_request(cmd.cli_ctx, "GET", location_list_url, headers=headers)
-
-            # this is required to fool the static analyzer. The else statement will only run if an exception
-            # is thrown, but flake8 will complain that e is undefined if we don"t also define it here.
-            error = None
-            break
-        except CLIError as e:
-            error = e
-    else:
-        # This will run if the above for loop was not broken out of. This means all three requests failed
-        raise error
-    json_response = json.loads(r.text)
-    for region_data in json_response["value"]:
-        region_names_to_id[region_data["displayName"]
-                           ] = region_data["name"]
-    # check if region supports DCR and DCRA
-    for _ in range(3):
-        try:
-            feature_check_url = f"https://management.azure.com/subscriptions/{mac_subscription_id}/providers/Microsoft.Insights?api-version=2020-10-01"
-            headers = ['User-Agent=azuremonitormetrics.get_mac_region_and_check_support.mac_subscription_dcr_dcra_regions_support_check']
-            r = send_raw_request(cmd.cli_ctx, "GET", feature_check_url, headers=headers)
-            error = None
-            break
-        except CLIError as e:
-            error = e
-    else:
-        raise error
-    json_response = json.loads(r.text)
-    for resource in json_response["resourceTypes"]:
-        region_ids = map(lambda x: region_names_to_id[x],
-                         resource["locations"])  # map is lazy, so doing this for every region isn"t slow
-        if resource["resourceType"].lower() == "datacollectionrules" and mac_location not in region_ids:
-            raise ClientRequestError(
-                f"Data Collection Rules are not supported for MAC region {mac_location}")
-        elif resource[
-                "resourceType"].lower() == "datacollectionruleassociations" and cluster_region not in region_ids:
-            raise ClientRequestError(
-                f"Data Collection Rule Associations are not supported for cluster region {cluster_region}")
     return mac_location
 
 
@@ -666,7 +620,7 @@ def link_azure_monitor_profile_artifacts(cmd, cluster_subscription, cluster_reso
     # MAC creation if required
     azure_monitor_workspace_resource_id = get_azure_monitor_workspace_resource_id(cmd, cluster_subscription, cluster_region, raw_parameters)
     # Get MAC region (required for DCE, DCR creation) and check support for DCE,DCR creation
-    mac_region = get_mac_region_and_check_support(cmd, azure_monitor_workspace_resource_id, cluster_region)
+    mac_region = get_mac_region(cmd, azure_monitor_workspace_resource_id)
     # DCE creation
     dce_resource_id = create_dce(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, mac_region)
     # DCR creation
