@@ -94,3 +94,23 @@ class AlertsScenarioTest(ScenarioTest):
 
         self.cmd('az monitor alert-processing-rule delete -g {rg} -n test1 --yes')
         self.cmd('az monitor alert-processing-rule delete -g {rg} -n test2 --yes')
+
+
+class PrometheusRuleGroup(ScenarioTest):
+    @ResourceGroupPreparer(name_prefix='cli_test_alertsmanagement_prometheus_rule_group_', location='eastus')
+    def test_alertsmanagement_prometheus_rule_group(self, resource_group):
+        subs_id = self.get_subscription_id()
+        rg_id = '/subscriptions/{}/resourceGroups/{}'.format(subs_id, resource_group)
+        self.kwargs.update({
+            'rg_id': rg_id,
+            'subs_id': subs_id,
+            'loc': 'eastus',
+            'name': self.create_random_name('prometheus-rule-group', 24),
+            'description': 'This is the description of the following rule group',
+            'interval': 'PT10M',
+        })
+        self.cmd('az alerts-management prometheus-rule-group create -n {name} -g {rg} -l {loc} --enabled '
+                 '--description {description} '
+                 '--interval {interval}'
+                 '--scopes {scope}'
+                 '--rules')
