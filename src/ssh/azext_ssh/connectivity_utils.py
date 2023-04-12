@@ -14,12 +14,13 @@ from glob import glob
 import colorama
 
 from azure.cli.core.style import Style, print_styled_text
-from azure.core.exceptions import ResourceNotFoundError
+from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 from azure.cli.core import telemetry
 from azure.cli.core import azclierror
-from azure.mgmt.core.tools import resource_id
+from azure.mgmt.core.tools import resource_id, parse_resource_id
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack import log
+from knack.prompting import prompt_y_n
 
 from . import file_utils
 from . import constants as consts
@@ -30,7 +31,7 @@ logger = log.get_logger(__name__)
 # Get the Access Details to connect to Arc Connectivity platform from the HybridConnectivity RP
 def get_relay_information(cmd, resource_group, vm_name, resource_type, certificate_validity_in_seconds, port):
     from .aaz.latest.hybrid_connectivity.endpoint import ListCredential
-    
+    print("GET RELAY INFORMATION")
     if not certificate_validity_in_seconds or \
        certificate_validity_in_seconds > consts.RELAY_INFO_MAXIMUM_DURATION_IN_SECONDS:
         certificate_validity_in_seconds = consts.RELAY_INFO_MAXIMUM_DURATION_IN_SECONDS
@@ -40,66 +41,95 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
     resource_uri = resource_id(subscription=get_subscription_id(cmd.cli_ctx), resource_group=resource_group,
                                  namespace=namespace, type=arc_type, name=vm_name)
     
-    list_cred_args = {
+    _check_and_fix_service_configuration(cmd, resource_uri, port)
+
+
+def _check_and_fix_service_configuration(cmd, resource_uri, port):
+    from .aaz.latest.hybrid_connectivity.endpoint.service_configuration import Show as ShowServiceConfig
+    show_service_config_args = {
         'endpoint_name': 'default',
         'resource_uri': resource_uri,
-        'expiresin': certificate_validity_in_seconds,
-        'service_name': 'SSH'
+        'service_configuration_name': 'SSH'
     }
-
+    serviceConfig = None
     try:
-        t0 = time.time()
-        result = ListCredential(cli_ctx=cmd.cli_ctx)(command_args=list_cred_args)
-        time_elapsed = time.time() - t0
-        telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
-    
+        serviceConfig = ShowServiceConfig(cli_ctx=cmd.cli_ctx)(command_args=show_service_config_args)
     except ResourceNotFoundError:
-        logger.debug("Default Endpoint couldn't be found. Trying to create Default Endpoint.")
-        _create_default_endpoint(cmd, resource_group, vm_name, resource_uri, port)
-        try:
-            t0 = time.time()
-            result = ListCredential(cli_ctx=cmd.cli_ctx)(command_args=list_cred_args)
-            time_elapsed = time.time() - t0
-            telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.SSHListCredentialsTime': time_elapsed})
-        except Exception as e:
-            raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed:\n{str(e)}")
-    except Exception as e:
-        raise azclierror.ClientRequestError(f"Request for Azure Relay Information Failed:\n{str(e)}")
-    return result
+        endpoint = _get_or_create_endpoint(cmd, resource_uri)
+        serviceConfig = _create_service_configuration(cmd, resource_uri, port)
+    
+    #check if SSH configuration matches port
+    #if it doesn't match port, offer to fix it
 
 
-def _create_default_endpoint(cmd, resource_group, vm_name, resource_uri, port):
-    from .aaz.latest.hybrid_connectivity.endpoint.service_configuration import Create as CreateServiceConfig
+def _get_or_create_endpoint(cmd, resource_uri):
+    from .aaz.latest.hybrid_connectivity.endpoint import Show as ShowEndpoint
+    show_endpoint_args = {
+        'endpoint_name': 'default',
+        'resource_uri': resource_uri,
+    }
+    try:
+        endpoint = ShowEndpoint(cli_ctx=cmd.cli_ctx)(command_args=show_endpoint_args)
+    except ResourceNotFoundError:
+        endpoint = _create_default_endpoint(cmd, resource_uri)
+
+    return endpoint
+
+
+def _create_default_endpoint(cmd, resource_uri):
     from .aaz.latest.hybrid_connectivity.endpoint import Create as CreateHybridConnectivityEndpoint
-
+    vm_name = parse_resource_id(resource_uri)["name"]
+    resource_group = parse_resource_id(resource_uri)["resource_group"]
     create_endpoint_args = {
         'endpoint_name': 'default',
         'resource_uri': resource_uri,
         'type': 'default'
     }
+    try:
+        endpoint = CreateHybridConnectivityEndpoint(cli_ctx=cmd.cli_ctx)(command_args=create_endpoint_args)
+    except HttpResponseError as e:
+        if e.reason == "Forbidden":
+             raise azclierror.UnauthorizedError("Client is not authorized to create the default connectivity " +
+                                               f"endpoint for \'{vm_name}\' in Resource Group \'{resource_group}\'. " +
+                                               "This is a one-time operation that must be performed by someone with " +
+                                               "Owner or Contributor role to allow connections to the target resource.",
+                                               consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
+        raise azclierror.UnclassifiedUserFault(f"Unable to create Default Endpoint for {vm_name} in {resource_group}."
+                                               f"\nError: {str(e)}",
+                                               consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
+    except Exception as e:
+        colorama.init()
+        raise azclierror.UnclassifiedUserFault(f"Unable to create Default Endpoint for {vm_name} in {resource_group}."
+                                               f"\nError: {str(e)}",
+                                               consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
+    
+    return endpoint
 
+
+def _create_service_configuration(cmd, resource_uri, port):
+    from .aaz.latest.hybrid_connectivity.endpoint.service_configuration import Create as CreateServiceConfig
+    if not port:
+        port = '22'
+    if port != '22' and not prompt_y_n(f"Current service configuration doesn't allow SSH connection to port {port}. Would you like to add it?"):
+        raise azclierror.ClientRequestError(f"No ssh permission for port {port}. If you want to connect to this port follow intructions on this doc: aka.ms/ssharc.")
+            
     create_service_conf_args = {
         'endpoint_name': 'default',
         'resource_uri': resource_uri,
         'service_configuration_name': 'SSH',
         'Properties': {
-            'port': port,
+            'port': int(port),
             'service_name': 'SSH'
         }
     }
     try:
-        CreateHybridConnectivityEndpoint(cli_ctx=cmd.cli_ctx)(command_args=create_endpoint_args)
-    except Exception as e:
-        colorama.init()
-        raise azclierror.UnauthorizedError(f"Unable to create Default Endpoint for {vm_name} in {resource_group}."
-                                           f"\nError: {str(e)}",
-                                           colorama.Fore.YELLOW + "Contact Owner/Contributor of the resource."
-                                           + colorama.Style.RESET_ALL)
-
-    try:
-        CreateServiceConfig(cli_ctx=cmd.cli_ctx)(command_args=create_service_conf_args)
+        serviceConfig = CreateServiceConfig(cli_ctx=cmd.cli_ctx)(command_args=create_service_conf_args)
     except Exception as e:
         raise azclierror.ClientRequestError({str(e)})
+
+    return serviceConfig
+
+   
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
 def get_client_side_proxy(arc_proxy_folder):

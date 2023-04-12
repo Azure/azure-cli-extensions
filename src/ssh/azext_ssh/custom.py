@@ -189,7 +189,7 @@ def _do_ssh_op(cmd, op_info, op_call):
             op_info.proxy_path = connectivity_utils.get_client_side_proxy(op_info.ssh_proxy_folder)
             op_info.relay_info = connectivity_utils.get_relay_information(cmd, op_info.resource_group_name,
                                                                           op_info.vm_name, op_info.resource_type,
-                                                                          cert_lifetime)
+                                                                          cert_lifetime, op_info.port)
     except Exception as e:
         if delete_keys or delete_cert:
             logger.debug("An error occured before operation concluded. Deleting generated keys: %s %s %s",

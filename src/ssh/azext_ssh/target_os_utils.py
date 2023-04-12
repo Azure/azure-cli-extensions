@@ -67,8 +67,8 @@ def _get_arc_server_os(cmd, resource_group_name, vm_name):
     except Exception:
         return None
 
-    if arc_server and arc_server.properties and arc_server.properties and arc_server.properties.os_name:
-        os_type = arc_server.properties.os_name
+    if arc_server and arc_server.get('osName', None):
+        os_type = arc_server['osName']
 
     return os_type
 

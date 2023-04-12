@@ -11,3 +11,4 @@
 from .__cmd_group import *
 from ._create import *
 from ._list_credential import *
+from ._show import *
