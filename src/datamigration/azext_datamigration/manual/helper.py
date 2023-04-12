@@ -120,8 +120,6 @@ def tdeMigration_console_app_setup():
 
     # Creating base folder structure
     create_dir_path(baseFolder)
-    # check and download console app
-    # TODO
 
     return exePath
 
