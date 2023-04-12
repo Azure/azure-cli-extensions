@@ -68,7 +68,17 @@ class Show(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.NspAccessRulesGet(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -179,11 +189,17 @@ class Show(AAZCommand):
                 serialized_name="addressPrefixes",
             )
             properties.direction = AAZStrType()
+            properties.email_addresses = AAZListType(
+                serialized_name="emailAddresses",
+            )
             properties.fully_qualified_domain_names = AAZListType(
                 serialized_name="fullyQualifiedDomainNames",
             )
             properties.network_security_perimeters = AAZListType(
                 serialized_name="networkSecurityPerimeters",
+            )
+            properties.phone_numbers = AAZListType(
+                serialized_name="phoneNumbers",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -193,6 +209,9 @@ class Show(AAZCommand):
 
             address_prefixes = cls._schema_on_200.properties.address_prefixes
             address_prefixes.Element = AAZStrType()
+
+            email_addresses = cls._schema_on_200.properties.email_addresses
+            email_addresses.Element = AAZStrType()
 
             fully_qualified_domain_names = cls._schema_on_200.properties.fully_qualified_domain_names
             fully_qualified_domain_names.Element = AAZStrType()
@@ -210,6 +229,9 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
+            phone_numbers = cls._schema_on_200.properties.phone_numbers
+            phone_numbers.Element = AAZStrType()
+
             subscriptions = cls._schema_on_200.properties.subscriptions
             subscriptions.Element = AAZObjectType()
 
@@ -220,6 +242,10 @@ class Show(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _ShowHelper:
+    """Helper class for Show"""
 
 
 __all__ = ["Show"]
