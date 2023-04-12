@@ -228,8 +228,8 @@ def check_and_download_tdeMigration_console_app(baseFolder):
                 nugets.append(item)
 
         nugets.sort(reverse=True)
-        avaiFile = nugets[0]
-        zipDestination = os.path.join(baseFolder, avaiFile)
+        latestNugetFile = nugets[0]
+        zipDestination = os.path.join(baseFolder, latestNugetFile)
         nuget = ZipFile(zipDestination, "r")
         nuget.extractall(path=baseFolder)
         consoleFolderExists = True
