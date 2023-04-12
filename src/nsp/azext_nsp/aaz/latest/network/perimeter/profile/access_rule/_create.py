@@ -57,19 +57,16 @@ class Create(AAZCommand):
             options=["-n", "--name", "--access-rule-name"],
             help="The name of the NSP access rule.",
             required=True,
-            id_part="child_name_2",
         )
         _args_schema.perimeter_name = AAZStrArg(
             options=["--perimeter-name"],
             help="The name of the network security perimeter.",
             required=True,
-            id_part="name",
         )
         _args_schema.profile_name = AAZStrArg(
             options=["--profile-name"],
             help="The name of the NSP profile.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -108,6 +105,11 @@ class Create(AAZCommand):
             help="Direction that specifies whether the access rules is inbound/outbound.",
             enum={"Inbound": "Inbound", "Outbound": "Outbound"},
         )
+        _args_schema.email_addresses = AAZListArg(
+            options=["--email-addresses"],
+            arg_group="Properties",
+            help="Outbound rules email address format.",
+        )
         _args_schema.fqdn = AAZListArg(
             options=["--fqdn"],
             arg_group="Properties",
@@ -118,6 +120,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Inbound rule specified by the perimeter id.",
         )
+        _args_schema.phone_numbers = AAZListArg(
+            options=["--phone-numbers"],
+            arg_group="Properties",
+            help="Outbound rules phone number format.",
+        )
         _args_schema.subscriptions = AAZListArg(
             options=["--subscriptions"],
             arg_group="Properties",
@@ -126,6 +133,9 @@ class Create(AAZCommand):
 
         address_prefixes = cls._args_schema.address_prefixes
         address_prefixes.Element = AAZStrArg()
+
+        email_addresses = cls._args_schema.email_addresses
+        email_addresses.Element = AAZStrArg()
 
         fqdn = cls._args_schema.fqdn
         fqdn.Element = AAZStrArg()
@@ -139,6 +149,9 @@ class Create(AAZCommand):
             help="NSP id in the ARM id format.",
         )
 
+        phone_numbers = cls._args_schema.phone_numbers
+        phone_numbers.Element = AAZStrArg()
+
         subscriptions = cls._args_schema.subscriptions
         subscriptions.Element = AAZObjectArg()
 
@@ -150,7 +163,17 @@ class Create(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.NspAccessRulesCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -246,13 +269,19 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("addressPrefixes", AAZListType, ".address_prefixes")
                 properties.set_prop("direction", AAZStrType, ".direction")
+                properties.set_prop("emailAddresses", AAZListType, ".email_addresses")
                 properties.set_prop("fullyQualifiedDomainNames", AAZListType, ".fqdn")
                 properties.set_prop("networkSecurityPerimeters", AAZListType, ".nsp")
+                properties.set_prop("phoneNumbers", AAZListType, ".phone_numbers")
                 properties.set_prop("subscriptions", AAZListType, ".subscriptions")
 
             address_prefixes = _builder.get(".properties.addressPrefixes")
             if address_prefixes is not None:
                 address_prefixes.set_elements(AAZStrType, ".")
+
+            email_addresses = _builder.get(".properties.emailAddresses")
+            if email_addresses is not None:
+                email_addresses.set_elements(AAZStrType, ".")
 
             fully_qualified_domain_names = _builder.get(".properties.fullyQualifiedDomainNames")
             if fully_qualified_domain_names is not None:
@@ -265,6 +294,10 @@ class Create(AAZCommand):
             _elements = _builder.get(".properties.networkSecurityPerimeters[]")
             if _elements is not None:
                 _elements.set_prop("id", AAZStrType, ".id")
+
+            phone_numbers = _builder.get(".properties.phoneNumbers")
+            if phone_numbers is not None:
+                phone_numbers.set_elements(AAZStrType, ".")
 
             subscriptions = _builder.get(".properties.subscriptions")
             if subscriptions is not None:
@@ -314,11 +347,17 @@ class Create(AAZCommand):
                 serialized_name="addressPrefixes",
             )
             properties.direction = AAZStrType()
+            properties.email_addresses = AAZListType(
+                serialized_name="emailAddresses",
+            )
             properties.fully_qualified_domain_names = AAZListType(
                 serialized_name="fullyQualifiedDomainNames",
             )
             properties.network_security_perimeters = AAZListType(
                 serialized_name="networkSecurityPerimeters",
+            )
+            properties.phone_numbers = AAZListType(
+                serialized_name="phoneNumbers",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -328,6 +367,9 @@ class Create(AAZCommand):
 
             address_prefixes = cls._schema_on_200_201.properties.address_prefixes
             address_prefixes.Element = AAZStrType()
+
+            email_addresses = cls._schema_on_200_201.properties.email_addresses
+            email_addresses.Element = AAZStrType()
 
             fully_qualified_domain_names = cls._schema_on_200_201.properties.fully_qualified_domain_names
             fully_qualified_domain_names.Element = AAZStrType()
@@ -345,6 +387,9 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
+            phone_numbers = cls._schema_on_200_201.properties.phone_numbers
+            phone_numbers.Element = AAZStrType()
+
             subscriptions = cls._schema_on_200_201.properties.subscriptions
             subscriptions.Element = AAZObjectType()
 
@@ -355,6 +400,10 @@ class Create(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

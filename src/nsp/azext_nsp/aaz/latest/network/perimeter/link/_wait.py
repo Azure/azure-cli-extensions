@@ -12,19 +12,15 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network perimeter association show",
+    "network perimeter link wait",
 )
-class Show(AAZCommand):
-    """Gets the specified NSP association by name.
-
-    :example: Get NSP Association
-        az network perimeter association show -n MyAssociation --perimeter-name MyPerimeter -g MyResourceGroup
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2021-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/resourceassociations/{}", "2021-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/links/{}", "2021-02-01-preview"],
         ]
     }
 
@@ -44,9 +40,9 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.association_name = AAZStrArg(
-            options=["-n", "--name", "--association-name"],
-            help="The name of the NSP association.",
+        _args_schema.link_name = AAZStrArg(
+            options=["-n", "--name", "--link-name"],
+            help="The name of the NSP link.",
             required=True,
             id_part="child_name_1",
         )
@@ -63,7 +59,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NspAssociationsGet(ctx=self.ctx)()
+        self.NspLinksGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,10 +71,10 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
-    class NspAssociationsGet(AAZHttpOperation):
+    class NspLinksGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -92,7 +88,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/resourceAssociations/{associationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/links/{linkName}",
                 **self.url_parameters
             )
 
@@ -108,7 +104,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "associationName", self.ctx.args.association_name,
+                    "linkName", self.ctx.args.link_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -163,59 +159,72 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
+            _schema_on_200.etag = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.location = AAZStrType()
-            _schema_on_200.name = AAZStrType()
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
-            properties.access_mode = AAZStrType(
-                serialized_name="accessMode",
+            properties.auto_approved_remote_perimeter_resource_id = AAZStrType(
+                serialized_name="autoApprovedRemotePerimeterResourceId",
             )
-            properties.has_provisioning_issues = AAZStrType(
-                serialized_name="hasProvisioningIssues",
+            properties.description = AAZStrType()
+            properties.local_inbound_profiles = AAZListType(
+                serialized_name="localInboundProfiles",
+            )
+            properties.local_outbound_profiles = AAZListType(
+                serialized_name="localOutboundProfiles",
                 flags={"read_only": True},
             )
-            properties.private_link_resource = AAZObjectType(
-                serialized_name="privateLinkResource",
-            )
-            _ShowHelper._build_schema_sub_resource_read(properties.private_link_resource)
-            properties.profile = AAZObjectType()
-            _ShowHelper._build_schema_sub_resource_read(properties.profile)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.remote_inbound_profiles = AAZListType(
+                serialized_name="remoteInboundProfiles",
+            )
+            properties.remote_outbound_profiles = AAZListType(
+                serialized_name="remoteOutboundProfiles",
+                flags={"read_only": True},
+            )
+            properties.remote_perimeter_guid = AAZStrType(
+                serialized_name="remotePerimeterGuid",
+                flags={"read_only": True},
+            )
+            properties.remote_perimeter_location = AAZStrType(
+                serialized_name="remotePerimeterLocation",
+                flags={"read_only": True},
+            )
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
 
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
+            local_inbound_profiles = cls._schema_on_200.properties.local_inbound_profiles
+            local_inbound_profiles.Element = AAZStrType()
+
+            local_outbound_profiles = cls._schema_on_200.properties.local_outbound_profiles
+            local_outbound_profiles.Element = AAZStrType()
+
+            remote_inbound_profiles = cls._schema_on_200.properties.remote_inbound_profiles
+            remote_inbound_profiles.Element = AAZStrType()
+
+            remote_outbound_profiles = cls._schema_on_200.properties.remote_outbound_profiles
+            remote_outbound_profiles.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
-
-    _schema_sub_resource_read = None
-
-    @classmethod
-    def _build_schema_sub_resource_read(cls, _schema):
-        if cls._schema_sub_resource_read is not None:
-            _schema.id = cls._schema_sub_resource_read.id
-            return
-
-        cls._schema_sub_resource_read = _schema_sub_resource_read = AAZObjectType()
-
-        sub_resource_read = _schema_sub_resource_read
-        sub_resource_read.id = AAZStrType()
-
-        _schema.id = cls._schema_sub_resource_read.id
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
-__all__ = ["Show"]
+__all__ = ["Wait"]

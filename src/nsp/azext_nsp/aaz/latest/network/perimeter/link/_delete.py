@@ -12,27 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network perimeter profile access-rule delete",
+    "network perimeter link delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Deletes an NSP access rule.
+    """Delete an NSP Link resource.
 
-    :example: Delete NSP access rule
-        az network perimeter profile access-rule delete -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup
+    :example: Delete NSP link
+        az network perimeter link delete --name link1 --perimeter-name nsp1 --resource-group rg1
     """
 
     _aaz_info = {
         "version": "2021-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/profiles/{}/accessrules/{}", "2021-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/links/{}", "2021-02-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return None
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -45,23 +46,17 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.access_rule_name = AAZStrArg(
-            options=["-n", "--name", "--access-rule-name"],
-            help="The name of the NSP access rule.",
+        _args_schema.link_name = AAZStrArg(
+            options=["-n", "--name", "--link-name"],
+            help="The name of the NSP link.",
             required=True,
-            id_part="child_name_2",
+            id_part="child_name_1",
         )
         _args_schema.perimeter_name = AAZStrArg(
             options=["--perimeter-name"],
             help="The name of the network security perimeter.",
             required=True,
             id_part="name",
-        )
-        _args_schema.profile_name = AAZStrArg(
-            options=["--profile-name"],
-            help="The name of the NSP profile.",
-            required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -70,7 +65,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.NspAccessRulesDelete(ctx=self.ctx)()
+        yield self.NspLinksDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -81,23 +76,46 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class NspAccessRulesDelete(AAZHttpOperation):
+    class NspLinksDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [204]:
-                return self.on_204(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/profiles/{profileName}/accessRules/{accessRuleName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/links/{linkName}",
                 **self.url_parameters
             )
 
@@ -113,15 +131,11 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "accessRuleName", self.ctx.args.access_rule_name,
+                    "linkName", self.ctx.args.link_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "networkSecurityPerimeterName", self.ctx.args.perimeter_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "profileName", self.ctx.args.profile_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
