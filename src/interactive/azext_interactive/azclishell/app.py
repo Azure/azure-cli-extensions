@@ -618,7 +618,7 @@ class AzInteractiveShell(object):
 
     def handle_search(self, text):
         """ parses for the scenario search """
-        # \ connect a momgodb -> connect a mongodb
+        # If the user's input text is "\ connect a momgodb", we extract the keyword "connect a mongodb" from it
         keywords = text.partition(SELECT_SYMBOL['search'])[2].strip()
         if not keywords:
             print_styled_text([(Style.WARNING, 'Please input search keywords')])
