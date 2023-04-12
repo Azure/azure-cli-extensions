@@ -684,6 +684,7 @@ def update_containerapp_logic(cmd,
 
     if workload_profile_name:
         new_containerapp["properties"]["workloadProfileName"] = workload_profile_name
+        ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile_name, managed_env_info)
 
     # Containers
     if update_map["container"]:

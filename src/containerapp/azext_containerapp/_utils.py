@@ -830,7 +830,8 @@ def _remove_readonly_attributes(containerapp_def):
         "latestRevisionFqdn",
         "customDomainVerificationId",
         "outboundIpAddresses",
-        "fqdn"
+        "fqdn",
+        "workloadProfileName"
     ]
 
     for unneeded_property in unneeded_properties:
