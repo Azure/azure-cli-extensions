@@ -639,7 +639,7 @@ class AzInteractiveShell(object):
                 if self.recommender.cur_thread.result:
                     break
             except (KeyboardInterrupt, ValueError):
-                # CTRL C
+                # Catch CTRL + C to quit the search thread
                 break
         if self.recommender.cur_thread.result is not None:
             results = self.recommender.cur_thread.result
