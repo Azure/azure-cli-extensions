@@ -2,6 +2,9 @@
 
 ## The interactive mode for Microsoft Azure CLI (Command Line Interface)
 
+-Recommend Commands and Scenarios Based on Previous Commands
+- Search for Scenarios
+- Value Completion in Scenario Mode
 - Interactive Tutorials
 - Lightweight Drop Down Completions 
 - Auto Cached Suggestions 
@@ -63,6 +66,12 @@ To undefault a value
    $ %% ..
 ```
 
+To Search for a scenario
+
+```bash
+   $ /[keywords]
+```
+
 ## Use Examples
 
 Type a command, for example:
@@ -105,40 +114,78 @@ Only clears the appended suggestion when you restart the interactive shell
 
 The color option will be saved.
 
-## Cli Recommendation(Preview)
-2023.04.04
-####  **[Breaking Change]** Integrate the cli recommendation to make the completion ability more intelligent and provide the scenario completion.
+# Intelligent AZ Interactive (Revolutionary Change)
+## Recommendation
 
-How to enable or disable the cli recommendation
-```bash
-$ az config set interactive.enable_recommender=True //Default, try the new recommendation feature
-$ az config set interactive.enable_recommender=False // Disable the recommendation feature
+We have integrated the cli recommendation to make the completion ability more intelligent and provide the scenario completion. This is a revolutionary change. Users can enable or disable the recommendation feature by running the following commands:
+
+```
+$ az config set interactive.enable_recommender=True # Default, try the new recommendation feature
+$ az config set interactive.enable_recommender=False # Disable the recommendation feature
 ```
 
-#### **[Add]** Add loading bar when initializing the az interactive
-We added the loading bar to show the progress of the initialization. Initializing `az interactive` will take about 1min, with a default timeout of 150 seconds.
+### Command Recommendation
 
-If the initialization is not finished within 150 seconds, the loading bar can be stopped and the initialization will continue in the background.
+Command recommendation uses an intelligent algorithm to suggest the most relevant and frequently used command for the user based on their historical command inputs. By analyzing the user's input history and matching it with the highest relevant commands, Intelligent Az Interactive can assist Azure CLI beginners in making quick and informed decisions, saving them time and effort.
 
-However, incomplete loading and initialization may result in some command parameters not being updated, some commands not being executed, etc. This can cause unknown errors, which will return to normal after loading is complete.
+The command recommendation feature can also be a good way to broaden users' knowledge boundaries and help them recognize and learn commands that are related to their common commands but never used before.
 
-#### **[Optimize]** Optimize the telemetry feedback to adapt to new recommendation function
-In order to collect data and facilitate the optimization and tuning of the cli recommendation model, we have optimized the telemetry feedback function.
+### Scenario Identification
 
-We have added `cli_recommendation_feedback` to the `properties` of telemetry feedback. For details, please refer to [cli-recommendation](https://github.com/hackathon-cli-recommendation/cli-recommendation/blob/master/Docs/feedback_design.md).
+Scenario identification is another powerful feature that automatically recognizes the user's current scenario and recommends a set of commands that are most relevant to the user's needs. This feature is based on our extensive database of over 600+ business scenarios, which cover a wide range of use cases across various scenes. By analyzing the user's input history, Intelligent Az Interactive can identify the relevant scenario and suggest the most appropriate command set, helping new CLI users to quickly accomplish their tasks with confidence and ease.
 
+## Search for Scenarios
 
-#### **[Add]** Added memory and completion mechanism for param value in scenarios
+We have added the ability to help users search for scenarios based on keywords. When the user enters some keywords or descriptions, we will recommend the scenarios that are most likely to be used based on the keywords and descriptions of the functions the user wants to implement.
 
-The completion mechanism for param value in scenarios is added to improve the completion ability of param value in scenarios.
-
-In multiple commands of the same scenario, once the user enters a param value, we store the value entered by the user based on the scenario sample value and some special global params, and automatically recommend the completion of these param values in subsequent commands.
-
-#### **[Add]** Recommending scenarios based on keywords and natural language
-We have added the ability to recommend scenarios based on keywords and natural language. When the user enters a command, we will recommend the scenarios that are most likely to be used based on the keywords and natural language descriptions of the functions the user wants to implement.
-
-```bash
+```
 $ az interactive // initialize the az interactive
-$ # app service database // Search for scenario by starting with # and entering keywords
-$ ::1 // Enter a space to get the recommended scenario based on keywords and select the desired scenario
+$ /connect a mongodb to web app // Search for scenario by starting with / and entering keywords
+>>  output
+[1] Connect an app to MongoDB (Cosmos DB). (5 Commands)
+Connect an app to MongoDB (Cosmos DB).
+
+[2] Tutorial to create and connect Web App to Azure Database for MySQL Flexible Server in a virtual network (6 Commands)
+Tutorial to create and connect Web App to Azure Database for MySQL Flexible Server in a virtual network
+
+[3] Connect an app to SQL Database. (7 Commands)
+Connect an app to SQL Database.
+
+[4] Connect an app to a storage account. (5 Commands)
+Connect an app to a storage account.
+
+[5] Deploy an ASP.NET Core web app to Azure App Service and connect to an Azure SQL Database. (8 Commands)
+Deploy an ASP.NET Core web app to Azure App Service and connect to an Azure SQL Database.
+
+ ? Please select your option (if none, enter 0):
+ $ 1 // Select the scenario you want to use
 ```
+
+## Loading Bar
+
+The loading bar is a feature that we have implemented to provide users with a more stable and predictable experience while using our platform. Its primary function is to prevent command parameter detection errors that may occur due to incomplete loading. By displaying the progress of initialization through the loading bar, users can be assured that the initialization process is ongoing and they can expect to see a fully loaded interface once the bar reaches 100%.
+
+Additionally, the loading bar helps prevent user interface lagging or freezing due to insufficient memory. By preloading the necessary resources and data, users can avoid encountering these issues when inputting commands.
+
+The loading bar is an essential tool that improves the user experience by ensuring that all necessary components are loaded before usage, thereby reducing the risk of encountering errors and providing a smoother, more stable platform.
+
+Please refer to the following gif to see the loading bar in action:
+
+<div  align="center">    
+<img src="docs/loading_bar.gif" width = "400" height = "150" alt="loading_bar" align=center>
+</div>
+
+
+## Value Completion in Scenarios
+
+We added a completion mechanism for param value in scenarios to improve the completion ability of param value in
+scenarios. In multiple commands of the same scenario, once the user enters a param value, we store the value entered by
+the user based on the scenario sample value and some special global params, and automatically recommend the completion
+of these param values in subsequent commands.
+
+## Telemetry Feedback Optimization
+
+To collect data and facilitate the optimization and tuning of the cli recommendation model, we have optimized the
+telemetry feedback function. We have added `CLIRecommendation` to the `properties` of telemetry feedback. For details,
+please refer
+to [cli-recommendation](https://github.com/hackathon-cli-recommendation/cli-recommendation/blob/master/Docs/feedback_design.md).
