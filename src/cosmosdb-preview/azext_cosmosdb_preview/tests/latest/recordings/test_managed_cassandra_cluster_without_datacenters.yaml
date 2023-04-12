@@ -19,19 +19,19 @@ interactions:
       ParameterSetName:
       - -g -l -n --subnet-name
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003?api-version=2022-01-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003\",\r\n
-        \ \"etag\": \"W/\\\"82f98adf-6f96-4682-9b1a-3649f62e67be\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"7d018f31-68fd-45ab-9b7e-21231f822668\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"resourceGuid\":
-        \"deddc367-bf21-4971-8dbc-0de42d077f94\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        \"da004946-4a70-4001-8366-3bb6ee0bfad5\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
         [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
         \     {\r\n        \"name\": \"cli000004\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004\",\r\n
-        \       \"etag\": \"W/\\\"82f98adf-6f96-4682-9b1a-3649f62e67be\\\"\",\r\n
+        \       \"etag\": \"W/\\\"7d018f31-68fd-45ab-9b7e-21231f822668\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Updating\",\r\n
         \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -42,7 +42,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/7e261e82-b640-4617-a215-52967defcbf9?api-version=2022-01-01
+      - https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/14dadbe5-4e36-4684-9e1d-42576905414a?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -50,7 +50,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 18:20:39 GMT
+      - Tue, 11 Apr 2023 23:45:46 GMT
       expires:
       - '-1'
       pragma:
@@ -63,12 +63,12 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - de78f0b3-e573-4557-815b-6920a3188f1d
+      - a1c27b5d-89eb-45d7-b034-8f1654791f9f
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
     status:
       code: 201
-      message: ''
+      message: Created
 - request:
     body: null
     headers:
@@ -83,9 +83,9 @@ interactions:
       ParameterSetName:
       - -g -l -n --subnet-name
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/7e261e82-b640-4617-a215-52967defcbf9?api-version=2022-01-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/14dadbe5-4e36-4684-9e1d-42576905414a?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -97,7 +97,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 18:20:39 GMT
+      - Tue, 11 Apr 2023 23:45:46 GMT
       expires:
       - '-1'
       pragma:
@@ -114,10 +114,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 5fa020a4-ab4a-4b55-b0bc-d462d5dee6da
+      - d763bfa4-bde5-47cf-8092-53432c644c5a
     status:
       code: 200
-      message: ''
+      message: OK
 - request:
     body: null
     headers:
@@ -132,9 +132,9 @@ interactions:
       ParameterSetName:
       - -g -l -n --subnet-name
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/7e261e82-b640-4617-a215-52967defcbf9?api-version=2022-01-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/14dadbe5-4e36-4684-9e1d-42576905414a?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -146,7 +146,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 18:20:49 GMT
+      - Tue, 11 Apr 2023 23:45:56 GMT
       expires:
       - '-1'
       pragma:
@@ -163,10 +163,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - c74bb1c4-ad95-4941-9992-e2f05d4b4995
+      - 17ff1779-1e3a-43dc-9156-66b325a1ec2e
     status:
       code: 200
-      message: ''
+      message: OK
 - request:
     body: null
     headers:
@@ -181,19 +181,19 @@ interactions:
       ParameterSetName:
       - -g -l -n --subnet-name
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003?api-version=2022-01-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003\",\r\n
-        \ \"etag\": \"W/\\\"8e81dee0-c4ca-4ce1-ac7b-525ce5b73026\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"fb57b408-c8fa-496a-bba1-f81f2ce8aaa3\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
-        \"deddc367-bf21-4971-8dbc-0de42d077f94\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        \"da004946-4a70-4001-8366-3bb6ee0bfad5\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
         [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
         \     {\r\n        \"name\": \"cli000004\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004\",\r\n
-        \       \"etag\": \"W/\\\"8e81dee0-c4ca-4ce1-ac7b-525ce5b73026\\\"\",\r\n
+        \       \"etag\": \"W/\\\"fb57b408-c8fa-496a-bba1-f81f2ce8aaa3\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -208,9 +208,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 18:20:49 GMT
+      - Tue, 11 Apr 2023 23:45:56 GMT
       etag:
-      - W/"8e81dee0-c4ca-4ce1-ac7b-525ce5b73026"
+      - W/"fb57b408-c8fa-496a-bba1-f81f2ce8aaa3"
       expires:
       - '-1'
       pragma:
@@ -227,10 +227,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - d61c7183-985b-4cf2-b72d-bac878592741
+      - 95b9b8a4-685d-4dfe-84cb-7c2c61969953
     status:
       code: 200
-      message: ''
+      message: OK
 - request:
     body: null
     headers:
@@ -245,19 +245,19 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003?api-version=2022-01-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003\",\r\n
-        \ \"etag\": \"W/\\\"8e81dee0-c4ca-4ce1-ac7b-525ce5b73026\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"fb57b408-c8fa-496a-bba1-f81f2ce8aaa3\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
-        \"deddc367-bf21-4971-8dbc-0de42d077f94\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        \"da004946-4a70-4001-8366-3bb6ee0bfad5\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
         [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
         \     {\r\n        \"name\": \"cli000004\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004\",\r\n
-        \       \"etag\": \"W/\\\"8e81dee0-c4ca-4ce1-ac7b-525ce5b73026\\\"\",\r\n
+        \       \"etag\": \"W/\\\"fb57b408-c8fa-496a-bba1-f81f2ce8aaa3\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -272,9 +272,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 18:20:51 GMT
+      - Tue, 11 Apr 2023 23:45:58 GMT
       etag:
-      - W/"8e81dee0-c4ca-4ce1-ac7b-525ce5b73026"
+      - W/"fb57b408-c8fa-496a-bba1-f81f2ce8aaa3"
       expires:
       - '-1'
       pragma:
@@ -291,10 +291,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - db764dac-00cd-4c62-9484-6e624e6d303f
+      - d0ac9dbc-5b70-4265-a2d4-11043cae6495
     status:
       code: 200
-      message: ''
+      message: OK
 - request:
     body: null
     headers:
@@ -309,7 +309,7 @@ interactions:
       ParameterSetName:
       - --assignee --role --scope
       User-Agent:
-      - python/3.10.8 (Windows-10-10.0.22621-SP0) AZURECLI/2.47.0
+      - python/3.10.2 (Windows-10-10.0.19045-SP0) AZURECLI/2.47.0
     method: GET
     uri: https://graph.microsoft.com/v1.0/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27e5007d2c-4b13-4a74-9b6a-605d99f03501%27%29
   response:
@@ -323,11 +323,11 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Mon, 10 Apr 2023 18:20:51 GMT
+      - Tue, 11 Apr 2023 23:45:59 GMT
       odata-version:
       - '4.0'
       request-id:
-      - 50ccf3a7-f489-44be-9c04-3b758b238979
+      - 92ad2892-b901-435e-803c-2d2b770ad47a
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -335,7 +335,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"North Central US","Slice":"E","Ring":"3","ScaleUnit":"004","RoleInstance":"CH01EPF0001B8C0"}}'
+      - '{"ServerInfo":{"DataCenter":"West US 2","Slice":"E","Ring":"1","ScaleUnit":"001","RoleInstance":"MW2PEPF00005E27"}}'
       x-ms-resource-unit:
       - '1'
     status:
@@ -360,7 +360,7 @@ interactions:
       ParameterSetName:
       - --assignee --role --scope
       User-Agent:
-      - python/3.10.8 (Windows-10-10.0.22621-SP0) AZURECLI/2.47.0
+      - python/3.10.2 (Windows-10-10.0.19045-SP0) AZURECLI/2.47.0
     method: POST
     uri: https://graph.microsoft.com/v1.0/directoryObjects/getByIds
   response:
@@ -380,13 +380,13 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Mon, 10 Apr 2023 18:20:51 GMT
+      - Tue, 11 Apr 2023 23:45:59 GMT
       location:
       - https://graph.microsoft.com
       odata-version:
       - '4.0'
       request-id:
-      - bb90fab9-fcd8-41c8-b254-4deee0665d4b
+      - cd166172-6573-4acf-b36f-711a4fe6781d
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -394,7 +394,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"North Central US","Slice":"E","Ring":"3","ScaleUnit":"004","RoleInstance":"CH01EPF00003EB5"}}'
+      - '{"ServerInfo":{"DataCenter":"West US 2","Slice":"E","Ring":"1","ScaleUnit":"001","RoleInstance":"MW2PEPF000031D6"}}'
       x-ms-resource-unit:
       - '3'
     status:
@@ -419,13 +419,13 @@ interactions:
       ParameterSetName:
       - --assignee --role --scope
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.10.8
-        (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.10.2
+        (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001?api-version=2022-04-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001?api-version=2022-04-01
   response:
     body:
-      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","principalId":"e5007d2c-4b13-4a74-9b6a-605d99f03501","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003","condition":null,"conditionVersion":null,"createdOn":"2023-04-10T18:20:53.8934411Z","updatedOn":"2023-04-10T18:20:54.3044466Z","createdBy":null,"updatedBy":"c20d3b6f-3f92-4cdd-9943-4e2bd151e9ed","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001","type":"Microsoft.Authorization/roleAssignments","name":"88888888-0000-0000-0000-000000000001"}'
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","principalId":"e5007d2c-4b13-4a74-9b6a-605d99f03501","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003","condition":null,"conditionVersion":null,"createdOn":"2023-04-11T23:46:01.2706095Z","updatedOn":"2023-04-11T23:46:01.6716132Z","createdBy":null,"updatedBy":"3472afbc-da6d-4050-88a0-b0fe52e69bc5","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001","type":"Microsoft.Authorization/roleAssignments","name":"88888888-0000-0000-0000-000000000001"}'
     headers:
       cache-control:
       - no-cache
@@ -434,7 +434,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 18:20:56 GMT
+      - Tue, 11 Apr 2023 23:46:03 GMT
       expires:
       - '-1'
       pragma:
@@ -446,7 +446,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 201
       message: Created
@@ -464,13 +464,13 @@ interactions:
       ParameterSetName:
       - -g --vnet-name --name
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004?api-version=2022-01-01
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004\",\r\n
-        \ \"etag\": \"W/\\\"8e81dee0-c4ca-4ce1-ac7b-525ce5b73026\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"fb57b408-c8fa-496a-bba1-f81f2ce8aaa3\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n
         \   \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n
         \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
@@ -483,9 +483,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 10 Apr 2023 18:20:56 GMT
+      - Tue, 11 Apr 2023 23:46:03 GMT
       etag:
-      - W/"8e81dee0-c4ca-4ce1-ac7b-525ce5b73026"
+      - W/"fb57b408-c8fa-496a-bba1-f81f2ce8aaa3"
       expires:
       - '-1'
       pragma:
@@ -502,10 +502,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 67e1051d-2d01-4ab4-8a5b-d906e79e18c0
+      - ad3749bb-a165-48e1-b909-971cc80a60cc
     status:
       code: 200
-      message: ''
+      message: OK
 - request:
     body: '{"location": "eastus2", "identity": {"type": "None"}, "properties": {"delegatedManagementSubnetId":
       "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004",
@@ -526,25 +526,25 @@ interactions:
       ParameterSetName:
       - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2023-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002","name":"cli000002","type":"Microsoft.DocumentDB/cassandraClusters","location":"East
-        US 2","tags":{},"systemData":{"createdBy":"mayankkatwal@microsoft.com","createdByType":"User","createdAt":"2023-04-10T18:20:59.9238094Z","lastModifiedBy":"mayankkatwal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-10T18:20:59.9238094Z"},"identity":{"type":"None"},"properties":{"authenticationMethod":"Cassandra","backupSchedules":[{"scheduleName":"DailyBackup-02:00UTC","cronExpression":"0
-        2 * * *","retentionInHours":48}],"cassandraVersion":"3.11","clientCertificates":[],"deallocated":false,"clusterType":"Production","delegatedManagementSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004","extensions":[],"externalGossipCertificates":[],"externalSeedNodes":[],"gossipCertificates":[],"hoursBetweenBackups":24,"backupRetentionPeriodInHours":24,"prometheusEndpoint":{},"provisioningState":"Creating","repairEnabled":true,"seedNodes":[],"cassandraAuditLoggingEnabled":false,"diagnosticSettingsId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_MANAGED_CASSANDRAFB5DLVGALZSXOGNQRRQ2UZ2SYSPJUNLC4Y3Y5T3VPVMHA2NTVKLEWZ/PROVIDERS/MICROSOFT.DOCUMENTDB/CASSANDRACLUSTERS/CLIXQESULW"}}'
+        US 2","tags":{},"systemData":{"createdBy":"ashwsing@microsoft.com","createdByType":"User","createdAt":"2023-04-11T23:46:06.172665Z","lastModifiedBy":"ashwsing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-11T23:46:06.172665Z"},"identity":{"type":"None"},"properties":{"authenticationMethod":"Cassandra","backupSchedules":[{"scheduleName":"DailyBackup-02:00UTC","cronExpression":"0
+        2 * * *","retentionInHours":48}],"cassandraVersion":"3.11","clientCertificates":[],"deallocated":false,"clusterType":"Production","delegatedManagementSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004","extensions":[],"externalGossipCertificates":[],"externalSeedNodes":[],"gossipCertificates":[],"hoursBetweenBackups":24,"backupRetentionPeriodInHours":24,"prometheusEndpoint":{},"provisioningState":"Creating","repairEnabled":true,"seedNodes":[],"cassandraAuditLoggingEnabled":false,"diagnosticSettingsId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_MANAGED_CASSANDRA6MEU5VYVYCKZNNUUFMFUOZRNSWUY564R3FQIY2HOBKVQNJA6QB43N3/PROVIDERS/MICROSOFT.DOCUMENTDB/CASSANDRACLUSTERS/CLI3YCUFBB"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/f6e5117c-6e10-4ede-ba72-39c7955c425c?api-version=2022-08-15-preview
+      - https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0e052db1-6505-412f-a6bd-0071f1ab3afb?api-version=2023-03-01-preview
       cache-control:
       - no-store, no-cache
       content-length:
-      - '1500'
+      - '1490'
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:21:00 GMT
+      - Tue, 11 Apr 2023 23:46:07 GMT
       pragma:
       - no-cache
       server:
@@ -556,7 +556,7 @@ interactions:
       x-ms-gatewayversion:
       - version=2.14.0
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1196'
     status:
       code: 201
       message: Created
@@ -574,9 +574,9 @@ interactions:
       ParameterSetName:
       - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/f6e5117c-6e10-4ede-ba72-39c7955c425c?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0e052db1-6505-412f-a6bd-0071f1ab3afb?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
@@ -588,7 +588,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:21:00 GMT
+      - Tue, 11 Apr 2023 23:46:07 GMT
       pragma:
       - no-cache
       server:
@@ -620,9 +620,9 @@ interactions:
       ParameterSetName:
       - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/f6e5117c-6e10-4ede-ba72-39c7955c425c?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0e052db1-6505-412f-a6bd-0071f1ab3afb?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -634,7 +634,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:21:31 GMT
+      - Tue, 11 Apr 2023 23:46:37 GMT
       pragma:
       - no-cache
       server:
@@ -666,9 +666,9 @@ interactions:
       ParameterSetName:
       - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/f6e5117c-6e10-4ede-ba72-39c7955c425c?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0e052db1-6505-412f-a6bd-0071f1ab3afb?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -680,7 +680,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:22:01 GMT
+      - Tue, 11 Apr 2023 23:47:08 GMT
       pragma:
       - no-cache
       server:
@@ -712,9 +712,9 @@ interactions:
       ParameterSetName:
       - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/f6e5117c-6e10-4ede-ba72-39c7955c425c?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0e052db1-6505-412f-a6bd-0071f1ab3afb?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -726,7 +726,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:22:31 GMT
+      - Tue, 11 Apr 2023 23:47:38 GMT
       pragma:
       - no-cache
       server:
@@ -758,9 +758,9 @@ interactions:
       ParameterSetName:
       - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/f6e5117c-6e10-4ede-ba72-39c7955c425c?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0e052db1-6505-412f-a6bd-0071f1ab3afb?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -772,7 +772,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:23:01 GMT
+      - Tue, 11 Apr 2023 23:48:07 GMT
       pragma:
       - no-cache
       server:
@@ -804,9 +804,9 @@ interactions:
       ParameterSetName:
       - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/f6e5117c-6e10-4ede-ba72-39c7955c425c?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0e052db1-6505-412f-a6bd-0071f1ab3afb?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -818,7 +818,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:23:31 GMT
+      - Tue, 11 Apr 2023 23:48:37 GMT
       pragma:
       - no-cache
       server:
@@ -850,9 +850,9 @@ interactions:
       ParameterSetName:
       - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/f6e5117c-6e10-4ede-ba72-39c7955c425c?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0e052db1-6505-412f-a6bd-0071f1ab3afb?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -864,7 +864,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:24:01 GMT
+      - Tue, 11 Apr 2023 23:49:08 GMT
       pragma:
       - no-cache
       server:
@@ -896,9 +896,9 @@ interactions:
       ParameterSetName:
       - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/f6e5117c-6e10-4ede-ba72-39c7955c425c?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0e052db1-6505-412f-a6bd-0071f1ab3afb?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -910,7 +910,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:24:32 GMT
+      - Tue, 11 Apr 2023 23:49:38 GMT
       pragma:
       - no-cache
       server:
@@ -942,9 +942,9 @@ interactions:
       ParameterSetName:
       - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/f6e5117c-6e10-4ede-ba72-39c7955c425c?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0e052db1-6505-412f-a6bd-0071f1ab3afb?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -956,7 +956,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:25:01 GMT
+      - Tue, 11 Apr 2023 23:50:08 GMT
       pragma:
       - no-cache
       server:
@@ -988,9 +988,101 @@ interactions:
       ParameterSetName:
       - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/f6e5117c-6e10-4ede-ba72-39c7955c425c?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0e052db1-6505-412f-a6bd-0071f1ab3afb?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Tue, 11 Apr 2023 23:50:39 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managed-cassandra cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -l -g -s -i
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0e052db1-6505-412f-a6bd-0071f1ab3afb?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"status":"Dequeued"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '21'
+      content-type:
+      - application/json
+      date:
+      - Tue, 11 Apr 2023 23:51:08 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - managed-cassandra cluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -l -g -s -i
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0e052db1-6505-412f-a6bd-0071f1ab3afb?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -1002,7 +1094,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:25:32 GMT
+      - Tue, 11 Apr 2023 23:51:39 GMT
       pragma:
       - no-cache
       server:
@@ -1034,13 +1126,13 @@ interactions:
       ParameterSetName:
       - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2023-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002","name":"cli000002","type":"Microsoft.DocumentDB/cassandraClusters","location":"East
-        US 2","tags":{},"systemData":{"createdBy":"mayankkatwal@microsoft.com","createdByType":"User","createdAt":"2023-04-10T18:20:59.9238094Z","lastModifiedBy":"mayankkatwal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-10T18:20:59.9238094Z"},"identity":{"type":"None"},"properties":{"authenticationMethod":"Cassandra","backupSchedules":[{"scheduleName":"DailyBackup-02:00UTC","cronExpression":"0
+        US 2","tags":{},"systemData":{"createdBy":"ashwsing@microsoft.com","createdByType":"User","createdAt":"2023-04-11T23:46:06.172665Z","lastModifiedBy":"ashwsing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-11T23:46:06.172665Z"},"identity":{"type":"None"},"properties":{"authenticationMethod":"Cassandra","backupSchedules":[{"scheduleName":"DailyBackup-02:00UTC","cronExpression":"0
         2 * * *","retentionInHours":48}],"cassandraVersion":"3.11","clientCertificates":[],"deallocated":false,"clusterType":"Production","delegatedManagementSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004","extensions":[],"externalGossipCertificates":[],"externalSeedNodes":[],"gossipCertificates":[{"pem":"-----BEGIN
         CERTIFICATE-----\r\nMIIElDCCA3ygAwIBAgIQAf2j627KdciIQ4tyS8+8kTANBgkqhkiG9w0BAQsFADBhMQswCQYDVQQG\r\nEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSAw\r\nHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBDQTAeFw0xMzAzMDgxMjAwMDBaFw0yMzAzMDgx\r\nMjAwMDBaME0xCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxJzAlBgNVBAMTHkRp\r\nZ2lDZXJ0IFNIQTIgU2VjdXJlIFNlcnZlciBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC\r\nggEBANyuWJBNwcQwFZA1W248ghX1LFy949v/cUP6ZCWA1O4Yok3wZtAKc24RmDYXZK83nf36QYSv\r\nx6+M/hpzTc8zl5CilodTgyu5pnVILR1WN3vaMTIa16yrBvSqXUu3R0bdKpPDkC55gIDvEwRqFDu1\r\nm5K+wgdlTvza/P96rtxcflUxDOg5B6TXvi/TC2rSsd9f/ld0Uzs1gN2ujkSYs58O09rg1/RrKatE\r\np0tYhG2SS4HD2nOLEpdIkARFdRrdNzGXkujNVA075ME/OV4uuPNcfhCOhkEAjUVmR7ChZc6gqikJ\r\nTvOX6+guqw9ypzAO+sf0/RR3w6RbKFfCs/mC/bdFWJsCAwEAAaOCAVowggFWMBIGA1UdEwEB/wQI\r\nMAYBAf8CAQAwDgYDVR0PAQH/BAQDAgGGMDQGCCsGAQUFBwEBBCgwJjAkBggrBgEFBQcwAYYYaHR0\r\ncDovL29jc3AuZGlnaWNlcnQuY29tMHsGA1UdHwR0MHIwN6A1oDOGMWh0dHA6Ly9jcmwzLmRpZ2lj\r\nZXJ0LmNvbS9EaWdpQ2VydEdsb2JhbFJvb3RDQS5jcmwwN6A1oDOGMWh0dHA6Ly9jcmw0LmRpZ2lj\r\nZXJ0LmNvbS9EaWdpQ2VydEdsb2JhbFJvb3RDQS5jcmwwPQYDVR0gBDYwNDAyBgRVHSAAMCowKAYI\r\nKwYBBQUHAgEWHGh0dHBzOi8vd3d3LmRpZ2ljZXJ0LmNvbS9DUFMwHQYDVR0OBBYEFA+AYRyCMWHV\r\nLyjnjUY4tCzhxtniMB8GA1UdIwQYMBaAFAPeUDVW0Uy7ZvCj4hsbw5eyPdFVMA0GCSqGSIb3DQEB\r\nCwUAA4IBAQAjPt9L0jFCpbZ+QlwaRMxp0Wi0XUvgBCFsS+JtzLHgl4+mUwnNqipl5TlPHoOlblyY\r\noiQm5vuh7ZPHLgLGTUq/sELfeNqzqPlt/yGFUzZgTHbO7Djc1lGA8MXW5dRNJ2Srm8c+cftIl7gz\r\nbckTB+6WohsYFfZcTEDts8Ls/3HB40f/1LkAtDdC2iDJ6m6K7hQGrn2iWZiIqBtvLfTyyRRfJs8s\r\njX7tN8Cp1Tm5gr8ZDOo0rwAhaPitc+LJMto4JQtV05od8GiG7S5BNO98pVAdvzr508EIDObtHopY\r\nJeS4d60tbvVS3bR0j6tJLp07kzQoH3jOlOrHvdPJbRzeXDLz\r\n-----END
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIDrzCCApegAwIBAgIQCDvgVpBCRrGhdWrJWZHHSjANBgkqhkiG9w0BAQUFADBhMQswCQYDVQQG\r\nEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSAw\r\nHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBDQTAeFw0wNjExMTAwMDAwMDBaFw0zMTExMTAw\r\nMDAwMDBaMGExCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3\r\ndy5kaWdpY2VydC5jb20xIDAeBgNVBAMTF0RpZ2lDZXJ0IEdsb2JhbCBSb290IENBMIIBIjANBgkq\r\nhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4jvhEXLeqKTTo1eqUKKPC3eQyaKl7hLOllsBCSDMAZOn\r\nTjC3U/dDxGkAV53ijSLdhwZAAIEJzs4bg7/fzTtxRuLWZscFs3YnFo97nh6Vfe63SKMI2tavegw5\r\nBmV/Sl0fvBf4q77uKNd0f3p4mVmFaG5cIzJLv07A6Fpt43C/dxC//AH2hdmoRBBYMql1GNXRor5H\r\n4idq9Joz+EkIYIvUX7Q6hL+hqkpMfT7PT19sdl6gSzeRntwi5m3OFBqOasv+zbMUZBfHWymeMr/y\r\n7vrTC0LUq7dBMtoM1O/4gdW7jVg/tRvoSSiicNoxBN33shbyTApOB6jtSj1etX+jkMOvJwIDAQAB\r\no2MwYTAOBgNVHQ8BAf8EBAMCAYYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUA95QNVbRTLtm\r\n8KPiGxvDl7I90VUwHwYDVR0jBBgwFoAUA95QNVbRTLtm8KPiGxvDl7I90VUwDQYJKoZIhvcNAQEF\r\nBQADggEBAMucN6pIExIK+t1EnE9SsPTfrgT1eXkIoyQY/EsrhMAtudXH/vTBH1jLuG2cenTnmCmr\r\nEbXjcKChzUyImZOMkXDiqw8cvpOp/2PV5Adg06O/nVsJ8dWO41P0jmP6P6fbtGbfYmbW0W5BjfIt\r\ntep3Sp+dWOIrWcBAI+0tKIJFPnlUkiaY4IBIqDfv8NZ5YBberOgOzW6sRBc4L0na4UU+Krk2U886\r\nUAb3LujEV0lsYSEY1QSteDwsOoBrp+uvFRTp2InBuThs4pFsiv9kuXclVzDAGySj4dzp30d8tbQk\r\nCAUw7C29C79Fv1C5qfPrmAESrciIxpg0X40KPMbp1ZWVbd4=\r\n-----END
@@ -1073,16 +1165,16 @@ interactions:
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIESDCCA8+gAwIBAgITMwAAACkPimIi72pWlQAAAAAAKTAKBggqhkjOPQQDAzBlMQswCQYDVQQG\r\nEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQg\r\nRUNDIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MTk1ODM4WhcNMjYw\r\nNjI0MTk1ODM4WjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9u\r\nMSwwKgYDVQQDEyNNaWNyb3NvZnQgRUNDIFRMUyBJc3N1aW5nIEFPQyBDQSAwMjB2MBAGByqGSM49\r\nAgEGBSuBBAAiA2IABI7Zgbmjd2OumgotYraLtAF/obAK54drz/RFV2lzPGE0f3js0+CUCGTEOGdO\r\naB+7fODrVJ84rKJPRPS/pEc8k80WepwWMYri+yoA7OlAQFiyIqk900jUel2o9LBoBNr72qOCAkkw\r\nggJFMA4GA1UdDwEB/wQEAwIBhjAQBgkrBgEEAYI3FQEEAwIBADAdBgNVHQ4EFgQU3tzXbCOZQ+qs\r\n7ci3HRhYgDZLjfQwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBkGCSsGAQQBgjcUAgQM\r\nHgoAUwB1AGIAQwBBMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0jBBgwFoAUyMuZcnBSDPjmvrIE\r\nVykqz0IQ7TUwcAYDVR0fBGkwZzBloGOgYYZfaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9w\r\ncy9jcmwvTWljcm9zb2Z0JTIwRUNDJTIwUm9vdCUyMENlcnRpZmljYXRlJTIwQXV0aG9yaXR5JTIw\r\nMjAxNy5jcmwwga4GCCsGAQUFBwEBBIGhMIGeMG0GCCsGAQUFBzAChmFodHRwOi8vd3d3Lm1pY3Jv\r\nc29mdC5jb20vcGtpb3BzL2NlcnRzL01pY3Jvc29mdCUyMEVDQyUyMFJvb3QlMjBDZXJ0aWZpY2F0\r\nZSUyMEF1dGhvcml0eSUyMDIwMTcuY3J0MC0GCCsGAQUFBzABhiFodHRwOi8vb25lb2NzcC5taWNy\r\nb3NvZnQuY29tL29jc3AwcAYDVR0gBGkwZzAIBgZngQwBAgEwCAYGZ4EMAQICMFEGDCsGAQQBgjdM\r\ng30BATBBMD8GCCsGAQUFBwIBFjNodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpb3BzL0RvY3Mv\r\nUmVwb3NpdG9yeS5odG0wCgYIKoZIzj0EAwMDZwAwZAIwSiB+6RshdjasB841Y6l6wCivxxnEBvxn\r\n6GCYIjk22EJa1p6B4w+Qf5seGf20/SsXAjBxv8F+Qz6CfnpQNxIGRby0UfKq36vne88PuoQCHdxY\r\nLnjkUiveg2NRTNiAFWXqhUg=\r\n-----END
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIESTCCA8+gAwIBAgITMwAAACvmkCg4ZytmeQAAAAAAKzAKBggqhkjOPQQDAzBlMQswCQYDVQQG\r\nEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQg\r\nRUNDIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MTk1ODQwWhcNMjYw\r\nNjI0MTk1ODQwWjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9u\r\nMSwwKgYDVQQDEyNNaWNyb3NvZnQgRUNDIFRMUyBJc3N1aW5nIEVPQyBDQSAwMjB2MBAGByqGSM49\r\nAgEGBSuBBAAiA2IABCnY32N9ck71DA0aFNh3TJUp5baxIf9K2kh2RJOvnsU82Epig+iwGtsdLbmm\r\nnQCis9VR8E0KfKUUBnNSdmtUneh36lhFwxDZ4NzmfdUjG24K8zbbMd/qTAVztrcDvdlhxqOCAkkw\r\nggJFMA4GA1UdDwEB/wQEAwIBhjAQBgkrBgEEAYI3FQEEAwIBADAdBgNVHQ4EFgQUv9gyNCuhlTu0\r\ntdS5QC1ySpwaAIYwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBkGCSsGAQQBgjcUAgQM\r\nHgoAUwB1AGIAQwBBMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0jBBgwFoAUyMuZcnBSDPjmvrIE\r\nVykqz0IQ7TUwcAYDVR0fBGkwZzBloGOgYYZfaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9w\r\ncy9jcmwvTWljcm9zb2Z0JTIwRUNDJTIwUm9vdCUyMENlcnRpZmljYXRlJTIwQXV0aG9yaXR5JTIw\r\nMjAxNy5jcmwwga4GCCsGAQUFBwEBBIGhMIGeMG0GCCsGAQUFBzAChmFodHRwOi8vd3d3Lm1pY3Jv\r\nc29mdC5jb20vcGtpb3BzL2NlcnRzL01pY3Jvc29mdCUyMEVDQyUyMFJvb3QlMjBDZXJ0aWZpY2F0\r\nZSUyMEF1dGhvcml0eSUyMDIwMTcuY3J0MC0GCCsGAQUFBzABhiFodHRwOi8vb25lb2NzcC5taWNy\r\nb3NvZnQuY29tL29jc3AwcAYDVR0gBGkwZzAIBgZngQwBAgEwCAYGZ4EMAQICMFEGDCsGAQQBgjdM\r\ng30BATBBMD8GCCsGAQUFBwIBFjNodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpb3BzL0RvY3Mv\r\nUmVwb3NpdG9yeS5odG0wCgYIKoZIzj0EAwMDaAAwZQIwGfSjP75G6tGRAEfRAnzF8zX82samzvpm\r\nHzL0nZtkAZbAAl94dP1iB4XNrmJjcSVxAjEA013gOWgrzozfn7vuDKDvI2xo+sQXBCJhagE/gJz8\r\niO6Hk1vZbEK2xVGQc0yBqBlO\r\n-----END
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIESTCCA8+gAwIBAgITMwAAACotAGSF/ay/6wAAAAAAKjAKBggqhkjOPQQDAzBlMQswCQYDVQQG\r\nEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQg\r\nRUNDIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MTk1ODM5WhcNMjYw\r\nNjI0MTk1ODM5WjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9u\r\nMSwwKgYDVQQDEyNNaWNyb3NvZnQgRUNDIFRMUyBJc3N1aW5nIEVPQyBDQSAwMTB2MBAGByqGSM49\r\nAgEGBSuBBAAiA2IABOJbIiS8pUiOCaUql10Yl6GbIflaGVxiZRG9Ot/zChiB74DcUfHk/wQXn4CQ\r\nlaml9yi80zVAzt5DlpmJ9nKGPZwAXEEYQ15WqfjuLmKRnUXJA8Z69uql5GUmyna4GnWuI6OCAkkw\r\nggJFMA4GA1UdDwEB/wQEAwIBhjAQBgkrBgEEAYI3FQEEAwIBADAdBgNVHQ4EFgQUuxzt0Ihxqcr7\r\nzZNfcXkiNXjGmsowHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBkGCSsGAQQBgjcUAgQM\r\nHgoAUwB1AGIAQwBBMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0jBBgwFoAUyMuZcnBSDPjmvrIE\r\nVykqz0IQ7TUwcAYDVR0fBGkwZzBloGOgYYZfaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9w\r\ncy9jcmwvTWljcm9zb2Z0JTIwRUNDJTIwUm9vdCUyMENlcnRpZmljYXRlJTIwQXV0aG9yaXR5JTIw\r\nMjAxNy5jcmwwga4GCCsGAQUFBwEBBIGhMIGeMG0GCCsGAQUFBzAChmFodHRwOi8vd3d3Lm1pY3Jv\r\nc29mdC5jb20vcGtpb3BzL2NlcnRzL01pY3Jvc29mdCUyMEVDQyUyMFJvb3QlMjBDZXJ0aWZpY2F0\r\nZSUyMEF1dGhvcml0eSUyMDIwMTcuY3J0MC0GCCsGAQUFBzABhiFodHRwOi8vb25lb2NzcC5taWNy\r\nb3NvZnQuY29tL29jc3AwcAYDVR0gBGkwZzAIBgZngQwBAgEwCAYGZ4EMAQICMFEGDCsGAQQBgjdM\r\ng30BATBBMD8GCCsGAQUFBwIBFjNodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpb3BzL0RvY3Mv\r\nUmVwb3NpdG9yeS5odG0wCgYIKoZIzj0EAwMDaAAwZQIxALsVA16qVCnS2LXK0EFRtQCFStOvrTmi\r\n+aBoWaiCqf6i/m7t3+Uhnxe5bYKhUM/LMAIwOJ1jHlVIe0xLjV6LZQo4eZA/bgQaDwIoUECkuW9D\r\nzwJORmfzm5h1e+oMay+Bb/mm\r\n-----END
-        CERTIFICATE-----\r\n"}],"hoursBetweenBackups":24,"backupRetentionPeriodInHours":24,"prometheusEndpoint":{"ipAddress":"10.0.0.4"},"provisioningState":"Succeeded","repairEnabled":true,"seedNodes":[],"cassandraAuditLoggingEnabled":false,"diagnosticSettingsId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_MANAGED_CASSANDRAFB5DLVGALZSXOGNQRRQ2UZ2SYSPJUNLC4Y3Y5T3VPVMHA2NTVKLEWZ/PROVIDERS/MICROSOFT.DOCUMENTDB/CASSANDRACLUSTERS/CLIXQESULW"}}'
+        CERTIFICATE-----\r\n"}],"hoursBetweenBackups":24,"backupRetentionPeriodInHours":24,"prometheusEndpoint":{"ipAddress":"10.0.0.4"},"provisioningState":"Succeeded","repairEnabled":true,"seedNodes":[],"cassandraAuditLoggingEnabled":false,"diagnosticSettingsId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_MANAGED_CASSANDRA6MEU5VYVYCKZNNUUFMFUOZRNSWUY564R3FQIY2HOBKVQNJA6QB43N3/PROVIDERS/MICROSOFT.DOCUMENTDB/CASSANDRACLUSTERS/CLI3YCUFBB"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '58163'
+      - '58153'
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:25:33 GMT
+      - Tue, 11 Apr 2023 23:51:39 GMT
       pragma:
       - no-cache
       server:
@@ -1114,13 +1206,13 @@ interactions:
       ParameterSetName:
       - -c -g
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2023-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002","name":"cli000002","type":"Microsoft.DocumentDB/cassandraClusters","location":"East
-        US 2","tags":{},"systemData":{"createdBy":"mayankkatwal@microsoft.com","createdByType":"User","createdAt":"2023-04-10T18:20:59.9238094Z","lastModifiedBy":"mayankkatwal@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-10T18:20:59.9238094Z"},"identity":{"type":"None"},"properties":{"authenticationMethod":"Cassandra","backupSchedules":[{"scheduleName":"DailyBackup-02:00UTC","cronExpression":"0
+        US 2","tags":{},"systemData":{"createdBy":"ashwsing@microsoft.com","createdByType":"User","createdAt":"2023-04-11T23:46:06.172665Z","lastModifiedBy":"ashwsing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-11T23:46:06.172665Z"},"identity":{"type":"None"},"properties":{"authenticationMethod":"Cassandra","backupSchedules":[{"scheduleName":"DailyBackup-02:00UTC","cronExpression":"0
         2 * * *","retentionInHours":48}],"cassandraVersion":"3.11","clientCertificates":[],"deallocated":false,"clusterType":"Production","delegatedManagementSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004","extensions":[],"externalGossipCertificates":[],"externalSeedNodes":[],"gossipCertificates":[{"pem":"-----BEGIN
         CERTIFICATE-----\r\nMIIElDCCA3ygAwIBAgIQAf2j627KdciIQ4tyS8+8kTANBgkqhkiG9w0BAQsFADBhMQswCQYDVQQG\r\nEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSAw\r\nHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBDQTAeFw0xMzAzMDgxMjAwMDBaFw0yMzAzMDgx\r\nMjAwMDBaME0xCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxJzAlBgNVBAMTHkRp\r\nZ2lDZXJ0IFNIQTIgU2VjdXJlIFNlcnZlciBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC\r\nggEBANyuWJBNwcQwFZA1W248ghX1LFy949v/cUP6ZCWA1O4Yok3wZtAKc24RmDYXZK83nf36QYSv\r\nx6+M/hpzTc8zl5CilodTgyu5pnVILR1WN3vaMTIa16yrBvSqXUu3R0bdKpPDkC55gIDvEwRqFDu1\r\nm5K+wgdlTvza/P96rtxcflUxDOg5B6TXvi/TC2rSsd9f/ld0Uzs1gN2ujkSYs58O09rg1/RrKatE\r\np0tYhG2SS4HD2nOLEpdIkARFdRrdNzGXkujNVA075ME/OV4uuPNcfhCOhkEAjUVmR7ChZc6gqikJ\r\nTvOX6+guqw9ypzAO+sf0/RR3w6RbKFfCs/mC/bdFWJsCAwEAAaOCAVowggFWMBIGA1UdEwEB/wQI\r\nMAYBAf8CAQAwDgYDVR0PAQH/BAQDAgGGMDQGCCsGAQUFBwEBBCgwJjAkBggrBgEFBQcwAYYYaHR0\r\ncDovL29jc3AuZGlnaWNlcnQuY29tMHsGA1UdHwR0MHIwN6A1oDOGMWh0dHA6Ly9jcmwzLmRpZ2lj\r\nZXJ0LmNvbS9EaWdpQ2VydEdsb2JhbFJvb3RDQS5jcmwwN6A1oDOGMWh0dHA6Ly9jcmw0LmRpZ2lj\r\nZXJ0LmNvbS9EaWdpQ2VydEdsb2JhbFJvb3RDQS5jcmwwPQYDVR0gBDYwNDAyBgRVHSAAMCowKAYI\r\nKwYBBQUHAgEWHGh0dHBzOi8vd3d3LmRpZ2ljZXJ0LmNvbS9DUFMwHQYDVR0OBBYEFA+AYRyCMWHV\r\nLyjnjUY4tCzhxtniMB8GA1UdIwQYMBaAFAPeUDVW0Uy7ZvCj4hsbw5eyPdFVMA0GCSqGSIb3DQEB\r\nCwUAA4IBAQAjPt9L0jFCpbZ+QlwaRMxp0Wi0XUvgBCFsS+JtzLHgl4+mUwnNqipl5TlPHoOlblyY\r\noiQm5vuh7ZPHLgLGTUq/sELfeNqzqPlt/yGFUzZgTHbO7Djc1lGA8MXW5dRNJ2Srm8c+cftIl7gz\r\nbckTB+6WohsYFfZcTEDts8Ls/3HB40f/1LkAtDdC2iDJ6m6K7hQGrn2iWZiIqBtvLfTyyRRfJs8s\r\njX7tN8Cp1Tm5gr8ZDOo0rwAhaPitc+LJMto4JQtV05od8GiG7S5BNO98pVAdvzr508EIDObtHopY\r\nJeS4d60tbvVS3bR0j6tJLp07kzQoH3jOlOrHvdPJbRzeXDLz\r\n-----END
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIDrzCCApegAwIBAgIQCDvgVpBCRrGhdWrJWZHHSjANBgkqhkiG9w0BAQUFADBhMQswCQYDVQQG\r\nEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSAw\r\nHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBDQTAeFw0wNjExMTAwMDAwMDBaFw0zMTExMTAw\r\nMDAwMDBaMGExCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3\r\ndy5kaWdpY2VydC5jb20xIDAeBgNVBAMTF0RpZ2lDZXJ0IEdsb2JhbCBSb290IENBMIIBIjANBgkq\r\nhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4jvhEXLeqKTTo1eqUKKPC3eQyaKl7hLOllsBCSDMAZOn\r\nTjC3U/dDxGkAV53ijSLdhwZAAIEJzs4bg7/fzTtxRuLWZscFs3YnFo97nh6Vfe63SKMI2tavegw5\r\nBmV/Sl0fvBf4q77uKNd0f3p4mVmFaG5cIzJLv07A6Fpt43C/dxC//AH2hdmoRBBYMql1GNXRor5H\r\n4idq9Joz+EkIYIvUX7Q6hL+hqkpMfT7PT19sdl6gSzeRntwi5m3OFBqOasv+zbMUZBfHWymeMr/y\r\n7vrTC0LUq7dBMtoM1O/4gdW7jVg/tRvoSSiicNoxBN33shbyTApOB6jtSj1etX+jkMOvJwIDAQAB\r\no2MwYTAOBgNVHQ8BAf8EBAMCAYYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUA95QNVbRTLtm\r\n8KPiGxvDl7I90VUwHwYDVR0jBBgwFoAUA95QNVbRTLtm8KPiGxvDl7I90VUwDQYJKoZIhvcNAQEF\r\nBQADggEBAMucN6pIExIK+t1EnE9SsPTfrgT1eXkIoyQY/EsrhMAtudXH/vTBH1jLuG2cenTnmCmr\r\nEbXjcKChzUyImZOMkXDiqw8cvpOp/2PV5Adg06O/nVsJ8dWO41P0jmP6P6fbtGbfYmbW0W5BjfIt\r\ntep3Sp+dWOIrWcBAI+0tKIJFPnlUkiaY4IBIqDfv8NZ5YBberOgOzW6sRBc4L0na4UU+Krk2U886\r\nUAb3LujEV0lsYSEY1QSteDwsOoBrp+uvFRTp2InBuThs4pFsiv9kuXclVzDAGySj4dzp30d8tbQk\r\nCAUw7C29C79Fv1C5qfPrmAESrciIxpg0X40KPMbp1ZWVbd4=\r\n-----END
@@ -1153,16 +1245,16 @@ interactions:
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIESDCCA8+gAwIBAgITMwAAACkPimIi72pWlQAAAAAAKTAKBggqhkjOPQQDAzBlMQswCQYDVQQG\r\nEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQg\r\nRUNDIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MTk1ODM4WhcNMjYw\r\nNjI0MTk1ODM4WjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9u\r\nMSwwKgYDVQQDEyNNaWNyb3NvZnQgRUNDIFRMUyBJc3N1aW5nIEFPQyBDQSAwMjB2MBAGByqGSM49\r\nAgEGBSuBBAAiA2IABI7Zgbmjd2OumgotYraLtAF/obAK54drz/RFV2lzPGE0f3js0+CUCGTEOGdO\r\naB+7fODrVJ84rKJPRPS/pEc8k80WepwWMYri+yoA7OlAQFiyIqk900jUel2o9LBoBNr72qOCAkkw\r\nggJFMA4GA1UdDwEB/wQEAwIBhjAQBgkrBgEEAYI3FQEEAwIBADAdBgNVHQ4EFgQU3tzXbCOZQ+qs\r\n7ci3HRhYgDZLjfQwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBkGCSsGAQQBgjcUAgQM\r\nHgoAUwB1AGIAQwBBMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0jBBgwFoAUyMuZcnBSDPjmvrIE\r\nVykqz0IQ7TUwcAYDVR0fBGkwZzBloGOgYYZfaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9w\r\ncy9jcmwvTWljcm9zb2Z0JTIwRUNDJTIwUm9vdCUyMENlcnRpZmljYXRlJTIwQXV0aG9yaXR5JTIw\r\nMjAxNy5jcmwwga4GCCsGAQUFBwEBBIGhMIGeMG0GCCsGAQUFBzAChmFodHRwOi8vd3d3Lm1pY3Jv\r\nc29mdC5jb20vcGtpb3BzL2NlcnRzL01pY3Jvc29mdCUyMEVDQyUyMFJvb3QlMjBDZXJ0aWZpY2F0\r\nZSUyMEF1dGhvcml0eSUyMDIwMTcuY3J0MC0GCCsGAQUFBzABhiFodHRwOi8vb25lb2NzcC5taWNy\r\nb3NvZnQuY29tL29jc3AwcAYDVR0gBGkwZzAIBgZngQwBAgEwCAYGZ4EMAQICMFEGDCsGAQQBgjdM\r\ng30BATBBMD8GCCsGAQUFBwIBFjNodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpb3BzL0RvY3Mv\r\nUmVwb3NpdG9yeS5odG0wCgYIKoZIzj0EAwMDZwAwZAIwSiB+6RshdjasB841Y6l6wCivxxnEBvxn\r\n6GCYIjk22EJa1p6B4w+Qf5seGf20/SsXAjBxv8F+Qz6CfnpQNxIGRby0UfKq36vne88PuoQCHdxY\r\nLnjkUiveg2NRTNiAFWXqhUg=\r\n-----END
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIESTCCA8+gAwIBAgITMwAAACvmkCg4ZytmeQAAAAAAKzAKBggqhkjOPQQDAzBlMQswCQYDVQQG\r\nEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQg\r\nRUNDIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MTk1ODQwWhcNMjYw\r\nNjI0MTk1ODQwWjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9u\r\nMSwwKgYDVQQDEyNNaWNyb3NvZnQgRUNDIFRMUyBJc3N1aW5nIEVPQyBDQSAwMjB2MBAGByqGSM49\r\nAgEGBSuBBAAiA2IABCnY32N9ck71DA0aFNh3TJUp5baxIf9K2kh2RJOvnsU82Epig+iwGtsdLbmm\r\nnQCis9VR8E0KfKUUBnNSdmtUneh36lhFwxDZ4NzmfdUjG24K8zbbMd/qTAVztrcDvdlhxqOCAkkw\r\nggJFMA4GA1UdDwEB/wQEAwIBhjAQBgkrBgEEAYI3FQEEAwIBADAdBgNVHQ4EFgQUv9gyNCuhlTu0\r\ntdS5QC1ySpwaAIYwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBkGCSsGAQQBgjcUAgQM\r\nHgoAUwB1AGIAQwBBMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0jBBgwFoAUyMuZcnBSDPjmvrIE\r\nVykqz0IQ7TUwcAYDVR0fBGkwZzBloGOgYYZfaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9w\r\ncy9jcmwvTWljcm9zb2Z0JTIwRUNDJTIwUm9vdCUyMENlcnRpZmljYXRlJTIwQXV0aG9yaXR5JTIw\r\nMjAxNy5jcmwwga4GCCsGAQUFBwEBBIGhMIGeMG0GCCsGAQUFBzAChmFodHRwOi8vd3d3Lm1pY3Jv\r\nc29mdC5jb20vcGtpb3BzL2NlcnRzL01pY3Jvc29mdCUyMEVDQyUyMFJvb3QlMjBDZXJ0aWZpY2F0\r\nZSUyMEF1dGhvcml0eSUyMDIwMTcuY3J0MC0GCCsGAQUFBzABhiFodHRwOi8vb25lb2NzcC5taWNy\r\nb3NvZnQuY29tL29jc3AwcAYDVR0gBGkwZzAIBgZngQwBAgEwCAYGZ4EMAQICMFEGDCsGAQQBgjdM\r\ng30BATBBMD8GCCsGAQUFBwIBFjNodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpb3BzL0RvY3Mv\r\nUmVwb3NpdG9yeS5odG0wCgYIKoZIzj0EAwMDaAAwZQIwGfSjP75G6tGRAEfRAnzF8zX82samzvpm\r\nHzL0nZtkAZbAAl94dP1iB4XNrmJjcSVxAjEA013gOWgrzozfn7vuDKDvI2xo+sQXBCJhagE/gJz8\r\niO6Hk1vZbEK2xVGQc0yBqBlO\r\n-----END
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIESTCCA8+gAwIBAgITMwAAACotAGSF/ay/6wAAAAAAKjAKBggqhkjOPQQDAzBlMQswCQYDVQQG\r\nEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQg\r\nRUNDIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MTk1ODM5WhcNMjYw\r\nNjI0MTk1ODM5WjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9u\r\nMSwwKgYDVQQDEyNNaWNyb3NvZnQgRUNDIFRMUyBJc3N1aW5nIEVPQyBDQSAwMTB2MBAGByqGSM49\r\nAgEGBSuBBAAiA2IABOJbIiS8pUiOCaUql10Yl6GbIflaGVxiZRG9Ot/zChiB74DcUfHk/wQXn4CQ\r\nlaml9yi80zVAzt5DlpmJ9nKGPZwAXEEYQ15WqfjuLmKRnUXJA8Z69uql5GUmyna4GnWuI6OCAkkw\r\nggJFMA4GA1UdDwEB/wQEAwIBhjAQBgkrBgEEAYI3FQEEAwIBADAdBgNVHQ4EFgQUuxzt0Ihxqcr7\r\nzZNfcXkiNXjGmsowHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBkGCSsGAQQBgjcUAgQM\r\nHgoAUwB1AGIAQwBBMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0jBBgwFoAUyMuZcnBSDPjmvrIE\r\nVykqz0IQ7TUwcAYDVR0fBGkwZzBloGOgYYZfaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9w\r\ncy9jcmwvTWljcm9zb2Z0JTIwRUNDJTIwUm9vdCUyMENlcnRpZmljYXRlJTIwQXV0aG9yaXR5JTIw\r\nMjAxNy5jcmwwga4GCCsGAQUFBwEBBIGhMIGeMG0GCCsGAQUFBzAChmFodHRwOi8vd3d3Lm1pY3Jv\r\nc29mdC5jb20vcGtpb3BzL2NlcnRzL01pY3Jvc29mdCUyMEVDQyUyMFJvb3QlMjBDZXJ0aWZpY2F0\r\nZSUyMEF1dGhvcml0eSUyMDIwMTcuY3J0MC0GCCsGAQUFBzABhiFodHRwOi8vb25lb2NzcC5taWNy\r\nb3NvZnQuY29tL29jc3AwcAYDVR0gBGkwZzAIBgZngQwBAgEwCAYGZ4EMAQICMFEGDCsGAQQBgjdM\r\ng30BATBBMD8GCCsGAQUFBwIBFjNodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpb3BzL0RvY3Mv\r\nUmVwb3NpdG9yeS5odG0wCgYIKoZIzj0EAwMDaAAwZQIxALsVA16qVCnS2LXK0EFRtQCFStOvrTmi\r\n+aBoWaiCqf6i/m7t3+Uhnxe5bYKhUM/LMAIwOJ1jHlVIe0xLjV6LZQo4eZA/bgQaDwIoUECkuW9D\r\nzwJORmfzm5h1e+oMay+Bb/mm\r\n-----END
-        CERTIFICATE-----\r\n"}],"hoursBetweenBackups":24,"backupRetentionPeriodInHours":24,"prometheusEndpoint":{"ipAddress":"10.0.0.4"},"provisioningState":"Succeeded","repairEnabled":true,"seedNodes":[],"cassandraAuditLoggingEnabled":false,"diagnosticSettingsId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_MANAGED_CASSANDRAFB5DLVGALZSXOGNQRRQ2UZ2SYSPJUNLC4Y3Y5T3VPVMHA2NTVKLEWZ/PROVIDERS/MICROSOFT.DOCUMENTDB/CASSANDRACLUSTERS/CLIXQESULW"}}'
+        CERTIFICATE-----\r\n"}],"hoursBetweenBackups":24,"backupRetentionPeriodInHours":24,"prometheusEndpoint":{"ipAddress":"10.0.0.4"},"provisioningState":"Succeeded","repairEnabled":true,"seedNodes":[],"cassandraAuditLoggingEnabled":false,"diagnosticSettingsId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_MANAGED_CASSANDRA6MEU5VYVYCKZNNUUFMFUOZRNSWUY564R3FQIY2HOBKVQNJA6QB43N3/PROVIDERS/MICROSOFT.DOCUMENTDB/CASSANDRACLUSTERS/CLI3YCUFBB"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '58163'
+      - '58153'
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:25:34 GMT
+      - Tue, 11 Apr 2023 23:51:44 GMT
       pragma:
       - no-cache
       server:
@@ -1196,15 +1288,15 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dcb38d48-d0aa-496d-b677-7ebe618552bb?api-version=2022-08-15-preview
+      - https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0489e505-f7c7-448f-a254-d8f9b9efad70?api-version=2023-03-01-preview
       cache-control:
       - no-store, no-cache
       content-length:
@@ -1212,9 +1304,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:25:37 GMT
+      - Tue, 11 Apr 2023 23:51:46 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationResults/dcb38d48-d0aa-496d-b677-7ebe618552bb?api-version=2022-08-15-preview
+      - https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationResults/0489e505-f7c7-448f-a254-d8f9b9efad70?api-version=2023-03-01-preview
       pragma:
       - no-cache
       server:
@@ -1226,7 +1318,7 @@ interactions:
       x-ms-gatewayversion:
       - version=2.14.0
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14998'
     status:
       code: 202
       message: Accepted
@@ -1244,9 +1336,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dcb38d48-d0aa-496d-b677-7ebe618552bb?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0489e505-f7c7-448f-a254-d8f9b9efad70?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
@@ -1258,7 +1350,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:25:37 GMT
+      - Tue, 11 Apr 2023 23:51:46 GMT
       pragma:
       - no-cache
       server:
@@ -1290,9 +1382,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dcb38d48-d0aa-496d-b677-7ebe618552bb?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0489e505-f7c7-448f-a254-d8f9b9efad70?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -1304,7 +1396,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:26:07 GMT
+      - Tue, 11 Apr 2023 23:52:16 GMT
       pragma:
       - no-cache
       server:
@@ -1336,9 +1428,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dcb38d48-d0aa-496d-b677-7ebe618552bb?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0489e505-f7c7-448f-a254-d8f9b9efad70?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -1350,7 +1442,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:26:37 GMT
+      - Tue, 11 Apr 2023 23:52:46 GMT
       pragma:
       - no-cache
       server:
@@ -1382,9 +1474,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dcb38d48-d0aa-496d-b677-7ebe618552bb?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0489e505-f7c7-448f-a254-d8f9b9efad70?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -1396,7 +1488,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:27:08 GMT
+      - Tue, 11 Apr 2023 23:53:16 GMT
       pragma:
       - no-cache
       server:
@@ -1428,9 +1520,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dcb38d48-d0aa-496d-b677-7ebe618552bb?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0489e505-f7c7-448f-a254-d8f9b9efad70?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -1442,7 +1534,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:27:37 GMT
+      - Tue, 11 Apr 2023 23:53:46 GMT
       pragma:
       - no-cache
       server:
@@ -1474,9 +1566,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dcb38d48-d0aa-496d-b677-7ebe618552bb?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0489e505-f7c7-448f-a254-d8f9b9efad70?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -1488,7 +1580,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:28:07 GMT
+      - Tue, 11 Apr 2023 23:54:16 GMT
       pragma:
       - no-cache
       server:
@@ -1520,9 +1612,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dcb38d48-d0aa-496d-b677-7ebe618552bb?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0489e505-f7c7-448f-a254-d8f9b9efad70?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -1534,7 +1626,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:28:37 GMT
+      - Tue, 11 Apr 2023 23:54:47 GMT
       pragma:
       - no-cache
       server:
@@ -1566,9 +1658,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dcb38d48-d0aa-496d-b677-7ebe618552bb?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0489e505-f7c7-448f-a254-d8f9b9efad70?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -1580,7 +1672,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:29:07 GMT
+      - Tue, 11 Apr 2023 23:55:16 GMT
       pragma:
       - no-cache
       server:
@@ -1612,9 +1704,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dcb38d48-d0aa-496d-b677-7ebe618552bb?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0489e505-f7c7-448f-a254-d8f9b9efad70?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -1626,7 +1718,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:29:38 GMT
+      - Tue, 11 Apr 2023 23:55:47 GMT
       pragma:
       - no-cache
       server:
@@ -1658,9 +1750,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dcb38d48-d0aa-496d-b677-7ebe618552bb?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0489e505-f7c7-448f-a254-d8f9b9efad70?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -1672,7 +1764,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:30:08 GMT
+      - Tue, 11 Apr 2023 23:56:17 GMT
       pragma:
       - no-cache
       server:
@@ -1704,9 +1796,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/dcb38d48-d0aa-496d-b677-7ebe618552bb?api-version=2022-08-15-preview
+    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/0489e505-f7c7-448f-a254-d8f9b9efad70?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -1718,7 +1810,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 10 Apr 2023 18:30:38 GMT
+      - Tue, 11 Apr 2023 23:56:47 GMT
       pragma:
       - no-cache
       server:
