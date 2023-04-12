@@ -9,7 +9,6 @@ import time
 import psutil
 import requests
 import subprocess
-import shutil
 from knack.log import get_logger
 from azure.cli.core import get_default_cli
 from azure.cli.core import telemetry
@@ -104,19 +103,19 @@ def create_hybrid_appliance(cmd, resource_group_name, name, correlation_id=None,
     current_path = os.path.abspath(os.path.dirname(__file__))
     out_path = os.path.join(home_dir, ".azure", "hybrid_appliance")
     os.makedirs(out_path, exist_ok=True)
+    latestMajorVersion, latestMinorVersion, kmsImage = utils.get_latest_tested_version()
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     cc_arm_id = consts.cc_arm_id_format.format(subscription_id, resource_group_name, name)
 
     try:
-        kms_replacements = {"__KUBECONFIG_PATH__": kubeconfig_path, "__CC_ARM_ID__": cc_arm_id, "__KMS_IMAGE_PATH__": consts.kms_image_path}
+        kms_replacements = {"__KUBECONFIG_PATH__": kubeconfig_path, "__CC_ARM_ID__": cc_arm_id, "__KMS_IMAGE_PATH__": kmsImage}
         utils.replace_string_in_file(os.path.join(current_path, "kms.yaml"), os.path.join(out_path, "kms.yaml"), kms_replacements)
         
         utils.replace_string_in_file(os.path.join(current_path, "kubeletconfig.yaml"), os.path.join(out_path, "kubeletconfig.yaml"), {"__STATIC_POD_PATH__": "/etc/kubernetes/manifests"})
     except Exception as ex:
         raise CLIInternalError("Failed to edit supporting files: {}".format(str(ex)))
     
-    latestMajorVersion, latestMinorVersion = utils.get_latest_tested_microk8s_version()
     os.environ["MICROK8S_VERSION"] = "{}.{}".format(latestMajorVersion, latestMinorVersion)
     os.environ["KUBECTL_CLIENT_LOCATION"] = "{}".format(kubectl_client_location)
     os.environ["KUBECONFIG_PATH"]=kubeconfig_path
@@ -134,7 +133,7 @@ def create_hybrid_appliance(cmd, resource_group_name, name, correlation_id=None,
         raise CLIInternalError("Microk8s cluster is not running after setting up the cluster. Please check the logs tarball at /var/snap/microk8s/current")
 
     # Onboard the cluster to arc
-    cmd_onboard_arc= ['connectedk8s', 'connect', '-n', name, '-g', resource_group_name, '--kube-config', kubeconfig_path]
+    cmd_onboard_arc= ['connectedk8s', 'connect', '-n', name, '-g', resource_group_name, '--kube-config', kubeconfig_path, '--output', 'none']
 
     # The NO_PROXY env variable needs the api server address, which is not available with the user before the cluster is provisioned.
     # To get around that, we get the server address and services cidr and append the no_proxy variable with those values.
@@ -190,7 +189,12 @@ def upgrade_hybrid_appliance(resource_group_name, name):
     currentMajorVersion = kubernetesVersionResponse["serverVersion"]["major"]
     currentMinorVersion =  kubernetesVersionResponse["serverVersion"]["minor"].strip('+') # For some versions, for example, 1.23, minor version is represented as 23+ 
     
-    latestMajorVersion, latestMinorVersion = utils.get_latest_tested_microk8s_version()
+    latestMajorVersion, latestMinorVersion, latest_kms_image = utils.get_latest_tested_version()
+
+    try:
+        utils.update_kms_version(latest_kms_image)
+    except Exception as e:
+        raise CLIInternalError("Failed to update yaml for kms plugin: {}".format(str(e)))
 
     if currentMajorVersion == latestMajorVersion and currentMinorVersion == latestMinorVersion:
         print("The kubernetes cluster is already at the latest available version.")

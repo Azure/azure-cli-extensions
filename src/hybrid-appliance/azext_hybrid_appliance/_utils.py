@@ -46,9 +46,26 @@ def install_kubectl_client():
         telemetry.set_exception(exception=e, fault_type=consts.Download_And_Install_Kubectl_Fault_Type, summary="Failed to download and install kubectl")
         raise CLIInternalError("Unable to install kubectl. Error: ", str(e))
 
-def get_latest_tested_microk8s_version():
+def get_latest_tested_version():
     response = requests.get("{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name))
-    return json.loads(response.content.decode())["latestTested"].split('.')
+    jsonDict = json.loads(response.content.decode())
+    major, minor = jsonDict["latestTestedMicrok8s"].split('.')
+    return major, minor, jsonDict["kmsImage"]
+
+def update_kms_version(new_kms_image):
+    kms_yaml_file_path = "/etc/kubernetes/manifests/kms.yaml"
+    try:
+        kms_yaml = yaml.safe_load(open(kms_yaml_file_path))
+    except:
+        raise CLIInternalError("Failed to get the current yaml for the kms pod.")
+    
+    current_kms_image = kms_yaml["spec"]["containers"][0]["image"]
+
+    if current_kms_image == new_kms_image:
+        print("The KMS plugin is already at the latest version")
+    else:
+        kms_yaml["spec"]["containers"][0]["image"] = new_kms_image
+        yaml.safe_dump(kms_yaml, open(kms_yaml_file_path, 'w'))
 
 def check_microk8s():
     statusYaml = subprocess.check_output(['microk8s', 'status', '--format', 'yaml']).decode()

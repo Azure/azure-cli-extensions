@@ -15,7 +15,6 @@ App_Insights_Endpoint = "https://mcr.microsoft.com" # Putting a place holder her
 MCR_Endpoint = "https://mcr.microsoft.com"
 Memory_Threshold = 4
 Disk_Threshold = 20
-Supported_Locations = "southeastasia"
 diagnostics_folder_name = "diagnostics_logs"
 # Fault types
 Download_And_Install_Kubectl_Fault_Type = "Failed to download and install kubectl"

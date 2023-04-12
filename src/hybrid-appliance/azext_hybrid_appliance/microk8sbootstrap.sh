@@ -6,7 +6,7 @@ fi
 
 mkdir -p ~/.azure/hybrid_appliance
 mkdir -p /etc/kubernetes/manifests
-cp ./encryptionconfig.yaml /etc/kubernetes
+cp ~/.azure/cliextensions/hybrid-appliance/azext_hybrid_appliance/encryptionconfig.yaml /etc/kubernetes
 cp ~/.azure/hybrid_appliance/kms.yaml /etc/kubernetes/manifests
 
 sudo snap install microk8s --channel=$MICROK8S_VERSION --classic
@@ -33,7 +33,7 @@ else
     exit 1
   fi
 
-  echo --encryption-provider-config=$HOME/.azure/cliextensions/hybrid-appliance/azext_hybrid_appliance/encryption_config.yaml >> /var/snap/microk8s/current/args/kube-apiserver
+  echo --encryption-provider-config=/etc/kubernetes/encryptionconfig.yaml >> /var/snap/microk8s/current/args/kube-apiserver
   sudo systemctl restart snap.microk8s.daemon-kubelite
 fi
 
