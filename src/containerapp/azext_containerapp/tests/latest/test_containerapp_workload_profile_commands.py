@@ -29,7 +29,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         app1 = self.create_random_name(prefix='app1', length=24)
         app2 = self.create_random_name(prefix='app2', length=24)
 
-        location = "northcentralus"
+        location = "eastus"
 
         self.cmd('containerapp env create -g {} -n {} --location {}  --logs-destination none --enable-workload-profiles'.format(resource_group, env, location))
 
@@ -55,6 +55,8 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
 
         self.cmd("az containerapp env workload-profile set -g {} -n {} --workload-profile-name my-d4 --workload-profile-type D4 --min-nodes 2 --max-nodes 3".format(resource_group, env))
 
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
@@ -68,6 +70,8 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         ])
 
         self.cmd("az containerapp env workload-profile set -g {} -n {} --workload-profile-name my-d4 --min-nodes 1 --max-nodes 2".format(resource_group, env))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
@@ -93,7 +97,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         env = self.create_random_name(prefix='env', length=24)
         vnet = self.create_random_name(prefix='name', length=24)
 
-        location = "northcentralus"
+        location = "eastus"
 
         self.cmd("az network vnet create -l {} --address-prefixes '14.0.0.0/16' -g {} -n {}".format(location, resource_group, vnet))
         sub_id = self.cmd("az network vnet subnet create --address-prefixes '14.0.0.0/22' --delegations Microsoft.App/environments -n sub -g {} --vnet-name {}".format(resource_group, vnet)).get_output_in_json()["id"]
@@ -108,6 +112,8 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         time.sleep(30)
 
         self.cmd("az containerapp env workload-profile set -g {} -n {} --workload-profile-name my-d8 --workload-profile-type D8 --min-nodes 1 --max-nodes 1".format(resource_group, env))
+
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
@@ -124,6 +130,13 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         profiles = self.cmd("az containerapp env workload-profile list -g {} -n {}".format(resource_group, env)).get_output_in_json()
         self.assertEqual(len(profiles), 2)
 
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+        time.sleep(30)
+
         self.cmd("az containerapp env workload-profile delete -g {} -n {} --workload-profile-name my-d8 ".format(resource_group, env))
 
         profiles = self.cmd("az containerapp env workload-profile list -g {} -n {}".format(resource_group, env)).get_output_in_json()
@@ -136,7 +149,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='yaml', length=24)
 
-        location = "northcentralus"
+        location = "eastus"
 
         self.cmd('containerapp env create -g {} -n {} --location {}  --logs-destination none --enable-workload-profiles'.format(resource_group, env, location))
 
@@ -195,7 +208,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
                       - npm
                       - start
                     resources:
-                      cpu: 3
+                      cpu: 10.0
                       memory: 5Gi
                 scale:
                   minReplicas: 1
@@ -206,11 +219,11 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         write_test_file(containerapp_file_name_01, containerapp_yaml_text_01)
         self.cmd(f'containerapp create -n {app} -g {resource_group} --environment {env} --yaml {containerapp_file_name_01}')
 
-        self.assertContainerappProperties(containerapp_env, resource_group, app, workload_profile_name, revision_01)
+        self.assertContainerappProperties(containerapp_env, resource_group, app, workload_profile_name, revision_01, "10.0", "5Gi")
 
         revision_02 = "revision02"
         containerapp_yaml_text_02 = containerapp_yaml_text_01.replace(workload_profile_name, "Consumption")
-        containerapp_yaml_text_02 = containerapp_yaml_text_02.replace("cpu: 3", "cpu: 0.5")
+        containerapp_yaml_text_02 = containerapp_yaml_text_02.replace("cpu: 10.0", "cpu: 0.5")
         containerapp_yaml_text_02 = containerapp_yaml_text_02.replace("memory: 5Gi", "memory: 1Gi")
         containerapp_yaml_text_02 = containerapp_yaml_text_02.replace(revision_01, revision_02)
 
@@ -219,17 +232,19 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
 
         self.cmd(f'containerapp update -n {app} -g {resource_group} --yaml {containerapp_file_name_02}')
 
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
         time.sleep(30)
 
-        self.assertContainerappProperties(containerapp_env, resource_group, app, "Consumption", revision_02)
+        self.assertContainerappProperties(containerapp_env, resource_group, app, "Consumption", revision_02, "0.5", "1Gi")
 
         clean_up_test_file(containerapp_file_name_01)
         clean_up_test_file(containerapp_file_name_02)
 
-    def assertContainerappProperties(self, containerapp_env, rg, app, workload_profile_name, revision):
+    def assertContainerappProperties(self, containerapp_env, rg, app, workload_profile_name, revision, cpu, mem):
         self.cmd(f'containerapp show -g {rg} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.configuration.ingress.external", True),
@@ -241,5 +256,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
-            JMESPathCheck("properties.workloadProfileName", workload_profile_name)
+            JMESPathCheck("properties.workloadProfileName", workload_profile_name),
+            JMESPathCheck("properties.template.containers[0].resources.cpu", cpu),
+            JMESPathCheck("properties.template.containers[0].resources.memory", mem)
         ])
