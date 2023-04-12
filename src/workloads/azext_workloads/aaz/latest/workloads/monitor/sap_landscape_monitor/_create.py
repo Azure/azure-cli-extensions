@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads monitor sap-landscape-monitor create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a SAP Landscape Monitor Dashboard for the specified subscription, resource group, and resource name.

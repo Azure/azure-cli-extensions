@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-virtual-instance start",
+    is_preview=True,
 )
 class Start(AAZCommand):
     """Starts the SAP application, that is the Central Services instance and Application server instances.

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "workloads sap-database-instance",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage database instance

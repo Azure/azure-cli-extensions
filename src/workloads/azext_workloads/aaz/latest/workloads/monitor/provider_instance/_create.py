@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads monitor provider-instance create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a provider instance for the specified subscription, resource group, SAP monitor name, and resource name.

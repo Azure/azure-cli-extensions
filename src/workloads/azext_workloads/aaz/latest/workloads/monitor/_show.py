@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads monitor show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Show properties of a SAP monitor for the specified subscription, resource group, and resource name.

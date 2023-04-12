@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-virtual-instance create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a Virtual Instance for SAP solutions (VIS) resource

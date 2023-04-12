@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-virtual-instance update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a Virtual Instance for SAP solutions (VIS) resource

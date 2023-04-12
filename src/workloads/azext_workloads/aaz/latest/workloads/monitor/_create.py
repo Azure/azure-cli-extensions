@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads monitor create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a SAP monitor for the specified subscription, resource group, and resource name.

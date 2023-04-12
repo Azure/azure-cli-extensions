@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads monitor sap-landscape-monitor list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List configuration values for Single Pane Of Glass for SAP monitor for the specified subscription, resource group, and resource name.

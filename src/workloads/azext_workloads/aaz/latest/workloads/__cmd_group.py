@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "workloads",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage workloads

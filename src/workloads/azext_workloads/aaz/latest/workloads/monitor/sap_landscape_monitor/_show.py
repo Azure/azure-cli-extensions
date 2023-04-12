@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads monitor sap-landscape-monitor show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Get configuration values for Single Pane Of Glass for SAP monitor for the specified subscription, resource group, and resource name.

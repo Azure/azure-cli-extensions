@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads monitor provider-instance list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List a list of provider instances in the specified SAP monitor. The operations returns various properties of each provider instances.

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-virtual-instance stop",
+    is_preview=True,
 )
 class Stop(AAZCommand):
     """Stops the SAP Application, that is the Application server instances and Central Services instance.

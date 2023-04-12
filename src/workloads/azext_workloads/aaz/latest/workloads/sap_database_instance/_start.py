@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-database-instance start",
+    is_preview=True,
 )
 class Start(AAZCommand):
     """Starts the database instance of the SAP system.

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads monitor update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a SAP monitor for the specified subscription, resource group, and resource name.

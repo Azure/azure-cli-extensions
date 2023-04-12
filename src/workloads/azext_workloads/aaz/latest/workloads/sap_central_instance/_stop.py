@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-central-instance stop",
+    is_preview=True,
 )
 class Stop(AAZCommand):
     """Stops the SAP Central Services Instance.

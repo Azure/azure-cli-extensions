@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "workloads monitor sap-landscape-monitor",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage monitor sap landscape monitor

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-supported-sku",
+    is_preview=True,
 )
 class SapSupportedSku(AAZCommand):
     """Show a list of SAP supported SKUs for ASCS, Application and Database tier.

@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-sizing-recommendation",
+    is_preview=True,
 )
 class SapSizingRecommendation(AAZCommand):
     """Show SAP sizing recommendations by providing input SAPS for application tier and memory required for database tier

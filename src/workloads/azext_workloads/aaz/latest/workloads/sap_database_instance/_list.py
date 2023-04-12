@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-database-instance list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List the Database resources associated with a Virtual Instance for SAP solutions resource.

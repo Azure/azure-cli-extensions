@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "workloads sap-database-instance show",
+    is_preview=True,
 )
 class Show(AAZCommand):
     """Show the SAP Database Instance resource.
