@@ -48,6 +48,7 @@ class SearchThread(threading.Thread):
         self.cli_ctx = cli_ctx
         self.keywords = keywords
         self.on_prepared_callback = on_prepared_callback
+        # maintain a copy of the command history to insert commands executed in the searched scenario
         self.command_history = search_path.get_cmd_history(25)
         if executing_command:
             self.command_history.append(executing_command)
@@ -66,6 +67,7 @@ class SearchThread(threading.Thread):
             self.result = "Connection Error. Please check your network connection."
 
 
+# copied from azext_scenario_guide.requests.search_online: https://github.com/Azure/azure-cli-extensions/blob/7365e1ba3cc858b075cbc98aeb4e5ce5c91db745/src/scenario-guide/azext_scenario_guide/requests.py#L13
 def online_search(keyword, scope=SearchScope.All, match_rule=MatchRule.All, top=5):
     """Search related e2e scenarios"""
     import requests
@@ -95,6 +97,7 @@ def online_search(keyword, scope=SearchScope.All, match_rule=MatchRule.All, top=
     return results, api_version
 
 
+# # copied from scenario_guide/azext_scenario_guide.custom._show_search_item: https://github.com/Azure/azure-cli-extensions/blob/7365e1ba3cc858b075cbc98aeb4e5ce5c91db745/src/scenario-guide/azext_scenario_guide/custom.py#L52
 def show_search_item(results):
     """
     Display searched scenarios in following format.
@@ -145,6 +148,7 @@ def show_search_item(results):
     print()
 
 
+# copied from scenario_guide/azext_scenario_guide.custom._match_result_highlight: https://github.com/Azure/azure-cli-extensions/blob/7365e1ba3cc858b075cbc98aeb4e5ce5c91db745/src/scenario-guide/azext_scenario_guide/custom.py#L129
 def _match_result_highlight(highlight_content: str) -> list:
     """Build `styled_text` from content with `<em></em>` as highlight mark"""
     styled_description = []

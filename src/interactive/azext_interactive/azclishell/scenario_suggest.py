@@ -84,6 +84,7 @@ class ScenarioAutoSuggest(AutoSuggest):
             unfinished = user_input.rsplit(' ', 1)[-1]
             # list of unused parameters in current sample
             unused_param = list(self.param_sample_value_map.keys())
+            # same as unfinished
             completed_parts = user_input.rsplit(' ', 1)[0].strip().split()
             # last completed part of user's input
             last_part = completed_parts[-1]
