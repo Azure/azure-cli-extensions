@@ -536,11 +536,11 @@ class AzInteractiveShell(object):
         # e.g. :: 1  => `selected_option='1'`
         selected_option = text.partition(SELECT_SYMBOL['example'])[2].strip()
         try:
-            selected_option = int(selected_option) - 1
+            selected_option = int(selected_option)
         except ValueError:
             print("An Integer should follow the colon", file=self.output)
             return
-        if 0 <= selected_option < len(self.recommender.get_scenarios() or []):
+        if 0 <= selected_option <= len(self.recommender.get_scenarios() or []):
             scenario = self.recommender.get_scenarios()[selected_option]
             self.recommender.feedback_scenario(selected_option, scenario)
         else:
@@ -652,8 +652,8 @@ class AzInteractiveShell(object):
                 print_styled_text([(Style.WARNING, "We currently can't find the scenario you need. \n"
                                                    "You can try to change the search keywords or "
                                                    "submit an issue to ask for the scenario you need.")])
-                # -1 means no result, since the idx+1 in feedback function, so passed -2
-                self.recommender.feedback_search(-2, keywords)
+                # -1 means no result
+                self.recommender.feedback_search("-1", keywords)
             else:
                 show_search_item(results)
 
@@ -661,11 +661,11 @@ class AzInteractiveShell(object):
                               (Style.SECONDARY, "(if none, enter 0)"), (Style.PRIMARY, ": ")]
                 option = select_option(option_msg, min_option=0, max_option=len(results), default_option=-1)
                 if option == 0:
-                    # -1 means no selection, since the idx+1 in feedback function, so passed -2
-                    self.recommender.feedback_search(-2, keywords)
-                elif option > 0:
+                    # 0 means no selection
+                    self.recommender.feedback_search("0", keywords)
+                if option > 0:
                     scenario = results[option - 1]
-                    self.recommender.feedback_search(option - 1, keywords, scenario=scenario)
+                    self.recommender.feedback_search(option, keywords, scenario=scenario)
                     self.scenario_repl(scenario)
 
     def _special_cases(self, cmd, outside):

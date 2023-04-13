@@ -23,8 +23,10 @@ class RecommendType(int, Enum):
     Scenario = 4
     Search = 5
 
+
 class RecommendThread(threading.Thread):
     """ Worker Thread to fetch recommendation online based on user's context """
+
     def __init__(self, cli_ctx, recommendation_path, executing_command, on_prepared_callback):
         super().__init__()
         self.cli_ctx = cli_ctx
@@ -68,32 +70,36 @@ class Recommender:
         """Whether recommender is enabled in global config"""
         return self.cli_ctx.config.getboolean("interactive", "enable_recommender", fallback=True)
 
-    def _feedback_command(self, command):
+    def feedback_command(self, command):
         """Send user's command choice in recommendations to telemetry."""
         if self.cur_thread and not self.cur_thread.is_alive():
             recommendations = self.cur_thread.result
             api_version = self.cur_thread.api_version
             trigger_commands = [cmd['command'] for cmd in self.cur_thread.command_history[-2:]]
             processed_exception = self.cur_thread.processed_exception
-            if not recommendations or not command:
-                send_feedback("-1", trigger_commands, processed_exception, recommendations, accepted_recommend=None, api_version=api_version)
-                return
             # reformat the user input
             # e.g. `az webapp   create -h` => `webapp create -h`
-            formatted_command = re.sub(r'^az ', '', re.sub(r'\s+', ' ', command)).strip()
+            command = re.sub(r'^az ', '', re.sub(r'\s+', ' ', command)).strip()
+            if not recommendations:
+                send_feedback("-1", trigger_commands, processed_exception, recommendations, accepted_recommend=None,
+                              api_version=api_version)
+            elif not command:
+                send_feedback("0", trigger_commands, processed_exception, recommendations, accepted_recommend=command,
+                              api_version=api_version)
+            # idx: index of the recommendation in the recommendation list, number from 0
             for idx, recommendation in enumerate(recommendations):
                 if recommendation['type'] != RecommendType.Command:
                     continue
                 # check if the user input matches recommendation
-                if formatted_command.startswith(recommendation['command']):
-                    send_feedback(f'a{idx + 1}', trigger_commands, processed_exception, recommendations, recommendation, api_version=api_version)
+                if command.startswith(recommendation['command']):
+                    send_feedback(f'a{idx + 1}', trigger_commands, processed_exception, recommendations,
+                                  accepted_recommend=command, api_version=api_version)
                     return
-            send_feedback("0", trigger_commands, processed_exception, recommendations, accepted_recommend=None, api_version=api_version)
 
     def feedback_scenario(self, scenario_idx, scenario=None):
-        """Send user's command choice in recommendations to telemetry.
+        """Send user's scenario choice in recommendations to telemetry.
 
-        :param scenario_idx: idx of the scenario in scenario recommendations list
+        :param scenario_idx: idx of the scenario in scenario recommendations list(number from 1)
         :param scenario: selected scenario item
         """
         if self.cur_thread and not self.cur_thread.is_alive():
@@ -101,19 +107,20 @@ class Recommender:
             api_version = self.cur_thread.api_version
             trigger_commands = [cmd['command'] for cmd in self.cur_thread.command_history[-2:]]
             processed_exception = self.cur_thread.processed_exception
-            if not recommendations or not scenario:
-                send_feedback(-1, trigger_commands, processed_exception, recommendations, accepted_recommend=None,
+            if not recommendations:
+                send_feedback("-1", trigger_commands, processed_exception, recommendations, accepted_recommend=None,
+                              api_version=api_version)
+            elif not scenario:
+                send_feedback("0", trigger_commands, processed_exception, recommendations, accepted_recommend=None,
                               api_version=api_version)
             else:
-                send_feedback(f'b{scenario_idx + 1}', trigger_commands, processed_exception, recommendations,
+                send_feedback(f'b{scenario_idx}', trigger_commands, processed_exception, recommendations,
                               accepted_recommend=scenario, api_version=api_version)
 
     def feedback_search(self, search_idx, keywords, scenario=None):
-        """Send user's command choice in scenario search to telemetry.
+        """Send user's scenario choice in scenario search to telemetry.
 
-        :param search_idx: idx of the scenario in scenario recommendations list
-        :param scenario: selected scenario item
-        :param not_accepted: whether the user choose to not accept the scenario
+        :param search_idx: idx of the scenario in scenario search list(number from 1)
         :param keywords: search keywords
         """
         if self.cur_thread and not self.cur_thread.is_alive():
@@ -121,8 +128,15 @@ class Recommender:
             api_version = self.cur_thread.api_version
             search_keywords = keywords.split(' ')
             processed_exception = self.cur_thread.processed_exception
-            send_feedback(f'c{search_idx + 1}', search_keywords, processed_exception, recommendations,
-                          accepted_recommend=scenario, api_version=api_version, request_type=5)
+            if not recommendations:
+                send_feedback("-1", search_keywords, processed_exception, recommendations, accepted_recommend=None,
+                              api_version=api_version)
+            elif not scenario:
+                send_feedback("0", search_keywords, processed_exception, recommendations, accepted_recommend=None,
+                              api_version=api_version)
+            else:
+                send_feedback(f'c{search_idx}', search_keywords, processed_exception, recommendations,
+                              accepted_recommend=scenario, api_version=api_version, request_type=5)
 
     def update_executing(self, cmd, feedback=True):
         """Update executing command info, and prefetch the recommendation result as if the execution is successful
@@ -137,7 +151,7 @@ class Recommender:
         command = re.sub('^az *', '', cmd).split('-', 1)[0].strip()
         param = sorted([p for p in cmd.split() if p.startswith('-')])
         if feedback:
-            self._feedback_command(command)
+            self.feedback_command(command)
         self.executing_command = {'command': command, 'arguments': param}
         self._update()
 
@@ -150,7 +164,7 @@ class Recommender:
         if not self.enabled or not self.executing_command:
             return
         self.recommendation_path.append_result(self.executing_command['command'], self.executing_command['arguments'],
-                                    exit_code, result_summary)
+                                               exit_code, result_summary)
         self.executing_command = None
         # If the execution of the last command fails, get the recommendation result again
         if exit_code != 0:
@@ -169,7 +183,8 @@ class Recommender:
         if not self.cur_thread.result:
             # This `None` represents the request is running and recommendation is not ready
             return None
-        return [recommendation for recommendation in self.cur_thread.result if recommendation['type'] == recommendation_type]
+        return [recommendation for recommendation in self.cur_thread.result if
+                recommendation['type'] == recommendation_type]
 
     def get_commands(self):
         """
@@ -270,7 +285,6 @@ def get_recommend_from_api(command_list, type, top_num=5, error_info=None):  # p
 
 def send_feedback(option_idx, latest_commands, processed_exception=None, recommends=None, accepted_recommend=None,
                   api_version=None, request_type=RecommendType.All):
-
     # initialize feedback data
     # If you want to add a new property to the feedback, please initialize it here in advance and place it with 'None' to prevent parameter loss due to parsing errors.
     feedback_data = {"request_type": None, "option": None, "trigger_commands": None, "error_info": None,
@@ -388,7 +402,7 @@ def _get_command_sample(command):
     if "arguments" in command and command["arguments"]:
         parameter = command["arguments"]
         sorted_param = sorted(parameter)
-        cmd_help = help_files._load_help_file(command['command'])   # pylint: disable=protected-access
+        cmd_help = help_files._load_help_file(command['command'])  # pylint: disable=protected-access
         if cmd_help and 'examples' in cmd_help and cmd_help['examples']:
             for cmd_example in cmd_help['examples']:
                 command_sample, example_arguments = _format_command_sample(cmd_example['text'])
