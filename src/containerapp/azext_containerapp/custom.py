@@ -628,10 +628,10 @@ def update_containerapp_logic(cmd,
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     validate_revision_suffix(revision_suffix)
 
-    # Validate that max_replicas is set to 0-30
+    # Validate that max_replicas is set to 0-1000
     if max_replicas is not None:
-        if max_replicas < 1 or max_replicas > 30:
-            raise ArgumentUsageError('--max-replicas must be in the range [1,30]')
+        if max_replicas < 1 or max_replicas > 1000:
+            raise ArgumentUsageError('--max-replicas must be in the range [1,1000]')
 
     if yaml:
         if image or min_replicas or max_replicas or\
@@ -2162,6 +2162,46 @@ def show_ip_restrictions(cmd, name, resource_group_name):
         return []
 
 
+def set_ingress_sticky_session(cmd, name, resource_group_name, affinity, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    containerapp_patch = {}
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "stickySessions", "affinity", value=affinity)
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_ingress_sticky_session(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
+
+    try:
+        return containerapp_def["properties"]["configuration"]["ingress"]
+    except Exception as e:
+        raise ValidationError("Ingress must be enabled to enable sticky sessions. Try running `az containerapp ingress -h` for more info.") from e
+
+
 def show_registry(cmd, name, resource_group_name, server):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
@@ -2789,7 +2829,7 @@ def containerapp_up(cmd,
                             _get_registry_details, _create_github_action, _set_up_defaults, up_output,
                             check_env_name_on_rg, get_token, _validate_containerapp_name, _has_dockerfile)
     from ._github_oauth import cache_github_token
-    HELLOWORLD = "mcr.microsoft.com/azuredocs/containerapps-helloworld"
+    HELLOWORLD = "mcr.microsoft.com/k8se/quickstart"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
     _validate_containerapp_name(name)

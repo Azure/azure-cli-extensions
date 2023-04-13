@@ -306,9 +306,9 @@ def _ensure_location_allowed(cmd, location, resource_provider, resource_type):
             if res and getattr(res, 'resource_type', "") == resource_type:
                 res_locations = getattr(res, 'locations', [])
 
-        res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+        res_locations = [format_location(res_loc) for res_loc in res_locations if res_loc.strip()]
 
-        location_formatted = location.lower().replace(" ", "")
+        location_formatted = format_location(location)
         if location_formatted not in res_locations:
             raise ValidationError(f"Location '{location}' is not currently supported. To get list of supported locations, run `az provider show -n {resource_provider} --query \"resourceTypes[?resourceType=='{resource_type}'].locations\"`")
 
@@ -1673,3 +1673,9 @@ def certificate_thumbprint_matches(certificate_object, thumbprint=None):
 
 def certificate_matches(certificate_object, location=None, thumbprint=None):
     return certificate_location_matches(certificate_object, location) and certificate_thumbprint_matches(certificate_object, thumbprint)
+
+
+def format_location(location=None):
+    if location:
+        return location.lower().replace(" ", "").replace("(", "").replace(")", "")
+    return location

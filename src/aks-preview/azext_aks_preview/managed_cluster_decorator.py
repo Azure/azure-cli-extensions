@@ -477,18 +477,16 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: str or None
         """
         # try to read the property value corresponding to the parameter from the `mc` object
-        pod_cidr = None
+        # only read on CREATE as this property can be updated
+        pod_cidr = self.raw_param.get("pod_cidr")
 
-        if (
-            self.mc and
-            self.mc.network_profile and
-            self.mc.network_profile.pod_cidr is not None
-        ):
-            pod_cidr = self.mc.network_profile.pod_cidr
-
-        # overwrite if provided by user
-        if self.raw_param.get("pod_cidr") is not None:
-            pod_cidr = self.raw_param.get("pod_cidr")
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.network_profile and
+                self.mc.network_profile.pod_cidr is not None
+            ):
+                pod_cidr = self.mc.network_profile.pod_cidr
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -499,18 +497,18 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: str or None
         """
-        network_plugin_mode = None
-        # try to read the property value corresponding to the parameter from the `mc` object
-        if (
-            self.mc and
-            self.mc.network_profile and
-            self.mc.network_profile.network_plugin_mode is not None
-        ):
-            network_plugin_mode = self.mc.network_profile.network_plugin_mode
-
         # overwrite if provided by user
-        if self.raw_param.get("network_plugin_mode") is not None:
-            network_plugin_mode = self.raw_param.get("network_plugin_mode")
+        network_plugin_mode = self.raw_param.get("network_plugin_mode")
+
+        # try to read the property value corresponding to the parameter from the `mc` object
+        # only read on CREATE as this property can be updated
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                self.mc.network_profile and
+                self.mc.network_profile.network_plugin_mode is not None
+            ):
+                network_plugin_mode = self.mc.network_profile.network_plugin_mode
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -3242,7 +3240,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if override_until is not None:
                 try:
                     mc.upgrade_settings.override_settings.until = parse(override_until)
-                except Exception as ex:  # pylint: disable=broad-except
+                except Exception:  # pylint: disable=broad-except
                     raise InvalidArgumentValueError(
                         f"{override_until} is not a valid datatime format."
                     )
