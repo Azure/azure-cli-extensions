@@ -1,5 +1,9 @@
 Release History
 ===============
+1.11.1
+---
+* Refine `az spring app create` command from 3 steps to 2 steps.
+
 1.11.0
 ---
 * Deprecate parameter `--enable-log-stream-public-endpoint` when creating/updating service 
