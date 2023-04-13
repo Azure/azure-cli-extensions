@@ -87,7 +87,7 @@ def _get_connected_vmware_os(cmd, resource_group_name, vm_name):
     except Exception:
         return None
 
-    if vmware and vmware.os_profile and vmware.os_profile.os_type:
-        os_type = vmware.os_profile.os_type
+    if vmware and vmware.get("osProfile") and vmware.get("osProfile").get("osType"):
+        os_type = vmware.get("osProfile").get("osType")
 
     return os_type
