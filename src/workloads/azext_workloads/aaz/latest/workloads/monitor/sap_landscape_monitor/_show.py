@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Show(AAZCommand):
-    """Get configuration values for Single Pane Of Glass for SAP monitor for the specified subscription, resource group, and resource name.
+    """Show configuration values for Single Pane Of Glass for SAP monitor for the specified subscription, resource group, and resource name.
 
     :example: Show workloads monitor sap landscape monitor
         az workloads monitor sap-landscape-monitor show -g rg --monitor-name name

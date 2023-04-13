@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create a provider instance for the specified subscription, resource group, SAP monitor name, and resource name.
 
     :example: Create workloads monitor provider instance
-        az workloads monitor provider-instance create -g rg --mointor-name name -n instance-name
+        az az workloads monitor provider-instance create -g rg --mointor-name name -n instance-name --provider-settings "{providerType: SapHana,hostname:name,dbName:db,sqlPort: 0000,instanceNumber:00,dbUsername:user,dbPassword:****,sslPreference:ServerCertificate,sslCertificateUri:https://storageaccount.blob.core.windows.net/containername/filename,sslHostNameInCertificate:xyz.domain.com,sapSid:SID}"
     """
 
     _aaz_info = {
@@ -58,6 +58,278 @@ class Create(AAZCommand):
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.provider_settings = AAZObjectArg(
+            options=["--provider-settings"],
+            arg_group="Properties",
+            help="Defines the provider specific properties.",
+        )
+
+        provider_settings = cls._args_schema.provider_settings
+        provider_settings.db2 = AAZObjectArg(
+            options=["db2"],
+        )
+        provider_settings.ms_sql_server = AAZObjectArg(
+            options=["ms-sql-server"],
+        )
+        provider_settings.prometheus_ha_cluster = AAZObjectArg(
+            options=["prometheus-ha-cluster"],
+        )
+        provider_settings.prometheus_os = AAZObjectArg(
+            options=["prometheus-os"],
+        )
+        provider_settings.sap_hana = AAZObjectArg(
+            options=["sap-hana"],
+        )
+        provider_settings.sap_net_weaver = AAZObjectArg(
+            options=["sap-net-weaver"],
+        )
+
+        db2 = cls._args_schema.provider_settings.db2
+        db2.db_name = AAZStrArg(
+            options=["db-name"],
+            help="Gets or sets the db2 database name.",
+        )
+        db2.db_password = AAZStrArg(
+            options=["db-password"],
+            help="Gets or sets the db2 database password.",
+        )
+        db2.db_password_uri = AAZStrArg(
+            options=["db-password-uri"],
+            help="Gets or sets the key vault URI to secret with the database password.",
+        )
+        db2.db_port = AAZStrArg(
+            options=["db-port"],
+            help="Gets or sets the db2 database sql port.",
+        )
+        db2.db_username = AAZStrArg(
+            options=["db-username"],
+            help="Gets or sets the db2 database user name.",
+        )
+        db2.hostname = AAZStrArg(
+            options=["hostname"],
+            help="Gets or sets the target virtual machine name.",
+        )
+        db2.sap_sid = AAZStrArg(
+            options=["sap-sid"],
+            help="Gets or sets the SAP System Identifier",
+        )
+        db2.ssl_certificate_uri = AAZStrArg(
+            options=["ssl-certificate-uri"],
+            help="Gets or sets the blob URI to SSL certificate for the DB2 Database.",
+        )
+        db2.ssl_preference = AAZStrArg(
+            options=["ssl-preference"],
+            help="Gets or sets certificate preference if secure communication is enabled.",
+            enum={"Disabled": "Disabled", "RootCertificate": "RootCertificate", "ServerCertificate": "ServerCertificate"},
+        )
+
+        ms_sql_server = cls._args_schema.provider_settings.ms_sql_server
+        ms_sql_server.db_password = AAZStrArg(
+            options=["db-password"],
+            help="Gets or sets the database password.",
+        )
+        ms_sql_server.db_password_uri = AAZStrArg(
+            options=["db-password-uri"],
+            help="Gets or sets the key vault URI to secret with the database password.",
+        )
+        ms_sql_server.db_port = AAZStrArg(
+            options=["db-port"],
+            help="Gets or sets the database sql port.",
+        )
+        ms_sql_server.db_username = AAZStrArg(
+            options=["db-username"],
+            help="Gets or sets the database user name.",
+        )
+        ms_sql_server.hostname = AAZStrArg(
+            options=["hostname"],
+            help="Gets or sets the SQL server host name.",
+        )
+        ms_sql_server.sap_sid = AAZStrArg(
+            options=["sap-sid"],
+            help="Gets or sets the SAP System Identifier",
+        )
+        ms_sql_server.ssl_certificate_uri = AAZStrArg(
+            options=["ssl-certificate-uri"],
+            help="Gets or sets the blob URI to SSL certificate for the SQL Database.",
+        )
+        ms_sql_server.ssl_preference = AAZStrArg(
+            options=["ssl-preference"],
+            help="Gets or sets certificate preference if secure communication is enabled.",
+            enum={"Disabled": "Disabled", "RootCertificate": "RootCertificate", "ServerCertificate": "ServerCertificate"},
+        )
+
+        prometheus_ha_cluster = cls._args_schema.provider_settings.prometheus_ha_cluster
+        prometheus_ha_cluster.cluster_name = AAZStrArg(
+            options=["cluster-name"],
+            help="Gets or sets the clusterName.",
+        )
+        prometheus_ha_cluster.hostname = AAZStrArg(
+            options=["hostname"],
+            help="Gets or sets the target machine name.",
+        )
+        prometheus_ha_cluster.prometheus_url = AAZStrArg(
+            options=["prometheus-url"],
+            help="URL of the Node Exporter endpoint.",
+        )
+        prometheus_ha_cluster.sid = AAZStrArg(
+            options=["sid"],
+            help="Gets or sets the cluster sid.",
+        )
+        prometheus_ha_cluster.ssl_certificate_uri = AAZStrArg(
+            options=["ssl-certificate-uri"],
+            help="Gets or sets the blob URI to SSL certificate for the HA cluster exporter.",
+        )
+        prometheus_ha_cluster.ssl_preference = AAZStrArg(
+            options=["ssl-preference"],
+            help="Gets or sets certificate preference if secure communication is enabled.",
+            enum={"Disabled": "Disabled", "RootCertificate": "RootCertificate", "ServerCertificate": "ServerCertificate"},
+        )
+
+        prometheus_os = cls._args_schema.provider_settings.prometheus_os
+        prometheus_os.prometheus_url = AAZStrArg(
+            options=["prometheus-url"],
+            help="URL of the Node Exporter endpoint",
+        )
+        prometheus_os.sap_sid = AAZStrArg(
+            options=["sap-sid"],
+            help="Gets or sets the SAP System Identifier",
+        )
+        prometheus_os.ssl_certificate_uri = AAZStrArg(
+            options=["ssl-certificate-uri"],
+            help="Gets or sets the blob URI to SSL certificate for the prometheus node exporter.",
+        )
+        prometheus_os.ssl_preference = AAZStrArg(
+            options=["ssl-preference"],
+            help="Gets or sets certificate preference if secure communication is enabled.",
+            enum={"Disabled": "Disabled", "RootCertificate": "RootCertificate", "ServerCertificate": "ServerCertificate"},
+        )
+
+        sap_hana = cls._args_schema.provider_settings.sap_hana
+        sap_hana.db_name = AAZStrArg(
+            options=["db-name"],
+            help="Gets or sets the hana database name.",
+        )
+        sap_hana.db_password = AAZStrArg(
+            options=["db-password"],
+            help="Gets or sets the database password.",
+        )
+        sap_hana.db_password_uri = AAZStrArg(
+            options=["db-password-uri"],
+            help="Gets or sets the key vault URI to secret with the database password.",
+        )
+        sap_hana.db_username = AAZStrArg(
+            options=["db-username"],
+            help="Gets or sets the database user name.",
+        )
+        sap_hana.hostname = AAZStrArg(
+            options=["hostname"],
+            help="Gets or sets the target virtual machine size.",
+        )
+        sap_hana.instance_number = AAZStrArg(
+            options=["instance-number"],
+            help="Gets or sets the database instance number.",
+        )
+        sap_hana.sap_sid = AAZStrArg(
+            options=["sap-sid"],
+            help="Gets or sets the SAP System Identifier.",
+        )
+        sap_hana.sql_port = AAZStrArg(
+            options=["sql-port"],
+            help="Gets or sets the database sql port.",
+        )
+        sap_hana.ssl_certificate_uri = AAZStrArg(
+            options=["ssl-certificate-uri"],
+            help="Gets or sets the blob URI to SSL certificate for the DB.",
+        )
+        sap_hana.ssl_host_name_in_certificate = AAZStrArg(
+            options=["ssl-host-name-in-certificate"],
+            help="Gets or sets the hostname(s) in the SSL certificate.",
+        )
+        sap_hana.ssl_preference = AAZStrArg(
+            options=["ssl-preference"],
+            help="Gets or sets certificate preference if secure communication is enabled.",
+            enum={"Disabled": "Disabled", "RootCertificate": "RootCertificate", "ServerCertificate": "ServerCertificate"},
+        )
+
+        sap_net_weaver = cls._args_schema.provider_settings.sap_net_weaver
+        sap_net_weaver.sap_client_id = AAZStrArg(
+            options=["sap-client-id"],
+            help="Gets or sets the SAP Client ID.",
+        )
+        sap_net_weaver.sap_host_file_entries = AAZListArg(
+            options=["sap-host-file-entries"],
+            help="Gets or sets the list of HostFile Entries",
+        )
+        sap_net_weaver.sap_hostname = AAZStrArg(
+            options=["sap-hostname"],
+            help="Gets or sets the target virtual machine IP Address/FQDN.",
+        )
+        sap_net_weaver.sap_instance_nr = AAZStrArg(
+            options=["sap-instance-nr"],
+            help="Gets or sets the instance number of SAP NetWeaver.",
+        )
+        sap_net_weaver.sap_password = AAZStrArg(
+            options=["sap-password"],
+            help="Sets the SAP password.",
+        )
+        sap_net_weaver.sap_password_uri = AAZStrArg(
+            options=["sap-password-uri"],
+            help="Gets or sets the key vault URI to secret with the SAP password.",
+        )
+        sap_net_weaver.sap_port_number = AAZStrArg(
+            options=["sap-port-number"],
+            help="Gets or sets the SAP HTTP port number.",
+        )
+        sap_net_weaver.sap_sid = AAZStrArg(
+            options=["sap-sid"],
+            help="Gets or sets the SAP System Identifier",
+        )
+        sap_net_weaver.sap_username = AAZStrArg(
+            options=["sap-username"],
+            help="Gets or sets the SAP user name.",
+        )
+        sap_net_weaver.ssl_certificate_uri = AAZStrArg(
+            options=["ssl-certificate-uri"],
+            help="Gets or sets the blob URI to SSL certificate for the SAP system.",
+        )
+        sap_net_weaver.ssl_preference = AAZStrArg(
+            options=["ssl-preference"],
+            help="Gets or sets certificate preference if secure communication is enabled.",
+            enum={"Disabled": "Disabled", "RootCertificate": "RootCertificate", "ServerCertificate": "ServerCertificate"},
+        )
+
+        sap_host_file_entries = cls._args_schema.provider_settings.sap_net_weaver.sap_host_file_entries
+        sap_host_file_entries.Element = AAZStrArg()
+
+        # define Arg Group "ProviderInstanceParameter"
+
+        _args_schema = cls._args_schema
+        _args_schema.identity = AAZObjectArg(
+            options=["--identity"],
+            arg_group="ProviderInstanceParameter",
+            help="[currently not in use] Managed service identity(user assigned identities)",
+        )
+
+        identity = cls._args_schema.identity
+        identity.type = AAZStrArg(
+            options=["type"],
+            help="Type of manage identity",
+            required=True,
+            enum={"None": "None", "UserAssigned": "UserAssigned"},
+        )
+        identity.user_assigned_identities = AAZDictArg(
+            options=["user-assigned-identities"],
+            help="User assigned identities dictionary",
+        )
+
+        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            blank={},
         )
         return cls._args_schema
 
@@ -156,10 +428,124 @@ class Create(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+
+            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
+            if user_assigned_identities is not None:
+                user_assigned_identities.set_elements(AAZObjectType, ".")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("providerSettings", AAZObjectType, ".provider_settings")
+
+            provider_settings = _builder.get(".properties.providerSettings")
+            if provider_settings is not None:
+                provider_settings.set_const("providerType", "Db2", AAZStrType, ".db2", typ_kwargs={"flags": {"required": True}})
+                provider_settings.set_const("providerType", "MsSqlServer", AAZStrType, ".ms_sql_server", typ_kwargs={"flags": {"required": True}})
+                provider_settings.set_const("providerType", "PrometheusHaCluster", AAZStrType, ".prometheus_ha_cluster", typ_kwargs={"flags": {"required": True}})
+                provider_settings.set_const("providerType", "PrometheusOS", AAZStrType, ".prometheus_os", typ_kwargs={"flags": {"required": True}})
+                provider_settings.set_const("providerType", "SapHana", AAZStrType, ".sap_hana", typ_kwargs={"flags": {"required": True}})
+                provider_settings.set_const("providerType", "SapNetWeaver", AAZStrType, ".sap_net_weaver", typ_kwargs={"flags": {"required": True}})
+                provider_settings.discriminate_by("providerType", "Db2")
+                provider_settings.discriminate_by("providerType", "MsSqlServer")
+                provider_settings.discriminate_by("providerType", "PrometheusHaCluster")
+                provider_settings.discriminate_by("providerType", "PrometheusOS")
+                provider_settings.discriminate_by("providerType", "SapHana")
+                provider_settings.discriminate_by("providerType", "SapNetWeaver")
+
+            disc_db2 = _builder.get(".properties.providerSettings{providerType:Db2}")
+            if disc_db2 is not None:
+                disc_db2.set_prop("dbName", AAZStrType, ".db2.db_name")
+                disc_db2.set_prop("dbPassword", AAZStrType, ".db2.db_password")
+                disc_db2.set_prop("dbPasswordUri", AAZStrType, ".db2.db_password_uri")
+                disc_db2.set_prop("dbPort", AAZStrType, ".db2.db_port")
+                disc_db2.set_prop("dbUsername", AAZStrType, ".db2.db_username")
+                disc_db2.set_prop("hostname", AAZStrType, ".db2.hostname")
+                disc_db2.set_prop("sapSid", AAZStrType, ".db2.sap_sid")
+                disc_db2.set_prop("sslCertificateUri", AAZStrType, ".db2.ssl_certificate_uri")
+                disc_db2.set_prop("sslPreference", AAZStrType, ".db2.ssl_preference")
+
+            disc_ms_sql_server = _builder.get(".properties.providerSettings{providerType:MsSqlServer}")
+            if disc_ms_sql_server is not None:
+                disc_ms_sql_server.set_prop("dbPassword", AAZStrType, ".ms_sql_server.db_password")
+                disc_ms_sql_server.set_prop("dbPasswordUri", AAZStrType, ".ms_sql_server.db_password_uri")
+                disc_ms_sql_server.set_prop("dbPort", AAZStrType, ".ms_sql_server.db_port")
+                disc_ms_sql_server.set_prop("dbUsername", AAZStrType, ".ms_sql_server.db_username")
+                disc_ms_sql_server.set_prop("hostname", AAZStrType, ".ms_sql_server.hostname")
+                disc_ms_sql_server.set_prop("sapSid", AAZStrType, ".ms_sql_server.sap_sid")
+                disc_ms_sql_server.set_prop("sslCertificateUri", AAZStrType, ".ms_sql_server.ssl_certificate_uri")
+                disc_ms_sql_server.set_prop("sslPreference", AAZStrType, ".ms_sql_server.ssl_preference")
+
+            disc_prometheus_ha_cluster = _builder.get(".properties.providerSettings{providerType:PrometheusHaCluster}")
+            if disc_prometheus_ha_cluster is not None:
+                disc_prometheus_ha_cluster.set_prop("clusterName", AAZStrType, ".prometheus_ha_cluster.cluster_name")
+                disc_prometheus_ha_cluster.set_prop("hostname", AAZStrType, ".prometheus_ha_cluster.hostname")
+                disc_prometheus_ha_cluster.set_prop("prometheusUrl", AAZStrType, ".prometheus_ha_cluster.prometheus_url")
+                disc_prometheus_ha_cluster.set_prop("sid", AAZStrType, ".prometheus_ha_cluster.sid")
+                disc_prometheus_ha_cluster.set_prop("sslCertificateUri", AAZStrType, ".prometheus_ha_cluster.ssl_certificate_uri")
+                disc_prometheus_ha_cluster.set_prop("sslPreference", AAZStrType, ".prometheus_ha_cluster.ssl_preference")
+
+            disc_prometheus_os = _builder.get(".properties.providerSettings{providerType:PrometheusOS}")
+            if disc_prometheus_os is not None:
+                disc_prometheus_os.set_prop("prometheusUrl", AAZStrType, ".prometheus_os.prometheus_url")
+                disc_prometheus_os.set_prop("sapSid", AAZStrType, ".prometheus_os.sap_sid")
+                disc_prometheus_os.set_prop("sslCertificateUri", AAZStrType, ".prometheus_os.ssl_certificate_uri")
+                disc_prometheus_os.set_prop("sslPreference", AAZStrType, ".prometheus_os.ssl_preference")
+
+            disc_sap_hana = _builder.get(".properties.providerSettings{providerType:SapHana}")
+            if disc_sap_hana is not None:
+                disc_sap_hana.set_prop("dbName", AAZStrType, ".sap_hana.db_name")
+                disc_sap_hana.set_prop("dbPassword", AAZStrType, ".sap_hana.db_password")
+                disc_sap_hana.set_prop("dbPasswordUri", AAZStrType, ".sap_hana.db_password_uri")
+                disc_sap_hana.set_prop("dbUsername", AAZStrType, ".sap_hana.db_username")
+                disc_sap_hana.set_prop("hostname", AAZStrType, ".sap_hana.hostname")
+                disc_sap_hana.set_prop("instanceNumber", AAZStrType, ".sap_hana.instance_number")
+                disc_sap_hana.set_prop("sapSid", AAZStrType, ".sap_hana.sap_sid")
+                disc_sap_hana.set_prop("sqlPort", AAZStrType, ".sap_hana.sql_port")
+                disc_sap_hana.set_prop("sslCertificateUri", AAZStrType, ".sap_hana.ssl_certificate_uri")
+                disc_sap_hana.set_prop("sslHostNameInCertificate", AAZStrType, ".sap_hana.ssl_host_name_in_certificate")
+                disc_sap_hana.set_prop("sslPreference", AAZStrType, ".sap_hana.ssl_preference")
+
+            disc_sap_net_weaver = _builder.get(".properties.providerSettings{providerType:SapNetWeaver}")
+            if disc_sap_net_weaver is not None:
+                disc_sap_net_weaver.set_prop("sapClientId", AAZStrType, ".sap_net_weaver.sap_client_id")
+                disc_sap_net_weaver.set_prop("sapHostFileEntries", AAZListType, ".sap_net_weaver.sap_host_file_entries")
+                disc_sap_net_weaver.set_prop("sapHostname", AAZStrType, ".sap_net_weaver.sap_hostname")
+                disc_sap_net_weaver.set_prop("sapInstanceNr", AAZStrType, ".sap_net_weaver.sap_instance_nr")
+                disc_sap_net_weaver.set_prop("sapPassword", AAZStrType, ".sap_net_weaver.sap_password")
+                disc_sap_net_weaver.set_prop("sapPasswordUri", AAZStrType, ".sap_net_weaver.sap_password_uri")
+                disc_sap_net_weaver.set_prop("sapPortNumber", AAZStrType, ".sap_net_weaver.sap_port_number")
+                disc_sap_net_weaver.set_prop("sapSid", AAZStrType, ".sap_net_weaver.sap_sid")
+                disc_sap_net_weaver.set_prop("sapUsername", AAZStrType, ".sap_net_weaver.sap_username")
+                disc_sap_net_weaver.set_prop("sslCertificateUri", AAZStrType, ".sap_net_weaver.ssl_certificate_uri")
+                disc_sap_net_weaver.set_prop("sslPreference", AAZStrType, ".sap_net_weaver.ssl_preference")
+
+            sap_host_file_entries = _builder.get(".properties.providerSettings{providerType:SapNetWeaver}.sapHostFileEntries")
+            if sap_host_file_entries is not None:
+                sap_host_file_entries.set_elements(AAZStrType, ".")
+
+            return self.serialize_content(_content_value)
 
         def on_200_201(self, session):
             data = self.deserialize_http_content(session)
@@ -234,6 +620,158 @@ class Create(AAZCommand):
                 serialized_name="providerType",
                 flags={"required": True},
             )
+
+            disc_db2 = cls._schema_on_200_201.properties.provider_settings.discriminate_by("provider_type", "Db2")
+            disc_db2.db_name = AAZStrType(
+                serialized_name="dbName",
+            )
+            disc_db2.db_password = AAZStrType(
+                serialized_name="dbPassword",
+            )
+            disc_db2.db_password_uri = AAZStrType(
+                serialized_name="dbPasswordUri",
+            )
+            disc_db2.db_port = AAZStrType(
+                serialized_name="dbPort",
+            )
+            disc_db2.db_username = AAZStrType(
+                serialized_name="dbUsername",
+            )
+            disc_db2.hostname = AAZStrType()
+            disc_db2.sap_sid = AAZStrType(
+                serialized_name="sapSid",
+            )
+            disc_db2.ssl_certificate_uri = AAZStrType(
+                serialized_name="sslCertificateUri",
+            )
+            disc_db2.ssl_preference = AAZStrType(
+                serialized_name="sslPreference",
+            )
+
+            disc_ms_sql_server = cls._schema_on_200_201.properties.provider_settings.discriminate_by("provider_type", "MsSqlServer")
+            disc_ms_sql_server.db_password = AAZStrType(
+                serialized_name="dbPassword",
+            )
+            disc_ms_sql_server.db_password_uri = AAZStrType(
+                serialized_name="dbPasswordUri",
+            )
+            disc_ms_sql_server.db_port = AAZStrType(
+                serialized_name="dbPort",
+            )
+            disc_ms_sql_server.db_username = AAZStrType(
+                serialized_name="dbUsername",
+            )
+            disc_ms_sql_server.hostname = AAZStrType()
+            disc_ms_sql_server.sap_sid = AAZStrType(
+                serialized_name="sapSid",
+            )
+            disc_ms_sql_server.ssl_certificate_uri = AAZStrType(
+                serialized_name="sslCertificateUri",
+            )
+            disc_ms_sql_server.ssl_preference = AAZStrType(
+                serialized_name="sslPreference",
+            )
+
+            disc_prometheus_ha_cluster = cls._schema_on_200_201.properties.provider_settings.discriminate_by("provider_type", "PrometheusHaCluster")
+            disc_prometheus_ha_cluster.cluster_name = AAZStrType(
+                serialized_name="clusterName",
+            )
+            disc_prometheus_ha_cluster.hostname = AAZStrType()
+            disc_prometheus_ha_cluster.prometheus_url = AAZStrType(
+                serialized_name="prometheusUrl",
+            )
+            disc_prometheus_ha_cluster.sid = AAZStrType()
+            disc_prometheus_ha_cluster.ssl_certificate_uri = AAZStrType(
+                serialized_name="sslCertificateUri",
+            )
+            disc_prometheus_ha_cluster.ssl_preference = AAZStrType(
+                serialized_name="sslPreference",
+            )
+
+            disc_prometheus_os = cls._schema_on_200_201.properties.provider_settings.discriminate_by("provider_type", "PrometheusOS")
+            disc_prometheus_os.prometheus_url = AAZStrType(
+                serialized_name="prometheusUrl",
+            )
+            disc_prometheus_os.sap_sid = AAZStrType(
+                serialized_name="sapSid",
+            )
+            disc_prometheus_os.ssl_certificate_uri = AAZStrType(
+                serialized_name="sslCertificateUri",
+            )
+            disc_prometheus_os.ssl_preference = AAZStrType(
+                serialized_name="sslPreference",
+            )
+
+            disc_sap_hana = cls._schema_on_200_201.properties.provider_settings.discriminate_by("provider_type", "SapHana")
+            disc_sap_hana.db_name = AAZStrType(
+                serialized_name="dbName",
+            )
+            disc_sap_hana.db_password = AAZStrType(
+                serialized_name="dbPassword",
+            )
+            disc_sap_hana.db_password_uri = AAZStrType(
+                serialized_name="dbPasswordUri",
+            )
+            disc_sap_hana.db_username = AAZStrType(
+                serialized_name="dbUsername",
+            )
+            disc_sap_hana.hostname = AAZStrType()
+            disc_sap_hana.instance_number = AAZStrType(
+                serialized_name="instanceNumber",
+            )
+            disc_sap_hana.sap_sid = AAZStrType(
+                serialized_name="sapSid",
+            )
+            disc_sap_hana.sql_port = AAZStrType(
+                serialized_name="sqlPort",
+            )
+            disc_sap_hana.ssl_certificate_uri = AAZStrType(
+                serialized_name="sslCertificateUri",
+            )
+            disc_sap_hana.ssl_host_name_in_certificate = AAZStrType(
+                serialized_name="sslHostNameInCertificate",
+            )
+            disc_sap_hana.ssl_preference = AAZStrType(
+                serialized_name="sslPreference",
+            )
+
+            disc_sap_net_weaver = cls._schema_on_200_201.properties.provider_settings.discriminate_by("provider_type", "SapNetWeaver")
+            disc_sap_net_weaver.sap_client_id = AAZStrType(
+                serialized_name="sapClientId",
+            )
+            disc_sap_net_weaver.sap_host_file_entries = AAZListType(
+                serialized_name="sapHostFileEntries",
+            )
+            disc_sap_net_weaver.sap_hostname = AAZStrType(
+                serialized_name="sapHostname",
+            )
+            disc_sap_net_weaver.sap_instance_nr = AAZStrType(
+                serialized_name="sapInstanceNr",
+            )
+            disc_sap_net_weaver.sap_password = AAZStrType(
+                serialized_name="sapPassword",
+            )
+            disc_sap_net_weaver.sap_password_uri = AAZStrType(
+                serialized_name="sapPasswordUri",
+            )
+            disc_sap_net_weaver.sap_port_number = AAZStrType(
+                serialized_name="sapPortNumber",
+            )
+            disc_sap_net_weaver.sap_sid = AAZStrType(
+                serialized_name="sapSid",
+            )
+            disc_sap_net_weaver.sap_username = AAZStrType(
+                serialized_name="sapUsername",
+            )
+            disc_sap_net_weaver.ssl_certificate_uri = AAZStrType(
+                serialized_name="sslCertificateUri",
+            )
+            disc_sap_net_weaver.ssl_preference = AAZStrType(
+                serialized_name="sslPreference",
+            )
+
+            sap_host_file_entries = cls._schema_on_200_201.properties.provider_settings.discriminate_by("provider_type", "SapNetWeaver").sap_host_file_entries
+            sap_host_file_entries.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
