@@ -116,14 +116,29 @@ def create_fleet_member(cmd,
                         name,
                         fleet_name,
                         member_cluster_id,
+                        update_group=None,
                         no_wait=False):
     fleet_member_model = cmd.get_models(
         "FleetMember",
         resource_type=CUSTOM_MGMT_FLEET,
         operation_group="fleet_members"
     )
-    fleet_member = fleet_member_model(cluster_resource_id=member_cluster_id)
+    fleet_member = fleet_member_model(cluster_resource_id=member_cluster_id, group=update_group)
     return sdk_no_wait(no_wait, client.begin_create, resource_group_name, fleet_name, name, fleet_member)
+
+def update_fleet_member(cmd,
+                        client,
+                        resource_group_name,
+                        name,
+                        fleet_name,
+                        update_group=None):
+    fleet_member_update_model = cmd.get_models(
+        "FleetMemberUpdate",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="fleet_members"
+    )
+    properties = fleet_member_update_model(group=update_group)
+    return client.update(resource_group_name, fleet_name, name, properties)
 
 
 def list_fleet_member(cmd,  # pylint: disable=unused-argument
