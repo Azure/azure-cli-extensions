@@ -18,7 +18,7 @@ class Cosmosdb_previewBurstCapacityScenarioTest(ScenarioTest):
         # Assumption: There exists a cosmosTest rg.
         self.kwargs.update({
             'rg' : 'cosmosTest',
-            'acc': 'burst-test',
+            'acc': 'burst-test-38129749813',
             'loc': 'australiaeast',
             'tar': '0=1200 1=1200',
             'src': '2'
@@ -44,4 +44,7 @@ class Cosmosdb_previewBurstCapacityScenarioTest(ScenarioTest):
             self.check('enableBurstCapacity', True),
         ])
         print('Enabled burst capacity')
+
+        #delete account
+        self.cmd('az cosmosdb delete -n {acc} -g {rg} --yes')
         
