@@ -3,12 +3,20 @@
 Release History
 ===============
 
-0.4.7
+0.5.0
 +++++
 * Support command recommendations that predicts the next commands users might need.
 * Support scenario recommendations to help users complete the complex scenarios more smoothly and simply.
 * Support new config `az config set interactive.enable_recommender=False` to disable these new recommenders.
 * Fix display offset in toolbar.
+* Add loading bar to avoid command execution errors caused by uncompleted command loading and param update. User can use CTRL+C to cancel the loading bar.
+* Update telemetry feedback function and add 'CLIRecommendation' property. (Details: https://github.com/hackathon-cli-recommendation/cli-recommendation/blob/master/Docs/feedback_design.md)
+* Add value completion mechanism for param value in scenarios
+* Support searching ability for scenarios
+* Optimize param completion mechanism to recommend one parameter at a time
+* Fix some small bugs
+* Remove README.rst and modified setup file
+* Import styled text print from azure-cli-core.style
 
 0.4.6
 +++++

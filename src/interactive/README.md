@@ -2,7 +2,7 @@
 
 ## The interactive mode for Microsoft Azure CLI (Command Line Interface)
 
--Recommend Commands and Scenarios Based on Previous Commands
+- Recommend Commands and Scenarios Based on Previous Commands
 - Search for Scenarios
 - Value Completion in Scenario Mode
 - Interactive Tutorials
