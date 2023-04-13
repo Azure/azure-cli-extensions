@@ -53,14 +53,18 @@ def acipolicygen_confcom(
             "Can only use ARM Template Parameters if ARM Template is also present"
         )
         sys.exit(1)
+    elif save_to_file and arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
+        logger.error("Must print policy to terminal when saving to file")
+        sys.exit(1)
 
     if print_existing_policy:
-        if not arm_template:
-            logger.error("Can only print existing policy from ARM Template")
-            sys.exit(1)
-        else:
-            print_existing_policy_from_arm_template(arm_template, arm_template_parameters)
-            sys.exit(0)
+        print_existing_policy_from_arm_template(arm_template, arm_template_parameters)
+        sys.exit(0)
+
+    if debug_mode:
+        logger.warning("WARNING: %s %s",
+                       "Debug mode must only be used for debugging purposes. ",
+                       "It should not be used for production systems.\n")
 
     tar_mapping = tar_mapping_validation(tar_mapping_location)
 
@@ -69,13 +73,7 @@ def acipolicygen_confcom(
     container_group_policies = None
 
     # warn user that input infrastructure_svn is less than the configured default value
-    if infrastructure_svn and parse_version(infrastructure_svn) < parse_version(
-        DEFAULT_REGO_FRAGMENTS[0]["minimum_svn"]
-    ):
-        logger.warning(
-            "Input Infrastructure Fragment Software Version Number is less than the default Infrastructure SVN: %s",
-            DEFAULT_REGO_FRAGMENTS[0]["minimum_svn"],
-        )
+    check_infrastructure_svn(infrastructure_svn)
 
     # telling the user what operation we're doing
     logger.warning(
@@ -122,7 +120,7 @@ def acipolicygen_confcom(
             exit_code = validate_sidecar_in_policy(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
         elif diff:
             exit_code = get_diff_outputs(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
-        elif arm_template and (not print_policy_to_terminal and not outraw and not outraw_pretty_print):
+        elif arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
             result = inject_policy_into_template(arm_template, arm_template_parameters,
                                                  policy.get_serialized_output(), count)
             if result:
@@ -134,6 +132,12 @@ def acipolicygen_confcom(
             print(f"{policy.get_serialized_output(output_type)}\n\n")
             # output to file
             if save_to_file:
+                logger.warning(
+                    "%s %s %s",
+                    "(Deprecation Warning) the --save-to-file (-s) flag is deprecated ",
+                    "and will be removed in a future release. ",
+                    "Please print to the console and redirect to a file instead."
+                )
                 policy.save_to_file(save_to_file, output_type)
 
     sys.exit(exit_code)
@@ -143,6 +147,16 @@ def update_confcom(cmd, instance, tags=None):
     with cmd.update_context(instance) as c:
         c.set_param("tags", tags)
     return instance
+
+
+def check_infrastructure_svn(infrastructure_svn):
+    if infrastructure_svn and parse_version(infrastructure_svn) < parse_version(
+        DEFAULT_REGO_FRAGMENTS[0]["minimum_svn"]
+    ):
+        logger.warning(
+            "Input Infrastructure Fragment Software Version Number is less than the default Infrastructure SVN: %s",
+            DEFAULT_REGO_FRAGMENTS[0]["minimum_svn"],
+        )
 
 
 def validate_sidecar_in_policy(policy: security_policy.AciPolicy, outraw_pretty_print: bool):

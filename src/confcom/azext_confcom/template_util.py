@@ -399,7 +399,10 @@ def replace_params_and_vars(params: dict, vars_dict: dict, attribute):
         full_param_name = next(param_name, None)
         if full_param_name:
             full_param_name = full_param_name.group(0)
-            out = attribute.replace(full_param_name, find_value_in_params_and_vars(params, vars_dict, attribute))
+            # cast to string
+            out = f"{out}"
+            out = attribute.replace(full_param_name, out)
+
     elif isinstance(attribute, list):
         out = []
         for item in attribute:
@@ -791,6 +794,8 @@ def get_container_group_name(
 
 
 def print_existing_policy_from_arm_template(arm_template_path, parameter_data_path):
+    if not arm_template_path:
+        eprint("Can only print existing policy from ARM Template")
     input_arm_json = os_util.load_json_from_file(arm_template_path)
     parameter_data = None
     if parameter_data_path:
