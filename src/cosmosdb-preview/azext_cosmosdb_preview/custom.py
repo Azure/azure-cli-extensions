@@ -366,7 +366,7 @@ def cli_cosmosdb_managed_cassandra_repair_create(client,
         blacklisted_tables=bList,
         repair_thread_count=repair_thread_count
     )
-    
+
     repair_resource = CassandraClusterRepairPublicResource(
         properties=repair_properties
     )
@@ -415,10 +415,10 @@ def cli_cosmosdb_managed_cassandra_repair_update(client,
                                                 intensity):
     intensityvalue = float(intensity)
 
-    if (intensityvalue <= 0):
-        intensityvalue = 0.1
-    elif (intensityvalue >= 1):
-        intensityvalue = 0.9
+    if (intensityvalue < 0):
+        intensityvalue = 0
+    elif (intensityvalue > 1):
+        intensityvalue = 1
     
     logger.warning('intensity is being updated to ' + str(intensityvalue))
 
