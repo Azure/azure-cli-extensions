@@ -126,6 +126,7 @@ def create_fleet_member(cmd,
     fleet_member = fleet_member_model(cluster_resource_id=member_cluster_id, group=update_group)
     return sdk_no_wait(no_wait, client.begin_create, resource_group_name, fleet_name, name, fleet_member)
 
+
 def update_fleet_member(cmd,
                         client,
                         resource_group_name,
