@@ -267,6 +267,10 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
     _remove_additional_attributes(containerapp_def)
     _remove_readonly_attributes(containerapp_def)
 
+    # Remove extra workloadProfileName introduced in deserialization
+    if "workloadProfileName" in containerapp_def:
+        del containerapp_def["workloadProfileName"]
+
     # Validate managed environment
     if not containerapp_def["properties"].get('environmentId'):
         raise RequiredArgumentMissingError('environmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
@@ -684,7 +688,6 @@ def update_containerapp_logic(cmd,
 
     if workload_profile_name:
         new_containerapp["properties"]["workloadProfileName"] = workload_profile_name
-        ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile_name, managed_env_info)
 
     # Containers
     if update_map["container"]:
