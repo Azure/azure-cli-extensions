@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.137
++++++++
+* {AKS} Fix role assignment failure caused by the breaking change of default API version bump of the auth SDK
+
 0.5.136
 +++++++
 * fix: remove uneeded location check for DCR, DCRA in azure monitor metrics addon (aks)
