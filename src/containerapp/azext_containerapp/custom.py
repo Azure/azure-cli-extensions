@@ -699,10 +699,9 @@ def update_containerapp_logic(cmd,
             pass
 
         if not managed_env_info:
-            raise ValidationError("Error parsing the managed environment '{}' from the specified containerapp".format(managed_env))
+            raise ValidationError("Error parsing the managed environment '{}' from the specified containerapp".format(managed_env_name))
 
         ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile_name, managed_env_info)
-
 
     # Containers
     if update_map["container"]:
