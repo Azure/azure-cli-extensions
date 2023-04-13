@@ -689,6 +689,21 @@ def update_containerapp_logic(cmd,
     if workload_profile_name:
         new_containerapp["properties"]["workloadProfileName"] = workload_profile_name
 
+        parsed_managed_env = parse_resource_id(containerapp_def["properties"]["managedEnvironmentId"])
+        managed_env_name = parsed_managed_env['name']
+        managed_env_rg = parsed_managed_env['resource_group']
+        managed_env_info = None
+        try:
+            managed_env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=managed_env_rg, name=managed_env_name)
+        except:
+            pass
+
+        if not managed_env_info:
+            raise ValidationError("Error parsing the managed environment '{}' from the specified containerapp".format(managed_env))
+
+        ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile_name, managed_env_info)
+
+
     # Containers
     if update_map["container"]:
         new_containerapp["properties"]["template"] = {} if "template" not in new_containerapp["properties"] else new_containerapp["properties"]["template"]
