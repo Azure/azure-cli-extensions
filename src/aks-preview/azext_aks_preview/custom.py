@@ -1902,10 +1902,18 @@ def aks_kanalyze(cmd, client, resource_group_name, name):
     aks_kanalyze_cmd(cmd, client, resource_group_name, name)
 
 
-def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
-                         identity_name, identity_namespace, identity_resource_id,
-                         binding_selector=None,
-                         no_wait=False):  # pylint: disable=unused-argument
+def aks_pod_identity_add(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    identity_name,
+    identity_namespace,
+    identity_resource_id,
+    binding_selector=None,
+    no_wait=False,
+    aks_custom_headers=None,
+):  # pylint: disable=unused-argument
     ManagedClusterPodIdentity = cmd.get_models(
         "ManagedClusterPodIdentity",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -1952,13 +1960,21 @@ def aks_pod_identity_add(cmd, client, resource_group_name, cluster_name,
         models=pod_identity_models
     )
 
+    headers = get_aks_custom_headers(aks_custom_headers)
     # send the managed cluster represeentation to update the pod identity addon
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, instance)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, instance, headers=headers)
 
 
-def aks_pod_identity_delete(cmd, client, resource_group_name, cluster_name,
-                            identity_name, identity_namespace,
-                            no_wait=False):  # pylint: disable=unused-argument
+def aks_pod_identity_delete(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    identity_name,
+    identity_namespace,
+    no_wait=False,
+    aks_custom_headers=None,
+):  # pylint: disable=unused-argument
     instance = client.get(resource_group_name, cluster_name)
     _ensure_pod_identity_addon_is_enabled(instance)
 
@@ -1981,8 +1997,9 @@ def aks_pod_identity_delete(cmd, client, resource_group_name, cluster_name,
         models=pod_identity_models
     )
 
+    headers = get_aks_custom_headers(aks_custom_headers)
     # send the managed cluster represeentation to update the pod identity addon
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, instance)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, instance, headers=headers)
 
 
 def aks_pod_identity_list(cmd, client, resource_group_name, cluster_name):  # pylint: disable=unused-argument
@@ -1990,8 +2007,17 @@ def aks_pod_identity_list(cmd, client, resource_group_name, cluster_name):  # py
     return _remove_nulls([instance])[0]
 
 
-def aks_pod_identity_exception_add(cmd, client, resource_group_name, cluster_name,
-                                   exc_name, exc_namespace, pod_labels, no_wait=False):  # pylint: disable=unused-argument
+def aks_pod_identity_exception_add(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    exc_name,
+    exc_namespace,
+    pod_labels,
+    no_wait=False,
+    aks_custom_headers=None,
+):  # pylint: disable=unused-argument
     ManagedClusterPodIdentityException = cmd.get_models(
         "ManagedClusterPodIdentityException",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -2019,12 +2045,21 @@ def aks_pod_identity_exception_add(cmd, client, resource_group_name, cluster_nam
         models=pod_identity_models
     )
 
+    headers = get_aks_custom_headers(aks_custom_headers)
     # send the managed cluster represeentation to update the pod identity addon
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, instance)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, instance, headers=headers)
 
 
-def aks_pod_identity_exception_delete(cmd, client, resource_group_name, cluster_name,
-                                      exc_name, exc_namespace, no_wait=False):  # pylint: disable=unused-argument
+def aks_pod_identity_exception_delete(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    exc_name,
+    exc_namespace,
+    no_wait=False,
+    aks_custom_headers=None,
+):  # pylint: disable=unused-argument
     instance = client.get(resource_group_name, cluster_name)
     _ensure_pod_identity_addon_is_enabled(instance)
 
@@ -2047,12 +2082,22 @@ def aks_pod_identity_exception_delete(cmd, client, resource_group_name, cluster_
         models=pod_identity_models
     )
 
+    headers = get_aks_custom_headers(aks_custom_headers)
     # send the managed cluster represeentation to update the pod identity addon
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, instance)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, instance, headers=headers)
 
 
-def aks_pod_identity_exception_update(cmd, client, resource_group_name, cluster_name,
-                                      exc_name, exc_namespace, pod_labels, no_wait=False):  # pylint: disable=unused-argument
+def aks_pod_identity_exception_update(
+    cmd,
+    client,
+    resource_group_name,
+    cluster_name,
+    exc_name,
+    exc_namespace,
+    pod_labels,
+    no_wait=False,
+    aks_custom_headers=None,
+):  # pylint: disable=unused-argument
     ManagedClusterPodIdentityException = cmd.get_models(
         "ManagedClusterPodIdentityException",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -2089,8 +2134,9 @@ def aks_pod_identity_exception_update(cmd, client, resource_group_name, cluster_
         models=pod_identity_models
     )
 
+    headers = get_aks_custom_headers(aks_custom_headers)
     # send the managed cluster represeentation to update the pod identity addon
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, instance)
+    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, cluster_name, instance, headers=headers)
 
 
 def aks_pod_identity_exception_list(cmd, client, resource_group_name, cluster_name):
