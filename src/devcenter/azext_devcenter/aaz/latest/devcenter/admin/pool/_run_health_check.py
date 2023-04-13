@@ -47,7 +47,7 @@ class RunHealthCheck(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.pool_name = AAZStrArg(
-            options=["--pool-name"],
+            options=["--name, -n, --pool-name"],
             help="Name of the pool.",
             required=True,
             id_part="child_name_1",
