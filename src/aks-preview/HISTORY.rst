@@ -14,7 +14,7 @@ Pending
 
 0.5.137
 +++++++
-* {AKS} Fix role assignment failure caused by the breaking change of default API version bump of the auth SDK
+* Fix role assignment failure caused by the breaking change of default API version bump of the auth SDK
 
 0.5.136
 +++++++
