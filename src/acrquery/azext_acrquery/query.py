@@ -42,15 +42,15 @@ def create_query(cmd, registry_name, kql_query, repository=None, skip_token=None
 
     if skip_token: 
         json_payload = {
-            'query': kql_query
-        }
-    else:
-        json_payload = {
             'query': kql_query,
             'options': {
             '$skipToken': skip_token
             }
         } 
+    else:
+        json_payload = {
+            'query': kql_query
+        }
 
     return _obtain_metadata_from_registry(
         login_server=login_server,
