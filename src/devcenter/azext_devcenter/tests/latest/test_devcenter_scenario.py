@@ -33,6 +33,7 @@ from .helper import (
     create_dev_box_dependencies,
 )
 
+
 @record_only()
 @try_manual
 class DevcenterScenarioTest(ScenarioTest):
@@ -256,7 +257,7 @@ class DevcenterScenarioTest(ScenarioTest):
             '--tags CostCode="123" '
             '--name "{projectName}" '
             '--resource-group "{rg}" '
-            '--max-dev-boxes-per-user null',
+            "--max-dev-boxes-per-user null",
             checks=[
                 self.check("tags.CostCode", "123"),
                 self.check("name", "{projectName}"),
@@ -900,7 +901,7 @@ class DevcenterScenarioTest(ScenarioTest):
             ],
         )
 
-        #TODO: add health check and health check details in return type
+        # TODO: add health check and health check details in return type
         self.cmd(
             "az devcenter admin pool create "
             '-d "{devBoxDefinitionName}" '
@@ -919,7 +920,7 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("networkConnectionName", "{attachedNetworkName}"),
                 self.check("location", "{location}"),
                 self.check("stopOnDisconnect.gracePeriodMinutes", "10"),
-                self.check("stopOnDisconnect.status", "Disabled")
+                self.check("stopOnDisconnect.status", "Disabled"),
             ],
         )
 
@@ -946,7 +947,7 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("networkConnectionName", "{attachedNetworkName}"),
                 self.check("location", "{location}"),
                 self.check("stopOnDisconnect.gracePeriodMinutes", "60"),
-                self.check("stopOnDisconnect.status", "Enabled")
+                self.check("stopOnDisconnect.status", "Enabled"),
             ],
         )
 
@@ -963,7 +964,7 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("networkConnectionName", "{attachedNetworkName}"),
                 self.check("location", "{location}"),
                 self.check("stopOnDisconnect.gracePeriodMinutes", "60"),
-                self.check("stopOnDisconnect.status", "Enabled")
+                self.check("stopOnDisconnect.status", "Enabled"),
             ],
         )
 
@@ -974,8 +975,8 @@ class DevcenterScenarioTest(ScenarioTest):
             '--resource-group "{rg}" '
         )
 
-        #TODO: add check for show after run health check
-        #TODO: default will be changed to schedule-default after idle update. Need to handle both names? 
+        # TODO: add check for show after run health check
+        # TODO: default will be changed to schedule-default after idle update. Need to handle both names?
 
         self.cmd(
             "az devcenter admin schedule create "
@@ -1011,7 +1012,7 @@ class DevcenterScenarioTest(ScenarioTest):
             ],
         )
 
-        #TODO: update for idle, add schedule list command
+        # TODO: update for idle, add schedule list command
         self.cmd(
             "az devcenter admin schedule show "
             '--pool-name "{poolName}" '
@@ -1532,75 +1533,103 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(
         name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
     )
-    def test_catalog_item_dataplane_scenario(self):
+    def test_catalog_dataplane_scenario(self):
         self.kwargs.update(
             {
                 "location": "westus3",
             }
         )
+
         create_catalog(self)
 
         self.cmd(
-            "az devcenter dev catalog-item list "
+            "az devcenter dev catalog list "
             '--dev-center "{devcenterName}" '
             '--project "{projectName}" ',
             checks=[
-                self.check("length(@)", 3),
-                self.check("[0].catalogName", "{catalogName}"),
-                self.check("[0].name", "Empty"),
+                self.check("length(@)", 1),
+                self.check("[0].name", "{catalogName}"),
             ],
         )
 
+        # TO DO: check with return type and if self.is_live still needed
         if self.is_live:
             self.cmd(
                 "az devcenter dev catalog-item show "
                 '--dev-center "{devcenterName}" '
                 '--project "{projectName}" '
-                '--catalog-item-id  "{catalogItemId}" ',
+                '--catalog-name  "{catalogName}" ',
                 checks=[
-                    self.check("id", "{catalogItemId}"),
-                    self.check("catalogName", "{catalogName}"),
-                    self.check("name", "Empty"),
+                    self.check("name", "{catalogName}"),
                 ],
             )
 
-            self.cmd(
-                "az devcenter dev catalog-item-version list "
-                '--dev-center "{devcenterName}" '
-                '--project "{projectName}" '
-                '--catalog-item-id  "{catalogItemId}" ',
-                checks=[
-                    self.check("length(@)", 1),
-                    self.check("[0].catalogName", "{catalogName}"),
-                    self.check("[0].catalogItemName", "Empty"),
-                    self.check("[0].description", "Deploys an empty environment"),
-                    self.check("[0].eligibleForLatestVersion", True),
-                    self.check("[0].runner", "ARM"),
-                    self.check("[0].status", "Enabled"),
-                    self.check("[0].summary", "Empty environment"),
-                    self.check("[0].templatePath", "Catalog_v2/Empty/azuredeploy.json"),
-                    self.check("[0].version", "1.0.0"),
-                ],
-            )
+    # TODO: add checks
+    @ResourceGroupPreparer(
+        name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
+    )
+    def test_env_definition_dataplane_scenario(self):
+        self.kwargs.update(
+            {
+                "location": "westus3",
+            }
+        )
 
-            self.cmd(
-                "az devcenter dev catalog-item-version show "
-                '--dev-center "{devcenterName}" '
-                '--project "{projectName}" '
-                '--catalog-item-id  "{catalogItemId}" '
-                '--version  "1.0.0" ',
-                checks=[
-                    self.check("catalogName", "{catalogName}"),
-                    self.check("catalogItemName", "Empty"),
-                    self.check("description", "Deploys an empty environment"),
-                    self.check("eligibleForLatestVersion", True),
-                    self.check("runner", "ARM"),
-                    self.check("status", "Enabled"),
-                    self.check("summary", "Empty environment"),
-                    self.check("templatePath", "Catalog_v2/Empty/azuredeploy.json"),
-                    self.check("version", "1.0.0"),
-                ],
-            )
+        create_catalog(self)
+
+        self.cmd(
+            "az devcenter dev environment-definition list "
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" ',
+            checks=[],
+        )
+
+        self.cmd(
+            "az devcenter dev environment-definition list "
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" '
+            '--catalog-name  "{catalogName}" ',
+            checks=[],
+        )
+
+        self.cmd(
+            "az devcenter dev environment-definition show "
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" '
+            '--catalog-name  "{catalogName}" '
+            '--definition-name "definitionName"',
+            checks=[],
+        )
+
+    # TODO: complete once implemented
+    @ResourceGroupPreparer(
+        name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
+    )
+    def test_artifact_dataplane_scenario(self):
+        self.kwargs.update(
+            {
+                "location": "westus3",
+            }
+        )
+
+        create_catalog(self)
+
+        self.cmd(
+            "az devcenter dev artifact list "
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" '
+            '--environment-name  "foo" ',
+            checks=[],
+        )
+
+        self.cmd(
+            "az devcenter dev artifact list "
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" '
+            '--environment-name  "foo" '
+            '--artifact-path "/artifacts" ',
+            checks=[],
+        )
 
     @ResourceGroupPreparer(
         name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
@@ -1773,8 +1802,6 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--dev-center "{devcenterName}" ',
             checks=[
                 self.check("length(@)", 1),
-                self.check("[0].actionType", "Stop"),
-                self.check("[0].reason", "Schedule"),
                 self.check(
                     "[0].sourceId",
                     "/projects/{projectName}/pools/{poolName}/schedules/default",
@@ -1789,9 +1816,10 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--dev-center "{devcenterName}" '
         ).get_output_in_json()
 
+        # TODO: recheck for idle
         self.kwargs.update(
             {
-                "actionName": stopAction[0]["id"],
+                "actionName": stopAction[0]["name"],
                 "scheduledTime": stopAction[0]["next"]["scheduledTime"],
                 "delayTime": "2:30",
             }
@@ -1805,9 +1833,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--action-name "{actionName}"',
             checks=[
                 self.check("name", "{actionName}"),
-                self.check("actionType", "Stop"),
-                self.check("reason", "Schedule"),
-                self.check("scheduledTime", "{scheduledTime}"),
+                self.check("next.scheduledTime", "{scheduledTime}"),
                 self.check(
                     "sourceId",
                     "/projects/{projectName}/pools/{poolName}/schedules/default",
@@ -1815,6 +1841,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             ],
         )
 
+        # TODO check original scheduled time
         self.cmd(
             "az devcenter dev dev-box delay-action "
             '--name "{devBoxName}" '
@@ -1824,8 +1851,23 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--action-name "{actionName}"',
             checks=[
                 self.check("name", "{actionName}"),
-                self.check("actionType", "Stop"),
-                self.check("reason", "Schedule"),
+                self.check("originalScheduledTime", "{scheduledTime}"),
+                self.check("next.scheduledTime", "2023-02-08T05:00:00+00:00"),
+                self.check(
+                    "sourceId",
+                    "/projects/{projectName}/pools/{poolName}/schedules/default",
+                ),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev dev-box delay-all-actions "
+            '--name "{devBoxName}" '
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" '
+            '--delay-time "1:30" ',
+            checks=[
+                self.check("name", "{actionName}"),
                 self.check("originalScheduledTime", "{scheduledTime}"),
                 self.check("scheduledTime", "2023-02-08T05:00:00+00:00"),
                 self.check(
@@ -1984,12 +2026,13 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         self.cmd(
             "az devcenter dev environment create "
-            '--catalog-item-name "Empty" '
             '--catalog-name "{catalogName}" '
             '--name "{envName}" '
             '--environment-type "{envTypeName}" '
             '--dev-center "{devcenterName}" '
-            '--project "{projectName}" ',
+            '--project "{projectName}" '
+            '--parameters "{"runtime":"dotnet","name":"myApp"}" ',
+            '--environment-definition-name "helloworld"',
             checks=[
                 self.check("catalogItemName", "Empty"),
                 self.check("catalogName", "{catalogName}"),
@@ -1998,6 +2041,8 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
             ],
         )
+
+        # TODO add environment create with parameters
 
         self.cmd(
             "az devcenter dev environment show "
@@ -2014,9 +2059,32 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         )
 
         self.cmd(
+            "az devcenter dev environment update "
+            '--name "{envName}" '
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" '
+            '--parameters "{"runtime":"node","name":"myApp2"}" ',
+            checks=[
+                self.check("catalogItemName", "Empty"),
+                self.check("catalogName", "{catalogName}"),
+                self.check("environmentType", "{envTypeName}"),
+                self.check("name", "{envName}"),
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        self.cmd(
             "az devcenter dev environment list "
             '--dev-center "{devcenterName}" '
             '--project "{projectName}" ',
+            checks=[self.check("length(@)", 1), self.check("[0].name", "{envName}")],
+        )
+
+        self.cmd(
+            "az devcenter dev environment list "
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" '
+            '--user-id "me" ',
             checks=[self.check("length(@)", 1), self.check("[0].name", "{envName}")],
         )
 
