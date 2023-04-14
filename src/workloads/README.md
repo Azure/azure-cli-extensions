@@ -196,7 +196,7 @@ az workloads monitor update -g rg -n monitor-name --tags "{tag:tag1}"
 #### provider-instance ####
 ##### Create #####
 ```
-az workloads monitor provider-instance create -g rg --mointor-name name -n instance-name
+az workloads monitor provider-instance create -g rg --mointor-name name -n instance-name --provider-settings "{sapHana:{hostname:name,dbName:db,sqlPort:0000,instanceNumber:00,dbUsername:user,dbPassword:****,sslPreference:ServerCertificate,sslCertificateUri:'https://storageaccount.blob.core.windows.net/containername/filename',sslHostNameInCertificate:xyz.domain.com,sapSid:SID}}"
 
 ```
 
@@ -245,7 +245,6 @@ az workloads monitor sap-landscape-monitor show -g rg --monitor-name name
 
 ##### Update #####
 ```
-az 
-workloads monitor sap-landscape-monitor update -g rg --monitor-name name --grouping "{landscape:[{name:Prod,topSid:[SID1,SID2]}],sapApplication:[{name:ERP1,topSid:[SID1,SID2]}]}" --top-metrics-thresholds "[{name:Inscane, green:90,yellow:75,red:50}]"
+az workloads monitor sap-landscape-monitor update -g rg --monitor-name name --grouping "{landscape:[{name:Prod,topSid:[SID1,SID2]}],sapApplication:[{name:ERP1,topSid:[SID1,SID2]}]}" --top-metrics-thresholds "[{name:Inscane, green:90,yellow:75,red:50}]"
 
 ```
