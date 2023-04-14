@@ -89,7 +89,7 @@ def space_toolbar(settings_items, empty_space):
 
 def whether_continue_module_loading():
     """ whether continue loading the command table, return True/False """
-    step_msg = [(Style.PRIMARY, "Do you want to continue loading?"), (Style.SECONDARY, "(y/n)\n"),
+    step_msg = [(Style.PRIMARY, "\nDo you want to continue loading?"), (Style.SECONDARY, "(y/n)\n"),
                 (Style.PRIMARY,
                  "If you choose n, it will start the shell immediately,"
                  "but it may cause unknown errors due to incomplete module loading.\n")]

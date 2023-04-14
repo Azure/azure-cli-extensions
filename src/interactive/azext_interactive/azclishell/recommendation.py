@@ -84,7 +84,7 @@ class Recommender:
                 send_feedback("-1", trigger_commands, processed_exception, recommendations, accepted_recommend=None,
                               api_version=api_version)
             elif not command:
-                send_feedback("0", trigger_commands, processed_exception, recommendations, accepted_recommend=command,
+                send_feedback("0", trigger_commands, processed_exception, recommendations, accepted_recommend=None,
                               api_version=api_version)
             # idx: index of the recommendation in the recommendation list, number from 0
             for idx, recommendation in enumerate(recommendations):
@@ -93,7 +93,7 @@ class Recommender:
                 # check if the user input matches recommendation
                 if command.startswith(recommendation['command']):
                     send_feedback(f'a{idx + 1}', trigger_commands, processed_exception, recommendations,
-                                  accepted_recommend=command, api_version=api_version)
+                                  accepted_recommend=recommendation, api_version=api_version)
                     return
 
     def feedback_scenario(self, scenario_idx, scenario=None):
