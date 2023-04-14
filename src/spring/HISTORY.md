@@ -4,7 +4,7 @@ Release History
 ---
 * Add argument `--ca-cert-name` in `az spring application-accelerator customized-accelerator update` and command `az spring application-accelerator customized-accelerator sync-cert`.
 * Support client cert validation for customized accelerator with CA certificate.
-* Add arguments `enable-cert-verify` and `--certificate-names` in `az spring gateway update` and command `az spring gateway sync-cert`.
+* Add arguments `--enable-cert-verify` and `--certificate-names` in `az spring gateway update` and command `az spring gateway sync-cert`.
 * Support client cert validation for Spring Cloud Gateway.
 
 1.11.0
