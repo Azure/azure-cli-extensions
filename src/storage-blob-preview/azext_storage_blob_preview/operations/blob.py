@@ -6,13 +6,15 @@
 from __future__ import print_function
 
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
+from azure.cli.core.profiles import get_sdk
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.command_modules.storage.url_quote_util import make_encoded_file_url_and_params
 from knack.log import get_logger
 from knack.util import CLIError
 
+from .._transformers import transform_response_with_bytearray
 from ..util import (create_file_share_from_storage_client,
                     create_short_lived_share_sas,
                     filter_none, collect_blobs, collect_blob_objects, collect_files,
@@ -462,9 +464,61 @@ def _get_datetime_from_string(dt_str):
     raise ValueError("datetime string '{}' not valid. Valid example: 2000-12-31T12:59:59Z".format(dt_str))
 
 
-def copy_blob(client, source_url, metadata=None, **kwargs):
+def copy_blob(cmd, client, source_url, metadata=None, **kwargs):
     if not kwargs['requires_sync']:
         kwargs.pop('requires_sync')
+    blob_type = kwargs.pop('destination_blob_type', None)
+    src_client = kwargs.pop('source_client', None)
+    if src_client is None:
+        src_client = client.from_blob_url(source_url)
+        if src_client.account_name == client.account_name:
+            src_client = client.from_blob_url(source_url, credential=client.credential)
+    StandardBlobTier = cmd.get_models('_models#StandardBlobTier', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+    if blob_type is not None and blob_type != 'Detect':
+        blob_service_client = src_client._get_container_client()._get_blob_service_client()
+        if blob_service_client.credential is not None:
+            as_user = True
+            if hasattr(blob_service_client.credential, 'account_key'):
+                as_user = False
+            expiry = (datetime.utcnow() + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%MZ')
+            source_url = generate_sas_blob_uri(cmd, blob_service_client, full_uri=True, blob_url=source_url,
+                                               blob_name=None, container_name=None, as_user=as_user,
+                                               expiry=expiry, permission='r')
+
+        params = {"source_if_modified_since": kwargs.get("source_if_modified_since"),
+                  "source_if_unmodified_since": kwargs.get("source_if_unmodified_since"),
+                  "if_modified_since": kwargs.get("if_modified_since"),
+                  "if_unmodified_since": kwargs.get("if_unmodified_since"),
+                  "timeout": kwargs.get("timeout")}
+
+        if blob_type == 'AppendBlob':
+            params.update({"lease": kwargs.get("destination_lease")})
+            client.create_append_blob()
+            res = client.append_block_from_url(copy_source_url=source_url, **params)
+            return transform_response_with_bytearray(res)
+        if blob_type == 'BlockBlob':
+            standard_blob_tier = getattr(StandardBlobTier, (kwargs.get("tier"))) if (kwargs.get("tier")) else None
+            params.update({"overwrite": True, "tags": kwargs.get("tags"),
+                           "destination_lease": kwargs.get("destination_lease"),
+                           "standard_blob_tier": standard_blob_tier})
+            return client.upload_blob_from_url(source_url=source_url, **params)
+        if blob_type == 'PageBlob':
+            params.update({"lease": kwargs.get("destination_lease")})
+            source_blob_client = client.from_blob_url(source_url)
+            blob_length = source_blob_client.get_blob_properties().size
+            if blob_length % 512 != 0:
+                raise ValueError("Source blob size must be an integer that aligns with 512 page size")
+            client.create_page_blob(size=blob_length)
+            res = client.upload_pages_from_url(source_url=source_url, offset=0, length=blob_length,
+                                               source_offset=0, **params)
+            return transform_response_with_bytearray(res)
+    if kwargs.get('tier') is not None:
+        tier = kwargs.pop('tier')
+        try:
+            kwargs["standard_blob_tier"] = getattr(StandardBlobTier, tier)
+        except AttributeError:
+            PremiumPageBlobTier = cmd.get_models('_models#PremiumPageBlobTier', resource_type=CUSTOM_DATA_STORAGE_BLOB)
+            kwargs["premium_page_blob_tier"] = getattr(PremiumPageBlobTier, tier)
     return client.start_copy_from_url(source_url=source_url, metadata=metadata, incremental_copy=False, **kwargs)
 
 
@@ -477,12 +531,14 @@ def download_blob(client, file_path, open_mode='wb', progress_callback=None, soc
     return client.get_blob_properties()
 
 
-def generate_sas_blob_uri(client, cmd, container_name, blob_name, permission=None,
+def generate_sas_blob_uri(cmd, client, container_name, blob_name, permission=None,
                           expiry=None, start=None, id=None, ip=None,  # pylint: disable=redefined-builtin
                           protocol=None, cache_control=None, content_disposition=None,
                           content_encoding=None, content_language=None,
-                          content_type=None, full_uri=False, as_user=False, snapshot=None, version_id=None):
-    generate_blob_sas = cmd.get_models('_shared_access_signature#generate_blob_sas')
+                          content_type=None, full_uri=False, as_user=False, snapshot=None, version_id=None, **kwargs):
+    from ..url_quote_util import encode_url_path, encode_for_url
+    generate_blob_sas = get_sdk(cmd.cli_ctx, CUSTOM_DATA_STORAGE_BLOB, '_shared_access_signature#generate_blob_sas')
+    t_blob_client = get_sdk(cmd.cli_ctx, CUSTOM_DATA_STORAGE_BLOB, '_blob_client#BlobClient')
 
     sas_kwargs = {}
     if as_user:
@@ -491,6 +547,14 @@ def generate_sas_blob_uri(client, cmd, container_name, blob_name, permission=Non
             _get_datetime_from_string(expiry))
     else:
         sas_kwargs['account_key'] = client.credential.account_key
+
+    blob_url = kwargs.pop('blob_url', None)
+    if blob_url:
+        credential = sas_kwargs.get('user_delegation_key', None) or sas_kwargs.get('account_key', None)
+        blob_client = t_blob_client.from_blob_url(blob_url=blob_url, credential=credential, snapshot=snapshot)
+        container_name = blob_client.container_name
+        blob_name = blob_client.blob_name
+
     sas_token = generate_blob_sas(account_name=client.account_name, container_name=container_name, blob_name=blob_name,
                                   snapshot=snapshot, version_id=version_id, permission=permission,
                                   expiry=expiry, start=start, policy_id=id, ip=ip, protocol=protocol,
@@ -499,12 +563,11 @@ def generate_sas_blob_uri(client, cmd, container_name, blob_name, permission=Non
                                   content_type=content_type, **sas_kwargs)
 
     if full_uri:
-        t_blob_client = cmd.get_models('_blob_client#BlobClient')
         blob_client = t_blob_client(account_url=client.url, container_name=container_name,
                                     blob_name=blob_name, snapshot=snapshot, credential=sas_token)
-        return blob_client.url
+        return encode_url_path(blob_client.url, safe='&%()$=\',~')
 
-    return sas_token
+    return encode_for_url(sas_token, safe='&%()$=\',~')
 
 
 def generate_sas_container_uri(client, cmd, container_name, permission=None,
@@ -592,11 +655,15 @@ def snapshot_blob(client, metadata=None, **kwargs):
 
 # pylint: disable=protected-access
 def _adjust_block_blob_size(client, blob_type, length):
-    if not blob_type or blob_type != 'block':
+    if not blob_type or blob_type != 'block' or length is None:
         return
-    # increase the block size to 4000MB when the block list will contain more than
-    # 50,000 blocks(each block 4MB)
+    # increase the block size to 100MB when the block list will contain more than 50,000 blocks(each block 4MB)
     if length > 50000 * 4 * 1024 * 1024:
+        client._config.max_block_size = 100 * 1024 * 1024
+        client._config.max_single_put_size = 256 * 1024 * 1024
+
+    # increase the block size to 4000MB when the block list will contain more than 50,000 blocks(each block 100MB)
+    if length > 50000 * 100 * 1024 * 1024:
         client._config.max_block_size = 4000 * 1024 * 1024
         client._config.max_single_put_size = 5000 * 1024 * 1024
 
@@ -615,6 +682,11 @@ def upload_blob(cmd, client, file_path=None, container_name=None, blob_name=None
         'max_concurrency': max_connections
     }
 
+    if file_path and 'content_settings' in kwargs:
+        t_blob_content_settings = cmd.get_models('_models#ContentSettings',
+                                                 resource_type=CUSTOM_DATA_STORAGE_BLOB)
+        kwargs['content_settings'] = guess_content_type(file_path, kwargs['content_settings'], t_blob_content_settings)
+
     if overwrite is not None:
         upload_args['overwrite'] = overwrite
     if maxsize_condition:
@@ -624,7 +696,7 @@ def upload_blob(cmd, client, file_path=None, container_name=None, blob_name=None
         upload_args['validate_content'] = validate_content
 
     if progress_callback:
-        upload_args['raw_response_hook'] = progress_callback
+        upload_args['progress_hook'] = progress_callback
 
     check_blob_args = {
         'if_modified_since': if_modified_since,
@@ -637,6 +709,11 @@ def upload_blob(cmd, client, file_path=None, container_name=None, blob_name=None
     if blob_type == 'append':
         if client.exists(timeout=timeout):
             client.get_blob_properties(lease=lease_id, timeout=timeout, **check_blob_args)
+    else:
+        upload_args['if_modified_since'] = if_modified_since
+        upload_args['if_unmodified_since'] = if_unmodified_since
+        upload_args['if_match'] = if_match
+        upload_args['if_none_match'] = if_none_match
 
     # Because the contents of the uploaded file may be too large, it should be passed into the a stream object,
     # upload_blob() read file data in batches to avoid OOM problems
@@ -650,9 +727,15 @@ def upload_blob(cmd, client, file_path=None, container_name=None, blob_name=None
                                               **upload_args, **kwargs)
         if data is not None:
             _adjust_block_blob_size(client, blob_type, length)
-            response = client.upload_blob(data=data, length=length, metadata=metadata,
-                                          encryption_scope=encryption_scope,
-                                          **upload_args, **kwargs)
+            try:
+                response = client.upload_blob(data=data, length=length, metadata=metadata,
+                                              encryption_scope=encryption_scope,
+                                              **upload_args, **kwargs)
+            except UnicodeEncodeError:
+                response = client.upload_blob(data=data.encode('UTF-8', 'ignore').decode('UTF-8'),
+                                              length=length, metadata=metadata,
+                                              encryption_scope=encryption_scope,
+                                              **upload_args, **kwargs)
     except ResourceExistsError as ex:
         from azure.cli.core.azclierror import AzureResponseError
         raise AzureResponseError(

@@ -7,6 +7,7 @@ from enum import Enum
 import os
 from time import sleep
 import codecs
+import requests
 import tarfile
 import tempfile
 import uuid
@@ -15,7 +16,8 @@ from re import (search, match, compile)
 from json import dumps
 from knack.util import CLIError, todict
 from knack.log import get_logger
-from .vendored_sdks.appplatform.v2022_11_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
+from azure.cli.core.azclierror import ValidationError
+from .vendored_sdks.appplatform.v2023_03_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
 from ._client_factory import cf_resource_groups
 
 
@@ -236,6 +238,8 @@ def _get_sku_name(tier):  # pylint: disable=too-many-return-statements
         return 'S0'
     if tier == 'ENTERPRISE':
         return 'E0'
+    if tier == 'STANDARDGEN2':
+        return 'S0'
     raise CLIError("Invalid sku(pricing tier), please refer to command help for valid values")
 
 
@@ -259,6 +263,14 @@ def get_portal_uri(cli_ctx):
         return 'https://portal.azure.com'
 
 
+def get_proxy_api_endpoint(cli_ctx, spring_resource):
+    """Get the endpoint of the proxy api."""
+    if not spring_resource.properties.fqdn:
+        raise ValidationError('The property of the service "fqdn" is empty.')
+
+    return spring_resource.properties.fqdn
+
+
 def get_spring_sku(client, resource_group, name):
     return client.services.get(resource_group, name).sku
 
@@ -277,9 +289,10 @@ def wait_till_end(cmd, *pollers):
     progress_bar = cmd.cli_ctx.get_progress_controller()
     progress_bar.add(message='Running')
     progress_bar.begin()
-    while any(x and not x.done() for x in pollers):
+    while any(x for x in pollers if not x.done()):
         progress_bar.add(message='Running')
         sleep(5)
+    progress_bar.end()
 
 
 def handle_asc_exception(ex):
@@ -291,3 +304,12 @@ def handle_asc_exception(ex):
             raise CLIError(response_dict["error"]["message"])
         else:
             raise CLIError(ex)
+
+
+class BearerAuth(requests.auth.AuthBase):
+    def __init__(self, token):
+        self.token = token
+
+    def __call__(self, r):
+        r.headers["authorization"] = "Bearer " + self.token
+        return r

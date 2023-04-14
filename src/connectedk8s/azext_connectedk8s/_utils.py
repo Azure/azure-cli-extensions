@@ -12,7 +12,6 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import json
-
 from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
@@ -25,8 +24,6 @@ from msrest.exceptions import ValidationError as MSRestValidationError
 from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import resource_providers_client, cf_resource_groups
 import azext_connectedk8s._constants as consts
-import azext_connectedk8s._precheckutils as precheckutils
-import azext_connectedk8s._troubleshootutils as troubleshootutils
 from kubernetes import client as kube_client
 from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
@@ -167,15 +164,15 @@ def save_cluster_diagnostic_checks_pod_description(corev1_api_instance, batchv1_
                 if kube_context:
                     describe_job_pod.extend(["--context", kube_context])
                 response_describe_job_pod = Popen(describe_job_pod, stdout=PIPE, stderr=PIPE)
-                _, error_describe_job_pod = response_describe_job_pod.communicate()
+                output_describe_job_pod, error_describe_job_pod = response_describe_job_pod.communicate()
                 if(response_describe_job_pod.returncode == 0):
-                    pod_description = response_describe_job_pod.communicate()[0].strip()
+                    pod_description = output_describe_job_pod.decode()
                     if storage_space_available:
-                        dns_check_path = os.path.join(filepath_with_timestamp, "cluster_diagnostic_checks_pod_description")
-                        with open(dns_check_path, 'wb') as f:
+                        dns_check_path = os.path.join(filepath_with_timestamp, "cluster_diagnostic_checks_pod_description.txt")
+                        with open(dns_check_path, 'w+') as f:
                             f.write(pod_description)
                 else:
-                    telemetry.set_exception(exception='Failed to save cluster diagnostic checks pod description in the local machine', fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Failed to save cluster diagnostic checks pod description in the local machine")
+                    telemetry.set_exception(exception=error_describe_job_pod.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Failed to save cluster diagnostic checks pod description in the local machine")
     except OSError as e:
         if "[Errno 28]" in str(e):
             storage_space_available = False
@@ -276,54 +273,6 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
         diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
 
     return consts.Diagnostic_Check_Incomplete, storage_space_available
-
-
-def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag, for_preonboarding_checks=False):
-
-    # This function is used to store the output that is obtained throughout the Diagnoser process
-    if for_preonboarding_checks:
-        diagnoser_output = precheckutils.diagnoser_output
-    else:
-        diagnoser_output = troubleshootutils.diagnoser_output
-
-    try:
-        # If storage space is available then only we store the output
-        if storage_space_available:
-            # Path to store the diagnoser results
-            cli_output_logger_path = os.path.join(filepath_with_timestamp, consts.Diagnoser_Results)
-            # If any results are obtained during the process than we will add it to the text file.
-            if len(diagnoser_output) > 0:
-                with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                    for output in diagnoser_output:
-                        cli_output_writer.write(output + "\n")
-                    # If flag is 0 that means that process was terminated using the Keyboard Interrupt so adding that also to the text file
-                    if flag == 0:
-                        cli_output_writer.write("Process terminated externally.\n")
-
-            # If no issues was found during the whole troubleshoot execution
-            elif flag:
-                with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                    cli_output_writer.write("The diagnoser didn't find any issues on the cluster.\n")
-            # If process was terminated by user
-            else:
-                with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                    cli_output_writer.write("Process terminated externally.\n")
-
-        return consts.Diagnostic_Check_Passed
-
-    # For handling storage or OS exception that may occur during the execution
-    except OSError as e:
-        if "[Errno 28]" in str(e):
-            storage_space_available = False
-            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
-            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
-
-    # To handle any exception that may occur during the execution
-    except Exception as e:
-        logger.warning("An exception has occured while trying to store the diagnoser results. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Result_Fault_Type, summary="Error while storing the diagnoser results")
-
-    return consts.Diagnostic_Check_Failed
 
 
 def create_folder_diagnosticlogs(time_stamp, folder_name):

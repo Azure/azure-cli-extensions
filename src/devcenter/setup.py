@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.1.0'
+VERSION = '0.1.2'
 try:
     from azext_devcenter.manual.version import VERSION
 except ImportError:
@@ -46,8 +46,8 @@ setup(
     name='devcenter',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools DevCenter Extension',
-    author='Microsoft Corporation',
-    author_email='azpycli@microsoft.com',
+    author='DevCenter',
+    author_email='tm-azurefidalgo@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/devcenter',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
