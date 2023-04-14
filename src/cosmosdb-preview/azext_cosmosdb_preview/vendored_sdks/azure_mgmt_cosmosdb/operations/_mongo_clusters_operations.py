@@ -43,7 +43,7 @@ _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
 
 
-def build_list_by_subscription_request(subscription_id: str, **kwargs: Any) -> HttpRequest:
+def build_list_request(subscription_id: str, **kwargs: Any) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
@@ -53,9 +53,7 @@ def build_list_by_subscription_request(subscription_id: str, **kwargs: Any) -> H
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
-    _url = kwargs.pop(
-        "template_url", "/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/cassandraClusters"
-    )
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/mongoClusters")
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
     }
@@ -83,7 +81,7 @@ def build_list_by_resource_group_request(resource_group_name: str, subscription_
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters",
     )  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
@@ -103,80 +101,8 @@ def build_list_by_resource_group_request(resource_group_name: str, subscription_
     return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_get_request(resource_group_name: str, cluster_name: str, subscription_id: str, **kwargs: Any) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: Literal["2023-03-01-preview"] = kwargs.pop(
-        "api_version", _params.pop("api-version", "2023-03-01-preview")
-    )
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = kwargs.pop(
-        "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}",
-    )  # pylint: disable=line-too-long
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
-        "resourceGroupName": _SERIALIZER.url(
-            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
-        ),
-        "clusterName": _SERIALIZER.url(
-            "cluster_name", cluster_name, "str", max_length=100, min_length=1, pattern=r"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
-        ),
-    }
-
-    _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-def build_delete_request(
-    resource_group_name: str, cluster_name: str, subscription_id: str, **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: Literal["2023-03-01-preview"] = kwargs.pop(
-        "api_version", _params.pop("api-version", "2023-03-01-preview")
-    )
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = kwargs.pop(
-        "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}",
-    )  # pylint: disable=line-too-long
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
-        "resourceGroupName": _SERIALIZER.url(
-            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
-        ),
-        "clusterName": _SERIALIZER.url(
-            "cluster_name", cluster_name, "str", max_length=100, min_length=1, pattern=r"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
-        ),
-    }
-
-    _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="DELETE", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-def build_create_update_request(
-    resource_group_name: str, cluster_name: str, subscription_id: str, **kwargs: Any
+def build_create_or_update_request(
+    resource_group_name: str, mongo_cluster_name: str, subscription_id: str, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
@@ -190,15 +116,20 @@ def build_create_update_request(
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}",
     )  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
         "resourceGroupName": _SERIALIZER.url(
             "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
         ),
-        "clusterName": _SERIALIZER.url(
-            "cluster_name", cluster_name, "str", max_length=100, min_length=1, pattern=r"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
+        "mongoClusterName": _SERIALIZER.url(
+            "mongo_cluster_name",
+            mongo_cluster_name,
+            "str",
+            max_length=40,
+            min_length=3,
+            pattern=r"^[a-z0-9]+(-[a-z0-9]+)*",
         ),
     }
 
@@ -215,8 +146,92 @@ def build_create_update_request(
     return HttpRequest(method="PUT", url=_url, params=_params, headers=_headers, **kwargs)
 
 
+def build_get_request(
+    resource_group_name: str, mongo_cluster_name: str, subscription_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+        "api_version", _params.pop("api-version", "2023-03-01-preview")
+    )
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}",
+    )  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "mongoClusterName": _SERIALIZER.url(
+            "mongo_cluster_name",
+            mongo_cluster_name,
+            "str",
+            max_length=40,
+            min_length=3,
+            pattern=r"^[a-z0-9]+(-[a-z0-9]+)*",
+        ),
+    }
+
+    _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+def build_delete_request(
+    resource_group_name: str, mongo_cluster_name: str, subscription_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+        "api_version", _params.pop("api-version", "2023-03-01-preview")
+    )
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}",
+    )  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "mongoClusterName": _SERIALIZER.url(
+            "mongo_cluster_name",
+            mongo_cluster_name,
+            "str",
+            max_length=40,
+            min_length=3,
+            pattern=r"^[a-z0-9]+(-[a-z0-9]+)*",
+        ),
+    }
+
+    _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="DELETE", url=_url, params=_params, headers=_headers, **kwargs)
+
+
 def build_update_request(
-    resource_group_name: str, cluster_name: str, subscription_id: str, **kwargs: Any
+    resource_group_name: str, mongo_cluster_name: str, subscription_id: str, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
@@ -230,15 +245,20 @@ def build_update_request(
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}",
     )  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
         "resourceGroupName": _SERIALIZER.url(
             "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
         ),
-        "clusterName": _SERIALIZER.url(
-            "cluster_name", cluster_name, "str", max_length=100, min_length=1, pattern=r"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
+        "mongoClusterName": _SERIALIZER.url(
+            "mongo_cluster_name",
+            mongo_cluster_name,
+            "str",
+            max_length=40,
+            min_length=3,
+            pattern=r"^[a-z0-9]+(-[a-z0-9]+)*",
         ),
     }
 
@@ -255,8 +275,8 @@ def build_update_request(
     return HttpRequest(method="PATCH", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_invoke_command_request(
-    resource_group_name: str, cluster_name: str, subscription_id: str, **kwargs: Any
+def build_create_or_update_firewall_rule_request(
+    resource_group_name: str, mongo_cluster_name: str, firewall_rule_name: str, subscription_id: str, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
@@ -270,16 +290,204 @@ def build_invoke_command_request(
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/invokeCommand",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/firewallRules/{firewallRuleName}",
     )  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
         "resourceGroupName": _SERIALIZER.url(
             "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
         ),
-        "clusterName": _SERIALIZER.url(
-            "cluster_name", cluster_name, "str", max_length=100, min_length=1, pattern=r"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
+        "mongoClusterName": _SERIALIZER.url(
+            "mongo_cluster_name",
+            mongo_cluster_name,
+            "str",
+            max_length=40,
+            min_length=3,
+            pattern=r"^[a-z0-9]+(-[a-z0-9]+)*",
         ),
+        "firewallRuleName": _SERIALIZER.url(
+            "firewall_rule_name",
+            firewall_rule_name,
+            "str",
+            max_length=80,
+            min_length=1,
+            pattern=r"^[a-zA-Z0-9][-_.a-zA-Z0-9]*",
+        ),
+    }
+
+    _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    if content_type is not None:
+        _headers["Content-Type"] = _SERIALIZER.header("content_type", content_type, "str")
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="PUT", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+def build_delete_firewall_rule_request(
+    resource_group_name: str, mongo_cluster_name: str, firewall_rule_name: str, subscription_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+        "api_version", _params.pop("api-version", "2023-03-01-preview")
+    )
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/firewallRules/{firewallRuleName}",
+    )  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "mongoClusterName": _SERIALIZER.url(
+            "mongo_cluster_name",
+            mongo_cluster_name,
+            "str",
+            max_length=40,
+            min_length=3,
+            pattern=r"^[a-z0-9]+(-[a-z0-9]+)*",
+        ),
+        "firewallRuleName": _SERIALIZER.url(
+            "firewall_rule_name",
+            firewall_rule_name,
+            "str",
+            max_length=80,
+            min_length=1,
+            pattern=r"^[a-zA-Z0-9][-_.a-zA-Z0-9]*",
+        ),
+    }
+
+    _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="DELETE", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+def build_get_firewall_rule_request(
+    resource_group_name: str, mongo_cluster_name: str, firewall_rule_name: str, subscription_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+        "api_version", _params.pop("api-version", "2023-03-01-preview")
+    )
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/firewallRules/{firewallRuleName}",
+    )  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "mongoClusterName": _SERIALIZER.url(
+            "mongo_cluster_name",
+            mongo_cluster_name,
+            "str",
+            max_length=40,
+            min_length=3,
+            pattern=r"^[a-z0-9]+(-[a-z0-9]+)*",
+        ),
+        "firewallRuleName": _SERIALIZER.url(
+            "firewall_rule_name",
+            firewall_rule_name,
+            "str",
+            max_length=80,
+            min_length=1,
+            pattern=r"^[a-zA-Z0-9][-_.a-zA-Z0-9]*",
+        ),
+    }
+
+    _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+def build_list_firewall_rules_request(
+    resource_group_name: str, mongo_cluster_name: str, subscription_id: str, **kwargs: Any
+) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+        "api_version", _params.pop("api-version", "2023-03-01-preview")
+    )
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/firewallRules",
+    )  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
+        "resourceGroupName": _SERIALIZER.url(
+            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
+        ),
+        "mongoClusterName": _SERIALIZER.url(
+            "mongo_cluster_name",
+            mongo_cluster_name,
+            "str",
+            max_length=40,
+            min_length=3,
+            pattern=r"^[a-z0-9]+(-[a-z0-9]+)*",
+        ),
+    }
+
+    _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
+
+    # Construct parameters
+    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+
+    # Construct headers
+    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
+
+    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
+
+
+def build_check_name_availability_request(location: str, subscription_id: str, **kwargs: Any) -> HttpRequest:
+    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+    api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+        "api_version", _params.pop("api-version", "2023-03-01-preview")
+    )
+    content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+    accept = _headers.pop("Accept", "application/json")
+
+    # Construct URL
+    _url = kwargs.pop(
+        "template_url",
+        "/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/checkMongoClusterNameAvailability",
+    )  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
+        "location": _SERIALIZER.url("location", location, "str", min_length=1),
     }
 
     _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
@@ -295,13 +503,8 @@ def build_invoke_command_request(
     return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_deallocate_request(
-    resource_group_name: str,
-    cluster_name: str,
-    subscription_id: str,
-    *,
-    x_ms_force_deallocate: Optional[bool] = None,
-    **kwargs: Any
+def build_list_connection_strings_request(
+    resource_group_name: str, mongo_cluster_name: str, subscription_id: str, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
@@ -314,54 +517,20 @@ def build_deallocate_request(
     # Construct URL
     _url = kwargs.pop(
         "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/deallocate",
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/listConnectionStrings",
     )  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
         "resourceGroupName": _SERIALIZER.url(
             "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
         ),
-        "clusterName": _SERIALIZER.url(
-            "cluster_name", cluster_name, "str", max_length=100, min_length=1, pattern=r"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
-        ),
-    }
-
-    _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    if x_ms_force_deallocate is not None:
-        _headers["x-ms-force-deallocate"] = _SERIALIZER.header("x_ms_force_deallocate", x_ms_force_deallocate, "bool")
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-def build_start_request(
-    resource_group_name: str, cluster_name: str, subscription_id: str, **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: Literal["2023-03-01-preview"] = kwargs.pop(
-        "api_version", _params.pop("api-version", "2023-03-01-preview")
-    )
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = kwargs.pop(
-        "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/start",
-    )  # pylint: disable=line-too-long
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
-        "resourceGroupName": _SERIALIZER.url(
-            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
-        ),
-        "clusterName": _SERIALIZER.url(
-            "cluster_name", cluster_name, "str", max_length=100, min_length=1, pattern=r"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
+        "mongoClusterName": _SERIALIZER.url(
+            "mongo_cluster_name",
+            mongo_cluster_name,
+            "str",
+            max_length=40,
+            min_length=3,
+            pattern=r"^[a-z0-9]+(-[a-z0-9]+)*",
         ),
     }
 
@@ -376,51 +545,14 @@ def build_start_request(
     return HttpRequest(method="POST", url=_url, params=_params, headers=_headers, **kwargs)
 
 
-def build_status_request(
-    resource_group_name: str, cluster_name: str, subscription_id: str, **kwargs: Any
-) -> HttpRequest:
-    _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-    _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-    api_version: Literal["2023-03-01-preview"] = kwargs.pop(
-        "api_version", _params.pop("api-version", "2023-03-01-preview")
-    )
-    accept = _headers.pop("Accept", "application/json")
-
-    # Construct URL
-    _url = kwargs.pop(
-        "template_url",
-        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/status",
-    )  # pylint: disable=line-too-long
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, "str", min_length=1),
-        "resourceGroupName": _SERIALIZER.url(
-            "resource_group_name", resource_group_name, "str", max_length=90, min_length=1
-        ),
-        "clusterName": _SERIALIZER.url(
-            "cluster_name", cluster_name, "str", max_length=100, min_length=1, pattern=r"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
-        ),
-    }
-
-    _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
-
-    # Construct parameters
-    _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
-
-    # Construct headers
-    _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
-
-    return HttpRequest(method="GET", url=_url, params=_params, headers=_headers, **kwargs)
-
-
-class CassandraClustersOperations:
+class MongoClustersOperations:
     """
     .. warning::
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
         :class:`~azure.mgmt.cosmosdb.CosmosDBManagementClient`'s
-        :attr:`cassandra_clusters` attribute.
+        :attr:`mongo_clusters` attribute.
     """
 
     models = _models
@@ -433,12 +565,12 @@ class CassandraClustersOperations:
         self._deserialize = input_args.pop(0) if input_args else kwargs.pop("deserializer")
 
     @distributed_trace
-    def list_by_subscription(self, **kwargs: Any) -> Iterable["_models.ClusterResource"]:
-        """List all managed Cassandra clusters in this subscription.
+    def list(self, **kwargs: Any) -> Iterable["_models.MongoCluster"]:
+        """List all the mongo clusters in a given subscription.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ClusterResource or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :return: An iterator like instance of either MongoCluster or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.MongoCluster]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
@@ -447,7 +579,7 @@ class CassandraClustersOperations:
         api_version: Literal["2023-03-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", self._config.api_version)
         )
-        cls: ClsType[_models.ListClusters] = kwargs.pop("cls", None)
+        cls: ClsType[_models.MongoClusterListResult] = kwargs.pop("cls", None)
 
         error_map = {
             401: ClientAuthenticationError,
@@ -460,10 +592,10 @@ class CassandraClustersOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_list_by_subscription_request(
+                request = build_list_request(
                     subscription_id=self._config.subscription_id,
                     api_version=api_version,
-                    template_url=self.list_by_subscription.metadata["url"],
+                    template_url=self.list.metadata["url"],
                     headers=_headers,
                     params=_params,
                 )
@@ -489,11 +621,11 @@ class CassandraClustersOperations:
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("ListClusters", pipeline_response)
+            deserialized = self._deserialize("MongoClusterListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return None, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -506,26 +638,25 @@ class CassandraClustersOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return ItemPaged(get_next, extract_data)
 
-    list_by_subscription.metadata = {
-        "url": "/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/cassandraClusters"
-    }
+    list.metadata = {"url": "/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/mongoClusters"}
 
     @distributed_trace
-    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> Iterable["_models.ClusterResource"]:
-        """List all managed Cassandra clusters in this resource group.
+    def list_by_resource_group(self, resource_group_name: str, **kwargs: Any) -> Iterable["_models.MongoCluster"]:
+        """List all the mongo clusters in a given resource group.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either ClusterResource or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :return: An iterator like instance of either MongoCluster or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.MongoCluster]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
@@ -534,7 +665,7 @@ class CassandraClustersOperations:
         api_version: Literal["2023-03-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", self._config.api_version)
         )
-        cls: ClsType[_models.ListClusters] = kwargs.pop("cls", None)
+        cls: ClsType[_models.MongoClusterListResult] = kwargs.pop("cls", None)
 
         error_map = {
             401: ClientAuthenticationError,
@@ -577,11 +708,11 @@ class CassandraClustersOperations:
             return request
 
         def extract_data(pipeline_response):
-            deserialized = self._deserialize("ListClusters", pipeline_response)
+            deserialized = self._deserialize("MongoClusterListResult", pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)  # type: ignore
-            return None, iter(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
             request = prepare_request(next_link)
@@ -594,28 +725,264 @@ class CassandraClustersOperations:
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
-                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
             return pipeline_response
 
         return ItemPaged(get_next, extract_data)
 
     list_by_resource_group.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters"
     }
 
-    @distributed_trace
-    def get(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> _models.ClusterResource:
-        """Get the properties of a managed Cassandra cluster.
+    def _create_or_update_initial(
+        self,
+        resource_group_name: str,
+        mongo_cluster_name: str,
+        parameters: Union[_models.MongoCluster, IO],
+        **kwargs: Any
+    ) -> _models.MongoCluster:
+        error_map = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
+        )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.MongoCluster] = kwargs.pop("cls", None)
+
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(parameters, (IO, bytes)):
+            _content = parameters
+        else:
+            _json = self._serialize.body(parameters, "MongoCluster")
+
+        request = build_create_or_update_request(
+            resource_group_name=resource_group_name,
+            mongo_cluster_name=mongo_cluster_name,
+            subscription_id=self._config.subscription_id,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            content=_content,
+            template_url=self._create_or_update_initial.metadata["url"],
+            headers=_headers,
+            params=_params,
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 201]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        if response.status_code == 200:
+            deserialized = self._deserialize("MongoCluster", pipeline_response)
+
+        if response.status_code == 201:
+            deserialized = self._deserialize("MongoCluster", pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})  # type: ignore
+
+        return deserialized  # type: ignore
+
+    _create_or_update_initial.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}"
+    }
+
+    @overload
+    def begin_create_or_update(
+        self,
+        resource_group_name: str,
+        mongo_cluster_name: str,
+        parameters: _models.MongoCluster,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> LROPoller[_models.MongoCluster]:
+        """Create or update a mongo cluster. Update overwrites all properties for the resource. To only
+        modify some of the properties, use PATCH.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
+        :param mongo_cluster_name: The name of the mongo cluster. Required.
+        :type mongo_cluster_name: str
+        :param parameters: The required parameters for creating or updating a mongo cluster. Required.
+        :type parameters: ~azure.mgmt.cosmosdb.models.MongoCluster
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: ClusterResource or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.ClusterResource
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
+         operation to not poll, or pass in your own initialized polling object for a personal polling
+         strategy.
+        :paramtype polling: bool or ~azure.core.polling.PollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of LROPoller that returns either MongoCluster or the result of
+         cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.MongoCluster]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @overload
+    def begin_create_or_update(
+        self,
+        resource_group_name: str,
+        mongo_cluster_name: str,
+        parameters: IO,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> LROPoller[_models.MongoCluster]:
+        """Create or update a mongo cluster. Update overwrites all properties for the resource. To only
+        modify some of the properties, use PATCH.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param mongo_cluster_name: The name of the mongo cluster. Required.
+        :type mongo_cluster_name: str
+        :param parameters: The required parameters for creating or updating a mongo cluster. Required.
+        :type parameters: IO
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
+         operation to not poll, or pass in your own initialized polling object for a personal polling
+         strategy.
+        :paramtype polling: bool or ~azure.core.polling.PollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of LROPoller that returns either MongoCluster or the result of
+         cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.MongoCluster]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace
+    def begin_create_or_update(
+        self,
+        resource_group_name: str,
+        mongo_cluster_name: str,
+        parameters: Union[_models.MongoCluster, IO],
+        **kwargs: Any
+    ) -> LROPoller[_models.MongoCluster]:
+        """Create or update a mongo cluster. Update overwrites all properties for the resource. To only
+        modify some of the properties, use PATCH.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param mongo_cluster_name: The name of the mongo cluster. Required.
+        :type mongo_cluster_name: str
+        :param parameters: The required parameters for creating or updating a mongo cluster. Is either
+         a MongoCluster type or a IO type. Required.
+        :type parameters: ~azure.mgmt.cosmosdb.models.MongoCluster or IO
+        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
+         Default value is None.
+        :paramtype content_type: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
+         operation to not poll, or pass in your own initialized polling object for a personal polling
+         strategy.
+        :paramtype polling: bool or ~azure.core.polling.PollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of LROPoller that returns either MongoCluster or the result of
+         cls(response)
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.MongoCluster]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
+        )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.MongoCluster] = kwargs.pop("cls", None)
+        polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
+        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
+        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
+        if cont_token is None:
+            raw_result = self._create_or_update_initial(
+                resource_group_name=resource_group_name,
+                mongo_cluster_name=mongo_cluster_name,
+                parameters=parameters,
+                api_version=api_version,
+                content_type=content_type,
+                cls=lambda x, y, z: x,
+                headers=_headers,
+                params=_params,
+                **kwargs
+            )
+        kwargs.pop("error_map", None)
+
+        def get_long_running_output(pipeline_response):
+            deserialized = self._deserialize("MongoCluster", pipeline_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
+
+        if polling is True:
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs)
+            )
+        elif polling is False:
+            polling_method = cast(PollingMethod, NoPolling())
+        else:
+            polling_method = polling
+        if cont_token:
+            return LROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output,
+            )
+        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
+
+    begin_create_or_update.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}"
+    }
+
+    @distributed_trace
+    def get(self, resource_group_name: str, mongo_cluster_name: str, **kwargs: Any) -> _models.MongoCluster:
+        """Gets information about a mongo cluster.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param mongo_cluster_name: The name of the mongo cluster. Required.
+        :type mongo_cluster_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: MongoCluster or the result of cls(response)
+        :rtype: ~azure.mgmt.cosmosdb.models.MongoCluster
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map = {
@@ -632,11 +999,11 @@ class CassandraClustersOperations:
         api_version: Literal["2023-03-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", self._config.api_version)
         )
-        cls: ClsType[_models.ClusterResource] = kwargs.pop("cls", None)
+        cls: ClsType[_models.MongoCluster] = kwargs.pop("cls", None)
 
         request = build_get_request(
             resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
+            mongo_cluster_name=mongo_cluster_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             template_url=self.get.metadata["url"],
@@ -655,9 +1022,10 @@ class CassandraClustersOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("ClusterResource", pipeline_response)
+        deserialized = self._deserialize("MongoCluster", pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
@@ -665,11 +1033,11 @@ class CassandraClustersOperations:
         return deserialized
 
     get.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}"
     }
 
     def _delete_initial(  # pylint: disable=inconsistent-return-statements
-        self, resource_group_name: str, cluster_name: str, **kwargs: Any
+        self, resource_group_name: str, mongo_cluster_name: str, **kwargs: Any
     ) -> None:
         error_map = {
             401: ClientAuthenticationError,
@@ -689,7 +1057,7 @@ class CassandraClustersOperations:
 
         request = build_delete_request(
             resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
+            mongo_cluster_name=mongo_cluster_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             template_url=self._delete_initial.metadata["url"],
@@ -708,24 +1076,29 @@ class CassandraClustersOperations:
 
         if response.status_code not in [202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _delete_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}"
     }
 
     @distributed_trace
-    def begin_delete(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> LROPoller[None]:
-        """Deletes a managed Cassandra cluster.
+    def begin_delete(self, resource_group_name: str, mongo_cluster_name: str, **kwargs: Any) -> LROPoller[None]:
+        """Deletes a mongo cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
+        :param mongo_cluster_name: The name of the mongo cluster. Required.
+        :type mongo_cluster_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -751,7 +1124,7 @@ class CassandraClustersOperations:
         if cont_token is None:
             raw_result = self._delete_initial(  # type: ignore
                 resource_group_name=resource_group_name,
-                cluster_name=cluster_name,
+                mongo_cluster_name=mongo_cluster_name,
                 api_version=api_version,
                 cls=lambda x, y, z: x,
                 headers=_headers,
@@ -765,7 +1138,9 @@ class CassandraClustersOperations:
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())
         else:
@@ -780,238 +1155,16 @@ class CassandraClustersOperations:
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     begin_delete.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}"
-    }
-
-    def _create_update_initial(
-        self, resource_group_name: str, cluster_name: str, body: Union[_models.ClusterResource, IO], **kwargs: Any
-    ) -> _models.ClusterResource:
-        error_map = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", self._config.api_version)
-        )
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ClusterResource] = kwargs.pop("cls", None)
-
-        content_type = content_type or "application/json"
-        _json = None
-        _content = None
-        if isinstance(body, (IO, bytes)):
-            _content = body
-        else:
-            _json = self._serialize.body(body, "ClusterResource")
-
-        request = build_create_update_request(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            subscription_id=self._config.subscription_id,
-            api_version=api_version,
-            content_type=content_type,
-            json=_json,
-            content=_content,
-            template_url=self._create_update_initial.metadata["url"],
-            headers=_headers,
-            params=_params,
-        )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 201]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        if response.status_code == 200:
-            deserialized = self._deserialize("ClusterResource", pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize("ClusterResource", pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
-
-        return deserialized  # type: ignore
-
-    _create_update_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}"
-    }
-
-    @overload
-    def begin_create_update(
-        self,
-        resource_group_name: str,
-        cluster_name: str,
-        body: _models.ClusterResource,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
-        """Create or update a managed Cassandra cluster. When updating, you must specify all writable
-        properties. To update only some properties, use PATCH.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
-        :param body: The properties specifying the desired state of the managed Cassandra cluster.
-         Required.
-        :type body: ~azure.mgmt.cosmosdb.models.ClusterResource
-        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @overload
-    def begin_create_update(
-        self,
-        resource_group_name: str,
-        cluster_name: str,
-        body: IO,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
-        """Create or update a managed Cassandra cluster. When updating, you must specify all writable
-        properties. To update only some properties, use PATCH.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
-        :param body: The properties specifying the desired state of the managed Cassandra cluster.
-         Required.
-        :type body: IO
-        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @distributed_trace
-    def begin_create_update(
-        self, resource_group_name: str, cluster_name: str, body: Union[_models.ClusterResource, IO], **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
-        """Create or update a managed Cassandra cluster. When updating, you must specify all writable
-        properties. To update only some properties, use PATCH.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
-        :param body: The properties specifying the desired state of the managed Cassandra cluster. Is
-         either a ClusterResource type or a IO type. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.ClusterResource or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", self._config.api_version)
-        )
-        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ClusterResource] = kwargs.pop("cls", None)
-        polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = self._create_update_initial(
-                resource_group_name=resource_group_name,
-                cluster_name=cluster_name,
-                body=body,
-                api_version=api_version,
-                content_type=content_type,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ClusterResource", pipeline_response)
-            if cls:
-                return cls(pipeline_response, deserialized, {})
-            return deserialized
-
-        if polling is True:
-            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
-        elif polling is False:
-            polling_method = cast(PollingMethod, NoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return LROPoller.from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    begin_create_update.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}"
     }
 
     def _update_initial(
-        self, resource_group_name: str, cluster_name: str, body: Union[_models.ClusterResource, IO], **kwargs: Any
-    ) -> _models.ClusterResource:
+        self,
+        resource_group_name: str,
+        mongo_cluster_name: str,
+        parameters: Union[_models.MongoClusterUpdate, IO],
+        **kwargs: Any
+    ) -> Optional[_models.MongoCluster]:
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -1027,19 +1180,19 @@ class CassandraClustersOperations:
             "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ClusterResource] = kwargs.pop("cls", None)
+        cls: ClsType[Optional[_models.MongoCluster]] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
         _content = None
-        if isinstance(body, (IO, bytes)):
-            _content = body
+        if isinstance(parameters, (IO, bytes)):
+            _content = parameters
         else:
-            _json = self._serialize.body(body, "ClusterResource")
+            _json = self._serialize.body(parameters, "MongoClusterUpdate")
 
         request = build_update_request(
             resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
+            mongo_cluster_name=mongo_cluster_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             content_type=content_type,
@@ -1061,42 +1214,46 @@ class CassandraClustersOperations:
 
         if response.status_code not in [200, 202]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
+        deserialized = None
+        response_headers = {}
         if response.status_code == 200:
-            deserialized = self._deserialize("ClusterResource", pipeline_response)
+            deserialized = self._deserialize("MongoCluster", pipeline_response)
 
         if response.status_code == 202:
-            deserialized = self._deserialize("ClusterResource", pipeline_response)
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
         if cls:
-            return cls(pipeline_response, deserialized, {})  # type: ignore
+            return cls(pipeline_response, deserialized, response_headers)
 
-        return deserialized  # type: ignore
+        return deserialized
 
     _update_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}"
     }
 
     @overload
     def begin_update(
         self,
         resource_group_name: str,
-        cluster_name: str,
-        body: _models.ClusterResource,
+        mongo_cluster_name: str,
+        parameters: _models.MongoClusterUpdate,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
-        """Updates some of the properties of a managed Cassandra cluster.
+    ) -> LROPoller[_models.MongoCluster]:
+        """Updates an existing mongo cluster. The request body can contain one to many of the properties
+        present in the normal mongo cluster definition.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
-        :param body: Parameters to provide for specifying the managed Cassandra cluster. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.ClusterResource
+        :param mongo_cluster_name: The name of the mongo cluster. Required.
+        :type mongo_cluster_name: str
+        :param parameters: The parameters for updating a mongo cluster. Required.
+        :type parameters: ~azure.mgmt.cosmosdb.models.MongoClusterUpdate
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -1108,9 +1265,9 @@ class CassandraClustersOperations:
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
+        :return: An instance of LROPoller that returns either MongoCluster or the result of
          cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.MongoCluster]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -1118,21 +1275,22 @@ class CassandraClustersOperations:
     def begin_update(
         self,
         resource_group_name: str,
-        cluster_name: str,
-        body: IO,
+        mongo_cluster_name: str,
+        parameters: IO,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
-        """Updates some of the properties of a managed Cassandra cluster.
+    ) -> LROPoller[_models.MongoCluster]:
+        """Updates an existing mongo cluster. The request body can contain one to many of the properties
+        present in the normal mongo cluster definition.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
-        :param body: Parameters to provide for specifying the managed Cassandra cluster. Required.
-        :type body: IO
+        :param mongo_cluster_name: The name of the mongo cluster. Required.
+        :type mongo_cluster_name: str
+        :param parameters: The parameters for updating a mongo cluster. Required.
+        :type parameters: IO
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -1144,26 +1302,31 @@ class CassandraClustersOperations:
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
+        :return: An instance of LROPoller that returns either MongoCluster or the result of
          cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.MongoCluster]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
     @distributed_trace
     def begin_update(
-        self, resource_group_name: str, cluster_name: str, body: Union[_models.ClusterResource, IO], **kwargs: Any
-    ) -> LROPoller[_models.ClusterResource]:
-        """Updates some of the properties of a managed Cassandra cluster.
+        self,
+        resource_group_name: str,
+        mongo_cluster_name: str,
+        parameters: Union[_models.MongoClusterUpdate, IO],
+        **kwargs: Any
+    ) -> LROPoller[_models.MongoCluster]:
+        """Updates an existing mongo cluster. The request body can contain one to many of the properties
+        present in the normal mongo cluster definition.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
-        :param body: Parameters to provide for specifying the managed Cassandra cluster. Is either a
-         ClusterResource type or a IO type. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.ClusterResource or IO
+        :param mongo_cluster_name: The name of the mongo cluster. Required.
+        :type mongo_cluster_name: str
+        :param parameters: The parameters for updating a mongo cluster. Is either a MongoClusterUpdate
+         type or a IO type. Required.
+        :type parameters: ~azure.mgmt.cosmosdb.models.MongoClusterUpdate or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
         :paramtype content_type: str
@@ -1175,9 +1338,9 @@ class CassandraClustersOperations:
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of LROPoller that returns either ClusterResource or the result of
+        :return: An instance of LROPoller that returns either MongoCluster or the result of
          cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.ClusterResource]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.MongoCluster]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -1187,15 +1350,15 @@ class CassandraClustersOperations:
             "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.ClusterResource] = kwargs.pop("cls", None)
+        cls: ClsType[_models.MongoCluster] = kwargs.pop("cls", None)
         polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
             raw_result = self._update_initial(
                 resource_group_name=resource_group_name,
-                cluster_name=cluster_name,
-                body=body,
+                mongo_cluster_name=mongo_cluster_name,
+                parameters=parameters,
                 api_version=api_version,
                 content_type=content_type,
                 cls=lambda x, y, z: x,
@@ -1206,13 +1369,15 @@ class CassandraClustersOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("ClusterResource", pipeline_response)
+            deserialized = self._deserialize("MongoCluster", pipeline_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
         if polling is True:
-            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())
         else:
@@ -1227,12 +1392,17 @@ class CassandraClustersOperations:
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     begin_update.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}"
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}"
     }
 
-    def _invoke_command_initial(
-        self, resource_group_name: str, cluster_name: str, body: Union[_models.CommandPostBody, IO], **kwargs: Any
-    ) -> _models.CommandOutput:
+    def _create_or_update_firewall_rule_initial(
+        self,
+        resource_group_name: str,
+        mongo_cluster_name: str,
+        firewall_rule_name: str,
+        parameters: Union[_models.FirewallRule, IO],
+        **kwargs: Any
+    ) -> _models.FirewallRule:
         error_map = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
@@ -1248,25 +1418,26 @@ class CassandraClustersOperations:
             "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.CommandOutput] = kwargs.pop("cls", None)
+        cls: ClsType[_models.FirewallRule] = kwargs.pop("cls", None)
 
         content_type = content_type or "application/json"
         _json = None
         _content = None
-        if isinstance(body, (IO, bytes)):
-            _content = body
+        if isinstance(parameters, (IO, bytes)):
+            _content = parameters
         else:
-            _json = self._serialize.body(body, "CommandPostBody")
+            _json = self._serialize.body(parameters, "FirewallRule")
 
-        request = build_invoke_command_request(
+        request = build_create_or_update_firewall_rule_request(
             resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
+            mongo_cluster_name=mongo_cluster_name,
+            firewall_rule_name=firewall_rule_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
             content_type=content_type,
             json=_json,
             content=_content,
-            template_url=self._invoke_command_initial.metadata["url"],
+            template_url=self._create_or_update_firewall_rule_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
@@ -1280,40 +1451,48 @@ class CassandraClustersOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [202]:
+        if response.status_code not in [200, 201]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("CommandOutput", pipeline_response)
+        if response.status_code == 200:
+            deserialized = self._deserialize("FirewallRule", pipeline_response)
+
+        if response.status_code == 201:
+            deserialized = self._deserialize("FirewallRule", pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
+        return deserialized  # type: ignore
 
-    _invoke_command_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/invokeCommand"
+    _create_or_update_firewall_rule_initial.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/firewallRules/{firewallRuleName}"
     }
 
     @overload
-    def begin_invoke_command(
+    def begin_create_or_update_firewall_rule(
         self,
         resource_group_name: str,
-        cluster_name: str,
-        body: _models.CommandPostBody,
+        mongo_cluster_name: str,
+        firewall_rule_name: str,
+        parameters: _models.FirewallRule,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.CommandOutput]:
-        """Invoke a command like nodetool for cassandra maintenance.
+    ) -> LROPoller[_models.FirewallRule]:
+        """Creates a new firewall rule or updates an existing firewall rule on a mongo cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
-        :param body: Specification which command to run where. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.CommandPostBody
+        :param mongo_cluster_name: The name of the mongo cluster. Required.
+        :type mongo_cluster_name: str
+        :param firewall_rule_name: The name of the mongo cluster firewall rule. Required.
+        :type firewall_rule_name: str
+        :param parameters: The required parameters for creating or updating a firewall rule. Required.
+        :type parameters: ~azure.mgmt.cosmosdb.models.FirewallRule
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -1325,31 +1504,34 @@ class CassandraClustersOperations:
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of LROPoller that returns either CommandOutput or the result of
+        :return: An instance of LROPoller that returns either FirewallRule or the result of
          cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.CommandOutput]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.FirewallRule]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
     @overload
-    def begin_invoke_command(
+    def begin_create_or_update_firewall_rule(
         self,
         resource_group_name: str,
-        cluster_name: str,
-        body: IO,
+        mongo_cluster_name: str,
+        firewall_rule_name: str,
+        parameters: IO,
         *,
         content_type: str = "application/json",
         **kwargs: Any
-    ) -> LROPoller[_models.CommandOutput]:
-        """Invoke a command like nodetool for cassandra maintenance.
+    ) -> LROPoller[_models.FirewallRule]:
+        """Creates a new firewall rule or updates an existing firewall rule on a mongo cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
-        :param body: Specification which command to run where. Required.
-        :type body: IO
+        :param mongo_cluster_name: The name of the mongo cluster. Required.
+        :type mongo_cluster_name: str
+        :param firewall_rule_name: The name of the mongo cluster firewall rule. Required.
+        :type firewall_rule_name: str
+        :param parameters: The required parameters for creating or updating a firewall rule. Required.
+        :type parameters: IO
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -1361,26 +1543,33 @@ class CassandraClustersOperations:
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of LROPoller that returns either CommandOutput or the result of
+        :return: An instance of LROPoller that returns either FirewallRule or the result of
          cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.CommandOutput]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.FirewallRule]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
     @distributed_trace
-    def begin_invoke_command(
-        self, resource_group_name: str, cluster_name: str, body: Union[_models.CommandPostBody, IO], **kwargs: Any
-    ) -> LROPoller[_models.CommandOutput]:
-        """Invoke a command like nodetool for cassandra maintenance.
+    def begin_create_or_update_firewall_rule(
+        self,
+        resource_group_name: str,
+        mongo_cluster_name: str,
+        firewall_rule_name: str,
+        parameters: Union[_models.FirewallRule, IO],
+        **kwargs: Any
+    ) -> LROPoller[_models.FirewallRule]:
+        """Creates a new firewall rule or updates an existing firewall rule on a mongo cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
-        :param body: Specification which command to run where. Is either a CommandPostBody type or a IO
-         type. Required.
-        :type body: ~azure.mgmt.cosmosdb.models.CommandPostBody or IO
+        :param mongo_cluster_name: The name of the mongo cluster. Required.
+        :type mongo_cluster_name: str
+        :param firewall_rule_name: The name of the mongo cluster firewall rule. Required.
+        :type firewall_rule_name: str
+        :param parameters: The required parameters for creating or updating a firewall rule. Is either
+         a FirewallRule type or a IO type. Required.
+        :type parameters: ~azure.mgmt.cosmosdb.models.FirewallRule or IO
         :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
          Default value is None.
         :paramtype content_type: str
@@ -1392,9 +1581,9 @@ class CassandraClustersOperations:
         :paramtype polling: bool or ~azure.core.polling.PollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
-        :return: An instance of LROPoller that returns either CommandOutput or the result of
+        :return: An instance of LROPoller that returns either FirewallRule or the result of
          cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.CommandOutput]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.cosmosdb.models.FirewallRule]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
@@ -1404,15 +1593,16 @@ class CassandraClustersOperations:
             "api_version", _params.pop("api-version", self._config.api_version)
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-        cls: ClsType[_models.CommandOutput] = kwargs.pop("cls", None)
+        cls: ClsType[_models.FirewallRule] = kwargs.pop("cls", None)
         polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = self._invoke_command_initial(
+            raw_result = self._create_or_update_firewall_rule_initial(
                 resource_group_name=resource_group_name,
-                cluster_name=cluster_name,
-                body=body,
+                mongo_cluster_name=mongo_cluster_name,
+                firewall_rule_name=firewall_rule_name,
+                parameters=parameters,
                 api_version=api_version,
                 content_type=content_type,
                 cls=lambda x, y, z: x,
@@ -1423,13 +1613,15 @@ class CassandraClustersOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
-            deserialized = self._deserialize("CommandOutput", pipeline_response)
+            deserialized = self._deserialize("FirewallRule", pipeline_response)
             if cls:
                 return cls(pipeline_response, deserialized, {})
             return deserialized
 
         if polling is True:
-            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "azure-async-operation"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())
         else:
@@ -1443,12 +1635,12 @@ class CassandraClustersOperations:
             )
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    begin_invoke_command.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/invokeCommand"
+    begin_create_or_update_firewall_rule.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/firewallRules/{firewallRuleName}"
     }
 
-    def _deallocate_initial(  # pylint: disable=inconsistent-return-statements
-        self, resource_group_name: str, cluster_name: str, x_ms_force_deallocate: Optional[bool] = None, **kwargs: Any
+    def _delete_firewall_rule_initial(  # pylint: disable=inconsistent-return-statements
+        self, resource_group_name: str, mongo_cluster_name: str, firewall_rule_name: str, **kwargs: Any
     ) -> None:
         error_map = {
             401: ClientAuthenticationError,
@@ -1466,13 +1658,13 @@ class CassandraClustersOperations:
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
-        request = build_deallocate_request(
+        request = build_delete_firewall_rule_request(
             resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
+            mongo_cluster_name=mongo_cluster_name,
+            firewall_rule_name=firewall_rule_name,
             subscription_id=self._config.subscription_id,
-            x_ms_force_deallocate=x_ms_force_deallocate,
             api_version=api_version,
-            template_url=self._deallocate_initial.metadata["url"],
+            template_url=self._delete_firewall_rule_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
@@ -1486,34 +1678,35 @@ class CassandraClustersOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [202]:
+        if response.status_code not in [202, 204]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
 
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
-    _deallocate_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/deallocate"
+    _delete_firewall_rule_initial.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/firewallRules/{firewallRuleName}"
     }
 
     @distributed_trace
-    def begin_deallocate(
-        self, resource_group_name: str, cluster_name: str, x_ms_force_deallocate: Optional[bool] = None, **kwargs: Any
+    def begin_delete_firewall_rule(
+        self, resource_group_name: str, mongo_cluster_name: str, firewall_rule_name: str, **kwargs: Any
     ) -> LROPoller[None]:
-        """Deallocate the Managed Cassandra Cluster and Associated Data Centers. Deallocation will
-        deallocate the host virtual machine of this cluster, and reserved the data disk. This won't do
-        anything on an already deallocated cluster. Use Start to restart the cluster.
+        """Deletes a mongo cluster firewall rule.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
-        :param x_ms_force_deallocate: Force to deallocate a cluster of Cluster Type Production. Force
-         to deallocate a cluster of Cluster Type Production might cause data loss. Default value is
-         None.
-        :type x_ms_force_deallocate: bool
+        :param mongo_cluster_name: The name of the mongo cluster. Required.
+        :type mongo_cluster_name: str
+        :param firewall_rule_name: The name of the mongo cluster firewall rule. Required.
+        :type firewall_rule_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -1537,10 +1730,10 @@ class CassandraClustersOperations:
         lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
         cont_token: Optional[str] = kwargs.pop("continuation_token", None)
         if cont_token is None:
-            raw_result = self._deallocate_initial(  # type: ignore
+            raw_result = self._delete_firewall_rule_initial(  # type: ignore
                 resource_group_name=resource_group_name,
-                cluster_name=cluster_name,
-                x_ms_force_deallocate=x_ms_force_deallocate,
+                mongo_cluster_name=mongo_cluster_name,
+                firewall_rule_name=firewall_rule_name,
                 api_version=api_version,
                 cls=lambda x, y, z: x,
                 headers=_headers,
@@ -1554,7 +1747,9 @@ class CassandraClustersOperations:
                 return cls(pipeline_response, None, {})
 
         if polling is True:
-            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
+            polling_method: PollingMethod = cast(
+                PollingMethod, ARMPolling(lro_delay, lro_options={"final-state-via": "location"}, **kwargs)
+            )
         elif polling is False:
             polling_method = cast(PollingMethod, NoPolling())
         else:
@@ -1568,141 +1763,26 @@ class CassandraClustersOperations:
             )
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
-    begin_deallocate.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/deallocate"
-    }
-
-    def _start_initial(  # pylint: disable=inconsistent-return-statements
-        self, resource_group_name: str, cluster_name: str, **kwargs: Any
-    ) -> None:
-        error_map = {
-            401: ClientAuthenticationError,
-            404: ResourceNotFoundError,
-            409: ResourceExistsError,
-            304: ResourceNotModifiedError,
-        }
-        error_map.update(kwargs.pop("error_map", {}) or {})
-
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", self._config.api_version)
-        )
-        cls: ClsType[None] = kwargs.pop("cls", None)
-
-        request = build_start_request(
-            resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
-            subscription_id=self._config.subscription_id,
-            api_version=api_version,
-            template_url=self._start_initial.metadata["url"],
-            headers=_headers,
-            params=_params,
-        )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
-
-        _stream = False
-        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
-        )
-
-        response = pipeline_response.http_response
-
-        if response.status_code not in [202]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        if cls:
-            return cls(pipeline_response, None, {})
-
-    _start_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/start"
+    begin_delete_firewall_rule.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/firewallRules/{firewallRuleName}"
     }
 
     @distributed_trace
-    def begin_start(self, resource_group_name: str, cluster_name: str, **kwargs: Any) -> LROPoller[None]:
-        """Start the Managed Cassandra Cluster and Associated Data Centers. Start will start the host
-        virtual machine of this cluster with reserved data disk. This won't do anything on an already
-        running cluster. Use Deallocate to deallocate the cluster.
+    def get_firewall_rule(
+        self, resource_group_name: str, mongo_cluster_name: str, firewall_rule_name: str, **kwargs: Any
+    ) -> _models.FirewallRule:
+        """Gets information about a mongo cluster firewall rule.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
         :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
+        :param mongo_cluster_name: The name of the mongo cluster. Required.
+        :type mongo_cluster_name: str
+        :param firewall_rule_name: The name of the mongo cluster firewall rule. Required.
+        :type firewall_rule_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
-        :return: An instance of LROPoller that returns either None or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[None]
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-        _headers = kwargs.pop("headers", {}) or {}
-        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
-
-        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
-            "api_version", _params.pop("api-version", self._config.api_version)
-        )
-        cls: ClsType[None] = kwargs.pop("cls", None)
-        polling: Union[bool, PollingMethod] = kwargs.pop("polling", True)
-        lro_delay = kwargs.pop("polling_interval", self._config.polling_interval)
-        cont_token: Optional[str] = kwargs.pop("continuation_token", None)
-        if cont_token is None:
-            raw_result = self._start_initial(  # type: ignore
-                resource_group_name=resource_group_name,
-                cluster_name=cluster_name,
-                api_version=api_version,
-                cls=lambda x, y, z: x,
-                headers=_headers,
-                params=_params,
-                **kwargs
-            )
-        kwargs.pop("error_map", None)
-
-        def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
-            if cls:
-                return cls(pipeline_response, None, {})
-
-        if polling is True:
-            polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
-        elif polling is False:
-            polling_method = cast(PollingMethod, NoPolling())
-        else:
-            polling_method = polling
-        if cont_token:
-            return LROPoller.from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output,
-            )
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    begin_start.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/start"
-    }
-
-    @distributed_trace
-    def status(
-        self, resource_group_name: str, cluster_name: str, **kwargs: Any
-    ) -> _models.CassandraClusterPublicStatus:
-        """Gets the CPU, memory, and disk usage statistics for each Cassandra node in a cluster.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-         Required.
-        :type resource_group_name: str
-        :param cluster_name: Managed Cassandra cluster name. Required.
-        :type cluster_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: CassandraClusterPublicStatus or the result of cls(response)
-        :rtype: ~azure.mgmt.cosmosdb.models.CassandraClusterPublicStatus
+        :return: FirewallRule or the result of cls(response)
+        :rtype: ~azure.mgmt.cosmosdb.models.FirewallRule
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         error_map = {
@@ -1719,14 +1799,15 @@ class CassandraClustersOperations:
         api_version: Literal["2023-03-01-preview"] = kwargs.pop(
             "api_version", _params.pop("api-version", self._config.api_version)
         )
-        cls: ClsType[_models.CassandraClusterPublicStatus] = kwargs.pop("cls", None)
+        cls: ClsType[_models.FirewallRule] = kwargs.pop("cls", None)
 
-        request = build_status_request(
+        request = build_get_firewall_rule_request(
             resource_group_name=resource_group_name,
-            cluster_name=cluster_name,
+            mongo_cluster_name=mongo_cluster_name,
+            firewall_rule_name=firewall_rule_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self.status.metadata["url"],
+            template_url=self.get_firewall_rule.metadata["url"],
             headers=_headers,
             params=_params,
         )
@@ -1742,15 +1823,304 @@ class CassandraClustersOperations:
 
         if response.status_code not in [200]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize("CassandraClusterPublicStatus", pipeline_response)
+        deserialized = self._deserialize("FirewallRule", pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    status.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/cassandraClusters/{clusterName}/status"
+    get_firewall_rule.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/firewallRules/{firewallRuleName}"
+    }
+
+    @distributed_trace
+    def list_firewall_rules(
+        self, resource_group_name: str, mongo_cluster_name: str, **kwargs: Any
+    ) -> Iterable["_models.FirewallRule"]:
+        """List all the firewall rules in a given mongo cluster.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param mongo_cluster_name: The name of the mongo cluster. Required.
+        :type mongo_cluster_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either FirewallRule or the result of cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.cosmosdb.models.FirewallRule]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
+        )
+        cls: ClsType[_models.FirewallRuleListResult] = kwargs.pop("cls", None)
+
+        error_map = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        def prepare_request(next_link=None):
+            if not next_link:
+
+                request = build_list_firewall_rules_request(
+                    resource_group_name=resource_group_name,
+                    mongo_cluster_name=mongo_cluster_name,
+                    subscription_id=self._config.subscription_id,
+                    api_version=api_version,
+                    template_url=self.list_firewall_rules.metadata["url"],
+                    headers=_headers,
+                    params=_params,
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
+
+            else:
+                # make call to next link with the client's api-version
+                _parsed_next_link = urllib.parse.urlparse(next_link)
+                _next_request_params = case_insensitive_dict(
+                    {
+                        key: [urllib.parse.quote(v) for v in value]
+                        for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
+                    }
+                )
+                _next_request_params["api-version"] = self._config.api_version
+                request = HttpRequest(
+                    "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
+                request.method = "GET"
+            return request
+
+        def extract_data(pipeline_response):
+            deserialized = self._deserialize("FirewallRuleListResult", pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)  # type: ignore
+            return deserialized.next_link or None, iter(list_of_elem)
+
+        def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            _stream = False
+            pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+                request, stream=_stream, **kwargs
+            )
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return ItemPaged(get_next, extract_data)
+
+    list_firewall_rules.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/firewallRules"
+    }
+
+    @overload
+    def check_name_availability(
+        self,
+        location: str,
+        parameters: _models.CheckNameAvailabilityRequest,
+        *,
+        content_type: str = "application/json",
+        **kwargs: Any
+    ) -> _models.CheckNameAvailabilityResponse:
+        """Check the availability of name for resource.
+
+        :param location: The name of the Azure region. Required.
+        :type location: str
+        :param parameters: The required parameters for checking if resource name is available.
+         Required.
+        :type parameters: ~azure.mgmt.cosmosdb.models.CheckNameAvailabilityRequest
+        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: CheckNameAvailabilityResponse or the result of cls(response)
+        :rtype: ~azure.mgmt.cosmosdb.models.CheckNameAvailabilityResponse
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @overload
+    def check_name_availability(
+        self, location: str, parameters: IO, *, content_type: str = "application/json", **kwargs: Any
+    ) -> _models.CheckNameAvailabilityResponse:
+        """Check the availability of name for resource.
+
+        :param location: The name of the Azure region. Required.
+        :type location: str
+        :param parameters: The required parameters for checking if resource name is available.
+         Required.
+        :type parameters: IO
+        :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
+         Default value is "application/json".
+        :paramtype content_type: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: CheckNameAvailabilityResponse or the result of cls(response)
+        :rtype: ~azure.mgmt.cosmosdb.models.CheckNameAvailabilityResponse
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+
+    @distributed_trace
+    def check_name_availability(
+        self, location: str, parameters: Union[_models.CheckNameAvailabilityRequest, IO], **kwargs: Any
+    ) -> _models.CheckNameAvailabilityResponse:
+        """Check the availability of name for resource.
+
+        :param location: The name of the Azure region. Required.
+        :type location: str
+        :param parameters: The required parameters for checking if resource name is available. Is
+         either a CheckNameAvailabilityRequest type or a IO type. Required.
+        :type parameters: ~azure.mgmt.cosmosdb.models.CheckNameAvailabilityRequest or IO
+        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
+         Default value is None.
+        :paramtype content_type: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: CheckNameAvailabilityResponse or the result of cls(response)
+        :rtype: ~azure.mgmt.cosmosdb.models.CheckNameAvailabilityResponse
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
+        )
+        content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
+        cls: ClsType[_models.CheckNameAvailabilityResponse] = kwargs.pop("cls", None)
+
+        content_type = content_type or "application/json"
+        _json = None
+        _content = None
+        if isinstance(parameters, (IO, bytes)):
+            _content = parameters
+        else:
+            _json = self._serialize.body(parameters, "CheckNameAvailabilityRequest")
+
+        request = build_check_name_availability_request(
+            location=location,
+            subscription_id=self._config.subscription_id,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            content=_content,
+            template_url=self.check_name_availability.metadata["url"],
+            headers=_headers,
+            params=_params,
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize("CheckNameAvailabilityResponse", pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+
+    check_name_availability.metadata = {
+        "url": "/subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/checkMongoClusterNameAvailability"
+    }
+
+    @distributed_trace
+    def list_connection_strings(
+        self, resource_group_name: str, mongo_cluster_name: str, **kwargs: Any
+    ) -> _models.ListConnectionStringsResult:
+        """List mongo cluster connection strings. This includes the default connection string using
+        SCRAM-SHA-256, as well as other connection strings supported by the cluster.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+         Required.
+        :type resource_group_name: str
+        :param mongo_cluster_name: The name of the mongo cluster. Required.
+        :type mongo_cluster_name: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: ListConnectionStringsResult or the result of cls(response)
+        :rtype: ~azure.mgmt.cosmosdb.models.ListConnectionStringsResult
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        error_map = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
+
+        api_version: Literal["2023-03-01-preview"] = kwargs.pop(
+            "api_version", _params.pop("api-version", self._config.api_version)
+        )
+        cls: ClsType[_models.ListConnectionStringsResult] = kwargs.pop("cls", None)
+
+        request = build_list_connection_strings_request(
+            resource_group_name=resource_group_name,
+            mongo_cluster_name=mongo_cluster_name,
+            subscription_id=self._config.subscription_id,
+            api_version=api_version,
+            template_url=self.list_connection_strings.metadata["url"],
+            headers=_headers,
+            params=_params,
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
+
+        _stream = False
+        pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
+            request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponseAutoGenerated, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        deserialized = self._deserialize("ListConnectionStringsResult", pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+
+    list_connection_strings.metadata = {
+        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DocumentDB/mongoClusters/{mongoClusterName}/listConnectionStrings"
     }

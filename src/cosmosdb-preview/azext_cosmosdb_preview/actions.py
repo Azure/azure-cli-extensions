@@ -13,7 +13,7 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     DatabaseRestoreResource,
     GremlinDatabaseRestoreResource,
     CosmosCassandraDataTransferDataSourceSink,
-    CosmosMongoDataTransferDataSourceSink,
+    # CosmosMongoDataTransferDataSourceSink,
     CosmosSqlDataTransferDataSourceSink,
     PhysicalPartitionThroughputInfoResource,
     PhysicalPartitionId

@@ -22,6 +22,10 @@ def cf_cassandra_data_center(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).cassandra_data_centers
 
 
+def cf_cassandra_cluster_repair(cli_ctx, _):
+    return cf_cosmosdb_preview(cli_ctx).cassandra_repair
+
+
 def cf_mongo_db_resources(cli_ctx, _):
     return cf_cosmosdb_preview(cli_ctx).mongo_db_resources
 

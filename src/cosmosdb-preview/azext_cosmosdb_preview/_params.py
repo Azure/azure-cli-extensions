@@ -16,6 +16,10 @@ from azext_cosmosdb_preview._validators import (
     validate_mongo_role_definition_id,
     validate_mongo_user_definition_body,
     validate_mongo_user_definition_id)
+    # validate_table_list,
+    # validate_node_list,
+    # validate_datacenter_list,
+    # validate_blacklisted_list)
 
 from azext_cosmosdb_preview.actions import (
     CreateGremlinDatabaseRestoreResource,
@@ -87,14 +91,14 @@ def load_arguments(self, _):
             'managed-cassandra cluster update']:
         with self.argument_context(scope) as c:
             c.argument('tags', arg_type=tags_type)
-            c.argument('external_gossip_certificates', nargs='+', validator=validate_gossip_certificates, options_list=['--external-gossip-certificates', '-e'], help="A list of certificates that the managed cassandra data center's should accept.")
+            c.argument('external_gossip_certificates', nargs='*', validator=validate_gossip_certificates, options_list=['--external-gossip-certificates', '-e'], help="A list of certificates that the managed cassandra data center's should accept.")
             c.argument('cassandra_version', help="The version of Cassandra chosen.")
-            c.argument('authentication_method', arg_type=get_enum_type(['None', 'Cassandra', 'Ldap']), help="Authentication mode can be None, Cassandra or Ldap. If None, no authentication will be required to connect to the Cassandra API. If Cassandra, then passwords will be used. Ldap is in preview")
+            c.argument('authentication_method', arg_type=get_enum_type(['None', 'Cassandra', 'Ldap']), help="Authentication mode can be None, Cassandra or Ldap. If None, no authentication will be required to connect to the Cassandra API. If Cassandra, then passwords will be used.")
             c.argument('hours_between_backups', help="The number of hours between backup attempts.")
-            c.argument('repair_enabled', help="Enables automatic repair.")
-            c.argument('client_certificates', nargs='+', validator=validate_client_certificates, help="If specified, enables client certificate authentication to the Cassandra API.")
+            c.argument('repair_enabled', arg_type=get_three_state_flag(), help="Enables automatic repair.")
+            c.argument('client_certificates', nargs='*', validator=validate_client_certificates, help="If specified, enables client certificate authentication to the Cassandra API.")
             c.argument('gossip_certificates', help="A list of certificates that should be accepted by on-premise data centers.")
-            c.argument('external_seed_nodes', nargs='+', validator=validate_seednodes, help="A list of ip addresses of the seed nodes of on-premise data centers.")
+            c.argument('external_seed_nodes', nargs='*', validator=validate_seednodes, help="A list of ip addresses of the seed nodes of on-premise data centers.")
             c.argument('identity_type', options_list=['--identity-type'], arg_type=get_enum_type(['None', 'SystemAssigned']), help="Type of identity used for Customer Managed Disk Key.")
 
     # Managed Cassandra Cluster
@@ -131,14 +135,7 @@ def load_arguments(self, _):
             c.argument('delegated_subnet_id', options_list=['--delegated-subnet-id', '-s'], help="The resource id of a subnet where ip addresses of the Cassandra virtual machines will be allocated. This must be in the same region as data_center_location.")
             c.argument('managed_disk_customer_key_uri', options_list=['--managed-disk-customer-key-uri', '-k'], help="Key uri to use for encryption of managed disks. Ensure the system assigned identity of the cluster has been assigned appropriate permissions(key get/wrap/unwrap permissions) on the key.")
             c.argument('backup_storage_customer_key_uri', options_list=['--backup-storage-customer-key-uri', '-p'], help="Indicates the Key Uri of the customer key to use for encryption of the backup storage account.")
-            c.argument('server_hostname', options_list=['--ldap-server-hostname'], help="Hostname of the LDAP server.")
-            c.argument('server_port', options_list=['--ldap-server-port'], help="Port of the LDAP server. Defaults to 636")
-            c.argument('service_user_distinguished_name', options_list=['--ldap-service-user-dn'], help="Distinguished name of the look up user account, who can look up user details on authentication.")
-            c.argument('service_user_password', options_list=['--ldap-svc-user-pwd'], help="Password of the look up user.")
-            c.argument('search_base_distinguished_name', options_list=['--ldap-search-base-dn'], help="Distinguished name of the object to start the recursive search of users from.")
-            c.argument('search_filter_template', options_list=['--ldap-search-filter'], help="Template to use for searching. Defaults to (cn=%s) where %s will be replaced by the username used to login. While using this parameter from Windows Powershell (not Windows CommandPrompt or Linux) there is a known issue with escaping special characters, so pass as \"\"\"(cn=%s)\"\"\" instead.")
-            c.argument('server_certificates', nargs='+', validator=validate_server_certificates, options_list=['--ldap-server-certs'], help="LDAP server certificate. It should have subject alternative name(SAN) DNS Name entry matching the hostname of the LDAP server.")
-
+            
     # Managed Cassandra Datacenter
     with self.argument_context('managed-cassandra datacenter create') as c:
         c.argument('data_center_location', options_list=['--data-center-location', '-l'], help="Azure Location of the Datacenter", required=True)
@@ -152,6 +149,101 @@ def load_arguments(self, _):
     # Managed Cassandra Datacenter
     with self.argument_context('managed-cassandra datacenter list') as c:
         c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
+
+    # Managed Cassandra Repair Cluster
+    for scope in [
+        'managed-cassandra repair status',
+        'managed-cassandra repair tablestatus',
+        'managed-cassandra repair create',
+        'managed-cassandra repair list',
+        'managed-cassandra repair show',
+        'managed-cassandra repair pause',
+        'managed-cassandra repair update',
+        'managed-cassandra repair resume',
+        'managed-cassandra repair delete',
+        'managed-cassandra repair segment list',
+        'managed-cassandra repair segment abort']:
+        with self.argument_context(scope) as c:
+            c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
+
+    # Managed Cassandra Repair Create
+    with self.argument_context('managed-cassandra repair create') as c:
+        c.argument('keyspace', options_list=['--keyspace', '-k'], help="The name of the table keyspace.", required=True)
+        c.argument('owner', options_list=['--owner', '-w'], help="Owner name for the run. This could be any string identifying the owner.", required=True)
+        c.argument('cause', options_list=['--cause', '-a'], help="Identifies the process, or cause the repair was started.", required=True)
+        c.argument('tables', options_list=['--tables', '-t'], help="The name of the targeted tables (column families) as comma separated list. If no tables given, then the whole keyspace is targeted.", required=False)
+        c.argument('segment_count', options_list=['--segment-count', '-s'], help="Defines the amount of segments per node to create for the repair run.", required=False)
+        c.argument('repair_parallelism', options_list=['--repair-parallelism', '-p'], help="Defines the used repair parallelism for repair run. Valid values are SEQUENTIAL, PARALLEL or DATACENTER_AWARE.", required=False)
+        c.argument('intensity', options_list=['--intensity', '-i'], help="Defines the repair intensity for repair run.", required=False)
+        c.argument('incremental_repair', options_list=['--incremental-repair', '-e'], arg_type=get_three_state_flag(), help="Defines if incremental repair should be done. [true/false]. True when this flag is passed. False otherwise.", required=False)
+        c.argument('nodes', options_list=['--nodes', '-n'], help="A specific comma separated list of nodes IP address whose tokens should be repaired.", required=False)
+        c.argument('data_centers', options_list=['--data-center', '-d'], help="A specific comma separated list of datacenters to repair.", required=False)
+        c.argument('black_listed_tables', options_list=['--black-listed-tables', '-b'], help="The name of the tables that should not be repaired. Cannot be used in conjunction with the tables parameter.", required=False)
+        c.argument('repair_thread_count', options_list=['--repair-thread-count', '-u'], help="Thread Count to be used for the parallel repair. Since Cassandra 2.2, repairs can be performed with up to 4 threads in order to parallelize the work on different token ranges.", required=False)
+
+    # Managed Cassandra Repair
+    for scope in [
+            'managed-cassandra repair show',
+            'managed-cassandra repair pause',
+            'managed-cassandra repair update',
+            'managed-cassandra repair resume',
+            'managed-cassandra repair delete',
+            'managed-cassandra repair segment list',
+            'managed-cassandra repair segment abort']:
+        with self.argument_context(scope) as c:
+            c.argument('repair_run_id', options_list=['--repair-run-id', '-r'], help="Guid identifying the repair run.", required=True)
+
+    # Managed Cassandra Repair List
+    with self.argument_context('managed-cassandra repair list') as c:
+        c.argument('keyspace', options_list=['--keyspace', '-k'], help="Keyspace to filter on.", required=False)
+        c.argument('repair_run_states', options_list=['--repair-run-state', '-s'], help="Filter based on repair run state by passing comma separated list. Valid states are NOT_STARTED,RUNNING,ERROR,DONE,PAUSED,ABORTED,DELETED", required=False)
+
+    # Managed Cassandra Repair Intensity
+    with self.argument_context('managed-cassandra repair update') as c:
+        c.argument('intensity', options_list=['--intensity', '-i'], help="Intensity value for the repair run.", required=True)
+
+    # Managed Cassandra Repair Delete
+    with self.argument_context('managed-cassandra repair delete') as c:
+        c.argument('owner', options_list=['--owner', '-w'], help="Owner name that was used while creation the repair run.", required=True)
+
+    # Managed Cassandra Segment Abort
+    with self.argument_context('managed-cassandra segment abort') as c:
+        c.argument('segment_id', options_list=['--segment-id', '-s'], help="Guid identifying the segment to be aborted.", required=True)
+
+
+    # Managed Cassandra Backup Schedule
+    for scope in [
+        'managed-cassandra backup schedule create',
+        'managed-cassandra backup schedule update',
+        'managed-cassandra backup schedule show',
+        'managed-cassandra backup schedule delete',
+        'managed-cassandra backup schedule list']:
+        with self.argument_context(scope) as c:
+            c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
+
+    # Managed Cassandra Backup Schedule
+    for scope in [
+        'managed-cassandra backup schedule create',
+        'managed-cassandra backup schedule update',
+        'managed-cassandra backup schedule show',
+        'managed-cassandra backup schedule delete']:
+        with self.argument_context(scope) as c:
+            c.argument('schedule_name', options_list=['--schedule-name', '-s'], help="Schedule Name", required=True)
+
+    # Managed Cassandra Backup Schedule
+    for scope in [
+        'managed-cassandra backup schedule create']:
+        with self.argument_context(scope) as c:
+            c.argument('cron_expression', options_list=['--cron-expression', '-e'], help="Cron Expression", required=True)
+            c.argument('retention_in_hours', options_list=['--retention-in-hours', '-r'], help="Retention in hours", required=True)
+
+    # Managed Cassandra Backup Schedule
+    for scope in [
+        'managed-cassandra backup schedule update']:
+        with self.argument_context(scope) as c:
+            c.argument('cron_expression', options_list=['--cron-expression', '-e'], help="Cron Expression", required=False)
+            c.argument('retention_in_hours', options_list=['--retention-in-hours', '-r'], help="Retention in hours", required=False)
+
 
     # Services
     with self.argument_context('cosmosdb service') as c:

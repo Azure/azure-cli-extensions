@@ -169,6 +169,199 @@ examples:
       az managed-cassandra datacenter list --resource-group MyResourceGroup --cluster-name MyCluster
 """
 
+
+helps['managed-cassandra repair'] = """
+type: group
+short-summary: Repair feature of Azure Managed Cassandra.
+"""
+
+helps['managed-cassandra repair status'] = """
+type: command
+short-summary: Shows status of all repairs of the cluster.
+examples:
+  - name: Shows repair status of the cluster.
+    text: |
+      az managed-cassandra repair status --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair tablestatus'] = """
+type: command
+short-summary: Shows a map of "keyspace_names to list of table_names" that are available as seen by the repair services.
+examples:
+  - name: Shows list of tables by keyspace that are available to repair.
+    text: |
+      az managed-cassandra repair tablestatus --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair create'] = """
+type: command
+short-summary: Create a repair run for the cluster.
+examples:
+  - name: Creates a repair for the specified keyspace of the cluster.
+    text: |
+      az managed-cassandra repair
+        --keyspace MyKeyspaceName \\
+        --cause MyCause \\
+        --owner MyOwnerName \\
+        --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair list'] = """
+type: command
+short-summary: Returns list of repair for the cluster.
+examples:
+  - name: Shows list of repair.
+    text: |
+      az managed-cassandra repair list --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair show'] = """
+type: command
+short-summary: Given repair_run_id, this command shows details of the repair.
+examples:
+  - name: Shows details of repair_run_id
+    text: |
+      az managed-cassandra repair show --repair-run-id "00000000-0000-0001-0000-000000000000" \\
+        --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair update'] = """
+type: command
+short-summary: Update intensity of a given repair_run_id.
+examples:
+  - name: Update intensity of a given repair_run_id.
+    text: |
+      az managed-cassandra repair delete --repair-run-id "00000000-0000-0001-0000-000000000000" \\
+        --intensity 0.85 \\
+        --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair pause'] = """
+type: command
+short-summary: Pause a give repair_run_id.
+examples:
+  - name: Pause a given repair_run_id.
+    text: |
+      az managed-cassandra repair pause --repair-run-id "00000000-0000-0001-0000-000000000000" \\
+        --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair resume'] = """
+type: command
+short-summary: Resume or start a a given repair_run_id.
+examples:
+  - name: Start a give repair_run_id.
+    text: |
+      az managed-cassandra repair resume --repair-run-id "00000000-0000-0001-0000-000000000000" \\
+        --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+
+helps['managed-cassandra repair delete'] = """
+type: command
+short-summary: Delete a given repair_run_id.
+examples:
+  - name: Delete a given repair_run_id
+    text: |
+      az managed-cassandra repair delete --repair-run-id "00000000-0000-0001-0000-000000000000" \\
+        --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+
+helps['managed-cassandra repair segment list'] = """
+type: command
+short-summary: Given repair_run_id, this command lists all segment of the repair run.
+examples:
+  - name: List segments of a repair run.
+    text: |
+      az managed-cassandra repair segment list --repair-run-id "00000000-0000-0001-0000-000000000000" \\
+        --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra repair segment abort'] = """
+type: command
+short-summary: Given repair_run_id and segment_id this command abort that particular segment of a repair run.
+examples:
+  - name: Abort a segment of a repair run.
+    text: |
+      az managed-cassandra repair show --repair-run-id "00000000-0000-0001-0000-000000000000" \\
+        --segment-id "00000000-0000-08gc-0000-000000000000" \\
+        --cluster-name MyCluster \\
+        --resource-group MyResourceGroup
+"""
+
+helps['managed-cassandra backup'] = """
+type: group
+short-summary: Backup feature of Azure Managed Cassandra.
+"""
+
+helps['managed-cassandra backup schedule create'] = """
+type: command
+short-summary: Create a schedule of how frequent the backup should be scheduled.
+examples:
+  - name: Create a backup schedule.
+    text: |
+      az managed-cassandra backup schedule create \\
+        --resource-group MyResourceGroup \\
+        --cluster-name MyCluster \\
+        --schedule-name MySchedule \\
+        --cron-expressions "0 19 * * *" \\
+        --retention-in-hours 48
+        
+"""
+
+helps['managed-cassandra backup schedule update'] = """
+type: command
+short-summary: Update a given backupshcedule identified by --schedule-name.
+examples:
+  - name: Update a backup schedule.
+    text: |
+      az managed-cassandra backup schedule update \\
+        --resource-group MyResourceGroup \\
+        --cluster-name MyCluster \\
+        --schedule-name MySchedule \\
+        --cron-expressions "0 18 * * *" \\
+        --retention-in-hours 24
+"""
+
+
+helps['managed-cassandra backup schedule list'] = """
+type: command
+short-summary: List all backup schedules of the cluster.
+examples:
+  - name: List backup schedule.
+    text: |
+      az managed-cassandra backup schedule list \\
+        --resource-group MyResourceGroup \\
+        --cluster-name MyCluster
+"""
+
+
+helps['managed-cassandra backup schedule show'] = """
+type: command
+short-summary: Returns details of backup schedule identified by --schedule-name.
+examples:
+  - name: Show a backup schedule.
+    text: |
+      az managed-cassandra backup schedule show \\
+        --resource-group MyResourceGroup \\
+        --cluster-name MyCluster \\
+        --schedule-name MySchedule
+"""
+
+
+helps['managed-cassandra backup schedule delete'] = """
+type: command
+short-summary: Delete a given backup schedule identified by --schedule-name
+examples:
+  - name: Delete a backup schedule.
+    text: |
+      az managed-cassandra backup schedule delete \\
+        --resource-group MyResourceGroup \\
+        --cluster-name MyCluster \\
+        --schedule-name MySchedule
+"""
+
 helps['cosmosdb service'] = """
 type: group
 short-summary: Commands to perform operations on Service.
