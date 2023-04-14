@@ -5,8 +5,8 @@ Release History
 
 0.2.17
 ++++++
-* `az network vhub connection create`: Add new parameter `allow-branch-to-branch-traffic` and `virtual-router-auto-scale-configuration`.
-* `az network vhub connection update`: Add new parameter `allow-branch-to-branch-traffic` and `virtual-router-auto-scale-configuration`.
+* `az network vhub connection create`: Add new parameter `allow-b2b-traffic` and `auto-scale-config`.
+* `az network vhub connection update`: Add new parameter `allow-b2b-traffic` and `auto-scale-config`.
 
 0.2.16
 ++++++

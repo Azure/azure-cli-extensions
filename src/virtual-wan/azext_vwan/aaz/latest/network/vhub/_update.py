@@ -66,10 +66,10 @@ class Update(AAZCommand):
             help="CIDR address prefix for the virtual hub.",
             nullable=True,
         )
-        _args_schema.allow_branch_to_branch_traffic = AAZBoolArg(
-            options=["--allow-branch-to-branch-traffic"],
+        _args_schema.allow_b2b_traffic = AAZBoolArg(
+            options=["--allow-b2b-traffic"],
             arg_group="Properties",
-            help="Flag to control transit for VirtualRouter hub.",
+            help="Flag to control branch-to-branch traffic for VirtualRouter hub.",
             nullable=True,
         )
         _args_schema.hub_routing_preference = AAZStrArg(
@@ -95,15 +95,15 @@ class Update(AAZCommand):
                 minimum=0,
             ),
         )
-        _args_schema.virtual_router_auto_scale_configuration = AAZObjectArg(
-            options=["--virtual-router-auto-scale-configuration"],
+        _args_schema.auto_scale_config = AAZObjectArg(
+            options=["--auto-scale-config"],
             arg_group="Properties",
             help="The VirtualHub Router autoscale configuration.",
             nullable=True,
         )
 
-        virtual_router_auto_scale_configuration = cls._args_schema.virtual_router_auto_scale_configuration
-        virtual_router_auto_scale_configuration.min_capacity = AAZIntArg(
+        auto_scale_config = cls._args_schema.auto_scale_config
+        auto_scale_config.min_capacity = AAZIntArg(
             options=["min-capacity"],
             help="The minimum number of scale units for VirtualHub Router.",
             nullable=True,
@@ -400,11 +400,11 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("addressPrefix", AAZStrType, ".address_prefix")
-                properties.set_prop("allowBranchToBranchTraffic", AAZBoolType, ".allow_branch_to_branch_traffic")
+                properties.set_prop("allowBranchToBranchTraffic", AAZBoolType, ".allow_b2b_traffic")
                 properties.set_prop("hubRoutingPreference", AAZStrType, ".hub_routing_preference")
                 properties.set_prop("sku", AAZStrType, ".sku")
                 properties.set_prop("virtualRouterAsn", AAZIntType, ".asn")
-                properties.set_prop("virtualRouterAutoScaleConfiguration", AAZObjectType, ".virtual_router_auto_scale_configuration")
+                properties.set_prop("virtualRouterAutoScaleConfiguration", AAZObjectType, ".auto_scale_config")
                 properties.set_prop("virtualWan", AAZObjectType)
 
             virtual_router_auto_scale_configuration = _builder.get(".properties.virtualRouterAutoScaleConfiguration")
