@@ -6,64 +6,16 @@
 import os
 
 from azure.cli.testsdk import (ScenarioTest, StorageAccountPreparer, record_only)
-from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer)
+from azure.cli.testsdk.reverse_dependency import (
+    get_dummy_cli,
+)
+from .custom_preparers import (SpringPreparer, SpringResourceGroupPreparer, SpringAppNamePreparer, SpringSubResourceWrapper)
 from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
-
-
-@record_only()
-class CustomDomainTests(ScenarioTest):
-
-    def test_bind_cert_to_domain(self):
-        self.kwargs.update({
-            'cert': 'test-cert',
-            'keyVaultUri': 'https://integration-test-prod.vault.azure.net/',
-            'KeyVaultCertName': 'cli-unittest',
-            'domain': 'clitest.asc-test.net',
-            'app': 'test-custom-domain',
-            'serviceName': 'cli-unittest',
-            'rg': 'cli'
-        })
-        self.cmd('spring app create -n {app} -s {serviceName} -g {rg}')
-
-        self.cmd('spring certificate add --name {cert} --vault-uri {keyVaultUri} --vault-certificate-name {KeyVaultCertName} -g {rg} -s {serviceName}', checks=[
-            self.check('name', '{cert}')
-        ])
-
-        self.cmd('spring certificate show --name {cert} -g {rg} -s {serviceName}', checks=[
-            self.check('name', '{cert}')
-        ])
-
-        result = self.cmd('spring certificate list -g {rg} -s {serviceName}').get_output_in_json()
-        self.assertTrue(len(result) > 0)
-
-        self.cmd('spring app custom-domain bind --domain-name {domain} --app {app} -g {rg} -s {serviceName}', checks=[
-            self.check('name', '{domain}')
-        ])
-
-        self.cmd('spring app custom-domain show --domain-name {domain} --app {app} -g {rg} -s {serviceName}', checks=[
-            self.check('name', '{domain}'),
-            self.check('properties.appName', '{app}')
-        ])
-
-        result = self.cmd('spring app custom-domain list --app {app} -g {rg} -s {serviceName}').get_output_in_json()
-        self.assertTrue(len(result) > 0)
-
-        self.cmd('spring app custom-domain update --domain-name {domain} --certificate {cert} --app {app} -g {rg} -s {serviceName}', checks=[
-            self.check('name', '{domain}'),
-            self.check('properties.appName', '{app}'),
-            self.check('properties.certName', '{cert}')
-        ])
-
-        self.cmd('spring app custom-domain unbind --domain-name {domain} --app {app} -g {rg} -s {serviceName}')
-        self.cmd('spring app custom-domain show --domain-name {domain} --app {app} -g {rg} -s {serviceName}', expect_failure=True)
-
-        self.cmd('spring certificate remove --name {cert} -g {rg} -s {serviceName}')
-        self.cmd('spring certificate show --name {cert} -g {rg} -s {serviceName}', expect_failure=True)
 
 
 class ByosTest(ScenarioTest):
@@ -126,26 +78,46 @@ class StartStopAscTest(ScenarioTest):
         ])
 
 
+class CertTearDown(SpringSubResourceWrapper):
+    def __init__(self,
+                 resource_group_parameter_name='resource_group',
+                 spring_parameter_name='spring'):
+        super(CertTearDown, self).__init__()
+        self.cli_ctx = get_dummy_cli()
+        self.resource_group_parameter_name = resource_group_parameter_name
+        self.spring_parameter_name = spring_parameter_name
+
+    def create_resource(self, *_, **kwargs):
+        self.resource_group = self._get_resource_group(**kwargs)
+        self.spring = self._get_spring(**kwargs)
+    
+    def remove_resource(self, *_, **__):
+        self.live_only_execute(self.cli_ctx, 'spring certificate remove -g {}  -s {} -n balti-cert'.format(self.resource_group, self.spring))
+        self.live_only_execute(self.cli_ctx, 'spring certificate remove -g {}  -s {} -n digi-cert'.format(self.resource_group, self.spring))
+
+
+@record_only()
 class SslTests(ScenarioTest):
 
-    def test_load_public_cert_to_app(self):
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
+    @SpringAppNamePreparer(skip_delete=True)
+    @CertTearDown()
+    def test_load_public_cert_to_app(self, resource_group, spring, app):
         py_path = os.path.abspath(os.path.dirname(__file__))
         baltiCertPath = os.path.join(py_path, 'files/BaltimoreCyberTrustRoot.crt.pem').replace("\\","/")
         digiCertPath = os.path.join(py_path, 'files/DigiCertGlobalRootCA.crt.pem').replace("\\","/")
         loadCertPath = os.path.join(py_path, 'files/load_certificate.json').replace("\\","/")
 
         self.kwargs.update({
-            'cert': 'test-cert',
-            'keyVaultUri': 'https://integration-test-prod.vault.azure.net/',
-            'KeyVaultCertName': 'cli-unittest',
             'baltiCert': 'balti-cert',
             'digiCert': 'digi-cert',
             'baltiCertPath': baltiCertPath,
             'digiCertPath': digiCertPath,
             'loadCertPath': loadCertPath,
-            'app': 'test-app-cert',
-            'serviceName': 'cli-unittest',
-            'rg': 'cli'
+            'app': app,
+            'serviceName': spring,
+            'rg': resource_group
         })
 
         self.cmd(
@@ -172,7 +144,7 @@ class SslTests(ScenarioTest):
 
         cert_result = self.cmd(
             'spring certificate list -g {rg} -s {serviceName}').get_output_in_json()
-        self.assertTrue(len(cert_result) == 2)
+        self.assertTrue(len(cert_result) >= 2) # in case there are other cert resources
 
         self.cmd(
             'spring app create --name {app} -f {loadCertPath} -g {rg} -s {serviceName}')
@@ -187,3 +159,5 @@ class SslTests(ScenarioTest):
         app_result = self.cmd(
             'spring certificate list-reference-app --name {digiCert} -g {rg} -s {serviceName}').get_output_in_json()
         self.assertTrue(len(app_result) > 0)
+
+        self.cmd('spring app delete --name {app}  -g {rg} -s {serviceName}')

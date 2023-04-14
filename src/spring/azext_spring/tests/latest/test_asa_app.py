@@ -13,7 +13,8 @@ from ...app import (app_create, app_update, app_deploy, deployment_create)
 from ...custom import (app_set_deployment, app_unset_deployment,
                        deployment_enable_remote_debugging,
                        deployment_disable_remote_debugging,
-                       deployment_get_remote_debugging)
+                       deployment_get_remote_debugging,
+                       domain_update, domain_unbind)
 try:
     import unittest.mock as mock
 except ImportError:
@@ -886,3 +887,55 @@ class RemoteDebugTest(BasicTest):
         args = client.deployments.get_remote_debugging_config.call_args_list
         self.assertEqual(1, len(args))
         self.assertEqual(('rg', 'asc', 'app', 'my-deployment'), args[0][0])
+
+
+class CustomDomainTests(BasicTest):
+
+    def test_create_domain(self):
+        client = self._get_basic_mock_client()
+        domain_update(_get_test_cmd(), client,
+                      'rg', 'asc', 'app', 'my-domain')
+        args = client.custom_domains.begin_create_or_update.call_args_list
+        self.assertEqual(1, len(args))
+        self.assertEqual(5, len(args[0][0]))
+        self.assertEqual(('rg', 'asc', 'app', 'my-domain'), args[0][0][0:4])
+        resource = args[0][0][4]
+        self.assertIsNone(resource.properties.thumbprint)
+        self.assertIsNone(resource.properties.cert_name)
+        app_args = client.apps.begin_update.call_args_list
+        self.assertEqual(0, len(app_args))
+
+    def test_bind_cert(self):
+        def _get_cert(*_, **__):
+            resp = models.CertificateResource(
+                properties=models.CertificateProperties()
+            )
+            resp.properties.thumbprint = 'my-thumbprint'
+            return resp
+        client = self._get_basic_mock_client()
+        client.certificates.get = _get_cert
+        domain_update(_get_test_cmd(), client,
+                      'rg', 'asc', 'app', 'my-domain', 'my-cert')
+        args = client.custom_domains.begin_create_or_update.call_args_list
+        self.assertEqual(1, len(args))
+        self.assertEqual(5, len(args[0][0]))
+        self.assertEqual(('rg', 'asc', 'app', 'my-domain'), args[0][0][0:4])
+        resource = args[0][0][4]
+        self.assertEqual('my-thumbprint', resource.properties.thumbprint)
+        self.assertEqual('my-cert', resource.properties.cert_name)
+        app_args = client.apps.begin_update.call_args_list
+        self.assertEqual(0, len(app_args))
+
+    def test_create_domain_with_ingress(self):
+        client = self._get_basic_mock_client()
+        domain_update(_get_test_cmd(), client,
+                      'rg', 'asc', 'app', 'my-domain', enable_ingress_to_app_tls=True)
+        args = client.custom_domains.begin_create_or_update.call_args_list
+        self.assertEqual(1, len(args))
+        self.assertEqual(5, len(args[0][0]))
+        self.assertEqual(('rg', 'asc', 'app', 'my-domain'), args[0][0][0:4])
+        resource = args[0][0][4]
+        self.assertIsNone(resource.properties.thumbprint)
+        self.assertIsNone(resource.properties.cert_name)
+        app_args = client.apps.begin_update.call_args_list
+        self.assertEqual(1, len(app_args))
