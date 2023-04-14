@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-04-01-preview",
+        "version": "2023-02-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2022-04-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2023-02-01"],
         ]
     }
 
@@ -55,7 +55,6 @@ class Create(AAZCommand):
             options=["-n", "--name"],
             help="The name of the workspace.",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 max_length=64,
                 min_length=3,
@@ -71,7 +70,7 @@ class Create(AAZCommand):
         _args_schema.managed_resource_group = AAZStrArg(
             options=["--managed-resource-group"],
             help="The managed resource group to create. It can be either a name or a resource ID.",
-            # required=True,
+            required=True,
         )
         _args_schema.enable_no_public_ip = AAZBoolArg(
             options=["--enable-no-public-ip"],
@@ -120,13 +119,10 @@ class Create(AAZCommand):
             arg_group="Custom VNET",
             help="The name of a Public Subnet within the Virtual Network.",
         )
-        _args_schema.vnet = AAZResourceIdArg(
+        _args_schema.vnet = AAZStrArg(
             options=["--vnet"],
             arg_group="Custom VNET",
             help="Virtual Network name or resource ID.",
-            fmt=AAZResourceIdArgFormat(
-                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{}"
-            )
         )
 
         # define Arg Group "Parameters"
@@ -236,7 +232,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-04-01-preview",
+                    "api-version", "2023-02-01",
                     required=True,
                 ),
             }
@@ -361,19 +357,20 @@ class Create(AAZCommand):
             properties.created_by = AAZObjectType(
                 serialized_name="createdBy",
             )
-            _build_schema_created_by_read(properties.created_by)
+            _CreateHelper._build_schema_created_by_read(properties.created_by)
             properties.created_date_time = AAZStrType(
                 serialized_name="createdDateTime",
                 flags={"read_only": True},
             )
             properties.disk_encryption_set_id = AAZStrType(
                 serialized_name="diskEncryptionSetId",
+                flags={"read_only": True},
             )
             properties.encryption = AAZObjectType()
             properties.managed_disk_identity = AAZObjectType(
                 serialized_name="managedDiskIdentity",
             )
-            _build_schema_managed_identity_configuration_read(properties.managed_disk_identity)
+            _CreateHelper._build_schema_managed_identity_configuration_read(properties.managed_disk_identity)
             properties.managed_resource_group_id = AAZStrType(
                 serialized_name="managedResourceGroupId",
                 flags={"required": True},
@@ -396,14 +393,14 @@ class Create(AAZCommand):
             properties.storage_account_identity = AAZObjectType(
                 serialized_name="storageAccountIdentity",
             )
-            _build_schema_managed_identity_configuration_read(properties.storage_account_identity)
+            _CreateHelper._build_schema_managed_identity_configuration_read(properties.storage_account_identity)
             properties.ui_definition_uri = AAZStrType(
                 serialized_name="uiDefinitionUri",
             )
             properties.updated_by = AAZObjectType(
                 serialized_name="updatedBy",
             )
-            _build_schema_created_by_read(properties.updated_by)
+            _CreateHelper._build_schema_created_by_read(properties.updated_by)
             properties.workspace_id = AAZStrType(
                 serialized_name="workspaceId",
                 flags={"read_only": True},
@@ -493,63 +490,63 @@ class Create(AAZCommand):
             parameters.aml_workspace_id = AAZObjectType(
                 serialized_name="amlWorkspaceId",
             )
-            _build_schema_workspace_custom_string_parameter_read(parameters.aml_workspace_id)
+            _CreateHelper._build_schema_workspace_custom_string_parameter_read(parameters.aml_workspace_id)
             parameters.custom_private_subnet_name = AAZObjectType(
                 serialized_name="customPrivateSubnetName",
             )
-            _build_schema_workspace_custom_string_parameter_read(parameters.custom_private_subnet_name)
+            _CreateHelper._build_schema_workspace_custom_string_parameter_read(parameters.custom_private_subnet_name)
             parameters.custom_public_subnet_name = AAZObjectType(
                 serialized_name="customPublicSubnetName",
             )
-            _build_schema_workspace_custom_string_parameter_read(parameters.custom_public_subnet_name)
+            _CreateHelper._build_schema_workspace_custom_string_parameter_read(parameters.custom_public_subnet_name)
             parameters.custom_virtual_network_id = AAZObjectType(
                 serialized_name="customVirtualNetworkId",
             )
-            _build_schema_workspace_custom_string_parameter_read(parameters.custom_virtual_network_id)
+            _CreateHelper._build_schema_workspace_custom_string_parameter_read(parameters.custom_virtual_network_id)
             parameters.enable_no_public_ip = AAZObjectType(
                 serialized_name="enableNoPublicIp",
             )
-            _build_schema_workspace_custom_boolean_parameter_read(parameters.enable_no_public_ip)
+            _CreateHelper._build_schema_workspace_custom_boolean_parameter_read(parameters.enable_no_public_ip)
             parameters.encryption = AAZObjectType()
             parameters.load_balancer_backend_pool_name = AAZObjectType(
                 serialized_name="loadBalancerBackendPoolName",
             )
-            _build_schema_workspace_custom_string_parameter_read(parameters.load_balancer_backend_pool_name)
+            _CreateHelper._build_schema_workspace_custom_string_parameter_read(parameters.load_balancer_backend_pool_name)
             parameters.load_balancer_id = AAZObjectType(
                 serialized_name="loadBalancerId",
             )
-            _build_schema_workspace_custom_string_parameter_read(parameters.load_balancer_id)
+            _CreateHelper._build_schema_workspace_custom_string_parameter_read(parameters.load_balancer_id)
             parameters.nat_gateway_name = AAZObjectType(
                 serialized_name="natGatewayName",
             )
-            _build_schema_workspace_custom_string_parameter_read(parameters.nat_gateway_name)
+            _CreateHelper._build_schema_workspace_custom_string_parameter_read(parameters.nat_gateway_name)
             parameters.prepare_encryption = AAZObjectType(
                 serialized_name="prepareEncryption",
             )
-            _build_schema_workspace_custom_boolean_parameter_read(parameters.prepare_encryption)
+            _CreateHelper._build_schema_workspace_custom_boolean_parameter_read(parameters.prepare_encryption)
             parameters.public_ip_name = AAZObjectType(
                 serialized_name="publicIpName",
             )
-            _build_schema_workspace_custom_string_parameter_read(parameters.public_ip_name)
+            _CreateHelper._build_schema_workspace_custom_string_parameter_read(parameters.public_ip_name)
             parameters.require_infrastructure_encryption = AAZObjectType(
                 serialized_name="requireInfrastructureEncryption",
             )
-            _build_schema_workspace_custom_boolean_parameter_read(parameters.require_infrastructure_encryption)
+            _CreateHelper._build_schema_workspace_custom_boolean_parameter_read(parameters.require_infrastructure_encryption)
             parameters.resource_tags = AAZObjectType(
                 serialized_name="resourceTags",
             )
             parameters.storage_account_name = AAZObjectType(
                 serialized_name="storageAccountName",
             )
-            _build_schema_workspace_custom_string_parameter_read(parameters.storage_account_name)
+            _CreateHelper._build_schema_workspace_custom_string_parameter_read(parameters.storage_account_name)
             parameters.storage_account_sku_name = AAZObjectType(
                 serialized_name="storageAccountSkuName",
             )
-            _build_schema_workspace_custom_string_parameter_read(parameters.storage_account_sku_name)
+            _CreateHelper._build_schema_workspace_custom_string_parameter_read(parameters.storage_account_sku_name)
             parameters.vnet_address_prefix = AAZObjectType(
                 serialized_name="vnetAddressPrefix",
             )
-            _build_schema_workspace_custom_string_parameter_read(parameters.vnet_address_prefix)
+            _CreateHelper._build_schema_workspace_custom_string_parameter_read(parameters.vnet_address_prefix)
 
             encryption = cls._schema_on_200_201.properties.parameters.encryption
             encryption.type = AAZStrType(
@@ -590,6 +587,9 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties.private_endpoint_connections.Element.properties
+            properties.group_ids = AAZListType(
+                serialized_name="groupIds",
+            )
             properties.private_endpoint = AAZObjectType(
                 serialized_name="privateEndpoint",
             )
@@ -602,14 +602,17 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
+            group_ids = cls._schema_on_200_201.properties.private_endpoint_connections.Element.properties.group_ids
+            group_ids.Element = AAZStrType()
+
             private_endpoint = cls._schema_on_200_201.properties.private_endpoint_connections.Element.properties.private_endpoint
             private_endpoint.id = AAZStrType(
                 flags={"read_only": True},
             )
 
             private_link_service_connection_state = cls._schema_on_200_201.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
-            private_link_service_connection_state.action_required = AAZStrType(
-                serialized_name="actionRequired",
+            private_link_service_connection_state.actions_required = AAZStrType(
+                serialized_name="actionsRequired",
             )
             private_link_service_connection_state.description = AAZStrType()
             private_link_service_connection_state.status = AAZStrType(
@@ -648,119 +651,115 @@ class Create(AAZCommand):
             return cls._schema_on_200_201
 
 
-def _build_schema_workspace_custom_string_parameter_create(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
+class _CreateHelper:
+    """Helper class for Create"""
 
+    @classmethod
+    def _build_schema_workspace_custom_string_parameter_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("value", AAZStrType, ".value", typ_kwargs={"flags": {"required": True}})
 
-_schema_created_by_read = None
+    _schema_created_by_read = None
 
+    @classmethod
+    def _build_schema_created_by_read(cls, _schema):
+        if cls._schema_created_by_read is not None:
+            _schema.application_id = cls._schema_created_by_read.application_id
+            _schema.oid = cls._schema_created_by_read.oid
+            _schema.puid = cls._schema_created_by_read.puid
+            return
 
-def _build_schema_created_by_read(_schema):
-    global _schema_created_by_read
-    if _schema_created_by_read is not None:
-        _schema.application_id = _schema_created_by_read.application_id
-        _schema.oid = _schema_created_by_read.oid
-        _schema.puid = _schema_created_by_read.puid
-        return
+        cls._schema_created_by_read = _schema_created_by_read = AAZObjectType()
 
-    _schema_created_by_read = AAZObjectType()
+        created_by_read = _schema_created_by_read
+        created_by_read.application_id = AAZStrType(
+            serialized_name="applicationId",
+            flags={"read_only": True},
+        )
+        created_by_read.oid = AAZStrType(
+            flags={"read_only": True},
+        )
+        created_by_read.puid = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    created_by_read = _schema_created_by_read
-    created_by_read.application_id = AAZStrType(
-        serialized_name="applicationId",
-        flags={"read_only": True},
-    )
-    created_by_read.oid = AAZStrType(
-        flags={"read_only": True},
-    )
-    created_by_read.puid = AAZStrType(
-        flags={"read_only": True},
-    )
+        _schema.application_id = cls._schema_created_by_read.application_id
+        _schema.oid = cls._schema_created_by_read.oid
+        _schema.puid = cls._schema_created_by_read.puid
 
-    _schema.application_id = _schema_created_by_read.application_id
-    _schema.oid = _schema_created_by_read.oid
-    _schema.puid = _schema_created_by_read.puid
+    _schema_managed_identity_configuration_read = None
 
+    @classmethod
+    def _build_schema_managed_identity_configuration_read(cls, _schema):
+        if cls._schema_managed_identity_configuration_read is not None:
+            _schema.principal_id = cls._schema_managed_identity_configuration_read.principal_id
+            _schema.tenant_id = cls._schema_managed_identity_configuration_read.tenant_id
+            _schema.type = cls._schema_managed_identity_configuration_read.type
+            return
 
-_schema_managed_identity_configuration_read = None
+        cls._schema_managed_identity_configuration_read = _schema_managed_identity_configuration_read = AAZObjectType()
 
+        managed_identity_configuration_read = _schema_managed_identity_configuration_read
+        managed_identity_configuration_read.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+        managed_identity_configuration_read.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+            flags={"read_only": True},
+        )
+        managed_identity_configuration_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-def _build_schema_managed_identity_configuration_read(_schema):
-    global _schema_managed_identity_configuration_read
-    if _schema_managed_identity_configuration_read is not None:
-        _schema.principal_id = _schema_managed_identity_configuration_read.principal_id
-        _schema.tenant_id = _schema_managed_identity_configuration_read.tenant_id
-        _schema.type = _schema_managed_identity_configuration_read.type
-        return
+        _schema.principal_id = cls._schema_managed_identity_configuration_read.principal_id
+        _schema.tenant_id = cls._schema_managed_identity_configuration_read.tenant_id
+        _schema.type = cls._schema_managed_identity_configuration_read.type
 
-    _schema_managed_identity_configuration_read = AAZObjectType()
+    _schema_workspace_custom_boolean_parameter_read = None
 
-    managed_identity_configuration_read = _schema_managed_identity_configuration_read
-    managed_identity_configuration_read.principal_id = AAZStrType(
-        serialized_name="principalId",
-        flags={"read_only": True},
-    )
-    managed_identity_configuration_read.tenant_id = AAZStrType(
-        serialized_name="tenantId",
-        flags={"read_only": True},
-    )
-    managed_identity_configuration_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+    @classmethod
+    def _build_schema_workspace_custom_boolean_parameter_read(cls, _schema):
+        if cls._schema_workspace_custom_boolean_parameter_read is not None:
+            _schema.type = cls._schema_workspace_custom_boolean_parameter_read.type
+            _schema.value = cls._schema_workspace_custom_boolean_parameter_read.value
+            return
 
-    _schema.principal_id = _schema_managed_identity_configuration_read.principal_id
-    _schema.tenant_id = _schema_managed_identity_configuration_read.tenant_id
-    _schema.type = _schema_managed_identity_configuration_read.type
+        cls._schema_workspace_custom_boolean_parameter_read = _schema_workspace_custom_boolean_parameter_read = AAZObjectType()
 
+        workspace_custom_boolean_parameter_read = _schema_workspace_custom_boolean_parameter_read
+        workspace_custom_boolean_parameter_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+        workspace_custom_boolean_parameter_read.value = AAZBoolType(
+            flags={"required": True},
+        )
 
-_schema_workspace_custom_boolean_parameter_read = None
+        _schema.type = cls._schema_workspace_custom_boolean_parameter_read.type
+        _schema.value = cls._schema_workspace_custom_boolean_parameter_read.value
 
+    _schema_workspace_custom_string_parameter_read = None
 
-def _build_schema_workspace_custom_boolean_parameter_read(_schema):
-    global _schema_workspace_custom_boolean_parameter_read
-    if _schema_workspace_custom_boolean_parameter_read is not None:
-        _schema.type = _schema_workspace_custom_boolean_parameter_read.type
-        _schema.value = _schema_workspace_custom_boolean_parameter_read.value
-        return
+    @classmethod
+    def _build_schema_workspace_custom_string_parameter_read(cls, _schema):
+        if cls._schema_workspace_custom_string_parameter_read is not None:
+            _schema.type = cls._schema_workspace_custom_string_parameter_read.type
+            _schema.value = cls._schema_workspace_custom_string_parameter_read.value
+            return
 
-    _schema_workspace_custom_boolean_parameter_read = AAZObjectType()
+        cls._schema_workspace_custom_string_parameter_read = _schema_workspace_custom_string_parameter_read = AAZObjectType()
 
-    workspace_custom_boolean_parameter_read = _schema_workspace_custom_boolean_parameter_read
-    workspace_custom_boolean_parameter_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
-    workspace_custom_boolean_parameter_read.value = AAZBoolType(
-        flags={"required": True},
-    )
+        workspace_custom_string_parameter_read = _schema_workspace_custom_string_parameter_read
+        workspace_custom_string_parameter_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+        workspace_custom_string_parameter_read.value = AAZStrType(
+            flags={"required": True},
+        )
 
-    _schema.type = _schema_workspace_custom_boolean_parameter_read.type
-    _schema.value = _schema_workspace_custom_boolean_parameter_read.value
-
-
-_schema_workspace_custom_string_parameter_read = None
-
-
-def _build_schema_workspace_custom_string_parameter_read(_schema):
-    global _schema_workspace_custom_string_parameter_read
-    if _schema_workspace_custom_string_parameter_read is not None:
-        _schema.type = _schema_workspace_custom_string_parameter_read.type
-        _schema.value = _schema_workspace_custom_string_parameter_read.value
-        return
-
-    _schema_workspace_custom_string_parameter_read = AAZObjectType()
-
-    workspace_custom_string_parameter_read = _schema_workspace_custom_string_parameter_read
-    workspace_custom_string_parameter_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
-    workspace_custom_string_parameter_read.value = AAZStrType(
-        flags={"required": True},
-    )
-
-    _schema.type = _schema_workspace_custom_string_parameter_read.type
-    _schema.value = _schema_workspace_custom_string_parameter_read.value
+        _schema.type = cls._schema_workspace_custom_string_parameter_read.type
+        _schema.value = cls._schema_workspace_custom_string_parameter_read.value
 
 
 __all__ = ["Create"]

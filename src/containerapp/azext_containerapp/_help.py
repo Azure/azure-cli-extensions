@@ -494,6 +494,56 @@ helps['containerapp env storage remove'] = """
           az containerapp env storage remove -g MyResourceGroup --storage-name MyStorageName -n MyEnvironment
 """
 
+helps['containerapp env workload-profile'] = """
+    type: group
+    short-summary: Manage the workload profiles of a Container Apps environment
+"""
+
+helps['containerapp env workload-profile delete'] = """
+    type: command
+    short-summary: Delete a workload profile from a Container Apps environment
+    examples:
+    - name: Delete a workload profile from a Container Apps environment
+      text: |
+          az containerapp env workload-profile delete -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp
+"""
+
+helps['containerapp env workload-profile list'] = """
+    type: command
+    short-summary: List the workload profiles from a Container Apps environment
+    examples:
+    - name: List the workload profiles from a Container Apps environment
+      text: |
+          az containerapp env workload-profile list -g MyResourceGroup -n MyEnvironment
+"""
+
+helps['containerapp env workload-profile show'] = """
+    type: command
+    short-summary: Show a workload profile from a Container Apps environment
+    examples:
+    - name: Show a workload profile from a Container Apps environment
+      text: |
+          az containerapp env workload-profile show -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp
+"""
+
+helps['containerapp env workload-profile list-supported'] = """
+    type: command
+    short-summary: List the supported workload profiles in a region
+    examples:
+    - name: List the supported workload profiles in a region
+      text: |
+          az containerapp env workload-profile list-supported -l region
+"""
+
+helps['containerapp env workload-profile set'] = """
+    type: command
+    short-summary: Create or update an existing workload profile in a Container Apps environment
+    examples:
+    - name: Create or update an existing workload profile in a Container Apps environment
+      text: |
+          az containerapp env workload-profile set -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 2
+"""
+
 # Certificates Commands
 helps['containerapp env certificate'] = """
     type: group
@@ -654,6 +704,16 @@ helps['containerapp ingress disable'] = """
           az containerapp ingress disable -n MyContainerapp -g MyResourceGroup
 """
 
+helps['containerapp ingress update'] = """
+    type: command
+    short-summary: Update ingress for a container app.
+    examples:
+    - name: Update ingress for a container app.
+      text: |
+          az containerapp ingress update -n MyContainerapp -g MyResourceGroup \\
+              --target-port 8080
+"""
+
 helps['containerapp ingress traffic'] = """
     type: group
     short-summary: Commands to manage traffic-splitting.
@@ -716,6 +776,32 @@ helps['containerapp ingress access-restriction list'] = """
     - name: List IP access restrictions.
       text: |
           az containerapp ingress access-restriction list -n MyContainerapp -g MyResourceGroup
+"""
+
+helps['containerapp ingress sticky-sessions'] = """
+    type: group
+    short-summary: Commands to set Sticky session affinity for a container app.
+"""
+
+helps['containerapp ingress sticky-sessions set'] = """
+    type: command
+    short-summary: Configure Sticky session for a container app.
+    examples:
+    - name: Set affinity to sticky for a container app.
+      text: |
+          az containerapp ingress sticky-sessions set -n MyContainerapp -g MyResourceGroup --affinity sticky
+    - name: Set affinity to none for a container app.
+      text: |
+          az containerapp ingress sticky-sessions set -n MyContainerapp -g MyResourceGroup --affinity none
+"""
+
+helps['containerapp ingress sticky-sessions show'] = """
+    type: command
+    short-summary: Show the Affinity for a container app.
+    examples:
+    - name: Show a container app's Sticky affinity configuration.
+      text: |
+          az containerapp ingress sticky-sessions show -n MyContainerapp -g MyResourceGroup
 """
 
 # Registry Commands
@@ -800,10 +886,10 @@ helps['containerapp secret set'] = """
     examples:
     - name: Add secrets to a container app.
       text: |
-          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MySecretName1=MySecretValue1 MySecretName2=MySecretValue2
+          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MySecretName1=MySecretValue1 MySecretName2=keyvaultref:http://example.vault.azure.net/secret/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
     - name: Update a secret.
       text: |
-          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue
+          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue MyExistingSecretName2=keyvaultref:https://example.vault.azure.net/secret/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
 """
 
 helps['containerapp github-action'] = """
@@ -905,7 +991,7 @@ helps['containerapp hostname add'] = """
     examples:
     - name: Add hostname without binding.
       text: |
-          az containerapp hostname add -n MyContainerapp -g MyResourceGroup --hostname MyHostname --location MyLocation
+          az containerapp hostname add -n MyContainerapp -g MyResourceGroup --hostname MyHostname
 """
 
 helps['containerapp hostname bind'] = """

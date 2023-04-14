@@ -1,5 +1,60 @@
 Release History
 ===============
+1.11.1
+---
+* Add argument `--ca-cert-name` in `az spring application-accelerator customized-accelerator update` and command `az spring application-accelerator customized-accelerator sync-cert`.
+* Support client cert validation for customized accelerator with CA certificate.
+* Add arguments `--enable-cert-verify` and `--certificate-names` in `az spring gateway update` and command `az spring gateway sync-cert`.
+* Support client cert validation for Spring Cloud Gateway.
+
+1.11.0
+---
+* Deprecate parameter `--enable-log-stream-public-endpoint` when creating/updating service 
+* Add new parameter `--enable-dataplane-public-endpoint` when creating/updating service 
+
+1.10.0
+---
+* Print more logs for app deployment
+
+1.9.2
+---
+* Fix `ingress_read_timeout` and `session_max_age` validation error
+
+1.9.1
+---
+* Support subPath for bring your own persistent storage feature.
+* Add new parameter `--enable-sub-path` into `az spring append-persistent-storage` to enable subPath feature.
+
+1.9.0
+---
+* Add new command -- `az spring build-service build create` to create the build resource when using your own container registry.
+* Add new command -- `az spring build-service build update` to update the build resource when using your own container registry.
+* Add new command -- `az spring build-service build show` to show the build resource.
+* Add new command -- `az spring build-service build list` to list all build resource.
+* Add new command -- `az spring build-service build delete` to delete the build resource.
+* Add new command -- `az spring build-service build result show` to show the build result by build name and result name.
+* Add new command -- `az spring build-service build result list` to list all build results of the build resource.
+* Add new command -- `az spring container-registry update` to update container registry resource.
+* Add new command -- `az spring container-registry show` to show the container registry resource.
+* Add new parameters -- `--disable-build-service`, `--container-registry-server`, `--container-registry-username` and `--container-registry-password` when creating service.
+
+1.8.0
+---
+* Add Azure Spring Apps StandardGen2 tier.
+
+1.7.3
+---
+* Fix `subscription_id` AAZSimpleValue type error
+
+1.7.2
+---
+* Support `--no-wait` in `az spring dev-tool`.
+* [BREAKING CHANGE] Add delete confirmation in `az spring dev-tool` and `az spring application-live-view`.
+
+1.7.1
+---
+* Remove dependency to NETWORK SDK
+
 1.7.0
 ---
 * Print application logs when create/update deployment

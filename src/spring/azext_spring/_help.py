@@ -726,6 +726,93 @@ helps['spring build-service builder delete'] = """
           text: az spring build-service builder delete --name my-builder --service clitest --resource-group cli
 """
 
+helps['spring build-service build'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage Build Resource
+"""
+
+helps['spring build-service build create'] = """
+    type: command
+    short-summary: Create a build.
+    examples:
+        - name: Create a build using a jar.
+          text: az spring build-service build create --name my-build --artifact-path hello.jar --service clitest --resource-group cli
+"""
+
+helps['spring build-service build update'] = """
+    type: command
+    short-summary: Update a build.
+    examples:
+        - name: Update a build using the source code.
+          text: az spring build-service build update --name my-build --source-path ./hello --service clitest --resource-group cli
+"""
+
+helps['spring build-service build show'] = """
+    type: command
+    short-summary: Show a build.
+    examples:
+        - name: Show a build.
+          text: az spring build-service build show --name my-build --service clitest --resource-group cli
+"""
+
+helps['spring build-service build list'] = """
+    type: command
+    short-summary: List builds.
+    examples:
+        - name: List builds.
+          text: az spring build-service build list --service clitest --resource-group cli
+"""
+
+helps['spring build-service build delete'] = """
+    type: command
+    short-summary: Delete a build.
+    examples:
+        - name: Delete a build.
+          text: az spring build-service build delete --name my-build --service clitest --resource-group cli
+"""
+
+helps['spring build-service build result'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to view Build Result Resource
+"""
+
+helps['spring build-service build result show'] = """
+    type: command
+    short-summary: Show a build result.
+    examples:
+        - name: Show a build result.
+          text: az spring build-service build result show --name 2 --build-name my-build --service clitest --resource-group cli
+"""
+
+helps['spring build-service build result list'] = """
+    type: command
+    short-summary: List build results.
+    examples:
+        - name: List build results by the build name.
+          text: az spring build-service build result list --build-name my-build --service clitest --resource-group cli
+"""
+
+helps['spring container-registry'] = """
+    type: group
+    short-summary: (Enterprise Tier Only) Commands to manage Container Registry Resource
+"""
+
+helps['spring container-registry update'] = """
+    type: command
+    short-summary: Update a container registry.
+    examples:
+        - name: Update a container registry.
+          text: az spring container-registry update --name default --server test.azurecr.io --username test --password xxx --service clitest --resource-group cli
+"""
+
+helps['spring container-registry show'] = """
+    type: command
+    short-summary: Show a container registry.
+    examples:
+        - name: Show a container registry.
+          text: az spring container-registry show --name default --service clitest --resource-group cli
+"""
+
 helps['spring application-live-view'] = """
     type: group
     short-summary: (Enterprise Tier Only) Commands to manage Application Live View in Azure Spring Apps. Application Live View presents application instance metrics, and makes it easy for developers to monitor application runtimes.
@@ -901,6 +988,14 @@ helps['spring gateway update'] = """
     examples:
         - name: Update gateway property.
           text: az spring gateway update -s MyService -g MyResourceGroup --assign-endpoint true --https-only true
+"""
+
+helps['spring gateway sync-cert'] = """
+    type: command
+    short-summary: Sync certificate of gateway.
+    examples:
+        - name: Sync certificate of gateway.
+          text: az spring gateway sync-cert -s MyService -g MyResourceGroup
 """
 
 helps['spring gateway route-config'] = """
@@ -1225,6 +1320,14 @@ helps['spring application-accelerator customized-accelerator update'] = """
     examples:
         - name: Update a customized accelerator.
           text: az spring application-accelerator customized-accelerator update --name AcceleratorName --service MyCluster --resource-group MyResourceGroup --git-url https://github.com/xxx --git-branch main --display-name acc-name
+"""
+
+helps['spring application-accelerator customized-accelerator sync-cert'] = """
+    type: command
+    short-summary: (Enterprise Tier Only) Sync certificate of a customized accelerator.
+    examples:
+        - name: Sync certificate of a customized accelerator.
+          text: az spring application-accelerator customized-accelerator sync-cert --name AcceleratorName --service MyCluster --resource-group MyResourceGroup
 """
 
 helps['spring application-accelerator customized-accelerator delete'] = """

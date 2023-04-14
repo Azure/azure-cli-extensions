@@ -52,6 +52,10 @@ def case_insensitive_dict_get(dictionary, search_key) -> Any:
     return None
 
 
+def image_has_hash(image: str) -> bool:
+    return "@sha256:" in image
+
+
 def get_image_info(progress, message_queue, tar_mapping, image):
     image_info = None
     raw_image = None
@@ -59,13 +63,15 @@ def get_image_info(progress, message_queue, tar_mapping, image):
     if not image.base:
         eprint("Image name cannot be empty")
     image_name = f"{image.base}:{image.tag}"
-    if len(image.tag.split(":")) > 1:
-        eprint(
-            f"The image name: {image.tag} cannot have the digest present to use a tarball as the image source"
-        )
+
     # only try to grab the info locally if that's absolutely what
     # we want to do
     if tar_mapping:
+        if image_has_hash(image_name):
+            progress.close()
+            eprint(
+                f"The image name: {image_name} cannot have the digest present to use a tarball as the image source"
+            )
         tar_location = get_tar_location_from_mapping(tar_mapping, image_name)
         # if we have a tar location, we can try to get the image info
         if tar_location:
@@ -103,7 +109,7 @@ def get_image_info(progress, message_queue, tar_mapping, image):
             # pull image to local daemon (if not in local
             # daemon)
             if not raw_image:
-                raw_image = client.images.pull(image.base, image.tag)
+                raw_image = client.images.pull(image_name)
                 image_info = raw_image.attrs.get("Config")
         except (docker.errors.ImageNotFound, docker.errors.NotFound):
             progress.close()

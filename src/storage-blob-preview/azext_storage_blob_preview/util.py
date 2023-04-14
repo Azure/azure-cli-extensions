@@ -107,12 +107,10 @@ def glob_files_remotely(cmd, client, share_name, pattern):
 
 def create_short_lived_blob_sas(cmd, account_name, account_key, container, blob):
     from datetime import datetime, timedelta
-    if cmd.supported_api_version(min_api='2017-04-17'):
-        t_sas = cmd.get_models('blob.sharedaccesssignature#BlobSharedAccessSignature')
-    else:
-        t_sas = cmd.get_models('shareaccesssignature#SharedAccessSignature')
 
-    t_blob_permissions = cmd.get_models('blob.models#BlobPermissions')
+    t_sas = cmd.get_models('_shared_access_signature#BlobSharedAccessSignature')
+    t_blob_permissions = cmd.get_models('_models#BlobSasPermissions')
+
     expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
     sas = t_sas(account_name, account_key)
     return sas.generate_blob(container, blob, permission=t_blob_permissions(read=True), expiry=expiry, protocol='https')

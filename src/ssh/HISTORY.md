@@ -1,5 +1,17 @@
 Release History
 ===============
+1.1.6
+-----
+* Fix issue of getting `publicIPAddress` error for `az ssh vm` CLI command  
+
+1.1.5
+-----
+* Fix issue of getting vm network interface `publicIPAddress` ref 
+
+1.1.4
+-----
+* Remove dependency to NETWORK SDK
+
 1.1.3
 -----
 * Add support to Microsoft.ConnectedVMwarevSphere/virtualMachines Resource Type.

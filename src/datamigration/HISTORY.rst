@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.4.1
+++++++
+* Bug fix for list-logins parameter in command "az datamigration login-migration".
+
 0.4.0
 ++++++
 * [NEW COMMAND] `az datamigration login-migration` : Migrate logins from the source Sql Servers to the target Azure Sql Servers.

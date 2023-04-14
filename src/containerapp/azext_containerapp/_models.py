@@ -7,7 +7,6 @@
 
 VnetConfiguration = {
     "infrastructureSubnetId": None,
-    "runtimeSubnetId": None,
     "dockerBridgeCidr": None,
     "platformReservedCidr": None,
     "platformReservedDnsIP": None
@@ -16,15 +15,12 @@ VnetConfiguration = {
 ManagedEnvironment = {
     "location": None,
     "tags": None,
-    "sku": {
-        "name": "Consumption",
-    },
     "properties": {
         "daprAIInstrumentationKey": None,
         "vnetConfiguration": None,  # VnetConfiguration
-        "internalLoadBalancerEnabled": None,
         "appLogsConfiguration": None,
-        "customDomainConfiguration": None  # CustomDomainConfiguration
+        "customDomainConfiguration": None,  # CustomDomainConfiguration,
+        "workloadProfiles": None
     }
 }
 
@@ -120,7 +116,9 @@ ScaleRule = {
 
 Secret = {
     "name": None,
-    "value": None
+    "value": None,
+    "keyVaultUrl": None,
+    "identity": None
 }
 
 Scale = {
@@ -153,7 +151,8 @@ Ingress = {
     "exposedPort": None,
     "traffic": None,  # TrafficWeight
     "customDomains": None,  # [CustomDomain]
-    "ipSecurityRestrictions": None  # [IPSecurityRestrictions]
+    "ipSecurityRestrictions": None,  # [IPSecurityRestrictions]
+    "stickySessions": None  # StickySessions
 }
 
 RegistryCredentials = {
@@ -191,9 +190,10 @@ ContainerApp = {
     "location": None,
     "identity": None,  # ManagedServiceIdentity
     "properties": {
-        "managedEnvironmentId": None,
+        "environmentId": None,
         "configuration": None,  # Configuration
-        "template": None  # Template
+        "template": None,  # Template
+        "workloadProfileName": None
     },
     "tags": None
 }
