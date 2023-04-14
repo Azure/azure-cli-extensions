@@ -1,0 +1,29 @@
+{
+  "filters": [
+    "StripPrefix=1"
+  ],
+  "predicates": [
+    "Path=/api/echo2"
+  ],
+  "ssoEnabled": true,
+  "openApi": {
+     "uri": "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.json"
+  },
+  "protocol": "HTTPS",
+  "routes": [
+    {
+       "title": "Customers service",
+       "description": "Route to customer service",
+       "predicates": [
+          "Path=/api/customers-service/owners"
+       ],
+       "ssoEnabled": false,
+       "filters": [
+          "StripPrefix=2"
+       ],
+       "tags": [
+          "pet clinic"
+       ]
+    }
+  ]
+}

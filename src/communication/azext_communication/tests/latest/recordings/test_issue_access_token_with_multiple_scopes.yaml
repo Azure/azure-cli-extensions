@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{"createTokenWithScopes": ["voip", "chat"]}'
+    body: '{"createTokenWithScopes": ["voip", "chat"], "expiresInMinutes": null}'
     headers:
       Accept:
       - application/json
@@ -9,45 +9,45 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '43'
+      - '69'
       Content-Type:
       - application/json
       User-Agent:
-      - AzureCli/1.2.2 azsdk-python-communication-identity/1.2.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AzureCli/1.3.0 azsdk-python-communication-identity/1.3.1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
-      - hlYiA5kT1yt3LwEdaupQDHzQEfodx+8svsStB5uolgw=
+      - bGEykS6j4LLQpzjUOVC1uFnHwPRFp+8rGOt50FB/Z78=
       x-ms-date:
-      - Wed, 21 Sep 2022 22:51:00 GMT
+      - Mon, 05 Dec 2022 20:05:37 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/identities?api-version=2022-06-01
+    uri: https://sanitized.communication.azure.com/identities?api-version=2022-10-01
   response:
     body:
       string: '{"identity": {"id": "sanitized"}, "accessToken": {"token": "sanitized",
-        "expiresOn": "2022-09-22T22:51:02.0919384+00:00"}}'
+        "expiresOn": "2022-12-06T20:05:38.4592231+00:00"}}'
     headers:
       api-supported-versions:
       - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
-        2021-11-01, 2022-06-01
+        2021-11-01, 2022-06-01, 2022-10-01
       content-length:
       - '122'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 21 Sep 2022 22:51:01 GMT
+      - Mon, 05 Dec 2022 20:05:38 GMT
       ms-cv:
-      - 9xxj1jIEU0e2gVWWyFFBUw.0
+      - uureWT0SC0ajdBAf605LuQ.0
       request-context:
       - appId=
       strict-transport-security:
       - max-age=2592000
       x-azure-ref:
-      - 0VZUrYwAAAABhRbuA8nwvS4e26lMuojMNWVZSMzExMDAwMTE1MDE3ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 0Ek+OYwAAAADecEClp259QZGbfYBmkjc6WVZSMzExMDAwMTE1MDE3ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
-      - 120ms
+      - 128ms
     status:
       code: 201
       message: Created

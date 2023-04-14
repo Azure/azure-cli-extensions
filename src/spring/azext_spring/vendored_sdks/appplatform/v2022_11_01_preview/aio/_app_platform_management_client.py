@@ -12,14 +12,13 @@ from typing import Any, Awaitable, TYPE_CHECKING
 from azure.core.rest import AsyncHttpResponse, HttpRequest
 from azure.mgmt.core import AsyncARMPipelineClient
 
-from .. import models
+from .. import models as _models
 from ..._serialization import Deserializer, Serializer
 from ._configuration import AppPlatformManagementClientConfiguration
 from .operations import (
     ApiPortalCustomDomainsOperations,
     ApiPortalsOperations,
     ApplicationAcceleratorsOperations,
-    ApplicationLiveViewOperations,
     ApplicationLiveViewsOperations,
     AppsOperations,
     BindingsOperations,
@@ -33,7 +32,6 @@ from .operations import (
     CustomDomainsOperations,
     CustomizedAcceleratorsOperations,
     DeploymentsOperations,
-    DevToolPortalOperations,
     DevToolPortalsOperations,
     GatewayCustomDomainsOperations,
     GatewayRouteConfigsOperations,
@@ -70,15 +68,9 @@ class AppPlatformManagementClient:  # pylint: disable=client-accepts-api-version
     :ivar application_live_views: ApplicationLiveViewsOperations operations
     :vartype application_live_views:
      azure.mgmt.appplatform.v2022_11_01_preview.aio.operations.ApplicationLiveViewsOperations
-    :ivar application_live_view: ApplicationLiveViewOperations operations
-    :vartype application_live_view:
-     azure.mgmt.appplatform.v2022_11_01_preview.aio.operations.ApplicationLiveViewOperations
     :ivar dev_tool_portals: DevToolPortalsOperations operations
     :vartype dev_tool_portals:
      azure.mgmt.appplatform.v2022_11_01_preview.aio.operations.DevToolPortalsOperations
-    :ivar dev_tool_portal: DevToolPortalOperations operations
-    :vartype dev_tool_portal:
-     azure.mgmt.appplatform.v2022_11_01_preview.aio.operations.DevToolPortalOperations
     :ivar build_service: BuildServiceOperations operations
     :vartype build_service:
      azure.mgmt.appplatform.v2022_11_01_preview.aio.operations.BuildServiceOperations
@@ -163,9 +155,9 @@ class AppPlatformManagementClient:  # pylint: disable=client-accepts-api-version
         self._config = AppPlatformManagementClientConfiguration(
             credential=credential, subscription_id=subscription_id, **kwargs
         )
-        self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client: AsyncARMPipelineClient = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
-        client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
+        client_models = {k: v for k, v in _models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
@@ -180,11 +172,7 @@ class AppPlatformManagementClient:  # pylint: disable=client-accepts-api-version
         self.application_live_views = ApplicationLiveViewsOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
-        self.application_live_view = ApplicationLiveViewOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
         self.dev_tool_portals = DevToolPortalsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.dev_tool_portal = DevToolPortalOperations(self._client, self._config, self._serialize, self._deserialize)
         self.build_service = BuildServiceOperations(self._client, self._config, self._serialize, self._deserialize)
         self.buildpack_binding = BuildpackBindingOperations(
             self._client, self._config, self._serialize, self._deserialize
@@ -259,5 +247,5 @@ class AppPlatformManagementClient:  # pylint: disable=client-accepts-api-version
         await self._client.__aenter__()
         return self
 
-    async def __aexit__(self, *exc_details) -> None:
+    async def __aexit__(self, *exc_details: Any) -> None:
         await self._client.__aexit__(*exc_details)

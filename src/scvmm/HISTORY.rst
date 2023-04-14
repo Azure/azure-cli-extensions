@@ -3,6 +3,11 @@
 Release History
 ===============
 
+
+0.1.7
+++++++
+* [Hotfix] Disabling pwinput till the issue here gets fixed: https://github.com/Azure/azure-cli/issues/24781 
+
 0.1.6
 ++++++
 * Displaying asterisks (*****) for password input.

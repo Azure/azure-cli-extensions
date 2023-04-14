@@ -5,6 +5,7 @@
 # --------------------------------------------------------------------------
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.core.exceptions import HttpResponseError
 import os
 from .recording_processors import URIIdentityReplacer, BodyReplacerProcessor
 from .preparers import CommunicationResourcePreparer
@@ -139,7 +140,7 @@ class CommunicationChatScenarios(ScenarioTest):
         thread_id = res['chatThread']['id']
         
         self.kwargs.update({ 'thread_id': thread_id })
-        self.cmd('az communication chat thread delete --thread {thread_id}')
+        self.cmd('az communication chat thread delete --thread {thread_id} --yes')
 
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
@@ -162,16 +163,17 @@ class CommunicationChatScenarios(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_chat_list_participants_bad_thread_id(self, communication_resource_info):
-        from azure.core.exceptions import HttpResponseError
+        from azure.core.exceptions import ResourceNotFoundError
 
         self.__update_environ(communication_resource_info)
 
         thread_id = 'sanitized'
         self.kwargs.update({
             'thread_id': thread_id })
-        with self.assertRaises(HttpResponseError) as raises:
-            self.cmd('az communication chat participant list --thread {thread_id}', checks = [
-                self.check('httpStatusCode', '400')])
+        with self.assertRaises(ResourceNotFoundError) as raises:
+            self.cmd('az communication chat participant list --thread {thread_id}')
+
+        assert 'Not Found' in str(raises.exception)
 
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
@@ -228,17 +230,15 @@ class CommunicationChatScenarios(ScenarioTest):
         self.kwargs.update({
             'user_id': '8:acs:fakeid===' })
 
-        with self.assertRaises(Exception) as raises:
-            self.cmd('az communication chat participant add --thread {thread_id} --user {user_id}', checks = [
-                self.check('CommunicationError.code', 'Bad Request')])
+        with self.assertRaises(HttpResponseError) as raises:
+            self.cmd('az communication chat participant add --thread {thread_id} --user {user_id}')
 
         assert 'Identifier format is invalid' in str(raises.exception)
+
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
     def test_chat_remove_participants(self, communication_resource_info):
-        from azure.core.exceptions import HttpResponseError
-
         self.__update_environ(communication_resource_info)
 
         user_id = self.__create_user(communication_resource_info)
@@ -257,26 +257,25 @@ class CommunicationChatScenarios(ScenarioTest):
         assert len(add_res) == 0
 
         # remove the new user from the chat thread
-        self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id}')        
+        self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id} --yes')        
 
         # try to remove a user with invalid id
         self.kwargs.update({
             'user_id': '8:acs:fakeid' })
 
         with self.assertRaises(HttpResponseError) as raises:
-            self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id}', checks = [
-                self.check('CommunicationError.code', 'Bad Request')])        
+            self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id} --yes')        
 
         assert 'Identifier format is invalid' in str(raises.exception)
 
         # remove the original user from the chat thread
         self.kwargs.update({
             'user_id': owner_id })
-        self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id}')
+        self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id} --yes')
 
         # try to remove the original user again, should raise an error
         with self.assertRaises(HttpResponseError) as raises:
-            self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id}')
+            self.cmd('az communication chat participant remove --thread {thread_id} --user {user_id} --yes')
 
         assert 'The initiator doesn\'t have the permission to perform the requested operation.' in str(raises.exception)
 
@@ -492,7 +491,7 @@ class CommunicationChatScenarios(ScenarioTest):
         # and delete it
         self.kwargs.update({
             'message_id': message['id'] })
-        self.cmd('az communication chat message delete --thread {thread_id} --message-id {message_id}')
+        self.cmd('az communication chat message delete --thread {thread_id} --message-id {message_id} --yes')
         
         # now, check that it is actually deleted
         self.kwargs.update({

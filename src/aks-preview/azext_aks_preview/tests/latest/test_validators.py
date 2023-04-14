@@ -114,12 +114,15 @@ class EnableCustomCATrustNamespace:
         self.os_type = os_type
         self.enable_custom_ca_trust = enable_custom_ca_trust
 
+class CustomCATrustCertificatesNamespace:
+    def __init__(self, os_type, custom_ca_trust_certificates):
+        self.os_type = os_type
+        self.custom_ca_trust_certificates = custom_ca_trust_certificates
 
 class DisableWindowsOutboundNatNamespace:
     def __init__(self, os_type, disable_windows_outbound_nat):
         self.os_type = os_type
         self.disable_windows_outbound_nat = disable_windows_outbound_nat
-
 
 class TestMaxSurge(unittest.TestCase):
     def test_valid_cases(self):
@@ -197,6 +200,23 @@ class TestEnableCustomCATrust(unittest.TestCase):
         self.assertTrue('--enable_custom_ca_trust can only be set for Linux nodepools' in str(cm.exception), msg=str(cm.exception))
 
 
+class TestCustomCATrustCertificates(unittest.TestCase):
+    def test_valid_cases(self):
+        valid = ["foo", ""]
+        for v in valid:
+            validators.validate_custom_ca_trust_certificates(CustomCATrustCertificatesNamespace("Linux", v))
+
+    def test_fail_if_os_type_windows(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_custom_ca_trust_certificates(CustomCATrustCertificatesNamespace("Windows", "foo"))
+        self.assertTrue('--custom-ca-trust-certificates can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
+
+    def test_fail_if_os_type_invalid(self):
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_custom_ca_trust_certificates(CustomCATrustCertificatesNamespace("invalid", "foo"))
+        self.assertTrue('--custom-ca-trust-certificates can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
+
+
 class TestDisableWindowsOutboundNAT(unittest.TestCase):
     def test_pass_if_os_type_windows(self):
         validators.validate_disable_windows_outbound_nat(DisableWindowsOutboundNatNamespace("Windows", True))
@@ -210,7 +230,6 @@ class TestDisableWindowsOutboundNAT(unittest.TestCase):
         with self.assertRaises(CLIError) as cm:
             validators.validate_disable_windows_outbound_nat(DisableWindowsOutboundNatNamespace("invalid", True))
         self.assertTrue('--disable-windows-outbound-nat can only be set for Windows nodepools' in str(cm.exception), msg=str(cm.exception))
-
 
 class ValidateAddonsNamespace:
     def __init__(self, addons):
@@ -577,6 +596,46 @@ class TestValidateApplicationSecurityGroups(unittest.TestCase):
         validators.validate_application_security_groups(
             namespace
         )
+
+class MaintenanceWindowNameSpace:
+    def __init__(self, utc_offset=None, start_date=None, start_time=None):
+        self.utc_offset = utc_offset
+        self.start_date = start_date
+        self.start_time = start_time
+
+class TestValidateMaintenanceWindow(unittest.TestCase):
+    def test_invalid_utc_offset(self):        
+        namespace = MaintenanceWindowNameSpace(utc_offset="5:00")
+        err = '--utc-offset must be in format: "+/-HH:mm". For example, "+05:30" and "-12:00".'
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_utc_offset(namespace)
+        self.assertEqual(str(cm.exception), err)
+    
+    def test_valid_utc_offset(self):        
+        namespace = MaintenanceWindowNameSpace(utc_offset="+05:00")
+        validators.validate_utc_offset(namespace)
+
+    def test_invalid_start_date(self):        
+        namespace = MaintenanceWindowNameSpace(start_date="2023/01/01")
+        err = '--start-date must be in format: "yyyy-MM-dd". For example, "2023-01-01".'
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_start_date(namespace)
+        self.assertEqual(str(cm.exception), err)
+    
+    def test_valid_start_datet(self):        
+        namespace = MaintenanceWindowNameSpace(start_date="2023-01-01")
+        validators.validate_start_date(namespace)
+    
+    def test_invalid_start_time(self):        
+        namespace = MaintenanceWindowNameSpace(start_time="3am")
+        err = '--start-time must be in format "HH:mm". For example, "09:30" and "17:00".'
+        with self.assertRaises(InvalidArgumentValueError) as cm:
+            validators.validate_start_time(namespace)
+        self.assertEqual(str(cm.exception), err)
+    
+    def test_valid_start_time(self):        
+        namespace = MaintenanceWindowNameSpace(start_date="00:30")
+        validators.validate_start_time(namespace)
 
 
 if __name__ == "__main__":

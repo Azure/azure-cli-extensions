@@ -759,7 +759,8 @@ def cli_cosmosdb_restore(cmd,
                          default_identity=None,
                          databases_to_restore=None,
                          gremlin_databases_to_restore=None,
-                         tables_to_restore=None):
+                         tables_to_restore=None,
+                         enable_public_network=None):
     restorable_database_accounts_client = cf_restorable_database_accounts(cmd.cli_ctx, [])
     restorable_database_accounts = restorable_database_accounts_client.list()
     restorable_database_accounts_list = list(restorable_database_accounts)
@@ -796,11 +797,12 @@ def cli_cosmosdb_restore(cmd,
     if not is_source_restorable_account_deleted:
         restorable_resources = None
         api_type = target_restorable_account.api_type.lower()
+        arm_location_normalized = target_restorable_account.location.lower().replace(" ", "")
         if api_type == "sql":
             try:
                 restorable_sql_resources_client = cf_restorable_sql_resources(cmd.cli_ctx, [])
                 restorable_resources = restorable_sql_resources_client.list(
-                    target_restorable_account.location,
+                    arm_location_normalized,
                     target_restorable_account.name,
                     location,
                     restore_timestamp_datetime_utc)
@@ -810,7 +812,7 @@ def cli_cosmosdb_restore(cmd,
             try:
                 restorable_mongodb_resources_client = cf_restorable_mongodb_resources(cmd.cli_ctx, [])
                 restorable_resources = restorable_mongodb_resources_client.list(
-                    target_restorable_account.location,
+                    arm_location_normalized,
                     target_restorable_account.name,
                     location,
                     restore_timestamp_datetime_utc)
@@ -820,7 +822,7 @@ def cli_cosmosdb_restore(cmd,
             try:
                 restorable_gremlin_resources_client = cf_restorable_gremlin_resources(cmd.cli_ctx, [])
                 restorable_resources = restorable_gremlin_resources_client.list(
-                    target_restorable_account.location,
+                    arm_location_normalized,
                     target_restorable_account.name,
                     location,
                     restore_timestamp_datetime_utc)
@@ -830,7 +832,7 @@ def cli_cosmosdb_restore(cmd,
             try:
                 restorable_table_resources_client = cf_restorable_table_resources(cmd.cli_ctx, [])
                 restorable_resources = restorable_table_resources_client.list(
-                    target_restorable_account.location,
+                    arm_location_normalized,
                     target_restorable_account.name,
                     location,
                     restore_timestamp_datetime_utc)
@@ -858,7 +860,8 @@ def cli_cosmosdb_restore(cmd,
                                     databases_to_restore=databases_to_restore,
                                     gremlin_databases_to_restore=gremlin_databases_to_restore,
                                     tables_to_restore=tables_to_restore,
-                                    arm_location=target_restorable_account.location)
+                                    arm_location=target_restorable_account.location,
+                                    enable_public_network=enable_public_network)
 
 
 # pylint: disable=too-many-statements

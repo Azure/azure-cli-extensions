@@ -41,7 +41,7 @@ class CommunicationIdentityScenarios(ScenarioTest):
         user_id = res['properties']['id']
 
         self.kwargs.update({ 'user_id': user_id })
-        self.cmd('az communication identity user delete --user {user_id}')
+        self.cmd('az communication identity user delete --user {user_id} --yes')
 
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     @CommunicationResourcePreparer(resource_group_parameter_name='rg')
@@ -115,4 +115,4 @@ class CommunicationIdentityScenarios(ScenarioTest):
         os.environ['AZURE_COMMUNICATION_CONNECTION_STRING'] = communication_resource_info[1]
         id = get_test_identity_id(self.is_live, self.in_recording, communication_resource_info[1])
         self.kwargs.update({'id': id})
-        self.cmd('az communication identity token revoke --user {id}')
+        self.cmd('az communication identity token revoke --user {id} --yes')

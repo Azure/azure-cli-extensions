@@ -7,50 +7,44 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - spring service-registry show
+      - spring app create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -s
+      - -g -s -n
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.5 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"cce4c6aa1eb34765b9312229666db8bf","networkProfile":{"outboundIPs":{"publicIPs":["52.188.92.61","52.226.99.235"]}},"powerState":"Running","fqdn":"tx-enterprise.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise","name":"tx-enterprise","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2022-01-02T08:01:01.7469068Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-02T08:01:01.7469068Z"}}'
+      string: '{"error":{"code":"NotFound","message":"App was not found","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003","details":null}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '761'
+      - '241'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Sun, 02 Jan 2022 10:03:59 GMT
+      - Mon, 03 Apr 2023 07:29:21 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
-      server:
-      - nginx/1.17.7
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '11998'
       x-rp-server-mvid:
-      - 321c357a-0cac-46b7-9d43-83f4ddaa38b8
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
     status:
-      code: 200
-      message: OK
+      code: 404
+      message: Not Found
 - request:
     body: null
     headers:
@@ -59,467 +53,92 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - spring service-registry show
+      - spring app create
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -s
+      - -g -s -n
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.5 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","resourceRequests":{"cpu":"500m","memory":"1Gi","instanceCount":2},"instances":[{"name":"eureka-tx-enterprise-default-46b1d-0","status":"Running"},{"name":"eureka-tx-enterprise-default-46b1d-1","status":"Running"}]},"type":"Microsoft.AppPlatform/Spring/serviceRegistries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default","name":"default","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2022-01-02T08:06:58.2883486Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-02T08:06:58.2883486Z"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"869575ac58f542e6b8c463fbfee844bf","networkProfile":{"outboundIPs":{"publicIPs":["20.49.218.229","20.49.223.183"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"clitest000002.azuremicroservices.io","marketplaceResource":{"plan":"asa-ent-hr-mtr","publisher":"vmware-inc","product":"azure-spring-cloud-vmware-tanzu-2"}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"uksouth","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002","name":"clitest000002","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-30T06:40:24.2896426Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-30T06:40:24.2896426Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '724'
+      - '935'
       content-type:
-      - application/json; charset=utf-8
-      date:
-      - Sun, 02 Jan 2022 10:04:01 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
-      server:
-      - nginx/1.17.7
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-rp-server-mvid:
-      - 321c357a-0cac-46b7-9d43-83f4ddaa38b8
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
       - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - spring service-registry bind
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --app -g -s
-      User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.5 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise?api-version=2022-01-01-preview
-  response:
-    body:
-      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"cce4c6aa1eb34765b9312229666db8bf","networkProfile":{"outboundIPs":{"publicIPs":["52.188.92.61","52.226.99.235"]}},"powerState":"Running","fqdn":"tx-enterprise.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise","name":"tx-enterprise","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2022-01-02T08:01:01.7469068Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-02T08:01:01.7469068Z"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '761'
-      content-type:
-      - application/json; charset=utf-8
       date:
-      - Sun, 02 Jan 2022 10:04:02 GMT
+      - Mon, 03 Apr 2023 07:29:21 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
-      server:
-      - nginx/1.17.7
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11999'
+      - '11998'
       x-rp-server-mvid:
-      - 321c357a-0cac-46b7-9d43-83f4ddaa38b8
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
     status:
       code: 200
       message: OK
 - request:
-    body: null
+    body: '{"properties": {"public": false, "httpsOnly": false, "temporaryDisk": {"sizeInGB":
+      5, "mountPath": "/tmp"}, "enableEndToEndTLS": false}}'
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - spring service-registry bind
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --app -g -s
-      User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.5 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2022-01-01-preview
-  response:
-    body:
-      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"tx-enterprise.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1","name":"app1","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2022-01-02T08:51:32.7656261Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-02T09:58:06.8878401Z"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '791'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Sun, 02 Jan 2022 10:04:04 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
-      server:
-      - nginx/1.17.7
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11999'
-      x-rp-server-mvid:
-      - 321c357a-0cac-46b7-9d43-83f4ddaa38b8
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"public": false, "addonConfigs": {"applicationConfigurationService":
-      {}, "serviceRegistry": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default"}},
-      "fqdn": "tx-enterprise.asc-test.net", "httpsOnly": false, "temporaryDisk": {"sizeInGB":
-      5, "mountPath": "/tmp"}, "persistentDisk": {"sizeInGB": 0, "mountPath": "/persistent"},
-      "enableEndToEndTLS": false}, "location": "eastus"}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - spring service-registry bind
+      - spring app create
       Connection:
       - keep-alive
       Content-Length:
-      - '503'
+      - '136'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --app -g -s
+      - -g -s -n
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.5 (Windows-10-10.0.19041-SP0)
-    method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2022-01-01-preview
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default"}},"public":false,"provisioningState":"Updating","fqdn":"tx-enterprise.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1","name":"app1","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2022-01-02T08:51:32.7656261Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-02T10:04:05.328464Z"}}'
+      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Creating","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"uksouth","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003","name":"clitest000003","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:29:22.2189172Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:29:22.2189172Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/506c6f50-0a8f-44c3-85be-42944e163b92?api-version=2022-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/a2ed9869-fe05-40cc-b128-c3a43269a255?api-version=2023-03-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '952'
+      - '879'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Sun, 02 Jan 2022 10:04:05 GMT
+      - Mon, 03 Apr 2023 07:29:22 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationResults/506c6f50-0a8f-44c3-85be-42944e163b92/Spring/app1?api-version=2022-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationResults/a2ed9869-fe05-40cc-b128-c3a43269a255/Spring/clitest000003?api-version=2023-03-01-preview
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
-      server:
-      - nginx/1.17.7
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '1199'
-      x-rp-server-mvid:
-      - 321c357a-0cac-46b7-9d43-83f4ddaa38b8
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - spring service-registry bind
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --app -g -s
-      User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.5 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/506c6f50-0a8f-44c3-85be-42944e163b92?api-version=2022-01-01-preview
-  response:
-    body:
-      string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/506c6f50-0a8f-44c3-85be-42944e163b92","name":"506c6f50-0a8f-44c3-85be-42944e163b92","status":"Succeeded","startTime":"2022-01-02T10:04:05.6375064Z","endTime":"2022-01-02T10:04:13.1807301Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '347'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Sun, 02 Jan 2022 10:04:35 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
-      server:
-      - nginx/1.17.7
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-rp-server-mvid:
-      - 321c357a-0cac-46b7-9d43-83f4ddaa38b8
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - spring service-registry bind
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --app -g -s
-      User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.5 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2022-01-01-preview
-  response:
-    body:
-      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default"}},"public":false,"provisioningState":"Succeeded","fqdn":"tx-enterprise.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1","name":"app1","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2022-01-02T08:51:32.7656261Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-02T10:04:05.328464Z"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '953'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Sun, 02 Jan 2022 10:04:36 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
-      server:
-      - nginx/1.17.7
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11998'
-      x-rp-server-mvid:
-      - 321c357a-0cac-46b7-9d43-83f4ddaa38b8
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - spring service-registry unbind
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --app -g -s
-      User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.5 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise?api-version=2022-01-01-preview
-  response:
-    body:
-      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"cce4c6aa1eb34765b9312229666db8bf","networkProfile":{"outboundIPs":{"publicIPs":["52.188.92.61","52.226.99.235"]}},"powerState":"Running","fqdn":"tx-enterprise.asc-test.net"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise","name":"tx-enterprise","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2022-01-02T08:01:01.7469068Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-02T08:01:01.7469068Z"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '761'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Sun, 02 Jan 2022 10:04:37 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
-      server:
-      - nginx/1.17.7
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11998'
-      x-rp-server-mvid:
-      - 321c357a-0cac-46b7-9d43-83f4ddaa38b8
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - spring service-registry unbind
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --app -g -s
-      User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.5 (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2022-01-01-preview
-  response:
-    body:
-      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/serviceRegistries/default"}},"public":false,"provisioningState":"Succeeded","fqdn":"tx-enterprise.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1","name":"app1","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2022-01-02T08:51:32.7656261Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-02T10:04:05.328464Z"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '953'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Sun, 02 Jan 2022 10:04:38 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
-      server:
-      - nginx/1.17.7
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding,Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11997'
-      x-rp-server-mvid:
-      - 321c357a-0cac-46b7-9d43-83f4ddaa38b8
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"public": false, "addonConfigs": {"applicationConfigurationService":
-      {}, "serviceRegistry": {"resourceId": ""}}, "fqdn": "tx-enterprise.asc-test.net",
-      "httpsOnly": false, "temporaryDisk": {"sizeInGB": 5, "mountPath": "/tmp"}, "persistentDisk":
-      {"sizeInGB": 0, "mountPath": "/persistent"}, "enableEndToEndTLS": false}, "location":
-      "eastus"}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - spring service-registry unbind
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '355'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --app -g -s
-      User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.5 (Windows-10-10.0.19041-SP0)
-    method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2022-01-01-preview
-  response:
-    body:
-      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Updating","fqdn":"tx-enterprise.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1","name":"app1","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2022-01-02T08:51:32.7656261Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-02T10:04:39.3286258Z"}}'
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/9030ad8d-8a63-47c6-bf56-05ebc9b2c99d?api-version=2022-01-01-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '790'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Sun, 02 Jan 2022 10:04:39 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationResults/9030ad8d-8a63-47c6-bf56-05ebc9b2c99d/Spring/app1?api-version=2022-01-01-preview
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
-      server:
-      - nginx/1.17.7
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       x-content-type-options:
@@ -527,7 +146,1512 @@ interactions:
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '1198'
       x-rp-server-mvid:
-      - 321c357a-0cac-46b7-9d43-83f4ddaa38b8
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/a2ed9869-fe05-40cc-b128-c3a43269a255?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/a2ed9869-fe05-40cc-b128-c3a43269a255","name":"a2ed9869-fe05-40cc-b128-c3a43269a255","status":"Running","startTime":"2023-04-03T07:29:22.7745111Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:29:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/a2ed9869-fe05-40cc-b128-c3a43269a255?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/a2ed9869-fe05-40cc-b128-c3a43269a255","name":"a2ed9869-fe05-40cc-b128-c3a43269a255","status":"Succeeded","startTime":"2023-04-03T07:29:22.7745111Z","endTime":"2023-04-03T07:29:29.0211134Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '371'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:29:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"clitest000002.azuremicroservices.io","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"uksouth","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003","name":"clitest000003","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:29:22.2189172Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:29:22.2189172Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '983'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:29:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11996'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"source": {"type": "BuildResult", "buildResultId": "<default>"},
+      "deploymentSettings": {"resourceRequests": {"cpu": "1", "memory": "1Gi"}, "scale":
+      {"minReplicas": 1, "maxReplicas": 10}}, "active": true}, "sku": {"name": "E0",
+      "tier": "Enterprise", "capacity": 1}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '280'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003/deployments/mock-deployment?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90},"provisioningState":"Creating","status":"Running","active":true,"instances":null,"source":{"type":"BuildResult","buildResultId":"<default>"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"E0","tier":"Enterprise","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003/deployments/default","name":"default","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:29:38.0531762Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:29:38.0531762Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/default/operationId/9faf2ab6-f7f8-4264-ad14-dcee85cc39a2?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '829'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:29:38 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationResults/9faf2ab6-f7f8-4264-ad14-dcee85cc39a2/Spring/default?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1198'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/default/operationId/9faf2ab6-f7f8-4264-ad14-dcee85cc39a2?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/default/operationId/9faf2ab6-f7f8-4264-ad14-dcee85cc39a2","name":"9faf2ab6-f7f8-4264-ad14-dcee85cc39a2","status":"Running","startTime":"2023-04-03T07:29:38.6192411Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '322'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:29:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"public": false, "httpsOnly": false, "enableEndToEndTLS":
+      false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '81'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Updating","fqdn":"clitest000002.azuremicroservices.io","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"uksouth","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003","name":"clitest000003","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:29:22.2189172Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:29:39.1735582Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/84cf92e9-43ad-4826-92d7-0adfa054d271?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '982'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:29:39 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationResults/84cf92e9-43ad-4826-92d7-0adfa054d271/Spring/clitest000003?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1197'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/84cf92e9-43ad-4826-92d7-0adfa054d271?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/84cf92e9-43ad-4826-92d7-0adfa054d271","name":"84cf92e9-43ad-4826-92d7-0adfa054d271","status":"Running","startTime":"2023-04-03T07:29:39.9773378Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:29:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/default/operationId/9faf2ab6-f7f8-4264-ad14-dcee85cc39a2?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/default/operationId/9faf2ab6-f7f8-4264-ad14-dcee85cc39a2","name":"9faf2ab6-f7f8-4264-ad14-dcee85cc39a2","status":"Running","startTime":"2023-04-03T07:29:38.6192411Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '322'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:29:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/84cf92e9-43ad-4826-92d7-0adfa054d271?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/84cf92e9-43ad-4826-92d7-0adfa054d271","name":"84cf92e9-43ad-4826-92d7-0adfa054d271","status":"Succeeded","startTime":"2023-04-03T07:29:39.9773378Z","endTime":"2023-04-03T07:29:46.267127Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '370'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:29:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"clitest000002.azuremicroservices.io","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"uksouth","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003","name":"clitest000003","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:29:22.2189172Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:29:39.1735582Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '983'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:29:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11997'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/default/operationId/9faf2ab6-f7f8-4264-ad14-dcee85cc39a2?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/default/operationId/9faf2ab6-f7f8-4264-ad14-dcee85cc39a2","name":"9faf2ab6-f7f8-4264-ad14-dcee85cc39a2","status":"Running","startTime":"2023-04-03T07:29:38.6192411Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '322'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:29:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/default/operationId/9faf2ab6-f7f8-4264-ad14-dcee85cc39a2?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/default/operationId/9faf2ab6-f7f8-4264-ad14-dcee85cc39a2","name":"9faf2ab6-f7f8-4264-ad14-dcee85cc39a2","status":"Running","startTime":"2023-04-03T07:29:38.6192411Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '322'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/default/operationId/9faf2ab6-f7f8-4264-ad14-dcee85cc39a2?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/default/operationId/9faf2ab6-f7f8-4264-ad14-dcee85cc39a2","name":"9faf2ab6-f7f8-4264-ad14-dcee85cc39a2","status":"Succeeded","startTime":"2023-04-03T07:29:38.6192411Z","endTime":"2023-04-03T07:30:10.0962968Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '365'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003/deployments/mock-deployment?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":300,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"clitest000003-default-15-8587d5856f-trhgf","status":"Running","discoveryStatus":"N/A","startTime":"2023-04-03T07:29:45Z"}],"source":{"type":"BuildResult","buildResultId":"<default>"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"E0","tier":"Enterprise","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003/deployments/default","name":"default","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:29:38.0531762Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:29:38.0531762Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1328'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11997'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"clitest000002.azuremicroservices.io","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"uksouth","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003","name":"clitest000003","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:29:22.2189172Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:29:39.1735582Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '983'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11996'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s -n
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003/deployments?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":300,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"clitest000003-default-15-8587d5856f-trhgf","status":"Running","discoveryStatus":"N/A","startTime":"2023-04-03T07:29:45Z"}],"source":{"type":"BuildResult","buildResultId":"<default>"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"E0","tier":"Enterprise","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003/deployments/default","name":"default","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:29:38.0531762Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:29:38.0531762Z"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1340'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11996'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"869575ac58f542e6b8c463fbfee844bf","networkProfile":{"outboundIPs":{"publicIPs":["20.49.218.229","20.49.223.183"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"clitest000002.azuremicroservices.io","marketplaceResource":{"plan":"asa-ent-hr-mtr","publisher":"vmware-inc","product":"azure-spring-cloud-vmware-tanzu-2"}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"uksouth","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002","name":"clitest000002","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-30T06:40:24.2896426Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-30T06:40:24.2896426Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '935'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11996'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/serviceRegistries/default?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","resourceRequests":{"cpu":"500m","memory":"1Gi","instanceCount":2},"instances":[{"name":"eureka-cli-unittest-tanzu-default-6105f-0","status":"Running"},{"name":"eureka-cli-unittest-tanzu-default-6105f-1","status":"Running"}]},"type":"Microsoft.AppPlatform/Spring/serviceRegistries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/serviceRegistries/default","name":"default","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:15:24.8883761Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:15:24.8883761Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '748'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry bind
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --app -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"869575ac58f542e6b8c463fbfee844bf","networkProfile":{"outboundIPs":{"publicIPs":["20.49.218.229","20.49.223.183"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"clitest000002.azuremicroservices.io","marketplaceResource":{"plan":"asa-ent-hr-mtr","publisher":"vmware-inc","product":"azure-spring-cloud-vmware-tanzu-2"}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"uksouth","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002","name":"clitest000002","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-30T06:40:24.2896426Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-30T06:40:24.2896426Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '935'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11999'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry bind
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --app -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"clitest000002.azuremicroservices.io","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"uksouth","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003","name":"clitest000003","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:29:22.2189172Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:29:39.1735582Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '983'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11995'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"public": false, "addonConfigs": {"applicationConfigurationService":
+      {}, "serviceRegistry": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/serviceRegistries/default"}},
+      "httpsOnly": false, "temporaryDisk": {"sizeInGB": 5, "mountPath": "/tmp"}, "persistentDisk":
+      {"sizeInGB": 0, "mountPath": "/persistent"}, "enableEndToEndTLS": false, "ingressSettings":
+      {"readTimeoutInSeconds": 300, "sendTimeoutInSeconds": 60, "sessionAffinity":
+      "None", "sessionCookieMaxAge": 0, "backendProtocol": "Default"}}, "location":
+      "uksouth"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry bind
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '641'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --app -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/serviceRegistries/default"}},"public":false,"provisioningState":"Updating","fqdn":"clitest000002.azuremicroservices.io","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"uksouth","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003","name":"clitest000003","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:29:22.2189172Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:30:31.9413298Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/393ae65c-5ce5-4022-9e79-ff100dea606d?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1159'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:31 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationResults/393ae65c-5ce5-4022-9e79-ff100dea606d/Spring/clitest000003?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1198'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry bind
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --app -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/393ae65c-5ce5-4022-9e79-ff100dea606d?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/393ae65c-5ce5-4022-9e79-ff100dea606d","name":"393ae65c-5ce5-4022-9e79-ff100dea606d","status":"Running","startTime":"2023-04-03T07:30:32.2549615Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry bind
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --app -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/393ae65c-5ce5-4022-9e79-ff100dea606d?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/393ae65c-5ce5-4022-9e79-ff100dea606d","name":"393ae65c-5ce5-4022-9e79-ff100dea606d","status":"Running","startTime":"2023-04-03T07:30:32.2549615Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry bind
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --app -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/393ae65c-5ce5-4022-9e79-ff100dea606d?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/393ae65c-5ce5-4022-9e79-ff100dea606d","name":"393ae65c-5ce5-4022-9e79-ff100dea606d","status":"Succeeded","startTime":"2023-04-03T07:30:32.2549615Z","endTime":"2023-04-03T07:30:46.4254388Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '371'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry bind
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --app -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/serviceRegistries/default"}},"public":false,"provisioningState":"Succeeded","fqdn":"clitest000002.azuremicroservices.io","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"uksouth","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003","name":"clitest000003","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:29:22.2189172Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:30:31.9413298Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1160'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11994'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/serviceRegistries/default"}},"public":false,"provisioningState":"Succeeded","fqdn":"clitest000002.azuremicroservices.io","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"uksouth","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003","name":"clitest000003","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:29:22.2189172Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:30:31.9413298Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1160'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11999'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring app show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003/deployments?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":300,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"clitest000003-default-15-8587d5856f-trhgf","status":"Running","discoveryStatus":"UNREGISTERED","startTime":"2023-04-03T07:29:45Z"}],"source":{"type":"BuildResult","buildResultId":"<default>"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"E0","tier":"Enterprise","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003/deployments/default","name":"default","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:29:38.0531762Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:29:38.0531762Z"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1349'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:58 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11999'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry unbind
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --app -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"869575ac58f542e6b8c463fbfee844bf","networkProfile":{"outboundIPs":{"publicIPs":["20.49.218.229","20.49.223.183"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"clitest000002.azuremicroservices.io","marketplaceResource":{"plan":"asa-ent-hr-mtr","publisher":"vmware-inc","product":"azure-spring-cloud-vmware-tanzu-2"}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"uksouth","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002","name":"clitest000002","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-30T06:40:24.2896426Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-30T06:40:24.2896426Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '935'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:30:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11998'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry unbind
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --app -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/serviceRegistries/default"}},"public":false,"provisioningState":"Succeeded","fqdn":"clitest000002.azuremicroservices.io","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"uksouth","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003","name":"clitest000003","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:29:22.2189172Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:30:31.9413298Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1160'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:31:00 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11999'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"public": false, "addonConfigs": {"applicationConfigurationService":
+      {}, "serviceRegistry": {"resourceId": ""}}, "httpsOnly": false, "temporaryDisk":
+      {"sizeInGB": 5, "mountPath": "/tmp"}, "persistentDisk": {"sizeInGB": 0, "mountPath":
+      "/persistent"}, "enableEndToEndTLS": false, "ingressSettings": {"readTimeoutInSeconds":
+      300, "sendTimeoutInSeconds": 60, "sessionAffinity": "None", "sessionCookieMaxAge":
+      0, "backendProtocol": "Default"}}, "location": "uksouth"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry unbind
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '479'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --app -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Updating","fqdn":"clitest000002.azuremicroservices.io","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"uksouth","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003","name":"clitest000003","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:29:22.2189172Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:31:02.3144728Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/4bee881a-2b4f-4f9c-a861-10cda41a4413?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '982'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:31:01 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationResults/4bee881a-2b4f-4f9c-a861-10cda41a4413/Spring/clitest000003?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '1199'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
     status:
       code: 202
       message: Accepted
@@ -545,39 +1669,37 @@ interactions:
       ParameterSetName:
       - --app -g -s
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.5 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/9030ad8d-8a63-47c6-bf56-05ebc9b2c99d?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/4bee881a-2b4f-4f9c-a861-10cda41a4413?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"id":"subscriptions/0753feba-86f1-4242-aff1-27938fb04531/resourceGroups/tx/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/app1/operationId/9030ad8d-8a63-47c6-bf56-05ebc9b2c99d","name":"9030ad8d-8a63-47c6-bf56-05ebc9b2c99d","status":"Succeeded","startTime":"2022-01-02T10:04:39.72966Z","endTime":"2022-01-02T10:04:46.0739961Z"}'
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/4bee881a-2b4f-4f9c-a861-10cda41a4413","name":"4bee881a-2b4f-4f9c-a861-10cda41a4413","status":"Running","startTime":"2023-04-03T07:31:02.5995467Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '345'
+      - '328'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Sun, 02 Jan 2022 10:05:10 GMT
+      - Mon, 03 Apr 2023 07:31:02 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
-      server:
-      - nginx/1.17.7
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-rp-server-mvid:
-      - 321c357a-0cac-46b7-9d43-83f4ddaa38b8
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
     status:
       code: 200
       message: OK
@@ -595,41 +1717,913 @@ interactions:
       ParameterSetName:
       - --app -g -s
       User-Agent:
-      - AZURECLI/2.31.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.5 (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1?api-version=2022-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/4bee881a-2b4f-4f9c-a861-10cda41a4413?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"tx-enterprise.asc-test.net","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"eastus","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tx/providers/Microsoft.AppPlatform/Spring/tx-enterprise/apps/app1","name":"app1","systemData":{"createdBy":"ninpan@microsoft.com","createdByType":"User","createdAt":"2022-01-02T08:51:32.7656261Z","lastModifiedBy":"ninpan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-01-02T10:04:39.3286258Z"}}'
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/4bee881a-2b4f-4f9c-a861-10cda41a4413","name":"4bee881a-2b4f-4f9c-a861-10cda41a4413","status":"Running","startTime":"2023-04-03T07:31:02.5995467Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '791'
+      - '328'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Sun, 02 Jan 2022 10:05:10 GMT
+      - Mon, 03 Apr 2023 07:31:13 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:ccd65fc4-7cd4-497e-8dc8-9a76e9a43ae2
-      server:
-      - nginx/1.17.7
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry unbind
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --app -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/4bee881a-2b4f-4f9c-a861-10cda41a4413?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000003/operationId/4bee881a-2b4f-4f9c-a861-10cda41a4413","name":"4bee881a-2b4f-4f9c-a861-10cda41a4413","status":"Succeeded","startTime":"2023-04-03T07:31:02.5995467Z","endTime":"2023-04-03T07:31:16.4156094Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '371'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:31:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry unbind
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --app -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"clitest000002.azuremicroservices.io","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"uksouth","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apps/clitest000003","name":"clitest000003","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:29:22.2189172Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:31:02.3144728Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '983'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:31:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11996'
+      - '11998'
       x-rp-server-mvid:
-      - 321c357a-0cac-46b7-9d43-83f4ddaa38b8
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --yes
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"869575ac58f542e6b8c463fbfee844bf","networkProfile":{"outboundIPs":{"publicIPs":["20.49.218.229","20.49.223.183"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"clitest000002.azuremicroservices.io","marketplaceResource":{"plan":"asa-ent-hr-mtr","publisher":"vmware-inc","product":"azure-spring-cloud-vmware-tanzu-2"}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"uksouth","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002","name":"clitest000002","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-30T06:40:24.2896426Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-30T06:40:24.2896426Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '935'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:31:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11998'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -s --yes
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/serviceRegistries/default?api-version=2023-03-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/abcf552d-6af7-42cb-b966-d9f7d440444d?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 03 Apr 2023 07:31:26 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationResults/abcf552d-6af7-42cb-b966-d9f7d440444d/Spring/clitest000002?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14998'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --yes
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/abcf552d-6af7-42cb-b966-d9f7d440444d?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/abcf552d-6af7-42cb-b966-d9f7d440444d","name":"abcf552d-6af7-42cb-b966-d9f7d440444d","status":"Running","startTime":"2023-04-03T07:31:26.6273015Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:31:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s --yes
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/abcf552d-6af7-42cb-b966-d9f7d440444d?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/abcf552d-6af7-42cb-b966-d9f7d440444d","name":"abcf552d-6af7-42cb-b966-d9f7d440444d","status":"Succeeded","startTime":"2023-04-03T07:31:26.6273015Z","endTime":"2023-04-03T07:31:34.3212091Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '371'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:31:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"869575ac58f542e6b8c463fbfee844bf","networkProfile":{"outboundIPs":{"publicIPs":["20.49.218.229","20.49.223.183"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"clitest000002.azuremicroservices.io","marketplaceResource":{"plan":"asa-ent-hr-mtr","publisher":"vmware-inc","product":"azure-spring-cloud-vmware-tanzu-2"}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"uksouth","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002","name":"clitest000002","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-30T06:40:24.2896426Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-30T06:40:24.2896426Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '935'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:31:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11999'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/serviceRegistries/default?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Creating","resourceRequests":{"cpu":"500m","memory":"1Gi","instanceCount":2},"instances":[{"name":"eureka-cli-unittest-tanzu-default-6105f-0","status":"Running"},{"name":"eureka-cli-unittest-tanzu-default-6105f-1","status":"Running"}]},"type":"Microsoft.AppPlatform/Spring/serviceRegistries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/serviceRegistries/default","name":"default","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:31:39.9573975Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:31:39.9573975Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '747'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:31:40 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationResults/70d7525c-c8e2-478e-8047-a4ac40f218cc/Spring/clitest000002?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc","name":"70d7525c-c8e2-478e-8047-a4ac40f218cc","status":"Running","startTime":"2023-04-03T07:31:40.7323893Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:31:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc","name":"70d7525c-c8e2-478e-8047-a4ac40f218cc","status":"Running","startTime":"2023-04-03T07:31:40.7323893Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:31:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc","name":"70d7525c-c8e2-478e-8047-a4ac40f218cc","status":"Running","startTime":"2023-04-03T07:31:40.7323893Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:32:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc","name":"70d7525c-c8e2-478e-8047-a4ac40f218cc","status":"Running","startTime":"2023-04-03T07:31:40.7323893Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:32:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc","name":"70d7525c-c8e2-478e-8047-a4ac40f218cc","status":"Running","startTime":"2023-04-03T07:31:40.7323893Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:32:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc","name":"70d7525c-c8e2-478e-8047-a4ac40f218cc","status":"Running","startTime":"2023-04-03T07:31:40.7323893Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:32:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc","name":"70d7525c-c8e2-478e-8047-a4ac40f218cc","status":"Running","startTime":"2023-04-03T07:31:40.7323893Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:32:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc","name":"70d7525c-c8e2-478e-8047-a4ac40f218cc","status":"Running","startTime":"2023-04-03T07:31:40.7323893Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '328'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:32:52 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/uksouth/operationStatus/clitest000002/operationId/70d7525c-c8e2-478e-8047-a4ac40f218cc","name":"70d7525c-c8e2-478e-8047-a4ac40f218cc","status":"Succeeded","startTime":"2023-04-03T07:31:40.7323893Z","endTime":"2023-04-03T07:32:57.0145135Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '371'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:33:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring service-registry create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/serviceRegistries/default?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","resourceRequests":{"cpu":"500m","memory":"1Gi","instanceCount":2},"instances":[{"name":"eureka-cli-unittest-tanzu-default-6105f-0","status":"Running"},{"name":"eureka-cli-unittest-tanzu-default-6105f-1","status":"Running"}]},"type":"Microsoft.AppPlatform/Spring/serviceRegistries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/serviceRegistries/default","name":"default","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-04-03T07:31:39.9573975Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-03T07:31:39.9573975Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '748'
+      content-type:
+      - application/json
+      date:
+      - Mon, 03 Apr 2023 07:33:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
     status:
       code: 200
       message: OK

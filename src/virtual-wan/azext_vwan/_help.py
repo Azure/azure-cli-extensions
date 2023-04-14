@@ -66,15 +66,9 @@ helps['network vhub connection update'] = """
     type: command
     short-summary: Update settings of a virtual hub connection.
     examples:
-    - name: Add labels of a virtual hub connection.
+    - name: Add labels for propagated route tables under routing configuration.
       text: |
           az network vhub connection update -n MyConnection --vhub-name MyHub -g MyRG --labels Newlabel1 Newlabel2
-    - name: Add labels for propagatedRouteTables of a virtual hub connection.
-      text: |
-          az network vhub connection update -n MyConnection --vhub-name MyHub -g MyRG --add routingConfiguration.propagatedRouteTables.labels Newlabel1 Newlabel2
-    - name: Reset labels of a virtual hub connection.
-      text: |
-          az network vhub connection update -n MyConnection --vhub-name MyHub -g MyRG --set routingConfiguration.propagatedRouteTables.labels[0]=Newlabel
 """
 
 helps['network vhub connection wait'] = """
@@ -316,15 +310,9 @@ helps['network vpn-gateway connection update'] = """
     type: command
     short-summary: Update settings of VPN gateway connection.
     examples:
-      - name: Update settings of VPN gateway connection.
+      - name: Add labels for propagated route tables under routing configuration.
         text: |
             az network vpn-gateway connection update -g MyRG -n MyConnection --gateway-name MyGateway --labels NewLabel1 NewLabels2
-      - name: Add labels of VPN gateway connection.
-        text: |
-            az network vpn-gateway connection update -g MyRG -n MyConnection --gateway-name MyGateway --add routingConfiguration.propagatedRouteTables.labels Newlabel1 Newlabel2
-      - name: Reset labels of VPN gateway connection.
-        text: |
-            az network vpn-gateway connection update -g MyRG -n MyConnection --gateway-name MyGateway --set routingConfiguration.propagatedRouteTables.labels[0]=Newlabel1
 """
 
 helps['network vpn-gateway connection wait'] = """
@@ -593,7 +581,7 @@ helps['network p2s-vpn-gateway update'] = """
     type: command
     short-summary: Update settings of a point-to-site VPN gateway.
     examples:
-      - name: Update settings of a point-to-site VPN gateway with routing configuration.
+      - name: Add labels for propagated route tables under routing configuration.
         text: |
             az network p2s-vpn-gateway update -g MyRG -n MyP2SVPNGateway --labels Newlabel1 Newlabel2 Newlabel3
 """

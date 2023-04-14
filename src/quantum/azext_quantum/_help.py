@@ -15,7 +15,7 @@ helps['quantum execute'] = """
     type: command
     short-summary: Submit a job to run on Azure Quantum, and waits for the result.
     examples:
-      - name: Submit the Q# program from the current folder and wait for the result.
+      - name: Submit a Q# program from the current folder and wait for the result.
         text: |-
             az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget
       - name: Submit and wait for a Q# program from the current folder with job and program parameters.
@@ -32,7 +32,7 @@ helps['quantum run'] = """
     type: command
     short-summary: Equivalent to `az quantum execute`
     examples:
-      - name: Submit the Q# program from the current folder and wait for the result.
+      - name: Submit a Q# program from the current folder and wait for the result.
         text: |-
             az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget
       - name: Submit and wait for a Q# program from the current folder with job and program parameters.
@@ -81,17 +81,17 @@ helps['quantum job show'] = """
 
 helps['quantum job submit'] = """
     type: command
-    short-summary: Submit a Q# project to run on Azure Quantum.
+    short-summary: Submit a program or circuit to run on Azure Quantum.
     examples:
-      - name: Submit the Q# program from the current folder.
+      - name: Submit a Q# program from the current folder.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
                -t MyTarget --job-name MyJob
-      - name: Submit the Q# program from the current folder with job parameters for a target.
+      - name: Submit a Q# program from the current folder with job parameters for a target.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
                -t MyTarget --job-name MyJob --job-params param1=value1 param2=value2
-      - name: Submit the Q# program with program parameters (e.g. n-qubits = 2).
+      - name: Submit a Q# program with program parameters (e.g. n-qubits = 2).
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
                -t MyTarget --job-name MyJob -- --n-qubits=2
@@ -99,6 +99,11 @@ helps['quantum job submit'] = """
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --target-capability MyTargetCapability
+      - name: Submit QIR bitcode from a file in the current folder.
+        text: |-
+            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+                --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
+                --entry-point MyQirEntryPoint
 """
 
 helps['quantum job wait'] = """
@@ -222,7 +227,7 @@ helps['quantum workspace create'] = """
       - name: Create a new Azure Quantum workspace with a specific list of providers.
         text: |-
             az quantum workspace create -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-                -r "MyProvider1 / MySKU1, MyProvider2 / MySKU2" -a MyStorageAccountName\n
+                -r "MyProvider1 / MySKU1, MyProvider2 / MySKU2" --skip-autoadd -a MyStorageAccountName\n
             To display a list of available providers and their SKUs, use the following command:
                 az quantum offerings list -l MyLocation -o table
 """

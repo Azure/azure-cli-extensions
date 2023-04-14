@@ -2,15 +2,16 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+import os
 import unittest  # pylint: disable=unused-import
 
 from azure.cli.testsdk import (ResourceGroupPreparer)
 from azure.cli.testsdk.decorators import serial_test
-from azext_containerapp.tests.latest.common import (ContainerappComposePreviewScenarioTest,  # pylint: disable=unused-import
-                                                    write_test_file,
-                                                    clean_up_test_file,
-                                                    TEST_DIR)
+from azext_containerapp.tests.latest.common import (
+    ContainerappComposePreviewScenarioTest,  # pylint: disable=unused-import
+    write_test_file,
+    clean_up_test_file,
+    TEST_DIR, TEST_LOCATION)
 from .utils import create_containerapp_env
 
 
@@ -18,6 +19,8 @@ class ContainerappComposePreviewTransportOverridesScenarioTest(ContainerappCompo
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_transport_arg(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
         compose_text = """
 services:
   foo:
@@ -52,10 +55,12 @@ services:
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_transport_mapping_arg(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
+    image: mcr.microsoft.com/k8se/quickstart:latest
     ports: 8080:80
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"

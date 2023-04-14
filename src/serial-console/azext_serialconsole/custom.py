@@ -277,8 +277,8 @@ class Terminal:
 
 class SerialConsole:
     def __init__(self, cmd, resource_group_name, vm_vmss_name, vmss_instanceid):
-        result, storage_account_region = get_region_from_storage_account(cmd.cli_ctx, resource_group_name,
-                                                                         vm_vmss_name, vmss_instanceid)
+        _, storage_account_region = get_region_from_storage_account(cmd.cli_ctx, resource_group_name,
+                                                                    vm_vmss_name, vmss_instanceid)
         if storage_account_region is not None:
             kwargs = {'storage_account_region': storage_account_region}
         else:
@@ -371,7 +371,7 @@ class SerialConsole:
             chars_copy = chars.copy()
             chars_copy[indx] = "\u25A0"
             squares = " ".join(chars_copy)
-            # PC.clear_line()
+            PC.clear_line()
             PC.print("Connecting to console of VM   " +
                      squares, color=PrintClass.CYAN)
             PC.show_cursor()
@@ -698,12 +698,11 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name, 
                               'MyScaleSet -g MyResourceGroup --instance-ids *".')
             raise AzureConnectionError(
                 error_message, recommendation=recommendation)
-        else:
-            if result.boot_diagnostics is not None:
-                logger.debug(result.boot_diagnostics)
-                if result.boot_diagnostics.console_screenshot_blob_uri is not None:
-                    storage_account_url = result.boot_diagnostics.console_screenshot_blob_uri
-                    storage_account_region = get_storage_account_info(storage_account_url, resource_group_name, scf)
+        if result.boot_diagnostics is not None:
+            logger.debug(result.boot_diagnostics)
+            if result.boot_diagnostics.console_screenshot_blob_uri is not None:
+                storage_account_url = result.boot_diagnostics.console_screenshot_blob_uri
+                storage_account_region = get_storage_account_info(storage_account_url, scf)
     else:
         try:
             result_data = client.virtual_machines.get(
@@ -729,36 +728,45 @@ def get_region_from_storage_account(cli_ctx, resource_group_name, vm_vmss_name, 
                               'parameter "--storage https://mystor.blob.windows.net/".')
             raise AzureConnectionError(
                 error_message, recommendation=recommendation)
-        else:
-            if result.diagnostics_profile is not None:
-                if result.diagnostics_profile.boot_diagnostics is not None:
-                    storage_account_url = result.diagnostics_profile.boot_diagnostics.storage_uri
-                    storage_account_region = get_storage_account_info(storage_account_url, resource_group_name, scf)
+        if result.diagnostics_profile is not None:
+            if result.diagnostics_profile.boot_diagnostics is not None:
+                storage_account_url = result.diagnostics_profile.boot_diagnostics.storage_uri
+                storage_account_region = get_storage_account_info(storage_account_url, scf)
 
     return result, storage_account_region
 
 
-def get_storage_account_info(storage_account_url, resource_group_name, scf):
+def get_storage_account_info(storage_account_url, scf):
     from azext_serialconsole._arm_endpoints import ArmEndpoints
 
     if storage_account_url is not None:
-        storage_account = parse_storage_account_url(storage_account_url)
+        storage_account, storage_account_resource_group = parse_storage_account_url(storage_account_url, scf)
         if storage_account is not None:
-            sa_result = scf.storage_accounts.get_properties(resource_group_name, storage_account)
+            sa_result = scf.storage_accounts.get_properties(storage_account_resource_group, storage_account)
             if (sa_result is not None and
                     sa_result.network_rule_set is not None and
                     len(sa_result.network_rule_set.ip_rules) > 0):
                 return ArmEndpoints.region_prefix_pairings[sa_result.location]
-
     return None
 
 
-def parse_storage_account_url(url):
+def parse_storage_account_url(url, scf):
     if url is not None:
         sa_list = url.split('.')
         if len(sa_list) > 0:
             sa_url = sa_list[0]
-            sa_url = sa_url.replace("https://", "")
-            return sa_url
+            sa_name = sa_url.replace("https://", "")
+            sa_resource_group = resource_group_from_storage_account_name(sa_name, scf)
+            return sa_name, sa_resource_group
+    return None, None
 
+
+def resource_group_from_storage_account_name(storage_account_name, scf):
+    storage_accounts = scf.storage_accounts.list()
+    for storage_account in storage_accounts:
+        storage_account_id = storage_account.id
+        if storage_account_id.endswith("Microsoft.Storage/storageAccounts/" + storage_account_name):
+            rg = re.search(r"resourceGroups/(.+)/providers/Microsoft.Storage/storageAccounts",
+                           storage_account_id).group(1)
+            return rg
     return None

@@ -33,9 +33,26 @@ helps['grafana show'] = """
     short-summary: Show details of a Azure Managed Grafana instance.
 """
 
+helps['grafana backup'] = """
+    type: command
+    short-summary: Backup an Azure Managed Grafana instance's content to an achive.
+"""
+
+helps['grafana restore'] = """
+    type: command
+    short-summary: Restore an Azure Managed Grafana instance from an achive.
+"""
+
 helps['grafana update'] = """
     type: command
     short-summary: Update a Azure Managed Grafana instance.
+    examples:
+        - name: disable the public network access
+          text: |
+           az grafana update -g MyResourceGroup -n MyGrafana --public-network-access disabled
+        - name: enable mail notification through SMTP relay sevice of mailgun
+          text: |
+           az grafana update -g MyResourceGroup -n MyGrafana --smtp enabled --from-address johndoe@outlook.com --from-name john --host "smtp.mailgun.org:587" --user "postmaster@sandbox12345.mailgun.org" --password "password" --start-tls-policy OpportunisticStartTLS --skip-verify true
 """
 
 helps['grafana data-source'] = """
@@ -94,6 +111,7 @@ helps['grafana data-source query'] = """
 helps['grafana notification-channel'] = """
     type: group
     short-summary: Commands to manage notification channels of an instance.
+    long-summary: as part of legacy alerting, this command group will be deprecated in a future release
 """
 
 helps['grafana notification-channel list'] = """
@@ -211,6 +229,18 @@ helps['grafana dashboard delete'] = """
            az grafana dashboard delete -g MyResourceGroup -n MyGrafana --dashboard VdrOA7jGz
 """
 
+helps['grafana dashboard sync'] = """
+    type: command
+    short-summary: Sync Azure Managed Grafana dashboards from one instance to another instance. Note, dashboards with "provisioned" state will be skipped due to being read-only
+    examples:
+        - name: Sync only dashboardss under a few folders
+          text: |
+            az grafana dashboard sync --source /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/source --destination /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/destination --folders-to-include "Azure Monitor Container Insights" "Azure Monitor"
+        - name: Preview the sync
+          text: |
+            az grafana dashboard sync --source /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/source --destination /subscriptions/00000000-1111-2222-3333-444444444444/resourceGroups/workspaces/providers/Microsoft.Dashboard/grafana/destination --dry-run
+"""
+
 helps['grafana folder'] = """
     type: group
     short-summary: Commands to manage folders of an instance.
@@ -279,4 +309,66 @@ helps['grafana api-key list'] = """
 helps['grafana api-key delete'] = """
     type: command
     short-summary: delete an api key.
+"""
+
+helps['grafana service-account'] = """
+    type: group
+    short-summary: Commands to manage service accounts.
+"""
+
+helps['grafana service-account create'] = """
+    type: command
+    short-summary: create a new service account.
+    examples:
+        - name: Create a service account with admin role
+          text: |
+           az grafana service-account create -g myResourceGroup -n myGrafana --service-account myAccount --role admin
+"""
+
+helps['grafana service-account update'] = """
+    type: command
+    short-summary: update a service account.
+    examples:
+        - name: disable a service account
+          text: |
+           az grafana service-account update -g myResourceGroup -n myGrafana --service-account myAccount --is-disabled true
+"""
+
+helps['grafana service-account show'] = """
+    type: command
+    short-summary: show details of a service account.
+"""
+
+helps['grafana service-account list'] = """
+    type: command
+    short-summary: list existing service accounts.
+"""
+
+helps['grafana service-account delete'] = """
+    type: command
+    short-summary: delete a service account.
+"""
+
+helps['grafana service-account token'] = """
+    type: group
+    short-summary: Commands to manage service account tokens.
+"""
+
+helps['grafana service-account token create'] = """
+    type: command
+    short-summary: create a new service account token.
+    examples:
+        - name: create a service account token lasting 1 day
+          text: |
+           az grafana service-account token create -g myResourceGroup -n myGrafana --service-account myAccount --token myToken --time-to-live 1d
+"""
+
+helps['grafana service-account token list'] = """
+    type: command
+    short-summary: list existing service account tokens.
+"""
+
+helps['grafana service-account token delete'] = """
+    type: command
+    short-summary: delete a service account token.
 """

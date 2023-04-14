@@ -35,7 +35,7 @@ def load_arguments(self, _):
     )
 
     frontdoor_name_type = CLIArgumentType(options_list=['--front-door-name', '-f'], help='Name of the Front Door.', completer=get_resource_name_completion_list('Microsoft.Network/frontdoors'), id_part='name')
-    waf_policy_name_type = CLIArgumentType(options_list='--policy-name', help='Name of the WAF policy.', completer=get_resource_name_completion_list('Microsoft.Network/frontDoorWebApplicationFirewallPolicies'), id_part='name')
+    waf_policy_name_type = CLIArgumentType(options_list='--policy-name', help='Name of the WAF policy. Name must begin with a letter and contain only letters and numbers.', completer=get_resource_name_completion_list('Microsoft.Network/frontDoorWebApplicationFirewallPolicies'), id_part='name')
     rules_engine_name_type = CLIArgumentType(options_list=['--rules-engine-name', '-r'], help='Name of the Rules Engine.', completer=get_fd_subresource_completion_list('rules_engines'), id_part='child_name_1')
 
     # region FrontDoors

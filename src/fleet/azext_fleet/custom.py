@@ -63,7 +63,7 @@ def update_fleet(cmd,
         operation_group="fleets"
     )
     fleet_patch = fleet_patch_model(tags=tags)
-    return client.update(resource_group_name, name, None, fleet_patch)
+    return client.update(resource_group_name, name, fleet_patch, None)
 
 
 def show_fleet(cmd,  # pylint: disable=unused-argument
@@ -78,7 +78,7 @@ def list_fleet(cmd,  # pylint: disable=unused-argument
                resource_group_name=None):
     if resource_group_name:
         return client.list_by_resource_group(resource_group_name)
-    return client.list()
+    return client.list_by_subscription()
 
 
 def delete_fleet(cmd,  # pylint: disable=unused-argument
@@ -123,7 +123,7 @@ def create_fleet_member(cmd,
         operation_group="fleet_members"
     )
     fleet_member = fleet_member_model(cluster_resource_id=member_cluster_id)
-    return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, fleet_name, name, fleet_member)
+    return sdk_no_wait(no_wait, client.begin_create, resource_group_name, fleet_name, name, fleet_member)
 
 
 def list_fleet_member(cmd,  # pylint: disable=unused-argument

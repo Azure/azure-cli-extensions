@@ -42,7 +42,8 @@ from .repair_utils import (
     _is_gen2,
     _unlock_encrypted_vm_run,
     _create_repair_vm,
-    _check_n_start_vm
+    _check_n_start_vm,
+    _check_existing_rg
 )
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError, CommandCanceledByUserError
 logger = get_logger(__name__)
@@ -58,7 +59,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         source_vm_instance_view = get_vm(cmd, resource_group_name, vm_name, 'instanceView')
 
         is_linux = _is_linux_os(source_vm)
-        is_gen2 = _is_gen2(source_vm_instance_view)
+        vm_hypervgen = _is_gen2(source_vm_instance_view)
 
         target_disk_name = source_vm.storage_profile.os_disk.name
         is_managed = _uses_managed_disk(source_vm)
@@ -100,10 +101,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             create_repair_vm_command += ' --zone {zone}'.format(zone=zone)
 
         # Create new resource group
-        create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
-                                        .format(loc=source_vm.location, group_name=repair_group_name)
-        logger.info('Creating resource group for repair VM and its resources...')
-        _call_az_command(create_resource_group_command)
+        if not _check_existing_rg(repair_group_name):
+            create_resource_group_command = 'az group create -l {loc} -n {group_name}' \
+                                            .format(loc=source_vm.location, group_name=repair_group_name)
+            logger.info('Creating resource group for repair VM and its resources...')
+            _call_az_command(create_resource_group_command)
 
         # MANAGED DISK
         if is_managed:
@@ -118,7 +120,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             if hyperV_generation:
                 copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation)
             elif is_linux and hyperV_generation_linux == 'V2':
-                logger.info('The disk did not contian the info of gen2 , but the machine is created from gen2 image')
+                logger.info('The disk did not contain the information of gen2 , but the machine is created from gen2 image')
                 copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation_linux)
             # Set availability zone for vm when available
             if source_vm.zones:
@@ -207,7 +209,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             logger.info("Running Script win-enable-nested-hyperv.ps1 to install HyperV")
 
             run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv --parameters gen={gen}" \
-                .format(g=repair_group_name, name=repair_vm_name, gen=is_gen2)
+                .format(g=repair_group_name, name=repair_vm_name, gen=vm_hypervgen)
             ret_enable_nested = _call_az_command(run_hyperv_command)
 
             logger.debug("az vm repair run hyperv command returned: %s", ret_enable_nested)
@@ -220,8 +222,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
 
                 # invoking hyperv script again
                 logger.info("Running win-enable-nested-hyperv.ps1 again to create nested VM")
-                run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv" \
-                    .format(g=repair_group_name, name=repair_vm_name)
+                run_hyperv_command = "az vm repair run -g {g} -n {name} --run-id win-enable-nested-hyperv --parameters gen={gen}" \
+                    .format(g=repair_group_name, name=repair_vm_name, gen=vm_hypervgen)
                 ret_enable_nested_again = _call_az_command(run_hyperv_command)
 
                 logger.debug("stderr: %s", ret_enable_nested_again)
@@ -270,7 +272,10 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     if not command.is_status_success():
         command.set_status_error()
         return_dict = command.init_return_dict()
-        _clean_up_resources(repair_group_name, confirm=False)
+        if _check_existing_rg(repair_group_name):
+            _clean_up_resources(repair_group_name, confirm=True)
+        else:
+            _clean_up_resources(repair_group_name, confirm=False)
     else:
         created_resources.append(copy_disk_id)
         command.message = 'Your repair VM \'{n}\' has been created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
@@ -573,14 +578,15 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         subnet_id_tokens = subnet_id.split('/')
         subnet_name = subnet_id_tokens[-1]
         vnet_name = subnet_id_tokens[-3]
+        vnet_resource_group = subnet_id_tokens[-7]
         ipconfig_name = ip_config_object['name']
-        orig_ip_address = ip_config_object['privateIpAddress']
+        orig_ip_address = ip_config_object['privateIPAddress']
         # Dynamic | Static
-        orig_ip_allocation_method = ip_config_object['privateIpAllocationMethod']
+        orig_ip_allocation_method = ip_config_object['privateIPAllocationMethod']
 
         # Get aviailable ip address within subnet
         get_available_ip_command = 'az network vnet subnet list-available-ips -g {g} --vnet-name {vnet} --name {subnet} --query [0] -o tsv' \
-                                   .format(g=resource_group_name, vnet=vnet_name, subnet=subnet_name)
+                                   .format(g=vnet_resource_group, vnet=vnet_name, subnet=subnet_name)
         swap_ip_address = _call_az_command(get_available_ip_command)
         if not swap_ip_address:
             # Raise available IP not found

@@ -15,7 +15,7 @@ from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingE
                                        ResourceNotFoundError, FileOperationError, CLIError, UnauthorizedError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.utils import _normalize_location
-from azure.cli.command_modules.network._client_factory import network_client_factory
+from .aaz.latest.network.vnet import Show as VNetShow
 from azure.cli.command_modules.role.custom import create_role_assignment
 from azure.cli.command_modules.acr.custom import acr_show
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
@@ -25,12 +25,12 @@ from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
-from ._clients import ContainerAppClient, ManagedEnvironmentClient
+from ._clients import ContainerAppClient, ManagedEnvironmentClient, WorkloadProfileClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
                          LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
-                         LOGS_STRING)
-from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel)
+                         LOGS_STRING, PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS)
+from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel, ManagedCertificateEnvelop as ManagedCertificateEnvelopModel)
 
 logger = get_logger(__name__)
 
@@ -60,9 +60,11 @@ def retry_until_success(operation, err_txt, retry_limit, *args, **kwargs):
 
 def get_vnet_location(cmd, subnet_resource_id):
     parsed_rid = parse_resource_id(subnet_resource_id)
-    vnet_client = network_client_factory(cmd.cli_ctx)
-    location = vnet_client.virtual_networks.get(resource_group_name=parsed_rid.get("resource_group"),
-                                                virtual_network_name=parsed_rid.get("name")).location
+    vnet = VNetShow(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": parsed_rid.get("resource_group"),
+        "name": parsed_rid.get("name")
+    })
+    location = vnet['location']
     return _normalize_location(cmd, location)
 
 
@@ -304,9 +306,9 @@ def _ensure_location_allowed(cmd, location, resource_provider, resource_type):
             if res and getattr(res, 'resource_type', "") == resource_type:
                 res_locations = getattr(res, 'locations', [])
 
-        res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+        res_locations = [format_location(res_loc) for res_loc in res_locations if res_loc.strip()]
 
-        location_formatted = location.lower().replace(" ", "")
+        location_formatted = format_location(location)
         if location_formatted not in res_locations:
             raise ValidationError(f"Location '{location}' is not currently supported. To get list of supported locations, run `az provider show -n {resource_provider} --query \"resourceTypes[?resourceType=='{resource_type}'].locations\"`")
 
@@ -342,21 +344,36 @@ def parse_env_var_flags(env_list, is_update_containerapp=False):
 
 
 def parse_secret_flags(secret_list):
-    secret_pairs = {}
-
-    for pair in secret_list:
-        key_val = pair.split('=', 1)
-        if len(key_val) != 2:
-            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\".")
-        if key_val[0] in secret_pairs:
-            raise ValidationError("Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
-        secret_pairs[key_val[0]] = key_val[1]
-
+    secret_entries = []
     secret_var_def = []
-    for key, value in secret_pairs.items():
+
+    for secret in secret_list:
+        key_val = secret.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\.")
+        if key_val[0] in secret_entries:
+            raise ValidationError("Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
+        secret_entries.append(key_val[0])
+
+        name = key_val[0]
+        value = key_val[1]
+        kv_url = ""
+        identity_Id = ""
+
+        kv_identity = value.split(',', 2)
+        if len(kv_identity) == 2:
+            kv = kv_identity[0]
+            identity = kv_identity[1]
+            if kv.startswith('keyvaultref:') and identity.startswith('identityref:'):
+                kv_url = kv.split('keyvaultref:', 1)[1]
+                identity_Id = identity.split('identityref:', 1)[1]
+                value = ""
+
         secret_var_def.append({
-            "name": key,
-            "value": value
+            "name": name,
+            "value": value,
+            "keyVaultUrl": kv_url,
+            "identity": identity_Id
         })
 
     return secret_var_def
@@ -663,13 +680,14 @@ def _ensure_identity_resource_id(subscription_id, resource_group, resource):
 def _add_or_update_secrets(containerapp_def, add_secrets):
     if "secrets" not in containerapp_def["properties"]["configuration"]:
         containerapp_def["properties"]["configuration"]["secrets"] = []
-
     for new_secret in add_secrets:
         is_existing = False
         for existing_secret in containerapp_def["properties"]["configuration"]["secrets"]:
             if existing_secret["name"].lower() == new_secret["name"].lower():
                 is_existing = True
                 existing_secret["value"] = new_secret["value"]
+                existing_secret["keyVaultUrl"] = new_secret["keyVaultUrl"]
+                existing_secret["identity"] = new_secret["identity"]
                 break
 
         if not is_existing:
@@ -1059,8 +1077,11 @@ def safe_get(model, *keys, default=None):
     if not model:
         return default
     for k in keys[:-1]:
-        model = model.get(k, {})
-    return model.get(keys[-1], default)
+        model = model.get(k)
+        if model is None:
+            return default
+    value = model.get(keys[-1], default)
+    return default if not value else value
 
 
 def safe_set(model, *keys, value):
@@ -1090,6 +1111,15 @@ def generate_randomized_cert_name(thumbprint, prefix, initial="rg"):
     cert_name = "{}-{}-{}-{:04}".format(prefix[:14], initial[:14], thumbprint[:4].lower(), randint(0, 9999))
     for c in cert_name:
         if not (c.isalnum() or c == '-' or c == '.'):
+            cert_name = cert_name.replace(c, '-')
+    return cert_name.lower()
+
+
+def generate_randomized_managed_cert_name(hostname, env_name):
+    from random import randint
+    cert_name = "mc-{}-{}-{:04}".format(env_name[:14], hostname[:16].lower(), randint(0, 9999))
+    for c in cert_name:
+        if not (c.isalnum() or c == '-'):
             cert_name = cert_name.replace(c, '-')
     return cert_name.lower()
 
@@ -1364,6 +1394,29 @@ def check_cert_name_availability(cmd, resource_group_name, name, cert_name):
     return r
 
 
+def prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method, location=None):
+    certificate_envelop = ManagedCertificateEnvelopModel
+    certificate_envelop["location"] = location
+    certificate_envelop["properties"]["subjectName"] = hostname
+    certificate_envelop["properties"]["validationMethod"] = validation_method
+    if not location:
+        try:
+            managed_env = ManagedEnvironmentClient.show(cmd, resource_group_name, name)
+            certificate_envelop["location"] = managed_env["location"]
+        except Exception as e:
+            handle_raw_exception(e)
+    return certificate_envelop
+
+
+def check_managed_cert_name_availability(cmd, resource_group_name, name, cert_name):
+    try:
+        certs = ManagedEnvironmentClient.list_managed_certificates(cmd, resource_group_name, name)
+        r = any(cert["name"] == cert_name and cert["properties"]["provisioningState"] in [PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS] for cert in certs)
+    except CLIError as e:
+        handle_raw_exception(e)
+    return not r
+
+
 def validate_hostname(cmd, resource_group_name, name, hostname):
     passed = False
     message = None
@@ -1386,10 +1439,7 @@ def patch_new_custom_domain(cmd, resource_group_name, name, new_custom_domains):
         r = ContainerAppClient.update(cmd, resource_group_name, name, envelope)
     except CLIError as e:
         handle_raw_exception(e)
-    if "customDomains" in r["properties"]["configuration"]["ingress"]:
-        return list(r["properties"]["configuration"]["ingress"]["customDomains"])
-    else:
-        return []
+    return safe_get(r, "properties", "configuration", "ingress", "customDomains", default=[])
 
 
 def get_custom_domains(cmd, resource_group_name, name, location=None, environment=None):
@@ -1399,12 +1449,9 @@ def get_custom_domains(cmd, resource_group_name, name, location=None, environmen
             _ensure_location_allowed(cmd, location, "Microsoft.App", "containerApps")
             if _normalize_location(cmd, app["location"]) != _normalize_location(cmd, location):
                 raise ResourceNotFoundError('Container app {} is not in location {}.'.format(name, location))
-        if environment and (_get_name(environment) != _get_name(app["properties"]["managedEnvironmentId"])):
+        if environment and (_get_name(environment) != _get_name(app["properties"]["environmentId"])):
             raise ResourceNotFoundError('Container app {} is not under environment {}.'.format(name, environment))
-        if "ingress" in app["properties"]["configuration"] and "customDomains" in app["properties"]["configuration"]["ingress"]:
-            custom_domains = app["properties"]["configuration"]["ingress"]["customDomains"]
-        else:
-            custom_domains = []
+        custom_domains = safe_get(app, "properties", "configuration", "ingress", "customDomains", default=[])
     except CLIError as e:
         handle_raw_exception(e)
     return custom_domains
@@ -1506,42 +1553,19 @@ def is_registry_msi_system(identity):
 
 
 def validate_environment_location(cmd, location):
-    from ._constants import MAX_ENV_PER_LOCATION
-    from .custom import list_managed_environments
-    env_list = list_managed_environments(cmd)
-
-    locations = [loc["location"] for loc in env_list]
-    locations = list(set(locations))  # remove duplicates
-
-    location_count = {}
-    for loc in locations:
-        location_count[loc] = len([e for e in env_list if e["location"] == loc])  # pylint: disable=used-before-assignment
-
-    disallowed_locations = []
-    for _, value in enumerate(location_count):
-        if location_count[value] > MAX_ENV_PER_LOCATION - 1:
-            disallowed_locations.append(value)
-
     res_locations = list_environment_locations(cmd)
-    res_locations = [loc for loc in res_locations if loc not in disallowed_locations]
 
     allowed_locs = ", ".join(res_locations)
 
     if location:
         try:
             _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "managedEnvironments")
+
+            return location
         except Exception as e:  # pylint: disable=broad-except
             raise ValidationError("You cannot create a Containerapp environment in location {}. List of eligible locations: {}.".format(location, allowed_locs)) from e
-
-    if len(res_locations) > 0:
-        if not location:
-            logger.warning("Creating environment on location %s.", res_locations[0])
-            return res_locations[0]
-        if location in disallowed_locations:
-            raise ValidationError("You have more than {} environments in location {}. List of eligible locations: {}.".format(MAX_ENV_PER_LOCATION, location, allowed_locs))
-        return location
     else:
-        raise ValidationError("You cannot create any more environments. Environments are limited to {} per location in a subscription. Please specify an existing environment using --environment.".format(MAX_ENV_PER_LOCATION))
+        return res_locations[0]
 
 
 def list_environment_locations(cmd):
@@ -1557,13 +1581,68 @@ def list_environment_locations(cmd):
     return res_locations
 
 
+# normalizes workload profile type
+def get_workload_profile_type(cmd, name, location):
+    return name.upper()
+
+
+def get_default_workload_profile(cmd, location):
+    return "Consumption"
+
+
+def get_default_workload_profile_name_from_env(cmd, env_def, resource_group):
+    location = env_def["location"]
+    api_default = get_default_workload_profile(cmd, location)
+    env_profiles = WorkloadProfileClient.list(cmd, resource_group, env_def["name"])
+    if api_default in [p["name"] for p in env_profiles]:
+        return api_default
+    return env_profiles[0]["name"]
+
+
+def get_default_workload_profiles(cmd, location):
+    profiles = [
+        {
+            "workloadProfileType": "Consumption",
+            "Name": "Consumption"
+        }
+    ]
+    return profiles
+
+
+def ensure_workload_profile_supported(cmd, env_name, env_rg, workload_profile_name, managed_env_info):
+    profile_names = [p["name"] for p in safe_get(managed_env_info, "properties", "workloadProfiles", default=[])]
+    profile_names_lower = [p.lower() for p in profile_names]
+    if workload_profile_name.lower() not in profile_names_lower:
+        raise ValidationError(f"Not a valid workload profile name: '{workload_profile_name}'. The valid workload profiles names for this environment are: '{', '.join(profile_names)}'")
+
+
+def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, action):
+    updated = False
+    for e in ip_restrictions:
+        if ip_restriction_name.lower() == e["name"].lower():
+            e["description"] = description
+            e["ipAddressRange"] = ip_address_range
+            e["action"] = action
+            updated = True
+            break
+    if not updated:
+        new_ip_restriction = {
+            "name": ip_restriction_name,
+            "description": description,
+            "ipAddressRange": ip_address_range,
+            "action": action
+        }
+        ip_restrictions.append(new_ip_restriction)
+    return ip_restrictions
+
+
 def _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, logs_destination):
     if logs_destination != "azure-monitor":
         if storage_account:
             logger.warning("Storage accounts only accepted for Azure Monitor logs destination. Ignoring storage account value.")
         return
     if not storage_account:
-        logger.warning("Azure monitor must be set up manually. Run `az monitor diagnostic-settings create --name mydiagnosticsettings --resource myManagedEnvironmentId --storage-account myStorageAccountId --logs myJsonLogSettings` to set up Azure Monitor diagnostic settings on your storage account.")
+        logger.warning("Azure monitor must be set up manually. Run `az monitor diagnostic-settings create --name mydiagnosticsettings --resource myEnvironmentId --storage-account myStorageAccountId --logs myJsonLogSettings` to set up Azure Monitor diagnostic settings on your storage account.")
         return
 
     from azure.cli.command_modules.monitor.operations.diagnostics_settings import create_diagnostics_settings
@@ -1583,3 +1662,21 @@ def _azure_monitor_quickstart(cmd, name, resource_group_name, storage_account, l
         logger.warning("Azure Monitor diagnastic settings created successfully.")
     except Exception as ex:
         handle_raw_exception(ex)
+
+
+def certificate_location_matches(certificate_object, location=None):
+    return certificate_object["location"] == location or not location
+
+
+def certificate_thumbprint_matches(certificate_object, thumbprint=None):
+    return certificate_object["properties"]["thumbprint"] == thumbprint or not thumbprint
+
+
+def certificate_matches(certificate_object, location=None, thumbprint=None):
+    return certificate_location_matches(certificate_object, location) and certificate_thumbprint_matches(certificate_object, thumbprint)
+
+
+def format_location(location=None):
+    if location:
+        return location.lower().replace(" ", "").replace("(", "").replace(")", "")
+    return location
