@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 
 PREVIEW_API_VERSION = "2022-11-01-preview"
 CURRENT_API_VERSION = "2022-11-01-preview"
-JOBS_API_VERSION = "2022-11-01-preview"
+JOBS_API_VERSION = "2023-04-01-preview"
 POLLING_TIMEOUT = 600  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -1063,7 +1063,7 @@ class ContainerAppsJobClient():
                 logger.warning('Containerapps job successfully deleted')
 
     @classmethod
-    def start_job(cls, cmd, resource_group_name, name):
+    def start_job(cls, cmd, resource_group_name, name, containerapp_job_start_envelope):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = JOBS_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -1074,8 +1074,11 @@ class ContainerAppsJobClient():
             resource_group_name,
             name,
             api_version)
-
-        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        if containerapp_job_start_envelope is None:
+            r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        else:
+            r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(containerapp_job_start_envelope))
+        
         return r.json()
 
     @classmethod

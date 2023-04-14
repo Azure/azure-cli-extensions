@@ -42,8 +42,10 @@ from ._models import (
     JobConfiguration as JobConfigurationModel,
     ManualTriggerConfig as ManualTriggerModel,
     ScheduleTriggerConfig as ScheduleTriggerModel,
+    EventTriggerConfig as EventTriggerModel,
     Template as TemplateModel,
     JobTemplate as JobTemplateModel,
+    JobExecutionTemplate as JobExecutionTemplateModel,
     RegistryCredentials as RegistryCredentialsModel,
     ContainerApp as ContainerAppModel,
     ContainerAppsJob as ContainerAppsJobModel,
@@ -1291,6 +1293,12 @@ def create_containerappsjob(cmd,
                             registry_pass=None,
                             startup_command=None,
                             args=None,
+                            scale_rule_metadata=None,
+                            scale_rule_name=None,
+                            scale_rule_type=None,
+                            scale_rule_auth=None,
+                            min_replicas=None,
+                            max_replicas=None,
                             tags=None,
                             no_wait=False,
                             system_assigned=False,
@@ -1306,7 +1314,7 @@ def create_containerappsjob(cmd,
         create_acrpull_role_assignment(cmd, registry_server, registry_identity, skip_error=True)
 
     if yaml:
-        if image or managed_env or trigger_type or replica_timeout or replica_retry_limit or target_port or\
+        if image or managed_env or trigger_type or replica_timeout or replica_retry_limit or\
             replica_count or parallelism or cron_expression or cpu or memory or registry_server or\
             registry_user or registry_pass or secrets or env_vars or\
                 startup_command or args or tags:
@@ -1349,6 +1357,38 @@ def create_containerappsjob(cmd,
         scheduleTriggerConfig_def["parallelism"] = parallelism
         scheduleTriggerConfig_def["cronExpression"] = cron_expression
 
+    eventTriggerConfig_def = None
+    if trigger_type is not None and trigger_type.lower() == "event":
+        scale_def = None
+        if min_replicas is not None or max_replicas is not None:
+            scale_def = ScaleModel
+            scale_def["minReplicas"] = min_replicas
+            scale_def["maxReplicas"] = max_replicas
+
+        if scale_rule_name:
+            if not scale_rule_type:
+                scale_rule_type = "http"
+            scale_rule_type = scale_rule_type.lower()
+            scale_rule_def = ScaleRuleModel
+            curr_metadata = {}
+            metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
+            auth_def = parse_auth_flags(scale_rule_auth)
+            scale_rule_def["name"] = scale_rule_name
+            scale_rule_def["http"] = None
+            scale_rule_def["custom"] = {}
+            scale_rule_def["custom"]["type"] = scale_rule_type
+            scale_rule_def["custom"]["metadata"] = metadata_def
+            scale_rule_def["custom"]["auth"] = auth_def
+            
+            if not scale_def:
+                scale_def = ScaleModel
+            scale_def["rules"] = [scale_rule_def]
+        
+        eventTriggerConfig_def = EventTriggerModel
+        eventTriggerConfig_def["replicaCompletionCount"] = replica_count
+        eventTriggerConfig_def["parallelism"] = parallelism
+        eventTriggerConfig_def["scale"] = scale_def
+    
     secrets_def = None
     if secrets is not None:
         secrets_def = parse_secret_flags(secrets)
@@ -1519,6 +1559,12 @@ def update_containerappsjob(cmd,
                             memory=None,
                             startup_command=None,
                             args=None,
+                            scale_rule_metadata=None,
+                            scale_rule_name=None,
+                            scale_rule_type=None,
+                            scale_rule_auth=None,
+                            min_replicas=None,
+                            max_replicas=None,
                             tags=None,
                             no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
@@ -1543,6 +1589,12 @@ def update_containerappsjob(cmd,
                                          startup_command=startup_command,
                                          args=args,
                                          tags=tags,
+                                         scale_rule_metadata=None,
+                                         scale_rule_name=None,
+                                         scale_rule_type=None,
+                                         scale_rule_auth=None,
+                                         min_replicas=None,
+                                         max_replicas=None,
                                          no_wait=no_wait)
 
 
@@ -1566,6 +1618,12 @@ def update_containerappsjob_logic(cmd,
                                   startup_command=None,
                                   args=None,
                                   tags=None,
+                                  scale_rule_metadata=None,
+                                  scale_rule_name=None,
+                                  scale_rule_type=None,
+                                  scale_rule_auth=None,
+                                  min_replicas=None,
+                                  max_replicas=None,
                                   no_wait=False,
                                   registry_server=None,
                                   registry_user=None,
@@ -1601,7 +1659,7 @@ def update_containerappsjob_logic(cmd,
 
     update_map = {}
     update_map['replicaConfigurations'] = replica_timeout or replica_retry_limit
-    update_map['triggerConfigurations'] = replica_count or parallelism or cron_expression
+    update_map['triggerConfigurations'] = replica_count or parallelism or cron_expression or scale_rule_name
     update_map['container'] = image or container_name or set_env_vars is not None or remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None
     update_map['registry'] = registry_server or registry_user or registry_pass
 
@@ -1641,7 +1699,52 @@ def update_containerappsjob_logic(cmd,
                 if cron_expression:
                     scheduleTriggerConfig_def["cronExpression"] = cron_expression
             new_containerappsjob["properties"]["configuration"]["scheduleTriggerConfig"] = scheduleTriggerConfig_def
+        if containerappsjob_def["properties"]["configuration"]["triggerType"] == "Event":
+            eventTriggerConfig_def = None
+            eventTriggerConfig_def = containerappsjob_def["properties"]["configuration"]["eventTriggerConfig"]
+            if replica_count is not None or parallelism is not None:
+                if replica_count:
+                    eventTriggerConfig_def["replicaCompletionCount"] = replica_count
+                if parallelism:
+                    eventTriggerConfig_def["parallelism"] = parallelism
+                
+                # Scale
+                if "scale" not in eventTriggerConfig_def["properties"]["template"]:
+                    eventTriggerConfig_def["scale"] = {}
+                if min_replicas is not None:
+                    eventTriggerConfig_def["scale"]["minReplicas"] = min_replicas
+                if max_replicas is not None:
+                    eventTriggerConfig_def["scale"]["maxReplicas"] = max_replicas
 
+                scale_def = None
+                if min_replicas is not None or max_replicas is not None:
+                    scale_def = ScaleModel
+                    scale_def["minReplicas"] = min_replicas
+                    scale_def["maxReplicas"] = max_replicas
+                # so we don't overwrite rules
+                if safe_get(eventTriggerConfig_def, "scale", "rules"):
+                    eventTriggerConfig_def["scale"].pop(["rules"])
+                if scale_rule_name:
+                    if not scale_rule_type:
+                        scale_rule_type = "http"
+                    scale_rule_type = scale_rule_type.lower()
+                    scale_rule_def = ScaleRuleModel
+                    curr_metadata = {}
+                    metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
+                    auth_def = parse_auth_flags(scale_rule_auth)
+                    scale_rule_def["name"] = scale_rule_name
+                    scale_rule_def["http"] = None
+                    scale_rule_def["custom"] = {}
+                    scale_rule_def["custom"]["type"] = scale_rule_type
+                    scale_rule_def["custom"]["metadata"] = metadata_def
+                    scale_rule_def["custom"]["auth"] = auth_def
+                    if not scale_def:
+                        scale_def = ScaleModel
+                    scale_def["rules"] = [scale_rule_def]
+                    eventTriggerConfig_def["scale"]["rules"] = scale_def["rules"]
+                
+            new_containerappsjob["properties"]["configuration"]["eventTriggerConfig"] = eventTriggerConfig_def
+            
     # Containers
     if update_map["container"]:
         new_containerappsjob["properties"]["template"] = {} if "template" not in new_containerappsjob["properties"] else new_containerappsjob["properties"]["template"]
@@ -2026,9 +2129,43 @@ def update_containerappjob_yaml(cmd, name, resource_group_name, file_name, no_wa
         handle_raw_exception(e)
 
 
-def start_containerappsjob(cmd, resource_group_name, name):
+def start_containerappsjob(cmd, 
+                           resource_group_name,
+                           name,
+                           image=None, 
+                           container_name=None,
+                           env_vars=None,
+                           startup_command=None,
+                           args=None,
+                           cpu=None,
+                           memory=None,
+                           registry_identity=None):
+    template_def = None
+    
+    if image is not None:
+        template_def = JobExecutionTemplateModel
+        container_def = ContainerModel        
+        resources_def = None
+        if cpu is not None or memory is not None:
+            resources_def = ContainerResourcesModel
+            resources_def["cpu"] = cpu
+            resources_def["memory"] = memory
+        
+        container_def["name"] = container_name if container_name else name
+        container_def["image"] = image if not is_registry_msi_system(registry_identity) else HELLO_WORLD_IMAGE
+        if env_vars is not None:
+            container_def["env"] = parse_env_var_flags(env_vars)
+        if startup_command is not None:
+            container_def["command"] = startup_command
+        if args is not None:
+            container_def["args"] = args
+        if resources_def is not None:
+            container_def["resources"] = resources_def
+        
+        template_def["template"]["containers"] = [container_def]
+    
     try:
-        return ContainerAppsJobClient.start_job(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        return ContainerAppsJobClient.start_job(cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_start_envelope=template_def)
     except CLIError as e:
         handle_raw_exception(e)
 

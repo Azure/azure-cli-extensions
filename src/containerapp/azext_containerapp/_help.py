@@ -566,12 +566,27 @@ helps['containerapp job create'] = """
     - name: Create a container apps job with Trigger Type as Schedule.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
-              --trigger-type Manual \\
+              --trigger-type Schedule \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
               --replica-count 1 \\
               --parallelism 1
               --cron-expression */1 * * * * \\
+              --image imageName
+    - name: Create a container apps job with Trigger Type as Event.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --trigger-type Event \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-count 1 \\
+              --parallelism 1 \\
+              --min-replicas 0 \\
+              --max-replicas 1 \\
+              --scale-rule-name messageQueueJob \\
+              --scale-rule-type type_of_scale_rule \\
+              --scale_rule_metadata metadata \\
+              --scale_rule_auth scale_rule_auth \\
               --image imageName
 """
 
@@ -620,6 +635,8 @@ helps['containerapp job start'] = """
     examples:
     - name: Start a job execution.
       text: az containerapp job start -n MyContainerappjob -g MyResourceGroup
+    - name: Start a job with different image and configurations.
+      text: az containerapp job start -n MyContainerappjob -g MyResourceGroup --image MyImageName --cpu 0.5 --memory 1.0Gi
 """
 
 helps['containerapp job stop'] = """

@@ -183,6 +183,14 @@ JobTemplate = {
     "volumes": None  # [Volume]
 }
 
+# Added template for starting job executions
+JobExecutionTemplate = {
+    "template": {
+        "containers": None,  # [Container]
+        "initContainers": None  # [Container]
+    }
+}
+
 JobConfiguration = {
     "secrets": None,  # [Secret]
     "triggerType": None,  # 'manual' or 'schedule' or 'event'
@@ -203,6 +211,12 @@ ScheduleTriggerConfig = {
     "replicaCompletionCount": None,
     "parallelism": None,
     "cronExpression": None
+}
+
+EventTriggerConfig = {
+    "replicaCompletionCount": None,
+    "parallelism": None,
+    "scale": None, #[Scale]
 }
 
 UserAssignedIdentity = {
