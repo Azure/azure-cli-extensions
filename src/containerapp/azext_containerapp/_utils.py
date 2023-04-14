@@ -1611,8 +1611,9 @@ def get_default_workload_profiles(cmd, location):
 
 def ensure_workload_profile_supported(cmd, env_name, env_rg, workload_profile_name, managed_env_info):
     profile_names = [p["name"] for p in safe_get(managed_env_info, "properties", "workloadProfiles", default=[])]
-    if workload_profile_name not in profile_names:
-        raise ValidationError(f"Not a valid workload profile name: '{workload_profile_name}'. Run 'az containerapp env workload-profile list -n myEnv -g myResourceGroup' to see options.")
+    profile_names_lower = [p.lower() for p in profile_names]
+    if workload_profile_name.lower() not in profile_names_lower:
+        raise ValidationError(f"Not a valid workload profile name: '{workload_profile_name}'. The valid workload profiles names for this environment are: '{', '.join(profile_names)}'")
 
 
 def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, action):

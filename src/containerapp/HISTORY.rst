@@ -8,6 +8,7 @@ Upcoming
 * 'az containerapp update': change --max-replicas limit
 * Add CLI support for containerapp ingress sticky-sessions'
 * Change quickstart image
+* 'az containerapp create': fix yaml not detecting workloadProfileName
 
 0.3.27
 ++++++
