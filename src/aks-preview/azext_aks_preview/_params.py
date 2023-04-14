@@ -759,6 +759,7 @@ def load_arguments(self, _):
 
     with self.argument_context('aks pod-identity') as c:
         c.argument('cluster_name', help='The cluster name.')
+        c.argument('aks_custom_headers', help='Send custom headers. When specified, format should be Key1=Value1,Key2=Value2.')
 
     with self.argument_context('aks pod-identity add') as c:
         c.argument('identity_name', options_list=['--name', '-n'], default=None, required=False,

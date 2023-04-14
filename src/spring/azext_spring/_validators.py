@@ -261,6 +261,14 @@ def validate_tracing_parameters_asc_create(namespace):
     _validate_app_insights_parameters(namespace)
 
 
+def validate_dataplane_public_endpoint(namespace):
+    if namespace.enable_log_stream_public_endpoint is not None and namespace.enable_dataplane_public_endpoint is not None:
+        if namespace.enable_log_stream_public_endpoint != namespace.enable_dataplane_public_endpoint:
+            raise InvalidArgumentValueError("The value of enable_log_stream_public_endpoint and "
+                                            "enable_dataplane_public_endpoint should be the same, "
+                                            "you cannot set one to false and another to true.")
+
+
 def validate_tracing_parameters_asc_update(namespace):
     if (namespace.app_insights or namespace.app_insights_key) and namespace.disable_app_insights:
         raise InvalidArgumentValueError(

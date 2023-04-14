@@ -234,7 +234,8 @@ ContainerApp = {
     "properties": {
         "environmentId": None,
         "configuration": None,  # Configuration
-        "template": None  # Template
+        "template": None,  # Template
+        "workloadProfileName": None
     },
     "tags": None
 }

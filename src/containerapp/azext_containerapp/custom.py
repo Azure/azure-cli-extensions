@@ -103,7 +103,7 @@ def process_loaded_yaml(yaml_containerapp):
             yaml_containerapp['identity']['userAssignedIdentities'][identity] = {}
 
     nested_properties = ["provisioningState", "managedEnvironmentId", "environmentId", "latestRevisionName", "latestRevisionFqdn",
-                         "customDomainVerificationId", "configuration", "template", "outboundIPAddresses"]
+                         "customDomainVerificationId", "configuration", "template", "outboundIPAddresses", "workloadProfileName"]
     for nested_property in nested_properties:
         tmp = yaml_containerapp.get(nested_property)
         if tmp:
@@ -274,6 +274,10 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
     # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
     _remove_additional_attributes(containerapp_def)
     _remove_readonly_attributes(containerapp_def)
+
+    # Remove extra workloadProfileName introduced in deserialization
+    if "workloadProfileName" in containerapp_def:
+        del containerapp_def["workloadProfileName"]
 
     # Validate managed environment
     if not containerapp_def["properties"].get('environmentId'):
@@ -692,6 +696,20 @@ def update_containerapp_logic(cmd,
 
     if workload_profile_name:
         new_containerapp["properties"]["workloadProfileName"] = workload_profile_name
+
+        parsed_managed_env = parse_resource_id(containerapp_def["properties"]["managedEnvironmentId"])
+        managed_env_name = parsed_managed_env['name']
+        managed_env_rg = parsed_managed_env['resource_group']
+        managed_env_info = None
+        try:
+            managed_env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=managed_env_rg, name=managed_env_name)
+        except:
+            pass
+
+        if not managed_env_info:
+            raise ValidationError("Error parsing the managed environment '{}' from the specified containerapp".format(managed_env_name))
+
+        ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile_name, managed_env_info)
 
     # Containers
     if update_map["container"]:

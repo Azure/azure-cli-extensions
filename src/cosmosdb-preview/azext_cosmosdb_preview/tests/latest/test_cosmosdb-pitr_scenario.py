@@ -807,7 +807,7 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
             'default_id2' : default_id2
         })
 
-        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc} --assign-identity {user_id_2} --default-identity {default_id2}')
+        self.cmd('az cosmosdb restore -n {restored_acc} -g {rg} -a {acc} --restore-timestamp {rts} --location {loc} --assign-identity {user_id_2} --default-identity {default_id2} --enable-public-network False')
         restored_account = self.cmd('az cosmosdb show -n {restored_acc} -g {rg}', checks=[
             self.check('restoreParameters.restoreMode', 'PointInTime')
         ]).get_output_in_json()
@@ -820,3 +820,6 @@ class Cosmosdb_previewPitrScenarioTest(ScenarioTest):
 
         restored_account_defaultIdentity = restored_account['defaultIdentity']
         assert user_id_2 in restored_account_defaultIdentity
+
+        public_network_access = restored_account['publicNetworkAccess']
+        assert public_network_access == 'Disabled'
