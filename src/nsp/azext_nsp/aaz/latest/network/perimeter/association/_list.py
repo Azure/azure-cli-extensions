@@ -66,7 +66,17 @@ class List(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.NspAssociationsList(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
@@ -191,9 +201,9 @@ class List(AAZCommand):
             properties.private_link_resource = AAZObjectType(
                 serialized_name="privateLinkResource",
             )
-            _build_schema_sub_resource_read(properties.private_link_resource)
+            _ListHelper._build_schema_sub_resource_read(properties.private_link_resource)
             properties.profile = AAZObjectType()
-            _build_schema_sub_resource_read(properties.profile)
+            _ListHelper._build_schema_sub_resource_read(properties.profile)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -205,21 +215,23 @@ class List(AAZCommand):
             return cls._schema_on_200
 
 
-_schema_sub_resource_read = None
+class _ListHelper:
+    """Helper class for List"""
 
+    _schema_sub_resource_read = None
 
-def _build_schema_sub_resource_read(_schema):
-    global _schema_sub_resource_read
-    if _schema_sub_resource_read is not None:
-        _schema.id = _schema_sub_resource_read.id
-        return
+    @classmethod
+    def _build_schema_sub_resource_read(cls, _schema):
+        if cls._schema_sub_resource_read is not None:
+            _schema.id = cls._schema_sub_resource_read.id
+            return
 
-    _schema_sub_resource_read = AAZObjectType()
+        cls._schema_sub_resource_read = _schema_sub_resource_read = AAZObjectType()
 
-    sub_resource_read = _schema_sub_resource_read
-    sub_resource_read.id = AAZStrType()
+        sub_resource_read = _schema_sub_resource_read
+        sub_resource_read.id = AAZStrType()
 
-    _schema.id = _schema_sub_resource_read.id
+        _schema.id = cls._schema_sub_resource_read.id
 
 
 __all__ = ["List"]

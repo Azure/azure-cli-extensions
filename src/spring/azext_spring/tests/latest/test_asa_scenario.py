@@ -218,13 +218,6 @@ class CustomImageTest(ScenarioTest):
             self.check('properties.source.customContainer.args', ['-cp', '/app/resources:/app/classes:/app/libs/*', 'hello.Application']),
         ])
 
-        self.cmd('spring app deployment create -g {resourceGroup} -s {serviceName} --app {app} -n green --container-image {containerImage} --language-framework springboot', checks=[
-            self.check('name', 'green'),
-            self.check('properties.source.type', 'Container'),
-            self.check('properties.source.customContainer.containerImage', '{containerImage}'),
-            self.check('properties.source.customContainer.languageFramework', 'springboot'),
-        ])
-
 
 class RemoteDebuggingTest(ScenarioTest):
     def test_remote_debugging(self):

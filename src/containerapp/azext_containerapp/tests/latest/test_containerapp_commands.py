@@ -696,7 +696,7 @@ class ContainerappRevisionTests(ScenarioTest):
 
         create_containerapp_env(self, env_name, resource_group)
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
 
         self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
             JMESPathCheck('external', True),
@@ -760,7 +760,7 @@ class ContainerappAnonymousRegistryTests(ScenarioTest):
 
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
-        image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+        image = "mcr.microsoft.com/k8se/quickstart:latest"
 
         create_containerapp_env(self, env, resource_group)
 
@@ -780,8 +780,8 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         app = self.create_random_name(prefix='aca', length=24)
         identity = self.create_random_name(prefix='id', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
-        image_source = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
-        image_name = f"{acr}.azurecr.io/azuredocs/containerapps-helloworld:latest"
+        image_source = "mcr.microsoft.com/k8se/quickstart:latest"
+        image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
 
         create_containerapp_env(self, env, resource_group)
 
@@ -803,8 +803,8 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
-        image_source = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
-        image_name = f"{acr}.azurecr.io/azuredocs/containerapps-helloworld:latest"
+        image_source = "mcr.microsoft.com/k8se/quickstart:latest"
+        image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
 
         create_containerapp_env(self, env, resource_group)
 

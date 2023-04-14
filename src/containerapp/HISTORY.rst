@@ -6,7 +6,11 @@ Release History
 ++++++
 * 'az containerapp secret set': fix help typo
 * 'az containerapp secret set': add more format validation for key vault secrets
+* 'az containerapp up': fix --location comparison logic
+* 'az containerapp update': change --max-replicas limit
 * Add CLI support for containerapp ingress sticky-sessions'
+* Change quickstart image
+* 'az containerapp create': fix yaml not detecting workloadProfileName
 
 0.3.27
 ++++++

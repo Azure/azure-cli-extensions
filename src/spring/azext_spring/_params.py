@@ -16,7 +16,7 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_ingress_timeout, validate_jar, validate_ingress_send_timeout,
                           validate_ingress_session_max_age, validate_config_server_ssh_or_warn,
                           validate_remote_debugging_port, validate_ingress_client_auth_certificates,
-                          validate_managed_environment)
+                          validate_managed_environment, validate_dataplane_public_endpoint)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_source_path, validate_artifact_path, validate_build_create,
                                      validate_build_update, validate_container_registry, validate_central_build_instance,
@@ -83,8 +83,15 @@ def load_arguments(self, _):
                    validator=validate_vnet, default="loadBalancer")
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
+                   validator=validate_dataplane_public_endpoint,
+                   deprecate_info=c.deprecate(target='--enable-log-stream-public-endpoint', redirect='--enable-dataplane-public-endpoint', hide=True),
                    options_list=['--enable-log-stream-public-endpoint', '--enable-lspa'],
                    help='If true, assign public endpoint for log streaming in vnet injection instance which could be accessed out of virtual network.')
+        c.argument('enable_dataplane_public_endpoint',
+                   arg_type=get_three_state_flag(),
+                   validator=validate_dataplane_public_endpoint,
+                   options_list=['--enable-dataplane-public-endpoint', '--enable-dppa'],
+                   help='If true, assign public endpoint for log streaming, remote debugging, app connect in vnet injection instance which could be accessed out of virtual network.')
         c.argument('enable_java_agent',
                    arg_group='Application Insights',
                    arg_type=get_three_state_flag(),
@@ -225,8 +232,15 @@ def load_arguments(self, _):
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
+                   validator=validate_dataplane_public_endpoint,
+                   deprecate_info=c.deprecate(target='--enable-log-stream-public-endpoint', redirect='--enable-dataplane-public-endpoint', hide=True),
                    options_list=['--enable-log-stream-public-endpoint', '--enable-lspa'],
                    help='If true, assign public endpoint for log streaming in vnet injection instance which could be accessed out of virtual network.')
+        c.argument('enable_dataplane_public_endpoint',
+                   arg_type=get_three_state_flag(),
+                   validator=validate_dataplane_public_endpoint,
+                   options_list=['--enable-dataplane-public-endpoint', '--enable-dppa'],
+                   help='If true, assign public endpoint for log streaming, remote debugging, app connect in vnet injection instance which could be accessed out of virtual network.')
 
     for scope in ['spring create', 'spring update']:
         with self.argument_context(scope) as c:
@@ -830,6 +844,11 @@ def load_arguments(self, _):
         c.argument('allow_credentials', arg_group='Cross-origin Resource Sharing (CORS)', arg_type=get_three_state_flag(),
                    help="Whether user credentials are supported on cross-site requests.")
         c.argument('exposed_headers', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of HTTP response headers to expose for cross-site requests.")
+        c.argument('enable_certificate_verification', arg_type=get_three_state_flag(),
+                   arg_group='Client Certificate Authentication',
+                   options_list=['--enable-certificate-verification', '--enable-cert-verify'],
+                   help='If true, will verify certificate in TLS connection from gateway to app.')
+        c.argument('certificate_names', arg_group='Client Certificate Authentication', help="Comma-separated list of certificate names in Azure Spring Apps.")
 
     for scope in ['spring gateway custom-domain',
                   'spring api-portal custom-domain']:
