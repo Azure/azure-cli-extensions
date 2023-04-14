@@ -14,7 +14,7 @@ except ImportError:
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
 # HISTORY.rst entry.
-VERSION = '1.1.0'
+VERSION = '1.0.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -32,7 +32,7 @@ CLASSIFIERS = [
 
 DEPENDENCIES = []
 
-with open('README.rst', 'r', encoding='utf-8') as f:
+with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
 with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
@@ -40,11 +40,11 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='acrquery',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Acrtransfer Extension',
+    description='Microsoft Azure Command-Line Tools AcrQuery Extension',
     author='Microsoft Corporation',
     author_email='KraterDev@microsoft.com',
     url='https://github.com/Azure/azure-cli-extensions/tree/main/src/acrquery',
-    long_description=README + '\n\n' + HISTORY,
+    long_description='Support the Azure Container Registry metadata querying feature',
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
