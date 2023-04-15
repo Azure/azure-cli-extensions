@@ -115,7 +115,8 @@ class ScenarioAutoSuggest(AutoSuggest):
                 # if last part is a not a parameter or the last part is a bool parameter and the value is empty, suggest the first unused parameter
                 if (not last_part.startswith('-')) or self.param_sample_value_map[last_part] == '':
                     for param in unused_param:
-                        if param in self.special_global_param_map.keys():
+                        # the param is a special global parameter, such as '--location' and not given a customized value
+                        if param in self.special_global_param_map.keys() and self.param_sample_value_map[param].startswith('<'):
                             cached_param = param
                         else:
                             # cached_param is either the sample values in scenarios, such as <RESOURCEGROUPNAME> or some special global params, such as '--location'
@@ -123,8 +124,10 @@ class ScenarioAutoSuggest(AutoSuggest):
                         if cached_param:
                             if cached_param in self.customized_cached_param_map.keys():
                                 value = self.customized_cached_param_map[cached_param]
-                            else:
+                            elif cached_param.startswith('<') or cached_param.startswith('-'):
                                 value = ''
+                            else:
+                                value = cached_param
                             return Suggestion(' '.join([param, value]))
                         else:
                             return Suggestion(param)

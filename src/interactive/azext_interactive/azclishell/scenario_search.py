@@ -172,7 +172,7 @@ def search_result_to_scenario_list(search_results):
     for raw_scenario in search_results:
         # type 5 means the scenario is from online search
         scenario = {'scenario': raw_scenario['description'], 'nextCommandSet': raw_scenario['commandSet'],
-                    'source': raw_scenario['source'], 'type': 5, 'executeIndex': range(len(search_results)),
+                    'source': raw_scenario['source'], 'type': 5, 'executeIndex': range(len(raw_scenario['commandSet'])),
                     'score': raw_scenario['score'], 'reason': raw_scenario['description'],
                     'highlights': raw_scenario['highlights'], 'description': raw_scenario['description']}
         # update command list: az group list => group list

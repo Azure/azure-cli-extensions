@@ -22,6 +22,7 @@ class RecommendType(int, Enum):
     Command = 3
     Scenario = 4
     Search = 5
+    Chatgpt = 6
 
 
 class RecommendThread(threading.Thread):
@@ -394,7 +395,7 @@ def gen_command_in_scenario(scenario, file=None):
 def _get_command_sample(command):
     """Try getting example from command. Or load the example from `--help` if not found."""
     if "example" in command and command["example"]:
-        command_sample, _ = _format_command_sample(command["example"].replace(" $", " "))
+        command_sample, _ = _format_command_sample(command["example"])
         return command_sample
 
     from knack import help_files
@@ -417,6 +418,7 @@ def _get_command_sample(command):
 def _format_command_sample(command_sample):
     """
     Format command sample in the style of `az xxx --name <appServicePlan>`.
+    if the parameter dose not have $ to show it is customisable, it will return the raw command sample value. For example: -o tsv
     Also return the arguments used in the sample.
     """
     if not command_sample:
@@ -447,7 +449,8 @@ def _format_command_sample(command_sample):
         formatted_example.append((Style.PRIMARY, " " + argument))
         if argument in argument_values and argument_values[argument]:
             argument_value = ' '.join(argument_values[argument])
-            if not (argument_value.startswith('<') and argument_value.endswith('>')):
+            if argument_value.startswith('$'):
+                argument_value = argument_value[1:]
                 argument_value = '<' + argument_value + '>'
             formatted_example.append((Style.WARNING, ' ' + argument_value))
 
