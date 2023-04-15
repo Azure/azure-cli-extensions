@@ -54,6 +54,7 @@ from .scenario_suggest import ScenarioAutoSuggest
 from .threads import LoadCommandTableThread
 from .util import get_window_dim, parse_quotes, get_os_clear_screen_word, get_yes_or_no_option, select_option
 from .scenario_search import SearchThread, show_search_item
+from .chatgpt_generate import ChatgptThread
 
 NOTIFICATIONS = ""
 PART_SCREEN_EXAMPLE = .3
@@ -654,6 +655,7 @@ class AzInteractiveShell(object):
                                                    "submit an issue to ask for the scenario you need.")])
                 # -1 means no result
                 self.recommender.feedback_search("-1", keywords)
+                self.chatgpt_generation(text=keywords)
             else:
                 show_search_item(results)
 
@@ -663,10 +665,44 @@ class AzInteractiveShell(object):
                 if option == 0:
                     # 0 means no selection
                     self.recommender.feedback_search("0", keywords)
+                    self.chatgpt_generation(text=keywords)
                 if option > 0:
                     scenario = results[option - 1]
                     self.recommender.feedback_search(option, keywords, scenario=scenario)
                     self.scenario_repl(scenario)
+
+    def chatgpt_generation(self, text):
+        """ parses for the chatgpt generation """
+        step_msg = [(Style.PRIMARY, "\nDo you want to try out for the under preview Chatgpt Script Generation feature?"), (Style.SECONDARY, "(y/n)\n")]
+        # whether to generate script with chatgpt
+        generate_script = get_yes_or_no_option(step_msg)
+        if not generate_script:
+            return
+        self.recommender.cur_thread = ChatgptThread(self.recommender.cli_ctx, text,
+                                                    self.recommender.recommendation_path,
+                                                    self.recommender.executing_command,
+                                                    self.recommender.on_prepared_callback)
+        self.recommender.cur_thread.start()
+        # Wait for the search thread to finish
+        while self.recommender.cur_thread.is_alive():
+            try:
+                time.sleep(0.1)
+                if self.recommender.cur_thread.result:
+                    break
+            except (KeyboardInterrupt, ValueError):
+                # Catch CTRL + C to quit the search thread
+                break
+        if self.recommender.cur_thread.result is not None:
+            results = self.recommender.cur_thread.result
+            # If the result is a string, it means the search thread has encountered an error
+            if type(results) is str:
+                print_styled_text([(Style.WARNING, results)])
+                self.recommender.cur_thread.result = []
+                return
+            elif type(results) is list:
+                scenario = results[0]["content"]
+                self.scenario_repl(scenario)
+
 
     def _special_cases(self, cmd, outside):
         break_flag = False
