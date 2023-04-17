@@ -91,6 +91,8 @@ class FleetScenarioTest(ScenarioTest):
         self.cmd('fleet member show -g {rg} --fleet-name {fleet_name} -n {member_name}', checks=[
             self.check('name', '{member_name}')
         ])
+
+        self.cmd('aks wait -g {rg} -n {member_name} --created', checks=[self.is_empty()])
         
         self.cmd('fleet member delete -g {rg} --fleet-name {fleet_name} -n {member_name}')
 
