@@ -990,6 +990,14 @@ helps['spring gateway update'] = """
           text: az spring gateway update -s MyService -g MyResourceGroup --assign-endpoint true --https-only true
 """
 
+helps['spring gateway sync-cert'] = """
+    type: command
+    short-summary: Sync certificate of gateway.
+    examples:
+        - name: Sync certificate of gateway.
+          text: az spring gateway sync-cert -s MyService -g MyResourceGroup
+"""
+
 helps['spring gateway route-config'] = """
     type: group
     short-summary: Commands to manage gateway route configs in Azure Spring Apps.
