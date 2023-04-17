@@ -1,5 +1,9 @@
 Release History
 ===============
+1.11.2
+---
+* Refine `az spring app create` command from 3 steps to 2 steps.
+
 1.11.1
 ---
 * Add argument `--ca-cert-name` in `az spring application-accelerator customized-accelerator update` and command `az spring application-accelerator customized-accelerator sync-cert`.
