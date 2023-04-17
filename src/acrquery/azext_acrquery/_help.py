@@ -1,4 +1,3 @@
-# coding=utf-8
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -17,9 +16,9 @@ helps['acr query'] = """
     short-summary: Query for artifacts in ACR using the Kusto Query Language.
     long-summary: Query for artifacts and images in an Azure Container Registry using the Kusto Query Language. OCI manifest properties such as digest, subject, annotations, etc. can be used to query, filter, and order search results.
     examples:
-        - name: Fetch a single manifest 
-          text: az acr query -n $MyRegistry -q "Manifests | limit 1" 
-        
+        - name: Fetch a single manifest
+          text: az acr query -n $MyRegistry -q "Manifests | limit 1"
+
         - name: List all manifests in repository $RepositoryName in order of creation date
           text: az acr query -n $MyRegistry --repository $RepositoryName -q "Manifests | order by createdAt desc"
 
@@ -29,4 +28,3 @@ helps['acr query'] = """
         - name: Query for the digests in a registry using a skip token (for results with pagination)
           text: az acr query -n $MyRegistry -q "Manifests | project digest | order by digest asc" --skip-token eyAibm8iOiAibHVjayIsICJidXQiOiAibmljZSIsICJ0cnkiOiAiISIgfQ==
 """
-

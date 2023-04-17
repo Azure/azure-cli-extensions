@@ -9,19 +9,20 @@ from ._client_factory import cf_metadata
 from azure.cli.core.commands import CliCommandType
 from ._format import transform_metadata_output
 
+
 class AcrqueryCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         acrquery_custom = CliCommandType(
-             operations_tmpl='azext_acrquery.custom#{}',
-             client_factory=cf_metadata)
+            operations_tmpl='azext_acrquery.custom#{}',
+            client_factory=cf_metadata)
         super(AcrqueryCommandsLoader, self).__init__(cli_ctx=cli_ctx, custom_command_type=acrquery_custom)
-        
+
     def load_command_table(self, _):
         acr_metadata_util = CliCommandType(
-             operations_tmpl='azext_acrquery.custom#{}',
-             client_factory=cf_metadata)
-        
+            operations_tmpl='azext_acrquery.custom#{}',
+            client_factory=cf_metadata)
+
         with self.command_group('acr', acr_metadata_util) as g:
             g.custom_command('query', 'create_query')
 
