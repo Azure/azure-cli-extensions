@@ -26,9 +26,9 @@ Fetch a single manifest
 az acr query -n MyRegistry -q "Manifests | limit 1"
 ```
 \
-List all manifests within a repository, order by image size
+List all manifests within a repository in order of creation date
 ```bash
-az acr query -n MyRegistry --repository MyRepository -q "Manifests | order by imageSize desc"
+az acr query -n MyRegistry --repository MyRepository -q "Manifests | order by createdAt desc"
 ```
 \
 Query for images that have a specific OS and architecture
