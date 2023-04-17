@@ -887,6 +887,21 @@ class ContainerappScaleTests(ScenarioTest):
 
         ])
 
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --cpu 0.5 --no-wait')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.template.containers[0].resources.cpu", "0.5"),
+            JMESPathCheck("properties.template.scale.rules[0].name", "my-datadog-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.type", "datadog"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.queryValue", "7"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.age", "120"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.metricUnavailableValue", "0"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[0].triggerParameter", "apiKey"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[0].secretRef", "api-key"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].triggerParameter", "appKey"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].secretRef", "app-key"),
+        ])
+
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     def test_containerapp_scale_revision_copy(self, resource_group):
