@@ -316,7 +316,7 @@ def load_arguments(self, _):
         c.argument('assign_public_endpoint',
                    arg_type=get_three_state_flag(),
                    help='If true, assign endpoint URL which could be accessed out of virtual network for vnet injection instance app.')
-        c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
+        c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https')
         c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
                    help='If true, enable ingress to app tls',
                    options_list=['--enable-ingress-to-app-tls', c.deprecate(target='--enable-end-to-end-tls', redirect='--enable-ingress-to-app-tls', hide=True)])
