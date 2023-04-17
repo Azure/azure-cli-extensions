@@ -19,10 +19,31 @@ The az acr query extension provides support to KQL (Kusto Querying Language) que
 | `--skip-token` | Skip token to get the next page of the query if applicable. | No | String |
 
 
-**Command example**
+**Command examples**
 
+Fetch a single manifest
+```bash
+az acr query -n MyRegistry -q "Manifests | limit 1"
+```
+\
+List all manifests within a repository, order by image size
+```bash
+az acr query -n MyRegistry --repository MyRepository -q "Manifests | order by imageSize desc"
+```
+\
+Query for images that have a specific OS and architecture
+```bash
+az acr query -n MyRegistry -q "Manifests | where mediaType == 'application/vnd.docker.distribution.manifest.v2+json' and os == 'linux' and architecture == 'amd64'"
+```
+\
+Query for images that are larger than 1 GB and order response based on image size
+
+```bash
+az acr query -n MyRegistry -q "Manifests | where mediaType == 'application/vnd.docker.distribution.manifest.v2+json' | where imageSize > 1000000000 | project imageSize, digest, repository | order by imageSize desc"
+```
+\
 Query for all digests in 'MyRegistry' signed by 'wabbit-networks.io' in the repository 'MyRepository'
 
 ```bash
-az acr query -n MyRegistry --repository MyRepository -q "Manifests | where annotations['org.cncf.notary.signature.subject'] == 'wabbit-networks.io' | project createdAt, digest, subject"
+az acr query -n MyRegistry --repository MyRepository -q "Manifests | where annotations['org.cncf.notary.signature.subject'] == 'wabbit-networks.io' | project createdAt, digest, subject, repository"
 ```
