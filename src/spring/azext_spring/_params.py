@@ -316,7 +316,7 @@ def load_arguments(self, _):
         c.argument('assign_public_endpoint',
                    arg_type=get_three_state_flag(),
                    help='If true, assign endpoint URL which could be accessed out of virtual network for vnet injection instance app.')
-        c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
+        c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https')
         c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
                    help='If true, enable ingress to app tls',
                    options_list=['--enable-ingress-to-app-tls', c.deprecate(target='--enable-end-to-end-tls', redirect='--enable-ingress-to-app-tls', hide=True)])
@@ -844,6 +844,11 @@ def load_arguments(self, _):
         c.argument('allow_credentials', arg_group='Cross-origin Resource Sharing (CORS)', arg_type=get_three_state_flag(),
                    help="Whether user credentials are supported on cross-site requests.")
         c.argument('exposed_headers', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of HTTP response headers to expose for cross-site requests.")
+        c.argument('enable_certificate_verification', arg_type=get_three_state_flag(),
+                   arg_group='Client Certificate Authentication',
+                   options_list=['--enable-certificate-verification', '--enable-cert-verify'],
+                   help='If true, will verify certificate in TLS connection from gateway to app.')
+        c.argument('certificate_names', arg_group='Client Certificate Authentication', help="Comma-separated list of certificate names in Azure Spring Apps.")
 
     for scope in ['spring gateway custom-domain',
                   'spring api-portal custom-domain']:
