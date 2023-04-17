@@ -8,7 +8,7 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['spring-cloud'] = """
     type: group
-    short-summary: Commands to manage Azure Spring Cloud.
+    short-summary: Commands to manage Azure Spring Cloud. This command group has been deprecated and we recommend you to upgrade to the new 'spring' command group by installing the 'spring' extension: run az extension add -n spring
 """
 
 helps['spring-cloud create'] = """
