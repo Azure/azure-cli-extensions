@@ -4,10 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_acrquery._help import helps  # pylint: disable=unused-import
 from ._client_factory import cf_metadata
 from azure.cli.core.commands import CliCommandType
-from ._format import transform_metadata_output
 
 
 class AcrqueryCommandsLoader(AzCommandsLoader):

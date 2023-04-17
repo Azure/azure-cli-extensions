@@ -3,8 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-VERSION_2023_01_01_PREVIEW = "2023-01-01-preview"
 from azure.cli.core.profiles import ResourceType
+VERSION_2023_01_01_PREVIEW = "2023-01-01-preview"
 
 
 def cf_metadata(cli_ctx, *_):

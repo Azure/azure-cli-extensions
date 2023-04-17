@@ -5,13 +5,8 @@
 
 import unittest
 from unittest import mock
-import sys
 import json
-import requests
 
-# change to most recent?
-from azure.mgmt.containerregistry.v2019_05_01.models import Registry, Sku
- 
 from azext_acrquery.query import (
     create_query
 )
@@ -21,8 +16,8 @@ from azure.cli.command_modules.acr._docker_utils import (
     get_authorization_header,
 )
 
-from azure.cli.command_modules.acr._docker_utils import ResourceNotFound
 from azure.cli.core.mock import DummyCli
+
 
 class AcrQueryCommandsTests(unittest.TestCase):
 
@@ -64,7 +59,7 @@ class AcrQueryCommandsTests(unittest.TestCase):
             },
             timeout=300,
             verify=mock.ANY)
-        
+
         # Filter by repository
         mock_get_access_credentials.return_value = 'testregistry.azurecr.io', EMPTY_GUID, 'password'
         create_query(cmd, 'testregistry', 'get', repository='repository')
@@ -90,7 +85,7 @@ class AcrQueryCommandsTests(unittest.TestCase):
             json={
                 'query': 'get',
                 'options': {
-                '$skipToken': '12345678'
+                    '$skipToken': '12345678'
                 }
             },
             timeout=300,

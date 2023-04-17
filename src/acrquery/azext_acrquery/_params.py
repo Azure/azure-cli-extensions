@@ -5,7 +5,6 @@
 
 
 def load_arguments(self, _):
-    from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
     with self.argument_context('acr query') as c:
         c.argument('registry_name', options_list=['--name', '-n'], help='The name of the container registry that the query is run against.')

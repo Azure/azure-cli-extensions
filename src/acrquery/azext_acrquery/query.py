@@ -34,7 +34,7 @@ def create_query(cmd, registry_name, kql_query, repository=None, skip_token=None
 
     queryPath = ACR_IMAGE_SUFFIX
 
-    if repository != None:
+    if repository is not None:
         queryPath = queryPath + repository + "/"
 
     queryPath = queryPath + ACR_METADATA_PATH
@@ -43,7 +43,7 @@ def create_query(cmd, registry_name, kql_query, repository=None, skip_token=None
         json_payload = {
             'query': kql_query,
             'options': {
-            '$skipToken': skip_token
+                '$skipToken': skip_token
             }
         }
     else:
@@ -60,10 +60,10 @@ def create_query(cmd, registry_name, kql_query, repository=None, skip_token=None
 
 
 def _obtain_metadata_from_registry(login_server,
-                               path,
-                               username,
-                               password,
-                               json_payload):
+                                   path,
+                                   username,
+                                   password,
+                                   json_payload):
 
     result = request_data_from_registry(
         http_method='post',
