@@ -214,19 +214,6 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         return dictionary
 
-    def _convert_to_json(self, dictionary) -> Dict:
-        # need to make a deep copy so we can change the underlying config data
-        # dicts
-        editable = copy.deepcopy(dictionary)
-        out = {"length": len(editable), "elements": {}}
-
-        for i, container in enumerate(editable):
-            out["elements"][str(i)] = container
-
-        self._add_elements(out)
-
-        return {config.POLICY_FIELD_CONTAINERS: out}
-
     def validate_cce_policy(self) -> Tuple[bool, Dict]:
         """Utility method: check to see if the existing policy
         that instantiates this function would allow the policy created by the input ARM Template"""
