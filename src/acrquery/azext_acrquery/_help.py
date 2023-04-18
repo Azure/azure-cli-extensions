@@ -6,14 +6,14 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['acr query'] = """
-    type: group
-    short-summary: KQL querying against an ACR content.
-"""
+# helps['acr query'] = """
+#     type: group
+#     short-summary: KQL querying against ACR content.
+# """
 
 helps['acr query'] = """
     type: command
-    short-summary: Query for artifacts in ACR using the Kusto Query Language.
+    short-summary: Query the content in an ACR using Kusto Query Language.
     long-summary: Query for artifacts and images in an Azure Container Registry using the Kusto Query Language. OCI manifest properties such as digest, subject, annotations, etc. can be used to query, filter, and order search results.
     examples:
         - name: Fetch a single manifest
