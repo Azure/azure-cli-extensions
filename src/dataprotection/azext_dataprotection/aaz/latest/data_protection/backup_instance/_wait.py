@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2022-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2023-01-01"],
         ]
     }
 
@@ -126,7 +126,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }
@@ -297,9 +297,70 @@ class Wait(AAZWaitCommand):
             )
 
             policy_parameters = cls._schema_on_200.properties.policy_info.policy_parameters
+            policy_parameters.backup_datasource_parameters_list = AAZListType(
+                serialized_name="backupDatasourceParametersList",
+            )
             policy_parameters.data_store_parameters_list = AAZListType(
                 serialized_name="dataStoreParametersList",
             )
+
+            backup_datasource_parameters_list = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list
+            backup_datasource_parameters_list.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element
+            _element.object_type = AAZStrType(
+                serialized_name="objectType",
+                flags={"required": True},
+            )
+
+            disc_blob_backup_datasource_parameters = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "BlobBackupDatasourceParameters")
+            disc_blob_backup_datasource_parameters.containers_list = AAZListType(
+                serialized_name="containersList",
+                flags={"required": True},
+            )
+
+            containers_list = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "BlobBackupDatasourceParameters").containers_list
+            containers_list.Element = AAZStrType()
+
+            disc_kubernetes_cluster_backup_datasource_parameters = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters")
+            disc_kubernetes_cluster_backup_datasource_parameters.excluded_namespaces = AAZListType(
+                serialized_name="excludedNamespaces",
+            )
+            disc_kubernetes_cluster_backup_datasource_parameters.excluded_resource_types = AAZListType(
+                serialized_name="excludedResourceTypes",
+            )
+            disc_kubernetes_cluster_backup_datasource_parameters.include_cluster_scope_resources = AAZBoolType(
+                serialized_name="includeClusterScopeResources",
+                flags={"required": True},
+            )
+            disc_kubernetes_cluster_backup_datasource_parameters.included_namespaces = AAZListType(
+                serialized_name="includedNamespaces",
+            )
+            disc_kubernetes_cluster_backup_datasource_parameters.included_resource_types = AAZListType(
+                serialized_name="includedResourceTypes",
+            )
+            disc_kubernetes_cluster_backup_datasource_parameters.label_selectors = AAZListType(
+                serialized_name="labelSelectors",
+            )
+            disc_kubernetes_cluster_backup_datasource_parameters.snapshot_volumes = AAZBoolType(
+                serialized_name="snapshotVolumes",
+                flags={"required": True},
+            )
+
+            excluded_namespaces = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").excluded_namespaces
+            excluded_namespaces.Element = AAZStrType()
+
+            excluded_resource_types = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").excluded_resource_types
+            excluded_resource_types.Element = AAZStrType()
+
+            included_namespaces = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").included_namespaces
+            included_namespaces.Element = AAZStrType()
+
+            included_resource_types = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").included_resource_types
+            included_resource_types.Element = AAZStrType()
+
+            label_selectors = cls._schema_on_200.properties.policy_info.policy_parameters.backup_datasource_parameters_list.Element.discriminate_by("object_type", "KubernetesClusterBackupDatasourceParameters").label_selectors
+            label_selectors.Element = AAZStrType()
 
             data_store_parameters_list = cls._schema_on_200.properties.policy_info.policy_parameters.data_store_parameters_list
             data_store_parameters_list.Element = AAZObjectType()

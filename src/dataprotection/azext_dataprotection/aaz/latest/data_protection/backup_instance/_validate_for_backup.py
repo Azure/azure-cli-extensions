@@ -13,16 +13,16 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "data-protection backup-instance validate-for-backup",
-    is_experimental=True,
+    is_preview=True,
 )
 class ValidateForBackup(AAZCommand):
     """Validate whether adhoc backup will be successful or not
     """
 
     _aaz_info = {
-        "version": "2022-12-01",
+        "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/validateforbackup", "2022-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/validateforbackup", "2023-01-01"],
         ]
     }
 
@@ -196,10 +196,82 @@ class ValidateForBackup(AAZCommand):
         )
 
         policy_parameters = cls._args_schema.backup_instance.policy_info.policy_parameters
+        policy_parameters.backup_datasource_parameters_list = AAZListArg(
+            options=["backup-datasource-parameters-list"],
+            help="Gets or sets the Backup Data Source Parameters",
+        )
         policy_parameters.data_store_parameters_list = AAZListArg(
             options=["data-store-parameters-list"],
             help="Gets or sets the DataStore Parameters",
         )
+
+        backup_datasource_parameters_list = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list
+        backup_datasource_parameters_list.Element = AAZObjectArg()
+
+        _element = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element
+        _element.blob_backup_datasource_parameters = AAZObjectArg(
+            options=["blob-backup-datasource-parameters"],
+        )
+        _element.kubernetes_cluster_backup_datasource_parameters = AAZObjectArg(
+            options=["kubernetes-cluster-backup-datasource-parameters"],
+        )
+
+        blob_backup_datasource_parameters = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.blob_backup_datasource_parameters
+        blob_backup_datasource_parameters.containers_list = AAZListArg(
+            options=["containers-list"],
+            help="List of containers to be backed up during configuration of backup of blobs",
+            required=True,
+        )
+
+        containers_list = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.blob_backup_datasource_parameters.containers_list
+        containers_list.Element = AAZStrArg()
+
+        kubernetes_cluster_backup_datasource_parameters = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.kubernetes_cluster_backup_datasource_parameters
+        kubernetes_cluster_backup_datasource_parameters.excluded_namespaces = AAZListArg(
+            options=["excluded-namespaces"],
+            help="Gets or sets the exclude namespaces property. This property sets the namespaces to be excluded during restore.",
+        )
+        kubernetes_cluster_backup_datasource_parameters.excluded_resource_types = AAZListArg(
+            options=["excluded-resource-types"],
+            help="Gets or sets the exclude resource types property. This property sets the resource types to be excluded during restore.",
+        )
+        kubernetes_cluster_backup_datasource_parameters.include_cluster_scope_resources = AAZBoolArg(
+            options=["include-cluster-scope-resources"],
+            help="Gets or sets the include cluster resources property. This property if enabled will include cluster scope resources during restore.",
+            required=True,
+        )
+        kubernetes_cluster_backup_datasource_parameters.included_namespaces = AAZListArg(
+            options=["included-namespaces"],
+            help="Gets or sets the include namespaces property. This property sets the namespaces to be included during restore.",
+        )
+        kubernetes_cluster_backup_datasource_parameters.included_resource_types = AAZListArg(
+            options=["included-resource-types"],
+            help="Gets or sets the include resource types property. This property sets the resource types to be included during restore.",
+        )
+        kubernetes_cluster_backup_datasource_parameters.label_selectors = AAZListArg(
+            options=["label-selectors"],
+            help="Gets or sets the LabelSelectors property. This property sets the resource with such label selectors to be included during restore.",
+        )
+        kubernetes_cluster_backup_datasource_parameters.snapshot_volumes = AAZBoolArg(
+            options=["snapshot-volumes"],
+            help="Gets or sets the volume snapshot property. This property if enabled will take volume snapshots during restore.",
+            required=True,
+        )
+
+        excluded_namespaces = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.kubernetes_cluster_backup_datasource_parameters.excluded_namespaces
+        excluded_namespaces.Element = AAZStrArg()
+
+        excluded_resource_types = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.kubernetes_cluster_backup_datasource_parameters.excluded_resource_types
+        excluded_resource_types.Element = AAZStrArg()
+
+        included_namespaces = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.kubernetes_cluster_backup_datasource_parameters.included_namespaces
+        included_namespaces.Element = AAZStrArg()
+
+        included_resource_types = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.kubernetes_cluster_backup_datasource_parameters.included_resource_types
+        included_resource_types.Element = AAZStrArg()
+
+        label_selectors = cls._args_schema.backup_instance.policy_info.policy_parameters.backup_datasource_parameters_list.Element.kubernetes_cluster_backup_datasource_parameters.label_selectors
+        label_selectors.Element = AAZStrArg()
 
         data_store_parameters_list = cls._args_schema.backup_instance.policy_info.policy_parameters.data_store_parameters_list
         data_store_parameters_list.Element = AAZObjectArg()
@@ -303,7 +375,7 @@ class ValidateForBackup(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }
@@ -382,7 +454,57 @@ class ValidateForBackup(AAZCommand):
 
             policy_parameters = _builder.get(".backupInstance.policyInfo.policyParameters")
             if policy_parameters is not None:
+                policy_parameters.set_prop("backupDatasourceParametersList", AAZListType, ".backup_datasource_parameters_list")
                 policy_parameters.set_prop("dataStoreParametersList", AAZListType, ".data_store_parameters_list")
+
+            backup_datasource_parameters_list = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList")
+            if backup_datasource_parameters_list is not None:
+                backup_datasource_parameters_list.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]")
+            if _elements is not None:
+                _elements.set_const("objectType", "BlobBackupDatasourceParameters", AAZStrType, ".blob_backup_datasource_parameters", typ_kwargs={"flags": {"required": True}})
+                _elements.set_const("objectType", "KubernetesClusterBackupDatasourceParameters", AAZStrType, ".kubernetes_cluster_backup_datasource_parameters", typ_kwargs={"flags": {"required": True}})
+                _elements.discriminate_by("objectType", "BlobBackupDatasourceParameters")
+                _elements.discriminate_by("objectType", "KubernetesClusterBackupDatasourceParameters")
+
+            disc_blob_backup_datasource_parameters = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:BlobBackupDatasourceParameters}")
+            if disc_blob_backup_datasource_parameters is not None:
+                disc_blob_backup_datasource_parameters.set_prop("containersList", AAZListType, ".blob_backup_datasource_parameters.containers_list", typ_kwargs={"flags": {"required": True}})
+
+            containers_list = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:BlobBackupDatasourceParameters}.containersList")
+            if containers_list is not None:
+                containers_list.set_elements(AAZStrType, ".")
+
+            disc_kubernetes_cluster_backup_datasource_parameters = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:KubernetesClusterBackupDatasourceParameters}")
+            if disc_kubernetes_cluster_backup_datasource_parameters is not None:
+                disc_kubernetes_cluster_backup_datasource_parameters.set_prop("excludedNamespaces", AAZListType, ".kubernetes_cluster_backup_datasource_parameters.excluded_namespaces")
+                disc_kubernetes_cluster_backup_datasource_parameters.set_prop("excludedResourceTypes", AAZListType, ".kubernetes_cluster_backup_datasource_parameters.excluded_resource_types")
+                disc_kubernetes_cluster_backup_datasource_parameters.set_prop("includeClusterScopeResources", AAZBoolType, ".kubernetes_cluster_backup_datasource_parameters.include_cluster_scope_resources", typ_kwargs={"flags": {"required": True}})
+                disc_kubernetes_cluster_backup_datasource_parameters.set_prop("includedNamespaces", AAZListType, ".kubernetes_cluster_backup_datasource_parameters.included_namespaces")
+                disc_kubernetes_cluster_backup_datasource_parameters.set_prop("includedResourceTypes", AAZListType, ".kubernetes_cluster_backup_datasource_parameters.included_resource_types")
+                disc_kubernetes_cluster_backup_datasource_parameters.set_prop("labelSelectors", AAZListType, ".kubernetes_cluster_backup_datasource_parameters.label_selectors")
+                disc_kubernetes_cluster_backup_datasource_parameters.set_prop("snapshotVolumes", AAZBoolType, ".kubernetes_cluster_backup_datasource_parameters.snapshot_volumes", typ_kwargs={"flags": {"required": True}})
+
+            excluded_namespaces = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:KubernetesClusterBackupDatasourceParameters}.excludedNamespaces")
+            if excluded_namespaces is not None:
+                excluded_namespaces.set_elements(AAZStrType, ".")
+
+            excluded_resource_types = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:KubernetesClusterBackupDatasourceParameters}.excludedResourceTypes")
+            if excluded_resource_types is not None:
+                excluded_resource_types.set_elements(AAZStrType, ".")
+
+            included_namespaces = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:KubernetesClusterBackupDatasourceParameters}.includedNamespaces")
+            if included_namespaces is not None:
+                included_namespaces.set_elements(AAZStrType, ".")
+
+            included_resource_types = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:KubernetesClusterBackupDatasourceParameters}.includedResourceTypes")
+            if included_resource_types is not None:
+                included_resource_types.set_elements(AAZStrType, ".")
+
+            label_selectors = _builder.get(".backupInstance.policyInfo.policyParameters.backupDatasourceParametersList[]{objectType:KubernetesClusterBackupDatasourceParameters}.labelSelectors")
+            if label_selectors is not None:
+                label_selectors.set_elements(AAZStrType, ".")
 
             data_store_parameters_list = _builder.get(".backupInstance.policyInfo.policyParameters.dataStoreParametersList")
             if data_store_parameters_list is not None:

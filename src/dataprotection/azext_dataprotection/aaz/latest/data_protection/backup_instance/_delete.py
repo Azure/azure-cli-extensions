@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "data-protection backup-instance delete",
-    is_experimental=True,
+    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
@@ -21,9 +21,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-01",
+        "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2022-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2023-01-01"],
         ]
     }
 
@@ -151,7 +151,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }

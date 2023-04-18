@@ -13,16 +13,16 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "data-protection backup-instance validate-for-restore",
-    is_experimental=True,
+    is_preview=True,
 )
 class ValidateForRestore(AAZCommand):
     """Validates if Restore can be triggered for a DataSource
     """
 
     _aaz_info = {
-        "version": "2022-12-01",
+        "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/validaterestore", "2022-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/validaterestore", "2023-01-01"],
         ]
     }
 
@@ -173,6 +173,12 @@ class ValidateForRestore(AAZCommand):
         restore_criteria.Element = AAZObjectArg()
 
         _element = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element
+        _element.item_path_based_restore_criteria = AAZObjectArg(
+            options=["item-path-based-restore-criteria"],
+        )
+        _element.kubernetes_cluster_restore_criteria = AAZObjectArg(
+            options=["kubernetes-cluster-restore-criteria"],
+        )
         _element.kubernetes_pv_restore_criteria = AAZObjectArg(
             options=["kubernetes-pv-restore-criteria"],
         )
@@ -182,6 +188,84 @@ class ValidateForRestore(AAZCommand):
         _element.range_based_item_level_restore_criteria = AAZObjectArg(
             options=["range-based-item-level-restore-criteria"],
         )
+
+        item_path_based_restore_criteria = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.item_path_based_restore_criteria
+        item_path_based_restore_criteria.is_path_relative_to_backup_item = AAZBoolArg(
+            options=["is-path-relative-to-backup-item"],
+            help="Flag to specify if the path is relative to backup item or full path",
+            required=True,
+        )
+        item_path_based_restore_criteria.item_path = AAZStrArg(
+            options=["item-path"],
+            help="The path of the item to be restored. It could be the full path of the item or the path relative to the backup item",
+            required=True,
+        )
+        item_path_based_restore_criteria.sub_item_path_prefix = AAZListArg(
+            options=["sub-item-path-prefix"],
+            help="The list of prefix strings to be used as filter criteria during restore. These are relative to the item path specified.",
+        )
+
+        sub_item_path_prefix = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.item_path_based_restore_criteria.sub_item_path_prefix
+        sub_item_path_prefix.Element = AAZStrArg()
+
+        kubernetes_cluster_restore_criteria = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria
+        kubernetes_cluster_restore_criteria.conflict_policy = AAZStrArg(
+            options=["conflict-policy"],
+            help="Gets or sets the Conflict Policy property. This property sets policy during conflict of resources during restore.",
+            enum={"Patch": "Patch", "Skip": "Skip"},
+        )
+        kubernetes_cluster_restore_criteria.excluded_namespaces = AAZListArg(
+            options=["excluded-namespaces"],
+            help="Gets or sets the exclude namespaces property. This property sets the namespaces to be excluded during restore.",
+        )
+        kubernetes_cluster_restore_criteria.excluded_resource_types = AAZListArg(
+            options=["excluded-resource-types"],
+            help="Gets or sets the exclude resource types property. This property sets the resource types to be excluded during restore.",
+        )
+        kubernetes_cluster_restore_criteria.include_cluster_scope_resources = AAZBoolArg(
+            options=["include-cluster-scope-resources"],
+            help="Gets or sets the include cluster resources property. This property if enabled will include cluster scope resources during restore.",
+            required=True,
+        )
+        kubernetes_cluster_restore_criteria.included_namespaces = AAZListArg(
+            options=["included-namespaces"],
+            help="Gets or sets the include namespaces property. This property sets the namespaces to be included during restore.",
+        )
+        kubernetes_cluster_restore_criteria.included_resource_types = AAZListArg(
+            options=["included-resource-types"],
+            help="Gets or sets the include resource types property. This property sets the resource types to be included during restore.",
+        )
+        kubernetes_cluster_restore_criteria.label_selectors = AAZListArg(
+            options=["label-selectors"],
+            help="Gets or sets the LabelSelectors property. This property sets the resource with such label selectors to be included during restore.",
+        )
+        kubernetes_cluster_restore_criteria.namespace_mappings = AAZDictArg(
+            options=["namespace-mappings"],
+            help="Gets or sets the Namespace Mappings property. This property sets if namespace needs to be change during restore.",
+        )
+        kubernetes_cluster_restore_criteria.persistent_volume_restore_mode = AAZStrArg(
+            options=["persistent-volume-restore-mode"],
+            help="Gets or sets the PV (Persistent Volume) Restore Mode property. This property sets whether volumes needs to be restored.",
+            enum={"RestoreWithVolumeData": "RestoreWithVolumeData", "RestoreWithoutVolumeData": "RestoreWithoutVolumeData"},
+        )
+
+        excluded_namespaces = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.excluded_namespaces
+        excluded_namespaces.Element = AAZStrArg()
+
+        excluded_resource_types = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.excluded_resource_types
+        excluded_resource_types.Element = AAZStrArg()
+
+        included_namespaces = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.included_namespaces
+        included_namespaces.Element = AAZStrArg()
+
+        included_resource_types = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.included_resource_types
+        included_resource_types.Element = AAZStrArg()
+
+        label_selectors = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.label_selectors
+        label_selectors.Element = AAZStrArg()
+
+        namespace_mappings = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.namespace_mappings
+        namespace_mappings.Element = AAZStrArg()
 
         kubernetes_pv_restore_criteria = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_pv_restore_criteria
         kubernetes_pv_restore_criteria.name = AAZStrArg(
@@ -495,7 +579,7 @@ class ValidateForRestore(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-01",
+                    "api-version", "2023-01-01",
                     required=True,
                 ),
             }
@@ -558,12 +642,62 @@ class ValidateForRestore(AAZCommand):
 
             _elements = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]")
             if _elements is not None:
+                _elements.set_const("objectType", "ItemPathBasedRestoreCriteria", AAZStrType, ".item_path_based_restore_criteria", typ_kwargs={"flags": {"required": True}})
+                _elements.set_const("objectType", "KubernetesClusterRestoreCriteria", AAZStrType, ".kubernetes_cluster_restore_criteria", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("objectType", "KubernetesPVRestoreCriteria", AAZStrType, ".kubernetes_pv_restore_criteria", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("objectType", "KubernetesStorageClassRestoreCriteria", AAZStrType, ".kubernetes_storage_class_restore_criteria", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("objectType", "RangeBasedItemLevelRestoreCriteria", AAZStrType, ".range_based_item_level_restore_criteria", typ_kwargs={"flags": {"required": True}})
+                _elements.discriminate_by("objectType", "ItemPathBasedRestoreCriteria")
+                _elements.discriminate_by("objectType", "KubernetesClusterRestoreCriteria")
                 _elements.discriminate_by("objectType", "KubernetesPVRestoreCriteria")
                 _elements.discriminate_by("objectType", "KubernetesStorageClassRestoreCriteria")
                 _elements.discriminate_by("objectType", "RangeBasedItemLevelRestoreCriteria")
+
+            disc_item_path_based_restore_criteria = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:ItemPathBasedRestoreCriteria}")
+            if disc_item_path_based_restore_criteria is not None:
+                disc_item_path_based_restore_criteria.set_prop("isPathRelativeToBackupItem", AAZBoolType, ".item_path_based_restore_criteria.is_path_relative_to_backup_item", typ_kwargs={"flags": {"required": True}})
+                disc_item_path_based_restore_criteria.set_prop("itemPath", AAZStrType, ".item_path_based_restore_criteria.item_path", typ_kwargs={"flags": {"required": True}})
+                disc_item_path_based_restore_criteria.set_prop("subItemPathPrefix", AAZListType, ".item_path_based_restore_criteria.sub_item_path_prefix")
+
+            sub_item_path_prefix = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:ItemPathBasedRestoreCriteria}.subItemPathPrefix")
+            if sub_item_path_prefix is not None:
+                sub_item_path_prefix.set_elements(AAZStrType, ".")
+
+            disc_kubernetes_cluster_restore_criteria = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}")
+            if disc_kubernetes_cluster_restore_criteria is not None:
+                disc_kubernetes_cluster_restore_criteria.set_prop("conflictPolicy", AAZStrType, ".kubernetes_cluster_restore_criteria.conflict_policy")
+                disc_kubernetes_cluster_restore_criteria.set_prop("excludedNamespaces", AAZListType, ".kubernetes_cluster_restore_criteria.excluded_namespaces")
+                disc_kubernetes_cluster_restore_criteria.set_prop("excludedResourceTypes", AAZListType, ".kubernetes_cluster_restore_criteria.excluded_resource_types")
+                disc_kubernetes_cluster_restore_criteria.set_prop("includeClusterScopeResources", AAZBoolType, ".kubernetes_cluster_restore_criteria.include_cluster_scope_resources", typ_kwargs={"flags": {"required": True}})
+                disc_kubernetes_cluster_restore_criteria.set_prop("includedNamespaces", AAZListType, ".kubernetes_cluster_restore_criteria.included_namespaces")
+                disc_kubernetes_cluster_restore_criteria.set_prop("includedResourceTypes", AAZListType, ".kubernetes_cluster_restore_criteria.included_resource_types")
+                disc_kubernetes_cluster_restore_criteria.set_prop("labelSelectors", AAZListType, ".kubernetes_cluster_restore_criteria.label_selectors")
+                disc_kubernetes_cluster_restore_criteria.set_prop("namespaceMappings", AAZDictType, ".kubernetes_cluster_restore_criteria.namespace_mappings")
+                disc_kubernetes_cluster_restore_criteria.set_prop("persistentVolumeRestoreMode", AAZStrType, ".kubernetes_cluster_restore_criteria.persistent_volume_restore_mode")
+
+            excluded_namespaces = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.excludedNamespaces")
+            if excluded_namespaces is not None:
+                excluded_namespaces.set_elements(AAZStrType, ".")
+
+            excluded_resource_types = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.excludedResourceTypes")
+            if excluded_resource_types is not None:
+                excluded_resource_types.set_elements(AAZStrType, ".")
+
+            included_namespaces = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.includedNamespaces")
+            if included_namespaces is not None:
+                included_namespaces.set_elements(AAZStrType, ".")
+
+            included_resource_types = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.includedResourceTypes")
+            if included_resource_types is not None:
+                included_resource_types.set_elements(AAZStrType, ".")
+
+            label_selectors = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.labelSelectors")
+            if label_selectors is not None:
+                label_selectors.set_elements(AAZStrType, ".")
+
+            namespace_mappings = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.namespaceMappings")
+            if namespace_mappings is not None:
+                namespace_mappings.set_elements(AAZStrType, ".")
 
             disc_kubernetes_pv_restore_criteria = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesPVRestoreCriteria}")
             if disc_kubernetes_pv_restore_criteria is not None:
