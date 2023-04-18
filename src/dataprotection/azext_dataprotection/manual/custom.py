@@ -209,6 +209,27 @@ def dataprotection_backup_instance_validate_for_backup(client, vault_name, resou
                        resource_group_name=resource_group_name, parameters=validate_for_backup_request)
 
 
+def dataprotection_backup_instance_initialize_backup_configuration(datasource_type, excluded_resource_types=None,
+                                                                   included_resource_types=None, excluded_namespaces=None,
+                                                                   included_namespaces=None, label_selectors=None,
+                                                                   snapshot_volumes=None,
+                                                                   include_cluster_scope_resources=None):
+    if snapshot_volumes is None:
+        snapshot_volumes = True
+    if include_cluster_scope_resources is None:
+        include_cluster_scope_resources = True
+
+    return {
+        "excluded_resource_types": excluded_resource_types,
+        "included_resource_types": included_resource_types,
+        "excluded_namespaces": excluded_namespaces,
+        "included_namespaces": included_namespaces,
+        "label_selectors": label_selectors,
+        "snapshot_volumes": snapshot_volumes,
+        "include_cluster_scope_resources": include_cluster_scope_resources
+    }
+
+
 def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
                                               secret_store_type=None, secret_store_uri=None,
                                               snapshot_resource_group_name=None, tags=None):
