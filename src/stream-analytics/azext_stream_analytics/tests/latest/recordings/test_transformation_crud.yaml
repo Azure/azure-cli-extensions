@@ -14,21 +14,22 @@ interactions:
       - -n -g --data-locale --output-error-policy --out-of-order-policy --order-max-delay
         --arrival-max-delay
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-azure-mgmt-resource/19.0.0 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001","name":"cli_test_stream_analytics_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2021-11-24T08:06:10Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001","name":"cli_test_stream_analytics_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-03-28T12:07:51Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '428'
+      - '342'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 24 Nov 2021 08:06:13 GMT
+      - Tue, 28 Mar 2023 12:07:52 GMT
       expires:
       - '-1'
       pragma:
@@ -63,44 +64,49 @@ interactions:
       - -n -g --data-locale --output-error-policy --out-of-order-policy --order-max-delay
         --arrival-max-delay
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job?api-version=2020-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job","name":"job","type":"Microsoft.StreamAnalytics/streamingjobs","location":"West
-        US","properties":{"sku":{"name":"Standard"},"jobId":"bf8edc20-f43d-45a3-8070-39b4f4bbdee8","provisioningState":"Succeeded","jobState":"Created","eventsOutOfOrderPolicy":"Drop","outputErrorPolicy":"Drop","eventsOutOfOrderMaxDelayInSeconds":0,"eventsLateArrivalMaxDelayInSeconds":5,"dataLocale":"en-US","createdDate":"2021-11-24T08:06:19.923Z","compatibilityLevel":"1.0","package":null,"jobStorageAccount":null,"contentStoragePolicy":"SystemAccount","inputs":[],"functions":[],"outputs":[],"jobType":"Cloud","subnetResourceId":null,"cluster":null}}'
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job\",\r\n
+        \ \"name\": \"job\",\r\n  \"type\": \"Microsoft.StreamAnalytics/streamingjobs\",\r\n
+        \ \"location\": \"West US\",\r\n  \"properties\": {\r\n    \"sku\": {\r\n
+        \     \"name\": \"Standard\"\r\n    },\r\n    \"jobId\": \"98e84595-26e5-4e0a-bf5d-06afc1ece88f\",\r\n
+        \   \"provisioningState\": \"Succeeded\",\r\n    \"jobState\": \"Created\",\r\n
+        \   \"eventsOutOfOrderPolicy\": \"Drop\",\r\n    \"outputErrorPolicy\": \"Drop\",\r\n
+        \   \"eventsOutOfOrderMaxDelayInSeconds\": 0,\r\n    \"eventsLateArrivalMaxDelayInSeconds\":
+        5,\r\n    \"dataLocale\": \"en-US\",\r\n    \"createdDate\": \"2023-03-28T12:07:54.203Z\",\r\n
+        \   \"compatibilityLevel\": \"1.0\",\r\n    \"jobStorageAccount\": null,\r\n
+        \   \"contentStoragePolicy\": \"SystemAccount\",\r\n    \"inputs\": [],\r\n
+        \   \"functions\": [],\r\n    \"outputs\": [],\r\n    \"jobType\": \"Cloud\",\r\n
+        \   \"cluster\": null\r\n  }\r\n}"
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '830'
+      - '920'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 24 Nov 2021 08:06:20 GMT
+      - Tue, 28 Mar 2023 12:07:54 GMT
       etag:
-      - 9fdbae44-87ac-408b-b50a-bad068a05b26
-      expires:
-      - '-1'
+      - 1cb67db4-da46-4afa-a63d-64709ecaf8b2
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnetmvc-version:
-      - '5.0'
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
-      x-powered-by:
-      - ASP.NET
+      - '1198'
     status:
       code: 200
       message: OK
@@ -123,44 +129,41 @@ interactions:
       ParameterSetName:
       - -n -g --job-name --saql --streaming-units
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/transformations/transformation?api-version=2020-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/transformations/transformation","name":"transformation","type":"Microsoft.StreamAnalytics/streamingjobs/transformations","properties":{"streamingUnits":6,"query":"SELECT
-        * INTO output FROM input"}}'
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/transformations/transformation\",\r\n
+        \ \"name\": \"transformation\",\r\n  \"type\": \"Microsoft.StreamAnalytics/streamingjobs/transformations\",\r\n
+        \ \"properties\": {\r\n    \"streamingUnits\": 6,\r\n    \"query\": \"SELECT
+        * INTO output FROM input\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '401'
+      - '398'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 24 Nov 2021 08:06:22 GMT
+      - Tue, 28 Mar 2023 12:07:54 GMT
       etag:
-      - 7c430000-c392-4cbd-9a73-6c179a94cd99
-      expires:
-      - '-1'
+      - 3a7e3128-1b22-499f-9ed0-9809932bc8ad
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnetmvc-version:
-      - '5.0'
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-powered-by:
-      - ASP.NET
+      - '1196'
     status:
       code: 200
       message: OK
@@ -183,44 +186,37 @@ interactions:
       ParameterSetName:
       - -n -g --job-name --saql --streaming-units
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/transformations/transformation?api-version=2020-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/transformations/transformation","name":"transformation","type":"Microsoft.StreamAnalytics/streamingjobs/transformations","properties":{"streamingUnits":3,"query":"SELECT
-        * INTO output FROM input"}}'
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/transformations/transformation\",\r\n
+        \ \"name\": \"transformation\",\r\n  \"type\": \"Microsoft.StreamAnalytics/streamingjobs/transformations\",\r\n
+        \ \"properties\": {\r\n    \"streamingUnits\": 3,\r\n    \"query\": \"SELECT
+        * INTO output FROM input\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '401'
+      - '398'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 24 Nov 2021 08:06:24 GMT
+      - Tue, 28 Mar 2023 12:07:58 GMT
       etag:
-      - 25c47eda-409b-4fde-a14a-9839ed180bde
-      expires:
-      - '-1'
+      - 4bcfe7a4-8e42-4506-8fc0-86f8e242722a
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-aspnetmvc-version:
-      - '5.0'
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK
@@ -238,42 +234,39 @@ interactions:
       ParameterSetName:
       - -n -g --job-name
       User-Agent:
-      - AZURECLI/2.30.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.8.10 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-streamanalytics/1.0.0b1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/transformations/transformation?api-version=2020-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/transformations/transformation","name":"transformation","type":"Microsoft.StreamAnalytics/streamingjobs/transformations","properties":{"streamingUnits":3,"query":"SELECT
-        * INTO output FROM input"}}'
+      string: "{\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stream_analytics_000001/providers/Microsoft.StreamAnalytics/streamingjobs/job/transformations/transformation\",\r\n
+        \ \"name\": \"transformation\",\r\n  \"type\": \"Microsoft.StreamAnalytics/streamingjobs/transformations\",\r\n
+        \ \"properties\": {\r\n    \"streamingUnits\": 3,\r\n    \"query\": \"SELECT
+        * INTO output FROM input\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '401'
+      - '398'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 24 Nov 2021 08:06:25 GMT
+      - Tue, 28 Mar 2023 12:07:58 GMT
       etag:
-      - 25c47eda-409b-4fde-a14a-9839ed180bde
-      expires:
-      - '-1'
+      - 4bcfe7a4-8e42-4506-8fc0-86f8e242722a
       pragma:
       - no-cache
       server:
-      - Microsoft-IIS/10.0
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
       - chunked
       vary:
       - Accept-Encoding
-      x-aspnetmvc-version:
-      - '5.0'
       x-content-type-options:
       - nosniff
-      x-powered-by:
-      - ASP.NET
     status:
       code: 200
       message: OK

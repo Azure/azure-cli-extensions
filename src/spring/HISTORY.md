@@ -1,5 +1,21 @@
 Release History
 ===============
+1.11.2
+---
+* Refine `az spring app create` command from 3 steps to 2 steps.
+
+1.11.1
+---
+* Add argument `--ca-cert-name` in `az spring application-accelerator customized-accelerator update` and command `az spring application-accelerator customized-accelerator sync-cert`.
+* Support client cert validation for customized accelerator with CA certificate.
+* Add arguments `--enable-cert-verify` and `--certificate-names` in `az spring gateway update` and command `az spring gateway sync-cert`.
+* Support client cert validation for Spring Cloud Gateway.
+
+1.11.0
+---
+* Deprecate parameter `--enable-log-stream-public-endpoint` when creating/updating service 
+* Add new parameter `--enable-dataplane-public-endpoint` when creating/updating service 
+
 1.10.0
 ---
 * Print more logs for app deployment
@@ -25,11 +41,6 @@ Release History
 * Add new command -- `az spring container-registry update` to update container registry resource.
 * Add new command -- `az spring container-registry show` to show the container registry resource.
 * Add new parameters -- `--disable-build-service`, `--container-registry-server`, `--container-registry-username` and `--container-registry-password` when creating service.
-
-1.8.1
----
-* Support `--ca-cert-name` and `--sync-cert` in `az spring application-accelerator customized-accelerator`.
-* Support client cert validation for customized accelerator with CA certificate.
 
 1.8.0
 ---

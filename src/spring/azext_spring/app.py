@@ -153,17 +153,6 @@ def app_create(cmd, client, resource_group, service, name,
         'scale_rule_metadata': scale_rule_metadata,
         'scale_rule_auth': scale_rule_auth,
     }
-    update_app_kwargs = {
-        'enable_persistent_storage': enable_persistent_storage,
-        'public': assign_endpoint,
-        'public_for_vnet': assign_public_endpoint,
-        'ingress_read_timeout': ingress_read_timeout,
-        'ingress_send_timeout': ingress_send_timeout,
-        'session_affinity': session_affinity,
-        'session_max_age': session_max_age,
-        'backend_protocol': backend_protocol,
-        'client_auth_certs': client_auth_certs
-    }
 
     deployable = deployable_selector(**create_deployment_kwargs, **basic_kwargs)
     create_deployment_kwargs['source_type'] = deployable.get_source_type(**create_deployment_kwargs, **basic_kwargs)
@@ -173,23 +162,20 @@ def app_create(cmd, client, resource_group, service, name,
     deployment_factory.validate_instance_count(instance_count)
 
     app_resource = app_factory.format_resource(**create_app_kwargs, **basic_kwargs)
-    logger.warning('[1/3] Creating app {}'.format(name))
+    banner_deployment_name = deployment_name or DEFAULT_DEPLOYMENT_NAME
+    deployment_resource = deployment_factory.format_resource(**create_deployment_kwargs, **basic_kwargs)
+
+    logger.warning('[1/2] Creating app {}'.format(name))
     app_poller = client.apps.begin_create_or_update(resource_group, service, name, app_resource)
     wait_till_end(cmd, app_poller)
 
-    banner_deployment_name = deployment_name or DEFAULT_DEPLOYMENT_NAME
-    logger.warning('[2/3] Creating default deployment with name "{}"'.format(banner_deployment_name))
-    deployment_resource = deployment_factory.format_resource(**create_deployment_kwargs, **basic_kwargs)
+    logger.warning('[2/2] Creating default deployment with name "{}"'.format(banner_deployment_name))
     poller = client.deployments.begin_create_or_update(resource_group,
                                                        service,
                                                        name,
                                                        banner_deployment_name,
                                                        deployment_resource)
-    logger.warning('[3/3] Updating app "{}" (this operation can take a while to complete)'.format(name))
-    app_resource = app_factory.format_resource(**update_app_kwargs, **basic_kwargs)
-    app_poller = client.apps.begin_update(resource_group, service, name, app_resource)
-
-    wait_till_end(cmd, poller, app_poller)
+    wait_till_end(cmd, poller)
     logger.warning('App create succeeded')
     return app_get(cmd, client, resource_group, service, name)
 

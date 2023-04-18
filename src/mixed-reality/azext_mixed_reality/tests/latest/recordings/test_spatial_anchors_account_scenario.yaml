@@ -13,30 +13,28 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2023-01-03T16:23:16Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2023-03-28T10:59:59Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '354'
+      - '311'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 03 Jan 2023 16:23:17 GMT
+      - Tue, 28 Mar 2023 11:00:00 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -60,13 +58,13 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"accountDomain":"mixedreality.azure.com","accountId":"034ffded-4a97-4748-a340-9b8ba197015b"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"accountDomain":"mixedreality.azure.com","accountId":"6b65d2ec-f9ad-42fe-83b0-b4f688e2232a"}}'
     headers:
       cache-control:
       - no-cache
@@ -75,13 +73,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 03 Jan 2023 16:23:19 GMT
+      - Tue, 28 Mar 2023 11:00:01 GMT
       expires:
       - '-1'
       location:
       - subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name
       ms-cv:
-      - DRNlRAhPdECLLtImPYqyVQ.0
+      - 3bhZj/w9W0ubPV4Kgi0Iww.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -89,7 +87,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1196'
     status:
       code: 201
       message: Created
@@ -107,22 +105,22 @@ interactions:
       ParameterSetName:
       - -g -n --storage-account-name --tag
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2023-01-03T16:23:16Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2023-03-28T10:59:59Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '354'
+      - '311'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 03 Jan 2023 16:23:19 GMT
+      - Tue, 28 Mar 2023 11:00:01 GMT
       expires:
       - '-1'
       pragma:
@@ -155,13 +153,13 @@ interactions:
       ParameterSetName:
       - -g -n --storage-account-name --tag
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name1?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name1","name":"spatial-anchors-account-name1","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{"tag":"tag"},"properties":{"storageAccountName":"storage_account_name","accountDomain":"mixedreality.azure.com","accountId":"d9bd0fb7-6a5c-4e91-b434-b5b50f2b2a53"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name1","name":"spatial-anchors-account-name1","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{"tag":"tag"},"properties":{"storageAccountName":"storage_account_name","accountDomain":"mixedreality.azure.com","accountId":"c5c3bfc2-b343-4ac6-a4cc-c12acf1d38e8"}}'
     headers:
       cache-control:
       - no-cache
@@ -170,13 +168,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 03 Jan 2023 16:23:19 GMT
+      - Tue, 28 Mar 2023 11:00:02 GMT
       expires:
       - '-1'
       location:
       - subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name1
       ms-cv:
-      - Y6SCpj4J0EOuNhCeUBhImQ.0
+      - 3VIAPG8aSkO638wxHsDWqA.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -184,7 +182,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1196'
     status:
       code: 201
       message: Created
@@ -202,22 +200,22 @@ interactions:
       ParameterSetName:
       - -g -n --storage-account-name
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2023-01-03T16:23:16Z","StorageType":"Standard_LRS","type":"test"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus2","tags":{"product":"azurecli","cause":"automation","date":"2023-03-28T10:59:59Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '354'
+      - '311'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 03 Jan 2023 16:23:20 GMT
+      - Tue, 28 Mar 2023 11:00:02 GMT
       expires:
       - '-1'
       pragma:
@@ -245,13 +243,13 @@ interactions:
       ParameterSetName:
       - -g -n --storage-account-name
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"accountDomain":"mixedreality.azure.com","accountId":"034ffded-4a97-4748-a340-9b8ba197015b"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"accountDomain":"mixedreality.azure.com","accountId":"6b65d2ec-f9ad-42fe-83b0-b4f688e2232a"}}'
     headers:
       cache-control:
       - no-cache
@@ -260,11 +258,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 03 Jan 2023 16:23:20 GMT
+      - Tue, 28 Mar 2023 11:00:03 GMT
       expires:
       - '-1'
       ms-cv:
-      - +R5lsEVT3Ee6TJYBnBtrbA.0
+      - WjhypcMkh0GQrKQogPC/tw.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -297,13 +295,13 @@ interactions:
       ParameterSetName:
       - -g -n --storage-account-name
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"mixedreality.azure.com","accountId":"034ffded-4a97-4748-a340-9b8ba197015b"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"mixedreality.azure.com","accountId":"6b65d2ec-f9ad-42fe-83b0-b4f688e2232a"}}'
     headers:
       cache-control:
       - no-cache
@@ -312,11 +310,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 03 Jan 2023 16:23:21 GMT
+      - Tue, 28 Mar 2023 11:00:03 GMT
       expires:
       - '-1'
       ms-cv:
-      - c2HWyw35REm6WiSAqTD5rA.0
+      - zHtq6XOYykCryUY2gvff1Q.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -346,13 +344,13 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name?api-version=2021-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"mixedreality.azure.com","accountId":"034ffded-4a97-4748-a340-9b8ba197015b"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"mixedreality.azure.com","accountId":"6b65d2ec-f9ad-42fe-83b0-b4f688e2232a"}}'
     headers:
       cache-control:
       - no-cache
@@ -361,15 +359,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 03 Jan 2023 16:23:21 GMT
+      - Tue, 28 Mar 2023 11:00:03 GMT
       expires:
       - '-1'
       ms-cv:
-      - hMrb4drQxUaR2l7GCcaikg.0
+      - Dk0XLHTzoUKaBrbbUJF01A.0
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -389,13 +391,13 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts?api-version=2021-01-01
   response:
     body:
-      string: '{"nextLink":null,"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"mixedreality.azure.com","accountId":"034ffded-4a97-4748-a340-9b8ba197015b"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name1","name":"spatial-anchors-account-name1","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{"tag":"tag"},"properties":{"storageAccountName":"storage_account_name","accountDomain":"mixedreality.azure.com","accountId":"d9bd0fb7-6a5c-4e91-b434-b5b50f2b2a53"}}]}'
+      string: '{"nextLink":null,"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"mixedreality.azure.com","accountId":"6b65d2ec-f9ad-42fe-83b0-b4f688e2232a"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name1","name":"spatial-anchors-account-name1","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{"tag":"tag"},"properties":{"storageAccountName":"storage_account_name","accountDomain":"mixedreality.azure.com","accountId":"c5c3bfc2-b343-4ac6-a4cc-c12acf1d38e8"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -404,11 +406,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 03 Jan 2023 16:23:21 GMT
+      - Tue, 28 Mar 2023 11:00:03 GMT
       expires:
       - '-1'
       ms-cv:
-      - HCL0ATRadE+Dj5jRqxTDHA.0
+      - sJajFyqS8EahdpAhtCN+ig.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -438,7 +440,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name1?api-version=2021-01-01
@@ -451,11 +453,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Tue, 03 Jan 2023 16:23:22 GMT
+      - Tue, 28 Mar 2023 11:00:04 GMT
       expires:
       - '-1'
       ms-cv:
-      - +zFoAN0uy0utMYwAAfRwWw.0
+      - 3B7uoZnb60O10Qp0y2Yx/A.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -481,13 +483,13 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts?api-version=2021-01-01
   response:
     body:
-      string: '{"nextLink":null,"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"mixedreality.azure.com","accountId":"034ffded-4a97-4748-a340-9b8ba197015b"}}]}'
+      string: '{"nextLink":null,"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name","name":"spatial-anchors-account-name","type":"Microsoft.MixedReality/spatialAnchorsAccounts","identity":null,"location":"eastus2","plan":null,"sku":null,"kind":null,"tags":{},"properties":{"storageAccountName":"storage_account_name1","accountDomain":"mixedreality.azure.com","accountId":"6b65d2ec-f9ad-42fe-83b0-b4f688e2232a"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -496,11 +498,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 03 Jan 2023 16:23:23 GMT
+      - Tue, 28 Mar 2023 11:00:04 GMT
       expires:
       - '-1'
       ms-cv:
-      - EHtJhQ7BFU2+YXcIl3tEmQ.0
+      - jiRCRf9uMkGpsm3HoFMhBA.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -530,7 +532,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name/listKeys?api-version=2021-01-01
@@ -545,11 +547,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 03 Jan 2023 16:23:23 GMT
+      - Tue, 28 Mar 2023 11:00:05 GMT
       expires:
       - '-1'
       ms-cv:
-      - a3aPkJaX5U6IaDl92vnIWw.0
+      - uDS8zA9prEqzF2Zq4/imfw.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -583,7 +585,7 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name/regenerateKeys?api-version=2021-01-01
@@ -598,11 +600,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 03 Jan 2023 16:23:23 GMT
+      - Tue, 28 Mar 2023 11:00:05 GMT
       expires:
       - '-1'
       ms-cv:
-      - RliBjIYN8USPenYya5mLUg.0
+      - YggAmkjcz0CjK8OgAHcMcg.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -614,7 +616,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -636,7 +638,7 @@ interactions:
       ParameterSetName:
       - -g -n -k
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name/regenerateKeys?api-version=2021-01-01
@@ -651,11 +653,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 03 Jan 2023 16:23:24 GMT
+      - Tue, 28 Mar 2023 11:00:06 GMT
       expires:
       - '-1'
       ms-cv:
-      - u6v5dws4YEuwwu3ryXfHrQ.0
+      - Ogh9t+YT2kir0T7O0DInvw.0
       pragma:
       - no-cache
       strict-transport-security:
@@ -689,7 +691,7 @@ interactions:
       ParameterSetName:
       - -g -n -k
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.8 (Linux-5.15.0-1023-azure-x86_64-with-glibc2.31)
+      - AZURECLI/2.46.0 azsdk-python-mgmt-mixedreality/0.0.1 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
         VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.MixedReality/spatialAnchorsAccounts/spatial-anchors-account-name/regenerateKeys?api-version=2021-01-01
@@ -704,11 +706,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 03 Jan 2023 16:23:24 GMT
+      - Tue, 28 Mar 2023 11:00:06 GMT
       expires:
       - '-1'
       ms-cv:
-      - fQLVDF9iQUipKPm6TDXtNA.0
+      - WUtfJ8KnE0es8OZvgDhBkg.0
       pragma:
       - no-cache
       strict-transport-security:
