@@ -991,6 +991,15 @@ class ContainerappScaleTests(ScenarioTest):
                 scale:
                   minReplicas: 1
                   maxReplicas: 3
+                  rules:
+                  - http:
+                      auth:
+                      - secretRef: secretref
+                        triggerParameter: trigger
+                      metadata:
+                        concurrentRequests: '50'
+                        key: value
+                    name: http-scale-rule
             identity:
               type: UserAssigned
               userAssignedIdentities:
@@ -1011,7 +1020,12 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
-            JMESPathCheck("properties.template.scale.maxReplicas", 3)
+            JMESPathCheck("properties.template.scale.maxReplicas", 3),
+            JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.concurrentRequests", "50"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
         ])
 
         # test environmentId
@@ -1049,6 +1063,7 @@ class ContainerappScaleTests(ScenarioTest):
                         scale:
                           minReplicas: 1
                           maxReplicas: 3
+                          rules: []
                     """
         write_test_file(containerapp_file_name, containerapp_yaml_text)
 
@@ -1064,7 +1079,8 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
-            JMESPathCheck("properties.template.scale.maxReplicas", 3)
+            JMESPathCheck("properties.template.scale.maxReplicas", 3),
+            JMESPathCheck("properties.template.scale.rules", None)
         ])
         clean_up_test_file(containerapp_file_name)
 
