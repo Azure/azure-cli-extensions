@@ -28,7 +28,6 @@ def acipolicygen_confcom(
     infrastructure_svn: str,
     tar_mapping_location: str,
     approve_wildcards: str = False,
-    use_json: bool = False,
     outraw: bool = False,
     outraw_pretty_print: bool = False,
     diff: bool = False,
@@ -125,17 +124,17 @@ def acipolicygen_confcom(
             exit_code = get_diff_outputs(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
         elif arm_template and (not print_policy_to_terminal and not outraw and not outraw_pretty_print):
             result = inject_policy_into_template(arm_template, arm_template_parameters,
-                                                 policy.get_serialized_output(output_type, use_json), count)
+                                                 policy.get_serialized_output(), count)
             if result:
                 # this is always going to be the unencoded policy
-                print(str_to_sha256(policy.get_serialized_output(OutputType.RAW, use_json)))
+                print(str_to_sha256(policy.get_serialized_output(OutputType.RAW)))
                 logger.info("CCE Policy successfully injected into ARM Template")
         else:
             # output to terminal
-            print(f"{policy.get_serialized_output(output_type, use_json)}\n\n")
+            print(f"{policy.get_serialized_output(output_type)}\n\n")
             # output to file
             if save_to_file:
-                policy.save_to_file(save_to_file, output_type, use_json)
+                policy.save_to_file(save_to_file, output_type)
 
     sys.exit(exit_code)
 

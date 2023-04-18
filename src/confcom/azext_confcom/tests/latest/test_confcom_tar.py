@@ -191,19 +191,15 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 os.remove(self.image_path)
 
         regular_image_json = json.loads(
-            regular_image.get_serialized_output(output_type=OutputType.RAW, use_json=True)
+            regular_image.get_serialized_output(output_type=OutputType.RAW, rego_boilerplate=False)
         )
 
         clean_room_json = json.loads(
-            clean_room_image.get_serialized_output(output_type=OutputType.RAW, use_json=True)
+            clean_room_image.get_serialized_output(output_type=OutputType.RAW, rego_boilerplate=False)
         )
 
-        regular_image_json[config.POLICY_FIELD_CONTAINERS][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS
-        ]["0"].pop(config.POLICY_FIELD_CONTAINERS_ID)
-        clean_room_json[config.POLICY_FIELD_CONTAINERS][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS
-        ]["0"].pop(config.POLICY_FIELD_CONTAINERS_ID)
+        regular_image_json[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
+        clean_room_json[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
 
         # see if the remote image and the local one produce the same output
         self.assertEqual(
@@ -408,25 +404,17 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 os.remove(image_path)
 
         regular_image_json = json.loads(
-            regular_image.get_serialized_output(output_type=OutputType.RAW, use_json=True)
+            regular_image.get_serialized_output(output_type=OutputType.RAW, rego_boilerplate=False)
         )
 
         clean_room_json = json.loads(
-            clean_room_image.get_serialized_output(output_type=OutputType.RAW, use_json=True)
+            clean_room_image.get_serialized_output(output_type=OutputType.RAW, rego_boilerplate=False)
         )
 
-        regular_image_json[config.POLICY_FIELD_CONTAINERS][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS
-        ]["0"].pop(config.POLICY_FIELD_CONTAINERS_ID)
-        clean_room_json[config.POLICY_FIELD_CONTAINERS][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS
-        ]["0"].pop(config.POLICY_FIELD_CONTAINERS_ID)
-        regular_image_json[config.POLICY_FIELD_CONTAINERS][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS
-        ]["1"].pop(config.POLICY_FIELD_CONTAINERS_ID)
-        clean_room_json[config.POLICY_FIELD_CONTAINERS][
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS
-        ]["1"].pop(config.POLICY_FIELD_CONTAINERS_ID)
+        regular_image_json[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
+        clean_room_json[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
+        regular_image_json[1].pop(config.POLICY_FIELD_CONTAINERS_ID)
+        clean_room_json[1].pop(config.POLICY_FIELD_CONTAINERS_ID)
 
         # see if the remote image and the local one produce the same output
         self.assertEqual(

@@ -60,15 +60,15 @@ Example 2: This command injects a CCE policy into [ARM-template](arm.template.md
 
     az confcom acipolicygen -a .\arm-template.json -p .\template.parameters.json
 
-This is mainly for decoupling purposes so that an ARM template can remain the same and evolving variables can go into a different file.
+This is mainly for decoupling purposes so that an ARM template can remain the same and evolving variables can go into a different file. When a security policy gets injected into the ARM Template, the corresponding sha256 hash of the decoded security policy gets printed to the command line. This sha256 hash can be used for verifying the hostdata field of the SEV-SNP Attestation Report and/or used for key release policies using MAA (Microsoft Azure Attestation) or mHSM (managed Hardware Security Module)
 
 Example 3: This command takes the input of an ARM template to create a human-readable CCE policy in pretty print JSON format and output the result to the console.
 NOTE: Generating JSON policy is for use by the customer only, and is not used by ACI In most cases. The default REGO format security policy is required. <br />
 
-    az confcom acipolicygen -a ".\arm_template" --outraw-pretty-print --json
+    az confcom acipolicygen -a ".\arm_template" --outraw-pretty-print
 
 The default output of `acipolicygen` command is base64 encoded REGO format.
-This example uses the `--json` argument to generate output in JSON format, use `--outraw-pretty-print` to indicate decoding policy in clear text and in pretty print format and print result to console.
+This example uses `--outraw-pretty-print` to indicate decoding policy in clear text and in pretty print format and print result to console.
 
 Example 4: The following command takes the input of an ARM template to create a human-readable CCE policy in clear text and print to console: <br />
 
