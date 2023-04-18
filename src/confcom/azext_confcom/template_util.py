@@ -8,6 +8,7 @@ import json
 import copy
 import tarfile
 from typing import Any, Tuple, Dict, List
+from hashlib import sha256
 import deepdiff
 import yaml
 import docker
@@ -568,6 +569,10 @@ def print_func(x: dict) -> str:
 
 def pretty_print_func(x: dict) -> str:
     return json.dumps(x, indent=2, sort_keys=True)
+
+
+def str_to_sha256(x: str) -> str:
+    return sha256(x.encode('utf-8')).hexdigest()
 
 
 def is_sidecar(image_name: str) -> bool:

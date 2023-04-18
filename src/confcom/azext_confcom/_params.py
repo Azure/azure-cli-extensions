@@ -77,12 +77,6 @@ def load_arguments(self, _):
             help="Disabling container stdio will disable the ability to see the output of the container in the terminal for Confidential ACI",
         )
         c.argument(
-            "use_json",
-            options_list=("--json", "-j"),
-            required=False,
-            help="Output in JSON format",
-        )
-        c.argument(
             "diff",
             options_list=("--diff", "-d"),
             required=False,

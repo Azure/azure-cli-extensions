@@ -272,7 +272,7 @@ class PolicyGenerating(unittest.TestCase):
             cls.aci_policy = aci_policy
 
     def test_injected_sidecar_container_msi(self):
-        expected_sidecar_container_ser = "eyJjb250YWluZXJzIjp7ImVsZW1lbnRzIjp7IjAiOnsiYWxsb3dfZWxldmF0ZWQiOnRydWUsImFsbG93X3N0ZGlvX2FjY2VzcyI6dHJ1ZSwiY29tbWFuZCI6eyJlbGVtZW50cyI6eyIwIjoiL2Jpbi9zaCIsIjEiOiItYyIsIjIiOiJ1bnRpbCAuL21zaUF0bGFzQWRhcHRlcjsgZG8gZWNobyAkPyByZXN0YXJ0aW5nOyBkb25lIn0sImxlbmd0aCI6M30sImVudl9ydWxlcyI6eyJlbGVtZW50cyI6eyIwIjp7InBhdHRlcm4iOiJJREVOVElUWV9BUElfVkVSU0lPTj0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSwiMSI6eyJwYXR0ZXJuIjoiSURFTlRJVFlfSEVBREVSPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LCIxMCI6eyJwYXR0ZXJuIjoiRmFicmljX1NlcnZpY2VOYW1lPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LCIxMSI6eyJwYXR0ZXJuIjoiRmFicmljX0FwcGxpY2F0aW9uTmFtZT0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSwiMTIiOnsicGF0dGVybiI6IkZhYnJpY19Db2RlUGFja2FnZU5hbWU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjEzIjp7InBhdHRlcm4iOiJGYWJyaWNfU2VydmljZURuc05hbWU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjE0Ijp7InBhdHRlcm4iOiJBQ0lfTUlfREVGQVVMVD0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSwiMTUiOnsicGF0dGVybiI6IlRva2VuUHJveHlJcEFkZHJlc3NFbnZLZXlOYW1lPVtDb250YWluZXJUb0hvc3RBZGRyZXNzfEZhYnJpY19Ob2RlbFBPckZRRE5dIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LCIxNiI6eyJwYXR0ZXJuIjoiQ29udGFpbmVyVG9Ib3N0QWRkcmVzcz0iLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5Ijoic3RyaW5nIn0sIjE3Ijp7InBhdHRlcm4iOiJGYWJyaWNfTmV0d29ya2luZ01vZGU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjE4Ijp7InBhdHRlcm4iOiJhenVyZWNvbnRhaW5lcmluc3RhbmNlX3Jlc3RhcnRlZF9ieT0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSwiMiI6eyJwYXR0ZXJuIjoiSURFTlRJVFlfU0VSVkVSX1RIVU1CUFJJTlQ9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjMiOnsicGF0dGVybiI6IkFDSV9NSV9DTElFTlRfSURfLis9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjQiOnsicGF0dGVybiI6IkFDSV9NSV9SRVNfSURfLis9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjUiOnsicGF0dGVybiI6IkhPU1ROQU1FPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LCI2Ijp7InBhdHRlcm4iOiJURVJNPXh0ZXJtIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InN0cmluZyJ9LCI3Ijp7InBhdHRlcm4iOiJQQVRIPS91c3IvbG9jYWwvc2JpbjovdXNyL2xvY2FsL2JpbjovdXNyL3NiaW46L3Vzci9iaW46L3NiaW46L2JpbiIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJzdHJpbmcifSwiOCI6eyJwYXR0ZXJuIjoiKCg/aSlGQUJSSUMpXy4rPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LCI5Ijp7InBhdHRlcm4iOiJGYWJyaWNfSWQrPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9fSwibGVuZ3RoIjoxOX0sImV4ZWNfcHJvY2Vzc2VzIjp7ImVsZW1lbnRzIjp7fSwibGVuZ3RoIjowfSwiaWQiOiJtY3IubWljcm9zb2Z0LmNvbS9hY2kvbXNpLWF0bGFzLWFkYXB0ZXI6bWFzdGVyXzIwMjAxMjAzLjEiLCJsYXllcnMiOnsiZWxlbWVudHMiOnsiMCI6IjYwNmZkNmJhZjVlYjFhNzFmZDI4NmFlYTI5NjcyYTA2YmZlNTVmMDAwN2RlZDkyZWU3MzE0MmEzNzU5MGVkMTkiLCIxIjoiOTBhZDJmNWIyYzQyNWE3YzQ1OGY5ZjVkMjFjZjA2NGMyMTVmMTRlNDA2ODAwOTY4ZjY0NGQyYWIwYjRkMDRkZiIsIjIiOiIxYzRiNjM2NWE3YjkzODM4N2RmZDgyMjg2MmNhNDFhZTU0OTBiNTQ5MGU0YzI2ZWI0YjVkYTk2YzY0MDk2MGNmIn0sImxlbmd0aCI6M30sIm1vdW50cyI6eyJlbGVtZW50cyI6e30sImxlbmd0aCI6MH0sInNpZ25hbHMiOnsiZWxlbWVudHMiOnt9LCJsZW5ndGgiOjB9LCJ3b3JraW5nX2RpciI6Ii9yb290LyJ9fSwibGVuZ3RoIjoxfX0="
+        expected_sidecar_container_ser = "cGFja2FnZSBtaWNyb3NvZnRjb250YWluZXJpbnN0YW5jZQoKYXBpX3ZlcnNpb24gOj0gIjAuMTAuMCIKZnJhbWV3b3JrX3ZlcnNpb24gOj0gIjAuMi4zIgoKY29udGFpbmVycyA6PSBbeyJhbGxvd19lbGV2YXRlZCI6dHJ1ZSwiYWxsb3dfc3RkaW9fYWNjZXNzIjp0cnVlLCJjb21tYW5kIjpbIi9iaW4vc2giLCItYyIsInVudGlsIC4vbXNpQXRsYXNBZGFwdGVyOyBkbyBlY2hvICQ/IHJlc3RhcnRpbmc7IGRvbmUiXSwiZW52X3J1bGVzIjpbeyJwYXR0ZXJuIjoiSURFTlRJVFlfQVBJX1ZFUlNJT049LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiSURFTlRJVFlfSEVBREVSPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6IklERU5USVRZX1NFUlZFUl9USFVNQlBSSU5UPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6IkFDSV9NSV9DTElFTlRfSURfLis9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiQUNJX01JX1JFU19JRF8uKz0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSx7InBhdHRlcm4iOiJIT1NUTkFNRT0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSx7InBhdHRlcm4iOiJURVJNPXh0ZXJtIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InN0cmluZyJ9LHsicGF0dGVybiI6IlBBVEg9L3Vzci9sb2NhbC9zYmluOi91c3IvbG9jYWwvYmluOi91c3Ivc2JpbjovdXNyL2Jpbjovc2JpbjovYmluIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InN0cmluZyJ9LHsicGF0dGVybiI6IigoP2kpRkFCUklDKV8uKz0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSx7InBhdHRlcm4iOiJGYWJyaWNfSWQrPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6IkZhYnJpY19TZXJ2aWNlTmFtZT0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSx7InBhdHRlcm4iOiJGYWJyaWNfQXBwbGljYXRpb25OYW1lPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6IkZhYnJpY19Db2RlUGFja2FnZU5hbWU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiRmFicmljX1NlcnZpY2VEbnNOYW1lPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6IkFDSV9NSV9ERUZBVUxUPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6IlRva2VuUHJveHlJcEFkZHJlc3NFbnZLZXlOYW1lPVtDb250YWluZXJUb0hvc3RBZGRyZXNzfEZhYnJpY19Ob2RlbFBPckZRRE5dIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6IkNvbnRhaW5lclRvSG9zdEFkZHJlc3M9IiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InN0cmluZyJ9LHsicGF0dGVybiI6IkZhYnJpY19OZXR3b3JraW5nTW9kZT0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSx7InBhdHRlcm4iOiJhenVyZWNvbnRhaW5lcmluc3RhbmNlX3Jlc3RhcnRlZF9ieT0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifV0sImV4ZWNfcHJvY2Vzc2VzIjpbXSwiaWQiOiJtY3IubWljcm9zb2Z0LmNvbS9hY2kvbXNpLWF0bGFzLWFkYXB0ZXI6bWFzdGVyXzIwMjAxMjAzLjEiLCJsYXllcnMiOlsiNjA2ZmQ2YmFmNWViMWE3MWZkMjg2YWVhMjk2NzJhMDZiZmU1NWYwMDA3ZGVkOTJlZTczMTQyYTM3NTkwZWQxOSIsIjkwYWQyZjViMmM0MjVhN2M0NThmOWY1ZDIxY2YwNjRjMjE1ZjE0ZTQwNjgwMDk2OGY2NDRkMmFiMGI0ZDA0ZGYiLCIxYzRiNjM2NWE3YjkzODM4N2RmZDgyMjg2MmNhNDFhZTU0OTBiNTQ5MGU0YzI2ZWI0YjVkYTk2YzY0MDk2MGNmIl0sIm1vdW50cyI6W10sInNpZ25hbHMiOltdLCJ3b3JraW5nX2RpciI6Ii9yb290LyJ9XQ=="
         image = self.aci_policy.get_images()[0]
         self.assertEqual(image.base, "mcr.microsoft.com/aci/msi-atlas-adapter")
         self.assertIsNotNone(image)
@@ -281,7 +281,7 @@ class PolicyGenerating(unittest.TestCase):
         expected_workingdir = "/root/"
         self.assertEqual(image._workingDir, expected_workingdir)
         self.assertEqual(
-            self.aci_policy.get_serialized_output(use_json=True),
+            self.aci_policy.get_serialized_output(),
             expected_sidecar_container_ser,
         )
 
@@ -400,11 +400,9 @@ class SidecarValidation(unittest.TestCase):
         self.assertTrue(
             json.loads(
                 self.aci_policy.get_serialized_output(
-                    use_json=True, output_type=OutputType.RAW
+                    output_type=OutputType.RAW, rego_boilerplate=False
                 )
-            )[config.POLICY_FIELD_CONTAINERS][config.POLICY_FIELD_CONTAINERS_ELEMENTS][
-                "0"
-            ][
+            )[0][
                 config.POLICY_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS
             ]
         )
@@ -661,12 +659,8 @@ class CustomJsonParsing(unittest.TestCase):
             aci_policy.populate_policy_content_for_all_images()
             self.assertTrue(
                 json.loads(
-                    aci_policy.get_serialized_output(use_json=True, output_type=OutputType.RAW)
-                )[config.POLICY_FIELD_CONTAINERS][
-                    config.POLICY_FIELD_CONTAINERS_ELEMENTS
-                ][
-                    "0"
-                ][
+                    aci_policy.get_serialized_output(output_type=OutputType.RAW, rego_boilerplate=False)
+                )[0][
                     config.POLICY_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS
                 ]
             )
@@ -690,12 +684,8 @@ class CustomJsonParsing(unittest.TestCase):
 
             self.assertFalse(
                 json.loads(
-                    aci_policy.get_serialized_output(use_json=True, output_type=OutputType.RAW)
-                )[config.POLICY_FIELD_CONTAINERS][
-                    config.POLICY_FIELD_CONTAINERS_ELEMENTS
-                ][
-                    "0"
-                ][
+                    aci_policy.get_serialized_output(output_type=OutputType.RAW, rego_boilerplate=False)
+                )[0][
                     config.POLICY_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS
                 ]
             )

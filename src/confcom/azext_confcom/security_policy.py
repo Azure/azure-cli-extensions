@@ -150,7 +150,6 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
     def get_serialized_output(
         self,
         output_type: OutputType = OutputType.DEFAULT,
-        use_json=False,
         rego_boilerplate=True,
     ) -> str:
         # error check the output type
@@ -158,13 +157,11 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             eprint("Unknown output type for serialization.")
 
         policy_str = self._policy_serialization(
-            use_json, output_type == OutputType.PRETTY_PRINT
+            output_type == OutputType.PRETTY_PRINT
         )
 
-        if not use_json and rego_boilerplate:
+        if rego_boilerplate:
             policy_str = self._add_rego_boilerplate(policy_str)
-        elif use_json and output_type == OutputType.PRETTY_PRINT:
-            policy_str = json.dumps(json.loads(policy_str), indent=2, sort_keys=True)
 
         # if we're not outputting base64
         if output_type in (OutputType.RAW, OutputType.PRETTY_PRINT):
@@ -216,19 +213,6 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                     self._add_elements(dictionary[key])
 
         return dictionary
-
-    def _convert_to_json(self, dictionary) -> Dict:
-        # need to make a deep copy so we can change the underlying config data
-        # dicts
-        editable = copy.deepcopy(dictionary)
-        out = {"length": len(editable), "elements": {}}
-
-        for i, container in enumerate(editable):
-            out["elements"][str(i)] = container
-
-        self._add_elements(out)
-
-        return {config.POLICY_FIELD_CONTAINERS: out}
 
     def validate_cce_policy(self) -> Tuple[bool, Dict]:
         """Utility method: check to see if the existing policy
@@ -361,12 +345,11 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self,
         file_path: str,
         output_type: OutputType = OutputType.DEFAULT,
-        use_json=False,
     ) -> None:
-        output = self.get_serialized_output(output_type, use_json=use_json)
+        output = self.get_serialized_output(output_type)
         os_util.write_str_to_file(file_path, output)
 
-    def _policy_serialization(self, use_json, pretty_print=False) -> str:
+    def _policy_serialization(self, pretty_print=False) -> str:
         policy = []
         regular_container_images = self.get_images()
 
@@ -383,9 +366,6 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 for container in policy:
                     container[config.POLICY_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS] = False
 
-        # default output is rego policy
-        if use_json:
-            policy = self._convert_to_json(policy)
         if pretty_print:
             return pretty_print_func(policy)
         return print_func(policy)

@@ -65,10 +65,6 @@ helps[
           type: boolean
           short-summary: 'When combined with an input ARM Template, verifies the policy present in the ARM Template under "ccePolicy" and the containers within the ARM Template are compatible. If they are incompatible, a list of reasons is given and the exit status code will be 2.'
 
-        - name: --json -j
-          type: string
-          short-summary: 'Outputs in JSON format instead of Rego'
-
         - name: --outraw
           type: boolean
           short-summary: 'Output policy in clear text compact JSON instead of default base64 format'
