@@ -215,7 +215,7 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
         r = ContainerAppClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
 
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+        if not no_wait and "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting":
             logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(
                 name, resource_group_name
             ))
