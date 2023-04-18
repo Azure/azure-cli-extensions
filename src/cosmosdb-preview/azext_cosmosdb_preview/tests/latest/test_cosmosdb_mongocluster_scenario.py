@@ -121,12 +121,9 @@ class MongoClusterScenarioTest(ScenarioTest):
         assert len(firewall_list) == 1
 
         # delete non existent rule, NoContent response
-        try: 
-            delete = self.cmd('az cosmosdb mongocluster firewall rule delete -c {c} -g {rg} --rule-name blah --yes')
-            assert delete==None
-        except Exception as e:
-            print(e)
-        
+        delete = self.cmd('az cosmosdb mongocluster firewall rule delete -c {c} -g {rg} --rule-name blah --yes')
+        assert delete==None
+               
         # Delete Clusters
         try:
             self.cmd('az cosmosdb mongocluster firewall rule delete -c {c} -g {rg} --rule-name {rule_name} --yes')
