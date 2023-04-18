@@ -79,9 +79,14 @@ class FleetScenarioTest(ScenarioTest):
             'mc_id': mc_id,
         })
 
-        self.cmd('fleet member create -g {rg} --fleet-name {fleet_name} -n {member_name} --member-cluster-id {mc_id}', checks=[
+        self.cmd('fleet member create -g {rg} --fleet-name {fleet_name} -n {member_name} --member-cluster-id {mc_id} --update-group group1', checks=[
             self.check('name', '{member_name}'),
-            self.check('clusterResourceId', '{mc_id}')
+            self.check('clusterResourceId', '{mc_id}'),
+            self.check('group', 'group1')
+        ])
+
+        self.cmd('fleet member update -g {rg} --fleet-name {fleet_name} -n {member_name} --update-group group2', checks=[
+            self.check('group', 'group2')
         ])
 
         self.cmd('fleet member list -g {rg} --fleet-name {fleet_name}', checks=[

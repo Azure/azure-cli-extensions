@@ -37,3 +37,7 @@ def load_arguments(self, _):
 
     with self.argument_context('fleet member create') as c:
         c.argument('member_cluster_id', validator=validate_member_cluster_id)
+        c.argument('update_group')
+
+    with self.argument_context('fleet member update') as c:
+        c.argument('update_group')
