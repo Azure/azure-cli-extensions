@@ -40,9 +40,9 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.diagnostics_resource_name = AAZStrArg(
-            options=["--diagnostics-resource-name"],
-            help="Unique resource name for insight resources",
+        _args_schema.diagnostic_name = AAZStrArg(
+            options=["--diagnostic-name"],
+            help="unique resource name for diagnostic proxy resources",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9-+@()_]+$",
@@ -104,7 +104,7 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "diagnosticsResourceName", self.ctx.args.diagnostics_resource_name,
+                    "diagnosticsResourceName", self.ctx.args.diagnostic_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
