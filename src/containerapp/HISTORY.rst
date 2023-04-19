@@ -2,6 +2,11 @@
 
 Release History
 ===============
+Upcoming
+++++++
+* 'az containerapp update'/'az containerapp env update': fix --no-wait
+* 'az containerapp update': fix the --yaml update behavior to respect the empty array in patch-request
+
 0.3.28
 ++++++
 * 'az containerapp secret set': fix help typo
