@@ -4,6 +4,7 @@ Release History
 ===============
 Upcoming
 ++++++
+* 'az containerapp auth update': remove unsupported argument --enable-token-store
 * 'az containerapp update'/'az containerapp env update': fix --no-wait
 * 'az containerapp update': fix the --yaml update behavior to respect the empty array in patch-request
 
