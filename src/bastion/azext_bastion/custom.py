@@ -153,7 +153,7 @@ def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, reso
     ip_connect = _is_ipconnect_request(cmd, bastion, target_ip_address)
     if ip_connect:
         target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
-    
+
     if ip_connect and int(resource_port) not in [22, 3389]:
         raise UnrecognizedArgumentError("Custom ports are not allowed. Allowed ports for Tunnel with IP connect is 22, 3389.")
 
@@ -246,7 +246,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
     ip_connect = _is_ipconnect_request(cmd, bastion, target_ip_address)
     if ip_connect:
         target_resource_id = f"/subscriptions/{get_subscription_id(cmd.cli_ctx)}/resourceGroups/{resource_group_name}/providers/Microsoft.Network/bh-hostConnect/{target_ip_address}"
-    
+
     if ip_connect and int(resource_port) not in [22, 3389]:
         raise UnrecognizedArgumentError("Custom ports are not allowed. Allowed ports for Tunnel with IP connect is 22, 3389.")
 
@@ -318,7 +318,7 @@ def _get_bastion_endpoint(cmd, bastion, resource_port, target_resource_id):
 def _write_to_file(response):
     with open("conn.rdp", "w", encoding="utf-8") as f:
         for line in response.text.splitlines():
-                f.write(line + "\n")
+            f.write(line + "\n")
 
 
 def _get_tunnel(cmd, bastion, bastion_endpoint, vm_id, resource_port, port=None):
