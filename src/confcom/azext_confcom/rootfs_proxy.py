@@ -125,14 +125,12 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             output = [output[j * 2 + 1] for j in range(len(output) // 2)]
             output = [i.rstrip("\n").split(": ", 1)[1] for i in output]
         else:
-            output = []
-            # eprint(
-            #     "Cannot get layer hashes. Please check whether the image exists in local repository/daemon."
-            # )
+            eprint(
+                "Cannot get layer hashes"
+            )
 
         if err.decode("utf8") != "":
-            output = []
-            # eprint(err.decode("utf8"))
+            eprint(err.decode("utf8"))
         # cache output layers
         self.layer_cache[image_name] = output
         return output
