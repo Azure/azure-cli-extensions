@@ -63,7 +63,7 @@ def load_arguments(self, _):
         c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation Expected value: '
                    'json-string/@json-file.')
 
-    with self.argument_context('data-protection backup-instance initialize-backup-configuration') as c:
+    with self.argument_context('data-protection backup-instance initialize-backupconfig') as c:
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
         c.argument('excluded_resource_types', type=str, nargs='+', help="")
         c.argument('included_resource_types', type=str, nargs='+', help="")

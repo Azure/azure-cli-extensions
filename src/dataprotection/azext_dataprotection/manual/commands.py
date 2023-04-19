@@ -18,7 +18,7 @@ from ._exception_handler import exception_handler
 
 def load_command_table(self, _):
     with self.command_group('data-protection backup-instance') as g:
-        g.custom_command('initialize-backup-configuration', "dataprotection_backup_instance_initialize_backup_configuration")
+        g.custom_command('initialize-backupconfig', "dataprotection_backup_instance_initialize_backupconfig")
         g.custom_command('create', 'data_protection_backup_instance_create', supports_no_wait=True)
         g.custom_command('validate-for-backup', 'data_protection_backup_instance_validate_for_backup', supports_no_wait=True)
         g.custom_command('list-from-resourcegraph', 'dataprotection_backup_instance_list_from_resourcegraph', client_factory=cf_resource_graph_client)
