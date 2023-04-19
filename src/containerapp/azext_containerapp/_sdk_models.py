@@ -864,6 +864,7 @@ class Configuration(Model):
         'ingress': {'key': 'ingress', 'type': 'Ingress'},
         'dapr': {'key': 'dapr', 'type': 'Dapr'},
         'registries': {'key': 'registries', 'type': '[RegistryCredentials]'},
+        'max_inactive_revisions': {'key': 'maxInactiveRevisions', 'type': 'int'},
     }
 
     def __init__(self, **kwargs):
@@ -873,6 +874,7 @@ class Configuration(Model):
         self.ingress = kwargs.get('ingress', None)
         self.dapr = kwargs.get('dapr', None)
         self.registries = kwargs.get('registries', None)
+        self.max_inactive_revisions = kwargs.get('max_inactive_revisions', None)
 
 
 class Container(Model):
@@ -953,6 +955,8 @@ class ContainerApp(TrackedResource):
     :param managed_environment_id: Resource ID of the Container App's
      environment.
     :type managed_environment_id: str
+    :param workload_profile_name: Name of the workload profile used
+    :type workload_profile_name: str
     :ivar latest_revision_name: Name of the latest revision of the Container
      App.
     :vartype latest_revision_name: str
@@ -994,6 +998,7 @@ class ContainerApp(TrackedResource):
         'identity': {'key': 'identity', 'type': 'ManagedServiceIdentity'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'environment_id': {'key': 'properties.environmentId', 'type': 'str'},
+        'workload_profile_name': {'key': 'properties.workloadProfileName', 'type': 'str'},
         'latest_revision_name': {'key': 'properties.latestRevisionName', 'type': 'str'},
         'latest_revision_fqdn': {'key': 'properties.latestRevisionFqdn', 'type': 'str'},
         'custom_domain_verification_id': {'key': 'properties.customDomainVerificationId', 'type': 'str'},
@@ -1007,6 +1012,7 @@ class ContainerApp(TrackedResource):
         self.identity = kwargs.get('identity', None)
         self.provisioning_state = None
         self.environment_id = kwargs.get('environment_id', None)
+        self.workload_profile_name = kwargs.get('workload_profile_name', None)
         self.latest_revision_name = None
         self.latest_revision_fqdn = None
         self.custom_domain_verification_id = None
@@ -1344,6 +1350,23 @@ class IPSecurityRestrictions(Model):
         self.description = kwargs.get('description', None)
 
 
+class StickySessions(Model):
+    """Sticky Sessions of a Container App.
+
+    :param name: affinity
+    :type name: str
+
+    """
+
+    _attribute_map = {
+        'affinity': {'key': 'affinity', 'type': 'str'},
+    }
+
+    def __init__(self, **kwargs):
+        super(StickySessions, self).__init__(**kwargs)
+        self.affinity = kwargs.get('affinity', None)
+
+
 class CustomHostnameAnalysisResult(ProxyResource):
     """Custom domain analysis.
 
@@ -1515,6 +1538,10 @@ class Dapr(Model):
         'app_id': {'key': 'appId', 'type': 'str'},
         'app_protocol': {'key': 'appProtocol', 'type': 'str'},
         'app_port': {'key': 'appPort', 'type': 'int'},
+        'http_read_buffer_size': {'key': 'httpReadBufferSize', 'type': 'int'},
+        'http_max_request_size': {'key': 'httpMaxRequestSize', 'type': 'int'},
+        'log_level': {'key': 'logLevel', 'type': 'str'},
+        'enable_api_logging': {'key': 'enableApiLogging', 'type': 'bool'},
     }
 
     def __init__(self, **kwargs):
@@ -1523,6 +1550,10 @@ class Dapr(Model):
         self.app_id = kwargs.get('app_id', None)
         self.app_protocol = kwargs.get('app_protocol', None)
         self.app_port = kwargs.get('app_port', None)
+        self.http_read_buffer_size = kwargs.get('http_read_buffer_size', None)
+        self.http_max_request_size = kwargs.get('http_max_request_size', None)
+        self.log_level = kwargs.get('log_level', None)
+        self.enable_api_logging = kwargs.get('enable_api_logging', None)
 
 
 class DaprComponent(ProxyResource):
@@ -2086,6 +2117,8 @@ class Ingress(Model):
      If set to false HTTP connections are automatically redirected to HTTPS
      connections
     :type allow_insecure: bool
+    :type sticky_sessions: sticky session affinity for Container App. Possible values include:
+    'none', 'Sticky'
     """
 
     _validation = {
@@ -2096,23 +2129,31 @@ class Ingress(Model):
         'fqdn': {'key': 'fqdn', 'type': 'str'},
         'external': {'key': 'external', 'type': 'bool'},
         'target_port': {'key': 'targetPort', 'type': 'int'},
+        'exposed_port': {'key': 'exposedPort', 'type': 'int'},
         'transport': {'key': 'transport', 'type': 'str'},
         'traffic': {'key': 'traffic', 'type': '[TrafficWeight]'},
         'custom_domains': {'key': 'customDomains', 'type': '[CustomDomain]'},
         'allow_insecure': {'key': 'allowInsecure', 'type': 'bool'},
-        'ipSecurityRestrictions': {'key': 'ipSecurityRestrictions', 'type': '[IPSecurityRestrictions]'},
+        'ip_security_restrictions': {'key': 'ipSecurityRestrictions', 'type': '[IPSecurityRestrictions]'},
+        'client_certificate_mode': {'key': 'clientCertificateMode', 'type': 'str'},
+        'cors_policy': {'key': 'corsPolicy', 'type': 'CorsPolicy'},
+        'sticky_sessions': {'key': 'stickySessions', 'type': 'StickySessions'},
     }
 
     def __init__(self, **kwargs):
         super(Ingress, self).__init__(**kwargs)
         self.fqdn = None
         self.external = kwargs.get('external', False)
+        self.exposedPort = kwargs.get('exposed_port', None)
         self.target_port = kwargs.get('target_port', None)
         self.transport = kwargs.get('transport', None)
         self.traffic = kwargs.get('traffic', None)
         self.custom_domains = kwargs.get('custom_domains', None)
         self.allow_insecure = kwargs.get('allow_insecure', None)
-        self.ipSecurityRestrictions = kwargs.get('ipSecurityRestrictions', None)
+        self.ipSecurityRestrictions = kwargs.get('ip_security_restrictions', None)
+        self.clientCertificateMode = kwargs.get('client_certificate_mode', None)
+        self.corsPolicy = kwargs.get('cors_policy', None)
+        self.stickySessions = kwargs.get('sticky_sessions', None)
 
 
 class LegacyMicrosoftAccount(Model):
@@ -2697,6 +2738,7 @@ class RegistryCredentials(Model):
         'server': {'key': 'server', 'type': 'str'},
         'username': {'key': 'username', 'type': 'str'},
         'password_secret_ref': {'key': 'passwordSecretRef', 'type': 'str'},
+        'identity': {'key': 'identity', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
@@ -2704,6 +2746,7 @@ class RegistryCredentials(Model):
         self.server = kwargs.get('server', None)
         self.username = kwargs.get('username', None)
         self.password_secret_ref = kwargs.get('password_secret_ref', None)
+        self.identity = kwargs.get('identity', None)
 
 
 class RegistryInfo(Model):
@@ -3033,17 +3076,25 @@ class Secret(Model):
     :type name: str
     :param value: Secret Value.
     :type value: str
+    :param keyVaultUrl: Secret KeyVaultUrl.
+    :type keyVaultUrl: str
+    :param identity: Identity talking to keyVault.
+    :type identity: str
     """
 
     _attribute_map = {
         'name': {'key': 'name', 'type': 'str'},
         'value': {'key': 'value', 'type': 'str'},
+        'keyVaultUrl': {'key': 'keyVaultUrl', 'type': 'str'},
+        'identity': {'key': 'identity', 'type': 'str'},
     }
 
     def __init__(self, **kwargs):
         super(Secret, self).__init__(**kwargs)
         self.name = kwargs.get('name', None)
         self.value = kwargs.get('value', None)
+        self.keyVaultUrl = kwargs.get('keyVaultUrl', None)
+        self.identity = kwargs.get('identity', None)
 
 
 class SecretsCollection(Model):
@@ -3426,3 +3477,45 @@ class VolumeMount(Model):
         super(VolumeMount, self).__init__(**kwargs)
         self.volume_name = kwargs.get('volume_name', None)
         self.mount_path = kwargs.get('mount_path', None)
+
+
+class CorsPolicy(Model):
+    """Cross-Origin-Resource-Sharing policy.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :param allowed_origins: allowed origins. Required.
+    :type allowed_origins: list[str]
+    :param allowed_methods: allowed HTTP methods.
+    :type allowed_methods: list[str]
+    :param allowed_headers: allowed HTTP headers.
+    :type allowed_headers: list[str]
+    :param expose_headers: expose HTTP headers.
+    :type expose_headers: list[str]
+    :param max_age: max time client can cache the result.
+    :type max_age: int
+    :param allow_credentials: allow credential or not.
+    :type allow_credentials: bool
+    """
+
+    _validation = {
+        'allowed_origins': {'required': True},
+    }
+
+    _attribute_map = {
+        'allowed_origins': {'key': 'allowedOrigins', 'type': '[str]'},
+        'allowed_methods': {'key': 'allowedMethods', 'type': '[str]'},
+        'allowed_headers': {'key': 'allowedHeaders', 'type': '[str]'},
+        'expose_headers': {'key': 'exposeHeaders', 'type': '[str]'},
+        'max_age': {'key': 'maxAge', 'type': 'int'},
+        'allow_credentials': {'key': 'allowCredentials', 'type': 'bool'},
+    }
+
+    def __init__(self, **kwargs):
+        super(CorsPolicy, self).__init__(**kwargs)
+        self.allowed_origins = kwargs.get('allowed_origins', None)
+        self.allowed_methods = kwargs.get('allowed_methods', None)
+        self.allowed_headers = kwargs.get('allowed_headers', None)
+        self.expose_headers = kwargs.get('expose_headers', None)
+        self.max_age = kwargs.get('max_age', None)
+        self.allow_credentials = kwargs.get('allow_credentials', None)

@@ -13,7 +13,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalEr
 from msrestazure.tools import parse_resource_id
 from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.azure_exceptions import CloudError
-from .vendored_sdks.appplatform.v2023_01_01_preview import models
+from .vendored_sdks.appplatform.v2023_03_01_preview import models
 from ._deployment_uploadable_factory import uploader_selector
 from ._log_stream import LogStream
 
@@ -39,7 +39,11 @@ class BuildService:
         upload_info = self._get_upload_info()
         logger.warning("[2/{}] Uploading package to blob.".format(total_steps))
         uploader_selector(cli_ctx=self.cmd.cli_ctx, upload_url=upload_info.upload_url, **kwargs).upload_and_build(**kwargs)
-        logger.warning("[3/{}] Creating or Updating build '{}'.".format(total_steps, kwargs['app']))
+        if 'app' in kwargs:
+            build_name = kwargs['app']
+        else:
+            build_name = kwargs['build_name']
+        logger.warning("[3/{}] Creating or Updating build '{}'.".format(total_steps, build_name))
         build_result_id = self._queue_build(upload_info.relative_path, **kwargs)
         logger.warning("[4/{}] Waiting for building container image to finish. This may take a few minutes.".format(total_steps))
         self._wait_build_finished(build_result_id)
@@ -56,7 +60,7 @@ class BuildService:
         except AttributeError as e:
             raise AzureInternalError("Failed to get a SAS URL to upload context. Error: {}".format(e))
 
-    def _queue_build(self, relative_path=None, builder=None, build_env=None, build_cpu=None, build_memory=None, app=None, deployment=None, **_):
+    def _queue_build(self, relative_path=None, builder=None, build_env=None, build_cpu=None, build_memory=None, app=None, deployment=None, build_name=None, **_):
         subscription = get_subscription_id(self.cmd.cli_ctx)
         service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(subscription, self.resource_group, self.service)
         build_resource_requests = models.BuildResourceRequests(
@@ -69,11 +73,13 @@ class BuildService:
             env=build_env if build_env else None,
             resource_requests=build_resource_requests)
         build = models.Build(properties=properties)
+        if build_name is None:
+            build_name = app + '-' + deployment
         try:
             return self.client.build_service.create_or_update_build(self.resource_group,
                                                                     self.service,
                                                                     self.name,
-                                                                    app + '-' + deployment,
+                                                                    build_name,
                                                                     build).properties.triggered_build_result.id
         except (AttributeError, CloudError) as e:
             raise DeploymentError("Failed to create or update a build. Error: {}".format(e.message))

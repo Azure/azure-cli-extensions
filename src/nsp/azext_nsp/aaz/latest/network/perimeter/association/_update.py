@@ -133,10 +133,30 @@ class Update(AAZCommand):
         _schema.id = cls._args_sub_resource_update.id
 
     def _execute_operations(self):
+        self.pre_operations()
         self.NspAssociationsGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
         self.NspAssociationsCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
+
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -225,7 +245,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_nsp_association_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_nsp_association_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -324,7 +344,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_nsp_association_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_nsp_association_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -347,8 +367,8 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("accessMode", AAZStrType, ".access_mode")
-                _build_schema_sub_resource_update(properties.set_prop("privateLinkResource", AAZObjectType, ".private_link_resource"))
-                _build_schema_sub_resource_update(properties.set_prop("profile", AAZObjectType, ".profile"))
+                _UpdateHelper._build_schema_sub_resource_update(properties.set_prop("privateLinkResource", AAZObjectType, ".private_link_resource"))
+                _UpdateHelper._build_schema_sub_resource_update(properties.set_prop("profile", AAZObjectType, ".profile"))
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -365,85 +385,85 @@ class Update(AAZCommand):
             )
 
 
-def _build_schema_sub_resource_update(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("id", AAZStrType, ".id")
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    @classmethod
+    def _build_schema_sub_resource_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("id", AAZStrType, ".id")
 
-_schema_nsp_association_read = None
+    _schema_nsp_association_read = None
 
+    @classmethod
+    def _build_schema_nsp_association_read(cls, _schema):
+        if cls._schema_nsp_association_read is not None:
+            _schema.id = cls._schema_nsp_association_read.id
+            _schema.location = cls._schema_nsp_association_read.location
+            _schema.name = cls._schema_nsp_association_read.name
+            _schema.properties = cls._schema_nsp_association_read.properties
+            _schema.tags = cls._schema_nsp_association_read.tags
+            _schema.type = cls._schema_nsp_association_read.type
+            return
 
-def _build_schema_nsp_association_read(_schema):
-    global _schema_nsp_association_read
-    if _schema_nsp_association_read is not None:
-        _schema.id = _schema_nsp_association_read.id
-        _schema.location = _schema_nsp_association_read.location
-        _schema.name = _schema_nsp_association_read.name
-        _schema.properties = _schema_nsp_association_read.properties
-        _schema.tags = _schema_nsp_association_read.tags
-        _schema.type = _schema_nsp_association_read.type
-        return
+        cls._schema_nsp_association_read = _schema_nsp_association_read = AAZObjectType()
 
-    _schema_nsp_association_read = AAZObjectType()
+        nsp_association_read = _schema_nsp_association_read
+        nsp_association_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        nsp_association_read.location = AAZStrType()
+        nsp_association_read.name = AAZStrType()
+        nsp_association_read.properties = AAZObjectType()
+        nsp_association_read.tags = AAZDictType()
+        nsp_association_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    nsp_association_read = _schema_nsp_association_read
-    nsp_association_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    nsp_association_read.location = AAZStrType()
-    nsp_association_read.name = AAZStrType()
-    nsp_association_read.properties = AAZObjectType()
-    nsp_association_read.tags = AAZDictType()
-    nsp_association_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        properties = _schema_nsp_association_read.properties
+        properties.access_mode = AAZStrType(
+            serialized_name="accessMode",
+        )
+        properties.has_provisioning_issues = AAZStrType(
+            serialized_name="hasProvisioningIssues",
+            flags={"read_only": True},
+        )
+        properties.private_link_resource = AAZObjectType(
+            serialized_name="privateLinkResource",
+        )
+        cls._build_schema_sub_resource_read(properties.private_link_resource)
+        properties.profile = AAZObjectType()
+        cls._build_schema_sub_resource_read(properties.profile)
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
 
-    properties = _schema_nsp_association_read.properties
-    properties.access_mode = AAZStrType(
-        serialized_name="accessMode",
-    )
-    properties.has_provisioning_issues = AAZStrType(
-        serialized_name="hasProvisioningIssues",
-        flags={"read_only": True},
-    )
-    properties.private_link_resource = AAZObjectType(
-        serialized_name="privateLinkResource",
-    )
-    _build_schema_sub_resource_read(properties.private_link_resource)
-    properties.profile = AAZObjectType()
-    _build_schema_sub_resource_read(properties.profile)
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
+        tags = _schema_nsp_association_read.tags
+        tags.Element = AAZStrType()
 
-    tags = _schema_nsp_association_read.tags
-    tags.Element = AAZStrType()
+        _schema.id = cls._schema_nsp_association_read.id
+        _schema.location = cls._schema_nsp_association_read.location
+        _schema.name = cls._schema_nsp_association_read.name
+        _schema.properties = cls._schema_nsp_association_read.properties
+        _schema.tags = cls._schema_nsp_association_read.tags
+        _schema.type = cls._schema_nsp_association_read.type
 
-    _schema.id = _schema_nsp_association_read.id
-    _schema.location = _schema_nsp_association_read.location
-    _schema.name = _schema_nsp_association_read.name
-    _schema.properties = _schema_nsp_association_read.properties
-    _schema.tags = _schema_nsp_association_read.tags
-    _schema.type = _schema_nsp_association_read.type
+    _schema_sub_resource_read = None
 
+    @classmethod
+    def _build_schema_sub_resource_read(cls, _schema):
+        if cls._schema_sub_resource_read is not None:
+            _schema.id = cls._schema_sub_resource_read.id
+            return
 
-_schema_sub_resource_read = None
+        cls._schema_sub_resource_read = _schema_sub_resource_read = AAZObjectType()
 
+        sub_resource_read = _schema_sub_resource_read
+        sub_resource_read.id = AAZStrType()
 
-def _build_schema_sub_resource_read(_schema):
-    global _schema_sub_resource_read
-    if _schema_sub_resource_read is not None:
-        _schema.id = _schema_sub_resource_read.id
-        return
-
-    _schema_sub_resource_read = AAZObjectType()
-
-    sub_resource_read = _schema_sub_resource_read
-    sub_resource_read.id = AAZStrType()
-
-    _schema.id = _schema_sub_resource_read.id
+        _schema.id = cls._schema_sub_resource_read.id
 
 
 __all__ = ["Update"]
