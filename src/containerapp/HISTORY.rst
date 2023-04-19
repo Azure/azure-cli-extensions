@@ -5,6 +5,7 @@ Release History
 Upcoming
 +++++++
 * Add CLI support for containerapp ingress sticky-sessions'
+* 'az containerapp create': add support for secret volumes
 
 0.3.27
 ++++++
