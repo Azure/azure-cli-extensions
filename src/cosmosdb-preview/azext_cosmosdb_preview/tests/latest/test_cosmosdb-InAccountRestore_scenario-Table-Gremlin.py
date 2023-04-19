@@ -31,20 +31,24 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
 
         assert not self.cmd('az cosmosdb gremlin database exists -g {rg} -a {acc} -n {db_name}').get_output_in_json()
 
-        database_create = self.cmd('az cosmosdb gremlin database create -g {rg} -a {acc} -n {db_name}').get_output_in_json()
-        assert database_create["name"] == db_name
+        self.cmd('az cosmosdb gremlin database create -g {rg} -a {acc} -n {db_name}', checks=[
+            self.check('name', db_name)
+        ]).get_output_in_json()
 
-        database_show = self.cmd('az cosmosdb gremlin database show -g {rg} -a {acc} -n {db_name}').get_output_in_json()
-        assert database_show["name"] == db_name
+        self.cmd('az cosmosdb gremlin database show -g {rg} -a {acc} -n {db_name}', checks=[
+            self.check('name', db_name)
+        ]).get_output_in_json()
 
-        database_list = self.cmd('az cosmosdb gremlin database list -g {rg} -a {acc}').get_output_in_json()
-        assert len(database_list) == 1
+        self.cmd('az cosmosdb gremlin database list -g {rg} -a {acc}', checks=[
+            self.check('length(@)', 1)
+        ]).get_output_in_json()
 
         assert self.cmd('az cosmosdb gremlin database exists -g {rg} -a {acc} -n {db_name}').get_output_in_json()
 
         self.cmd('az cosmosdb gremlin database delete -g {rg} -a {acc} -n {db_name} --yes')
-        database_list = self.cmd('az cosmosdb gremlin database list -g {rg} -a {acc}').get_output_in_json()
-        assert len(database_list) == 0
+        self.cmd('az cosmosdb gremlin database list -g {rg} -a {acc}', checks=[
+            self.check('length(@)', 0)
+        ]).get_output_in_json()
 
 
     @AllowLargeResponse()
@@ -76,28 +80,33 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
 
         assert not self.cmd('az cosmosdb gremlin graph exists -g {rg} -a {acc} -d {db_name} -n {gp_name}').get_output_in_json()
 
-        graph_create = self.cmd('az cosmosdb gremlin graph create -g {rg} -a {acc} -d {db_name} -n {gp_name} -p {part} --ttl {ttl} \
-            --conflict-resolution-policy {conflict_resolution} --idx {indexing}').get_output_in_json()
-        assert graph_create["name"] == gp_name
-        assert graph_create["resource"]["partitionKey"]["paths"][0] == partition_key
-        assert graph_create["resource"]["defaultTtl"] == default_ttl
-        assert graph_create["resource"]["conflictResolutionPolicy"]["mode"] == "lastWriterWins"
-        assert graph_create["resource"]["indexingPolicy"]["excludedPaths"][0]["path"] == "/headquarters/employees/?"
+        self.cmd('az cosmosdb gremlin graph create -g {rg} -a {acc} -d {db_name} -n {gp_name} -p {part} --ttl {ttl} \
+            --conflict-resolution-policy {conflict_resolution} --idx {indexing}', checks=[
+            self.check('name', gp_name),
+            self.check('resource.partitionKey.paths[0]', partition_key),
+            self.check('resource.defaultTtl', default_ttl),
+            self.check('resource.conflictResolutionPolicy.mode', "lastWriterWins"),
+            self.check('resource.indexingPolicy.excludedPaths[0].path', "/headquarters/employees/?")
+        ]).get_output_in_json()
 
-        graph_update = self.cmd('az cosmosdb gremlin graph update -g {rg} -a {acc} -d {db_name} -n {gp_name} --ttl {nttl}').get_output_in_json()
-        assert graph_update["resource"]["defaultTtl"] == new_default_ttl
+        self.cmd('az cosmosdb gremlin graph update -g {rg} -a {acc} -d {db_name} -n {gp_name} --ttl {nttl}', checks=[
+            self.check('resource.defaultTtl', new_default_ttl)
+        ]).get_output_in_json()
 
-        graph_show = self.cmd('az cosmosdb gremlin graph show -g {rg} -a {acc} -d {db_name} -n {gp_name}').get_output_in_json()
-        assert graph_show["name"] == gp_name
+        self.cmd('az cosmosdb gremlin graph show -g {rg} -a {acc} -d {db_name} -n {gp_name}', checks=[
+            self.check('name', gp_name)
+        ]).get_output_in_json()
 
-        graph_list = self.cmd('az cosmosdb gremlin graph list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
-        assert len(graph_list) == 1
+        self.cmd('az cosmosdb gremlin graph list -g {rg} -a {acc} -d {db_name}', checks=[
+            self.check('length(@)', 1)
+        ]).get_output_in_json()
 
         assert self.cmd('az cosmosdb gremlin graph exists -g {rg} -a {acc} -d {db_name} -n {gp_name}').get_output_in_json()
 
         self.cmd('az cosmosdb gremlin graph delete -g {rg} -a {acc} -d {db_name} -n {gp_name} --yes')
-        graph_list = self.cmd('az cosmosdb gremlin graph list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
-        assert len(graph_list) == 0
+        self.cmd('az cosmosdb gremlin graph list -g {rg} -a {acc} -d {db_name}', checks=[
+            self.check('length(@)', 0)
+        ]).get_output_in_json()
 
 
     @AllowLargeResponse()
@@ -129,13 +138,14 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
 
         assert not self.cmd('az cosmosdb gremlin graph exists -g {rg} -a {acc} -d {db_name} -n {gp_name}').get_output_in_json()
 
-        graph_create = self.cmd('az cosmosdb gremlin graph create -g {rg} -a {acc} -d {db_name} -n {gp_name} -p {part} --ttl {ttl} \
-            --conflict-resolution-policy {conflict_resolution} --idx {indexing}').get_output_in_json()
-        assert graph_create["name"] == gp_name
-        assert graph_create["resource"]["partitionKey"]["paths"][0] == partition_key
-        assert graph_create["resource"]["defaultTtl"] == default_ttl
-        assert graph_create["resource"]["conflictResolutionPolicy"]["mode"] == "lastWriterWins"
-        assert graph_create["resource"]["indexingPolicy"]["excludedPaths"][0]["path"] == "/headquarters/employees/?"
+        self.cmd('az cosmosdb gremlin graph create -g {rg} -a {acc} -d {db_name} -n {gp_name} -p {part} --ttl {ttl} \
+            --conflict-resolution-policy {conflict_resolution} --idx {indexing}', checks=[
+            self.check('name', gp_name),
+            self.check('resource.partitionKey.paths[0]', partition_key),
+            self.check('resource.defaultTtl', default_ttl),
+            self.check('resource.conflictResolutionPolicy.mode', "lastWriterWins"),
+            self.check('resource.indexingPolicy.excludedPaths[0].path', "/headquarters/employees/?")
+        ]).get_output_in_json()
 
         #restore time
         restore_ts_string = datetime.datetime.utcnow().isoformat()
@@ -146,58 +156,62 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
         import time
         time.sleep(500)
 
-        graph_show = self.cmd('az cosmosdb gremlin graph show -g {rg} -a {acc} -d {db_name} -n {gp_name}').get_output_in_json()
-        assert graph_show["name"] == gp_name
+        self.cmd('az cosmosdb gremlin graph show -g {rg} -a {acc} -d {db_name} -n {gp_name}', checks=[
+            self.check('name', gp_name)
+        ]).get_output_in_json()
 
-        graph_list = self.cmd('az cosmosdb gremlin graph list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
-        assert len(graph_list) == 1
+        self.cmd('az cosmosdb gremlin graph list -g {rg} -a {acc} -d {db_name}', checks=[
+            self.check('length(@)', 1)
+        ]).get_output_in_json()
 
         assert self.cmd('az cosmosdb gremlin graph exists -g {rg} -a {acc} -d {db_name} -n {gp_name}').get_output_in_json()
 
         #delete graph
         self.cmd('az cosmosdb gremlin graph delete -g {rg} -a {acc} -d {db_name} -n {gp_name} --yes')
 
-        import time
         time.sleep(500)
 
         # restore graph
         self.cmd('az cosmosdb gremlin graph restore -g {rg} -a {acc} -d {db_name} -n {gp_name} --restore-timestamp {rts}')
 
-        import time
         time.sleep(500)
 
-        graph_show = self.cmd('az cosmosdb gremlin graph show -g {rg} -a {acc} -d {db_name} -n {gp_name}').get_output_in_json()
-        assert graph_show["name"] == gp_name
+        self.cmd('az cosmosdb gremlin graph show -g {rg} -a {acc} -d {db_name} -n {gp_name}', checks=[
+            self.check('name', gp_name)
+        ]).get_output_in_json()
 
-        graph_list = self.cmd('az cosmosdb gremlin graph list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
-        assert len(graph_list) == 1
+        self.cmd('az cosmosdb gremlin graph list -g {rg} -a {acc} -d {db_name}', checks=[
+            self.check('length(@)', 1)
+        ]).get_output_in_json()
 
         #delete database
         self.cmd('az cosmosdb gremlin database delete -g {rg} -a {acc} -n {db_name} --yes')
 
-        database_list = self.cmd('az cosmosdb gremlin database list -g {rg} -a {acc}').get_output_in_json()
-        assert len(database_list) == 0
+        self.cmd('az cosmosdb gremlin database list -g {rg} -a {acc}', checks=[
+            self.check('length(@)', 0)
+        ]).get_output_in_json()
 
-        import time
         time.sleep(500)
 
         self.cmd('az cosmosdb gremlin database restore -g {rg} -a {acc} -n {db_name} --restore-timestamp {rts}')
 
-        import time
         time.sleep(500)
 
-        database_list = self.cmd('az cosmosdb gremlin database list -g {rg} -a {acc}').get_output_in_json()
-        assert len(database_list) == 1
+        self.cmd('az cosmosdb gremlin database list -g {rg} -a {acc}', checks=[
+            self.check('length(@)', 1)
+        ]).get_output_in_json()
 
         self.cmd('az cosmosdb gremlin graph delete -g {rg} -a {acc} -d {db_name} -n {gp_name} --yes')
 
-        graph_list = self.cmd('az cosmosdb gremlin graph list -g {rg} -a {acc} -d {db_name}').get_output_in_json()
-        assert len(graph_list) == 0
+        self.cmd('az cosmosdb gremlin graph list -g {rg} -a {acc} -d {db_name}', checks=[
+            self.check('length(@)', 0)
+        ]).get_output_in_json()
 
         self.cmd('az cosmosdb gremlin database delete -g {rg} -a {acc} -n {db_name} --yes')
 
-        database_list = self.cmd('az cosmosdb gremlin database list -g {rg} -a {acc}').get_output_in_json()
-        assert len(database_list) == 0
+        self.cmd('az cosmosdb gremlin database list -g {rg} -a {acc}', checks=[
+            self.check('length(@)', 0)
+        ]).get_output_in_json()
 
 
     @AllowLargeResponse()
@@ -215,14 +229,17 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
 
         assert not self.cmd('az cosmosdb table exists -g {rg} -a {acc} -n {table_name}').get_output_in_json()
 
-        table_create = self.cmd('az cosmosdb table create -g {rg} -a {acc} -n {table_name}').get_output_in_json()
-        assert table_create["name"] == table_name
+        self.cmd('az cosmosdb table create -g {rg} -a {acc} -n {table_name}', checks=[
+            self.check('name', table_name)
+        ]).get_output_in_json()
 
-        table_show = self.cmd('az cosmosdb table show -g {rg} -a {acc} -n {table_name}').get_output_in_json()
-        assert table_show["name"] == table_name
+        self.cmd('az cosmosdb table show -g {rg} -a {acc} -n {table_name}', checks=[
+            self.check('name', table_name)
+        ]).get_output_in_json()
 
-        table_list = self.cmd('az cosmosdb table list -g {rg} -a {acc}').get_output_in_json()
-        assert len(table_list) == 1
+        self.cmd('az cosmosdb table list -g {rg} -a {acc}', checks=[
+            self.check('length(@)', 1)
+        ]).get_output_in_json()
 
         assert self.cmd('az cosmosdb table exists -g {rg} -a {acc} -n {table_name}').get_output_in_json()
 
@@ -236,22 +253,25 @@ class Cosmosdb_previewInAccountRestoreScenarioTest_Table_Gremlin(ScenarioTest):
 
         self.cmd('az cosmosdb table delete -g {rg} -a {acc} -n {table_name} --yes')
         
-        table_list = self.cmd('az cosmosdb table list -g {rg} -a {acc}').get_output_in_json()
-        assert len(table_list) == 0
+        self.cmd('az cosmosdb table list -g {rg} -a {acc}', checks=[
+            self.check('length(@)', 0)
+        ]).get_output_in_json()
 
         self.cmd('az cosmosdb table restore -g {rg} -a {acc} -n {table_name} --restore-timestamp {rts}').get_output_in_json()
 
-        import time
         time.sleep(500)
 
-        table_show = self.cmd('az cosmosdb table show -g {rg} -a {acc} -n {table_name}').get_output_in_json()
-        assert table_show["name"] == table_name
+        self.cmd('az cosmosdb table show -g {rg} -a {acc} -n {table_name}', checks=[
+            self.check('name', table_name)
+        ]).get_output_in_json()
 
-        table_list = self.cmd('az cosmosdb table list -g {rg} -a {acc}').get_output_in_json()
-        assert len(table_list) == 1
+        self.cmd('az cosmosdb table list -g {rg} -a {acc}', checks=[
+            self.check('length(@)', 1)
+        ]).get_output_in_json()
 
         assert self.cmd('az cosmosdb table exists -g {rg} -a {acc} -n {table_name}').get_output_in_json()
 
         self.cmd('az cosmosdb table delete -g {rg} -a {acc} -n {table_name} --yes')
-        table_list = self.cmd('az cosmosdb table list -g {rg} -a {acc}').get_output_in_json()
-        assert len(table_list) == 0
+        self.cmd('az cosmosdb table list -g {rg} -a {acc}', checks=[
+            self.check('length(@)', 0)
+        ]).get_output_in_json()
