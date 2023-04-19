@@ -54,7 +54,9 @@ from ._models import (
     ContainerAppCustomDomain as ContainerAppCustomDomainModel,
     AzureFileProperties as AzureFilePropertiesModel,
     CustomDomainConfiguration as CustomDomainConfigurationModel,
-    ScaleRule as ScaleRuleModel)
+    ScaleRule as ScaleRuleModel,
+    Volume as VolumeModel,
+    VolumeMount as VolumeMountModel,)
 
 from ._utils import (_validate_subscription_registered, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
@@ -71,7 +73,7 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart,
                      set_ip_restrictions, certificate_location_matches, certificate_matches, generate_randomized_managed_cert_name,
                      check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                     get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported)
+                     get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported,_generate_secret_volume_name,)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -357,7 +359,8 @@ def create_containerapp(cmd,
                         disable_warnings=False,
                         user_assigned=None,
                         registry_identity=None,
-                        workload_profile_name=None):
+                        workload_profile_name=None,
+                        secret_volume_mount=None,):
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name)
     validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
@@ -416,7 +419,9 @@ def create_containerapp(cmd,
         ingress_def["transport"] = transport
         ingress_def["exposedPort"] = exposed_port if transport == "tcp" else None
 
-    secrets_def = None
+    secret_volume_mount_path = None
+    secret_volume_def = None
+    secret_volume_name = None
     if secrets is not None:
         secrets_def = parse_secret_flags(secrets)
 
@@ -534,9 +539,23 @@ def create_containerapp(cmd,
     if resources_def is not None:
         container_def["resources"] = resources_def
 
+    volume_def = VolumeModel
+    volume_mount_def = VolumeMountModel
+    if secret_volume_mount is not None:
+        # generate a volume name
+        volume_def["name"] = _generate_secret_volume_name(resource_group_name)
+        volume_def["storageType"] = "Secret"
+
+        # mount the volume to the container
+        volume_mount_def["volumeName"] = volume_def["name"]
+        volume_mount_def["mountPath"] = secret_volume_mount
+        container_def["volumeMounts"] = [volume_mount_def]
+
     template_def = TemplateModel
     template_def["containers"] = [container_def]
     template_def["scale"] = scale_def
+    # do i put this under an if
+    template_def["volumes"] = [volume_def]
 
     if revision_suffix is not None:
         template_def["revisionSuffix"] = revision_suffix
