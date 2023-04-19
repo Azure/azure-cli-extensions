@@ -73,7 +73,7 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart,
                      set_ip_restrictions, certificate_location_matches, certificate_matches, generate_randomized_managed_cert_name,
                      check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                     get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported,_generate_secret_volume_name,)
+                     get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported, _generate_secret_volume_name)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -419,9 +419,7 @@ def create_containerapp(cmd,
         ingress_def["transport"] = transport
         ingress_def["exposedPort"] = exposed_port if transport == "tcp" else None
 
-    secret_volume_mount_path = None
-    secret_volume_def = None
-    secret_volume_name = None
+    secrets_def = None
     if secrets is not None:
         secrets_def = parse_secret_flags(secrets)
 
