@@ -40,22 +40,17 @@ def acipolicygen_confcom(
 ):
 
     if sum(map(bool, [input_path, arm_template, image_name])) != 1:
-        logger.error("Can only generate CCE policy from one source at a time")
-        sys.exit(1)
+        error_out("Can only generate CCE policy from one source at a time")
     if sum(map(bool, [print_policy_to_terminal, outraw, outraw_pretty_print])) > 1:
-        logger.error("Can only print in one format at a time")
-        sys.exit(1)
+        error_out("Can only print in one format at a time")
     elif (diff and input_path) or (diff and image_name):
-        logger.error("Can only diff CCE policy from ARM Template")
-        sys.exit(1)
+        error_out("Can only diff CCE policy from ARM Template")
     elif arm_template_parameters and not arm_template:
-        logger.error(
+        error_out(
             "Can only use ARM Template Parameters if ARM Template is also present"
         )
-        sys.exit(1)
     elif save_to_file and arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
-        logger.error("Must print policy to terminal when saving to file")
-        sys.exit(1)
+        error_out("Must print policy to terminal when saving to file")
 
     if print_existing_policy:
         print_existing_policy_from_arm_template(arm_template, arm_template_parameters)
@@ -236,3 +231,8 @@ def get_output_type(outraw, outraw_pretty_print):
     elif outraw_pretty_print:
         output_type = security_policy.OutputType.PRETTY_PRINT
     return output_type
+
+
+def error_out(error_string):
+    logger.error(error_string)
+    sys.exit(1)

@@ -185,35 +185,6 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             pretty_print_func(self._allow_unencrypted_scratch),
         )
 
-    def _add_elements(self, dictionary) -> Dict:
-        """Recursive function to convert CCE policy rego into a json policy
-        - adds 'length' keys to dicts that were arrays
-        - expands 'elements' dicts from an array
-        """
-
-        if isinstance(dictionary, (str, int)):
-            return None
-        if isinstance(dictionary, list):
-            for item in dictionary:
-                self._add_elements(item)
-        if isinstance(dictionary, dict):
-            for key in dictionary.keys():
-                if isinstance(dictionary[key], list):
-                    elements_list = {}
-                    for i, item in enumerate(dictionary[key]):
-                        elements_list[str(i)] = item
-                    dictionary[key] = {
-                        "elements": elements_list,
-                        "length": len(dictionary[key]),
-                    }
-
-                    for i in range(len(dictionary[key]["elements"].keys())):
-                        self._add_elements(dictionary[key]["elements"][str(i)])
-                else:
-                    self._add_elements(dictionary[key])
-
-        return dictionary
-
     def validate_cce_policy(self) -> Tuple[bool, Dict]:
         """Utility method: check to see if the existing policy
         that instantiates this function would allow the policy created by the input ARM Template"""
