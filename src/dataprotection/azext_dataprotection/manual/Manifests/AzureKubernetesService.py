@@ -5,10 +5,6 @@
 
 manifest = '''
 {
-  "datasourcePermissions": [ "Reader" ],
-  "snapshotRGPermissions": [ "Reader" ],
-  "keyVaultPermissions": [],
-  "dataSourceOverSnapshotRGPermissions": [ "Contributor" ],
   "isProxyResource": true,
   "enableDataSourceSetInfo": true,
   "resourceType": "Microsoft.ContainerService/managedclusters",
@@ -21,6 +17,20 @@ manifest = '''
   "addDataStoreParametersList": true,
   "friendlyNameRequired": true,
   "supportSecretStoreAuthentication": false,
+  "backupVaultPermissions": [
+    {
+        "roleDefinitionName": "Reader",
+        "type": "DataSource"
+    },
+    {
+        "roleDefinitionName": "Reader",
+        "type": "SnapshotRG"
+    },
+    {
+        "roleDefinitionName": "Contributor",
+        "type": "DataSourceOverSnapshotRG"
+    }
+  ],
   "policySettings": {
     "supportedRetentionTags": [ "Daily", "Weekly" ],
     "supportedDatastoreTypes": [ "OperationalStore" ],
