@@ -79,10 +79,16 @@ Container = {
     "volumeMounts": None,  # [VolumeMount]
 }
 
+SecretVolumeItem = {
+    "secretRef": None,
+    "path": None,
+}
+
 Volume = {
     "name": None,
-    "storageType": "EmptyDir",  # AzureFile or EmptyDir
-    "storageName": None  # None for EmptyDir, otherwise name of storage resource
+    "storageType": "EmptyDir",  # AzureFile, EmptyDir or Secret
+    "storageName": None,   # None for EmptyDir or Secret, otherwise name of storage resource
+    "secrets": None,  # [SecretVolumeItem]
 }
 
 ScaleRuleAuth = {
