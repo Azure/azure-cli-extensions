@@ -273,6 +273,18 @@ class PolicyGeneratingArm(unittest.TestCase):
             ],
         )
 
+    def test_default_allow_elevated(self):
+        regular_image_json = json.loads(
+            self.aci_arm_policy.get_serialized_output(
+                output_type=OutputType.RAW, rego_boilerplate=False
+            )
+        )
+
+        allow_elevated = regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_ELEVATED]
+
+        # see if the remote image and the local one produce the same output
+        self.assertTrue(allow_elevated)
+
 
 # @unittest.skip("not in use")
 @pytest.mark.run(order=2)
@@ -2328,6 +2340,157 @@ class PolicyGeneratingDisableStdioAccess(unittest.TestCase):
 
 # @unittest.skip("not in use")
 @pytest.mark.run(order=13)
+class PolicyGeneratingAllowElevated(unittest.TestCase):
+
+    custom_arm_json_default_value = """
+    {
+        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+        "contentVersion": "1.0.0.0",
+
+
+        "parameters": {
+            "containergroupname": {
+                "type": "string",
+                "metadata": {
+                    "description": "Name for the container group"
+                },
+                "defaultValue":"simple-container-group"
+            },
+            "image": {
+                "type": "string",
+                "metadata": {
+                    "description": "Name for the container group"
+                },
+                "defaultValue":"rust:1.52.1"
+            },
+            "containername": {
+                "type": "string",
+                "metadata": {
+                    "description": "Name for the container"
+                },
+                "defaultValue":"simple-container"
+            },
+
+            "port": {
+                "type": "string",
+                "metadata": {
+                    "description": "Port to open on the container and the public IP address."
+                },
+                "defaultValue": "8080"
+            },
+            "cpuCores": {
+                "type": "string",
+                "metadata": {
+                    "description": "The number of CPU cores to allocate to the container."
+                },
+                "defaultValue": "1.0"
+            },
+            "memoryInGb": {
+                "type": "string",
+                "metadata": {
+                    "description": "The amount of memory to allocate to the container in gigabytes."
+                },
+                "defaultValue": "1.5"
+            },
+            "location": {
+                "type": "string",
+                "defaultValue": "[resourceGroup().location]",
+                "metadata": {
+                    "description": "Location for all resources."
+                }
+            }
+        },
+        "resources": [
+            {
+            "name": "[parameters('containergroupname')]",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2022-04-01-preview",
+            "location": "[parameters('location')]",
+
+            "properties": {
+                "containers": [
+                {
+                    "name": "[parameters('containername')]",
+                    "properties": {
+                    "securityContext":{
+                        "privileged":"false"
+                    },
+                    "image": "[parameters('image')]",
+                    "environmentVariables": [
+                        {
+                        "name": "PORT",
+                        "value": "80"
+                        }
+                    ],
+
+                    "ports": [
+                        {
+                        "port": "[parameters('port')]"
+                        }
+                    ],
+                    "command": [
+                        "/bin/bash",
+                        "-c",
+                        "while sleep 5; do cat /mnt/input/access.log; done"
+                    ],
+                    "resources": {
+                        "requests": {
+                        "cpu": "[parameters('cpuCores')]",
+                        "memoryInGb": "[parameters('memoryInGb')]"
+                        }
+                    }
+                    }
+                }
+                ],
+
+                "osType": "Linux",
+                "restartPolicy": "OnFailure",
+                "confidentialComputeProperties": {
+                "IsolationType": "SevSnp"
+                },
+                "ipAddress": {
+                "type": "Public",
+                "ports": [
+                    {
+                    "protocol": "Tcp",
+                    "port": "[parameters( 'port' )]"
+                    }
+                ]
+                }
+            }
+            }
+        ],
+        "outputs": {
+            "containerIPv4Address": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containergroupname'))).ipAddress.ip]"
+            }
+        }
+    }
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.aci_arm_policy = load_policy_from_arm_template_str(
+            cls.custom_arm_json_default_value, "", disable_stdio=True
+        )[0]
+        cls.aci_arm_policy.populate_policy_content_for_all_images()
+
+    def test_arm_template_allow_elevated_false(self):
+        regular_image_json = json.loads(
+            self.aci_arm_policy.get_serialized_output(
+                output_type=OutputType.RAW, rego_boilerplate=False
+            )
+        )
+
+        allow_elevated = regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_ELEVATED]
+
+        # see if the remote image and the local one produce the same output
+        self.assertFalse(allow_elevated)
+
+
+# @unittest.skip("not in use")
+@pytest.mark.run(order=14)
 class PrintExistingPolicy(unittest.TestCase):
 
     def test_printing_existing_policy(self):
@@ -2628,7 +2791,7 @@ class PrintExistingPolicy(unittest.TestCase):
             os.remove("test_template2.json")
 
 # @unittest.skip("not in use")
-@pytest.mark.run(order=14)
+@pytest.mark.run(order=15)
 class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
     custom_json = """
         {
@@ -3292,7 +3455,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
 
 
 # @unittest.skip("not in use")
-@pytest.mark.run(order=15)
+@pytest.mark.run(order=16)
 class PolicyGeneratingEdgeCases(unittest.TestCase):
 
     custom_arm_json_default_value = """

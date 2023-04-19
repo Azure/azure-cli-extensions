@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import tempfile
 import unittest
 import pytest
 import deepdiff
@@ -388,6 +389,12 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
         image = client.images.get("nginx:1.22")
         image_path = self.image_path + "2"
         # Note: Class setup and teardown shouldn't have side effects, and reading from the tar file fails when all the tests are running in parallel, so we want to save and delete this tar file as a part of the test. Not as a part of the testing class.
+        # make a temp directory for the tar file
+        temp_dir = tempfile.TemporaryDirectory()
+
+        image_path = os.path.join(
+            temp_dir.name, "nginx.tar"
+        )
         f = open(image_path, "wb")
         for chunk in image.save(named=True):
             f.write(chunk)
@@ -396,9 +403,10 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
         tar_mapping_file = {"nginx:1.22": image_path}
         try:
             clean_room_image.populate_policy_content_for_all_images(
-                tar_mapping=tar_mapping_file
+                tar_mapping=image_path
             )
         finally:
+            temp_dir.cleanup()
             # delete the tar file
             if os.path.isfile(image_path):
                 os.remove(image_path)
@@ -557,8 +565,11 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
         image = client.images.get("nginx:1.23")
 
         # Note: Class setup and teardown shouldn't have side effects, and reading from the tar file fails when all the tests are running in parallel, so we want to save and delete this tar file as a part of the test. Not as a part of the testing class.
-        image_path = self.image_path + "3"
-        tar_mapping_file = {"nginx:1.22": image_path}
+        temp_dir = tempfile.TemporaryDirectory()
+
+        image_path = os.path.join(
+            temp_dir.name, "nginx.tar"
+        )
         f = open(image_path, "wb")
         for chunk in image.save(named=True):
             f.write(chunk)
@@ -567,15 +578,16 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
 
         try:
             clean_room_image.populate_policy_content_for_all_images(
-                tar_mapping=tar_mapping_file
+                tar_mapping=image_path
             )
             raise AccContainerError("getting image should fail")
         except:
             pass
         finally:
             # delete the tar file
-            if os.path.isfile(image_path):
-                os.remove(image_path)
+            temp_dir.cleanup()
+            if os.path.isfile(self.image_path):
+                os.remove(self.image_path)
 
     def test_clean_room_fake_tar_invalid(self):
         custom_arm_json_default_value = """

@@ -571,13 +571,15 @@ def load_policy_from_arm_template_str(
                     )
                     or [],
                     config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts(image_properties, volumes),
-                    config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED: False,
                     config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
                     + config.DEBUG_MODE_SETTINGS.get("execProcesses")
                     if debug_mode
                     else exec_processes,
                     config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
                     config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS: not disable_stdio,
+                    config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: case_insensitive_dict_get(
+                        image_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
+                    ),
                 }
             )
 

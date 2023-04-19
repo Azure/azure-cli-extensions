@@ -214,6 +214,29 @@ def extract_exec_process(container_json: Any) -> List:
 
 
 def extract_allow_elevated(container_json: Any) -> bool:
+    # privileged is used for arm templates
+    security_context = case_insensitive_dict_get(
+        container_json, config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT
+    )
+
+    # get the field for privileged, default to false
+    privileged_value = case_insensitive_dict_get(
+        security_context, config.ACI_FIELD_CONTAINERS_PRIVILEGED
+    )
+    if privileged_value and not isinstance(privileged_value, bool) and not isinstance(privileged_value, str):
+        eprint(
+            f'Field ["{config.ACI_FIELD_CONTAINERS}"]["{config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT}"]'
+            + f'["{config.ACI_FIELD_CONTAINERS_PRIVILEGED}"] can only be a boolean or string value.'
+        )
+
+    # force the field into a bool
+    if isinstance(privileged_value, str):
+        privileged_value = privileged_value.lower() == "true"
+
+    if privileged_value is not None:
+        return privileged_value
+
+    # allow_elevated is used for input.json
     _allow_elevated = case_insensitive_dict_get(
         container_json, config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED
     )
@@ -223,10 +246,11 @@ def extract_allow_elevated(container_json: Any) -> bool:
                 f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
                 + f'["{config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED}"] can only be boolean value.'
             )
-    else:
-        # default is allow_elevated should be true
-        _allow_elevated = True
-    return _allow_elevated
+
+    if _allow_elevated is not None:
+        return _allow_elevated
+    # default value is true
+    return True
 
 
 def extract_allow_stdio_access(container_json: Any) -> bool:

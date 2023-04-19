@@ -36,6 +36,7 @@ test_update_infrastructure_svn | python:3.6.14-slim-buster | Change the minimum 
 test_multiple_policies | python:3.6.14-slim-buster & rust:1.52.1 | See if two unique policies are generated from a single ARM Template container multiple container groups. Also have an extra resource that is untouched. Also has a secureValue for an environment variable.
 test_arm_template_with_init_container | python:3.6.14-slim-buster & rust:1.52.1 | See if having an initContainer is picked up and added to the list of valid containers
 test_arm_template_without_stdio_access | rust:1.52.1 | See if disabling container stdio access gets passed down to individual containers
+test_arm_template_allow_elevated_false | rust:1.52.1 | Disabling allow_elevated via securityContext
 test_arm_template_policy_regex | python:3.6.14-slim-buster | Make sure the regex generated from the ARM Template workflow matches that of the policy.json workflow
 test_wildcard_env_var | python:3.6.14-slim-buster | Check that an "allow all" regex is created when a value for env var is not provided via a parameter value
 test_wildcard_env_var_invalid | N/A | Make sure the process errors out if a value is not given for an env var or an undefined parameter is used for the name of an env var
