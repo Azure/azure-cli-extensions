@@ -60,12 +60,8 @@ class MongoClusterScenarioTest(ScenarioTest):
         assert cluster['provisioningState'] == 'Succeeded'
         
         # delete non existent cluster, NoContent response
-        try: 
-            delete = self.cmd('az cosmosdb mongocluster delete -c blah -g {rg} --yes')
-            assert delete==None
-        except Exception as e:
-            print(e)
-
+        self.cmd('az cosmosdb mongocluster delete -c blah -g {rg} --yes')
+        
         # Delete Clusters
         try:
             self.cmd('az cosmosdb mongocluster delete -c {c} -g {rg} --yes')
