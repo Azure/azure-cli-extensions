@@ -169,6 +169,10 @@ def get_help_text_on_grant_permissions(datasource_type):
     if datasource_type == 'AzureDisk':
         help_text += "Backup vault's identity access on the disk and snapshot resource group"
 
+    if datasource_type == "AzureKubernetesService":
+        help_text += ("1. Backup vault's identity access on the AKS Cluster and snapshot resource group\n"
+                      "2. AKS cluster's identity access on the snapshot resource group")
+
     help_text += "\nAre you sure you want to continue?"
     return help_text
 

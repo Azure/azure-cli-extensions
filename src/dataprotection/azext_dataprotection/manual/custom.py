@@ -446,13 +446,16 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
     if not yes and not prompt_y_n(msg):
         return None
 
-    backup_vault = client.get(resource_group_name=resource_group_name,
-                              vault_name=vault_name)
-    principal_id = backup_vault.identity.principal_id
+    from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Show as BackupVaultGet
+    backup_vault = BackupVaultGet(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "vault_name": vault_name
+    })
+    principal_id = backup_vault['identity']['principalId']
 
     role_assignments_arr = []
 
-    if backup_instance['properties']['data_source_info']['resource_location'] != backup_vault.location:
+    if backup_instance['properties']['data_source_info']['resource_location'] != backup_vault['location']:
         raise CLIError("Location of data source needs to be the same as backup vault.\nMake sure the datasource "
                        "and vault are chosen properly")
 
@@ -549,17 +552,26 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
             role_assignments_arr.append(helper.get_permission_object_from_keyvault(keyvault))
 
     for role_object in manifest['backupVaultPermissions']:
+        print("principal_id: ", principal_id)
         resource_id = helper.get_resource_id_from_backup_instance(backup_instance, role_object['type'])
+        print("resource ID after first GET:", resource_id)
         resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
+        print("resource ID after truncate using scope:", resource_id)
 
         assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
+        print("assignment scope after i truncated id using scope on the resource ID:", assignment_scope)
 
         role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
                                                  scope=resource_id, include_inherited=True)
+        print("Role assignments: ", role_assignments)
         if not role_assignments:
             assignment = create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
                                                 scope=assignment_scope)
             role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
+
+    if manifest['dataSourcePermissions']:
+        for role_object in manifest['dataSourcePermissions']:
+            datasource_id = helper.get_resource_id_from_backup_instance(backup_instance, 'DataSource')
 
     # Network line of sight access on server, if that is the datasource type
     if datasource_type == 'AzureDatabaseForPostgreSQL':
@@ -585,6 +597,8 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
             rule = postgres_firewall_client.begin_create_or_update(server_rg, server_name, firewall_rule_name, parameters)
             role_assignments_arr.append(helper.get_permission_object_from_server_firewall_rule(rule.result()))
+
+    print("Role assignments ARR: ", role_assignments_arr)
 
     if not role_assignments_arr:
         logger.warning("The required permissions are already assigned!")

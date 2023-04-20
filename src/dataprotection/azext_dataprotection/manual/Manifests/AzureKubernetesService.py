@@ -25,10 +25,12 @@ manifest = '''
     {
         "roleDefinitionName": "Reader",
         "type": "SnapshotRG"
-    },
+    }
+  ],
+  "dataSourcePermissions": [
     {
         "roleDefinitionName": "Contributor",
-        "type": "DataSourceOverSnapshotRG"
+        "type": "SnapshotRG"
     }
   ],
   "policySettings": {
