@@ -12,7 +12,9 @@ import sys
 from typing import Any, Dict, List, Optional, Union
 
 import msrest.serialization as _serialization
-import azext_containerapp as _models
+# import azext_containerapp as _models
+
+from . import _sdk_models, _sdk_enums as _models
 
 if sys.version_info >= (3, 9):
     from collections.abc import MutableMapping
