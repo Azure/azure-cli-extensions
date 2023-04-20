@@ -63,6 +63,19 @@ def get_dashboard(board_uri, grafana_url, http_get_headers):
     return (status_code, content)
 
 
+def search_library_panels(page, grafana_url, http_get_headers):
+    url = f'{grafana_url}/api/library-elements?page={page}'
+    logger.info("search library panel in grafana: %s", url)
+    (status_code, content) = send_grafana_get(url, http_get_headers)
+    return (status_code, content.get('result', {}).get('elements', []))
+
+
+def get_library_panel(panel_uri, grafana_url, http_get_headers):
+    url = f'{grafana_url}/api/library-elements/{panel_uri}'
+    logger.info("query library panel in grafana: %s", url)
+    return send_grafana_get(url, http_get_headers)
+
+
 def search_annotations(grafana_url, ts_from, ts_to, http_get_headers):
     # there is two types of annotations
     # annotation: are user created, custom ones and can be managed via the api
@@ -142,6 +155,15 @@ def send_grafana_get(url, http_get_headers):
 
 def send_grafana_post(url, json_payload, http_post_headers):
     r = requests.post(url, headers=http_post_headers, data=json_payload)
+    log_response(r)
+    try:
+        return (r.status_code, r.json())
+    except ValueError:
+        return (r.status_code, r.text)
+
+
+def send_grafana_patch(url, json_payload, http_post_headers):
+    r = requests.patch(url, headers=http_post_headers, data=json_payload)
     log_response(r)
     try:
         return (r.status_code, r.json())

@@ -50,29 +50,7 @@ class AppDeploy(ScenarioTest):
         # deploy fake file, the fail is expected
         with self.assertRaisesRegexp(CLIError, "112404: Exit code 1: application error."):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v1')
-        deployment = self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
-            self.check('name', 'default'),
-            self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('sku.capacity', 1),
-            self.check('properties.source.type', 'Jar'),
-            self.check('starts_with(properties.source.relativePath, `resources/`)', True),
-            self.check('properties.source.runtimeVersion', 'Java_11'),
-            self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
-        ]).get_output_in_json()
-        relative_path = deployment['properties']['source']['relativePath']
 
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --runtime-version Java_8 --env "bas=baz"')
-        self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
-            self.check('name', 'default'),
-            self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('properties.deploymentSettings.resourceRequests.memory', '1Gi'),
-            self.check('sku.capacity', 1),
-            self.check('properties.source.type', 'Jar'),
-            self.check('properties.source.relativePath', relative_path),
-            self.check('properties.source.version', 'v1'),
-            self.check('properties.source.runtimeVersion', 'Java_8'),
-            self.check('properties.deploymentSettings.environmentVariables', {'bas': 'baz'}),
-        ])
 
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
@@ -100,42 +78,6 @@ class AppDeploy(ScenarioTest):
         # deploy change to .Net
         with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped."):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v2 --runtime-version NetCore_31 --main-entry test')
-        deployment = self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
-            self.check('name', 'default'),
-            self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('sku.capacity', 1),
-            self.check('properties.source.type', 'NetCoreZip'),
-            self.check('starts_with(properties.source.relativePath, `resources/`)', True),
-            self.check('properties.source.runtimeVersion', 'NetCore_31'),
-            self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
-        ]).get_output_in_json()
-        relative_path = deployment['properties']['source']['relativePath']
-
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --main-entry test1')
-        self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
-            self.check('name', 'default'),
-            self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('sku.capacity', 1),
-            self.check('properties.source.type', 'NetCoreZip'),
-            self.check('properties.source.relativePath', relative_path),
-            self.check('properties.source.version', 'v2'),
-            self.check('properties.source.runtimeVersion', 'NetCore_31'),
-            self.check('properties.source.netCoreMainEntryPath', 'test1'),
-            self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
-        ])
-
-        # keep deploy .net
-        with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped."):
-            self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v3 --main-entry test3')
-        self.cmd('spring app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
-            self.check('name', 'default'),
-            self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('sku.capacity', 1),
-            self.check('properties.source.type', 'NetCoreZip'),
-            self.check('starts_with(properties.source.relativePath, `resources/`)', True),
-            self.check('properties.source.runtimeVersion', 'NetCore_31'),
-            self.check('properties.source.netCoreMainEntryPath', 'test3'),
-        ])
 
 
 class AppCRUD(ScenarioTest):
@@ -159,7 +101,15 @@ class AppCRUD(ScenarioTest):
             self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
 
-        self.cmd('spring app show -n {app} -g {rg} -s {serviceName}')
+        # ingress only set session affinity
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --session-affinity Cookie --session-max-age 1800', checks=[
+            self.check('name', '{app}'),
+            self.check('properties.ingressSettings.readTimeoutInSeconds', '300'),
+            self.check('properties.ingressSettings.sendTimeoutInSeconds', '60'),
+            self.check('properties.ingressSettings.backendProtocol', 'Default'),
+            self.check('properties.ingressSettings.sessionAffinity', 'Cookie'),
+            self.check('properties.ingressSettings.sessionCookieMaxAge', '1800'),
+        ])
 
         # green deployment copy settings from active, but still accept input as highest priority
         self.cmd('spring app deployment create -n green --app {app} -g {rg} -s {serviceName} --instance-count 2', checks=[
@@ -170,18 +120,6 @@ class AppCRUD(ScenarioTest):
             self.check('properties.source.runtimeVersion', 'Java_11'),
             self.check('sku.capacity', 2),
             self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
-        ])
-
-        self.cmd('spring app show -n {app} -g {rg} -s {serviceName}')
-
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --runtime-version Java_11', checks=[
-            self.check('properties.activeDeployment.name', 'default'),
-            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
-            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.memory', '1Gi'),
-            self.check('properties.activeDeployment.sku.capacity', 1),
-            self.check('properties.activeDeployment.properties.source.type', 'Jar'),
-            self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_11'),
-            self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
 
 
@@ -266,91 +204,45 @@ class BlueGreenTest(ScenarioTest):
             self.check('properties.active', False)
         ])
 
+@record_only()
+class CustomImageTest(ScenarioTest):
 
-class I2aTLSTest(ScenarioTest):
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
-    def test_app_i2a_tls(self, resource_group, spring, app):
+    def test_app_deploy_container(self, resource_group, spring, app):
         self.kwargs.update({
             'app': app,
             'serviceName': spring,
-            'rg': resource_group
+            'containerImage': 'springio/gs-spring-boot-docker',
+            'resourceGroup': resource_group,
         })
 
-        self.cmd('spring app create -n {app} -g {rg} -s {serviceName}')
-        self.cmd('spring app show -n {app} -g {rg} -s {serviceName}', checks=[
-            self.check('properties.enableEndToEndTls', False)
+        self.cmd('spring app create -s {serviceName} -g {resourceGroup} -n {app}')
+
+        self.cmd('spring app deploy -g {resourceGroup} -s {serviceName} -n {app} --container-image {containerImage}', checks=[
+            self.check('properties.source.type', 'Container'),
+            self.check('properties.source.customContainer.containerImage', '{containerImage}'),
+            self.check('properties.source.customContainer.languageFramework', None),
         ])
 
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --enable-ingress-to-app-tls true --env foo=bar', checks=[
-            self.check('properties.enableEndToEndTls', True)
-        ])
 
-        self.cmd('spring app show -n {app} -g {rg} -s {serviceName}', checks=[
-            self.check('properties.enableEndToEndTls', True)
-        ])
-
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --enable-ingress-to-app-tls false', checks=[
-            self.check('properties.enableEndToEndTls', False)
-        ])
-
-@record_only()
-class GenerateDumpTest(ScenarioTest):
-    def test_generate_deployment_dump(self):
-        file_path = os.path.join(tempfile.gettempdir(), 'dumpfile.txt')
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
+    @SpringAppNamePreparer()
+    def test_app_deploy_container_command(self, resource_group, spring, app):
         self.kwargs.update({
-            'app': 'test-app-dump',
-            'deployment': 'default',
-            'serviceName': 'cli-unittest',
-            'resourceGroup': 'cli',
-            'path': file_path
-        })
-        result = self.cmd('spring app deployment show -g {resourceGroup} -s {serviceName} --app {app} -n {deployment}').get_output_in_json()
-        self.kwargs['instance'] = result['properties'].get('instances', [{}])[0].get('name')
-        self.assertTrue(self.kwargs['instance'])
-        self.cmd('spring app deployment generate-heap-dump -g {resourceGroup} -s {serviceName} --app {app} --deployment {deployment} --app-instance {instance} --file-path {path}')
-
-
-@record_only()
-class VnetPublicEndpointTest(ScenarioTest):
-    def test_vnet_public_endpoint(self):
-        self.kwargs.update({
-            'app': 'test-app',
-            'serviceName': 'cli-unittest',
-            'rg': 'cli'
+            'app': app,
+            'serviceName': spring,
+            'containerImage': 'springio/gs-spring-boot-docker',
+            'resourceGroup': resource_group,
         })
 
-        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --assign-public-endpoint true', checks=[
-            self.check('properties.vnetAddons.publicEndpoint', True)
-        ])
+        self.cmd('spring app create -s {serviceName} -g {resourceGroup} -n {app}')
 
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --assign-public-endpoint false', checks=[
-            self.check('properties.vnetAddons.publicEndpoint', False)
-        ])
-
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --assign-public-endpoint true', checks=[
-            self.check('properties.vnetAddons.publicEndpoint', True)
-        ])
-
-
-@record_only()
-class ClientAuthTest(ScenarioTest):
-    def test_client_auth(self):
-        self.kwargs.update({
-            'cert': 'test-cert',
-            'keyVaultUri': 'https://integration-test-prod.vault.azure.net/',
-            'kvCertName': 'cli-unittest',
-            'app': 'test-client-auth',
-            'serviceName': 'cli-unittest',
-            'rg': 'cli',
-            'location': 'eastus'
-        })
-
-        cert_id = self.cmd(
-            'spring certificate add --name {cert} --vault-uri {keyVaultUri} --only-public-cert '
-            '--vault-certificate-name {kvCertName} -g {rg} -s {serviceName} --query "id" -o tsv').output.strip()
-        app_create_cmd_template = 'spring app update -n {{app}} -s {{serviceName}} -g {{rg}} --client-auth-certs {}'
-        self.cmd(app_create_cmd_template.format(cert_id), checks=[
-            self.check('properties.ingressSettings.clientAuth.certificates[0]', cert_id)
+        self.cmd('spring app deploy -g {resourceGroup} -s {serviceName} -n {app} --container-image {containerImage} --container-command "java" --container-args "-cp /app/resources:/app/classes:/app/libs/* hello.Application"', checks=[
+            self.check('properties.source.type', 'Container'),
+            self.check('properties.source.customContainer.containerImage', '{containerImage}'),
+            self.check('properties.source.customContainer.command', ['java']),
+            self.check('properties.source.customContainer.args', ['-cp', '/app/resources:/app/classes:/app/libs/*', 'hello.Application']),
         ])

@@ -955,6 +955,8 @@ class ContainerApp(TrackedResource):
     :param managed_environment_id: Resource ID of the Container App's
      environment.
     :type managed_environment_id: str
+    :param workload_profile_name: Name of the workload profile used
+    :type workload_profile_name: str
     :ivar latest_revision_name: Name of the latest revision of the Container
      App.
     :vartype latest_revision_name: str
@@ -996,6 +998,7 @@ class ContainerApp(TrackedResource):
         'identity': {'key': 'identity', 'type': 'ManagedServiceIdentity'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'environment_id': {'key': 'properties.environmentId', 'type': 'str'},
+        'workload_profile_name': {'key': 'properties.workloadProfileName', 'type': 'str'},
         'latest_revision_name': {'key': 'properties.latestRevisionName', 'type': 'str'},
         'latest_revision_fqdn': {'key': 'properties.latestRevisionFqdn', 'type': 'str'},
         'custom_domain_verification_id': {'key': 'properties.customDomainVerificationId', 'type': 'str'},
@@ -1009,6 +1012,7 @@ class ContainerApp(TrackedResource):
         self.identity = kwargs.get('identity', None)
         self.provisioning_state = None
         self.environment_id = kwargs.get('environment_id', None)
+        self.workload_profile_name = kwargs.get('workload_profile_name', None)
         self.latest_revision_name = None
         self.latest_revision_fqdn = None
         self.custom_domain_verification_id = None

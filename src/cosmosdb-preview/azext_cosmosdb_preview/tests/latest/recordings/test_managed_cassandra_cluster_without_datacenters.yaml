@@ -1,9 +1,8 @@
 interactions:
 - request:
-    body: '{"location": "eastus2", "tags": {}, "properties": {"addressSpace": {"addressPrefixes":
-      ["10.0.0.0/16"]}, "dhcpOptions": {}, "subnets": [{"name": "cli000004", "properties":
-      {"addressPrefix": "10.0.0.0/24", "privateEndpointNetworkPolicies": "Disabled",
-      "privateLinkServiceNetworkPolicies": "Enabled"}}]}}'
+    body: '{"location": "eastus2", "properties": {"addressSpace": {"addressPrefixes":
+      ["10.0.0.0/16"]}, "enableDdosProtection": false, "enableVmProtection": false,
+      "subnets": [{"name": "cli000004", "properties": {"addressPrefix": "10.0.0.0/24"}}]}}'
     headers:
       Accept:
       - application/json
@@ -14,27 +13,25 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '302'
+      - '237'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g -l -n --subnet-name
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-azure-mgmt-network/21.0.1 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003\",\r\n
-        \ \"etag\": \"W/\\\"7c5986b2-ae3f-4345-bd2e-e3c867eaa8d1\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"7ee8ac57-363a-45f5-bc82-3da1a26c3d57\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2\",\r\n
-        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n
-        \   \"resourceGuid\": \"0967be4e-e5f6-4d19-85b5-f31983970bb6\",\r\n    \"addressSpace\":
-        {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
-        \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
-        \   \"subnets\": [\r\n      {\r\n        \"name\": \"cli000004\",\r\n        \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004\",\r\n
-        \       \"etag\": \"W/\\\"7c5986b2-ae3f-4345-bd2e-e3c867eaa8d1\\\"\",\r\n
+        \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"resourceGuid\":
+        \"d80d1cc7-0ac6-489e-b6ef-b8aeb0d604d0\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
+        \     {\r\n        \"name\": \"cli000004\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004\",\r\n
+        \       \"etag\": \"W/\\\"7ee8ac57-363a-45f5-bc82-3da1a26c3d57\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Updating\",\r\n
         \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -45,15 +42,15 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/2a8e937c-765b-4d7d-b5e0-f7ba1bbba073?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/d0bee44a-13c4-4bb3-8f71-c332255968e6?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
-      - '1325'
+      - '1256'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Sep 2022 18:38:59 GMT
+      - Mon, 17 Apr 2023 20:34:09 GMT
       expires:
       - '-1'
       pragma:
@@ -66,12 +63,12 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - ca117064-7950-4f18-b887-94d1f4c15d84
+      - e922bf33-141d-4e80-a851-d421e4dd5f6a
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
     status:
       code: 201
-      message: ''
+      message: Created
 - request:
     body: null
     headers:
@@ -86,9 +83,58 @@ interactions:
       ParameterSetName:
       - -g -l -n --subnet-name
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-azure-mgmt-network/21.0.1 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/2a8e937c-765b-4d7d-b5e0-f7ba1bbba073?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/d0bee44a-13c4-4bb3-8f71-c332255968e6?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:34:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 6536cf49-2e60-45db-bc0b-a870939bc7fd
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -l -n --subnet-name
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus2/operations/d0bee44a-13c4-4bb3-8f71-c332255968e6?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -100,7 +146,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Sep 2022 18:39:02 GMT
+      - Mon, 17 Apr 2023 20:34:19 GMT
       expires:
       - '-1'
       pragma:
@@ -117,10 +163,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 1b9fb202-7c29-402f-9469-2cad6e0f40e1
+      - 03d50902-c911-4e95-bf56-7f8d520d3af3
     status:
       code: 200
-      message: ''
+      message: OK
 - request:
     body: null
     headers:
@@ -135,21 +181,19 @@ interactions:
       ParameterSetName:
       - -g -l -n --subnet-name
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-azure-mgmt-network/21.0.1 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003\",\r\n
-        \ \"etag\": \"W/\\\"1942a82e-502e-45e0-9e2e-17bb77ff728c\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"dc2f3337-a9bf-4cf7-9129-6a51059416a9\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2\",\r\n
-        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"resourceGuid\": \"0967be4e-e5f6-4d19-85b5-f31983970bb6\",\r\n    \"addressSpace\":
-        {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
-        \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
-        \   \"subnets\": [\r\n      {\r\n        \"name\": \"cli000004\",\r\n        \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004\",\r\n
-        \       \"etag\": \"W/\\\"1942a82e-502e-45e0-9e2e-17bb77ff728c\\\"\",\r\n
+        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
+        \"d80d1cc7-0ac6-489e-b6ef-b8aeb0d604d0\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
+        \     {\r\n        \"name\": \"cli000004\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004\",\r\n
+        \       \"etag\": \"W/\\\"dc2f3337-a9bf-4cf7-9129-6a51059416a9\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -160,13 +204,13 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '1327'
+      - '1258'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Sep 2022 18:39:02 GMT
+      - Mon, 17 Apr 2023 20:34:19 GMT
       etag:
-      - W/"1942a82e-502e-45e0-9e2e-17bb77ff728c"
+      - W/"dc2f3337-a9bf-4cf7-9129-6a51059416a9"
       expires:
       - '-1'
       pragma:
@@ -183,10 +227,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 2449b218-191c-4a42-94be-c1e3f2a9b3e5
+      - b3841c49-e1e9-4037-acb8-36d67a02d516
     status:
       code: 200
-      message: ''
+      message: OK
 - request:
     body: null
     headers:
@@ -201,21 +245,19 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003\",\r\n
-        \ \"etag\": \"W/\\\"1942a82e-502e-45e0-9e2e-17bb77ff728c\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"dc2f3337-a9bf-4cf7-9129-6a51059416a9\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus2\",\r\n
-        \ \"tags\": {},\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"resourceGuid\": \"0967be4e-e5f6-4d19-85b5-f31983970bb6\",\r\n    \"addressSpace\":
-        {\r\n      \"addressPrefixes\": [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n
-        \   },\r\n    \"dhcpOptions\": {\r\n      \"dnsServers\": []\r\n    },\r\n
-        \   \"subnets\": [\r\n      {\r\n        \"name\": \"cli000004\",\r\n        \"id\":
-        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004\",\r\n
-        \       \"etag\": \"W/\\\"1942a82e-502e-45e0-9e2e-17bb77ff728c\\\"\",\r\n
+        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
+        \"d80d1cc7-0ac6-489e-b6ef-b8aeb0d604d0\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
+        \     {\r\n        \"name\": \"cli000004\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004\",\r\n
+        \       \"etag\": \"W/\\\"dc2f3337-a9bf-4cf7-9129-6a51059416a9\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -226,13 +268,13 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '1327'
+      - '1258'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Sep 2022 18:39:03 GMT
+      - Mon, 17 Apr 2023 20:34:21 GMT
       etag:
-      - W/"1942a82e-502e-45e0-9e2e-17bb77ff728c"
+      - W/"dc2f3337-a9bf-4cf7-9129-6a51059416a9"
       expires:
       - '-1'
       pragma:
@@ -249,10 +291,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - cca55aa7-4ba3-42a1-9f2f-bd0a6cda163c
+      - 4bcc3cdf-1287-4ac2-b814-2c95401cda03
     status:
       code: 200
-      message: ''
+      message: OK
 - request:
     body: null
     headers:
@@ -267,7 +309,7 @@ interactions:
       ParameterSetName:
       - --assignee --role --scope
       User-Agent:
-      - python/3.10.1 (Windows-10-10.0.19044-SP0) AZURECLI/2.40.0
+      - python/3.10.2 (Windows-10-10.0.19045-SP0) AZURECLI/2.47.0
     method: GET
     uri: https://graph.microsoft.com/v1.0/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27e5007d2c-4b13-4a74-9b6a-605d99f03501%27%29
   response:
@@ -281,11 +323,11 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Thu, 29 Sep 2022 18:39:05 GMT
+      - Mon, 17 Apr 2023 20:34:22 GMT
       odata-version:
       - '4.0'
       request-id:
-      - 28f058e4-5301-4a38-81f2-916fa970b9fa
+      - f28c3504-866d-425f-9dc1-44ce28c96e16
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -293,7 +335,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"West Central US","Slice":"E","Ring":"1","ScaleUnit":"001","RoleInstance":"CY4PEPF0000B7DE"}}'
+      - '{"ServerInfo":{"DataCenter":"West US 2","Slice":"E","Ring":"1","ScaleUnit":"002","RoleInstance":"MWH0EPF0004E10A"}}'
       x-ms-resource-unit:
       - '1'
     status:
@@ -318,7 +360,7 @@ interactions:
       ParameterSetName:
       - --assignee --role --scope
       User-Agent:
-      - python/3.10.1 (Windows-10-10.0.19044-SP0) AZURECLI/2.40.0
+      - python/3.10.2 (Windows-10-10.0.19045-SP0) AZURECLI/2.47.0
     method: POST
     uri: https://graph.microsoft.com/v1.0/directoryObjects/getByIds
   response:
@@ -338,13 +380,13 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Thu, 29 Sep 2022 18:39:05 GMT
+      - Mon, 17 Apr 2023 20:34:23 GMT
       location:
       - https://graph.microsoft.com
       odata-version:
       - '4.0'
       request-id:
-      - 85f82785-86b9-4192-a331-608103906e2c
+      - 9e08b9bc-ee8d-49d4-ad48-a37a0263ab7a
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -352,7 +394,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"West US 2","Slice":"E","Ring":"1","ScaleUnit":"000","RoleInstance":"CO1PEPF00000101"}}'
+      - '{"ServerInfo":{"DataCenter":"West US 2","Slice":"E","Ring":"1","ScaleUnit":"002","RoleInstance":"MWH0EPF00032B57"}}'
       x-ms-resource-unit:
       - '3'
     status:
@@ -373,19 +415,17 @@ interactions:
       Content-Length:
       - '270'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - --assignee --role --scope
       User-Agent:
-      - python/3.10.1 (Windows-10-10.0.19044-SP0) msrest/0.7.1 msrest_azure/0.6.4
-        azure-mgmt-authorization/0.61.0 Azure-SDK-For-Python AZURECLI/2.40.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.10.2
+        (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001?api-version=2020-04-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001?api-version=2022-04-01
   response:
     body:
-      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","principalId":"e5007d2c-4b13-4a74-9b6a-605d99f03501","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003","condition":null,"conditionVersion":null,"createdOn":"2022-09-29T18:39:06.5101940Z","updatedOn":"2022-09-29T18:39:06.8852073Z","createdBy":null,"updatedBy":"27f82b5d-ce19-4257-a337-dabea1926ae2","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001","type":"Microsoft.Authorization/roleAssignments","name":"88888888-0000-0000-0000-000000000001"}'
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7","principalId":"e5007d2c-4b13-4a74-9b6a-605d99f03501","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003","condition":null,"conditionVersion":null,"createdOn":"2023-04-17T20:34:24.1376820Z","updatedOn":"2023-04-17T20:34:24.8174816Z","createdBy":null,"updatedBy":"3472afbc-da6d-4050-88a0-b0fe52e69bc5","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/providers/Microsoft.Authorization/roleAssignments/88888888-0000-0000-0000-000000000001","type":"Microsoft.Authorization/roleAssignments","name":"88888888-0000-0000-0000-000000000001"}'
     headers:
       cache-control:
       - no-cache
@@ -394,7 +434,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Sep 2022 18:39:08 GMT
+      - Mon, 17 Apr 2023 20:34:25 GMT
       expires:
       - '-1'
       pragma:
@@ -424,13 +464,13 @@ interactions:
       ParameterSetName:
       - -g --vnet-name --name
       User-Agent:
-      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.26.4 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"cli000004\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004\",\r\n
-        \ \"etag\": \"W/\\\"1942a82e-502e-45e0-9e2e-17bb77ff728c\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"dc2f3337-a9bf-4cf7-9129-6a51059416a9\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n
         \   \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n
         \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
@@ -443,9 +483,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 29 Sep 2022 18:39:07 GMT
+      - Mon, 17 Apr 2023 20:34:27 GMT
       etag:
-      - W/"1942a82e-502e-45e0-9e2e-17bb77ff728c"
+      - W/"dc2f3337-a9bf-4cf7-9129-6a51059416a9"
       expires:
       - '-1'
       pragma:
@@ -462,16 +502,14 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - c55fa1e0-615a-4716-ac94-e0839716c238
+      - acebdb71-3e3e-4f52-b690-5d8461dfb7d6
     status:
       code: 200
-      message: ''
+      message: OK
 - request:
     body: '{"location": "eastus2", "identity": {"type": "None"}, "properties": {"delegatedManagementSubnetId":
       "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004",
-      "externalGossipCertificates": [{"pem": "-----BEGIN CERTIFICATE-----\r\nMIICLDCCAdKgAwIBAgIBADAKBggqhkjOPQQDAjB9MQswCQYDVQQGEwJCRTEPMA0G\r\nA1UEChMGR251VExTMSUwIwYDVQQLExxHbnVUTFMgY2VydGlmaWNhdGUgYXV0aG9y\r\naXR5MQ8wDQYDVQQIEwZMZXV2ZW4xJTAjBgNVBAMTHEdudVRMUyBjZXJ0aWZpY2F0\r\nZSBhdXRob3JpdHkwHhcNMTEwNTIzMjAzODIxWhcNMTIxMjIyMDc0MTUxWjB9MQsw\r\nCQYDVQQGEwJCRTEPMA0GA1UEChMGR251VExTMSUwIwYDVQQLExxHbnVUTFMgY2Vy\r\ndGlmaWNhdGUgYXV0aG9yaXR5MQ8wDQYDVQQIEwZMZXV2ZW4xJTAjBgNVBAMTHEdu\r\ndVRMUyBjZXJ0aWZpY2F0ZSBhdXRob3JpdHkwWTATBgcqhkjOPQIBBggqhkjOPQMB\r\nBwNCAARS2I0jiuNn14Y2sSALCX3IybqiIJUvxUpj+oNfzngvj/Niyv2394BWnW4X\r\nuQ4RTEiywK87WRcWMGgJB5kX/t2no0MwQTAPBgNVHRMBAf8EBTADAQH/MA8GA1Ud\r\nDwEB/wQFAwMHBgAwHQYDVR0OBBYEFPC0gf6YEr+1KLlkQAPLzB9mTigDMAoGCCqG\r\nSM49BAMCA0gAMEUCIDGuwD1KPyG+hRf88MeyMQcqOFZD0TbVleF+UsAGQ4enAiEA\r\nl4wOuDwKQa+upc8GftXE2C//4mKANBC6It01gUaTIpo=\r\n-----END
-      CERTIFICATE-----"}], "externalSeedNodes": [{"ipAddress": "127.0.0.1"}, {"ipAddress":
-      "127.0.0.2"}]}}'
+      "initialCassandraAdminPassword": "cassandra"}}'
     headers:
       Accept:
       - application/json
@@ -482,32 +520,31 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '1246'
+      - '316'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -c -l -g -s -e --external-seed-nodes
+      - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2023-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002","name":"cli000002","type":"Microsoft.DocumentDB/cassandraClusters","location":"East
-        US 2","tags":{},"systemData":{"createdBy":"amisi@microsoft.com","createdByType":"User","createdAt":"2022-09-29T18:39:09.9636662Z","lastModifiedBy":"amisi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-29T18:39:09.9636662Z"},"identity":{"type":"None"},"properties":{"authenticationMethod":"Cassandra","errors":[],"cassandraVersion":"3.11","clientCertificates":[],"deallocated":false,"delegatedManagementSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004","externalGossipCertificates":[{"pem":"-----BEGIN
-        CERTIFICATE-----\r\nMIICLDCCAdKgAwIBAgIBADAKBggqhkjOPQQDAjB9MQswCQYDVQQGEwJCRTEPMA0G\r\nA1UEChMGR251VExTMSUwIwYDVQQLExxHbnVUTFMgY2VydGlmaWNhdGUgYXV0aG9y\r\naXR5MQ8wDQYDVQQIEwZMZXV2ZW4xJTAjBgNVBAMTHEdudVRMUyBjZXJ0aWZpY2F0\r\nZSBhdXRob3JpdHkwHhcNMTEwNTIzMjAzODIxWhcNMTIxMjIyMDc0MTUxWjB9MQsw\r\nCQYDVQQGEwJCRTEPMA0GA1UEChMGR251VExTMSUwIwYDVQQLExxHbnVUTFMgY2Vy\r\ndGlmaWNhdGUgYXV0aG9yaXR5MQ8wDQYDVQQIEwZMZXV2ZW4xJTAjBgNVBAMTHEdu\r\ndVRMUyBjZXJ0aWZpY2F0ZSBhdXRob3JpdHkwWTATBgcqhkjOPQIBBggqhkjOPQMB\r\nBwNCAARS2I0jiuNn14Y2sSALCX3IybqiIJUvxUpj+oNfzngvj/Niyv2394BWnW4X\r\nuQ4RTEiywK87WRcWMGgJB5kX/t2no0MwQTAPBgNVHRMBAf8EBTADAQH/MA8GA1Ud\r\nDwEB/wQFAwMHBgAwHQYDVR0OBBYEFPC0gf6YEr+1KLlkQAPLzB9mTigDMAoGCCqG\r\nSM49BAMCA0gAMEUCIDGuwD1KPyG+hRf88MeyMQcqOFZD0TbVleF+UsAGQ4enAiEA\r\nl4wOuDwKQa+upc8GftXE2C//4mKANBC6It01gUaTIpo=\r\n-----END
-        CERTIFICATE-----"}],"externalSeedNodes":[{"ipAddress":"127.0.0.1"},{"ipAddress":"127.0.0.2"}],"gossipCertificates":[],"hoursBetweenBackups":24,"backupRetentionPeriodInHours":24,"prometheusEndpoint":{},"provisioningState":"Creating","repairEnabled":true,"seedNodes":[],"cassandraAuditLoggingEnabled":false,"diagnosticSettingsId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_MANAGED_CASSANDRAZONPOEFCHTCLFT3WFICTCTLV27SOZS46IPJ6SYLA5BUKXXBLHN75QR/PROVIDERS/MICROSOFT.DOCUMENTDB/CASSANDRACLUSTERS/CLIUO2KRQ2"}}'
+        US 2","tags":{},"systemData":{"createdBy":"ashwsing@microsoft.com","createdByType":"User","createdAt":"2023-04-17T20:34:29.1880037Z","lastModifiedBy":"ashwsing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-17T20:34:29.1880037Z"},"identity":{"type":"None"},"properties":{"authenticationMethod":"Cassandra","backupSchedules":[{"scheduleName":"DailyBackup-02:00UTC","cronExpression":"0
+        2 * * *","retentionInHours":48}],"cassandraVersion":"3.11","clientCertificates":[],"deallocated":false,"clusterType":"Production","delegatedManagementSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004","extensions":[],"externalGossipCertificates":[],"externalSeedNodes":[],"gossipCertificates":[],"hoursBetweenBackups":24,"backupRetentionPeriodInHours":24,"prometheusEndpoint":{},"provisioningState":"Creating","repairEnabled":true,"seedNodes":[],"cassandraAuditLoggingEnabled":false,"diagnosticSettingsId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_MANAGED_CASSANDRAALTGUM4VH34TECDKBIUBUZKH6RBKAVUJ3GOSTDZPZYAHGFXN6NJPOY/PROVIDERS/MICROSOFT.DOCUMENTDB/CASSANDRACLUSTERS/CLIGC5WCK2"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/65773d96-de74-4330-bdac-06f6c6d251a4?api-version=2022-08-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3d2b8f20-94c7-4a5c-afee-b42dfd5990f0?api-version=2023-03-01-preview
       cache-control:
       - no-store, no-cache
       content-length:
-      - '2257'
+      - '1492'
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:39:09 GMT
+      - Mon, 17 Apr 2023 20:34:29 GMT
       pragma:
       - no-cache
       server:
@@ -535,14 +572,14 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -c -l -g -s -e --external-seed-nodes
+      - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/65773d96-de74-4330-bdac-06f6c6d251a4?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3d2b8f20-94c7-4a5c-afee-b42dfd5990f0?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"status":"Dequeued"}'
+      string: '{"status":"Enqueued"}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -551,7 +588,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:39:40 GMT
+      - Mon, 17 Apr 2023 20:34:29 GMT
       pragma:
       - no-cache
       server:
@@ -581,11 +618,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -c -l -g -s -e --external-seed-nodes
+      - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/65773d96-de74-4330-bdac-06f6c6d251a4?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3d2b8f20-94c7-4a5c-afee-b42dfd5990f0?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -597,7 +634,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:40:10 GMT
+      - Mon, 17 Apr 2023 20:35:00 GMT
       pragma:
       - no-cache
       server:
@@ -627,11 +664,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -c -l -g -s -e --external-seed-nodes
+      - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/65773d96-de74-4330-bdac-06f6c6d251a4?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3d2b8f20-94c7-4a5c-afee-b42dfd5990f0?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -643,7 +680,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:40:40 GMT
+      - Mon, 17 Apr 2023 20:35:30 GMT
       pragma:
       - no-cache
       server:
@@ -673,11 +710,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -c -l -g -s -e --external-seed-nodes
+      - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/65773d96-de74-4330-bdac-06f6c6d251a4?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3d2b8f20-94c7-4a5c-afee-b42dfd5990f0?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -689,7 +726,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:41:11 GMT
+      - Mon, 17 Apr 2023 20:36:00 GMT
       pragma:
       - no-cache
       server:
@@ -719,11 +756,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -c -l -g -s -e --external-seed-nodes
+      - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/65773d96-de74-4330-bdac-06f6c6d251a4?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3d2b8f20-94c7-4a5c-afee-b42dfd5990f0?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -735,7 +772,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:41:40 GMT
+      - Mon, 17 Apr 2023 20:36:30 GMT
       pragma:
       - no-cache
       server:
@@ -765,11 +802,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -c -l -g -s -e --external-seed-nodes
+      - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/65773d96-de74-4330-bdac-06f6c6d251a4?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3d2b8f20-94c7-4a5c-afee-b42dfd5990f0?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -781,7 +818,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:42:10 GMT
+      - Mon, 17 Apr 2023 20:37:00 GMT
       pragma:
       - no-cache
       server:
@@ -811,11 +848,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -c -l -g -s -e --external-seed-nodes
+      - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/65773d96-de74-4330-bdac-06f6c6d251a4?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3d2b8f20-94c7-4a5c-afee-b42dfd5990f0?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -827,7 +864,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:42:40 GMT
+      - Mon, 17 Apr 2023 20:37:30 GMT
       pragma:
       - no-cache
       server:
@@ -857,11 +894,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -c -l -g -s -e --external-seed-nodes
+      - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/65773d96-de74-4330-bdac-06f6c6d251a4?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3d2b8f20-94c7-4a5c-afee-b42dfd5990f0?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -873,7 +910,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:43:10 GMT
+      - Mon, 17 Apr 2023 20:38:01 GMT
       pragma:
       - no-cache
       server:
@@ -903,11 +940,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -c -l -g -s -e --external-seed-nodes
+      - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/65773d96-de74-4330-bdac-06f6c6d251a4?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3d2b8f20-94c7-4a5c-afee-b42dfd5990f0?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -919,7 +956,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:43:41 GMT
+      - Mon, 17 Apr 2023 20:38:31 GMT
       pragma:
       - no-cache
       server:
@@ -949,11 +986,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -c -l -g -s -e --external-seed-nodes
+      - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/65773d96-de74-4330-bdac-06f6c6d251a4?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3d2b8f20-94c7-4a5c-afee-b42dfd5990f0?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -965,7 +1002,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:44:11 GMT
+      - Mon, 17 Apr 2023 20:39:01 GMT
       pragma:
       - no-cache
       server:
@@ -995,11 +1032,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -c -l -g -s -e --external-seed-nodes
+      - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/65773d96-de74-4330-bdac-06f6c6d251a4?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3d2b8f20-94c7-4a5c-afee-b42dfd5990f0?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -1011,7 +1048,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:44:41 GMT
+      - Mon, 17 Apr 2023 20:39:31 GMT
       pragma:
       - no-cache
       server:
@@ -1041,57 +1078,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -c -l -g -s -e --external-seed-nodes
+      - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/65773d96-de74-4330-bdac-06f6c6d251a4?api-version=2022-08-15-preview
-  response:
-    body:
-      string: '{"status":"Dequeued"}'
-    headers:
-      cache-control:
-      - no-store, no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json
-      date:
-      - Thu, 29 Sep 2022 18:45:11 GMT
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-gatewayversion:
-      - version=2.14.0
-    status:
-      code: 200
-      message: Ok
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - managed-cassandra cluster create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -c -l -g -s -e --external-seed-nodes
-      User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/65773d96-de74-4330-bdac-06f6c6d251a4?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3d2b8f20-94c7-4a5c-afee-b42dfd5990f0?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -1103,7 +1094,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:45:42 GMT
+      - Mon, 17 Apr 2023 20:40:02 GMT
       pragma:
       - no-cache
       server:
@@ -1133,17 +1124,16 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -c -l -g -s -e --external-seed-nodes
+      - -c -l -g -s -i
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2023-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002","name":"cli000002","type":"Microsoft.DocumentDB/cassandraClusters","location":"East
-        US 2","tags":{},"systemData":{"createdBy":"amisi@microsoft.com","createdByType":"User","createdAt":"2022-09-29T18:39:09.9636662Z","lastModifiedBy":"amisi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-29T18:39:09.9636662Z"},"identity":{"type":"None"},"properties":{"authenticationMethod":"Cassandra","errors":[],"cassandraVersion":"3.11","clientCertificates":[],"deallocated":false,"delegatedManagementSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004","externalGossipCertificates":[{"pem":"-----BEGIN
-        CERTIFICATE-----\r\nMIICLDCCAdKgAwIBAgIBADAKBggqhkjOPQQDAjB9MQswCQYDVQQGEwJCRTEPMA0G\r\nA1UEChMGR251VExTMSUwIwYDVQQLExxHbnVUTFMgY2VydGlmaWNhdGUgYXV0aG9y\r\naXR5MQ8wDQYDVQQIEwZMZXV2ZW4xJTAjBgNVBAMTHEdudVRMUyBjZXJ0aWZpY2F0\r\nZSBhdXRob3JpdHkwHhcNMTEwNTIzMjAzODIxWhcNMTIxMjIyMDc0MTUxWjB9MQsw\r\nCQYDVQQGEwJCRTEPMA0GA1UEChMGR251VExTMSUwIwYDVQQLExxHbnVUTFMgY2Vy\r\ndGlmaWNhdGUgYXV0aG9yaXR5MQ8wDQYDVQQIEwZMZXV2ZW4xJTAjBgNVBAMTHEdu\r\ndVRMUyBjZXJ0aWZpY2F0ZSBhdXRob3JpdHkwWTATBgcqhkjOPQIBBggqhkjOPQMB\r\nBwNCAARS2I0jiuNn14Y2sSALCX3IybqiIJUvxUpj+oNfzngvj/Niyv2394BWnW4X\r\nuQ4RTEiywK87WRcWMGgJB5kX/t2no0MwQTAPBgNVHRMBAf8EBTADAQH/MA8GA1Ud\r\nDwEB/wQFAwMHBgAwHQYDVR0OBBYEFPC0gf6YEr+1KLlkQAPLzB9mTigDMAoGCCqG\r\nSM49BAMCA0gAMEUCIDGuwD1KPyG+hRf88MeyMQcqOFZD0TbVleF+UsAGQ4enAiEA\r\nl4wOuDwKQa+upc8GftXE2C//4mKANBC6It01gUaTIpo=\r\n-----END
-        CERTIFICATE-----"}],"externalSeedNodes":[{"ipAddress":"127.0.0.1"},{"ipAddress":"127.0.0.2"}],"gossipCertificates":[{"pem":"-----BEGIN
+        US 2","tags":{},"systemData":{"createdBy":"ashwsing@microsoft.com","createdByType":"User","createdAt":"2023-04-17T20:34:29.1880037Z","lastModifiedBy":"ashwsing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-17T20:34:29.1880037Z"},"identity":{"type":"None"},"properties":{"authenticationMethod":"Cassandra","backupSchedules":[{"scheduleName":"DailyBackup-02:00UTC","cronExpression":"0
+        2 * * *","retentionInHours":48}],"cassandraVersion":"3.11","clientCertificates":[],"deallocated":false,"clusterType":"Production","delegatedManagementSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004","extensions":[],"externalGossipCertificates":[],"externalSeedNodes":[],"gossipCertificates":[{"pem":"-----BEGIN
         CERTIFICATE-----\r\nMIIElDCCA3ygAwIBAgIQAf2j627KdciIQ4tyS8+8kTANBgkqhkiG9w0BAQsFADBhMQswCQYDVQQG\r\nEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSAw\r\nHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBDQTAeFw0xMzAzMDgxMjAwMDBaFw0yMzAzMDgx\r\nMjAwMDBaME0xCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxJzAlBgNVBAMTHkRp\r\nZ2lDZXJ0IFNIQTIgU2VjdXJlIFNlcnZlciBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC\r\nggEBANyuWJBNwcQwFZA1W248ghX1LFy949v/cUP6ZCWA1O4Yok3wZtAKc24RmDYXZK83nf36QYSv\r\nx6+M/hpzTc8zl5CilodTgyu5pnVILR1WN3vaMTIa16yrBvSqXUu3R0bdKpPDkC55gIDvEwRqFDu1\r\nm5K+wgdlTvza/P96rtxcflUxDOg5B6TXvi/TC2rSsd9f/ld0Uzs1gN2ujkSYs58O09rg1/RrKatE\r\np0tYhG2SS4HD2nOLEpdIkARFdRrdNzGXkujNVA075ME/OV4uuPNcfhCOhkEAjUVmR7ChZc6gqikJ\r\nTvOX6+guqw9ypzAO+sf0/RR3w6RbKFfCs/mC/bdFWJsCAwEAAaOCAVowggFWMBIGA1UdEwEB/wQI\r\nMAYBAf8CAQAwDgYDVR0PAQH/BAQDAgGGMDQGCCsGAQUFBwEBBCgwJjAkBggrBgEFBQcwAYYYaHR0\r\ncDovL29jc3AuZGlnaWNlcnQuY29tMHsGA1UdHwR0MHIwN6A1oDOGMWh0dHA6Ly9jcmwzLmRpZ2lj\r\nZXJ0LmNvbS9EaWdpQ2VydEdsb2JhbFJvb3RDQS5jcmwwN6A1oDOGMWh0dHA6Ly9jcmw0LmRpZ2lj\r\nZXJ0LmNvbS9EaWdpQ2VydEdsb2JhbFJvb3RDQS5jcmwwPQYDVR0gBDYwNDAyBgRVHSAAMCowKAYI\r\nKwYBBQUHAgEWHGh0dHBzOi8vd3d3LmRpZ2ljZXJ0LmNvbS9DUFMwHQYDVR0OBBYEFA+AYRyCMWHV\r\nLyjnjUY4tCzhxtniMB8GA1UdIwQYMBaAFAPeUDVW0Uy7ZvCj4hsbw5eyPdFVMA0GCSqGSIb3DQEB\r\nCwUAA4IBAQAjPt9L0jFCpbZ+QlwaRMxp0Wi0XUvgBCFsS+JtzLHgl4+mUwnNqipl5TlPHoOlblyY\r\noiQm5vuh7ZPHLgLGTUq/sELfeNqzqPlt/yGFUzZgTHbO7Djc1lGA8MXW5dRNJ2Srm8c+cftIl7gz\r\nbckTB+6WohsYFfZcTEDts8Ls/3HB40f/1LkAtDdC2iDJ6m6K7hQGrn2iWZiIqBtvLfTyyRRfJs8s\r\njX7tN8Cp1Tm5gr8ZDOo0rwAhaPitc+LJMto4JQtV05od8GiG7S5BNO98pVAdvzr508EIDObtHopY\r\nJeS4d60tbvVS3bR0j6tJLp07kzQoH3jOlOrHvdPJbRzeXDLz\r\n-----END
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIDrzCCApegAwIBAgIQCDvgVpBCRrGhdWrJWZHHSjANBgkqhkiG9w0BAQUFADBhMQswCQYDVQQG\r\nEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSAw\r\nHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBDQTAeFw0wNjExMTAwMDAwMDBaFw0zMTExMTAw\r\nMDAwMDBaMGExCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3\r\ndy5kaWdpY2VydC5jb20xIDAeBgNVBAMTF0RpZ2lDZXJ0IEdsb2JhbCBSb290IENBMIIBIjANBgkq\r\nhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4jvhEXLeqKTTo1eqUKKPC3eQyaKl7hLOllsBCSDMAZOn\r\nTjC3U/dDxGkAV53ijSLdhwZAAIEJzs4bg7/fzTtxRuLWZscFs3YnFo97nh6Vfe63SKMI2tavegw5\r\nBmV/Sl0fvBf4q77uKNd0f3p4mVmFaG5cIzJLv07A6Fpt43C/dxC//AH2hdmoRBBYMql1GNXRor5H\r\n4idq9Joz+EkIYIvUX7Q6hL+hqkpMfT7PT19sdl6gSzeRntwi5m3OFBqOasv+zbMUZBfHWymeMr/y\r\n7vrTC0LUq7dBMtoM1O/4gdW7jVg/tRvoSSiicNoxBN33shbyTApOB6jtSj1etX+jkMOvJwIDAQAB\r\no2MwYTAOBgNVHQ8BAf8EBAMCAYYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUA95QNVbRTLtm\r\n8KPiGxvDl7I90VUwHwYDVR0jBBgwFoAUA95QNVbRTLtm8KPiGxvDl7I90VUwDQYJKoZIhvcNAQEF\r\nBQADggEBAMucN6pIExIK+t1EnE9SsPTfrgT1eXkIoyQY/EsrhMAtudXH/vTBH1jLuG2cenTnmCmr\r\nEbXjcKChzUyImZOMkXDiqw8cvpOp/2PV5Adg06O/nVsJ8dWO41P0jmP6P6fbtGbfYmbW0W5BjfIt\r\ntep3Sp+dWOIrWcBAI+0tKIJFPnlUkiaY4IBIqDfv8NZ5YBberOgOzW6sRBc4L0na4UU+Krk2U886\r\nUAb3LujEV0lsYSEY1QSteDwsOoBrp+uvFRTp2InBuThs4pFsiv9kuXclVzDAGySj4dzp30d8tbQk\r\nCAUw7C29C79Fv1C5qfPrmAESrciIxpg0X40KPMbp1ZWVbd4=\r\n-----END
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIE6DCCA9CgAwIBAgIQAnQuqhfKjiHHF7sf/P0MoDANBgkqhkiG9w0BAQsFADBhMQswCQYDVQQG\r\nEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSAw\r\nHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBDQTAeFw0yMDA5MjMwMDAwMDBaFw0zMDA5MjIy\r\nMzU5NTlaME0xCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxJzAlBgNVBAMTHkRp\r\nZ2lDZXJ0IFNIQTIgU2VjdXJlIFNlcnZlciBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC\r\nggEBANyuWJBNwcQwFZA1W248ghX1LFy949v/cUP6ZCWA1O4Yok3wZtAKc24RmDYXZK83nf36QYSv\r\nx6+M/hpzTc8zl5CilodTgyu5pnVILR1WN3vaMTIa16yrBvSqXUu3R0bdKpPDkC55gIDvEwRqFDu1\r\nm5K+wgdlTvza/P96rtxcflUxDOg5B6TXvi/TC2rSsd9f/ld0Uzs1gN2ujkSYs58O09rg1/RrKatE\r\np0tYhG2SS4HD2nOLEpdIkARFdRrdNzGXkujNVA075ME/OV4uuPNcfhCOhkEAjUVmR7ChZc6gqikJ\r\nTvOX6+guqw9ypzAO+sf0/RR3w6RbKFfCs/mC/bdFWJsCAwEAAaOCAa4wggGqMB0GA1UdDgQWBBQP\r\ngGEcgjFh1S8o541GOLQs4cbZ4jAfBgNVHSMEGDAWgBQD3lA1VtFMu2bwo+IbG8OXsj3RVTAOBgNV\r\nHQ8BAf8EBAMCAYYwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBIGA1UdEwEB/wQIMAYB\r\nAf8CAQAwdgYIKwYBBQUHAQEEajBoMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5j\r\nb20wQAYIKwYBBQUHMAKGNGh0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEdsb2Jh\r\nbFJvb3RDQS5jcnQwewYDVR0fBHQwcjA3oDWgM4YxaHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0Rp\r\nZ2lDZXJ0R2xvYmFsUm9vdENBLmNybDA3oDWgM4YxaHR0cDovL2NybDQuZGlnaWNlcnQuY29tL0Rp\r\nZ2lDZXJ0R2xvYmFsUm9vdENBLmNybDAwBgNVHSAEKTAnMAcGBWeBDAEBMAgGBmeBDAECATAIBgZn\r\ngQwBAgIwCAYGZ4EMAQIDMA0GCSqGSIb3DQEBCwUAA4IBAQB3MR8Il9cSm2PSEWUIpvZlubj6kgPL\r\noX7hyA2MPrQbkb4CCF6fWXF7Ef3gwOOPWdegUqHQS1TSSJZI73fpKQbLQxCgLzwWji3+HlU87MOY\r\n7hgNI+gH9bMtxKtXc1r2G1O6+x/6vYzTUVEgR17vf5irF0LKhVyfIjc0RXbyQ14AniKDrN+v0ebH\r\nExfppGlkTIBn6rakf4994VH6npdn6mkus5CkHBXIrMtPKex6XF2firjUDLuU7tC8y7WlHgjPxEED\r\nDb0Gw6D0yDdVSvG/5XlCNatBmO/8EznDu1vr72N8gJzISUZwa6CCUD7QBLbKJcXBBVVf8nwvV9Gv\r\nlW+sbXlr\r\n-----END
@@ -1165,16 +1155,26 @@ interactions:
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIEFzCCAv+gAwIBAgIQB/LzXIeod6967+lHmTUlvTANBgkqhkiG9w0BAQwFADBhMQswCQYDVQQG\r\nEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSAw\r\nHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBDQTAeFw0yMTA0MTQwMDAwMDBaFw0zMTA0MTMy\r\nMzU5NTlaMFYxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxMDAuBgNVBAMTJ0Rp\r\nZ2lDZXJ0IFRMUyBIeWJyaWQgRUNDIFNIQTM4NCAyMDIwIENBMTB2MBAGByqGSM49AgEGBSuBBAAi\r\nA2IABMEbxppbmNmkKaDp1AS12+umsmxVwP/tmMZJLwYnUcu/cMEFesOxnYeJuq20ExfJqLSDyLiQ\r\n0cx0NTY8g3KwtdD3ImnI8YDEe0CPz2iHJlw5ifFNkU3aiYvkA8ND5b8vc6OCAYIwggF+MBIGA1Ud\r\nEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFAq8CCkXjKU5bXoOzjPHLrPt+8N6MB8GA1UdIwQYMBaA\r\nFAPeUDVW0Uy7ZvCj4hsbw5eyPdFVMA4GA1UdDwEB/wQEAwIBhjAdBgNVHSUEFjAUBggrBgEFBQcD\r\nAQYIKwYBBQUHAwIwdgYIKwYBBQUHAQEEajBoMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdp\r\nY2VydC5jb20wQAYIKwYBBQUHMAKGNGh0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2Vy\r\ndEdsb2JhbFJvb3RDQS5jcnQwQgYDVR0fBDswOTA3oDWgM4YxaHR0cDovL2NybDMuZGlnaWNlcnQu\r\nY29tL0RpZ2lDZXJ0R2xvYmFsUm9vdENBLmNybDA9BgNVHSAENjA0MAsGCWCGSAGG/WwCATAHBgVn\r\ngQwBATAIBgZngQwBAgEwCAYGZ4EMAQICMAgGBmeBDAECAzANBgkqhkiG9w0BAQwFAAOCAQEAR1mB\r\nf9QbH7Bx9phdGLqYR5iwfnYr6v8ai6wms0KNMeZK6BnQ79oU59cUkqGS8qcuLa/7Hfb7U7CKP/zY\r\nFgrpsC62pQsYkDUmotr2qLcy/JUjS8ZFucTP5Hzu5sn4kL1y45nDHQsFfGqXbbKrAjbYwrwsAZI/\r\nBKOLdRHHuSm8EdCGupK8JvllyDfNJvaGEwwEqonleLHBTnm8dqMLUeTF0J5q/hosVq4GNiejcxwI\r\nfZMy0MJEGdqN9A57HSgDKwmKdsp33Id6rHtSJlWncg+d0ohP/rEhxRqhqjn1VtvChMQ1H3Dau0bw\r\nhr9kAMQ+959GG50jBbl9s08PqUU643QwmA==\r\n-----END
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIFrTCCBJWgAwIBAgIQB9JqWPDx4GjFlGd8ZBuA+DANBgkqhkiG9w0BAQsFADBaMQswCQYDVQQG\r\nEwJJRTESMBAGA1UEChMJQmFsdGltb3JlMRMwEQYDVQQLEwpDeWJlclRydXN0MSIwIAYDVQQDExlC\r\nYWx0aW1vcmUgQ3liZXJUcnVzdCBSb290MB4XDTIyMDQwNzAwMDAwMFoXDTI1MDUxMTIzNTk1OVow\r\nSjELMAkGA1UEBhMCVVMxHjAcBgNVBAoTFU1pY3Jvc29mdCBDb3Jwb3JhdGlvbjEbMBkGA1UEAxMS\r\nTVNGVCBCQUxUIFJTMjU2IENBMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwTgQW2vE\r\ntqjPda6g6ZwoqAqb1mdoiFEqeYB8nex6Y0mSgW8NnF4C+MiF1MCFjSlWYgkIVycQ4E86g7znUL1u\r\nVdkEol39U6UiogypLAsQh58fDe7goJrTE36BfQBeS9qx/rvfUPv/PhR74miZsc7nOUsaoMMS76LN\r\nymDhXD+imVseHynsmN2D2AJQZ/7nompXsn/NHIdQF2hqFdLqb6tanGSZuCqCvnf9kJ7RNQipq8lo\r\nzQhWSIQu6tQh2Rs+1iv2wEH7XJgSq8rcsnk4qI9uzfcvhPUNwU14a2rtnahcfUBHrjsaCsB7Ubgj\r\nqi+s9j3POkBCcBDW4x84kAwhpGNYIp1abupXdBPPZYZ6VI3ViA9xeoql/ig8tlGLHsalfYb69Hbm\r\nMGdrwDYmf4YIuLmWSBBynmOJUcNSaDSEtKxERNwcUHzrrp9A9SaC4eg8ZK6J5R5mbVr5eegELzWT\r\nvPtXjiCXlfDvpr+PXLchwEkV3xjymdZd7eq+NmaSafY5mCm/C/KF5eQOhgaXomERa2brYyUazJPQ\r\nzoyHwFOdKpfNINqRg+TnzwXoapbZzVXdquafgUYuHOa28T8/nv85tV20kxQMUy+ICV4anHsAibEp\r\nzgLuDV1Cl9CpoDMOL7fFYOpKXn/zLAG5ZyWW6h426JHq5SKWV4z4utoSDiqMGsZpL1UCAwEAAaOC\r\nAX0wggF5MBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFEa78CwfKmRLIeiu3crbctSqIShc\r\nMB8GA1UdIwQYMBaAFOWdWTCCR1jMrPoIVDaGezq1BE3wMA4GA1UdDwEB/wQEAwIBhjAdBgNVHSUE\r\nFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIweQYIKwYBBQUHAQEEbTBrMCQGCCsGAQUFBzABhhhodHRw\r\nOi8vb2NzcC5kaWdpY2VydC5jb20wQwYIKwYBBQUHMAKGN2h0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0\r\nLmNvbS9CYWx0aW1vcmVDeWJlclRydXN0Um9vdC5jcnQwOgYDVR0fBDMwMTAvoC2gK4YpaHR0cDov\r\nL2NybDMuZGlnaWNlcnQuY29tL09tbmlyb290MjAyNS5jcmwwPQYDVR0gBDYwNDALBglghkgBhv1s\r\nAgEwBwYFZ4EMAQEwCAYGZ4EMAQIBMAgGBmeBDAECAjAIBgZngQwBAgMwDQYJKoZIhvcNAQELBQAD\r\nggEBADOP/3F1jZdadZfbmTfTRjJXHHjisxhiFlVL87cG9PLYIgn5E3xfuGKBnaGXnfdGlPBQuwB2\r\nlKIUA1/JuE5CYF//6Kpa087EDV+Vn3pJ04VkIibNi48Efjs6ROSWPeSd/CzqXB15LbeLB8v7tm4f\r\nsD7CRhERJJUfVkGP8s9249cy7V63SovqP6EYQhFxP0lwJUbzhmMNx37mjnK9dMiKhNKhGQ2KUBdH\r\n/NuiuBL11h2mFowSiuNq6sGBNv9JwwKBHQQ05jhzxXEJiw9lcCYg+2yIk5p6IY4ArdAwi4oZ4knE\r\noyyUmOQy/MkTEdsSptaEbOoBncTBFX2YkXulNYTPyz4=\r\n-----END
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIEtjCCA56gAwIBAgIQCv1eRG9c89YADp5Gwibf9jANBgkqhkiG9w0BAQsFADBhMQswCQYDVQQG\r\nEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSAw\r\nHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBHMjAeFw0yMjA0MjgwMDAwMDBaFw0zMjA0Mjcy\r\nMzU5NTlaMEcxCzAJBgNVBAYTAlVTMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xGDAW\r\nBgNVBAMTD01TRlQgUlMyNTYgQ0EtMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMiJ\r\nV34oeVNHI0mZGh1Rj9mdde3zSY7IhQNqAmRaTzOeRye8QsfhYFXSiMW25JddlcqaqGJ9GEMcJPWB\r\nIBIEdNVYl1bB5KQOl+3m68p59Pu7npC74lJRY8F+p8PLKZAJjSkDD9ExmjHBlPcRrasgflPom3D0\r\nXB++nB1y+WLn+cB7DWLoj6qZSUDyWwnEDkkjfKee6ybxSAXq7oORPe9o2BKfgi7dTKlOd7eKhotw\r\n96yIgMx7yigE3Q3ARS8m+BOFZ/mx150gdKFfMcDNvSkCpxjVWnk//icrrmmEsn2xJbEuDCvtoSNv\r\nGIuCXxqhTM352HGfO2JKAF/Kjf5OrPn2QpECAwEAAaOCAYIwggF+MBIGA1UdEwEB/wQIMAYBAf8C\r\nAQAwHQYDVR0OBBYEFAyBfpQ5X8d3on8XFnk46DWWjn+UMB8GA1UdIwQYMBaAFE4iVCAYlebjbuYP\r\n+vq5Eu0GF485MA4GA1UdDwEB/wQEAwIBhjAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIw\r\ndgYIKwYBBQUHAQEEajBoMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wQAYI\r\nKwYBBQUHMAKGNGh0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEdsb2JhbFJvb3RH\r\nMi5jcnQwQgYDVR0fBDswOTA3oDWgM4YxaHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0\r\nR2xvYmFsUm9vdEcyLmNybDA9BgNVHSAENjA0MAsGCWCGSAGG/WwCATAHBgVngQwBATAIBgZngQwB\r\nAgEwCAYGZ4EMAQICMAgGBmeBDAECAzANBgkqhkiG9w0BAQsFAAOCAQEAdYWmf+ABklEQShTbhGPQ\r\nmH1c9BfnEgUFMJsNpzo9dvRj1Uek+L9WfI3kBQn97oUtf25BQsfckIIvTlE3WhA2Cg2yWLTVjH0N\r\ny03dGsqoFYIypnuAwhOWUPHAu++vaUMcPUTUpQCbeC1h4YW4CCSTYN37D2Q555wxnni0elPj9O0p\r\nymWS8gZnsfoKjvoYi/qDPZw1/TSRpenOgI6XjmlmPLBrk4LIw7P7PPg4uXUpCzzeybvARG/NIIkF\r\nv1eRYIbDF+bIkZbJQFdB9BjjlA4ukAg2YkOyCiB8eXTBi2APaceh3+uBLIgLk8ysy52g2U3gP7Q2\r\n6Jlgq/xKzj3O9hFh/g==\r\n-----END
-        CERTIFICATE-----\r\n"}],"hoursBetweenBackups":24,"backupRetentionPeriodInHours":24,"prometheusEndpoint":{"ipAddress":"10.0.0.4"},"provisioningState":"Succeeded","repairEnabled":true,"seedNodes":[],"cassandraAuditLoggingEnabled":false,"diagnosticSettingsId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_MANAGED_CASSANDRAZONPOEFCHTCLFT3WFICTCTLV27SOZS46IPJ6SYLA5BUKXXBLHN75QR/PROVIDERS/MICROSOFT.DOCUMENTDB/CASSANDRACLUSTERS/CLIUO2KRQ2"}}'
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIHmDCCBYCgAwIBAgITMwAAAC/68G9ml+JGnAAAAAAALzANBgkqhkiG9w0BAQwFADBlMQswCQYD\r\nVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3Nv\r\nZnQgUlNBIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MjA1NzM1WhcN\r\nMjYwNjI0MjA1NzM1WjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0\r\naW9uMSwwKgYDVQQDEyNNaWNyb3NvZnQgUlNBIFRMUyBJc3N1aW5nIEFPQyBDQSAwMTCCAiIwDQYJ\r\nKoZIhvcNAQEBBQADggIPADCCAgoCggIBAKAYz8zB6I+LeiWYURf1QUaISydvRgxWfcc6UvEiwvry\r\nj2UsRfFuREo2ErLTvP9qQ9E0YBTyWEqI2TXn4jo2uZ2cpGODiQQWlixeaAFcYgSqLzidFXj401vz\r\nQsz4E0zylD/ZeY+xkQ6xrdg5312x2u2Ap7AWLzqolZHZgR0aicn9gcO6M4qn6Uuge8mOve1N7U6j\r\n8ebhSiw0KlkzY9ha1Kvrez+NXQdeLC+VPDWPPPlBWeysTnIM6dusbV1v2/C7Ooz9TuGb8wiXRriP\r\npI7+igSIPqBebF00rHGJDmx9eN3g78VF9JpTrrRkV8alpMYVZKAh9IzMp9NWVZsw5wgZaX2W05Sa\r\nXkSHP3zROBANhKzwkBkCcDMbmF1LFOk+wgkcEtFlKEnfgvOQVHTp02gTzyhSxstw0buon4CyZAm1\r\nL+6bJJ+puNL8HuLTJxq1mqiaY0T50olJeySSX5uJBo/l29Pz+0WjANnhRLVqe5xdxPV11QGHDxnv\r\nsXaMgC4y/5sLo5v4UEZT+4VDcKiRHReusJD+kUt92FSYqWTKxs6zwuxf25as/rJbZT99o9QVFLfH\r\nEs6DgHKNIqQuVxZxH0T3M6XqfmnRTo1FrD8ip/93Q4zQta5S9whe/sAxpizwyMw/9fhBDHGVHfgF\r\nV1C0EP9zxkyHEya0CGAMhbzp+0Y/ZYxrAgMBAAGjggJJMIICRTAOBgNVHQ8BAf8EBAMCAYYwEAYJ\r\nKwYBBAGCNxUBBAMCAQAwHQYDVR0OBBYEFOtMMXw9PzK4g9fF23va5HjanBRXMB0GA1UdJQQWMBQG\r\nCCsGAQUFBwMBBggrBgEFBQcDAjAZBgkrBgEEAYI3FAIEDB4KAFMAdQBiAEMAQTASBgNVHRMBAf8E\r\nCDAGAQH/AgEAMB8GA1UdIwQYMBaAFAnLWX+GsnCPGsM548DZ6b+7TbIjMHAGA1UdHwRpMGcwZaBj\r\noGGGX2h0dHA6Ly93d3cubWljcm9zb2Z0LmNvbS9wa2lvcHMvY3JsL01pY3Jvc29mdCUyMFJTQSUy\r\nMFJvb3QlMjBDZXJ0aWZpY2F0ZSUyMEF1dGhvcml0eSUyMDIwMTcuY3JsMIGuBggrBgEFBQcBAQSB\r\noTCBnjBtBggrBgEFBQcwAoZhaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9wcy9jZXJ0cy9N\r\naWNyb3NvZnQlMjBSU0ElMjBSb290JTIwQ2VydGlmaWNhdGUlMjBBdXRob3JpdHklMjAyMDE3LmNy\r\ndDAtBggrBgEFBQcwAYYhaHR0cDovL29uZW9jc3AubWljcm9zb2Z0LmNvbS9vY3NwMHAGA1UdIARp\r\nMGcwCAYGZ4EMAQIBMAgGBmeBDAECAjBRBgwrBgEEAYI3TIN9AQEwQTA/BggrBgEFBQcCARYzaHR0\r\ncDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9wcy9Eb2NzL1JlcG9zaXRvcnkuaHRtMA0GCSqGSIb3\r\nDQEBDAUAA4ICAQAkucWkMrgs2ahYrG7y4sY2yZno4f9TGyk7p+Srg4Yz/g7LmVeyOob9o579Omw9\r\nAiyeDK8Y/dXnTTof+sKJrlNTpIzyEBkzCiGGkWtp7x2yxLCm12L65wtmD/6OAV9Bm1kOhf3p7v+d\r\n3gtFt7cw46W35lr+fguy62s7uuytTV9hfhQ0pp2E2E9F6B7U71jR4bC+6zGq+34AmqTirjKHwXOh\r\nWDRDpEJIkaFAh+qdz/nqJktZj3n5GdC94jfWrMUJjClGjlc4+Ws3AxN46oFpx8oIXDG9wIPfFhUf\r\n0SdnCYJL8TD5+qBNp0H5q/V2R31Wi8rijHGQ4CxHqzP5VJbjgvRQgxAp39BrmLQ+JSvf9e5VqQqa\r\nH4NYgpB1WObq12B73BJHjBOvpRrULFjPqDW8sPRBzBTRXkXOPEdZbzQj6O/CWEFsg6ilO4thk3n3\r\ndrb9FEJjVh9uGtRXV6Ea5bNaPvJppZNXb7M9mORk3mddx/K1FgOETQE3quh+mU4ojbSRUWMVmjcb\r\n6bKF5oQd+Q0do4yaEIfH1oVnIas/FIE/xu3Z4fvBs0qdiNLCeNT6uS26vqD2PEvVlFWb683Do3Ls\r\n59MMCxhy6Erb7kFQgu1oUWXGFhbMQkeLN4TXGi6X3loXYfING9omnWa/udxvPRwAZmcHU2l2W8cw\r\nVXiy6uucsh3kPQ==\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIFqDCCA5CgAwIBAgIQHtOXCV/YtLNHcB6qvn9FszANBgkqhkiG9w0BAQwFADBlMQswCQYDVQQG\r\nEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQg\r\nUlNBIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMTkxMjE4MjI1MTIyWhcNNDIw\r\nNzE4MjMwMDIzWjBlMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9u\r\nMTYwNAYDVQQDEy1NaWNyb3NvZnQgUlNBIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcw\r\nggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDKW76UM4wplZEWCpW9R2LBifOZNt9GkMml\r\n7Xhqb0eRaPgnZ1AzHaGm++DlQ6OEAlcBXZxIQIJTELy/xztokLaCLeX0ZdDMbRnMlfl7rEqUrQ7e\r\nS0MdhweSE5CAg2Q1OQT85elss7YfUJQ4ZVBcF0a5toW1HLUX6NZFndiyJrDKxHBKrmCk3bPZ7Pw7\r\n1VdyvD/IybLeS2v4I2wDwAW9lcfNcztmgGTjGqwu+UcF8ga2m3P1eDNbx6H7JyqhtJqRjJHTOoI+\r\ndkC0zVJhUXAoP8XFWvLJjEm7FFtNyP9nTUwSlq31/niol4fX/V4ggNyhSyL71Imtus5Hl0dVe49F\r\nyGcohJUcaDDv70ngNXtk55iwlNpNhTs+VcQor1fznhPbRiefHqJeRIOkpcrVE7NLP8TjwuaGYaRS\r\nMLl6IE9vDzhTyzMMEyuP1pq9KsgtsRx9S1HKR9FIJ3Jdh+vVReZIZZ2vUpC6W6IYZVcSn2i51BVr\r\nlMRpIpj0M+Dt+VGOQVDJNE92kKz8OMHY4Xu54+OU4UZpyw4KUGsTuqwPN1q3ErWQgR5WrlcihtnJ\r\n0tHXUeOrO8ZV/R4O03QK0dqq6mm4lyiPSMQH+FJDOvTKVTUssKZqwJz58oHhEmrARdlns87/I6KJ\r\nClTUFLkqqNfs+avNJVgyeY+QW5g5xAgGwax/Dj0ApQIDAQABo1QwUjAOBgNVHQ8BAf8EBAMCAYYw\r\nDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUCctZf4aycI8awznjwNnpv7tNsiMwEAYJKwYBBAGC\r\nNxUBBAMCAQAwDQYJKoZIhvcNAQEMBQADggIBAKyvPl3CEZaJjqPnktaXFbgToqZCLgLNFgVZJ8og\r\n6Lq46BrsTaiXVq5lQ7GPAJtSzVXNUzltYkyLDVt8LkS/gxCP81OCgMNPOsduET/m4xaRhPtthH80\r\ndK2Jp86519efhGSSvpWhrQlTM93uCupKUY5vVau6tZRGrox/2KJQJWVggEbbMwSubLWYdFQl3JPk\r\n+ONVFT24bcMKpBLBaYVu32TxU5nhSnUgnZUP5NbcA/FZGOhHibJXWpS2qdgXKxdJ5XbLwVaZOjex\r\n/2kskZGT4d9Mozd2TaGf+G0eHdP67Pv0RR0Tbc/3WeUiJ3IrhvNXuzDtJE3cfVa7o7P4NHmJweDy\r\nAmH3pvwPuxwXC65B2Xy9J6P9LjrRk5Sxcx0ki69bIImtt2dmefU6xqaWM/5TkshGsRGRxpl/j8nW\r\nZjEgQRCHLQzWwa80mMpkg/sTV9HB8Dx6jKXB/ZUhoHHBk2dxEuqPiAppGWSZI1b7rCoucL5mxAyE\r\n7+WL85MB+GqQk2dLsmijtWKP6T+MejteD+eMuMZ87zf9dOLITzNy4ZQ5bb0Sr74MTnB8G2+NszKT\r\nc0QWbej09+CVgI+WXTik9KveCjCHk9hNAHFiRSdLOkKEW39lt2c0Ui2cFmuqqNh7o0JMcccMyj6D\r\n5KbvtwEwXlGjefVwaaZBRA+GsCyRxj3qrg+E\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIHmDCCBYCgAwIBAgITMwAAADJETXUhNBSWqQAAAAAAMjANBgkqhkiG9w0BAQwFADBlMQswCQYD\r\nVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3Nv\r\nZnQgUlNBIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MjA1NzQwWhcN\r\nMjYwNjI0MjA1NzQwWjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0\r\naW9uMSwwKgYDVQQDEyNNaWNyb3NvZnQgUlNBIFRMUyBJc3N1aW5nIEVPQyBDQSAwMjCCAiIwDQYJ\r\nKoZIhvcNAQEBBQADggIPADCCAgoCggIBAL28YfGMKaaA3aFSX4S0CqcMBgt6nWcNV3mlKE9XH2yi\r\nEQJf3xOAW+22DPRcbpjMkfj7m88h4GbKblK2VTyhjdHDCnHwi7f1Q5zY/H8XWLqiPYfKPAuq53QD\r\n5o5wPjyfMCouFwOzEkUBAN7xlpkiRkN0G4OI2miP3Jx7GecbmyqJnbdL6C84iKH4j8PN10KNLtTR\r\na6W0LjZHEQFoIrIQ/+VqXpBW/AoSGek6+anEZkRBtZ5AxRV0P/aQXhE5+Mxiv18T3aYXB5+cImcx\r\ncWXIlITDydAYO+P8RgM2PZ95QjUagR33+4zkoopss/XH0FtdjmdTLa9pyXXIFjy94jnqZbo1sGgF\r\nVyFx2vdcnk0ssH8VbS20amKsRsbhBfVaFQX1j0KRgepL+KW50EYhoTXEiB7TgT7agqpDivWJ5o5s\r\n7f9/YrHi/+gNQLyVdsvBovL6N6lzjXpy0wTlQv+IIHwzDu7mRu+aFR+gwsB/LF+VtTtxbK3l9deI\r\nqikgyRrQHcjFhkeF26R9bmgPgV4vGOEJBlctLiJ29Ihiy4y00tu346bSnvxDGSxKHQz+KE4fTYyR\r\n/XgIasIUwmW12sB6NhdkCJTE9KBPrN3tWzaiPNvKnvcGG2vZ2jXvmBOXsq46R9iiQ6e3ywU9+lLe\r\nOeXMvMeIxSUCEX89F1vL4+vwe9/CIf6BAgMBAAGjggJJMIICRTAOBgNVHQ8BAf8EBAMCAYYwEAYJ\r\nKwYBBAGCNxUBBAMCAQAwHQYDVR0OBBYEFMmEljhzpi5LGGptRNWUo300psf3MB0GA1UdJQQWMBQG\r\nCCsGAQUFBwMBBggrBgEFBQcDAjAZBgkrBgEEAYI3FAIEDB4KAFMAdQBiAEMAQTASBgNVHRMBAf8E\r\nCDAGAQH/AgEAMB8GA1UdIwQYMBaAFAnLWX+GsnCPGsM548DZ6b+7TbIjMHAGA1UdHwRpMGcwZaBj\r\noGGGX2h0dHA6Ly93d3cubWljcm9zb2Z0LmNvbS9wa2lvcHMvY3JsL01pY3Jvc29mdCUyMFJTQSUy\r\nMFJvb3QlMjBDZXJ0aWZpY2F0ZSUyMEF1dGhvcml0eSUyMDIwMTcuY3JsMIGuBggrBgEFBQcBAQSB\r\noTCBnjBtBggrBgEFBQcwAoZhaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9wcy9jZXJ0cy9N\r\naWNyb3NvZnQlMjBSU0ElMjBSb290JTIwQ2VydGlmaWNhdGUlMjBBdXRob3JpdHklMjAyMDE3LmNy\r\ndDAtBggrBgEFBQcwAYYhaHR0cDovL29uZW9jc3AubWljcm9zb2Z0LmNvbS9vY3NwMHAGA1UdIARp\r\nMGcwCAYGZ4EMAQIBMAgGBmeBDAECAjBRBgwrBgEEAYI3TIN9AQEwQTA/BggrBgEFBQcCARYzaHR0\r\ncDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9wcy9Eb2NzL1JlcG9zaXRvcnkuaHRtMA0GCSqGSIb3\r\nDQEBDAUAA4ICAQCdEQ+ePCPMaq87pCqCJKdniTeRKIYI/jv15KRw89WoYi7H+XWz8v2MawuffAuF\r\n/LS+CKq9pIh2RlR7oLeymU6ZKQ+HKLDNkKAyEbSqvVjg0sQGOYDNu1SIOwywkZFLowWtzetCOzhN\r\nE/ujq2H0Lz6biPK7cgK+2afg5iJfy2N9bftR7MKV1jcidk5JbMyMJWPnHirS4erYiQymmvive2mr\r\njewZAykUkqTuGtNuumnQtaDm+aW7c+SJkn7uhTavShnLZeH8LfA5+I+obJg22ZNvg5KSQ0Sglsi2\r\n0uSuVnzAvIjaOvWlIxcBnhLIKuxUChPcT9+3shfmvEa0iJEArOI8m9YJ4H54Xu0sI6VVdSQA23BW\r\nkA6uLQU9EPzJ+oSAumXUXKV/MeHmU3iai2Guf1EMf3JdaIdGlAU9o/seIUa/Ht98xo7oao8Ge/kT\r\nQG0IQTGUhIloQzjMALlNrcmekKVwVTFTVKEWil1XKckDWr0UaeTghY2YXItR8qznKNPIwCKOiEYy\r\npQ05uZRpTT5YmBR28/ffac8OLr1avAlK8N52nkg319gMYbtwkjpjCitTnZkmis8LDfafRxq+DD0R\r\nsLbH1B6Ajbthiz6KN3GnG6GpNw2vuKVYohLQ2of+f2f/cMwjFU79PQGL7+70lverGFlpuhcdt7XZ\r\nEzawCYwdiBi+KA==\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIHmDCCBYCgAwIBAgITMwAAADDHVsyI9cHn6wAAAAAAMDANBgkqhkiG9w0BAQwFADBlMQswCQYD\r\nVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3Nv\r\nZnQgUlNBIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MjA1NzM3WhcN\r\nMjYwNjI0MjA1NzM3WjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0\r\naW9uMSwwKgYDVQQDEyNNaWNyb3NvZnQgUlNBIFRMUyBJc3N1aW5nIEFPQyBDQSAwMjCCAiIwDQYJ\r\nKoZIhvcNAQEBBQADggIPADCCAgoCggIBALMPi6Bpg5qJHcamm8fFfU2hj27RSRFp614v82PPoLeK\r\neJwRetr+Up5NAi7FN1EO/zu9b4TU4i7HRaDKnVrPMQdWkh5BcKQxicpXgnMvN0FRtMA7Bo7WVTJz\r\nw6THkB88ARRYlQz9HdctBd+AfL27oWZ9MJo2lJ8v+3jxj3BMaKbiYVLmabDn/Arm5J7ThYaRduhy\r\nu22/kMFtVk5bqhg+jg7GPvdCaLnRuV1SvEdb+ZkQ8dT/bEWYugnoDfX8x10b+jFT1G1wpnNK7bWM\r\nU3NVJL1y8h7/ZNBNloyjqdrn0NeUdaqp95EI6ER5CRpGyNq7/tCjr2vhJIumZzr+abEZfBq6ML2m\r\ngoa83jwcR6xMkmSOwPeE7F6MlVN5MrTx1Fco3VMIrzOLfzwUkZ2385grAjY7S10olouk//xOwo7c\r\nkVTZKVBlL2jAtDVXCYwrTPdyx9SLfJrYVAN+kfa1wqR4/I7xgK6gXhf+Gn5PBktIYiY7QX7Q/CdF\r\nrSFIKrZOWyqj9okUC+pMOu7AKbQHeBJDz//UsS7cxkCzptBPmta5AH69PlgJdZEFYOFT8PHfF/EF\r\nbIlHwP+vyKzg1EMnRsCB5tt4RZ8Bw44Md6mtR5PYbSBGnQFxcr6BBZJl6cVdQZGzk6FvoYM3uhQV\r\nrxBEbVUfBweskghG+kyBd0fAB3ZshGJ5AgMBAAGjggJJMIICRTAOBgNVHQ8BAf8EBAMCAYYwEAYJ\r\nKwYBBAGCNxUBBAMCAQAwHQYDVR0OBBYEFIqWwoENV4pCzjD5uMGdDB5Tpk/lMB0GA1UdJQQWMBQG\r\nCCsGAQUFBwMBBggrBgEFBQcDAjAZBgkrBgEEAYI3FAIEDB4KAFMAdQBiAEMAQTASBgNVHRMBAf8E\r\nCDAGAQH/AgEAMB8GA1UdIwQYMBaAFAnLWX+GsnCPGsM548DZ6b+7TbIjMHAGA1UdHwRpMGcwZaBj\r\noGGGX2h0dHA6Ly93d3cubWljcm9zb2Z0LmNvbS9wa2lvcHMvY3JsL01pY3Jvc29mdCUyMFJTQSUy\r\nMFJvb3QlMjBDZXJ0aWZpY2F0ZSUyMEF1dGhvcml0eSUyMDIwMTcuY3JsMIGuBggrBgEFBQcBAQSB\r\noTCBnjBtBggrBgEFBQcwAoZhaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9wcy9jZXJ0cy9N\r\naWNyb3NvZnQlMjBSU0ElMjBSb290JTIwQ2VydGlmaWNhdGUlMjBBdXRob3JpdHklMjAyMDE3LmNy\r\ndDAtBggrBgEFBQcwAYYhaHR0cDovL29uZW9jc3AubWljcm9zb2Z0LmNvbS9vY3NwMHAGA1UdIARp\r\nMGcwCAYGZ4EMAQIBMAgGBmeBDAECAjBRBgwrBgEEAYI3TIN9AQEwQTA/BggrBgEFBQcCARYzaHR0\r\ncDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9wcy9Eb2NzL1JlcG9zaXRvcnkuaHRtMA0GCSqGSIb3\r\nDQEBDAUAA4ICAQCKnn44AnDZSahvJeSdxx3trgl8XI+IiQ/+O9Uj55D32IO8PN2AWoSDhmgiWXyw\r\nN3WdM6HrJoJAaJgiZitql68aNdqcW2VILRdvNdWj25may+YQY4GIfAmrfLEHJXLZNljfOi+BvLS7\r\nRyk2fmNx6E2Pi8+ZGWwJeBVpfHuFsWG2gmiD3ZpTryOPZLs2+nwiHTmnwUQRp4jX5Zxq3d6Ee/Zp\r\nPNO0u0SAJ4fE5WXiec1uzpbcAtziMG1weo3fW4apTHffzdzuJ/VSoQSgcvCko/SYLthxNYVDyA9D\r\nbYJPLAiVkaqQXOMl39BD/cD8DrOrAoTA/M1Sdx9G+gcXtXkgBa1wLzQ3vaKysOyRuBsIXvjyU8oe\r\n7iEX9N3JAe8qqSZVgqtyb5x/st23PzdnfeH95ExT/EyQevOIN9mfTCs0ywkU2A1ruL/wgHhKl5AK\r\n2aEzdoYqcueYG0BZxCcc4jWUaKwKpLXk1xP+EALGgJnSrPaqwOIGRu5s7ER5ZMkrKEQQDboa83Pz\r\nyIXeKWyLyiqztRZ4KZTmIbe5le4u+QWhPZ57Hv4BP6HKH+R41Fy5iXq7oXNeW9d9dumNzsk1rKow\r\n+LkotQfC9Owgoi4+aZpLW9lrwt3n41hfHu5GlNhv0f3J1XQFoimVPqas7J793+QfvhL9weeouO4m\r\nRj8ZD6RQFn5qjA==\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIHmDCCBYCgAwIBAgITMwAAADEMSRSxjI8zmgAAAAAAMTANBgkqhkiG9w0BAQwFADBlMQswCQYD\r\nVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3Nv\r\nZnQgUlNBIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MjA1NzM5WhcN\r\nMjYwNjI0MjA1NzM5WjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0\r\naW9uMSwwKgYDVQQDEyNNaWNyb3NvZnQgUlNBIFRMUyBJc3N1aW5nIEVPQyBDQSAwMTCCAiIwDQYJ\r\nKoZIhvcNAQEBBQADggIPADCCAgoCggIBAL7Z8OMcWj3FKKBLKIQ2CBoe0HICBLmagHZmQpECgsmD\r\nRXqA6QcLQPzwZUvQLUvRITLaGshy0zuL27fT9hD0YRFFQyUcVDVWVyOaChL0H2Lhsie3nnKe2ivo\r\nenWrPx00CSU9ONVlyihtur7Jga1lA8nxYmmZTONVGilZoBrQ3kJBfJmrdTPbcjQtqi+8ok/cvY0f\r\n5UdMtGroBJOwFtwRDCckV/qExILfI/9bibWlYBX1iecZF2JwGxEWD8qP8BV+cVleMB5rhIIcs9DH\r\n2SFMwok+lctQB68WYEskbhXfIrS4xHldcHrYxMWdPrdKPLFXHUaE7UJIovyBDvzDfoGRMzSy5DOE\r\nTnghTByzz/87GB0aM2k17oLGafN2yHRUT7+XxNFqoSSLt2siuBbwelsnaGitq40HCLbfrNTWjRv5\r\nFiAuqygpgBF+RclWH8HHHii7lLHGsPARssdlffk7J7+Nb7x5SOo8J6sSTrqk4N/nP7Z1FPqUG6qU\r\n2tcCDVsRh4qb5LzqHl7SpoJzAP+vIBGkRH4At1gRpkJzdg8FWqtzQ5wX5MQnB62OPnYTyFByStAQ\r\nC3puN8FCtlurm74gqdIdR6fYURbpH9OXag8Fa4qbmYbmnCQF/A2cLB1EOhjk4MGlmfp/aDdCTC+z\r\nMr9VTNTt5KkowSSWZ0wUpjUNZ9bRPzZPAgMBAAGjggJJMIICRTAOBgNVHQ8BAf8EBAMCAYYwEAYJ\r\nKwYBBAGCNxUBBAMCAQAwHQYDVR0OBBYEFHMIeJP51amco3d+ETR0/0UycbeDMB0GA1UdJQQWMBQG\r\nCCsGAQUFBwMBBggrBgEFBQcDAjAZBgkrBgEEAYI3FAIEDB4KAFMAdQBiAEMAQTASBgNVHRMBAf8E\r\nCDAGAQH/AgEAMB8GA1UdIwQYMBaAFAnLWX+GsnCPGsM548DZ6b+7TbIjMHAGA1UdHwRpMGcwZaBj\r\noGGGX2h0dHA6Ly93d3cubWljcm9zb2Z0LmNvbS9wa2lvcHMvY3JsL01pY3Jvc29mdCUyMFJTQSUy\r\nMFJvb3QlMjBDZXJ0aWZpY2F0ZSUyMEF1dGhvcml0eSUyMDIwMTcuY3JsMIGuBggrBgEFBQcBAQSB\r\noTCBnjBtBggrBgEFBQcwAoZhaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9wcy9jZXJ0cy9N\r\naWNyb3NvZnQlMjBSU0ElMjBSb290JTIwQ2VydGlmaWNhdGUlMjBBdXRob3JpdHklMjAyMDE3LmNy\r\ndDAtBggrBgEFBQcwAYYhaHR0cDovL29uZW9jc3AubWljcm9zb2Z0LmNvbS9vY3NwMHAGA1UdIARp\r\nMGcwCAYGZ4EMAQIBMAgGBmeBDAECAjBRBgwrBgEEAYI3TIN9AQEwQTA/BggrBgEFBQcCARYzaHR0\r\ncDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9wcy9Eb2NzL1JlcG9zaXRvcnkuaHRtMA0GCSqGSIb3\r\nDQEBDAUAA4ICAQBw7zk6D2kKZzdRQNSGTtOtfssB4MjYgEKeeTtzmgz8B2HO654S0WPHIn2EFV5s\r\nJgn3WzMKGCRizxKq00ulUOBJQpPx3x1DnW2LgWXNBWtcXzSBpAyeQf2BWa08BzqbmQ2uG8k96A4x\r\nUvYk2HmQioyDk+f9+o5tlHXlf8IKx1joSahaLEmGwBOCQFC6JbUYIVgOeS1hf7gNRyM8QWPR5D5M\r\n9qMVyGNoTt3fIXHxgbDuNHhEGPpiv9FWlzMT8jKFtURutEYmhg3Y6Qr/QXbbeaN4Ow5UiS5/Tr4A\r\nQEaU6Yoc3qvKFdoOV9Fjp7Ze4UmRv81LoQrzuS7vAP5iW3mB/n2jzCHdNIKX/qHDYU4qjC+aZFqq\r\nT9rUpWnYW9qsPhTi8LORsn7fvPuL1ecVgkUB3F/1z9udnfjhG1sjt3hj0NXJc1qnYGDhiKLJHeU9\r\nMSFUlBieVUSV2m+0q8WHPjLiJBHiZbt/gleHbdTb+WPCFa3LCPbLuqiK+KKAsWvtuJs26KegodyE\r\nfvFz753D3fLWMfRZBZgRTKJODA5Vb899QyzsUSXBMX7+oYE4A9o9yc8rvzTWoMuEw3UhCdfTKrE0\r\nuKg4FSYi1W5UMdjlMdACoCh2aCp7jNiLt6wtSZIzG27MNIz/bWTFmcRoN9xh4Lbj7b5tfuIop8cZ\r\ndKuCtnRBx5mK8w==\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIESTCCA8+gAwIBAgITMwAAACgr/SPn0a3XBwAAAAAAKDAKBggqhkjOPQQDAzBlMQswCQYDVQQG\r\nEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQg\r\nRUNDIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MTk1ODM2WhcNMjYw\r\nNjI0MTk1ODM2WjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9u\r\nMSwwKgYDVQQDEyNNaWNyb3NvZnQgRUNDIFRMUyBJc3N1aW5nIEFPQyBDQSAwMTB2MBAGByqGSM49\r\nAgEGBSuBBAAiA2IABMBXcHExvrYrhw7v30oPR4aBaMne5o0FtTtbMV7iqVhTJDQSWDEJhr528nyS\r\n6jcLLu9pLXQMJYxVd7bz4wWXgVtZnnbQ7trAAIPWVh5B6f5eJf5OQ7w7AwJgz3snP5Hx16OCAkkw\r\nggJFMA4GA1UdDwEB/wQEAwIBhjAQBgkrBgEEAYI3FQEEAwIBADAdBgNVHQ4EFgQUMVu5zlEbfNGq\r\nA8Dr7TZdwp3TieEwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBkGCSsGAQQBgjcUAgQM\r\nHgoAUwB1AGIAQwBBMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0jBBgwFoAUyMuZcnBSDPjmvrIE\r\nVykqz0IQ7TUwcAYDVR0fBGkwZzBloGOgYYZfaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9w\r\ncy9jcmwvTWljcm9zb2Z0JTIwRUNDJTIwUm9vdCUyMENlcnRpZmljYXRlJTIwQXV0aG9yaXR5JTIw\r\nMjAxNy5jcmwwga4GCCsGAQUFBwEBBIGhMIGeMG0GCCsGAQUFBzAChmFodHRwOi8vd3d3Lm1pY3Jv\r\nc29mdC5jb20vcGtpb3BzL2NlcnRzL01pY3Jvc29mdCUyMEVDQyUyMFJvb3QlMjBDZXJ0aWZpY2F0\r\nZSUyMEF1dGhvcml0eSUyMDIwMTcuY3J0MC0GCCsGAQUFBzABhiFodHRwOi8vb25lb2NzcC5taWNy\r\nb3NvZnQuY29tL29jc3AwcAYDVR0gBGkwZzAIBgZngQwBAgEwCAYGZ4EMAQICMFEGDCsGAQQBgjdM\r\ng30BATBBMD8GCCsGAQUFBwIBFjNodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpb3BzL0RvY3Mv\r\nUmVwb3NpdG9yeS5odG0wCgYIKoZIzj0EAwMDaAAwZQIxANmPydUjlgj/2K77UnMeMkSGIgXzOhcT\r\nsixzZL+NmTR1Bq2hSPeA6Y3mn3lMlwxZmAIwIio6KrgItH4YmLWKd8QClIrE9QjbDlR7oFqaU3J3\r\n4bWbMlAEjRARdZhhQlNwdORe\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIICWTCCAd+gAwIBAgIQZvI9r4fei7FK6gxXMQHC7DAKBggqhkjOPQQDAzBlMQswCQYDVQQGEwJV\r\nUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQgRUND\r\nIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMTkxMjE4MjMwNjQ1WhcNNDIwNzE4\r\nMjMxNjA0WjBlMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYw\r\nNAYDVQQDEy1NaWNyb3NvZnQgRUNDIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwdjAQ\r\nBgcqhkjOPQIBBgUrgQQAIgNiAATUvD0CQnVBEyPNgASGAlEvaqiBYgtlzPbKnR5vSmZRogPZnZH6\r\nthaxjG7efM3beaYvzrvOcS/lpaso7GMEZpn4+vKTEAXhgShC48Zo9OYbhGBKia/teQ87zvH2RPUB\r\neMCjVDBSMA4GA1UdDwEB/wQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBTIy5lycFIM\r\n+Oa+sgRXKSrPQhDtNTAQBgkrBgEEAYI3FQEEAwIBADAKBggqhkjOPQQDAwNoADBlAjBY8k3qDPlf\r\nXu5gKcs68tvWMoQZP3zVL8KxzJOuULsJMsbG7X7JNpQS5GiFBqIb0C8CMQCZ6Ra0DvpWSNSkMBaR\r\neNtUjGUBiudQZsIxtzm6uBoiB078a1QWIP8rtedMDE2mT3M=\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIESDCCA8+gAwIBAgITMwAAACkPimIi72pWlQAAAAAAKTAKBggqhkjOPQQDAzBlMQswCQYDVQQG\r\nEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQg\r\nRUNDIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MTk1ODM4WhcNMjYw\r\nNjI0MTk1ODM4WjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9u\r\nMSwwKgYDVQQDEyNNaWNyb3NvZnQgRUNDIFRMUyBJc3N1aW5nIEFPQyBDQSAwMjB2MBAGByqGSM49\r\nAgEGBSuBBAAiA2IABI7Zgbmjd2OumgotYraLtAF/obAK54drz/RFV2lzPGE0f3js0+CUCGTEOGdO\r\naB+7fODrVJ84rKJPRPS/pEc8k80WepwWMYri+yoA7OlAQFiyIqk900jUel2o9LBoBNr72qOCAkkw\r\nggJFMA4GA1UdDwEB/wQEAwIBhjAQBgkrBgEEAYI3FQEEAwIBADAdBgNVHQ4EFgQU3tzXbCOZQ+qs\r\n7ci3HRhYgDZLjfQwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBkGCSsGAQQBgjcUAgQM\r\nHgoAUwB1AGIAQwBBMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0jBBgwFoAUyMuZcnBSDPjmvrIE\r\nVykqz0IQ7TUwcAYDVR0fBGkwZzBloGOgYYZfaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9w\r\ncy9jcmwvTWljcm9zb2Z0JTIwRUNDJTIwUm9vdCUyMENlcnRpZmljYXRlJTIwQXV0aG9yaXR5JTIw\r\nMjAxNy5jcmwwga4GCCsGAQUFBwEBBIGhMIGeMG0GCCsGAQUFBzAChmFodHRwOi8vd3d3Lm1pY3Jv\r\nc29mdC5jb20vcGtpb3BzL2NlcnRzL01pY3Jvc29mdCUyMEVDQyUyMFJvb3QlMjBDZXJ0aWZpY2F0\r\nZSUyMEF1dGhvcml0eSUyMDIwMTcuY3J0MC0GCCsGAQUFBzABhiFodHRwOi8vb25lb2NzcC5taWNy\r\nb3NvZnQuY29tL29jc3AwcAYDVR0gBGkwZzAIBgZngQwBAgEwCAYGZ4EMAQICMFEGDCsGAQQBgjdM\r\ng30BATBBMD8GCCsGAQUFBwIBFjNodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpb3BzL0RvY3Mv\r\nUmVwb3NpdG9yeS5odG0wCgYIKoZIzj0EAwMDZwAwZAIwSiB+6RshdjasB841Y6l6wCivxxnEBvxn\r\n6GCYIjk22EJa1p6B4w+Qf5seGf20/SsXAjBxv8F+Qz6CfnpQNxIGRby0UfKq36vne88PuoQCHdxY\r\nLnjkUiveg2NRTNiAFWXqhUg=\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIESTCCA8+gAwIBAgITMwAAACvmkCg4ZytmeQAAAAAAKzAKBggqhkjOPQQDAzBlMQswCQYDVQQG\r\nEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQg\r\nRUNDIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MTk1ODQwWhcNMjYw\r\nNjI0MTk1ODQwWjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9u\r\nMSwwKgYDVQQDEyNNaWNyb3NvZnQgRUNDIFRMUyBJc3N1aW5nIEVPQyBDQSAwMjB2MBAGByqGSM49\r\nAgEGBSuBBAAiA2IABCnY32N9ck71DA0aFNh3TJUp5baxIf9K2kh2RJOvnsU82Epig+iwGtsdLbmm\r\nnQCis9VR8E0KfKUUBnNSdmtUneh36lhFwxDZ4NzmfdUjG24K8zbbMd/qTAVztrcDvdlhxqOCAkkw\r\nggJFMA4GA1UdDwEB/wQEAwIBhjAQBgkrBgEEAYI3FQEEAwIBADAdBgNVHQ4EFgQUv9gyNCuhlTu0\r\ntdS5QC1ySpwaAIYwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBkGCSsGAQQBgjcUAgQM\r\nHgoAUwB1AGIAQwBBMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0jBBgwFoAUyMuZcnBSDPjmvrIE\r\nVykqz0IQ7TUwcAYDVR0fBGkwZzBloGOgYYZfaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9w\r\ncy9jcmwvTWljcm9zb2Z0JTIwRUNDJTIwUm9vdCUyMENlcnRpZmljYXRlJTIwQXV0aG9yaXR5JTIw\r\nMjAxNy5jcmwwga4GCCsGAQUFBwEBBIGhMIGeMG0GCCsGAQUFBzAChmFodHRwOi8vd3d3Lm1pY3Jv\r\nc29mdC5jb20vcGtpb3BzL2NlcnRzL01pY3Jvc29mdCUyMEVDQyUyMFJvb3QlMjBDZXJ0aWZpY2F0\r\nZSUyMEF1dGhvcml0eSUyMDIwMTcuY3J0MC0GCCsGAQUFBzABhiFodHRwOi8vb25lb2NzcC5taWNy\r\nb3NvZnQuY29tL29jc3AwcAYDVR0gBGkwZzAIBgZngQwBAgEwCAYGZ4EMAQICMFEGDCsGAQQBgjdM\r\ng30BATBBMD8GCCsGAQUFBwIBFjNodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpb3BzL0RvY3Mv\r\nUmVwb3NpdG9yeS5odG0wCgYIKoZIzj0EAwMDaAAwZQIwGfSjP75G6tGRAEfRAnzF8zX82samzvpm\r\nHzL0nZtkAZbAAl94dP1iB4XNrmJjcSVxAjEA013gOWgrzozfn7vuDKDvI2xo+sQXBCJhagE/gJz8\r\niO6Hk1vZbEK2xVGQc0yBqBlO\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIESTCCA8+gAwIBAgITMwAAACotAGSF/ay/6wAAAAAAKjAKBggqhkjOPQQDAzBlMQswCQYDVQQG\r\nEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQg\r\nRUNDIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MTk1ODM5WhcNMjYw\r\nNjI0MTk1ODM5WjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9u\r\nMSwwKgYDVQQDEyNNaWNyb3NvZnQgRUNDIFRMUyBJc3N1aW5nIEVPQyBDQSAwMTB2MBAGByqGSM49\r\nAgEGBSuBBAAiA2IABOJbIiS8pUiOCaUql10Yl6GbIflaGVxiZRG9Ot/zChiB74DcUfHk/wQXn4CQ\r\nlaml9yi80zVAzt5DlpmJ9nKGPZwAXEEYQ15WqfjuLmKRnUXJA8Z69uql5GUmyna4GnWuI6OCAkkw\r\nggJFMA4GA1UdDwEB/wQEAwIBhjAQBgkrBgEEAYI3FQEEAwIBADAdBgNVHQ4EFgQUuxzt0Ihxqcr7\r\nzZNfcXkiNXjGmsowHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBkGCSsGAQQBgjcUAgQM\r\nHgoAUwB1AGIAQwBBMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0jBBgwFoAUyMuZcnBSDPjmvrIE\r\nVykqz0IQ7TUwcAYDVR0fBGkwZzBloGOgYYZfaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9w\r\ncy9jcmwvTWljcm9zb2Z0JTIwRUNDJTIwUm9vdCUyMENlcnRpZmljYXRlJTIwQXV0aG9yaXR5JTIw\r\nMjAxNy5jcmwwga4GCCsGAQUFBwEBBIGhMIGeMG0GCCsGAQUFBzAChmFodHRwOi8vd3d3Lm1pY3Jv\r\nc29mdC5jb20vcGtpb3BzL2NlcnRzL01pY3Jvc29mdCUyMEVDQyUyMFJvb3QlMjBDZXJ0aWZpY2F0\r\nZSUyMEF1dGhvcml0eSUyMDIwMTcuY3J0MC0GCCsGAQUFBzABhiFodHRwOi8vb25lb2NzcC5taWNy\r\nb3NvZnQuY29tL29jc3AwcAYDVR0gBGkwZzAIBgZngQwBAgEwCAYGZ4EMAQICMFEGDCsGAQQBgjdM\r\ng30BATBBMD8GCCsGAQUFBwIBFjNodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpb3BzL0RvY3Mv\r\nUmVwb3NpdG9yeS5odG0wCgYIKoZIzj0EAwMDaAAwZQIxALsVA16qVCnS2LXK0EFRtQCFStOvrTmi\r\n+aBoWaiCqf6i/m7t3+Uhnxe5bYKhUM/LMAIwOJ1jHlVIe0xLjV6LZQo4eZA/bgQaDwIoUECkuW9D\r\nzwJORmfzm5h1e+oMay+Bb/mm\r\n-----END
+        CERTIFICATE-----\r\n"}],"hoursBetweenBackups":24,"backupRetentionPeriodInHours":24,"prometheusEndpoint":{"ipAddress":"10.0.0.4"},"provisioningState":"Succeeded","repairEnabled":true,"seedNodes":[],"cassandraAuditLoggingEnabled":false,"diagnosticSettingsId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_MANAGED_CASSANDRAALTGUM4VH34TECDKBIUBUZKH6RBKAVUJ3GOSTDZPZYAHGFXN6NJPOY/PROVIDERS/MICROSOFT.DOCUMENTDB/CASSANDRACLUSTERS/CLIGC5WCK2"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '38166'
+      - '58155'
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:45:42 GMT
+      - Mon, 17 Apr 2023 20:40:02 GMT
       pragma:
       - no-cache
       server:
@@ -1206,15 +1206,14 @@ interactions:
       ParameterSetName:
       - -c -g
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2023-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002","name":"cli000002","type":"Microsoft.DocumentDB/cassandraClusters","location":"East
-        US 2","tags":{},"systemData":{"createdBy":"amisi@microsoft.com","createdByType":"User","createdAt":"2022-09-29T18:39:09.9636662Z","lastModifiedBy":"amisi@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2022-09-29T18:39:09.9636662Z"},"identity":{"type":"None"},"properties":{"authenticationMethod":"Cassandra","errors":[],"cassandraVersion":"3.11","clientCertificates":[],"deallocated":false,"delegatedManagementSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004","externalGossipCertificates":[{"pem":"-----BEGIN
-        CERTIFICATE-----\r\nMIICLDCCAdKgAwIBAgIBADAKBggqhkjOPQQDAjB9MQswCQYDVQQGEwJCRTEPMA0G\r\nA1UEChMGR251VExTMSUwIwYDVQQLExxHbnVUTFMgY2VydGlmaWNhdGUgYXV0aG9y\r\naXR5MQ8wDQYDVQQIEwZMZXV2ZW4xJTAjBgNVBAMTHEdudVRMUyBjZXJ0aWZpY2F0\r\nZSBhdXRob3JpdHkwHhcNMTEwNTIzMjAzODIxWhcNMTIxMjIyMDc0MTUxWjB9MQsw\r\nCQYDVQQGEwJCRTEPMA0GA1UEChMGR251VExTMSUwIwYDVQQLExxHbnVUTFMgY2Vy\r\ndGlmaWNhdGUgYXV0aG9yaXR5MQ8wDQYDVQQIEwZMZXV2ZW4xJTAjBgNVBAMTHEdu\r\ndVRMUyBjZXJ0aWZpY2F0ZSBhdXRob3JpdHkwWTATBgcqhkjOPQIBBggqhkjOPQMB\r\nBwNCAARS2I0jiuNn14Y2sSALCX3IybqiIJUvxUpj+oNfzngvj/Niyv2394BWnW4X\r\nuQ4RTEiywK87WRcWMGgJB5kX/t2no0MwQTAPBgNVHRMBAf8EBTADAQH/MA8GA1Ud\r\nDwEB/wQFAwMHBgAwHQYDVR0OBBYEFPC0gf6YEr+1KLlkQAPLzB9mTigDMAoGCCqG\r\nSM49BAMCA0gAMEUCIDGuwD1KPyG+hRf88MeyMQcqOFZD0TbVleF+UsAGQ4enAiEA\r\nl4wOuDwKQa+upc8GftXE2C//4mKANBC6It01gUaTIpo=\r\n-----END
-        CERTIFICATE-----"}],"externalSeedNodes":[{"ipAddress":"127.0.0.1"},{"ipAddress":"127.0.0.2"}],"gossipCertificates":[{"pem":"-----BEGIN
+        US 2","tags":{},"systemData":{"createdBy":"ashwsing@microsoft.com","createdByType":"User","createdAt":"2023-04-17T20:34:29.1880037Z","lastModifiedBy":"ashwsing@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-17T20:34:29.1880037Z"},"identity":{"type":"None"},"properties":{"authenticationMethod":"Cassandra","backupSchedules":[{"scheduleName":"DailyBackup-02:00UTC","cronExpression":"0
+        2 * * *","retentionInHours":48}],"cassandraVersion":"3.11","clientCertificates":[],"deallocated":false,"clusterType":"Production","delegatedManagementSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.Network/virtualNetworks/cli000003/subnets/cli000004","extensions":[],"externalGossipCertificates":[],"externalSeedNodes":[],"gossipCertificates":[{"pem":"-----BEGIN
         CERTIFICATE-----\r\nMIIElDCCA3ygAwIBAgIQAf2j627KdciIQ4tyS8+8kTANBgkqhkiG9w0BAQsFADBhMQswCQYDVQQG\r\nEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSAw\r\nHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBDQTAeFw0xMzAzMDgxMjAwMDBaFw0yMzAzMDgx\r\nMjAwMDBaME0xCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxJzAlBgNVBAMTHkRp\r\nZ2lDZXJ0IFNIQTIgU2VjdXJlIFNlcnZlciBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC\r\nggEBANyuWJBNwcQwFZA1W248ghX1LFy949v/cUP6ZCWA1O4Yok3wZtAKc24RmDYXZK83nf36QYSv\r\nx6+M/hpzTc8zl5CilodTgyu5pnVILR1WN3vaMTIa16yrBvSqXUu3R0bdKpPDkC55gIDvEwRqFDu1\r\nm5K+wgdlTvza/P96rtxcflUxDOg5B6TXvi/TC2rSsd9f/ld0Uzs1gN2ujkSYs58O09rg1/RrKatE\r\np0tYhG2SS4HD2nOLEpdIkARFdRrdNzGXkujNVA075ME/OV4uuPNcfhCOhkEAjUVmR7ChZc6gqikJ\r\nTvOX6+guqw9ypzAO+sf0/RR3w6RbKFfCs/mC/bdFWJsCAwEAAaOCAVowggFWMBIGA1UdEwEB/wQI\r\nMAYBAf8CAQAwDgYDVR0PAQH/BAQDAgGGMDQGCCsGAQUFBwEBBCgwJjAkBggrBgEFBQcwAYYYaHR0\r\ncDovL29jc3AuZGlnaWNlcnQuY29tMHsGA1UdHwR0MHIwN6A1oDOGMWh0dHA6Ly9jcmwzLmRpZ2lj\r\nZXJ0LmNvbS9EaWdpQ2VydEdsb2JhbFJvb3RDQS5jcmwwN6A1oDOGMWh0dHA6Ly9jcmw0LmRpZ2lj\r\nZXJ0LmNvbS9EaWdpQ2VydEdsb2JhbFJvb3RDQS5jcmwwPQYDVR0gBDYwNDAyBgRVHSAAMCowKAYI\r\nKwYBBQUHAgEWHGh0dHBzOi8vd3d3LmRpZ2ljZXJ0LmNvbS9DUFMwHQYDVR0OBBYEFA+AYRyCMWHV\r\nLyjnjUY4tCzhxtniMB8GA1UdIwQYMBaAFAPeUDVW0Uy7ZvCj4hsbw5eyPdFVMA0GCSqGSIb3DQEB\r\nCwUAA4IBAQAjPt9L0jFCpbZ+QlwaRMxp0Wi0XUvgBCFsS+JtzLHgl4+mUwnNqipl5TlPHoOlblyY\r\noiQm5vuh7ZPHLgLGTUq/sELfeNqzqPlt/yGFUzZgTHbO7Djc1lGA8MXW5dRNJ2Srm8c+cftIl7gz\r\nbckTB+6WohsYFfZcTEDts8Ls/3HB40f/1LkAtDdC2iDJ6m6K7hQGrn2iWZiIqBtvLfTyyRRfJs8s\r\njX7tN8Cp1Tm5gr8ZDOo0rwAhaPitc+LJMto4JQtV05od8GiG7S5BNO98pVAdvzr508EIDObtHopY\r\nJeS4d60tbvVS3bR0j6tJLp07kzQoH3jOlOrHvdPJbRzeXDLz\r\n-----END
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIDrzCCApegAwIBAgIQCDvgVpBCRrGhdWrJWZHHSjANBgkqhkiG9w0BAQUFADBhMQswCQYDVQQG\r\nEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSAw\r\nHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBDQTAeFw0wNjExMTAwMDAwMDBaFw0zMTExMTAw\r\nMDAwMDBaMGExCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3\r\ndy5kaWdpY2VydC5jb20xIDAeBgNVBAMTF0RpZ2lDZXJ0IEdsb2JhbCBSb290IENBMIIBIjANBgkq\r\nhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4jvhEXLeqKTTo1eqUKKPC3eQyaKl7hLOllsBCSDMAZOn\r\nTjC3U/dDxGkAV53ijSLdhwZAAIEJzs4bg7/fzTtxRuLWZscFs3YnFo97nh6Vfe63SKMI2tavegw5\r\nBmV/Sl0fvBf4q77uKNd0f3p4mVmFaG5cIzJLv07A6Fpt43C/dxC//AH2hdmoRBBYMql1GNXRor5H\r\n4idq9Joz+EkIYIvUX7Q6hL+hqkpMfT7PT19sdl6gSzeRntwi5m3OFBqOasv+zbMUZBfHWymeMr/y\r\n7vrTC0LUq7dBMtoM1O/4gdW7jVg/tRvoSSiicNoxBN33shbyTApOB6jtSj1etX+jkMOvJwIDAQAB\r\no2MwYTAOBgNVHQ8BAf8EBAMCAYYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUA95QNVbRTLtm\r\n8KPiGxvDl7I90VUwHwYDVR0jBBgwFoAUA95QNVbRTLtm8KPiGxvDl7I90VUwDQYJKoZIhvcNAQEF\r\nBQADggEBAMucN6pIExIK+t1EnE9SsPTfrgT1eXkIoyQY/EsrhMAtudXH/vTBH1jLuG2cenTnmCmr\r\nEbXjcKChzUyImZOMkXDiqw8cvpOp/2PV5Adg06O/nVsJ8dWO41P0jmP6P6fbtGbfYmbW0W5BjfIt\r\ntep3Sp+dWOIrWcBAI+0tKIJFPnlUkiaY4IBIqDfv8NZ5YBberOgOzW6sRBc4L0na4UU+Krk2U886\r\nUAb3LujEV0lsYSEY1QSteDwsOoBrp+uvFRTp2InBuThs4pFsiv9kuXclVzDAGySj4dzp30d8tbQk\r\nCAUw7C29C79Fv1C5qfPrmAESrciIxpg0X40KPMbp1ZWVbd4=\r\n-----END
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIE6DCCA9CgAwIBAgIQAnQuqhfKjiHHF7sf/P0MoDANBgkqhkiG9w0BAQsFADBhMQswCQYDVQQG\r\nEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSAw\r\nHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBDQTAeFw0yMDA5MjMwMDAwMDBaFw0zMDA5MjIy\r\nMzU5NTlaME0xCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxJzAlBgNVBAMTHkRp\r\nZ2lDZXJ0IFNIQTIgU2VjdXJlIFNlcnZlciBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC\r\nggEBANyuWJBNwcQwFZA1W248ghX1LFy949v/cUP6ZCWA1O4Yok3wZtAKc24RmDYXZK83nf36QYSv\r\nx6+M/hpzTc8zl5CilodTgyu5pnVILR1WN3vaMTIa16yrBvSqXUu3R0bdKpPDkC55gIDvEwRqFDu1\r\nm5K+wgdlTvza/P96rtxcflUxDOg5B6TXvi/TC2rSsd9f/ld0Uzs1gN2ujkSYs58O09rg1/RrKatE\r\np0tYhG2SS4HD2nOLEpdIkARFdRrdNzGXkujNVA075ME/OV4uuPNcfhCOhkEAjUVmR7ChZc6gqikJ\r\nTvOX6+guqw9ypzAO+sf0/RR3w6RbKFfCs/mC/bdFWJsCAwEAAaOCAa4wggGqMB0GA1UdDgQWBBQP\r\ngGEcgjFh1S8o541GOLQs4cbZ4jAfBgNVHSMEGDAWgBQD3lA1VtFMu2bwo+IbG8OXsj3RVTAOBgNV\r\nHQ8BAf8EBAMCAYYwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBIGA1UdEwEB/wQIMAYB\r\nAf8CAQAwdgYIKwYBBQUHAQEEajBoMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5j\r\nb20wQAYIKwYBBQUHMAKGNGh0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEdsb2Jh\r\nbFJvb3RDQS5jcnQwewYDVR0fBHQwcjA3oDWgM4YxaHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0Rp\r\nZ2lDZXJ0R2xvYmFsUm9vdENBLmNybDA3oDWgM4YxaHR0cDovL2NybDQuZGlnaWNlcnQuY29tL0Rp\r\nZ2lDZXJ0R2xvYmFsUm9vdENBLmNybDAwBgNVHSAEKTAnMAcGBWeBDAEBMAgGBmeBDAECATAIBgZn\r\ngQwBAgIwCAYGZ4EMAQIDMA0GCSqGSIb3DQEBCwUAA4IBAQB3MR8Il9cSm2PSEWUIpvZlubj6kgPL\r\noX7hyA2MPrQbkb4CCF6fWXF7Ef3gwOOPWdegUqHQS1TSSJZI73fpKQbLQxCgLzwWji3+HlU87MOY\r\n7hgNI+gH9bMtxKtXc1r2G1O6+x/6vYzTUVEgR17vf5irF0LKhVyfIjc0RXbyQ14AniKDrN+v0ebH\r\nExfppGlkTIBn6rakf4994VH6npdn6mkus5CkHBXIrMtPKex6XF2firjUDLuU7tC8y7WlHgjPxEED\r\nDb0Gw6D0yDdVSvG/5XlCNatBmO/8EznDu1vr72N8gJzISUZwa6CCUD7QBLbKJcXBBVVf8nwvV9Gv\r\nlW+sbXlr\r\n-----END
@@ -1236,16 +1235,26 @@ interactions:
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIEFzCCAv+gAwIBAgIQB/LzXIeod6967+lHmTUlvTANBgkqhkiG9w0BAQwFADBhMQswCQYDVQQG\r\nEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSAw\r\nHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBDQTAeFw0yMTA0MTQwMDAwMDBaFw0zMTA0MTMy\r\nMzU5NTlaMFYxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxMDAuBgNVBAMTJ0Rp\r\nZ2lDZXJ0IFRMUyBIeWJyaWQgRUNDIFNIQTM4NCAyMDIwIENBMTB2MBAGByqGSM49AgEGBSuBBAAi\r\nA2IABMEbxppbmNmkKaDp1AS12+umsmxVwP/tmMZJLwYnUcu/cMEFesOxnYeJuq20ExfJqLSDyLiQ\r\n0cx0NTY8g3KwtdD3ImnI8YDEe0CPz2iHJlw5ifFNkU3aiYvkA8ND5b8vc6OCAYIwggF+MBIGA1Ud\r\nEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFAq8CCkXjKU5bXoOzjPHLrPt+8N6MB8GA1UdIwQYMBaA\r\nFAPeUDVW0Uy7ZvCj4hsbw5eyPdFVMA4GA1UdDwEB/wQEAwIBhjAdBgNVHSUEFjAUBggrBgEFBQcD\r\nAQYIKwYBBQUHAwIwdgYIKwYBBQUHAQEEajBoMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdp\r\nY2VydC5jb20wQAYIKwYBBQUHMAKGNGh0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2Vy\r\ndEdsb2JhbFJvb3RDQS5jcnQwQgYDVR0fBDswOTA3oDWgM4YxaHR0cDovL2NybDMuZGlnaWNlcnQu\r\nY29tL0RpZ2lDZXJ0R2xvYmFsUm9vdENBLmNybDA9BgNVHSAENjA0MAsGCWCGSAGG/WwCATAHBgVn\r\ngQwBATAIBgZngQwBAgEwCAYGZ4EMAQICMAgGBmeBDAECAzANBgkqhkiG9w0BAQwFAAOCAQEAR1mB\r\nf9QbH7Bx9phdGLqYR5iwfnYr6v8ai6wms0KNMeZK6BnQ79oU59cUkqGS8qcuLa/7Hfb7U7CKP/zY\r\nFgrpsC62pQsYkDUmotr2qLcy/JUjS8ZFucTP5Hzu5sn4kL1y45nDHQsFfGqXbbKrAjbYwrwsAZI/\r\nBKOLdRHHuSm8EdCGupK8JvllyDfNJvaGEwwEqonleLHBTnm8dqMLUeTF0J5q/hosVq4GNiejcxwI\r\nfZMy0MJEGdqN9A57HSgDKwmKdsp33Id6rHtSJlWncg+d0ohP/rEhxRqhqjn1VtvChMQ1H3Dau0bw\r\nhr9kAMQ+959GG50jBbl9s08PqUU643QwmA==\r\n-----END
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIFrTCCBJWgAwIBAgIQB9JqWPDx4GjFlGd8ZBuA+DANBgkqhkiG9w0BAQsFADBaMQswCQYDVQQG\r\nEwJJRTESMBAGA1UEChMJQmFsdGltb3JlMRMwEQYDVQQLEwpDeWJlclRydXN0MSIwIAYDVQQDExlC\r\nYWx0aW1vcmUgQ3liZXJUcnVzdCBSb290MB4XDTIyMDQwNzAwMDAwMFoXDTI1MDUxMTIzNTk1OVow\r\nSjELMAkGA1UEBhMCVVMxHjAcBgNVBAoTFU1pY3Jvc29mdCBDb3Jwb3JhdGlvbjEbMBkGA1UEAxMS\r\nTVNGVCBCQUxUIFJTMjU2IENBMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwTgQW2vE\r\ntqjPda6g6ZwoqAqb1mdoiFEqeYB8nex6Y0mSgW8NnF4C+MiF1MCFjSlWYgkIVycQ4E86g7znUL1u\r\nVdkEol39U6UiogypLAsQh58fDe7goJrTE36BfQBeS9qx/rvfUPv/PhR74miZsc7nOUsaoMMS76LN\r\nymDhXD+imVseHynsmN2D2AJQZ/7nompXsn/NHIdQF2hqFdLqb6tanGSZuCqCvnf9kJ7RNQipq8lo\r\nzQhWSIQu6tQh2Rs+1iv2wEH7XJgSq8rcsnk4qI9uzfcvhPUNwU14a2rtnahcfUBHrjsaCsB7Ubgj\r\nqi+s9j3POkBCcBDW4x84kAwhpGNYIp1abupXdBPPZYZ6VI3ViA9xeoql/ig8tlGLHsalfYb69Hbm\r\nMGdrwDYmf4YIuLmWSBBynmOJUcNSaDSEtKxERNwcUHzrrp9A9SaC4eg8ZK6J5R5mbVr5eegELzWT\r\nvPtXjiCXlfDvpr+PXLchwEkV3xjymdZd7eq+NmaSafY5mCm/C/KF5eQOhgaXomERa2brYyUazJPQ\r\nzoyHwFOdKpfNINqRg+TnzwXoapbZzVXdquafgUYuHOa28T8/nv85tV20kxQMUy+ICV4anHsAibEp\r\nzgLuDV1Cl9CpoDMOL7fFYOpKXn/zLAG5ZyWW6h426JHq5SKWV4z4utoSDiqMGsZpL1UCAwEAAaOC\r\nAX0wggF5MBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFEa78CwfKmRLIeiu3crbctSqIShc\r\nMB8GA1UdIwQYMBaAFOWdWTCCR1jMrPoIVDaGezq1BE3wMA4GA1UdDwEB/wQEAwIBhjAdBgNVHSUE\r\nFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIweQYIKwYBBQUHAQEEbTBrMCQGCCsGAQUFBzABhhhodHRw\r\nOi8vb2NzcC5kaWdpY2VydC5jb20wQwYIKwYBBQUHMAKGN2h0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0\r\nLmNvbS9CYWx0aW1vcmVDeWJlclRydXN0Um9vdC5jcnQwOgYDVR0fBDMwMTAvoC2gK4YpaHR0cDov\r\nL2NybDMuZGlnaWNlcnQuY29tL09tbmlyb290MjAyNS5jcmwwPQYDVR0gBDYwNDALBglghkgBhv1s\r\nAgEwBwYFZ4EMAQEwCAYGZ4EMAQIBMAgGBmeBDAECAjAIBgZngQwBAgMwDQYJKoZIhvcNAQELBQAD\r\nggEBADOP/3F1jZdadZfbmTfTRjJXHHjisxhiFlVL87cG9PLYIgn5E3xfuGKBnaGXnfdGlPBQuwB2\r\nlKIUA1/JuE5CYF//6Kpa087EDV+Vn3pJ04VkIibNi48Efjs6ROSWPeSd/CzqXB15LbeLB8v7tm4f\r\nsD7CRhERJJUfVkGP8s9249cy7V63SovqP6EYQhFxP0lwJUbzhmMNx37mjnK9dMiKhNKhGQ2KUBdH\r\n/NuiuBL11h2mFowSiuNq6sGBNv9JwwKBHQQ05jhzxXEJiw9lcCYg+2yIk5p6IY4ArdAwi4oZ4knE\r\noyyUmOQy/MkTEdsSptaEbOoBncTBFX2YkXulNYTPyz4=\r\n-----END
         CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIEtjCCA56gAwIBAgIQCv1eRG9c89YADp5Gwibf9jANBgkqhkiG9w0BAQsFADBhMQswCQYDVQQG\r\nEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSAw\r\nHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBHMjAeFw0yMjA0MjgwMDAwMDBaFw0zMjA0Mjcy\r\nMzU5NTlaMEcxCzAJBgNVBAYTAlVTMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xGDAW\r\nBgNVBAMTD01TRlQgUlMyNTYgQ0EtMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMiJ\r\nV34oeVNHI0mZGh1Rj9mdde3zSY7IhQNqAmRaTzOeRye8QsfhYFXSiMW25JddlcqaqGJ9GEMcJPWB\r\nIBIEdNVYl1bB5KQOl+3m68p59Pu7npC74lJRY8F+p8PLKZAJjSkDD9ExmjHBlPcRrasgflPom3D0\r\nXB++nB1y+WLn+cB7DWLoj6qZSUDyWwnEDkkjfKee6ybxSAXq7oORPe9o2BKfgi7dTKlOd7eKhotw\r\n96yIgMx7yigE3Q3ARS8m+BOFZ/mx150gdKFfMcDNvSkCpxjVWnk//icrrmmEsn2xJbEuDCvtoSNv\r\nGIuCXxqhTM352HGfO2JKAF/Kjf5OrPn2QpECAwEAAaOCAYIwggF+MBIGA1UdEwEB/wQIMAYBAf8C\r\nAQAwHQYDVR0OBBYEFAyBfpQ5X8d3on8XFnk46DWWjn+UMB8GA1UdIwQYMBaAFE4iVCAYlebjbuYP\r\n+vq5Eu0GF485MA4GA1UdDwEB/wQEAwIBhjAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIw\r\ndgYIKwYBBQUHAQEEajBoMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wQAYI\r\nKwYBBQUHMAKGNGh0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEdsb2JhbFJvb3RH\r\nMi5jcnQwQgYDVR0fBDswOTA3oDWgM4YxaHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0\r\nR2xvYmFsUm9vdEcyLmNybDA9BgNVHSAENjA0MAsGCWCGSAGG/WwCATAHBgVngQwBATAIBgZngQwB\r\nAgEwCAYGZ4EMAQICMAgGBmeBDAECAzANBgkqhkiG9w0BAQsFAAOCAQEAdYWmf+ABklEQShTbhGPQ\r\nmH1c9BfnEgUFMJsNpzo9dvRj1Uek+L9WfI3kBQn97oUtf25BQsfckIIvTlE3WhA2Cg2yWLTVjH0N\r\ny03dGsqoFYIypnuAwhOWUPHAu++vaUMcPUTUpQCbeC1h4YW4CCSTYN37D2Q555wxnni0elPj9O0p\r\nymWS8gZnsfoKjvoYi/qDPZw1/TSRpenOgI6XjmlmPLBrk4LIw7P7PPg4uXUpCzzeybvARG/NIIkF\r\nv1eRYIbDF+bIkZbJQFdB9BjjlA4ukAg2YkOyCiB8eXTBi2APaceh3+uBLIgLk8ysy52g2U3gP7Q2\r\n6Jlgq/xKzj3O9hFh/g==\r\n-----END
-        CERTIFICATE-----\r\n"}],"hoursBetweenBackups":24,"backupRetentionPeriodInHours":24,"prometheusEndpoint":{"ipAddress":"10.0.0.4"},"provisioningState":"Succeeded","repairEnabled":true,"seedNodes":[],"cassandraAuditLoggingEnabled":false,"diagnosticSettingsId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_MANAGED_CASSANDRAZONPOEFCHTCLFT3WFICTCTLV27SOZS46IPJ6SYLA5BUKXXBLHN75QR/PROVIDERS/MICROSOFT.DOCUMENTDB/CASSANDRACLUSTERS/CLIUO2KRQ2"}}'
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIHmDCCBYCgAwIBAgITMwAAAC/68G9ml+JGnAAAAAAALzANBgkqhkiG9w0BAQwFADBlMQswCQYD\r\nVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3Nv\r\nZnQgUlNBIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MjA1NzM1WhcN\r\nMjYwNjI0MjA1NzM1WjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0\r\naW9uMSwwKgYDVQQDEyNNaWNyb3NvZnQgUlNBIFRMUyBJc3N1aW5nIEFPQyBDQSAwMTCCAiIwDQYJ\r\nKoZIhvcNAQEBBQADggIPADCCAgoCggIBAKAYz8zB6I+LeiWYURf1QUaISydvRgxWfcc6UvEiwvry\r\nj2UsRfFuREo2ErLTvP9qQ9E0YBTyWEqI2TXn4jo2uZ2cpGODiQQWlixeaAFcYgSqLzidFXj401vz\r\nQsz4E0zylD/ZeY+xkQ6xrdg5312x2u2Ap7AWLzqolZHZgR0aicn9gcO6M4qn6Uuge8mOve1N7U6j\r\n8ebhSiw0KlkzY9ha1Kvrez+NXQdeLC+VPDWPPPlBWeysTnIM6dusbV1v2/C7Ooz9TuGb8wiXRriP\r\npI7+igSIPqBebF00rHGJDmx9eN3g78VF9JpTrrRkV8alpMYVZKAh9IzMp9NWVZsw5wgZaX2W05Sa\r\nXkSHP3zROBANhKzwkBkCcDMbmF1LFOk+wgkcEtFlKEnfgvOQVHTp02gTzyhSxstw0buon4CyZAm1\r\nL+6bJJ+puNL8HuLTJxq1mqiaY0T50olJeySSX5uJBo/l29Pz+0WjANnhRLVqe5xdxPV11QGHDxnv\r\nsXaMgC4y/5sLo5v4UEZT+4VDcKiRHReusJD+kUt92FSYqWTKxs6zwuxf25as/rJbZT99o9QVFLfH\r\nEs6DgHKNIqQuVxZxH0T3M6XqfmnRTo1FrD8ip/93Q4zQta5S9whe/sAxpizwyMw/9fhBDHGVHfgF\r\nV1C0EP9zxkyHEya0CGAMhbzp+0Y/ZYxrAgMBAAGjggJJMIICRTAOBgNVHQ8BAf8EBAMCAYYwEAYJ\r\nKwYBBAGCNxUBBAMCAQAwHQYDVR0OBBYEFOtMMXw9PzK4g9fF23va5HjanBRXMB0GA1UdJQQWMBQG\r\nCCsGAQUFBwMBBggrBgEFBQcDAjAZBgkrBgEEAYI3FAIEDB4KAFMAdQBiAEMAQTASBgNVHRMBAf8E\r\nCDAGAQH/AgEAMB8GA1UdIwQYMBaAFAnLWX+GsnCPGsM548DZ6b+7TbIjMHAGA1UdHwRpMGcwZaBj\r\noGGGX2h0dHA6Ly93d3cubWljcm9zb2Z0LmNvbS9wa2lvcHMvY3JsL01pY3Jvc29mdCUyMFJTQSUy\r\nMFJvb3QlMjBDZXJ0aWZpY2F0ZSUyMEF1dGhvcml0eSUyMDIwMTcuY3JsMIGuBggrBgEFBQcBAQSB\r\noTCBnjBtBggrBgEFBQcwAoZhaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9wcy9jZXJ0cy9N\r\naWNyb3NvZnQlMjBSU0ElMjBSb290JTIwQ2VydGlmaWNhdGUlMjBBdXRob3JpdHklMjAyMDE3LmNy\r\ndDAtBggrBgEFBQcwAYYhaHR0cDovL29uZW9jc3AubWljcm9zb2Z0LmNvbS9vY3NwMHAGA1UdIARp\r\nMGcwCAYGZ4EMAQIBMAgGBmeBDAECAjBRBgwrBgEEAYI3TIN9AQEwQTA/BggrBgEFBQcCARYzaHR0\r\ncDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9wcy9Eb2NzL1JlcG9zaXRvcnkuaHRtMA0GCSqGSIb3\r\nDQEBDAUAA4ICAQAkucWkMrgs2ahYrG7y4sY2yZno4f9TGyk7p+Srg4Yz/g7LmVeyOob9o579Omw9\r\nAiyeDK8Y/dXnTTof+sKJrlNTpIzyEBkzCiGGkWtp7x2yxLCm12L65wtmD/6OAV9Bm1kOhf3p7v+d\r\n3gtFt7cw46W35lr+fguy62s7uuytTV9hfhQ0pp2E2E9F6B7U71jR4bC+6zGq+34AmqTirjKHwXOh\r\nWDRDpEJIkaFAh+qdz/nqJktZj3n5GdC94jfWrMUJjClGjlc4+Ws3AxN46oFpx8oIXDG9wIPfFhUf\r\n0SdnCYJL8TD5+qBNp0H5q/V2R31Wi8rijHGQ4CxHqzP5VJbjgvRQgxAp39BrmLQ+JSvf9e5VqQqa\r\nH4NYgpB1WObq12B73BJHjBOvpRrULFjPqDW8sPRBzBTRXkXOPEdZbzQj6O/CWEFsg6ilO4thk3n3\r\ndrb9FEJjVh9uGtRXV6Ea5bNaPvJppZNXb7M9mORk3mddx/K1FgOETQE3quh+mU4ojbSRUWMVmjcb\r\n6bKF5oQd+Q0do4yaEIfH1oVnIas/FIE/xu3Z4fvBs0qdiNLCeNT6uS26vqD2PEvVlFWb683Do3Ls\r\n59MMCxhy6Erb7kFQgu1oUWXGFhbMQkeLN4TXGi6X3loXYfING9omnWa/udxvPRwAZmcHU2l2W8cw\r\nVXiy6uucsh3kPQ==\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIFqDCCA5CgAwIBAgIQHtOXCV/YtLNHcB6qvn9FszANBgkqhkiG9w0BAQwFADBlMQswCQYDVQQG\r\nEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQg\r\nUlNBIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMTkxMjE4MjI1MTIyWhcNNDIw\r\nNzE4MjMwMDIzWjBlMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9u\r\nMTYwNAYDVQQDEy1NaWNyb3NvZnQgUlNBIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcw\r\nggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDKW76UM4wplZEWCpW9R2LBifOZNt9GkMml\r\n7Xhqb0eRaPgnZ1AzHaGm++DlQ6OEAlcBXZxIQIJTELy/xztokLaCLeX0ZdDMbRnMlfl7rEqUrQ7e\r\nS0MdhweSE5CAg2Q1OQT85elss7YfUJQ4ZVBcF0a5toW1HLUX6NZFndiyJrDKxHBKrmCk3bPZ7Pw7\r\n1VdyvD/IybLeS2v4I2wDwAW9lcfNcztmgGTjGqwu+UcF8ga2m3P1eDNbx6H7JyqhtJqRjJHTOoI+\r\ndkC0zVJhUXAoP8XFWvLJjEm7FFtNyP9nTUwSlq31/niol4fX/V4ggNyhSyL71Imtus5Hl0dVe49F\r\nyGcohJUcaDDv70ngNXtk55iwlNpNhTs+VcQor1fznhPbRiefHqJeRIOkpcrVE7NLP8TjwuaGYaRS\r\nMLl6IE9vDzhTyzMMEyuP1pq9KsgtsRx9S1HKR9FIJ3Jdh+vVReZIZZ2vUpC6W6IYZVcSn2i51BVr\r\nlMRpIpj0M+Dt+VGOQVDJNE92kKz8OMHY4Xu54+OU4UZpyw4KUGsTuqwPN1q3ErWQgR5WrlcihtnJ\r\n0tHXUeOrO8ZV/R4O03QK0dqq6mm4lyiPSMQH+FJDOvTKVTUssKZqwJz58oHhEmrARdlns87/I6KJ\r\nClTUFLkqqNfs+avNJVgyeY+QW5g5xAgGwax/Dj0ApQIDAQABo1QwUjAOBgNVHQ8BAf8EBAMCAYYw\r\nDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUCctZf4aycI8awznjwNnpv7tNsiMwEAYJKwYBBAGC\r\nNxUBBAMCAQAwDQYJKoZIhvcNAQEMBQADggIBAKyvPl3CEZaJjqPnktaXFbgToqZCLgLNFgVZJ8og\r\n6Lq46BrsTaiXVq5lQ7GPAJtSzVXNUzltYkyLDVt8LkS/gxCP81OCgMNPOsduET/m4xaRhPtthH80\r\ndK2Jp86519efhGSSvpWhrQlTM93uCupKUY5vVau6tZRGrox/2KJQJWVggEbbMwSubLWYdFQl3JPk\r\n+ONVFT24bcMKpBLBaYVu32TxU5nhSnUgnZUP5NbcA/FZGOhHibJXWpS2qdgXKxdJ5XbLwVaZOjex\r\n/2kskZGT4d9Mozd2TaGf+G0eHdP67Pv0RR0Tbc/3WeUiJ3IrhvNXuzDtJE3cfVa7o7P4NHmJweDy\r\nAmH3pvwPuxwXC65B2Xy9J6P9LjrRk5Sxcx0ki69bIImtt2dmefU6xqaWM/5TkshGsRGRxpl/j8nW\r\nZjEgQRCHLQzWwa80mMpkg/sTV9HB8Dx6jKXB/ZUhoHHBk2dxEuqPiAppGWSZI1b7rCoucL5mxAyE\r\n7+WL85MB+GqQk2dLsmijtWKP6T+MejteD+eMuMZ87zf9dOLITzNy4ZQ5bb0Sr74MTnB8G2+NszKT\r\nc0QWbej09+CVgI+WXTik9KveCjCHk9hNAHFiRSdLOkKEW39lt2c0Ui2cFmuqqNh7o0JMcccMyj6D\r\n5KbvtwEwXlGjefVwaaZBRA+GsCyRxj3qrg+E\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIHmDCCBYCgAwIBAgITMwAAADJETXUhNBSWqQAAAAAAMjANBgkqhkiG9w0BAQwFADBlMQswCQYD\r\nVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3Nv\r\nZnQgUlNBIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MjA1NzQwWhcN\r\nMjYwNjI0MjA1NzQwWjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0\r\naW9uMSwwKgYDVQQDEyNNaWNyb3NvZnQgUlNBIFRMUyBJc3N1aW5nIEVPQyBDQSAwMjCCAiIwDQYJ\r\nKoZIhvcNAQEBBQADggIPADCCAgoCggIBAL28YfGMKaaA3aFSX4S0CqcMBgt6nWcNV3mlKE9XH2yi\r\nEQJf3xOAW+22DPRcbpjMkfj7m88h4GbKblK2VTyhjdHDCnHwi7f1Q5zY/H8XWLqiPYfKPAuq53QD\r\n5o5wPjyfMCouFwOzEkUBAN7xlpkiRkN0G4OI2miP3Jx7GecbmyqJnbdL6C84iKH4j8PN10KNLtTR\r\na6W0LjZHEQFoIrIQ/+VqXpBW/AoSGek6+anEZkRBtZ5AxRV0P/aQXhE5+Mxiv18T3aYXB5+cImcx\r\ncWXIlITDydAYO+P8RgM2PZ95QjUagR33+4zkoopss/XH0FtdjmdTLa9pyXXIFjy94jnqZbo1sGgF\r\nVyFx2vdcnk0ssH8VbS20amKsRsbhBfVaFQX1j0KRgepL+KW50EYhoTXEiB7TgT7agqpDivWJ5o5s\r\n7f9/YrHi/+gNQLyVdsvBovL6N6lzjXpy0wTlQv+IIHwzDu7mRu+aFR+gwsB/LF+VtTtxbK3l9deI\r\nqikgyRrQHcjFhkeF26R9bmgPgV4vGOEJBlctLiJ29Ihiy4y00tu346bSnvxDGSxKHQz+KE4fTYyR\r\n/XgIasIUwmW12sB6NhdkCJTE9KBPrN3tWzaiPNvKnvcGG2vZ2jXvmBOXsq46R9iiQ6e3ywU9+lLe\r\nOeXMvMeIxSUCEX89F1vL4+vwe9/CIf6BAgMBAAGjggJJMIICRTAOBgNVHQ8BAf8EBAMCAYYwEAYJ\r\nKwYBBAGCNxUBBAMCAQAwHQYDVR0OBBYEFMmEljhzpi5LGGptRNWUo300psf3MB0GA1UdJQQWMBQG\r\nCCsGAQUFBwMBBggrBgEFBQcDAjAZBgkrBgEEAYI3FAIEDB4KAFMAdQBiAEMAQTASBgNVHRMBAf8E\r\nCDAGAQH/AgEAMB8GA1UdIwQYMBaAFAnLWX+GsnCPGsM548DZ6b+7TbIjMHAGA1UdHwRpMGcwZaBj\r\noGGGX2h0dHA6Ly93d3cubWljcm9zb2Z0LmNvbS9wa2lvcHMvY3JsL01pY3Jvc29mdCUyMFJTQSUy\r\nMFJvb3QlMjBDZXJ0aWZpY2F0ZSUyMEF1dGhvcml0eSUyMDIwMTcuY3JsMIGuBggrBgEFBQcBAQSB\r\noTCBnjBtBggrBgEFBQcwAoZhaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9wcy9jZXJ0cy9N\r\naWNyb3NvZnQlMjBSU0ElMjBSb290JTIwQ2VydGlmaWNhdGUlMjBBdXRob3JpdHklMjAyMDE3LmNy\r\ndDAtBggrBgEFBQcwAYYhaHR0cDovL29uZW9jc3AubWljcm9zb2Z0LmNvbS9vY3NwMHAGA1UdIARp\r\nMGcwCAYGZ4EMAQIBMAgGBmeBDAECAjBRBgwrBgEEAYI3TIN9AQEwQTA/BggrBgEFBQcCARYzaHR0\r\ncDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9wcy9Eb2NzL1JlcG9zaXRvcnkuaHRtMA0GCSqGSIb3\r\nDQEBDAUAA4ICAQCdEQ+ePCPMaq87pCqCJKdniTeRKIYI/jv15KRw89WoYi7H+XWz8v2MawuffAuF\r\n/LS+CKq9pIh2RlR7oLeymU6ZKQ+HKLDNkKAyEbSqvVjg0sQGOYDNu1SIOwywkZFLowWtzetCOzhN\r\nE/ujq2H0Lz6biPK7cgK+2afg5iJfy2N9bftR7MKV1jcidk5JbMyMJWPnHirS4erYiQymmvive2mr\r\njewZAykUkqTuGtNuumnQtaDm+aW7c+SJkn7uhTavShnLZeH8LfA5+I+obJg22ZNvg5KSQ0Sglsi2\r\n0uSuVnzAvIjaOvWlIxcBnhLIKuxUChPcT9+3shfmvEa0iJEArOI8m9YJ4H54Xu0sI6VVdSQA23BW\r\nkA6uLQU9EPzJ+oSAumXUXKV/MeHmU3iai2Guf1EMf3JdaIdGlAU9o/seIUa/Ht98xo7oao8Ge/kT\r\nQG0IQTGUhIloQzjMALlNrcmekKVwVTFTVKEWil1XKckDWr0UaeTghY2YXItR8qznKNPIwCKOiEYy\r\npQ05uZRpTT5YmBR28/ffac8OLr1avAlK8N52nkg319gMYbtwkjpjCitTnZkmis8LDfafRxq+DD0R\r\nsLbH1B6Ajbthiz6KN3GnG6GpNw2vuKVYohLQ2of+f2f/cMwjFU79PQGL7+70lverGFlpuhcdt7XZ\r\nEzawCYwdiBi+KA==\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIHmDCCBYCgAwIBAgITMwAAADDHVsyI9cHn6wAAAAAAMDANBgkqhkiG9w0BAQwFADBlMQswCQYD\r\nVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3Nv\r\nZnQgUlNBIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MjA1NzM3WhcN\r\nMjYwNjI0MjA1NzM3WjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0\r\naW9uMSwwKgYDVQQDEyNNaWNyb3NvZnQgUlNBIFRMUyBJc3N1aW5nIEFPQyBDQSAwMjCCAiIwDQYJ\r\nKoZIhvcNAQEBBQADggIPADCCAgoCggIBALMPi6Bpg5qJHcamm8fFfU2hj27RSRFp614v82PPoLeK\r\neJwRetr+Up5NAi7FN1EO/zu9b4TU4i7HRaDKnVrPMQdWkh5BcKQxicpXgnMvN0FRtMA7Bo7WVTJz\r\nw6THkB88ARRYlQz9HdctBd+AfL27oWZ9MJo2lJ8v+3jxj3BMaKbiYVLmabDn/Arm5J7ThYaRduhy\r\nu22/kMFtVk5bqhg+jg7GPvdCaLnRuV1SvEdb+ZkQ8dT/bEWYugnoDfX8x10b+jFT1G1wpnNK7bWM\r\nU3NVJL1y8h7/ZNBNloyjqdrn0NeUdaqp95EI6ER5CRpGyNq7/tCjr2vhJIumZzr+abEZfBq6ML2m\r\ngoa83jwcR6xMkmSOwPeE7F6MlVN5MrTx1Fco3VMIrzOLfzwUkZ2385grAjY7S10olouk//xOwo7c\r\nkVTZKVBlL2jAtDVXCYwrTPdyx9SLfJrYVAN+kfa1wqR4/I7xgK6gXhf+Gn5PBktIYiY7QX7Q/CdF\r\nrSFIKrZOWyqj9okUC+pMOu7AKbQHeBJDz//UsS7cxkCzptBPmta5AH69PlgJdZEFYOFT8PHfF/EF\r\nbIlHwP+vyKzg1EMnRsCB5tt4RZ8Bw44Md6mtR5PYbSBGnQFxcr6BBZJl6cVdQZGzk6FvoYM3uhQV\r\nrxBEbVUfBweskghG+kyBd0fAB3ZshGJ5AgMBAAGjggJJMIICRTAOBgNVHQ8BAf8EBAMCAYYwEAYJ\r\nKwYBBAGCNxUBBAMCAQAwHQYDVR0OBBYEFIqWwoENV4pCzjD5uMGdDB5Tpk/lMB0GA1UdJQQWMBQG\r\nCCsGAQUFBwMBBggrBgEFBQcDAjAZBgkrBgEEAYI3FAIEDB4KAFMAdQBiAEMAQTASBgNVHRMBAf8E\r\nCDAGAQH/AgEAMB8GA1UdIwQYMBaAFAnLWX+GsnCPGsM548DZ6b+7TbIjMHAGA1UdHwRpMGcwZaBj\r\noGGGX2h0dHA6Ly93d3cubWljcm9zb2Z0LmNvbS9wa2lvcHMvY3JsL01pY3Jvc29mdCUyMFJTQSUy\r\nMFJvb3QlMjBDZXJ0aWZpY2F0ZSUyMEF1dGhvcml0eSUyMDIwMTcuY3JsMIGuBggrBgEFBQcBAQSB\r\noTCBnjBtBggrBgEFBQcwAoZhaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9wcy9jZXJ0cy9N\r\naWNyb3NvZnQlMjBSU0ElMjBSb290JTIwQ2VydGlmaWNhdGUlMjBBdXRob3JpdHklMjAyMDE3LmNy\r\ndDAtBggrBgEFBQcwAYYhaHR0cDovL29uZW9jc3AubWljcm9zb2Z0LmNvbS9vY3NwMHAGA1UdIARp\r\nMGcwCAYGZ4EMAQIBMAgGBmeBDAECAjBRBgwrBgEEAYI3TIN9AQEwQTA/BggrBgEFBQcCARYzaHR0\r\ncDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9wcy9Eb2NzL1JlcG9zaXRvcnkuaHRtMA0GCSqGSIb3\r\nDQEBDAUAA4ICAQCKnn44AnDZSahvJeSdxx3trgl8XI+IiQ/+O9Uj55D32IO8PN2AWoSDhmgiWXyw\r\nN3WdM6HrJoJAaJgiZitql68aNdqcW2VILRdvNdWj25may+YQY4GIfAmrfLEHJXLZNljfOi+BvLS7\r\nRyk2fmNx6E2Pi8+ZGWwJeBVpfHuFsWG2gmiD3ZpTryOPZLs2+nwiHTmnwUQRp4jX5Zxq3d6Ee/Zp\r\nPNO0u0SAJ4fE5WXiec1uzpbcAtziMG1weo3fW4apTHffzdzuJ/VSoQSgcvCko/SYLthxNYVDyA9D\r\nbYJPLAiVkaqQXOMl39BD/cD8DrOrAoTA/M1Sdx9G+gcXtXkgBa1wLzQ3vaKysOyRuBsIXvjyU8oe\r\n7iEX9N3JAe8qqSZVgqtyb5x/st23PzdnfeH95ExT/EyQevOIN9mfTCs0ywkU2A1ruL/wgHhKl5AK\r\n2aEzdoYqcueYG0BZxCcc4jWUaKwKpLXk1xP+EALGgJnSrPaqwOIGRu5s7ER5ZMkrKEQQDboa83Pz\r\nyIXeKWyLyiqztRZ4KZTmIbe5le4u+QWhPZ57Hv4BP6HKH+R41Fy5iXq7oXNeW9d9dumNzsk1rKow\r\n+LkotQfC9Owgoi4+aZpLW9lrwt3n41hfHu5GlNhv0f3J1XQFoimVPqas7J793+QfvhL9weeouO4m\r\nRj8ZD6RQFn5qjA==\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIHmDCCBYCgAwIBAgITMwAAADEMSRSxjI8zmgAAAAAAMTANBgkqhkiG9w0BAQwFADBlMQswCQYD\r\nVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3Nv\r\nZnQgUlNBIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MjA1NzM5WhcN\r\nMjYwNjI0MjA1NzM5WjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0\r\naW9uMSwwKgYDVQQDEyNNaWNyb3NvZnQgUlNBIFRMUyBJc3N1aW5nIEVPQyBDQSAwMTCCAiIwDQYJ\r\nKoZIhvcNAQEBBQADggIPADCCAgoCggIBAL7Z8OMcWj3FKKBLKIQ2CBoe0HICBLmagHZmQpECgsmD\r\nRXqA6QcLQPzwZUvQLUvRITLaGshy0zuL27fT9hD0YRFFQyUcVDVWVyOaChL0H2Lhsie3nnKe2ivo\r\nenWrPx00CSU9ONVlyihtur7Jga1lA8nxYmmZTONVGilZoBrQ3kJBfJmrdTPbcjQtqi+8ok/cvY0f\r\n5UdMtGroBJOwFtwRDCckV/qExILfI/9bibWlYBX1iecZF2JwGxEWD8qP8BV+cVleMB5rhIIcs9DH\r\n2SFMwok+lctQB68WYEskbhXfIrS4xHldcHrYxMWdPrdKPLFXHUaE7UJIovyBDvzDfoGRMzSy5DOE\r\nTnghTByzz/87GB0aM2k17oLGafN2yHRUT7+XxNFqoSSLt2siuBbwelsnaGitq40HCLbfrNTWjRv5\r\nFiAuqygpgBF+RclWH8HHHii7lLHGsPARssdlffk7J7+Nb7x5SOo8J6sSTrqk4N/nP7Z1FPqUG6qU\r\n2tcCDVsRh4qb5LzqHl7SpoJzAP+vIBGkRH4At1gRpkJzdg8FWqtzQ5wX5MQnB62OPnYTyFByStAQ\r\nC3puN8FCtlurm74gqdIdR6fYURbpH9OXag8Fa4qbmYbmnCQF/A2cLB1EOhjk4MGlmfp/aDdCTC+z\r\nMr9VTNTt5KkowSSWZ0wUpjUNZ9bRPzZPAgMBAAGjggJJMIICRTAOBgNVHQ8BAf8EBAMCAYYwEAYJ\r\nKwYBBAGCNxUBBAMCAQAwHQYDVR0OBBYEFHMIeJP51amco3d+ETR0/0UycbeDMB0GA1UdJQQWMBQG\r\nCCsGAQUFBwMBBggrBgEFBQcDAjAZBgkrBgEEAYI3FAIEDB4KAFMAdQBiAEMAQTASBgNVHRMBAf8E\r\nCDAGAQH/AgEAMB8GA1UdIwQYMBaAFAnLWX+GsnCPGsM548DZ6b+7TbIjMHAGA1UdHwRpMGcwZaBj\r\noGGGX2h0dHA6Ly93d3cubWljcm9zb2Z0LmNvbS9wa2lvcHMvY3JsL01pY3Jvc29mdCUyMFJTQSUy\r\nMFJvb3QlMjBDZXJ0aWZpY2F0ZSUyMEF1dGhvcml0eSUyMDIwMTcuY3JsMIGuBggrBgEFBQcBAQSB\r\noTCBnjBtBggrBgEFBQcwAoZhaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9wcy9jZXJ0cy9N\r\naWNyb3NvZnQlMjBSU0ElMjBSb290JTIwQ2VydGlmaWNhdGUlMjBBdXRob3JpdHklMjAyMDE3LmNy\r\ndDAtBggrBgEFBQcwAYYhaHR0cDovL29uZW9jc3AubWljcm9zb2Z0LmNvbS9vY3NwMHAGA1UdIARp\r\nMGcwCAYGZ4EMAQIBMAgGBmeBDAECAjBRBgwrBgEEAYI3TIN9AQEwQTA/BggrBgEFBQcCARYzaHR0\r\ncDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9wcy9Eb2NzL1JlcG9zaXRvcnkuaHRtMA0GCSqGSIb3\r\nDQEBDAUAA4ICAQBw7zk6D2kKZzdRQNSGTtOtfssB4MjYgEKeeTtzmgz8B2HO654S0WPHIn2EFV5s\r\nJgn3WzMKGCRizxKq00ulUOBJQpPx3x1DnW2LgWXNBWtcXzSBpAyeQf2BWa08BzqbmQ2uG8k96A4x\r\nUvYk2HmQioyDk+f9+o5tlHXlf8IKx1joSahaLEmGwBOCQFC6JbUYIVgOeS1hf7gNRyM8QWPR5D5M\r\n9qMVyGNoTt3fIXHxgbDuNHhEGPpiv9FWlzMT8jKFtURutEYmhg3Y6Qr/QXbbeaN4Ow5UiS5/Tr4A\r\nQEaU6Yoc3qvKFdoOV9Fjp7Ze4UmRv81LoQrzuS7vAP5iW3mB/n2jzCHdNIKX/qHDYU4qjC+aZFqq\r\nT9rUpWnYW9qsPhTi8LORsn7fvPuL1ecVgkUB3F/1z9udnfjhG1sjt3hj0NXJc1qnYGDhiKLJHeU9\r\nMSFUlBieVUSV2m+0q8WHPjLiJBHiZbt/gleHbdTb+WPCFa3LCPbLuqiK+KKAsWvtuJs26KegodyE\r\nfvFz753D3fLWMfRZBZgRTKJODA5Vb899QyzsUSXBMX7+oYE4A9o9yc8rvzTWoMuEw3UhCdfTKrE0\r\nuKg4FSYi1W5UMdjlMdACoCh2aCp7jNiLt6wtSZIzG27MNIz/bWTFmcRoN9xh4Lbj7b5tfuIop8cZ\r\ndKuCtnRBx5mK8w==\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIESTCCA8+gAwIBAgITMwAAACgr/SPn0a3XBwAAAAAAKDAKBggqhkjOPQQDAzBlMQswCQYDVQQG\r\nEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQg\r\nRUNDIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MTk1ODM2WhcNMjYw\r\nNjI0MTk1ODM2WjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9u\r\nMSwwKgYDVQQDEyNNaWNyb3NvZnQgRUNDIFRMUyBJc3N1aW5nIEFPQyBDQSAwMTB2MBAGByqGSM49\r\nAgEGBSuBBAAiA2IABMBXcHExvrYrhw7v30oPR4aBaMne5o0FtTtbMV7iqVhTJDQSWDEJhr528nyS\r\n6jcLLu9pLXQMJYxVd7bz4wWXgVtZnnbQ7trAAIPWVh5B6f5eJf5OQ7w7AwJgz3snP5Hx16OCAkkw\r\nggJFMA4GA1UdDwEB/wQEAwIBhjAQBgkrBgEEAYI3FQEEAwIBADAdBgNVHQ4EFgQUMVu5zlEbfNGq\r\nA8Dr7TZdwp3TieEwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBkGCSsGAQQBgjcUAgQM\r\nHgoAUwB1AGIAQwBBMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0jBBgwFoAUyMuZcnBSDPjmvrIE\r\nVykqz0IQ7TUwcAYDVR0fBGkwZzBloGOgYYZfaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9w\r\ncy9jcmwvTWljcm9zb2Z0JTIwRUNDJTIwUm9vdCUyMENlcnRpZmljYXRlJTIwQXV0aG9yaXR5JTIw\r\nMjAxNy5jcmwwga4GCCsGAQUFBwEBBIGhMIGeMG0GCCsGAQUFBzAChmFodHRwOi8vd3d3Lm1pY3Jv\r\nc29mdC5jb20vcGtpb3BzL2NlcnRzL01pY3Jvc29mdCUyMEVDQyUyMFJvb3QlMjBDZXJ0aWZpY2F0\r\nZSUyMEF1dGhvcml0eSUyMDIwMTcuY3J0MC0GCCsGAQUFBzABhiFodHRwOi8vb25lb2NzcC5taWNy\r\nb3NvZnQuY29tL29jc3AwcAYDVR0gBGkwZzAIBgZngQwBAgEwCAYGZ4EMAQICMFEGDCsGAQQBgjdM\r\ng30BATBBMD8GCCsGAQUFBwIBFjNodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpb3BzL0RvY3Mv\r\nUmVwb3NpdG9yeS5odG0wCgYIKoZIzj0EAwMDaAAwZQIxANmPydUjlgj/2K77UnMeMkSGIgXzOhcT\r\nsixzZL+NmTR1Bq2hSPeA6Y3mn3lMlwxZmAIwIio6KrgItH4YmLWKd8QClIrE9QjbDlR7oFqaU3J3\r\n4bWbMlAEjRARdZhhQlNwdORe\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIICWTCCAd+gAwIBAgIQZvI9r4fei7FK6gxXMQHC7DAKBggqhkjOPQQDAzBlMQswCQYDVQQGEwJV\r\nUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQgRUND\r\nIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMTkxMjE4MjMwNjQ1WhcNNDIwNzE4\r\nMjMxNjA0WjBlMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYw\r\nNAYDVQQDEy1NaWNyb3NvZnQgRUNDIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwdjAQ\r\nBgcqhkjOPQIBBgUrgQQAIgNiAATUvD0CQnVBEyPNgASGAlEvaqiBYgtlzPbKnR5vSmZRogPZnZH6\r\nthaxjG7efM3beaYvzrvOcS/lpaso7GMEZpn4+vKTEAXhgShC48Zo9OYbhGBKia/teQ87zvH2RPUB\r\neMCjVDBSMA4GA1UdDwEB/wQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBTIy5lycFIM\r\n+Oa+sgRXKSrPQhDtNTAQBgkrBgEEAYI3FQEEAwIBADAKBggqhkjOPQQDAwNoADBlAjBY8k3qDPlf\r\nXu5gKcs68tvWMoQZP3zVL8KxzJOuULsJMsbG7X7JNpQS5GiFBqIb0C8CMQCZ6Ra0DvpWSNSkMBaR\r\neNtUjGUBiudQZsIxtzm6uBoiB078a1QWIP8rtedMDE2mT3M=\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIESDCCA8+gAwIBAgITMwAAACkPimIi72pWlQAAAAAAKTAKBggqhkjOPQQDAzBlMQswCQYDVQQG\r\nEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQg\r\nRUNDIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MTk1ODM4WhcNMjYw\r\nNjI0MTk1ODM4WjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9u\r\nMSwwKgYDVQQDEyNNaWNyb3NvZnQgRUNDIFRMUyBJc3N1aW5nIEFPQyBDQSAwMjB2MBAGByqGSM49\r\nAgEGBSuBBAAiA2IABI7Zgbmjd2OumgotYraLtAF/obAK54drz/RFV2lzPGE0f3js0+CUCGTEOGdO\r\naB+7fODrVJ84rKJPRPS/pEc8k80WepwWMYri+yoA7OlAQFiyIqk900jUel2o9LBoBNr72qOCAkkw\r\nggJFMA4GA1UdDwEB/wQEAwIBhjAQBgkrBgEEAYI3FQEEAwIBADAdBgNVHQ4EFgQU3tzXbCOZQ+qs\r\n7ci3HRhYgDZLjfQwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBkGCSsGAQQBgjcUAgQM\r\nHgoAUwB1AGIAQwBBMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0jBBgwFoAUyMuZcnBSDPjmvrIE\r\nVykqz0IQ7TUwcAYDVR0fBGkwZzBloGOgYYZfaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9w\r\ncy9jcmwvTWljcm9zb2Z0JTIwRUNDJTIwUm9vdCUyMENlcnRpZmljYXRlJTIwQXV0aG9yaXR5JTIw\r\nMjAxNy5jcmwwga4GCCsGAQUFBwEBBIGhMIGeMG0GCCsGAQUFBzAChmFodHRwOi8vd3d3Lm1pY3Jv\r\nc29mdC5jb20vcGtpb3BzL2NlcnRzL01pY3Jvc29mdCUyMEVDQyUyMFJvb3QlMjBDZXJ0aWZpY2F0\r\nZSUyMEF1dGhvcml0eSUyMDIwMTcuY3J0MC0GCCsGAQUFBzABhiFodHRwOi8vb25lb2NzcC5taWNy\r\nb3NvZnQuY29tL29jc3AwcAYDVR0gBGkwZzAIBgZngQwBAgEwCAYGZ4EMAQICMFEGDCsGAQQBgjdM\r\ng30BATBBMD8GCCsGAQUFBwIBFjNodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpb3BzL0RvY3Mv\r\nUmVwb3NpdG9yeS5odG0wCgYIKoZIzj0EAwMDZwAwZAIwSiB+6RshdjasB841Y6l6wCivxxnEBvxn\r\n6GCYIjk22EJa1p6B4w+Qf5seGf20/SsXAjBxv8F+Qz6CfnpQNxIGRby0UfKq36vne88PuoQCHdxY\r\nLnjkUiveg2NRTNiAFWXqhUg=\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIESTCCA8+gAwIBAgITMwAAACvmkCg4ZytmeQAAAAAAKzAKBggqhkjOPQQDAzBlMQswCQYDVQQG\r\nEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQg\r\nRUNDIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MTk1ODQwWhcNMjYw\r\nNjI0MTk1ODQwWjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9u\r\nMSwwKgYDVQQDEyNNaWNyb3NvZnQgRUNDIFRMUyBJc3N1aW5nIEVPQyBDQSAwMjB2MBAGByqGSM49\r\nAgEGBSuBBAAiA2IABCnY32N9ck71DA0aFNh3TJUp5baxIf9K2kh2RJOvnsU82Epig+iwGtsdLbmm\r\nnQCis9VR8E0KfKUUBnNSdmtUneh36lhFwxDZ4NzmfdUjG24K8zbbMd/qTAVztrcDvdlhxqOCAkkw\r\nggJFMA4GA1UdDwEB/wQEAwIBhjAQBgkrBgEEAYI3FQEEAwIBADAdBgNVHQ4EFgQUv9gyNCuhlTu0\r\ntdS5QC1ySpwaAIYwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBkGCSsGAQQBgjcUAgQM\r\nHgoAUwB1AGIAQwBBMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0jBBgwFoAUyMuZcnBSDPjmvrIE\r\nVykqz0IQ7TUwcAYDVR0fBGkwZzBloGOgYYZfaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9w\r\ncy9jcmwvTWljcm9zb2Z0JTIwRUNDJTIwUm9vdCUyMENlcnRpZmljYXRlJTIwQXV0aG9yaXR5JTIw\r\nMjAxNy5jcmwwga4GCCsGAQUFBwEBBIGhMIGeMG0GCCsGAQUFBzAChmFodHRwOi8vd3d3Lm1pY3Jv\r\nc29mdC5jb20vcGtpb3BzL2NlcnRzL01pY3Jvc29mdCUyMEVDQyUyMFJvb3QlMjBDZXJ0aWZpY2F0\r\nZSUyMEF1dGhvcml0eSUyMDIwMTcuY3J0MC0GCCsGAQUFBzABhiFodHRwOi8vb25lb2NzcC5taWNy\r\nb3NvZnQuY29tL29jc3AwcAYDVR0gBGkwZzAIBgZngQwBAgEwCAYGZ4EMAQICMFEGDCsGAQQBgjdM\r\ng30BATBBMD8GCCsGAQUFBwIBFjNodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpb3BzL0RvY3Mv\r\nUmVwb3NpdG9yeS5odG0wCgYIKoZIzj0EAwMDaAAwZQIwGfSjP75G6tGRAEfRAnzF8zX82samzvpm\r\nHzL0nZtkAZbAAl94dP1iB4XNrmJjcSVxAjEA013gOWgrzozfn7vuDKDvI2xo+sQXBCJhagE/gJz8\r\niO6Hk1vZbEK2xVGQc0yBqBlO\r\n-----END
+        CERTIFICATE-----\r\n"},{"pem":"-----BEGIN CERTIFICATE-----\r\nMIIESTCCA8+gAwIBAgITMwAAACotAGSF/ay/6wAAAAAAKjAKBggqhkjOPQQDAzBlMQswCQYDVQQG\r\nEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMTYwNAYDVQQDEy1NaWNyb3NvZnQg\r\nRUNDIFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTcwHhcNMjEwNjI0MTk1ODM5WhcNMjYw\r\nNjI0MTk1ODM5WjBbMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9u\r\nMSwwKgYDVQQDEyNNaWNyb3NvZnQgRUNDIFRMUyBJc3N1aW5nIEVPQyBDQSAwMTB2MBAGByqGSM49\r\nAgEGBSuBBAAiA2IABOJbIiS8pUiOCaUql10Yl6GbIflaGVxiZRG9Ot/zChiB74DcUfHk/wQXn4CQ\r\nlaml9yi80zVAzt5DlpmJ9nKGPZwAXEEYQ15WqfjuLmKRnUXJA8Z69uql5GUmyna4GnWuI6OCAkkw\r\nggJFMA4GA1UdDwEB/wQEAwIBhjAQBgkrBgEEAYI3FQEEAwIBADAdBgNVHQ4EFgQUuxzt0Ihxqcr7\r\nzZNfcXkiNXjGmsowHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMBkGCSsGAQQBgjcUAgQM\r\nHgoAUwB1AGIAQwBBMBIGA1UdEwEB/wQIMAYBAf8CAQAwHwYDVR0jBBgwFoAUyMuZcnBSDPjmvrIE\r\nVykqz0IQ7TUwcAYDVR0fBGkwZzBloGOgYYZfaHR0cDovL3d3dy5taWNyb3NvZnQuY29tL3BraW9w\r\ncy9jcmwvTWljcm9zb2Z0JTIwRUNDJTIwUm9vdCUyMENlcnRpZmljYXRlJTIwQXV0aG9yaXR5JTIw\r\nMjAxNy5jcmwwga4GCCsGAQUFBwEBBIGhMIGeMG0GCCsGAQUFBzAChmFodHRwOi8vd3d3Lm1pY3Jv\r\nc29mdC5jb20vcGtpb3BzL2NlcnRzL01pY3Jvc29mdCUyMEVDQyUyMFJvb3QlMjBDZXJ0aWZpY2F0\r\nZSUyMEF1dGhvcml0eSUyMDIwMTcuY3J0MC0GCCsGAQUFBzABhiFodHRwOi8vb25lb2NzcC5taWNy\r\nb3NvZnQuY29tL29jc3AwcAYDVR0gBGkwZzAIBgZngQwBAgEwCAYGZ4EMAQICMFEGDCsGAQQBgjdM\r\ng30BATBBMD8GCCsGAQUFBwIBFjNodHRwOi8vd3d3Lm1pY3Jvc29mdC5jb20vcGtpb3BzL0RvY3Mv\r\nUmVwb3NpdG9yeS5odG0wCgYIKoZIzj0EAwMDaAAwZQIxALsVA16qVCnS2LXK0EFRtQCFStOvrTmi\r\n+aBoWaiCqf6i/m7t3+Uhnxe5bYKhUM/LMAIwOJ1jHlVIe0xLjV6LZQo4eZA/bgQaDwIoUECkuW9D\r\nzwJORmfzm5h1e+oMay+Bb/mm\r\n-----END
+        CERTIFICATE-----\r\n"}],"hoursBetweenBackups":24,"backupRetentionPeriodInHours":24,"prometheusEndpoint":{"ipAddress":"10.0.0.4"},"provisioningState":"Succeeded","repairEnabled":true,"seedNodes":[],"cassandraAuditLoggingEnabled":false,"diagnosticSettingsId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_MANAGED_CASSANDRAALTGUM4VH34TECDKBIUBUZKH6RBKAVUJ3GOSTDZPZYAHGFXN6NJPOY/PROVIDERS/MICROSOFT.DOCUMENTDB/CASSANDRACLUSTERS/CLIGC5WCK2"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '38166'
+      - '58155'
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:45:43 GMT
+      - Mon, 17 Apr 2023 20:40:04 GMT
       pragma:
       - no-cache
       server:
@@ -1279,15 +1288,15 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_managed_cassandra000001/providers/Microsoft.DocumentDB/cassandraClusters/cli000002?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3eb87bb5-56ea-4ffd-86ab-f0e3cdb5f730?api-version=2022-08-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/43959d7c-211b-4cbd-a7d0-f7badfc2191b?api-version=2023-03-01-preview
       cache-control:
       - no-store, no-cache
       content-length:
@@ -1295,9 +1304,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:45:44 GMT
+      - Mon, 17 Apr 2023 20:40:06 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationResults/3eb87bb5-56ea-4ffd-86ab-f0e3cdb5f730?api-version=2022-08-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationResults/43959d7c-211b-4cbd-a7d0-f7badfc2191b?api-version=2023-03-01-preview
       pragma:
       - no-cache
       server:
@@ -1327,12 +1336,12 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3eb87bb5-56ea-4ffd-86ab-f0e3cdb5f730?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/43959d7c-211b-4cbd-a7d0-f7badfc2191b?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"status":"Dequeued"}'
+      string: '{"status":"Enqueued"}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -1341,7 +1350,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:46:14 GMT
+      - Mon, 17 Apr 2023 20:40:06 GMT
       pragma:
       - no-cache
       server:
@@ -1373,9 +1382,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3eb87bb5-56ea-4ffd-86ab-f0e3cdb5f730?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/43959d7c-211b-4cbd-a7d0-f7badfc2191b?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -1387,7 +1396,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:46:44 GMT
+      - Mon, 17 Apr 2023 20:40:36 GMT
       pragma:
       - no-cache
       server:
@@ -1419,9 +1428,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3eb87bb5-56ea-4ffd-86ab-f0e3cdb5f730?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/43959d7c-211b-4cbd-a7d0-f7badfc2191b?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -1433,7 +1442,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:47:15 GMT
+      - Mon, 17 Apr 2023 20:41:06 GMT
       pragma:
       - no-cache
       server:
@@ -1465,9 +1474,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3eb87bb5-56ea-4ffd-86ab-f0e3cdb5f730?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/43959d7c-211b-4cbd-a7d0-f7badfc2191b?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -1479,7 +1488,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:47:45 GMT
+      - Mon, 17 Apr 2023 20:41:36 GMT
       pragma:
       - no-cache
       server:
@@ -1511,9 +1520,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3eb87bb5-56ea-4ffd-86ab-f0e3cdb5f730?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/43959d7c-211b-4cbd-a7d0-f7badfc2191b?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -1525,7 +1534,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:48:15 GMT
+      - Mon, 17 Apr 2023 20:42:07 GMT
       pragma:
       - no-cache
       server:
@@ -1557,9 +1566,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3eb87bb5-56ea-4ffd-86ab-f0e3cdb5f730?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/43959d7c-211b-4cbd-a7d0-f7badfc2191b?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -1571,7 +1580,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:48:45 GMT
+      - Mon, 17 Apr 2023 20:42:37 GMT
       pragma:
       - no-cache
       server:
@@ -1603,101 +1612,9 @@ interactions:
       ParameterSetName:
       - -c -g --yes
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3eb87bb5-56ea-4ffd-86ab-f0e3cdb5f730?api-version=2022-08-15-preview
-  response:
-    body:
-      string: '{"status":"Dequeued"}'
-    headers:
-      cache-control:
-      - no-store, no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json
-      date:
-      - Thu, 29 Sep 2022 18:49:15 GMT
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-gatewayversion:
-      - version=2.14.0
-    status:
-      code: 200
-      message: Ok
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - managed-cassandra cluster delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -c -g --yes
-      User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3eb87bb5-56ea-4ffd-86ab-f0e3cdb5f730?api-version=2022-08-15-preview
-  response:
-    body:
-      string: '{"status":"Dequeued"}'
-    headers:
-      cache-control:
-      - no-store, no-cache
-      content-length:
-      - '21'
-      content-type:
-      - application/json
-      date:
-      - Thu, 29 Sep 2022 18:49:46 GMT
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-gatewayversion:
-      - version=2.14.0
-    status:
-      code: 200
-      message: Ok
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - managed-cassandra cluster delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -c -g --yes
-      User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/3eb87bb5-56ea-4ffd-86ab-f0e3cdb5f730?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus2/operationsStatus/43959d7c-211b-4cbd-a7d0-f7badfc2191b?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -1709,7 +1626,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 18:50:15 GMT
+      - Mon, 17 Apr 2023 20:43:07 GMT
       pragma:
       - no-cache
       server:
