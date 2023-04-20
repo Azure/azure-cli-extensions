@@ -546,7 +546,7 @@ def create_containerapp(cmd,
     volume_mount_def = VolumeMountModel
     if secret_volume_mount is not None:
         # generate a volume name
-        volume_def["name"] = _generate_secret_volume_name(resource_group_name)
+        volume_def["name"] = _generate_secret_volume_name()
         volume_def["storageType"] = "Secret"
 
         # mount the volume to the container

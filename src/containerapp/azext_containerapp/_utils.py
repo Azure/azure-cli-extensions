@@ -551,18 +551,15 @@ def _new_tiny_guid():
 
 
 #  Generate a random volume name using same method as log analytics workspace
-def _generate_secret_volume_name(resource_group_name):
+def _generate_secret_volume_name():
     import re
     prefix = "secret-volume"
     # volume name must be lowercase
     suffix = _new_tiny_guid().lower()
-    alphaNumericRG = resource_group_name
-    alphaNumericRG = re.sub(r'[^0-9a-z]', '', resource_group_name)
     maxLength = 40
 
-    name = "{}-{}-{}".format(
+    name = "{}-{}".format(
         prefix,
-        alphaNumericRG,
         suffix
     )
 
