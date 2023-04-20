@@ -365,7 +365,6 @@ def load_arguments(self, _):
         c.argument('config_file_path', help='The path of the config file containing auth settings if they come from a file.')
         c.argument('unauthenticated_client_action', options_list=['--unauthenticated-client-action', '--action'], arg_type=get_enum_type(UNAUTHENTICATED_CLIENT_ACTION), help='The action to take when an unauthenticated client attempts to access the app.')
         c.argument('redirect_provider', help='The default authentication provider to use when multiple providers are configured.')
-        c.argument('enable_token_store', arg_type=get_three_state_flag(), help='true to durably store platform-specific security tokens that are obtained during login flows; otherwise, false.')
         c.argument('require_https', arg_type=get_three_state_flag(), help='false if the authentication/authorization responses not having the HTTPS scheme are permissible; otherwise, true.')
         c.argument('proxy_convention', arg_type=get_enum_type(FORWARD_PROXY_CONVENTION), help='The convention used to determine the url of the request made.')
         c.argument('proxy_custom_host_header', options_list=['--proxy-custom-host-header', '--custom-host-header'], help='The name of the header containing the host of the request.')
