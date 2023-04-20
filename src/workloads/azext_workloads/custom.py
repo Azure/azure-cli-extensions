@@ -74,13 +74,12 @@ class SVICreate(_SVICreate):
                 properties.set_prop("discovery", AAZObjectType, ".properties.discovery_org",
                                     typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("environment", AAZStrType, ".environment", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("managedResourceGroupConfiguration", AAZObjectType,
-                                    ".managed_resource_group_configuration")
+                properties.set_prop("managedResourceGroupConfiguration", AAZObjectType)
                 properties.set_prop("sapProduct", AAZStrType, ".sap_product", typ_kwargs={"flags": {"required": True}})
 
             managed_resource_group_configuration = _builder.get(".properties.managedResourceGroupConfiguration")
             if managed_resource_group_configuration is not None:
-                managed_resource_group_configuration.set_prop("name", AAZStrType, ".name")
+                managed_resource_group_configuration.set_prop("name", AAZStrType, ".managed_rg_name")
 
             tags = _builder.get(".tags")
             if tags is not None:
