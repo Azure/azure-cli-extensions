@@ -204,91 +204,45 @@ class BlueGreenTest(ScenarioTest):
             self.check('properties.active', False)
         ])
 
+@record_only()
+class CustomImageTest(ScenarioTest):
 
-class I2aTLSTest(ScenarioTest):
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
-    def test_app_i2a_tls(self, resource_group, spring, app):
+    def test_app_deploy_container(self, resource_group, spring, app):
         self.kwargs.update({
             'app': app,
             'serviceName': spring,
-            'rg': resource_group
+            'containerImage': 'springio/gs-spring-boot-docker',
+            'resourceGroup': resource_group,
         })
 
-        self.cmd('spring app create -n {app} -g {rg} -s {serviceName}')
-        self.cmd('spring app show -n {app} -g {rg} -s {serviceName}', checks=[
-            self.check('properties.enableEndToEndTls', False)
+        self.cmd('spring app create -s {serviceName} -g {resourceGroup} -n {app}')
+
+        self.cmd('spring app deploy -g {resourceGroup} -s {serviceName} -n {app} --container-image {containerImage}', checks=[
+            self.check('properties.source.type', 'Container'),
+            self.check('properties.source.customContainer.containerImage', '{containerImage}'),
+            self.check('properties.source.customContainer.languageFramework', None),
         ])
 
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --enable-ingress-to-app-tls true --env foo=bar', checks=[
-            self.check('properties.enableEndToEndTls', True)
-        ])
 
-        self.cmd('spring app show -n {app} -g {rg} -s {serviceName}', checks=[
-            self.check('properties.enableEndToEndTls', True)
-        ])
-
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --enable-ingress-to-app-tls false', checks=[
-            self.check('properties.enableEndToEndTls', False)
-        ])
-
-@record_only()
-class GenerateDumpTest(ScenarioTest):
-    def test_generate_deployment_dump(self):
-        file_path = os.path.join(tempfile.gettempdir(), 'dumpfile.txt')
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
+    @SpringAppNamePreparer()
+    def test_app_deploy_container_command(self, resource_group, spring, app):
         self.kwargs.update({
-            'app': 'test-app-dump',
-            'deployment': 'default',
-            'serviceName': 'cli-unittest',
-            'resourceGroup': 'cli',
-            'path': file_path
-        })
-        result = self.cmd('spring app deployment show -g {resourceGroup} -s {serviceName} --app {app} -n {deployment}').get_output_in_json()
-        self.kwargs['instance'] = result['properties'].get('instances', [{}])[0].get('name')
-        self.assertTrue(self.kwargs['instance'])
-        self.cmd('spring app deployment generate-heap-dump -g {resourceGroup} -s {serviceName} --app {app} --deployment {deployment} --app-instance {instance} --file-path {path}')
-
-
-@record_only()
-class VnetPublicEndpointTest(ScenarioTest):
-    def test_vnet_public_endpoint(self):
-        self.kwargs.update({
-            'app': 'test-app',
-            'serviceName': 'cli-unittest',
-            'rg': 'cli'
+            'app': app,
+            'serviceName': spring,
+            'containerImage': 'springio/gs-spring-boot-docker',
+            'resourceGroup': resource_group,
         })
 
-        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --assign-public-endpoint true', checks=[
-            self.check('properties.vnetAddons.publicEndpoint', True)
-        ])
+        self.cmd('spring app create -s {serviceName} -g {resourceGroup} -n {app}')
 
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --assign-public-endpoint false', checks=[
-            self.check('properties.vnetAddons.publicEndpoint', False)
-        ])
-
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --assign-public-endpoint true', checks=[
-            self.check('properties.vnetAddons.publicEndpoint', True)
-        ])
-
-
-@record_only()
-class ClientAuthTest(ScenarioTest):
-    def test_client_auth(self):
-        self.kwargs.update({
-            'cert': 'test-cert',
-            'keyVaultUri': 'https://integration-test-prod.vault.azure.net/',
-            'kvCertName': 'cli-unittest',
-            'app': 'test-client-auth',
-            'serviceName': 'cli-unittest',
-            'rg': 'cli',
-            'location': 'eastus'
-        })
-
-        cert_id = self.cmd(
-            'spring certificate add --name {cert} --vault-uri {keyVaultUri} --only-public-cert '
-            '--vault-certificate-name {kvCertName} -g {rg} -s {serviceName} --query "id" -o tsv').output.strip()
-        app_create_cmd_template = 'spring app update -n {{app}} -s {{serviceName}} -g {{rg}} --client-auth-certs {}'
-        self.cmd(app_create_cmd_template.format(cert_id), checks=[
-            self.check('properties.ingressSettings.clientAuth.certificates[0]', cert_id)
+        self.cmd('spring app deploy -g {resourceGroup} -s {serviceName} -n {app} --container-image {containerImage} --container-command "java" --container-args "-cp /app/resources:/app/classes:/app/libs/* hello.Application"', checks=[
+            self.check('properties.source.type', 'Container'),
+            self.check('properties.source.customContainer.containerImage', '{containerImage}'),
+            self.check('properties.source.customContainer.command', ['java']),
+            self.check('properties.source.customContainer.args', ['-cp', '/app/resources:/app/classes:/app/libs/*', 'hello.Application']),
         ])
