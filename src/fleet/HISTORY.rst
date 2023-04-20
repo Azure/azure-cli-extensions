@@ -22,4 +22,4 @@ Release History
 
 0.2.2
 ++++++
-* Add fleet multi-cluste update commands
+* Add fleet multi-cluster update commands
