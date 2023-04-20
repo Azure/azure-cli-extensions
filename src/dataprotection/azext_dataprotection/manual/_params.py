@@ -73,6 +73,18 @@ def load_arguments(self, _):
         c.argument('snapshot_volumes', type=bool, help="")
         c.argument('include_cluster_scope_resources', type=bool, help="")
 
+    with self.argument_context('data-protection backup-instance initialize') as c:
+        c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
+        c.argument('datasource_id', type=str, help="ARM Id of the resource to be backed up")
+        c.argument('datasource_location', options_list=['--datasource-location', '-l'], arg_type=get_location_type(self.cli_ctx))
+        c.argument('friendly_name', type=str, help="")
+        c.argument('backup_configuration', type=validate_file_or_dict, help="")
+        c.argument('policy_id', type=str, help="Id of the backup policy the datasource will be associated")
+        c.argument('secret_store_type', arg_type=get_enum_type(get_secret_store_type_values()), help="Specify the secret store type to use for authentication")
+        c.argument('secret_store_uri', type=str, help="specify the secret store uri to use for authentication")
+        c.argument('snapshot_resource_group_name', options_list=['--snapshot-resource-group-name', '--snapshot-rg'], type=str, help="Name of the resource group in which the backup snapshots should be stored")
+        c.argument('tags', tags_type)
+
     with self.argument_context('dataprotection backup-instance initialize') as c:
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
         c.argument('datasource_id', type=str, help="ARM Id of the resource to be backed up")
