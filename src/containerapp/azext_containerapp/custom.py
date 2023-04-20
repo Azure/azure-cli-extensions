@@ -541,14 +541,13 @@ def create_containerapp(cmd,
     if resources_def is not None:
         container_def["resources"] = resources_def
 
-
     template_def = TemplateModel
     template_def["containers"] = [container_def]
     template_def["scale"] = scale_def
 
-    volume_def = VolumeModel
-    volume_mount_def = VolumeMountModel
     if secret_volume_mount is not None:
+        volume_def = VolumeModel
+        volume_mount_def = VolumeMountModel
         # generate a volume name
         volume_def["name"] = _generate_secret_volume_name()
         volume_def["storageType"] = "Secret"
