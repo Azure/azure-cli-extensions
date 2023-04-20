@@ -135,7 +135,7 @@ helps['fleet updaterun create'] = """
         - name: Create updaterun for a fleet with 'Full' upgrade type & stages.
           text: |
             az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.2.3 --stages ./test/stages.json
-                
+
                 A sample json to demonstrate the expected format. It takes a stages array. Each stage consists of the stage name, groups array and an optional afterStageWaitInSeconds.
                 Each group consists of group name, given to a fleet's member(s).
                 {

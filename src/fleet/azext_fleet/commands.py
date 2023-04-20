@@ -46,7 +46,7 @@ def load_command_table(self, _):
         g.custom_command("list", "list_fleet_member")
         g.custom_show_command("show", "show_fleet_member")
         g.wait_command("wait")
-    
+
     # fleet update runs command group
     with self.command_group("fleet updaterun", update_runs_sdk, client_factory=cf_update_runs) as g:
         g.custom_command("create", "create_update_run", supports_no_wait=True)

@@ -15,16 +15,17 @@ def validate_member_cluster_id(namespace):
         raise InvalidArgumentValueError(
             "--member-cluster-id is not a valid Azure resource ID.")
 
+
 def validate_upgrade_type(namespace):
     upgrade_type = namespace.upgrade_type
-    if upgrade_type != "Full" and upgrade_type != "NodeImageOnly":
+    if upgrade_type not in ("Full", "NodeImageOnly"):
         raise InvalidArgumentValueError(
             "--upgrade-type must be set to 'Full' or 'NodeImageOnly'")
-    
+
+
 def validate_kubernetes_version(namespace):
     try:
         semver.VersionInfo.parse(namespace.kubernetes_version)
     except ValueError:
         raise InvalidArgumentValueError(
             "--kubernetes-version must be set as version x.x.x (eg. 1.2.3)")
-

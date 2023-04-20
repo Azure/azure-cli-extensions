@@ -6,6 +6,7 @@
 from azure.cli.core.commands.parameters import get_one_of_subscription_locations
 from azure.cli.core.decorators import Completer
 
+
 @Completer
 def get_k8s_versions_completion_list(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
     """Return Kubernetes versions available for provisioning a new cluster."""
@@ -15,12 +16,14 @@ def get_k8s_versions_completion_list(cmd, prefix, namespace, **kwargs):  # pylin
 
 def get_k8s_versions(cli_ctx, location):
     """Return a list of Kubernetes versions available for a new cluster."""
+    # TODO: Add cf_container_services in client_factory
     from azext_fleet._client_factory import cf_container_services
     from jmespath import search  # pylint: disable=import-error
 
     results = cf_container_services(cli_ctx).list_orchestrators(location, resource_type='managedClusters').as_dict()
     # Flatten all the "orchestrator_version" fields into one array
     return search('orchestrators[*].orchestrator_version', results)
+
 
 def _get_location(cli_ctx, namespace):
     """
@@ -35,6 +38,7 @@ def _get_location(cli_ctx, namespace):
     if not location:
         location = get_one_of_subscription_locations(cli_ctx)
     return location
+
 
 def _get_location_from_resource_group(cli_ctx, resource_group_name):
     from azext_fleet._client_factory import get_resource_groups_client
