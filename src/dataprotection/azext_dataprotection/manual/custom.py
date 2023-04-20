@@ -571,7 +571,30 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
     if manifest['dataSourcePermissions']:
         for role_object in manifest['dataSourcePermissions']:
-            datasource_id = helper.get_resource_id_from_backup_instance(backup_instance, 'DataSource')
+            datasource_principal_id = None
+
+            if datasource_type == "AzureKubernetesService":
+                datasource_arm_id = helper.get_resource_id_from_backup_instance(backup_instance, 'DataSource')
+                subscription_arm_id = helper.get_sub_id_from_arm_id(datasource_arm_id)
+                subscription_id = subscription_arm_id.split("/")[-1]
+
+                from azext_dataprotection.vendored_sdks.azure_mgmt_preview_aks import ContainerServiceClient
+                aks_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient, subscription_id=subscription_id)
+                aks_client = getattr(aks_client, 'managed_clusters')
+
+                # aks = aks_client.get(resource_group_name, )
+
+            resource_id = helper.get_resource_id_from_backup_instance(backup_instance, role_object['type'])
+            resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
+            assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
+
+            role_assignments = list_role_assignments(cmd, assignee=datasource_principal_id, 
+                                                     role=role_object['roleDefinitionName'], scope=resource_id, 
+                                                     include_inherited=True)
+            if not role_assignments:
+                assignment = create_role_assignment(cmd, assignee=datasource_principal_id, 
+                                                    role=role_object['roleDefinitionName'], scope=assignment_scope)
+                role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
 
     # Network line of sight access on server, if that is the datasource type
     if datasource_type == 'AzureDatabaseForPostgreSQL':
