@@ -86,6 +86,17 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Object id of arc AAD service principal.",
         )
+        _args_schema.connectivity_properties = AAZObjectArg(
+            options=["--connectivity-properties"],
+            arg_group="Properties",
+            help="contains connectivity related configuration for ARC resources",
+        )
+
+        connectivity_properties = cls._args_schema.connectivity_properties
+        connectivity_properties.enabled = AAZBoolArg(
+            options=["enabled"],
+            help="True indicates ARC connectivity is enabled",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -191,6 +202,11 @@ class Create(AAZCommand):
                 properties.set_prop("arcApplicationTenantId", AAZStrType, ".arc_application_tenant_id")
                 properties.set_prop("arcInstanceResourceGroup", AAZStrType, ".arc_instance_rg")
                 properties.set_prop("arcServicePrincipalObjectId", AAZStrType, ".arc_service_principal_object_id")
+                properties.set_prop("connectivityProperties", AAZObjectType, ".connectivity_properties")
+
+            connectivity_properties = _builder.get(".properties.connectivityProperties")
+            if connectivity_properties is not None:
+                connectivity_properties.set_prop("enabled", AAZBoolType, ".enabled")
 
             return self.serialize_content(_content_value)
 
@@ -249,6 +265,9 @@ class Create(AAZCommand):
             properties.arc_service_principal_object_id = AAZStrType(
                 serialized_name="arcServicePrincipalObjectId",
             )
+            properties.connectivity_properties = AAZObjectType(
+                serialized_name="connectivityProperties",
+            )
             properties.default_extensions = AAZListType(
                 serialized_name="defaultExtensions",
                 flags={"read_only": True},
@@ -261,6 +280,9 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            connectivity_properties = cls._schema_on_200.properties.connectivity_properties
+            connectivity_properties.enabled = AAZBoolType()
 
             default_extensions = cls._schema_on_200.properties.default_extensions
             default_extensions.Element = AAZObjectType()

@@ -63,6 +63,21 @@ class Update(AAZCommand):
         )
 
         # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.connectivity_properties = AAZObjectArg(
+            options=["--connectivity-properties"],
+            arg_group="Properties",
+            help="contains connectivity related configuration for ARC resources",
+            nullable=True,
+        )
+
+        connectivity_properties = cls._args_schema.connectivity_properties
+        connectivity_properties.enabled = AAZBoolArg(
+            options=["enabled"],
+            help="True indicates ARC connectivity is enabled",
+            nullable=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -294,6 +309,14 @@ class Update(AAZCommand):
             )
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("connectivityProperties", AAZObjectType, ".connectivity_properties")
+
+            connectivity_properties = _builder.get(".properties.connectivityProperties")
+            if connectivity_properties is not None:
+                connectivity_properties.set_prop("enabled", AAZBoolType, ".enabled")
+
             return _instance_value
 
     class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
@@ -360,6 +383,9 @@ class _UpdateHelper:
         properties.arc_service_principal_object_id = AAZStrType(
             serialized_name="arcServicePrincipalObjectId",
         )
+        properties.connectivity_properties = AAZObjectType(
+            serialized_name="connectivityProperties",
+        )
         properties.default_extensions = AAZListType(
             serialized_name="defaultExtensions",
             flags={"read_only": True},
@@ -372,6 +398,9 @@ class _UpdateHelper:
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
+
+        connectivity_properties = _schema_arc_setting_read.properties.connectivity_properties
+        connectivity_properties.enabled = AAZBoolType()
 
         default_extensions = _schema_arc_setting_read.properties.default_extensions
         default_extensions.Element = AAZObjectType()

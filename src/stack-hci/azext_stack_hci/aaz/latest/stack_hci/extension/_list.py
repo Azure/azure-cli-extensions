@@ -197,7 +197,6 @@ class List(AAZCommand):
             )
             properties.extension_parameters = AAZObjectType(
                 serialized_name="extensionParameters",
-                flags={"client_flatten": True},
             )
             properties.managed_by = AAZStrType(
                 serialized_name="managedBy",
@@ -222,14 +221,24 @@ class List(AAZCommand):
             extension_parameters.force_update_tag = AAZStrType(
                 serialized_name="forceUpdateTag",
             )
-            extension_parameters.protected_settings = AAZStrType(
+            extension_parameters.protected_settings = AAZObjectType(
                 serialized_name="protectedSettings",
             )
             extension_parameters.publisher = AAZStrType()
-            extension_parameters.settings = AAZStrType()
+            extension_parameters.settings = AAZObjectType()
             extension_parameters.type = AAZStrType()
             extension_parameters.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
+            )
+
+            protected_settings = cls._schema_on_200.value.Element.properties.extension_parameters.protected_settings
+            protected_settings.workspace_key = AAZStrType(
+                serialized_name="workspaceKey",
+            )
+
+            settings = cls._schema_on_200.value.Element.properties.extension_parameters.settings
+            settings.workspace_id = AAZStrType(
+                serialized_name="workspaceId",
             )
 
             per_node_extension_details = cls._schema_on_200.value.Element.properties.per_node_extension_details

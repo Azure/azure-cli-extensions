@@ -200,6 +200,9 @@ class Show(AAZCommand):
             properties.arc_service_principal_object_id = AAZStrType(
                 serialized_name="arcServicePrincipalObjectId",
             )
+            properties.connectivity_properties = AAZObjectType(
+                serialized_name="connectivityProperties",
+            )
             properties.default_extensions = AAZListType(
                 serialized_name="defaultExtensions",
                 flags={"read_only": True},
@@ -212,6 +215,9 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            connectivity_properties = cls._schema_on_200.properties.connectivity_properties
+            connectivity_properties.enabled = AAZBoolType()
 
             default_extensions = cls._schema_on_200.properties.default_extensions
             default_extensions.Element = AAZObjectType()

@@ -77,8 +77,8 @@ class Create(AAZCommand):
             arg_group="ExtensionParameters",
             help="How the extension handler should be forced to update even if the extension configuration has not changed.",
         )
-        _args_schema.protected_settings_org = AAZStrArg(
-            options=["--protected-settings-org"],
+        _args_schema.protected_settings = AAZObjectArg(
+            options=["--protected-settings"],
             arg_group="ExtensionParameters",
             help="Protected settings (may contain secrets).",
         )
@@ -87,8 +87,8 @@ class Create(AAZCommand):
             arg_group="ExtensionParameters",
             help="The name of the extension handler publisher.",
         )
-        _args_schema.settings_org = AAZStrArg(
-            options=["--settings-org"],
+        _args_schema.settings = AAZObjectArg(
+            options=["--settings"],
             arg_group="ExtensionParameters",
             help="Json formatted public settings for the extension.",
         )
@@ -101,6 +101,18 @@ class Create(AAZCommand):
             options=["--type-handler-version"],
             arg_group="ExtensionParameters",
             help="Specifies the version of the script handler. Latest version would be used if not specified.",
+        )
+
+        protected_settings = cls._args_schema.protected_settings
+        protected_settings.workspace_key = AAZStrArg(
+            options=["workspace-key"],
+            help="Workspace Key.",
+        )
+
+        settings = cls._args_schema.settings
+        settings.workspace_id = AAZStrArg(
+            options=["workspace-id"],
+            help="Workspace Id.",
         )
         return cls._args_schema
 
@@ -222,17 +234,25 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("extensionParameters", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+                properties.set_prop("extensionParameters", AAZObjectType)
 
             extension_parameters = _builder.get(".properties.extensionParameters")
             if extension_parameters is not None:
                 extension_parameters.set_prop("autoUpgradeMinorVersion", AAZBoolType, ".auto_upgrade")
                 extension_parameters.set_prop("forceUpdateTag", AAZStrType, ".force_update_tag")
-                extension_parameters.set_prop("protectedSettings", AAZStrType, ".protected_settings_org")
+                extension_parameters.set_prop("protectedSettings", AAZObjectType, ".protected_settings")
                 extension_parameters.set_prop("publisher", AAZStrType, ".publisher")
-                extension_parameters.set_prop("settings", AAZStrType, ".settings_org")
+                extension_parameters.set_prop("settings", AAZObjectType, ".settings")
                 extension_parameters.set_prop("type", AAZStrType, ".type")
                 extension_parameters.set_prop("typeHandlerVersion", AAZStrType, ".type_handler_version")
+
+            protected_settings = _builder.get(".properties.extensionParameters.protectedSettings")
+            if protected_settings is not None:
+                protected_settings.set_prop("workspaceKey", AAZStrType, ".workspace_key")
+
+            settings = _builder.get(".properties.extensionParameters.settings")
+            if settings is not None:
+                settings.set_prop("workspaceId", AAZStrType, ".workspace_id")
 
             return self.serialize_content(_content_value)
 
@@ -278,7 +298,6 @@ class Create(AAZCommand):
             )
             properties.extension_parameters = AAZObjectType(
                 serialized_name="extensionParameters",
-                flags={"client_flatten": True},
             )
             properties.managed_by = AAZStrType(
                 serialized_name="managedBy",
@@ -303,14 +322,24 @@ class Create(AAZCommand):
             extension_parameters.force_update_tag = AAZStrType(
                 serialized_name="forceUpdateTag",
             )
-            extension_parameters.protected_settings = AAZStrType(
+            extension_parameters.protected_settings = AAZObjectType(
                 serialized_name="protectedSettings",
             )
             extension_parameters.publisher = AAZStrType()
-            extension_parameters.settings = AAZStrType()
+            extension_parameters.settings = AAZObjectType()
             extension_parameters.type = AAZStrType()
             extension_parameters.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
+            )
+
+            protected_settings = cls._schema_on_200_201.properties.extension_parameters.protected_settings
+            protected_settings.workspace_key = AAZStrType(
+                serialized_name="workspaceKey",
+            )
+
+            settings = cls._schema_on_200_201.properties.extension_parameters.settings
+            settings.workspace_id = AAZStrType(
+                serialized_name="workspaceId",
             )
 
             per_node_extension_details = cls._schema_on_200_201.properties.per_node_extension_details

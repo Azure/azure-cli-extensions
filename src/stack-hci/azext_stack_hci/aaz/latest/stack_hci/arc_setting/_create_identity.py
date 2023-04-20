@@ -46,7 +46,7 @@ class CreateIdentity(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.arc_setting_name = AAZStrArg(
-            options=["--arc-setting-name"],
+            options=["-n", "--name", "--arc-setting-name"],
             help="The name of the proxy resource holding details of HCI ArcSetting information.",
             required=True,
             id_part="child_name_1",
