@@ -13,12 +13,12 @@ interactions:
       ParameterSetName:
       - -n -g --backup-policy-type --locations
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_cosmosdb_sql_database000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001","name":"cli_test_cosmosdb_sql_database000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-04-08T16:21:09Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001","name":"cli_test_cosmosdb_sql_database000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-04-17T21:14:42Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 08 Apr 2023 16:21:12 GMT
+      - Mon, 17 Apr 2023 21:14:44 GMT
       expires:
       - '-1'
       pragma:
@@ -63,30 +63,30 @@ interactions:
       ParameterSetName:
       - -n -g --backup-policy-type --locations
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003?api-version=2023-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003","name":"cli000003","location":"West
-        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2023-04-08T16:21:18.9812982Z"},"properties":{"provisioningState":"Creating","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"62bf06d8-9e56-4434-9078-423179904be7","createMode":"Default","databaseAccountOfferType":"Standard","enableMaterializedViews":false,"defaultIdentity":"","networkAclBypass":"None","disableLocalAuth":false,"enablePartitionMerge":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000003-westus","locationName":"West
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2023-04-17T21:14:47.8422021Z"},"properties":{"provisioningState":"Creating","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"2dd35557-75ef-4cb1-9e30-5c90a83dc903","createMode":"Default","databaseAccountOfferType":"Standard","enableCassandraConnector":false,"connectorOffer":"","enableMaterializedViews":false,"defaultIdentity":"","networkAclBypass":"None","disableLocalAuth":false,"enablePartitionMerge":false,"enableBurstCapacity":false,"minimalTlsVersion":"Tls","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000003-westus","locationName":"West
         US","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000003-westus","locationName":"West
         US","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000003-westus","locationName":"West
         US","provisioningState":"Creating","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000003-westus","locationName":"West
-        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Continuous","continuousModeProperties":{"tier":"Continuous30Days"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"},"keysMetadata":{"primaryMasterKey":{"generationTime":"2023-04-08T16:21:18.9812982Z"},"secondaryMasterKey":{"generationTime":"2023-04-08T16:21:18.9812982Z"},"primaryReadonlyMasterKey":{"generationTime":"2023-04-08T16:21:18.9812982Z"},"secondaryReadonlyMasterKey":{"generationTime":"2023-04-08T16:21:18.9812982Z"}}},"identity":{"type":"None"}}'
+        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Continuous","continuousModeProperties":{"tier":"Continuous30Days"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"},"keysMetadata":{"primaryMasterKey":{"generationTime":"2023-04-17T21:14:47.8422021Z"},"secondaryMasterKey":{"generationTime":"2023-04-17T21:14:47.8422021Z"},"primaryReadonlyMasterKey":{"generationTime":"2023-04-17T21:14:47.8422021Z"},"secondaryReadonlyMasterKey":{"generationTime":"2023-04-17T21:14:47.8422021Z"}}},"identity":{"type":"None"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/c19ee154-e5ed-4d76-8fa0-b32bb4ad3876?api-version=2022-08-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/79c5fc6c-529a-4d1c-84f8-816c600b2ef4?api-version=2023-03-01-preview
       cache-control:
       - no-store, no-cache
       content-length:
-      - '2247'
+      - '2354'
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:21:22 GMT
+      - Mon, 17 Apr 2023 21:14:49 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/operationResults/c19ee154-e5ed-4d76-8fa0-b32bb4ad3876?api-version=2022-08-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/operationResults/79c5fc6c-529a-4d1c-84f8-816c600b2ef4?api-version=2023-03-01-preview
       pragma:
       - no-cache
       server:
@@ -120,9 +120,9 @@ interactions:
       ParameterSetName:
       - -n -g --backup-policy-type --locations
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/c19ee154-e5ed-4d76-8fa0-b32bb4ad3876?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/79c5fc6c-529a-4d1c-84f8-816c600b2ef4?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
@@ -134,7 +134,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:21:22 GMT
+      - Mon, 17 Apr 2023 21:14:49 GMT
       pragma:
       - no-cache
       server:
@@ -166,9 +166,9 @@ interactions:
       ParameterSetName:
       - -n -g --backup-policy-type --locations
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/c19ee154-e5ed-4d76-8fa0-b32bb4ad3876?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/79c5fc6c-529a-4d1c-84f8-816c600b2ef4?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -180,7 +180,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:21:52 GMT
+      - Mon, 17 Apr 2023 21:15:20 GMT
       pragma:
       - no-cache
       server:
@@ -212,9 +212,9 @@ interactions:
       ParameterSetName:
       - -n -g --backup-policy-type --locations
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/c19ee154-e5ed-4d76-8fa0-b32bb4ad3876?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/79c5fc6c-529a-4d1c-84f8-816c600b2ef4?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -226,7 +226,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:22:21 GMT
+      - Mon, 17 Apr 2023 21:15:49 GMT
       pragma:
       - no-cache
       server:
@@ -258,9 +258,9 @@ interactions:
       ParameterSetName:
       - -n -g --backup-policy-type --locations
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/c19ee154-e5ed-4d76-8fa0-b32bb4ad3876?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/79c5fc6c-529a-4d1c-84f8-816c600b2ef4?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -272,7 +272,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:22:52 GMT
+      - Mon, 17 Apr 2023 21:16:19 GMT
       pragma:
       - no-cache
       server:
@@ -304,9 +304,9 @@ interactions:
       ParameterSetName:
       - -n -g --backup-policy-type --locations
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/c19ee154-e5ed-4d76-8fa0-b32bb4ad3876?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/79c5fc6c-529a-4d1c-84f8-816c600b2ef4?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Dequeued"}'
@@ -318,7 +318,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:23:22 GMT
+      - Mon, 17 Apr 2023 21:16:50 GMT
       pragma:
       - no-cache
       server:
@@ -350,9 +350,9 @@ interactions:
       ParameterSetName:
       - -n -g --backup-policy-type --locations
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/c19ee154-e5ed-4d76-8fa0-b32bb4ad3876?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/79c5fc6c-529a-4d1c-84f8-816c600b2ef4?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -364,7 +364,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:23:52 GMT
+      - Mon, 17 Apr 2023 21:17:20 GMT
       pragma:
       - no-cache
       server:
@@ -396,26 +396,26 @@ interactions:
       ParameterSetName:
       - -n -g --backup-policy-type --locations
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003?api-version=2023-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003","name":"cli000003","location":"West
-        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2023-04-08T16:23:15.0733231Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000003.documents.azure.com:443/","sqlEndpoint":"https://cli000003.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"62bf06d8-9e56-4434-9078-423179904be7","createMode":"Default","databaseAccountOfferType":"Standard","enableMaterializedViews":false,"defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"enablePartitionMerge":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000003-westus","locationName":"West
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2023-04-17T21:16:45.3861643Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000003.documents.azure.com:443/","sqlEndpoint":"https://cli000003.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"2dd35557-75ef-4cb1-9e30-5c90a83dc903","createMode":"Default","databaseAccountOfferType":"Standard","enableCassandraConnector":false,"connectorOffer":"","enableMaterializedViews":false,"defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"enablePartitionMerge":false,"enableBurstCapacity":false,"minimalTlsVersion":"Tls","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000003-westus","locationName":"West
         US","documentEndpoint":"https://cli000003-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000003-westus","locationName":"West
         US","documentEndpoint":"https://cli000003-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000003-westus","locationName":"West
         US","documentEndpoint":"https://cli000003-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000003-westus","locationName":"West
-        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Continuous","continuousModeProperties":{"tier":"Continuous30Days"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"},"keysMetadata":{"primaryMasterKey":{"generationTime":"2023-04-08T16:23:15.0733231Z"},"secondaryMasterKey":{"generationTime":"2023-04-08T16:23:15.0733231Z"},"primaryReadonlyMasterKey":{"generationTime":"2023-04-08T16:23:15.0733231Z"},"secondaryReadonlyMasterKey":{"generationTime":"2023-04-08T16:23:15.0733231Z"}}},"identity":{"type":"None"}}'
+        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Continuous","continuousModeProperties":{"tier":"Continuous30Days"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"},"keysMetadata":{"primaryMasterKey":{"generationTime":"2023-04-17T21:16:45.3861643Z"},"secondaryMasterKey":{"generationTime":"2023-04-17T21:16:45.3861643Z"},"primaryReadonlyMasterKey":{"generationTime":"2023-04-17T21:16:45.3861643Z"},"secondaryReadonlyMasterKey":{"generationTime":"2023-04-17T21:16:45.3861643Z"}}},"identity":{"type":"None"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '2605'
+      - '2712'
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:23:52 GMT
+      - Mon, 17 Apr 2023 21:17:20 GMT
       pragma:
       - no-cache
       server:
@@ -447,26 +447,26 @@ interactions:
       ParameterSetName:
       - -n -g --backup-policy-type --locations
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003?api-version=2023-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003","name":"cli000003","location":"West
-        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2023-04-08T16:23:15.0733231Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000003.documents.azure.com:443/","sqlEndpoint":"https://cli000003.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"62bf06d8-9e56-4434-9078-423179904be7","createMode":"Default","databaseAccountOfferType":"Standard","enableMaterializedViews":false,"defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"enablePartitionMerge":false,"consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000003-westus","locationName":"West
+        US","type":"Microsoft.DocumentDB/databaseAccounts","kind":"GlobalDocumentDB","tags":{},"systemData":{"createdAt":"2023-04-17T21:16:45.3861643Z"},"properties":{"provisioningState":"Succeeded","documentEndpoint":"https://cli000003.documents.azure.com:443/","sqlEndpoint":"https://cli000003.documents.azure.com:443/","publicNetworkAccess":"Enabled","enableAutomaticFailover":false,"enableMultipleWriteLocations":false,"enablePartitionKeyMonitor":false,"isVirtualNetworkFilterEnabled":false,"virtualNetworkRules":[],"EnabledApiTypes":"Sql","disableKeyBasedMetadataWriteAccess":false,"enableFreeTier":false,"enableAnalyticalStorage":false,"analyticalStorageConfiguration":{"schemaType":"WellDefined"},"instanceId":"2dd35557-75ef-4cb1-9e30-5c90a83dc903","createMode":"Default","databaseAccountOfferType":"Standard","enableCassandraConnector":false,"connectorOffer":"","enableMaterializedViews":false,"defaultIdentity":"FirstPartyIdentity","networkAclBypass":"None","disableLocalAuth":false,"enablePartitionMerge":false,"enableBurstCapacity":false,"minimalTlsVersion":"Tls","consistencyPolicy":{"defaultConsistencyLevel":"Session","maxIntervalInSeconds":5,"maxStalenessPrefix":100},"configurationOverrides":{},"writeLocations":[{"id":"cli000003-westus","locationName":"West
         US","documentEndpoint":"https://cli000003-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"readLocations":[{"id":"cli000003-westus","locationName":"West
         US","documentEndpoint":"https://cli000003-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"locations":[{"id":"cli000003-westus","locationName":"West
         US","documentEndpoint":"https://cli000003-westus.documents.azure.com:443/","provisioningState":"Succeeded","failoverPriority":0,"isZoneRedundant":false}],"failoverPolicies":[{"id":"cli000003-westus","locationName":"West
-        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Continuous","continuousModeProperties":{"tier":"Continuous30Days"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"},"keysMetadata":{"primaryMasterKey":{"generationTime":"2023-04-08T16:23:15.0733231Z"},"secondaryMasterKey":{"generationTime":"2023-04-08T16:23:15.0733231Z"},"primaryReadonlyMasterKey":{"generationTime":"2023-04-08T16:23:15.0733231Z"},"secondaryReadonlyMasterKey":{"generationTime":"2023-04-08T16:23:15.0733231Z"}}},"identity":{"type":"None"}}'
+        US","failoverPriority":0}],"cors":[],"capabilities":[],"ipRules":[],"backupPolicy":{"type":"Continuous","continuousModeProperties":{"tier":"Continuous30Days"}},"networkAclBypassResourceIds":[],"diagnosticLogSettings":{"enableFullTextQuery":"None"},"keysMetadata":{"primaryMasterKey":{"generationTime":"2023-04-17T21:16:45.3861643Z"},"secondaryMasterKey":{"generationTime":"2023-04-17T21:16:45.3861643Z"},"primaryReadonlyMasterKey":{"generationTime":"2023-04-17T21:16:45.3861643Z"},"secondaryReadonlyMasterKey":{"generationTime":"2023-04-17T21:16:45.3861643Z"}}},"identity":{"type":"None"}}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '2605'
+      - '2712'
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:23:52 GMT
+      - Mon, 17 Apr 2023 21:17:20 GMT
       pragma:
       - no-cache
       server:
@@ -502,7 +502,7 @@ interactions:
       ParameterSetName:
       - -g -a -n
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002?api-version=2022-11-15
   response:
@@ -510,7 +510,7 @@ interactions:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/afb3ce2c-50b1-44bc-9c30-6276e63e1075?api-version=2022-11-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/16790c20-e615-4696-bd4f-43c79b0e993e?api-version=2022-11-15
       cache-control:
       - no-store, no-cache
       content-length:
@@ -518,9 +518,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:23:55 GMT
+      - Mon, 17 Apr 2023 21:17:21 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002/operationResults/afb3ce2c-50b1-44bc-9c30-6276e63e1075?api-version=2022-11-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002/operationResults/16790c20-e615-4696-bd4f-43c79b0e993e?api-version=2022-11-15
       pragma:
       - no-cache
       server:
@@ -550,9 +550,9 @@ interactions:
       ParameterSetName:
       - -g -a -n
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/afb3ce2c-50b1-44bc-9c30-6276e63e1075?api-version=2022-11-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/16790c20-e615-4696-bd4f-43c79b0e993e?api-version=2022-11-15
   response:
     body:
       string: '{"status":"Enqueued"}'
@@ -564,7 +564,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:23:55 GMT
+      - Mon, 17 Apr 2023 21:17:21 GMT
       pragma:
       - no-cache
       server:
@@ -596,9 +596,9 @@ interactions:
       ParameterSetName:
       - -g -a -n
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/afb3ce2c-50b1-44bc-9c30-6276e63e1075?api-version=2022-11-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/16790c20-e615-4696-bd4f-43c79b0e993e?api-version=2022-11-15
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -610,7 +610,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:24:25 GMT
+      - Mon, 17 Apr 2023 21:17:52 GMT
       pragma:
       - no-cache
       server:
@@ -642,12 +642,12 @@ interactions:
       ParameterSetName:
       - -g -a -n
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002?api-version=2022-11-15
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002","type":"Microsoft.DocumentDB/databaseAccounts/sqlDatabases","name":"cli000002","properties":{"resource":{"id":"cli000002","_rid":"AjJsAA==","_self":"dbs/AjJsAA==/","_etag":"\"0000f511-0000-0700-0000-643195200000\"","_colls":"colls/","_users":"users/","_ts":1680971040}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002","type":"Microsoft.DocumentDB/databaseAccounts/sqlDatabases","name":"cli000002","properties":{"resource":{"id":"cli000002","_rid":"us1zAA==","_self":"dbs/us1zAA==/","_etag":"\"00000b05-0000-0700-0000-643db7670000\"","_colls":"colls/","_users":"users/","_ts":1681766247}}}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -656,7 +656,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:24:26 GMT
+      - Mon, 17 Apr 2023 21:17:52 GMT
       pragma:
       - no-cache
       server:
@@ -688,12 +688,12 @@ interactions:
       ParameterSetName:
       - -g -a -n
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002?api-version=2022-11-15
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002","type":"Microsoft.DocumentDB/databaseAccounts/sqlDatabases","name":"cli000002","properties":{"resource":{"id":"cli000002","_rid":"AjJsAA==","_self":"dbs/AjJsAA==/","_etag":"\"0000f511-0000-0700-0000-643195200000\"","_colls":"colls/","_users":"users/","_ts":1680971040}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002","type":"Microsoft.DocumentDB/databaseAccounts/sqlDatabases","name":"cli000002","properties":{"resource":{"id":"cli000002","_rid":"us1zAA==","_self":"dbs/us1zAA==/","_etag":"\"00000b05-0000-0700-0000-643db7670000\"","_colls":"colls/","_users":"users/","_ts":1681766247}}}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -702,7 +702,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:24:28 GMT
+      - Mon, 17 Apr 2023 21:17:52 GMT
       pragma:
       - no-cache
       server:
@@ -734,12 +734,12 @@ interactions:
       ParameterSetName:
       - -g -a -n
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002?api-version=2022-11-15
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002","type":"Microsoft.DocumentDB/databaseAccounts/sqlDatabases","name":"cli000002","properties":{"resource":{"id":"cli000002","_rid":"AjJsAA==","_self":"dbs/AjJsAA==/","_etag":"\"0000f511-0000-0700-0000-643195200000\"","_colls":"colls/","_users":"users/","_ts":1680971040}}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002","type":"Microsoft.DocumentDB/databaseAccounts/sqlDatabases","name":"cli000002","properties":{"resource":{"id":"cli000002","_rid":"us1zAA==","_self":"dbs/us1zAA==/","_etag":"\"00000b05-0000-0700-0000-643db7670000\"","_colls":"colls/","_users":"users/","_ts":1681766247}}}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -748,7 +748,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:24:29 GMT
+      - Mon, 17 Apr 2023 21:17:53 GMT
       pragma:
       - no-cache
       server:
@@ -780,60 +780,60 @@ interactions:
       ParameterSetName:
       - -g -a -n
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/invalid?api-version=2022-11-15
   response:
     body:
       string: '{"code":"NotFound","message":"Message: {\"code\":\"NotFound\",\"message\":\"Message:
         {\\\"Errors\\\":[\\\"Resource Not Found. Learn more: https:\\\\/\\\\/aka.ms\\\\/cosmosdb-tsg-not-found\\\"]}\\r\\nActivityId:
-        d67921f9-d629-11ed-a615-f077c3948549, Request URI: /apps/ceac077b-da6e-4c0f-8611-9c3d26a8a05f/services/e73c0ba3-5e3c-4842-ae10-0ec21cb5adc1/partitions/4b597b54-08fb-411d-84fe-686e478e7a16/replicas/133254246078556740s,
-        RequestStats: \\r\\nRequestStartTime: 2023-04-08T16:24:31.3738068Z, RequestEndTime:
-        2023-04-08T16:24:31.3938069Z,  Number of regions attempted:1\\r\\n{\\\"systemHistory\\\":[{\\\"dateUtc\\\":\\\"2023-04-08T16:23:23.1629992Z\\\",\\\"cpu\\\":0.805,\\\"memory\\\":496186400.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0228,\\\"availableThreads\\\":32764,\\\"minThreads\\\":52,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":2330},{\\\"dateUtc\\\":\\\"2023-04-08T16:23:43.1732201Z\\\",\\\"cpu\\\":0.572,\\\"memory\\\":496193672.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0154,\\\"availableThreads\\\":32764,\\\"minThreads\\\":52,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":2386},{\\\"dateUtc\\\":\\\"2023-04-08T16:23:53.1833168Z\\\",\\\"cpu\\\":0.520,\\\"memory\\\":496197064.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0135,\\\"availableThreads\\\":32762,\\\"minThreads\\\":52,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":2386},{\\\"dateUtc\\\":\\\"2023-04-08T16:24:03.1935029Z\\\",\\\"cpu\\\":0.492,\\\"memory\\\":496177848.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0241,\\\"availableThreads\\\":32764,\\\"minThreads\\\":52,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":2386},{\\\"dateUtc\\\":\\\"2023-04-08T16:24:13.2035724Z\\\",\\\"cpu\\\":0.522,\\\"memory\\\":496179380.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0209,\\\"availableThreads\\\":32762,\\\"minThreads\\\":52,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":2338},{\\\"dateUtc\\\":\\\"2023-04-08T16:24:23.2137502Z\\\",\\\"cpu\\\":0.432,\\\"memory\\\":496144472.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0154,\\\"availableThreads\\\":32764,\\\"minThreads\\\":52,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":2338}]}\\r\\nRequestStart:
-        2023-04-08T16:24:31.3838524Z; ResponseTime: 2023-04-08T16:24:31.3938069Z;
-        StoreResult: StorePhysicalAddress: rntbd://10.0.1.32:11300/apps/ceac077b-da6e-4c0f-8611-9c3d26a8a05f/services/e73c0ba3-5e3c-4842-ae10-0ec21cb5adc1/partitions/4b597b54-08fb-411d-84fe-686e478e7a16/replicas/133254246078556740s,
+        51422b25-dd65-11ed-a85b-8cdcd4532c5b, Request URI: /apps/086b9727-0f1e-420d-ad24-bd7872d61a7c/services/902ef170-7877-49d2-a447-24108ab4b886/partitions/84e3a825-d977-43f2-a0a8-bc797ae36440/replicas/133256184057980331s,
+        RequestStats: \\r\\nRequestStartTime: 2023-04-17T21:17:54.9104595Z, RequestEndTime:
+        2023-04-17T21:17:54.9104595Z,  Number of regions attempted:1\\r\\n{\\\"systemHistory\\\":[{\\\"dateUtc\\\":\\\"2023-04-17T21:16:52.0692286Z\\\",\\\"cpu\\\":0.748,\\\"memory\\\":637338060.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0195,\\\"availableThreads\\\":32763,\\\"minThreads\\\":64,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":605},{\\\"dateUtc\\\":\\\"2023-04-17T21:17:02.0794203Z\\\",\\\"cpu\\\":0.591,\\\"memory\\\":637331564.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0361,\\\"availableThreads\\\":32759,\\\"minThreads\\\":64,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":603},{\\\"dateUtc\\\":\\\"2023-04-17T21:17:22.0898196Z\\\",\\\"cpu\\\":0.551,\\\"memory\\\":637309308.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0113,\\\"availableThreads\\\":32763,\\\"minThreads\\\":64,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":607},{\\\"dateUtc\\\":\\\"2023-04-17T21:17:32.1000141Z\\\",\\\"cpu\\\":0.579,\\\"memory\\\":637326332.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0626,\\\"availableThreads\\\":32762,\\\"minThreads\\\":64,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":605},{\\\"dateUtc\\\":\\\"2023-04-17T21:17:42.1102076Z\\\",\\\"cpu\\\":0.658,\\\"memory\\\":637321408.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0274,\\\"availableThreads\\\":32760,\\\"minThreads\\\":64,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":613},{\\\"dateUtc\\\":\\\"2023-04-17T21:17:52.1204047Z\\\",\\\"cpu\\\":0.656,\\\"memory\\\":637318684.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0107,\\\"availableThreads\\\":32764,\\\"minThreads\\\":64,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":618}]}\\r\\nRequestStart:
+        2023-04-17T21:17:54.9104595Z; ResponseTime: 2023-04-17T21:17:54.9104595Z;
+        StoreResult: StorePhysicalAddress: rntbd://10.0.1.6:11000/apps/086b9727-0f1e-420d-ad24-bd7872d61a7c/services/902ef170-7877-49d2-a447-24108ab4b886/partitions/84e3a825-d977-43f2-a0a8-bc797ae36440/replicas/133256184057980331s,
         LSN: 10, GlobalCommittedLsn: 10, PartitionKeyRangeId: , IsValid: True, StatusCode:
         404, SubStatusCode: 0, RequestCharge: 1, ItemLSN: -1, SessionToken: -1#10,
-        UsingLocalLSN: False, TransportException: null, BELatencyMs: 0.272, ActivityId:
-        d67921f9-d629-11ed-a615-f077c3948549, RetryAfterInMs: , TransportRequestTimeline:
+        UsingLocalLSN: False, TransportException: null, BELatencyMs: 0.23, ActivityId:
+        51422b25-dd65-11ed-a85b-8cdcd4532c5b, RetryAfterInMs: , TransportRequestTimeline:
         {\\\"requestTimeline\\\":[{\\\"event\\\": \\\"Created\\\", \\\"startTimeUtc\\\":
-        \\\"2023-04-08T16:24:31.3738068Z\\\", \\\"durationInMs\\\": 0.0098},{\\\"event\\\":
-        \\\"ChannelAcquisitionStarted\\\", \\\"startTimeUtc\\\": \\\"2023-04-08T16:24:31.3738166Z\\\",
-        \\\"durationInMs\\\": 10.3511},{\\\"event\\\": \\\"Pipelined\\\", \\\"startTimeUtc\\\":
-        \\\"2023-04-08T16:24:31.3841677Z\\\", \\\"durationInMs\\\": 0.1271},{\\\"event\\\":
-        \\\"Transit Time\\\", \\\"startTimeUtc\\\": \\\"2023-04-08T16:24:31.3842948Z\\\",
-        \\\"durationInMs\\\": 0.4667},{\\\"event\\\": \\\"Received\\\", \\\"startTimeUtc\\\":
-        \\\"2023-04-08T16:24:31.3847615Z\\\", \\\"durationInMs\\\": 0.054},{\\\"event\\\":
-        \\\"Completed\\\", \\\"startTimeUtc\\\": \\\"2023-04-08T16:24:31.3848155Z\\\",
-        \\\"durationInMs\\\": 0}],\\\"serviceEndpointStats\\\":{\\\"inflightRequests\\\":1,\\\"openConnections\\\":1},\\\"connectionStats\\\":{\\\"waitforConnectionInit\\\":\\\"True\\\",\\\"callsPendingReceive\\\":0,\\\"lastSendAttempt\\\":\\\"2023-04-08T16:24:31.3838524Z\\\",\\\"lastSend\\\":\\\"2023-04-08T16:24:31.3838524Z\\\",\\\"lastReceive\\\":\\\"2023-04-08T16:24:31.3838524Z\\\"},\\\"requestSizeInBytes\\\":452,\\\"responseMetadataSizeInBytes\\\":135,\\\"responseBodySizeInBytes\\\":87};\\r\\n
-        ResourceType: Database, OperationType: Read\\r\\nRequestStart: 2023-04-08T16:24:31.3838524Z;
-        ResponseTime: 2023-04-08T16:24:31.3938069Z; StoreResult: StorePhysicalAddress:
-        rntbd://10.0.1.11:11300/apps/ceac077b-da6e-4c0f-8611-9c3d26a8a05f/services/e73c0ba3-5e3c-4842-ae10-0ec21cb5adc1/partitions/4b597b54-08fb-411d-84fe-686e478e7a16/replicas/133254246078556742s,
+        \\\"2023-04-17T21:17:54.9104595Z\\\", \\\"durationInMs\\\": 0.0094},{\\\"event\\\":
+        \\\"ChannelAcquisitionStarted\\\", \\\"startTimeUtc\\\": \\\"2023-04-17T21:17:54.9104689Z\\\",
+        \\\"durationInMs\\\": 0.0018},{\\\"event\\\": \\\"Pipelined\\\", \\\"startTimeUtc\\\":
+        \\\"2023-04-17T21:17:54.9104707Z\\\", \\\"durationInMs\\\": 0.1144},{\\\"event\\\":
+        \\\"Transit Time\\\", \\\"startTimeUtc\\\": \\\"2023-04-17T21:17:54.9105851Z\\\",
+        \\\"durationInMs\\\": 0.5358},{\\\"event\\\": \\\"Received\\\", \\\"startTimeUtc\\\":
+        \\\"2023-04-17T21:17:54.9111209Z\\\", \\\"durationInMs\\\": 0.0658},{\\\"event\\\":
+        \\\"Completed\\\", \\\"startTimeUtc\\\": \\\"2023-04-17T21:17:54.9111867Z\\\",
+        \\\"durationInMs\\\": 0}],\\\"serviceEndpointStats\\\":{\\\"inflightRequests\\\":1,\\\"openConnections\\\":1},\\\"connectionStats\\\":{\\\"waitforConnectionInit\\\":\\\"False\\\",\\\"callsPendingReceive\\\":0,\\\"lastSendAttempt\\\":\\\"2023-04-17T21:17:54.8404561Z\\\",\\\"lastSend\\\":\\\"2023-04-17T21:17:54.8404561Z\\\",\\\"lastReceive\\\":\\\"2023-04-17T21:17:54.8704551Z\\\"},\\\"requestSizeInBytes\\\":456,\\\"responseMetadataSizeInBytes\\\":135,\\\"responseBodySizeInBytes\\\":87};\\r\\n
+        ResourceType: Database, OperationType: Read\\r\\nRequestStart: 2023-04-17T21:17:54.9104595Z;
+        ResponseTime: 2023-04-17T21:17:54.9104595Z; StoreResult: StorePhysicalAddress:
+        rntbd://10.0.1.4:11300/apps/086b9727-0f1e-420d-ad24-bd7872d61a7c/services/902ef170-7877-49d2-a447-24108ab4b886/partitions/84e3a825-d977-43f2-a0a8-bc797ae36440/replicas/133256184057980333s,
         LSN: 10, GlobalCommittedLsn: 10, PartitionKeyRangeId: , IsValid: True, StatusCode:
         404, SubStatusCode: 0, RequestCharge: 1, ItemLSN: -1, SessionToken: -1#10,
-        UsingLocalLSN: False, TransportException: null, BELatencyMs: 0.308, ActivityId:
-        d67921f9-d629-11ed-a615-f077c3948549, RetryAfterInMs: , TransportRequestTimeline:
+        UsingLocalLSN: False, TransportException: null, BELatencyMs: 0.178, ActivityId:
+        51422b25-dd65-11ed-a85b-8cdcd4532c5b, RetryAfterInMs: , TransportRequestTimeline:
         {\\\"requestTimeline\\\":[{\\\"event\\\": \\\"Created\\\", \\\"startTimeUtc\\\":
-        \\\"2023-04-08T16:24:31.3838524Z\\\", \\\"durationInMs\\\": 0.0098},{\\\"event\\\":
-        \\\"ChannelAcquisitionStarted\\\", \\\"startTimeUtc\\\": \\\"2023-04-08T16:24:31.3838622Z\\\",
-        \\\"durationInMs\\\": 0.0017},{\\\"event\\\": \\\"Pipelined\\\", \\\"startTimeUtc\\\":
-        \\\"2023-04-08T16:24:31.3838639Z\\\", \\\"durationInMs\\\": 0.0949},{\\\"event\\\":
-        \\\"Transit Time\\\", \\\"startTimeUtc\\\": \\\"2023-04-08T16:24:31.3839588Z\\\",
-        \\\"durationInMs\\\": 1.0286},{\\\"event\\\": \\\"Received\\\", \\\"startTimeUtc\\\":
-        \\\"2023-04-08T16:24:31.3849874Z\\\", \\\"durationInMs\\\": 0.0535},{\\\"event\\\":
-        \\\"Completed\\\", \\\"startTimeUtc\\\": \\\"2023-04-08T16:24:31.3850409Z\\\",
-        \\\"durationInMs\\\": 0}],\\\"serviceEndpointStats\\\":{\\\"inflightRequests\\\":1,\\\"openConnections\\\":1},\\\"connectionStats\\\":{\\\"waitforConnectionInit\\\":\\\"False\\\",\\\"callsPendingReceive\\\":0,\\\"lastSendAttempt\\\":\\\"2023-04-08T16:24:31.2938079Z\\\",\\\"lastSend\\\":\\\"2023-04-08T16:24:31.2938079Z\\\",\\\"lastReceive\\\":\\\"2023-04-08T16:24:31.3338102Z\\\"},\\\"requestSizeInBytes\\\":452,\\\"responseMetadataSizeInBytes\\\":135,\\\"responseBodySizeInBytes\\\":87};\\r\\n
+        \\\"2023-04-17T21:17:54.9104595Z\\\", \\\"durationInMs\\\": 0.0045},{\\\"event\\\":
+        \\\"ChannelAcquisitionStarted\\\", \\\"startTimeUtc\\\": \\\"2023-04-17T21:17:54.9104640Z\\\",
+        \\\"durationInMs\\\": 0.0057},{\\\"event\\\": \\\"Pipelined\\\", \\\"startTimeUtc\\\":
+        \\\"2023-04-17T21:17:54.9104697Z\\\", \\\"durationInMs\\\": 0.0637},{\\\"event\\\":
+        \\\"Transit Time\\\", \\\"startTimeUtc\\\": \\\"2023-04-17T21:17:54.9105334Z\\\",
+        \\\"durationInMs\\\": 0.4938},{\\\"event\\\": \\\"Received\\\", \\\"startTimeUtc\\\":
+        \\\"2023-04-17T21:17:54.9110272Z\\\", \\\"durationInMs\\\": 0.0975},{\\\"event\\\":
+        \\\"Completed\\\", \\\"startTimeUtc\\\": \\\"2023-04-17T21:17:54.9111247Z\\\",
+        \\\"durationInMs\\\": 0}],\\\"serviceEndpointStats\\\":{\\\"inflightRequests\\\":1,\\\"openConnections\\\":1},\\\"connectionStats\\\":{\\\"waitforConnectionInit\\\":\\\"False\\\",\\\"callsPendingReceive\\\":0,\\\"lastSendAttempt\\\":\\\"2023-04-17T21:17:51.3103868Z\\\",\\\"lastSend\\\":\\\"2023-04-17T21:17:51.3103868Z\\\",\\\"lastReceive\\\":\\\"2023-04-17T21:17:51.3103868Z\\\"},\\\"requestSizeInBytes\\\":456,\\\"responseMetadataSizeInBytes\\\":135,\\\"responseBodySizeInBytes\\\":87};\\r\\n
         ResourceType: Database, OperationType: Read\\r\\n, SDK: Microsoft.Azure.Documents.Common/2.14.0\"},
         Request URI: /dbs/invalid, RequestStats: , SDK: Microsoft.Azure.Documents.Common/2.14.0"}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '6531'
+      - '6523'
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:24:30 GMT
+      - Mon, 17 Apr 2023 21:17:54 GMT
       pragma:
       - no-cache
       server:
@@ -861,12 +861,12 @@ interactions:
       ParameterSetName:
       - -g -a
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases?api-version=2022-11-15
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002","type":"Microsoft.DocumentDB/databaseAccounts/sqlDatabases","name":"cli000002","properties":{"resource":{"id":"cli000002","_rid":"AjJsAA==","_self":"dbs/AjJsAA==/","_etag":"\"0000f511-0000-0700-0000-643195200000\"","_colls":"colls/","_users":"users/","_ts":1680971040}}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002","type":"Microsoft.DocumentDB/databaseAccounts/sqlDatabases","name":"cli000002","properties":{"resource":{"id":"cli000002","_rid":"us1zAA==","_self":"dbs/us1zAA==/","_etag":"\"00000b05-0000-0700-0000-643db7670000\"","_colls":"colls/","_users":"users/","_ts":1681766247}}}]}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -875,7 +875,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:24:32 GMT
+      - Mon, 17 Apr 2023 21:17:55 GMT
       pragma:
       - no-cache
       server:
@@ -909,7 +909,7 @@ interactions:
       ParameterSetName:
       - -g -a -n --yes
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002?api-version=2022-11-15
   response:
@@ -917,7 +917,7 @@ interactions:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/90820e04-c0e3-4bce-8fe2-9b62dab83bfb?api-version=2022-11-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/b334d5fd-fe2d-4543-90cc-5dcf1a0b8c42?api-version=2022-11-15
       cache-control:
       - no-store, no-cache
       content-length:
@@ -925,9 +925,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:24:33 GMT
+      - Mon, 17 Apr 2023 21:17:55 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002/operationResults/90820e04-c0e3-4bce-8fe2-9b62dab83bfb?api-version=2022-11-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002/operationResults/b334d5fd-fe2d-4543-90cc-5dcf1a0b8c42?api-version=2022-11-15
       pragma:
       - no-cache
       server:
@@ -957,9 +957,9 @@ interactions:
       ParameterSetName:
       - -g -a -n --yes
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/90820e04-c0e3-4bce-8fe2-9b62dab83bfb?api-version=2022-11-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/b334d5fd-fe2d-4543-90cc-5dcf1a0b8c42?api-version=2022-11-15
   response:
     body:
       string: '{"status":"Enqueued"}'
@@ -971,7 +971,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:24:33 GMT
+      - Mon, 17 Apr 2023 21:17:55 GMT
       pragma:
       - no-cache
       server:
@@ -1003,9 +1003,9 @@ interactions:
       ParameterSetName:
       - -g -a -n --yes
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/90820e04-c0e3-4bce-8fe2-9b62dab83bfb?api-version=2022-11-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/westus/operationsStatus/b334d5fd-fe2d-4543-90cc-5dcf1a0b8c42?api-version=2022-11-15
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -1017,7 +1017,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:25:04 GMT
+      - Mon, 17 Apr 2023 21:18:26 GMT
       pragma:
       - no-cache
       server:
@@ -1049,60 +1049,60 @@ interactions:
       ParameterSetName:
       - -g -a -n
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.8 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_cosmosdb_sql_database000001/providers/Microsoft.DocumentDB/databaseAccounts/cli000003/sqlDatabases/cli000002?api-version=2022-11-15
   response:
     body:
       string: '{"code":"NotFound","message":"Message: {\"code\":\"NotFound\",\"message\":\"Message:
         {\\\"Errors\\\":[\\\"Resource Not Found. Learn more: https:\\\\/\\\\/aka.ms\\\\/cosmosdb-tsg-not-found\\\"]}\\r\\nActivityId:
-        eb6a5232-d629-11ed-8918-f077c3948549, Request URI: /apps/ceac077b-da6e-4c0f-8611-9c3d26a8a05f/services/e73c0ba3-5e3c-4842-ae10-0ec21cb5adc1/partitions/4b597b54-08fb-411d-84fe-686e478e7a16/replicas/133254246078556741s,
-        RequestStats: \\r\\nRequestStartTime: 2023-04-08T16:25:06.4676356Z, RequestEndTime:
-        2023-04-08T16:25:06.4676356Z,  Number of regions attempted:1\\r\\n{\\\"systemHistory\\\":[{\\\"dateUtc\\\":\\\"2023-04-08T16:24:07.8372433Z\\\",\\\"cpu\\\":0.912,\\\"memory\\\":480736240.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0224,\\\"availableThreads\\\":32762,\\\"minThreads\\\":52,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":2193},{\\\"dateUtc\\\":\\\"2023-04-08T16:24:17.8473807Z\\\",\\\"cpu\\\":0.874,\\\"memory\\\":480734436.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0209,\\\"availableThreads\\\":32764,\\\"minThreads\\\":52,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":2192},{\\\"dateUtc\\\":\\\"2023-04-08T16:24:27.8573826Z\\\",\\\"cpu\\\":1.108,\\\"memory\\\":480683120.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0189,\\\"availableThreads\\\":32763,\\\"minThreads\\\":52,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":2193},{\\\"dateUtc\\\":\\\"2023-04-08T16:24:37.8674575Z\\\",\\\"cpu\\\":1.649,\\\"memory\\\":480523704.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0226,\\\"availableThreads\\\":32764,\\\"minThreads\\\":52,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":2195},{\\\"dateUtc\\\":\\\"2023-04-08T16:24:47.8775248Z\\\",\\\"cpu\\\":0.907,\\\"memory\\\":480495424.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0183,\\\"availableThreads\\\":32763,\\\"minThreads\\\":52,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":2175},{\\\"dateUtc\\\":\\\"2023-04-08T16:24:57.8875987Z\\\",\\\"cpu\\\":1.042,\\\"memory\\\":480501420.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0188,\\\"availableThreads\\\":32764,\\\"minThreads\\\":52,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":2175}]}\\r\\nRequestStart:
-        2023-04-08T16:25:06.4676356Z; ResponseTime: 2023-04-08T16:25:06.4676356Z;
-        StoreResult: StorePhysicalAddress: rntbd://10.0.1.13:11000/apps/ceac077b-da6e-4c0f-8611-9c3d26a8a05f/services/e73c0ba3-5e3c-4842-ae10-0ec21cb5adc1/partitions/4b597b54-08fb-411d-84fe-686e478e7a16/replicas/133254246078556741s,
+        647936e6-dd65-11ed-9740-8cdcd4532c5b, Request URI: /apps/086b9727-0f1e-420d-ad24-bd7872d61a7c/services/902ef170-7877-49d2-a447-24108ab4b886/partitions/84e3a825-d977-43f2-a0a8-bc797ae36440/replicas/133256184057980332s,
+        RequestStats: \\r\\nRequestStartTime: 2023-04-17T21:18:27.3922379Z, RequestEndTime:
+        2023-04-17T21:18:27.3922379Z,  Number of regions attempted:1\\r\\n{\\\"systemHistory\\\":[{\\\"dateUtc\\\":\\\"2023-04-17T21:17:32.1020784Z\\\",\\\"cpu\\\":0.746,\\\"memory\\\":651440976.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0214,\\\"availableThreads\\\":32764,\\\"minThreads\\\":64,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":641},{\\\"dateUtc\\\":\\\"2023-04-17T21:17:42.1121039Z\\\",\\\"cpu\\\":1.010,\\\"memory\\\":651073976.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.018,\\\"availableThreads\\\":32752,\\\"minThreads\\\":64,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":645},{\\\"dateUtc\\\":\\\"2023-04-17T21:17:52.1221325Z\\\",\\\"cpu\\\":0.764,\\\"memory\\\":651064140.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.011,\\\"availableThreads\\\":32764,\\\"minThreads\\\":64,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":649},{\\\"dateUtc\\\":\\\"2023-04-17T21:18:02.1421628Z\\\",\\\"cpu\\\":0.407,\\\"memory\\\":651041516.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0148,\\\"availableThreads\\\":32762,\\\"minThreads\\\":64,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":650},{\\\"dateUtc\\\":\\\"2023-04-17T21:18:12.1521918Z\\\",\\\"cpu\\\":0.702,\\\"memory\\\":651006212.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0246,\\\"availableThreads\\\":32764,\\\"minThreads\\\":64,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":653},{\\\"dateUtc\\\":\\\"2023-04-17T21:18:22.1722222Z\\\",\\\"cpu\\\":1.531,\\\"memory\\\":650974240.000,\\\"threadInfo\\\":{\\\"isThreadStarving\\\":\\\"False\\\",\\\"threadWaitIntervalInMs\\\":0.0145,\\\"availableThreads\\\":32762,\\\"minThreads\\\":64,\\\"maxThreads\\\":32767},\\\"numberOfOpenTcpConnection\\\":651}]}\\r\\nRequestStart:
+        2023-04-17T21:18:27.3922379Z; ResponseTime: 2023-04-17T21:18:27.3922379Z;
+        StoreResult: StorePhysicalAddress: rntbd://10.0.1.5:11000/apps/086b9727-0f1e-420d-ad24-bd7872d61a7c/services/902ef170-7877-49d2-a447-24108ab4b886/partitions/84e3a825-d977-43f2-a0a8-bc797ae36440/replicas/133256184057980332s,
         LSN: 11, GlobalCommittedLsn: 11, PartitionKeyRangeId: , IsValid: True, StatusCode:
         404, SubStatusCode: 0, RequestCharge: 1, ItemLSN: -1, SessionToken: -1#11,
-        UsingLocalLSN: False, TransportException: null, BELatencyMs: 0.364, ActivityId:
-        eb6a5232-d629-11ed-8918-f077c3948549, RetryAfterInMs: , TransportRequestTimeline:
+        UsingLocalLSN: False, TransportException: null, BELatencyMs: 0.152, ActivityId:
+        647936e6-dd65-11ed-9740-8cdcd4532c5b, RetryAfterInMs: , TransportRequestTimeline:
         {\\\"requestTimeline\\\":[{\\\"event\\\": \\\"Created\\\", \\\"startTimeUtc\\\":
-        \\\"2023-04-08T16:25:06.4676356Z\\\", \\\"durationInMs\\\": 0.0089},{\\\"event\\\":
-        \\\"ChannelAcquisitionStarted\\\", \\\"startTimeUtc\\\": \\\"2023-04-08T16:25:06.4676445Z\\\",
-        \\\"durationInMs\\\": 0.0029},{\\\"event\\\": \\\"Pipelined\\\", \\\"startTimeUtc\\\":
-        \\\"2023-04-08T16:25:06.4676474Z\\\", \\\"durationInMs\\\": 0.1476},{\\\"event\\\":
-        \\\"Transit Time\\\", \\\"startTimeUtc\\\": \\\"2023-04-08T16:25:06.4677950Z\\\",
-        \\\"durationInMs\\\": 1.0165},{\\\"event\\\": \\\"Received\\\", \\\"startTimeUtc\\\":
-        \\\"2023-04-08T16:25:06.4688115Z\\\", \\\"durationInMs\\\": 0.0708},{\\\"event\\\":
-        \\\"Completed\\\", \\\"startTimeUtc\\\": \\\"2023-04-08T16:25:06.4688823Z\\\",
-        \\\"durationInMs\\\": 0}],\\\"serviceEndpointStats\\\":{\\\"inflightRequests\\\":1,\\\"openConnections\\\":1},\\\"connectionStats\\\":{\\\"waitforConnectionInit\\\":\\\"False\\\",\\\"callsPendingReceive\\\":0,\\\"lastSendAttempt\\\":\\\"2023-04-08T16:25:06.3676624Z\\\",\\\"lastSend\\\":\\\"2023-04-08T16:25:06.3676624Z\\\",\\\"lastReceive\\\":\\\"2023-04-08T16:25:06.4078291Z\\\"},\\\"requestSizeInBytes\\\":470,\\\"responseMetadataSizeInBytes\\\":135,\\\"responseBodySizeInBytes\\\":87};\\r\\n
-        ResourceType: Database, OperationType: Read\\r\\nRequestStart: 2023-04-08T16:25:06.4676356Z;
-        ResponseTime: 2023-04-08T16:25:06.4676356Z; StoreResult: StorePhysicalAddress:
-        rntbd://10.0.1.32:11300/apps/ceac077b-da6e-4c0f-8611-9c3d26a8a05f/services/e73c0ba3-5e3c-4842-ae10-0ec21cb5adc1/partitions/4b597b54-08fb-411d-84fe-686e478e7a16/replicas/133254246078556740s,
+        \\\"2023-04-17T21:18:27.3922379Z\\\", \\\"durationInMs\\\": 0.0069},{\\\"event\\\":
+        \\\"ChannelAcquisitionStarted\\\", \\\"startTimeUtc\\\": \\\"2023-04-17T21:18:27.3922448Z\\\",
+        \\\"durationInMs\\\": 0.0019},{\\\"event\\\": \\\"Pipelined\\\", \\\"startTimeUtc\\\":
+        \\\"2023-04-17T21:18:27.3922467Z\\\", \\\"durationInMs\\\": 0.0772},{\\\"event\\\":
+        \\\"Transit Time\\\", \\\"startTimeUtc\\\": \\\"2023-04-17T21:18:27.3923239Z\\\",
+        \\\"durationInMs\\\": 0.3305},{\\\"event\\\": \\\"Received\\\", \\\"startTimeUtc\\\":
+        \\\"2023-04-17T21:18:27.3926544Z\\\", \\\"durationInMs\\\": 0.0328},{\\\"event\\\":
+        \\\"Completed\\\", \\\"startTimeUtc\\\": \\\"2023-04-17T21:18:27.3926872Z\\\",
+        \\\"durationInMs\\\": 0}],\\\"serviceEndpointStats\\\":{\\\"inflightRequests\\\":1,\\\"openConnections\\\":1},\\\"connectionStats\\\":{\\\"waitforConnectionInit\\\":\\\"False\\\",\\\"callsPendingReceive\\\":0,\\\"lastSendAttempt\\\":\\\"2023-04-17T21:18:27.3522369Z\\\",\\\"lastSend\\\":\\\"2023-04-17T21:18:27.3522369Z\\\",\\\"lastReceive\\\":\\\"2023-04-17T21:18:27.3922379Z\\\"},\\\"requestSizeInBytes\\\":468,\\\"responseMetadataSizeInBytes\\\":135,\\\"responseBodySizeInBytes\\\":87};\\r\\n
+        ResourceType: Database, OperationType: Read\\r\\nRequestStart: 2023-04-17T21:18:27.3922379Z;
+        ResponseTime: 2023-04-17T21:18:27.3922379Z; StoreResult: StorePhysicalAddress:
+        rntbd://10.0.1.4:11300/apps/086b9727-0f1e-420d-ad24-bd7872d61a7c/services/902ef170-7877-49d2-a447-24108ab4b886/partitions/84e3a825-d977-43f2-a0a8-bc797ae36440/replicas/133256184057980333s,
         LSN: 11, GlobalCommittedLsn: 11, PartitionKeyRangeId: , IsValid: True, StatusCode:
         404, SubStatusCode: 0, RequestCharge: 1, ItemLSN: -1, SessionToken: -1#11,
-        UsingLocalLSN: False, TransportException: null, BELatencyMs: 0.317, ActivityId:
-        eb6a5232-d629-11ed-8918-f077c3948549, RetryAfterInMs: , TransportRequestTimeline:
+        UsingLocalLSN: False, TransportException: null, BELatencyMs: 0.142, ActivityId:
+        647936e6-dd65-11ed-9740-8cdcd4532c5b, RetryAfterInMs: , TransportRequestTimeline:
         {\\\"requestTimeline\\\":[{\\\"event\\\": \\\"Created\\\", \\\"startTimeUtc\\\":
-        \\\"2023-04-08T16:25:06.4676356Z\\\", \\\"durationInMs\\\": 0.0047},{\\\"event\\\":
-        \\\"ChannelAcquisitionStarted\\\", \\\"startTimeUtc\\\": \\\"2023-04-08T16:25:06.4676403Z\\\",
-        \\\"durationInMs\\\": 0.0021},{\\\"event\\\": \\\"Pipelined\\\", \\\"startTimeUtc\\\":
-        \\\"2023-04-08T16:25:06.4676424Z\\\", \\\"durationInMs\\\": 0.1339},{\\\"event\\\":
-        \\\"Transit Time\\\", \\\"startTimeUtc\\\": \\\"2023-04-08T16:25:06.4677763Z\\\",
-        \\\"durationInMs\\\": 0.7889},{\\\"event\\\": \\\"Received\\\", \\\"startTimeUtc\\\":
-        \\\"2023-04-08T16:25:06.4685652Z\\\", \\\"durationInMs\\\": 0.0738},{\\\"event\\\":
-        \\\"Completed\\\", \\\"startTimeUtc\\\": \\\"2023-04-08T16:25:06.4686390Z\\\",
-        \\\"durationInMs\\\": 0}],\\\"serviceEndpointStats\\\":{\\\"inflightRequests\\\":1,\\\"openConnections\\\":1},\\\"connectionStats\\\":{\\\"waitforConnectionInit\\\":\\\"False\\\",\\\"callsPendingReceive\\\":0,\\\"lastSendAttempt\\\":\\\"2023-04-08T16:25:06.3676624Z\\\",\\\"lastSend\\\":\\\"2023-04-08T16:25:06.3676624Z\\\",\\\"lastReceive\\\":\\\"2023-04-08T16:25:06.3976338Z\\\"},\\\"requestSizeInBytes\\\":470,\\\"responseMetadataSizeInBytes\\\":135,\\\"responseBodySizeInBytes\\\":87};\\r\\n
+        \\\"2023-04-17T21:18:27.3922379Z\\\", \\\"durationInMs\\\": 0.0032},{\\\"event\\\":
+        \\\"ChannelAcquisitionStarted\\\", \\\"startTimeUtc\\\": \\\"2023-04-17T21:18:27.3922411Z\\\",
+        \\\"durationInMs\\\": 0.0011},{\\\"event\\\": \\\"Pipelined\\\", \\\"startTimeUtc\\\":
+        \\\"2023-04-17T21:18:27.3922422Z\\\", \\\"durationInMs\\\": 0.0557},{\\\"event\\\":
+        \\\"Transit Time\\\", \\\"startTimeUtc\\\": \\\"2023-04-17T21:18:27.3922979Z\\\",
+        \\\"durationInMs\\\": 0.4006},{\\\"event\\\": \\\"Received\\\", \\\"startTimeUtc\\\":
+        \\\"2023-04-17T21:18:27.3926985Z\\\", \\\"durationInMs\\\": 0.0445},{\\\"event\\\":
+        \\\"Completed\\\", \\\"startTimeUtc\\\": \\\"2023-04-17T21:18:27.3927430Z\\\",
+        \\\"durationInMs\\\": 0}],\\\"serviceEndpointStats\\\":{\\\"inflightRequests\\\":1,\\\"openConnections\\\":1},\\\"connectionStats\\\":{\\\"waitforConnectionInit\\\":\\\"False\\\",\\\"callsPendingReceive\\\":0,\\\"lastSendAttempt\\\":\\\"2023-04-17T21:18:27.3522369Z\\\",\\\"lastSend\\\":\\\"2023-04-17T21:18:27.3522369Z\\\",\\\"lastReceive\\\":\\\"2023-04-17T21:18:27.3822371Z\\\"},\\\"requestSizeInBytes\\\":468,\\\"responseMetadataSizeInBytes\\\":135,\\\"responseBodySizeInBytes\\\":87};\\r\\n
         ResourceType: Database, OperationType: Read\\r\\n, SDK: Microsoft.Azure.Documents.Common/2.14.0\"},
         Request URI: /dbs/cli000002, RequestStats: , SDK: Microsoft.Azure.Documents.Common/2.14.0"}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '6534'
+      - '6524'
       content-type:
       - application/json
       date:
-      - Sat, 08 Apr 2023 16:25:06 GMT
+      - Mon, 17 Apr 2023 21:18:26 GMT
       pragma:
       - no-cache
       server:

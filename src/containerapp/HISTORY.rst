@@ -3,7 +3,15 @@
 Release History
 ===============
 Upcoming
-+++++++
+++++++
+* 'az containerapp auth update': remove unsupported argument --enable-token-store
+* 'az containerapp update'/'az containerapp env update': fix --no-wait
+* 'az containerapp update': fix the --yaml update behavior to respect the empty array in patch-request
+
+0.3.28
+++++++
+* 'az containerapp secret set': fix help typo
+* 'az containerapp secret set': add more format validation for key vault secrets
 * 'az containerapp up': fix --location comparison logic
 * 'az containerapp update': change --max-replicas limit
 * Add CLI support for containerapp ingress sticky-sessions'
@@ -16,7 +24,7 @@ Upcoming
 * 'az containerapp secret show': add support for secrets from Key Vault
 
 0.3.26
-+++++++
+++++++
 * 'az containerapp exec': fix bugs for consumption workload based environment
 * 'az containerapp env create': fix bug causing --enable-workload-profiles to require an argument
 
