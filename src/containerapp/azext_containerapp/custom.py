@@ -3990,7 +3990,7 @@ def remove_openid_connect_provider_settings(cmd, resource_group_name, name, prov
 
 def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=None,
                        runtime_version=None, config_file_path=None, unauthenticated_client_action=None,
-                       redirect_provider=None, enable_token_store=None, require_https=None,
+                       redirect_provider=None, require_https=None,
                        proxy_convention=None, proxy_custom_host_header=None,
                        proxy_custom_proto_header=None, excluded_paths=None):
     from ._utils import set_field_in_auth_settings, update_http_settings_in_auth_settings
@@ -4029,13 +4029,6 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
         if "globalValidation" not in existing_auth:
             existing_auth["globalValidation"] = {}
         existing_auth["globalValidation"]["redirectToProvider"] = redirect_provider
-
-    if enable_token_store is not None:
-        if "login" not in existing_auth:
-            existing_auth["login"] = {}
-        if "tokenStore" not in existing_auth["login"]:
-            existing_auth["login"]["tokenStore"] = {}
-        existing_auth["login"]["tokenStore"]["enabled"] = enable_token_store
 
     if excluded_paths is not None:
         if "globalValidation" not in existing_auth:
