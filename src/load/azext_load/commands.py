@@ -16,6 +16,3 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
 
     from .operations.update import LoadTestUpdate
     self.command_table['load update'] = LoadTestUpdate(loader=self)
-
-    
-    
