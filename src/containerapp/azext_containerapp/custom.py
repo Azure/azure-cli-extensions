@@ -113,7 +113,9 @@ def process_loaded_yaml(yaml_containerapp):
             del yaml_containerapp[nested_property]
 
     if "managedEnvironmentId" in yaml_containerapp['properties']:
-        yaml_containerapp['properties']["environmentId"] = yaml_containerapp['properties']['managedEnvironmentId']
+        tmp = yaml_containerapp['properties']['managedEnvironmentId']
+        if tmp:
+            yaml_containerapp['properties']["environmentId"] = tmp
         del yaml_containerapp['properties']['managedEnvironmentId']
 
     return yaml_containerapp

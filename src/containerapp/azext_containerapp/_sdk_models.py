@@ -12,7 +12,6 @@ import sys
 from typing import Any, Dict, List, Optional, Union
 
 import msrest.serialization as _serialization
-# import azext_containerapp as _models
 
 from . import _sdk_models, _sdk_enums as _models
 
