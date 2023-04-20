@@ -306,9 +306,9 @@ def _ensure_location_allowed(cmd, location, resource_provider, resource_type):
             if res and getattr(res, 'resource_type', "") == resource_type:
                 res_locations = getattr(res, 'locations', [])
 
-        res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+        res_locations = [format_location(res_loc) for res_loc in res_locations if res_loc.strip()]
 
-        location_formatted = location.lower().replace(" ", "")
+        location_formatted = format_location(location)
         if location_formatted not in res_locations:
             raise ValidationError(f"Location '{location}' is not currently supported. To get list of supported locations, run `az provider show -n {resource_provider} --query \"resourceTypes[?resourceType=='{resource_type}'].locations\"`")
 
@@ -361,6 +361,12 @@ def parse_secret_flags(secret_list):
         identity_Id = ""
 
         kv_identity = value.split(',', 2)
+        if len(kv_identity) == 1:
+            if kv_identity[0].startswith('keyvaultref:'):
+                raise ValidationError("Identityref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\.")
+            if kv_identity[0].startswith('identityref:'):
+                raise ValidationError("Keyvaultref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\.")
+
         if len(kv_identity) == 2:
             kv = kv_identity[0]
             identity = kv_identity[1]
@@ -864,7 +870,7 @@ def clean_null_values(d):
         return {
             k: v
             for k, v in ((k, clean_null_values(v)) for k, v in d.items())
-            if v
+            if v or isinstance(v, list)
         }
     if isinstance(d, list):
         return [v for v in map(clean_null_values, d) if v]
@@ -1629,8 +1635,9 @@ def get_default_workload_profiles(cmd, location):
 
 def ensure_workload_profile_supported(cmd, env_name, env_rg, workload_profile_name, managed_env_info):
     profile_names = [p["name"] for p in safe_get(managed_env_info, "properties", "workloadProfiles", default=[])]
-    if workload_profile_name not in profile_names:
-        raise ValidationError(f"Not a valid workload profile name: '{workload_profile_name}'. Run 'az containerapp env workload-profile list -n myEnv -g myResourceGroup' to see options.")
+    profile_names_lower = [p.lower() for p in profile_names]
+    if workload_profile_name.lower() not in profile_names_lower:
+        raise ValidationError(f"Not a valid workload profile name: '{workload_profile_name}'. The valid workload profiles names for this environment are: '{', '.join(profile_names)}'")
 
 
 def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, action):
@@ -1691,3 +1698,9 @@ def certificate_thumbprint_matches(certificate_object, thumbprint=None):
 
 def certificate_matches(certificate_object, location=None, thumbprint=None):
     return certificate_location_matches(certificate_object, location) and certificate_thumbprint_matches(certificate_object, thumbprint)
+
+
+def format_location(location=None):
+    if location:
+        return location.lower().replace(" ", "").replace("(", "").replace(")", "")
+    return location

@@ -1,6 +1,12 @@
 # Azure CLI Bastion Extension #
 This is an extension to Azure CLI to manage Bastion resources.
 
+Documentation References: 
+
+https://learn.microsoft.com/en-us/azure/bastion/connect-ip-address#connect-to-vm---native-client
+
+https://learn.microsoft.com/en-us/azure/bastion/connect-native-client-windows#connect-IP
+
 ## How to use ##
 Manage Azure Bastion host machines.
 
