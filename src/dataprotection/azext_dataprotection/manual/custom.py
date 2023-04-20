@@ -299,6 +299,16 @@ def data_protection_backup_instance_initialize(datasource_type, datasource_id, d
     else:
         backup_instance_name = datasource_info["resource_name"] + "-" + datasource_info["resource_name"] + "-" + str(guid)
 
+    if manifest["addBackupDatasourceParametersList"]:
+        if backup_configuration is None:
+            raise CLIError("Please input parameter backup-configuration for AKS cluster backup. \
+                           Use command az dataprotection backup-instance initialize-backupconfig \
+                           for creating the backup-configuration")
+    else:
+        if not backup_configuration is None:
+            # Raise a warning for user?
+            pass
+
     return {
         "backup_instance_name": backup_instance_name,
         "properties": {
@@ -307,6 +317,7 @@ def data_protection_backup_instance_initialize(datasource_type, datasource_id, d
             "policy_info": policy_info,
             "datasource_auth_credentials": datasource_auth_credentials_info,
             "friendly_name": friendly_name,
+            "backup_configuration": backup_configuration,
             "object_type": "BackupInstance"
         },
         "tags": tags
