@@ -537,6 +537,11 @@ def create_containerapp(cmd,
     if resources_def is not None:
         container_def["resources"] = resources_def
 
+
+    template_def = TemplateModel
+    template_def["containers"] = [container_def]
+    template_def["scale"] = scale_def
+
     volume_def = VolumeModel
     volume_mount_def = VolumeMountModel
     if secret_volume_mount is not None:
@@ -548,12 +553,7 @@ def create_containerapp(cmd,
         volume_mount_def["volumeName"] = volume_def["name"]
         volume_mount_def["mountPath"] = secret_volume_mount
         container_def["volumeMounts"] = [volume_mount_def]
-
-    template_def = TemplateModel
-    template_def["containers"] = [container_def]
-    template_def["scale"] = scale_def
-    # do i put this under an if
-    template_def["volumes"] = [volume_def]
+        template_def["volumes"] = [volume_def]
 
     if revision_suffix is not None:
         template_def["revisionSuffix"] = revision_suffix
