@@ -70,7 +70,6 @@ def cf_environment_type_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).environment_type
 
 
-
 # Control plane
 
 

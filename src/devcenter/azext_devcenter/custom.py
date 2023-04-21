@@ -832,4 +832,3 @@ def devcenter_environment_definition_show_dp(
     return cf_dataplane.environment_definitions.get(
         catalog_name=catalog_name, definition_name=definition_name
     )
-
