@@ -60,7 +60,7 @@ helps['containerapp create'] = """
               az containerapp create -n MyContainerapp -g MyResourceGroup \\
                   --image my-app:v1.0 --environment MyContainerappEnv \\
                   --secrets mysecret=secretvalue1 anothersecret="secret value 2" \\
-                  --mount-secret-volume "mnt/secrets"
+                  --secret-volume-mount "mnt/secrets"
 """
 
 helps['containerapp update'] = """
