@@ -18,8 +18,11 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update the Database resource corresponding to the Virtual Instance for SAP solutions resource. This will be used by service only. PUT by end user will return a Bad Request error.
 
-    :example: Update workloads sap database instance tags
-        az workloads sap-database-instance update -g rg -n instance-name --vis-name name --tags "{tag:tag}"
+    :example: Add tags for an existing Database instance resource
+        az workloads sap-database-instance update --sap-virtual-instance-name <VIS name> -g <Resource-group-name> -n <ResourceName> --tags tag=test tag2=test2
+
+    :example: Add tags for an existing Database instance resource using the Azure resource ID of the instance
+        az workloads sap-database-instance update --id <ResourceID> --tags tag=test1
     """
 
     _aaz_info = {

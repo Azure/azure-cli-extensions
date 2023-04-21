@@ -18,8 +18,11 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Show the SAP Application Server Instance corresponding to the Virtual Instance for SAP solutions resource.
 
-    :example: Show workloads sap application server instance
-        az workloads sap-application-server-instance show -g rg -n instance-name --vis-name name
+    :example: Get an overview of an App Server Instance
+        az workloads sap-application-server-instance show -g <Resource-group-name> --sap-virtual-instance-name <VIS name> -n <ResourceName>
+
+    :example: Get an overview of an App Server Instance using the Azure resource ID of the instance
+        az workloads sap-application-server-instance show --id <ResourceID>
     """
 
     _aaz_info = {

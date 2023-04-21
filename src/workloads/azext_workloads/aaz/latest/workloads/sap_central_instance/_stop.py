@@ -18,8 +18,11 @@ from azure.cli.core.aaz import *
 class Stop(AAZCommand):
     """Stops the SAP Central Services Instance.
 
-    :example: Stop workloads sap central instance
-        az workloads sap-central-instance stop -g rg -n instance-name --vis-name name
+    :example: Stop Central services instance of the SAP system
+        az workloads sap-central-instance stop --sap-virtual-instance-name <VIS Name> -g <Resource-group-name> -n <ResourceName>
+
+    :example: Stop Central services instance of the SAP system using the Azure resource ID of the instance
+        az workloads sap-central-instance stop --id <ResourceID>
     """
 
     _aaz_info = {

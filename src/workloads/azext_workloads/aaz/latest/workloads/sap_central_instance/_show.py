@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Show the SAP Central Services Instance resource.
 
-    :example: Show workloads sap central instance
-        az workloads sap-central-instance show -g rg -n instance-name --vis-name name
+    :example: Get an overview of a Central service Instance using the Azure resource ID of the instance
+        az workloads sap-central-instance show --id <ResourceID>
     """
 
     _aaz_info = {

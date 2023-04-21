@@ -18,8 +18,20 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a Virtual Instance for SAP solutions (VIS) resource
 
-    :example: Create workloads sap-virtual-instance
-        az workloads sap-virtual-instance create -g rg -n instance-name --environment Nonprod --sap-product s4hana --configuration D:\create_infra_distributed_non_ha_config.json
+    :example: Deploy infrastructure for a three-tier distributed SAP system. See sample json payload here: https://go.microsoft.com/fwlink/?linkid=2230236
+        az workloads sap-virtual-instance create -g <Resource Group Name> -n <VIS Name> --environment NonProd --sap-product s4hana --configuration <Payload file path> --identity "{type:UserAssigned,userAssignedIdentities:{<Managed_Identity_ResourceID>:{}}}"
+
+    :example: Install SAP software on the infrastructure deployed for the three-tier distributed SAP system. See sample json payload here: https://go.microsoft.com/fwlink/?linkid=2230167
+        az workloads sap-virtual-instance create -g <Resource Group Name> -n <VIS Name> --environment NonProd --sap-product s4hana --configuration <Payload file path> --identity "{type:UserAssigned,userAssignedIdentities:{<Managed_Identity_ResourceID>:{}}}"
+
+    :example: Deploy infrastructure for a three-tier distributed Highly Available (HA) SAP system with customized resource naming. See sample json payload here: https://go.microsoft.com/fwlink/?linkid=2230402
+        az workloads sap-virtual-instance create -g <Resource Group Name> -n <VIS Name> --environment NonProd --sap-product s4hana --configuration <Payload file path> --identity "{type:UserAssigned,userAssignedIdentities:{<Managed_Identity_ResourceID>:{}}}"
+
+    :example: Install SAP software on the infrastructure deployed for the three-tier distributed Highly Available (HA) SAP system with customized resource naming. See sample json payload here: https://go.microsoft.com/fwlink/?linkid=2230340
+        az workloads sap-virtual-instance create -g <Resource Group Name> -n <VIS Name> --environment NonProd --sap-product s4hana --configuration <Payload file path> --identity "{type:UserAssigned,userAssignedIdentities:{<Managed_Identity_ResourceID>:{}}}"
+
+    :example: Register an existing SAP system as a Virtual Instance for SAP solutions resource (VIS)
+        az workloads sap-virtual-instance create -g CLI-TESTING -n C36 --environment NonProd --sap-product s4hana --central-server-vm <Virtual Machine ID> --identity "{type:UserAssigned,userAssignedIdentities:{<Managed Identity resource ID>:{}}}"
     """
 
     _aaz_info = {

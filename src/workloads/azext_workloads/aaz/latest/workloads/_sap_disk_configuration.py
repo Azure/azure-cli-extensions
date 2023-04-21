@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class SapDiskConfiguration(AAZCommand):
     """Show the SAP Disk Configuration Layout prod/non-prod SAP System.
 
-    :example: Show the SAP Disk Configuration Layout prod/non-prod SAP System.
-        az workloads sap-disk-configuration --app-location "northeurope" --database-type "HANA" --db-vm-sku "Standard_M32ts" --deployment-type "SingleServer" --environment "NonProd" --sap-product "S4HANA" --location "northeurope"
+    :example: Get the SAP Disk Configuration Layout for prod/non-prod SAP System
+        az workloads sap-disk-configuration --app-location eastus --database-type HANA --db-vm-sku Standard_M32ts --deployment-type SingleServer --environment NonProd --sap-product S4HANA --location eastus
     """
 
     _aaz_info = {

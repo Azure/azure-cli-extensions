@@ -18,8 +18,11 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a Virtual Instance for SAP solutions (VIS) resource
 
-    :example: Update sap-virtual-instance tags
-        az workloads sap-virtual-instance update -g rg -n instance-name --tags "{tag:tag}"
+    :example: Add tags for an existing Virtual Instance for SAP solutions (VIS) resource
+        az workloads sap-virtual-instance update -g <Resource-group-name> -n <ResourceName> --tags tag=test tag2=test2
+
+    :example: Add tags for an existing Virtual Instance for SAP solutions (VIS) resource using the Azure resource ID of the VIS
+        az workloads sap-virtual-instance update --id <ResourceID> --tags tag=test1
     """
 
     _aaz_info = {

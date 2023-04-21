@@ -18,8 +18,11 @@ from azure.cli.core.aaz import *
 class Stop(AAZCommand):
     """Stops the SAP Application, that is the Application server instances and Central Services instance.
 
-    :example: Stop workloads sap-virtual-instance
-        az workloads sap-virtual-instance stop -g rg --vis-name name
+    :example: Stop an SAP system: This command stops the SAP application tier, that is ASCS instance and App servers of the system.
+        az workloads sap-virtual-instance stop -g <Resource-group-name> -n <ResourceName>
+
+    :example: Stop an SAP system using the Azure resource ID of the Virtual instance for SAP solutions (VIS): This command stops the SAP application tier, that is ASCS instance and App servers of the system.
+        az workloads sap-virtual-instance stop --id <ResourceID>
     """
 
     _aaz_info = {

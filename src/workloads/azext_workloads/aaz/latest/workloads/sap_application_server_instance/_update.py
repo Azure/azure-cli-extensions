@@ -18,8 +18,11 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update the SAP Application Server Instance resource. This will be used by service only. PUT by end user will return a Bad Request error.
 
-    :example: Update workloads sap application server instance
-        az workloads sap-application-server-instance update -g rg -n instance-name --vis-name name --tags "{tag:tag}"
+    :example: Add tags for an existing App server instance resource
+        az workloads sap-application-server-instance update --sap-virtual-instance-name <VIS name> -g <Resource-group-name> -n <ResourceName> --tags tag=test tag2=test2
+
+    :example: Add tags for an existing App server instance resource using the Azure resource ID of the instance
+        az workloads sap-application-server-instance update --id <ResourceID> --tags tag=test1
     """
 
     _aaz_info = {

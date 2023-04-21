@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List the SAP Central Services Instance resource for the given Virtual Instance for SAP solutions resource.
 
-    :example: List workloads sap-central-instance
-        az workloads sap-central-instance list -g rg --vis-name name
+    :example: Get an overview of the Central service Instance in a Virtual instance for SAP solutions (VIS)
+        az workloads sap-central-instance list -g <Resource-group-name> --sap-virtual-instance-name <VIS name>
     """
 
     _aaz_info = {

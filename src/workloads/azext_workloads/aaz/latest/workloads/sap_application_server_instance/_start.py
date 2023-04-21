@@ -18,8 +18,11 @@ from azure.cli.core.aaz import *
 class Start(AAZCommand):
     """Starts the SAP Application Server Instance.
 
-    :example: Start workloads sap application server instance
-        az workloads sap-application-server-instance start -g rg -n instance-name --vis-name name
+    :example: Start an Application server instance of the SAP system
+        az workloads sap-application-server-instance start --sap-virtual-instance-name <VIS Name> -g <Resource-group-name> -n <ResourceName>
+
+    :example: Start an Application server instance of the SAP system using the Azure resource ID of the instance
+        az workloads sap-application-server-instance start --id <ResourceID>
     """
 
     _aaz_info = {
