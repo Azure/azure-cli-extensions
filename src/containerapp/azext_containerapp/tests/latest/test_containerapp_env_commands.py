@@ -122,6 +122,13 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.appLogsConfiguration.destination', None),
         ])
 
+        self.cmd('containerapp env update -g {} -n {} --logs-destination none --no-wait'.format(resource_group, env_name))
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', None),
+        ])
+
 
 
     @AllowLargeResponse(8192)

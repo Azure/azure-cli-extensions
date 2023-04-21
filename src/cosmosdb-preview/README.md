@@ -296,3 +296,28 @@ az cosmosdb mongodb collection restore --account-name "account-name" \
     --collection-name "collection-name"
     --restore-timestamp "2020-07-20T16:09:53+0000" \
 ```
+
+#### Restore a deleted container within same account for a Gremlin database account ####
+
+```sh
+az cosmosdb gremlin graph restore --account-name "account-name" \
+    --database-name "database-name"
+    --name "graph-name"
+    --restore-timestamp "2022-07-20T16:09:53+0000" \
+```
+
+#### Restore a deleted database within same account for a Gremlin database account ####
+
+```sh
+az cosmosdb gremlin database restore --account-name "account-name" \
+    --name "database-name"
+    --restore-timestamp "2022-07-20T16:09:53+0000" \
+```
+
+#### Restore a deleted collection within same account for a Table account ####
+
+```sh
+az cosmosdb table restore --account-name "account-name" \
+    --table-name "table-name"
+    --restore-timestamp "2022-07-20T16:09:53+0000" \
+```
