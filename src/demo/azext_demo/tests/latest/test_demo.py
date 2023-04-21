@@ -73,8 +73,7 @@ class Redisenterprisescenario1Test(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(Redisenterprisescenario1Test, self).__init__(*args, **kwargs)
         self.kwargs.update({
-            #'subscription_id': self.get_subscription_id()
-            'subscription_id': 'b3e4e86c-59f5-46c5-8b86-e97530eac8fb'
+            'subscription_id': self.get_subscription_id()
         })
 
         self.kwargs.update({
@@ -126,8 +125,7 @@ class Redisenterprisescenario2Test(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(Redisenterprisescenario2Test, self).__init__(*args, **kwargs)
         self.kwargs.update({
-            #'subscription_id': self.get_subscription_id()
-            'subscription_id': 'b3e4e86c-59f5-46c5-8b86-e97530eac8fb'
+            'subscription_id': self.get_subscription_id()
         })
 
         self.kwargs.update({
