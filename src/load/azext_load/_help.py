@@ -10,24 +10,36 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-helps['az load test create'] = """Create a new test or update an existing test.
+helps['load test create'] = """
+type: command
+short-summary: Create a new test test.
+long-summary: Create a new test test.
+parameters:
+    - name: --test-id
+      type: string
+      short-summary: 'Unique name for the load test'
+      long-summary: |
+          Unique name for the load test, must contain only lower-case alphabetic, numeric, underscore or hyphen characters. Required.
+    - name: --body
+      type: string
+      short-summary: 'Load test model'
+      long-summary: |
+          Load test model. Required.
+"""
 
-        Create a new test or update an existing test.
-
-        :param test_id: Unique name for the load test, must contain only lower-case alphabetic,
-         numeric, underscore or hyphen characters. Required.
-        :type test_id: str
-        :param body: Load test model. Required.
-        :type body: JSON
-        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
-         Default value is "application/merge-patch+json".
-        :paramtype content_type: str
-        :return: JSON object
-        :rtype: JSON
-        :raises ~azure.core.exceptions.HttpResponseError:"""
-
-helps['az load test delete'] = """Create a new test or update an existing test.
-
-        :param test_id: Unique name for the load test, must contain only lower-case alphabetic,
-         numeric, underscore or hyphen characters. Required.
-        :type test_id: str"""
+helps['load test update'] = """
+type: command
+short-summary: Update an existing test.
+long-summary: Update an existing test.
+parameters:
+    - name: --test-id
+      type: string
+      short-summary: 'Unique name for the load test'
+      long-summary: |
+          Unique name for the load test, must contain only lower-case alphabetic, numeric, underscore or hyphen characters. Required.
+    - name: --body
+      type: string
+      short-summary: 'Load test model'
+      long-summary: |
+          Load test model. Required.
+"""
