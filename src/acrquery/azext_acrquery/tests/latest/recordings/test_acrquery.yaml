@@ -30,7 +30,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:34:45 GMT
+      - Fri, 21 Apr 2023 17:12:48 GMT
       expires:
       - '-1'
       pragma:
@@ -70,7 +70,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cabarker/providers/Microsoft.ContainerRegistry/registries/metadataunittest/listCredentials?api-version=2022-02-01-preview
   response:
     body:
-      string: '{"username":"metadataUnitTest","passwords":[{"name":"password","value":"pBpvwuG+EtplLPsh58tF4wC5y2PC9CKs1TtBlM2tRW+ACRB1S4kB"},{"name":"password2","value":"tPSTpVp6rdoKQy2mhV+PDQyJaAjZ/0G+5Su63L6Xw8+ACRCpHqRC"}]}'
+      string: '{"username":"metadataUnitTest","passwords":[{"name":"password","value":"a6rb+OZE4JkMYmsyM7jCTGvy2Zhhsy+SeF4CCim/Dj+ACRA0f3zz"},{"name":"password2","value":"tPSTpVp6rdoKQy2mhV+PDQyJaAjZ/0G+5Su63L6Xw8+ACRCpHqRC"}]}'
     headers:
       api-supported-versions:
       - 2022-02-01-preview
@@ -81,7 +81,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:34:47 GMT
+      - Fri, 21 Apr 2023 17:12:49 GMT
       expires:
       - '-1'
       pragma:
@@ -132,7 +132,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:34:48 GMT
+      - Fri, 21 Apr 2023 17:12:50 GMT
       expires:
       - '-1'
       pragma:
@@ -177,7 +177,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:34:50 GMT
+      - Fri, 21 Apr 2023 17:12:51 GMT
       expires:
       - '-1'
       pragma:
@@ -227,7 +227,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:34:50 GMT
+      - Fri, 21 Apr 2023 17:12:52 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -274,7 +274,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:34:51 GMT
+      - Fri, 21 Apr 2023 17:12:52 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -290,7 +290,7 @@ interactions:
       code: 401
       message: Unauthorized
 - request:
-    body: service=metadataunittest.azurecr.io&grant_type=password&username=metadataUnitTest&password=pBpvwuG%2BEtplLPsh58tF4wC5y2PC9CKs1TtBlM2tRW%2BACRB1S4kB&scope=registry%3Acatalog%3A%2A
+    body: service=metadataunittest.azurecr.io&grant_type=password&username=metadataUnitTest&password=a6rb%2BOZE4JkMYmsyM7jCTGvy2Zhhsy%2BSeF4CCim%2FDj%2BACRA0f3zz&scope=registry%3Acatalog%3A%2A
     headers:
       Accept:
       - '*/*'
@@ -299,7 +299,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '178'
+      - '182'
       Content-Type:
       - application/x-www-form-urlencoded
       User-Agent:
@@ -308,14 +308,14 @@ interactions:
     uri: https://metadataunittest.azurecr.io/oauth2/token
   response:
     body:
-      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJhMmM1NzhlYi0xYzdkLTQwMDYtYTdkNC0yZTFjZjA2ZjAwMzgiLCJzdWIiOiJtZXRhZGF0YVVuaXRUZXN0IiwibmJmIjoxNjgyMDIxOTkxLCJleHAiOjE2ODIwMjY0OTEsImlhdCI6MTY4MjAyMTk5MSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiYWNjZXNzIjpbeyJUeXBlIjoicmVnaXN0cnkiLCJOYW1lIjoiY2F0YWxvZyIsIkFjdGlvbnMiOlsiKiJdfV0sInJvbGVzIjpbIk93bmVyIl0sImdyYW50X3R5cGUiOiJhY2Nlc3NfdG9rZW4ifQ.IWmVKAQPhVfRkjM3vpI1bFwQv4QWGMrImLcgJnycHcqUPn9b5zNKVdxkyIqozBqGpGW49P0knD5DXvHMFiRz2fhb1okU30P4UFMacCCj2rHrKqADHrQjEq0tx96uvCTM44XzF_HtnTlrtNRgKtJ3WKkzNrUgtNMeYN2_N2xZMMCNMYzeVk34ZWbZOrJE48iXTOzYgSP7jmmZL86RQK6h9aIKWpP-6wnIBCJsEXz4GtMyn1mfw37iWoEBTRaHMEWB5Uxrdt-imt1FfME9b29vpW0eoqReoMVjO3fYAVZQ6857PqrPDIJt5x0DWcsLvkoupU0KkKBW2xDc52vIRYuuCg"}'
+      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJmNWU4ZjQwNC00M2Q5LTQzN2ItYWRkYi1iMDY1YTA3OWE4ZDQiLCJzdWIiOiJtZXRhZGF0YVVuaXRUZXN0IiwibmJmIjoxNjgyMDk2MjcyLCJleHAiOjE2ODIxMDA3NzIsImlhdCI6MTY4MjA5NjI3MiwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiYWNjZXNzIjpbeyJUeXBlIjoicmVnaXN0cnkiLCJOYW1lIjoiY2F0YWxvZyIsIkFjdGlvbnMiOlsiKiJdfV0sInJvbGVzIjpbIk93bmVyIl0sImdyYW50X3R5cGUiOiJhY2Nlc3NfdG9rZW4ifQ.RMVcFiZSbMrUORlPjZTp8JhNolbZbVnDhFh500QmtxXIouUtsqeXhXnWVujzYSAeMRmH3NadgCosogb-MQdKXX-RgNpqmrgcyrO2G14Fo14SP1NpAp49k7Aits5EIhsWqi6SQwXVpUPH9OCCOVbj4oTt_kF3vDaqPKUsP46LFb6_swVchzAat7bEyqovp3vN2yxENdJIBkw9g4ixnDASmAAhkyhG-c0s55a0PF44mdUfIxC8FEhr-Pcto_cgltD33y8U-oX9LXei-ggsyGvkkSKRMTlA6b5OG5oGXf3hHgjz9itirCCAX4G8ye1DI0GzLOfjo4eyfiIT5OrgSwy_Tw"}'
     headers:
       connection:
       - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:34:51 GMT
+      - Fri, 21 Apr 2023 17:12:52 GMT
       server:
       - openresty
       strict-transport-security:
@@ -362,7 +362,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:34:51 GMT
+      - Fri, 21 Apr 2023 17:12:53 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -408,7 +408,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:34:53 GMT
+      - Fri, 21 Apr 2023 17:12:54 GMT
       expires:
       - '-1'
       pragma:
@@ -453,99 +453,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:34:55 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - python-requests/2.26.0
-    method: GET
-    uri: https://metadataunittest.azurecr.io/v2/
-  response:
-    body:
-      string: '{"errors":[{"code":"UNAUTHORIZED","message":"authentication required,
-        visit https://aka.ms/acr/authorization for more information.","detail":null}]}
-
-        '
-    headers:
-      access-control-expose-headers:
-      - Docker-Content-Digest
-      - WWW-Authenticate
-      - Link
-      - X-Ms-Correlation-Request-Id
-      connection:
-      - keep-alive
-      content-length:
-      - '149'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 20 Apr 2023 20:34:56 GMT
-      docker-distribution-api-version:
-      - registry/2.0
-      server:
-      - openresty
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      - max-age=31536000; includeSubDomains
-      www-authenticate:
-      - Bearer realm="https://metadataunittest.azurecr.io/oauth2/token",service="metadataunittest.azurecr.io"
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 401
-      message: Unauthorized
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - acr login
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n --expose-token
-      User-Agent:
-      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
-        (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cabarker/providers/Microsoft.ContainerRegistry/registries/metadataunittest?api-version=2022-02-01-preview
-  response:
-    body:
-      string: '{"sku":{"name":"Premium","tier":"Premium"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cabarker/providers/Microsoft.ContainerRegistry/registries/metadataUnitTest","name":"metadataUnitTest","location":"eastus2euap","tags":{},"systemData":{"createdBy":"cabarker@microsoft.com","createdByType":"User","createdAt":"2023-04-12T17:24:53.9169276+00:00","lastModifiedBy":"cabarker@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-12T21:12:45.4115208+00:00"},"properties":{"loginServer":"metadataunittest.azurecr.io","creationDate":"2023-04-12T17:24:53.9169276Z","provisioningState":"Succeeded","adminUserEnabled":true,"networkRuleSet":{"defaultAction":"Allow","ipRules":[]},"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2023-04-12T17:25:07.1209478+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2023-04-12T21:12:45.5771286+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false}}'
-    headers:
-      api-supported-versions:
-      - 2022-02-01-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '1432'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 20 Apr 2023 20:34:56 GMT
+      - Fri, 21 Apr 2023 17:12:55 GMT
       expires:
       - '-1'
       pragma:
@@ -595,7 +503,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:34:57 GMT
+      - Fri, 21 Apr 2023 17:12:56 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -611,7 +519,103 @@ interactions:
       code: 401
       message: Unauthorized
 - request:
-    body: grant_type=access_token&service=metadataunittest.azurecr.io&tenant=72f988bf-86f1-41af-91ab-2d7cd011db47&access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNjgyMDIyNTg1LCJuYmYiOjE2ODIwMjI1ODUsImV4cCI6MTY4MjAyNzk3OCwiX2NsYWltX25hbWVzIjp7Imdyb3VwcyI6InNyYzEifSwiX2NsYWltX3NvdXJjZXMiOnsic3JjMSI6eyJlbmRwb2ludCI6Imh0dHBzOi8vZ3JhcGgud2luZG93cy5uZXQvNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3VzZXJzL2YzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMy9nZXRNZW1iZXJPYmplY3RzIn19LCJhY3IiOiIxIiwiYWlvIjoiQVZRQXEvOFRBQUFBajNjUzRGZEZ4dTRqWVhIRHFLbHNwanRzTXFrb0R1ck9HQmhPam1kTmpXRjlzWk1BaGNSbXNsVENUeHBNRGY5VXZyNTBGNXZXVEd4WUFyZFBvTHBTUitBOEJQYmlqSm5nc2F1RDRRQXZQWUE9IiwiYW1yIjpbInB3ZCIsIm1mYSJdLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsImFwcGlkYWNyIjoiMCIsImZhbWlseV9uYW1lIjoiQmFya2VyIiwiZ2l2ZW5fbmFtZSI6IkNhcm9saW5lIiwiaXBhZGRyIjoiMjQuMTcuMTc5LjUzIiwibmFtZSI6IkNhcm9saW5lIEJhcmtlciIsIm9pZCI6ImYzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMyIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0yMTI3NTIxMTg0LTE2MDQwMTI5MjAtMTg4NzkyNzUyNy02MDAxODI2MCIsInB1aWQiOiIxMDAzMjAwMjFCRDQwNzE5IiwicmgiOiIwLkFSb0F2NGo1Y3ZHR3IwR1JxeTE4MEJIYlIwWklmM2tBdXRkUHVrUGF3ZmoyTUJNYUFDRS4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJFYTFFZ3hfMjhyWXdjcnZLc2xpd1Z1RUZtbzZSWEtKZXdlQy1WczQ0dkJvIiwidGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3IiwidW5pcXVlX25hbWUiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwidXBuIjoiY2FiYXJrZXJAbWljcm9zb2Z0LmNvbSIsInV0aSI6InZVVldVZVlIZjAtSFFoQ0luY29yQUEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbImI3OWZiZjRkLTNlZjktNDY4OS04MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfY2MiOlsiQ1AxIl0sInhtc190Y2R0IjoxMjg5MjQxNTQ3fQ.Ku1TTxdQM8FLVuAs8NFmECx7sh7whFxh12jAIwM5pcx3pTRCUvK9IyYmFv7Kfn4bcaGCunDE8SSyO-i_GEZagEhxrtfB-cxTbp5YudhesaMTmhUkeXVjoXAOMTjEdbBFwGrVa3eQxBwczPfyEJ4CAiCgnws8mDAV8HtGKObZqvtpgS6a9eGb2u6YEB5mQHHOSmTiciVta8mngurHQ9Xkxzzdnk7CCevPCqSVCmi-eegno08Zp-hDsAfGz8xb54b00skoLfYEok8GTWNAm4CQ0uRnipgF9JmGmmFGvpCIda8ikRlE_RoV0_w7G0YSk3RyE9qa3n8LX-UsP5wOY1l7sw
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - acr login
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n --expose-token
+      User-Agent:
+      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
+        (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cabarker/providers/Microsoft.ContainerRegistry/registries/metadataunittest?api-version=2022-02-01-preview
+  response:
+    body:
+      string: '{"sku":{"name":"Premium","tier":"Premium"},"type":"Microsoft.ContainerRegistry/registries","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cabarker/providers/Microsoft.ContainerRegistry/registries/metadataUnitTest","name":"metadataUnitTest","location":"eastus2euap","tags":{},"systemData":{"createdBy":"cabarker@microsoft.com","createdByType":"User","createdAt":"2023-04-12T17:24:53.9169276+00:00","lastModifiedBy":"cabarker@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-12T21:12:45.4115208+00:00"},"properties":{"loginServer":"metadataunittest.azurecr.io","creationDate":"2023-04-12T17:24:53.9169276Z","provisioningState":"Succeeded","adminUserEnabled":true,"networkRuleSet":{"defaultAction":"Allow","ipRules":[]},"policies":{"quarantinePolicy":{"status":"disabled"},"trustPolicy":{"type":"Notary","status":"disabled"},"retentionPolicy":{"days":7,"lastUpdatedTime":"2023-04-12T17:25:07.1209478+00:00","status":"disabled"},"exportPolicy":{"status":"enabled"},"azureADAuthenticationAsArmPolicy":{"status":"enabled"},"softDeletePolicy":{"retentionDays":7,"lastUpdatedTime":"2023-04-12T21:12:45.5771286+00:00","status":"disabled"}},"encryption":{"status":"disabled"},"dataEndpointEnabled":false,"dataEndpointHostNames":[],"privateEndpointConnections":[],"publicNetworkAccess":"Enabled","networkRuleBypassOptions":"AzureServices","zoneRedundancy":"Disabled","anonymousPullEnabled":false}}'
+    headers:
+      api-supported-versions:
+      - 2022-02-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1432'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 17:12:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.26.0
+    method: GET
+    uri: https://metadataunittest.azurecr.io/v2/
+  response:
+    body:
+      string: '{"errors":[{"code":"UNAUTHORIZED","message":"authentication required,
+        visit https://aka.ms/acr/authorization for more information.","detail":null}]}
+
+        '
+    headers:
+      access-control-expose-headers:
+      - Docker-Content-Digest
+      - WWW-Authenticate
+      - Link
+      - X-Ms-Correlation-Request-Id
+      connection:
+      - keep-alive
+      content-length:
+      - '149'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 21 Apr 2023 17:12:57 GMT
+      docker-distribution-api-version:
+      - registry/2.0
+      server:
+      - openresty
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      - max-age=31536000; includeSubDomains
+      www-authenticate:
+      - Bearer realm="https://metadataunittest.azurecr.io/oauth2/token",service="metadataunittest.azurecr.io"
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 401
+      message: Unauthorized
+- request:
+    body: grant_type=access_token&service=metadataunittest.azurecr.io&tenant=72f988bf-86f1-41af-91ab-2d7cd011db47&access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNjgyMDk2ODQ4LCJuYmYiOjE2ODIwOTY4NDgsImV4cCI6MTY4MjEwMjQxNCwiX2NsYWltX25hbWVzIjp7Imdyb3VwcyI6InNyYzEifSwiX2NsYWltX3NvdXJjZXMiOnsic3JjMSI6eyJlbmRwb2ludCI6Imh0dHBzOi8vZ3JhcGgud2luZG93cy5uZXQvNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3VzZXJzL2YzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMy9nZXRNZW1iZXJPYmplY3RzIn19LCJhY3IiOiIxIiwiYWlvIjoiQVZRQXEvOFRBQUFBemFwY0FSWlcwTVZodE5ibkhaNFp4NFcyQ29JQVhkK3BSVVE5ZWFZbkRSd2Vmbnk3SUhGeFN5OW1DZFdSaGRZTytoakhYMUpXRGxPMjVFQWx2WC8yNEdJRi9idGxCWURuWFF5VFpqZWJOY2c9IiwiYW1yIjpbInB3ZCIsIm1mYSJdLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsImFwcGlkYWNyIjoiMCIsImZhbWlseV9uYW1lIjoiQmFya2VyIiwiZ2l2ZW5fbmFtZSI6IkNhcm9saW5lIiwiaXBhZGRyIjoiMjQuMTcuMTc5LjUzIiwibmFtZSI6IkNhcm9saW5lIEJhcmtlciIsIm9pZCI6ImYzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMyIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0yMTI3NTIxMTg0LTE2MDQwMTI5MjAtMTg4NzkyNzUyNy02MDAxODI2MCIsInB1aWQiOiIxMDAzMjAwMjFCRDQwNzE5IiwicmgiOiIwLkFSb0F2NGo1Y3ZHR3IwR1JxeTE4MEJIYlIwWklmM2tBdXRkUHVrUGF3ZmoyTUJNYUFDRS4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJFYTFFZ3hfMjhyWXdjcnZLc2xpd1Z1RUZtbzZSWEtKZXdlQy1WczQ0dkJvIiwidGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3IiwidW5pcXVlX25hbWUiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwidXBuIjoiY2FiYXJrZXJAbWljcm9zb2Z0LmNvbSIsInV0aSI6ImVkcmNBZzhBT1VPcFRyNzBVd3RVQUEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbImI3OWZiZjRkLTNlZjktNDY4OS04MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfY2MiOlsiQ1AxIl0sInhtc190Y2R0IjoxMjg5MjQxNTQ3fQ.nqZ82CyP8acm-r9D3ByWngKAcy3QLID1XBykqtj4UccvP8VNc4Aw0NIkQo0DOYcZeNG53LVab4QcAeKjJRhyrJrLjXsaRFXq8mUU3cOJsJW_jbi9sntHY8lEfTOZj1zFklwtbHS3Oq0T-VQDYsNMO0_qGIEK3TidJKBsD6eNYpOaytjuwVuK0CIFcdz5p4kbjy_pgQVg4l4dFeO1l9lh1CGuCUjGLAJpjkH6MAe42Rv9Xm3eOm1ucoCFAYKzDODf6Nhua3-TuH1zBzbawBItG22WvCPxYMnAaH-AyHPDFrk-mxYUqQFDbNAASItEqNkTn9zntw4QMqS-tQYmEulSkw
     headers:
       Accept:
       - '*/*'
@@ -629,14 +633,14 @@ interactions:
     uri: https://metadataunittest.azurecr.io/oauth2/exchange
   response:
     body:
-      string: '{"refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJhZmY1ZjcyYy1iNGQ0LTQyMTgtYTRjMC1lOTM0ZWY0ZjViNjAiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDIxOTk4LCJleHAiOjE2ODIwMzM2OTgsImlhdCI6MTY4MjAyMTk5OCwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.n_x0uWeGgCZ1IeFl5EQ6AP53AWVOsq52mP_eWoA5gbOLGq1ZkEjPUWQttfXgVwXo-UfsOtvasZOqBuRgsv9NJZ6EZuXHIENMfKXfPjBTW2vALX-y83vGqlDuBy74PR3clny4LfLCjcrSJy1kvy0u64wem25ixz1-qDfe3JFMfnkgAE70EaH13dY503WPNsg_ma3Voc4e5eNO_zBYD9sMcOfH35fRW5iFxfsysz2hWYeamQn5GhNUQPHoGovoNSfyPOEhyPEDu7S9JDXBwxdu0oGy-FN04P3DmG32LocSkC7rmRM3_b-mPxMusBD64TB6emhZoUBOFNZvmM-r3RPoCA"}'
+      string: '{"refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJiNmE0ZTk4Ny0yMDhmLTQ2NjgtYjBhNy1hZmMxMjk2YWFiMjMiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk2Mjc4LCJleHAiOjE2ODIxMDc5NzgsImlhdCI6MTY4MjA5NjI3OCwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.Bq75mKE8kjDaUlvEbnAt5F_j_Mgb9NwQoRNdTTrejKrB27-SFxfqYnqrDVoceRaQHCINKAMgl1pRFkVg3b7RPrpM9uZJRFG7fD3Lx4pqhKCZJhrn7DSgfty8qwYfYLTWZGf8Ae5GeWkeHXc3zMBuF1AKNWezLJHNMNNGkyZJ7-EKQdbOe7jNKt0OtYXEYaksTeO4xQL2U7fjdKPMOwm7xnV52B5dL33KV5cGz_qfQd6oe9kCu_KDdyYj_4kfAQ821GLRoWEgrSBKwxBJg0DHKqshzen73CcLHcYhWIuP5InBdAuafbUJyfrwwZMGv5XQtUoRD6rgBiPNaWrA_Y3wiw"}'
     headers:
       connection:
       - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:34:58 GMT
+      - Fri, 21 Apr 2023 17:12:58 GMT
       server:
       - openresty
       strict-transport-security:
@@ -644,7 +648,7 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-ratelimit-remaining-calls-per-second:
-      - '333.3'
+      - '333.316667'
     status:
       code: 200
       message: OK
@@ -679,7 +683,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:01 GMT
+      - Fri, 21 Apr 2023 17:12:59 GMT
       expires:
       - '-1'
       pragma:
@@ -724,7 +728,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:03 GMT
+      - Fri, 21 Apr 2023 17:13:00 GMT
       expires:
       - '-1'
       pragma:
@@ -774,7 +778,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:04 GMT
+      - Fri, 21 Apr 2023 17:13:02 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -821,7 +825,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:04 GMT
+      - Fri, 21 Apr 2023 17:13:02 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -837,7 +841,7 @@ interactions:
       code: 401
       message: Unauthorized
 - request:
-    body: service=metadataunittest.azurecr.io&grant_type=password&username=00000000-0000-0000-0000-000000000000&password=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJhZmY1ZjcyYy1iNGQ0LTQyMTgtYTRjMC1lOTM0ZWY0ZjViNjAiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDIxOTk4LCJleHAiOjE2ODIwMzM2OTgsImlhdCI6MTY4MjAyMTk5OCwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.n_x0uWeGgCZ1IeFl5EQ6AP53AWVOsq52mP_eWoA5gbOLGq1ZkEjPUWQttfXgVwXo-UfsOtvasZOqBuRgsv9NJZ6EZuXHIENMfKXfPjBTW2vALX-y83vGqlDuBy74PR3clny4LfLCjcrSJy1kvy0u64wem25ixz1-qDfe3JFMfnkgAE70EaH13dY503WPNsg_ma3Voc4e5eNO_zBYD9sMcOfH35fRW5iFxfsysz2hWYeamQn5GhNUQPHoGovoNSfyPOEhyPEDu7S9JDXBwxdu0oGy-FN04P3DmG32LocSkC7rmRM3_b-mPxMusBD64TB6emhZoUBOFNZvmM-r3RPoCA&scope=registry%3Acatalog%3A%2A
+    body: service=metadataunittest.azurecr.io&grant_type=password&username=00000000-0000-0000-0000-000000000000&password=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJiNmE0ZTk4Ny0yMDhmLTQ2NjgtYjBhNy1hZmMxMjk2YWFiMjMiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk2Mjc4LCJleHAiOjE2ODIxMDc5NzgsImlhdCI6MTY4MjA5NjI3OCwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.Bq75mKE8kjDaUlvEbnAt5F_j_Mgb9NwQoRNdTTrejKrB27-SFxfqYnqrDVoceRaQHCINKAMgl1pRFkVg3b7RPrpM9uZJRFG7fD3Lx4pqhKCZJhrn7DSgfty8qwYfYLTWZGf8Ae5GeWkeHXc3zMBuF1AKNWezLJHNMNNGkyZJ7-EKQdbOe7jNKt0OtYXEYaksTeO4xQL2U7fjdKPMOwm7xnV52B5dL33KV5cGz_qfQd6oe9kCu_KDdyYj_4kfAQ821GLRoWEgrSBKwxBJg0DHKqshzen73CcLHcYhWIuP5InBdAuafbUJyfrwwZMGv5XQtUoRD6rgBiPNaWrA_Y3wiw&scope=registry%3Acatalog%3A%2A
     headers:
       Accept:
       - '*/*'
@@ -855,14 +859,14 @@ interactions:
     uri: https://metadataunittest.azurecr.io/oauth2/token
   response:
     body:
-      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJmNmE2MzYwMC0yYWU0LTQ2MzMtOWJmOC1lMmVlNjk5ODBmNDUiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDIyMDA1LCJleHAiOjE2ODIwMjY1MDUsImlhdCI6MTY4MjAyMjAwNSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiYWNjZXNzIjpbeyJUeXBlIjoicmVnaXN0cnkiLCJOYW1lIjoiY2F0YWxvZyIsIkFjdGlvbnMiOlsiKiJdfV0sInJvbGVzIjpbXSwiZ3JhbnRfdHlwZSI6ImFjY2Vzc190b2tlbiIsImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2In0.tPfh_bU358uhI9C7-wUhGwn5WEaYTc-iBg_ilacbyekccIOUNxnfmmHgqlR-g-geqhKNTkGEGckLSiw621JsYbppLsi5Oi2rp5z50S2mNCSWUC40_WCn1LQj6-aOfh3p71qBN1c5jpQXbE5uORwl_eo7HviemGQfEeGvToklFR6lJakeGI2DuLwklyNCM1fcFhemXL3fC9zhNmiiBEoehIzLNjYHnbxh-iAxh3Zcyk38MPF0p3OnnfGSHc_NCF7ehyBn8M6EiDVB9rf8XlBRMmXsYVYqa5yH8Ri6Vn7pUuJsHMKVTRXREkyOhmgDrwDJDIJfMcjVqmbmhzJugwcdDg","refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJhZmY1ZjcyYy1iNGQ0LTQyMTgtYTRjMC1lOTM0ZWY0ZjViNjAiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDIxOTk4LCJleHAiOjE2ODIwMzM2OTgsImlhdCI6MTY4MjAyMTk5OCwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.n_x0uWeGgCZ1IeFl5EQ6AP53AWVOsq52mP_eWoA5gbOLGq1ZkEjPUWQttfXgVwXo-UfsOtvasZOqBuRgsv9NJZ6EZuXHIENMfKXfPjBTW2vALX-y83vGqlDuBy74PR3clny4LfLCjcrSJy1kvy0u64wem25ixz1-qDfe3JFMfnkgAE70EaH13dY503WPNsg_ma3Voc4e5eNO_zBYD9sMcOfH35fRW5iFxfsysz2hWYeamQn5GhNUQPHoGovoNSfyPOEhyPEDu7S9JDXBwxdu0oGy-FN04P3DmG32LocSkC7rmRM3_b-mPxMusBD64TB6emhZoUBOFNZvmM-r3RPoCA"}'
+      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiI0NDkyYzRmZC0wYjllLTRmZmItYjRjYy1iOTIzMjk2Yzc1ZDAiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk2MjgzLCJleHAiOjE2ODIxMDA3ODMsImlhdCI6MTY4MjA5NjI4MywiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiYWNjZXNzIjpbeyJUeXBlIjoicmVnaXN0cnkiLCJOYW1lIjoiY2F0YWxvZyIsIkFjdGlvbnMiOlsiKiJdfV0sInJvbGVzIjpbXSwiZ3JhbnRfdHlwZSI6ImFjY2Vzc190b2tlbiIsImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2In0.ZQJSa5wyMnCfPgH_WBEjq4HHCu-A392T-JdrA5SfsgcKKQ5yZUIOKqn4psgBVd7OeaBLeZPVCzNtNzT-TprbW8H2oInb5y1iclM6suFuVbHkLOCTaovnHadBNkg4Shn2c0ZDgWdxwqZ1K5Iu4yTVh2Dz_fuI26l4ETkW0ZZfaRxhbBGy-mZCsdE634FA1mneCO7YwdE8IjIluGNzpsHlj7HrksdzAQl49bPdmG0Uvdd-ikAeA2mqNhjgiMw_FaLIEKG7yUCOXLd95YdhNmlAQvy2c-gAXaElW9l-_wCFZgcE81gwl7p9ilMKuKZ-BDs_2C3FnrJvdFe4MSpK_iMv_w","refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJiNmE0ZTk4Ny0yMDhmLTQ2NjgtYjBhNy1hZmMxMjk2YWFiMjMiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk2Mjc4LCJleHAiOjE2ODIxMDc5NzgsImlhdCI6MTY4MjA5NjI3OCwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.Bq75mKE8kjDaUlvEbnAt5F_j_Mgb9NwQoRNdTTrejKrB27-SFxfqYnqrDVoceRaQHCINKAMgl1pRFkVg3b7RPrpM9uZJRFG7fD3Lx4pqhKCZJhrn7DSgfty8qwYfYLTWZGf8Ae5GeWkeHXc3zMBuF1AKNWezLJHNMNNGkyZJ7-EKQdbOe7jNKt0OtYXEYaksTeO4xQL2U7fjdKPMOwm7xnV52B5dL33KV5cGz_qfQd6oe9kCu_KDdyYj_4kfAQ821GLRoWEgrSBKwxBJg0DHKqshzen73CcLHcYhWIuP5InBdAuafbUJyfrwwZMGv5XQtUoRD6rgBiPNaWrA_Y3wiw"}'
     headers:
       connection:
       - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:05 GMT
+      - Fri, 21 Apr 2023 17:13:03 GMT
       server:
       - openresty
       strict-transport-security:
@@ -870,7 +874,7 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-ratelimit-remaining-calls-per-second:
-      - '333.283333'
+      - '333.3'
     status:
       code: 200
       message: OK
@@ -909,7 +913,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:05 GMT
+      - Fri, 21 Apr 2023 17:13:03 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -955,13 +959,15 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:07 GMT
+      - Fri, 21 Apr 2023 17:13:04 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -998,7 +1004,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:06 GMT
+      - Fri, 21 Apr 2023 17:13:06 GMT
       expires:
       - '-1'
       pragma:
@@ -1040,7 +1046,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cabarker/providers/Microsoft.ContainerRegistry/registries/metadataunittest/regenerateCredential?api-version=2022-02-01-preview
   response:
     body:
-      string: '{"username":"metadataUnitTest","passwords":[{"name":"password","value":"a6rb+OZE4JkMYmsyM7jCTGvy2Zhhsy+SeF4CCim/Dj+ACRA0f3zz"},{"name":"password2","value":"tPSTpVp6rdoKQy2mhV+PDQyJaAjZ/0G+5Su63L6Xw8+ACRCpHqRC"}]}'
+      string: '{"username":"metadataUnitTest","passwords":[{"name":"password","value":"YCwrB754Qq/NsKiYFdf0jyY8dNAtl2bGO4jxukkuXx+ACRC45HX1"},{"name":"password2","value":"tPSTpVp6rdoKQy2mhV+PDQyJaAjZ/0G+5Su63L6Xw8+ACRCpHqRC"}]}'
     headers:
       api-supported-versions:
       - 2022-02-01-preview
@@ -1051,7 +1057,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:07 GMT
+      - Fri, 21 Apr 2023 17:13:06 GMT
       expires:
       - '-1'
       pragma:
@@ -1102,7 +1108,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:10 GMT
+      - Fri, 21 Apr 2023 17:13:07 GMT
       expires:
       - '-1'
       pragma:
@@ -1147,7 +1153,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:10 GMT
+      - Fri, 21 Apr 2023 17:13:08 GMT
       expires:
       - '-1'
       pragma:
@@ -1197,7 +1203,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:12 GMT
+      - Fri, 21 Apr 2023 17:13:09 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -1243,7 +1249,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:12 GMT
+      - Fri, 21 Apr 2023 17:13:09 GMT
       expires:
       - '-1'
       pragma:
@@ -1293,7 +1299,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:13 GMT
+      - Fri, 21 Apr 2023 17:13:10 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -1309,7 +1315,7 @@ interactions:
       code: 401
       message: Unauthorized
 - request:
-    body: grant_type=access_token&service=metadataunittest.azurecr.io&tenant=72f988bf-86f1-41af-91ab-2d7cd011db47&access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNjgyMDIyNTg1LCJuYmYiOjE2ODIwMjI1ODUsImV4cCI6MTY4MjAyNzk3OCwiX2NsYWltX25hbWVzIjp7Imdyb3VwcyI6InNyYzEifSwiX2NsYWltX3NvdXJjZXMiOnsic3JjMSI6eyJlbmRwb2ludCI6Imh0dHBzOi8vZ3JhcGgud2luZG93cy5uZXQvNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3VzZXJzL2YzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMy9nZXRNZW1iZXJPYmplY3RzIn19LCJhY3IiOiIxIiwiYWlvIjoiQVZRQXEvOFRBQUFBajNjUzRGZEZ4dTRqWVhIRHFLbHNwanRzTXFrb0R1ck9HQmhPam1kTmpXRjlzWk1BaGNSbXNsVENUeHBNRGY5VXZyNTBGNXZXVEd4WUFyZFBvTHBTUitBOEJQYmlqSm5nc2F1RDRRQXZQWUE9IiwiYW1yIjpbInB3ZCIsIm1mYSJdLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsImFwcGlkYWNyIjoiMCIsImZhbWlseV9uYW1lIjoiQmFya2VyIiwiZ2l2ZW5fbmFtZSI6IkNhcm9saW5lIiwiaXBhZGRyIjoiMjQuMTcuMTc5LjUzIiwibmFtZSI6IkNhcm9saW5lIEJhcmtlciIsIm9pZCI6ImYzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMyIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0yMTI3NTIxMTg0LTE2MDQwMTI5MjAtMTg4NzkyNzUyNy02MDAxODI2MCIsInB1aWQiOiIxMDAzMjAwMjFCRDQwNzE5IiwicmgiOiIwLkFSb0F2NGo1Y3ZHR3IwR1JxeTE4MEJIYlIwWklmM2tBdXRkUHVrUGF3ZmoyTUJNYUFDRS4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJFYTFFZ3hfMjhyWXdjcnZLc2xpd1Z1RUZtbzZSWEtKZXdlQy1WczQ0dkJvIiwidGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3IiwidW5pcXVlX25hbWUiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwidXBuIjoiY2FiYXJrZXJAbWljcm9zb2Z0LmNvbSIsInV0aSI6InZVVldVZVlIZjAtSFFoQ0luY29yQUEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbImI3OWZiZjRkLTNlZjktNDY4OS04MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfY2MiOlsiQ1AxIl0sInhtc190Y2R0IjoxMjg5MjQxNTQ3fQ.Ku1TTxdQM8FLVuAs8NFmECx7sh7whFxh12jAIwM5pcx3pTRCUvK9IyYmFv7Kfn4bcaGCunDE8SSyO-i_GEZagEhxrtfB-cxTbp5YudhesaMTmhUkeXVjoXAOMTjEdbBFwGrVa3eQxBwczPfyEJ4CAiCgnws8mDAV8HtGKObZqvtpgS6a9eGb2u6YEB5mQHHOSmTiciVta8mngurHQ9Xkxzzdnk7CCevPCqSVCmi-eegno08Zp-hDsAfGz8xb54b00skoLfYEok8GTWNAm4CQ0uRnipgF9JmGmmFGvpCIda8ikRlE_RoV0_w7G0YSk3RyE9qa3n8LX-UsP5wOY1l7sw
+    body: grant_type=access_token&service=metadataunittest.azurecr.io&tenant=72f988bf-86f1-41af-91ab-2d7cd011db47&access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNjgyMDk2ODQ4LCJuYmYiOjE2ODIwOTY4NDgsImV4cCI6MTY4MjEwMjQxNCwiX2NsYWltX25hbWVzIjp7Imdyb3VwcyI6InNyYzEifSwiX2NsYWltX3NvdXJjZXMiOnsic3JjMSI6eyJlbmRwb2ludCI6Imh0dHBzOi8vZ3JhcGgud2luZG93cy5uZXQvNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3VzZXJzL2YzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMy9nZXRNZW1iZXJPYmplY3RzIn19LCJhY3IiOiIxIiwiYWlvIjoiQVZRQXEvOFRBQUFBemFwY0FSWlcwTVZodE5ibkhaNFp4NFcyQ29JQVhkK3BSVVE5ZWFZbkRSd2Vmbnk3SUhGeFN5OW1DZFdSaGRZTytoakhYMUpXRGxPMjVFQWx2WC8yNEdJRi9idGxCWURuWFF5VFpqZWJOY2c9IiwiYW1yIjpbInB3ZCIsIm1mYSJdLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsImFwcGlkYWNyIjoiMCIsImZhbWlseV9uYW1lIjoiQmFya2VyIiwiZ2l2ZW5fbmFtZSI6IkNhcm9saW5lIiwiaXBhZGRyIjoiMjQuMTcuMTc5LjUzIiwibmFtZSI6IkNhcm9saW5lIEJhcmtlciIsIm9pZCI6ImYzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMyIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0yMTI3NTIxMTg0LTE2MDQwMTI5MjAtMTg4NzkyNzUyNy02MDAxODI2MCIsInB1aWQiOiIxMDAzMjAwMjFCRDQwNzE5IiwicmgiOiIwLkFSb0F2NGo1Y3ZHR3IwR1JxeTE4MEJIYlIwWklmM2tBdXRkUHVrUGF3ZmoyTUJNYUFDRS4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJFYTFFZ3hfMjhyWXdjcnZLc2xpd1Z1RUZtbzZSWEtKZXdlQy1WczQ0dkJvIiwidGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3IiwidW5pcXVlX25hbWUiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwidXBuIjoiY2FiYXJrZXJAbWljcm9zb2Z0LmNvbSIsInV0aSI6ImVkcmNBZzhBT1VPcFRyNzBVd3RVQUEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbImI3OWZiZjRkLTNlZjktNDY4OS04MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfY2MiOlsiQ1AxIl0sInhtc190Y2R0IjoxMjg5MjQxNTQ3fQ.nqZ82CyP8acm-r9D3ByWngKAcy3QLID1XBykqtj4UccvP8VNc4Aw0NIkQo0DOYcZeNG53LVab4QcAeKjJRhyrJrLjXsaRFXq8mUU3cOJsJW_jbi9sntHY8lEfTOZj1zFklwtbHS3Oq0T-VQDYsNMO0_qGIEK3TidJKBsD6eNYpOaytjuwVuK0CIFcdz5p4kbjy_pgQVg4l4dFeO1l9lh1CGuCUjGLAJpjkH6MAe42Rv9Xm3eOm1ucoCFAYKzDODf6Nhua3-TuH1zBzbawBItG22WvCPxYMnAaH-AyHPDFrk-mxYUqQFDbNAASItEqNkTn9zntw4QMqS-tQYmEulSkw
     headers:
       Accept:
       - '*/*'
@@ -1327,14 +1333,14 @@ interactions:
     uri: https://metadataunittest.azurecr.io/oauth2/exchange
   response:
     body:
-      string: '{"refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJkNTI3NWY4Ni05ZDRlLTQzNzItOTBmZi00OWRmNDczMTNhMzQiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDIyMDE0LCJleHAiOjE2ODIwMzM3MTQsImlhdCI6MTY4MjAyMjAxNCwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.Gbm89lK_ozMbYGZefJL0xFshjVTKVeprMHABGDQkK0f5eeARRjkcwkKjDDzdatm2U-iu0CaRX9lT7W5GRmBB2zntF9vL3qcdi82QVOTY5kKttg0Be8IsGmFoTlmRiMl15SWo76vX_g5v4NjRrw6UxdR_R_0nD5xu4_ndDi17A7QKSzoMEYDD_BXNCe3LUez9yGaVGO5gnpaTRw8UHr_ed34L1TmG8zoq9I8w4xpD23vXBcRCIOTOk3kh8XtE7CqlmTZN-Tl0EUrTYa2nDfXGvF3lHrhXU7CWn1KLAh3NY4stME6kzQ5YM9Bu4NJoeh53hL4_y0x1r8US9XQzz2wmtA"}'
+      string: '{"refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiIxYzQ0NThiNC0xYzcwLTQ1OGUtYmQ5ZS1kZTJlM2E4NDA5OTQiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk2MjkxLCJleHAiOjE2ODIxMDc5OTEsImlhdCI6MTY4MjA5NjI5MSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.rMXTTiCmPEAw8Ls-f4VTmV1lzI3ga1q4UrAJM_6J4I7JJ4oJh2O3WiE_kDCm5zOE9AvfMCHrbloDaXux7nB603-0eRIuuRh4CIJE_bIBYoqbC2o5rzOWmVoan7--s4ZljT-dLKT1eSPFLxbihyKTtfXW0aFDnyqvceonX23pTZS7nlG3jG0SvUpowB7jbR6hY6lzlh3XbjPkbkbhr_IEC0fT-thTaCfVJQfzMiZ6uCGzTketIhLlfbClR9gdCIJnA_Cg-EdnLSP_2Mm9BHHRyoynIqYipyF0DS4xyfUsMsYElkTzHAJR1Wj7cvAK0PqYAvGYeYabQrFjWN4jKV_ATA"}'
     headers:
       connection:
       - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:14 GMT
+      - Fri, 21 Apr 2023 17:13:11 GMT
       server:
       - openresty
       strict-transport-security:
@@ -1342,12 +1348,12 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-ratelimit-remaining-calls-per-second:
-      - '333.266667'
+      - '333.3'
     status:
       code: 200
       message: OK
 - request:
-    body: grant_type=refresh_token&service=metadataunittest.azurecr.io&scope=registry%3Acatalog%3A%2A&refresh_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJkNTI3NWY4Ni05ZDRlLTQzNzItOTBmZi00OWRmNDczMTNhMzQiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDIyMDE0LCJleHAiOjE2ODIwMzM3MTQsImlhdCI6MTY4MjAyMjAxNCwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.Gbm89lK_ozMbYGZefJL0xFshjVTKVeprMHABGDQkK0f5eeARRjkcwkKjDDzdatm2U-iu0CaRX9lT7W5GRmBB2zntF9vL3qcdi82QVOTY5kKttg0Be8IsGmFoTlmRiMl15SWo76vX_g5v4NjRrw6UxdR_R_0nD5xu4_ndDi17A7QKSzoMEYDD_BXNCe3LUez9yGaVGO5gnpaTRw8UHr_ed34L1TmG8zoq9I8w4xpD23vXBcRCIOTOk3kh8XtE7CqlmTZN-Tl0EUrTYa2nDfXGvF3lHrhXU7CWn1KLAh3NY4stME6kzQ5YM9Bu4NJoeh53hL4_y0x1r8US9XQzz2wmtA
+    body: grant_type=refresh_token&service=metadataunittest.azurecr.io&scope=registry%3Acatalog%3A%2A&refresh_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiIxYzQ0NThiNC0xYzcwLTQ1OGUtYmQ5ZS1kZTJlM2E4NDA5OTQiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk2MjkxLCJleHAiOjE2ODIxMDc5OTEsImlhdCI6MTY4MjA5NjI5MSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.rMXTTiCmPEAw8Ls-f4VTmV1lzI3ga1q4UrAJM_6J4I7JJ4oJh2O3WiE_kDCm5zOE9AvfMCHrbloDaXux7nB603-0eRIuuRh4CIJE_bIBYoqbC2o5rzOWmVoan7--s4ZljT-dLKT1eSPFLxbihyKTtfXW0aFDnyqvceonX23pTZS7nlG3jG0SvUpowB7jbR6hY6lzlh3XbjPkbkbhr_IEC0fT-thTaCfVJQfzMiZ6uCGzTketIhLlfbClR9gdCIJnA_Cg-EdnLSP_2Mm9BHHRyoynIqYipyF0DS4xyfUsMsYElkTzHAJR1Wj7cvAK0PqYAvGYeYabQrFjWN4jKV_ATA
     headers:
       Accept:
       - '*/*'
@@ -1365,14 +1371,14 @@ interactions:
     uri: https://metadataunittest.azurecr.io/oauth2/token
   response:
     body:
-      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiI1YzhkZjY4NC1jNTFhLTQwZjAtYjdkZS0wYTMzZWFlYWRlNDEiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDIyMDE0LCJleHAiOjE2ODIwMjY1MTQsImlhdCI6MTY4MjAyMjAxNCwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiYWNjZXNzIjpbeyJUeXBlIjoicmVnaXN0cnkiLCJOYW1lIjoiY2F0YWxvZyIsIkFjdGlvbnMiOlsiKiJdfV0sInJvbGVzIjpbXSwiZ3JhbnRfdHlwZSI6ImFjY2Vzc190b2tlbiIsImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2In0.KDVuL-vZWHyaAI-umeBNECR_nYOofij92fCsM_e5ixRbLGiDrw6p3PGxZcd43jxtfYLvpDcvdmsUxLZWZFO5BrXdeISWlevJBsZngkGymbRxfo_WDP9skHzTuOHfQ5gsxghTbrjHz87-T28S7kDIIMsmfU3fy5d7RV8ePdGAlzVnlmSiun7nKymxNzxmWtqUPWxmia-KTgtXRAPnjcC3dDa3qjlVpRdkWwOoFaHnkoY99HvRJfKutRNoRzE2s9ZkmViMePQHIEmGvW8Hfr78HCY6rL7Fwo9QLxx3jLQz8BKJNeWficlFQGLaowSArg2AWDauKyGS2BB0spjf50W_8g"}'
+      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJiYTMzODViMi00MzBjLTQyNWQtODRiZC00ZDRkZmUwYjBlY2IiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk2MjkxLCJleHAiOjE2ODIxMDA3OTEsImlhdCI6MTY4MjA5NjI5MSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiYWNjZXNzIjpbeyJUeXBlIjoicmVnaXN0cnkiLCJOYW1lIjoiY2F0YWxvZyIsIkFjdGlvbnMiOlsiKiJdfV0sInJvbGVzIjpbXSwiZ3JhbnRfdHlwZSI6ImFjY2Vzc190b2tlbiIsImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2In0.jYuJ9dQZB0fnAaAG2ek53ASmYnqb4LuizeNTG4rvJbZXQ2Oq-6ngaDMVAnPqY0D-nITI4nVrssSaZEAm0bffoH49yJr03QUxIVEEF6DWqFkDcOH_GeQFrB4nzQ1Stc9i_UgHtTIf206ptj9IGV8KA13GwqTNyzxwqgRPlIMakNEC5wzyV0oLtQ1sgniB9tDIHkp5koO0cFGoKoT9Jp4fV7WRh85DJmNbQCtujPClCQdkNP00DEr1nm20aoAyG2M7U19ocqJz6QhxUqqcvYuM96MnE8sGkWCb1Mkfox0cVXfK7ppHVOj7hyFXw4TTDAMV1UzHmRYPFfTxu6g_Y5KK6w"}'
     headers:
       connection:
       - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:14 GMT
+      - Fri, 21 Apr 2023 17:13:11 GMT
       server:
       - openresty
       strict-transport-security:
@@ -1419,7 +1425,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:14 GMT
+      - Fri, 21 Apr 2023 17:13:12 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -1460,12 +1466,14 @@ interactions:
     headers:
       cache-control:
       - no-cache
+      connection:
+      - close
       content-length:
       - '37322'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:15 GMT
+      - Fri, 21 Apr 2023 17:13:12 GMT
       expires:
       - '-1'
       pragma:
@@ -1510,7 +1518,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:16 GMT
+      - Fri, 21 Apr 2023 17:13:13 GMT
       expires:
       - '-1'
       pragma:
@@ -1560,7 +1568,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:17 GMT
+      - Fri, 21 Apr 2023 17:13:14 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -1606,7 +1614,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:17 GMT
+      - Fri, 21 Apr 2023 17:13:15 GMT
       expires:
       - '-1'
       pragma:
@@ -1656,7 +1664,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:18 GMT
+      - Fri, 21 Apr 2023 17:13:16 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -1672,7 +1680,7 @@ interactions:
       code: 401
       message: Unauthorized
 - request:
-    body: grant_type=access_token&service=metadataunittest.azurecr.io&tenant=72f988bf-86f1-41af-91ab-2d7cd011db47&access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNjgyMDIyNTg1LCJuYmYiOjE2ODIwMjI1ODUsImV4cCI6MTY4MjAyNzk3OCwiX2NsYWltX25hbWVzIjp7Imdyb3VwcyI6InNyYzEifSwiX2NsYWltX3NvdXJjZXMiOnsic3JjMSI6eyJlbmRwb2ludCI6Imh0dHBzOi8vZ3JhcGgud2luZG93cy5uZXQvNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3VzZXJzL2YzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMy9nZXRNZW1iZXJPYmplY3RzIn19LCJhY3IiOiIxIiwiYWlvIjoiQVZRQXEvOFRBQUFBajNjUzRGZEZ4dTRqWVhIRHFLbHNwanRzTXFrb0R1ck9HQmhPam1kTmpXRjlzWk1BaGNSbXNsVENUeHBNRGY5VXZyNTBGNXZXVEd4WUFyZFBvTHBTUitBOEJQYmlqSm5nc2F1RDRRQXZQWUE9IiwiYW1yIjpbInB3ZCIsIm1mYSJdLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsImFwcGlkYWNyIjoiMCIsImZhbWlseV9uYW1lIjoiQmFya2VyIiwiZ2l2ZW5fbmFtZSI6IkNhcm9saW5lIiwiaXBhZGRyIjoiMjQuMTcuMTc5LjUzIiwibmFtZSI6IkNhcm9saW5lIEJhcmtlciIsIm9pZCI6ImYzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMyIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0yMTI3NTIxMTg0LTE2MDQwMTI5MjAtMTg4NzkyNzUyNy02MDAxODI2MCIsInB1aWQiOiIxMDAzMjAwMjFCRDQwNzE5IiwicmgiOiIwLkFSb0F2NGo1Y3ZHR3IwR1JxeTE4MEJIYlIwWklmM2tBdXRkUHVrUGF3ZmoyTUJNYUFDRS4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJFYTFFZ3hfMjhyWXdjcnZLc2xpd1Z1RUZtbzZSWEtKZXdlQy1WczQ0dkJvIiwidGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3IiwidW5pcXVlX25hbWUiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwidXBuIjoiY2FiYXJrZXJAbWljcm9zb2Z0LmNvbSIsInV0aSI6InZVVldVZVlIZjAtSFFoQ0luY29yQUEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbImI3OWZiZjRkLTNlZjktNDY4OS04MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfY2MiOlsiQ1AxIl0sInhtc190Y2R0IjoxMjg5MjQxNTQ3fQ.Ku1TTxdQM8FLVuAs8NFmECx7sh7whFxh12jAIwM5pcx3pTRCUvK9IyYmFv7Kfn4bcaGCunDE8SSyO-i_GEZagEhxrtfB-cxTbp5YudhesaMTmhUkeXVjoXAOMTjEdbBFwGrVa3eQxBwczPfyEJ4CAiCgnws8mDAV8HtGKObZqvtpgS6a9eGb2u6YEB5mQHHOSmTiciVta8mngurHQ9Xkxzzdnk7CCevPCqSVCmi-eegno08Zp-hDsAfGz8xb54b00skoLfYEok8GTWNAm4CQ0uRnipgF9JmGmmFGvpCIda8ikRlE_RoV0_w7G0YSk3RyE9qa3n8LX-UsP5wOY1l7sw
+    body: grant_type=access_token&service=metadataunittest.azurecr.io&tenant=72f988bf-86f1-41af-91ab-2d7cd011db47&access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNjgyMDk2ODQ4LCJuYmYiOjE2ODIwOTY4NDgsImV4cCI6MTY4MjEwMjQxNCwiX2NsYWltX25hbWVzIjp7Imdyb3VwcyI6InNyYzEifSwiX2NsYWltX3NvdXJjZXMiOnsic3JjMSI6eyJlbmRwb2ludCI6Imh0dHBzOi8vZ3JhcGgud2luZG93cy5uZXQvNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3VzZXJzL2YzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMy9nZXRNZW1iZXJPYmplY3RzIn19LCJhY3IiOiIxIiwiYWlvIjoiQVZRQXEvOFRBQUFBemFwY0FSWlcwTVZodE5ibkhaNFp4NFcyQ29JQVhkK3BSVVE5ZWFZbkRSd2Vmbnk3SUhGeFN5OW1DZFdSaGRZTytoakhYMUpXRGxPMjVFQWx2WC8yNEdJRi9idGxCWURuWFF5VFpqZWJOY2c9IiwiYW1yIjpbInB3ZCIsIm1mYSJdLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsImFwcGlkYWNyIjoiMCIsImZhbWlseV9uYW1lIjoiQmFya2VyIiwiZ2l2ZW5fbmFtZSI6IkNhcm9saW5lIiwiaXBhZGRyIjoiMjQuMTcuMTc5LjUzIiwibmFtZSI6IkNhcm9saW5lIEJhcmtlciIsIm9pZCI6ImYzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMyIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0yMTI3NTIxMTg0LTE2MDQwMTI5MjAtMTg4NzkyNzUyNy02MDAxODI2MCIsInB1aWQiOiIxMDAzMjAwMjFCRDQwNzE5IiwicmgiOiIwLkFSb0F2NGo1Y3ZHR3IwR1JxeTE4MEJIYlIwWklmM2tBdXRkUHVrUGF3ZmoyTUJNYUFDRS4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJFYTFFZ3hfMjhyWXdjcnZLc2xpd1Z1RUZtbzZSWEtKZXdlQy1WczQ0dkJvIiwidGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3IiwidW5pcXVlX25hbWUiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwidXBuIjoiY2FiYXJrZXJAbWljcm9zb2Z0LmNvbSIsInV0aSI6ImVkcmNBZzhBT1VPcFRyNzBVd3RVQUEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbImI3OWZiZjRkLTNlZjktNDY4OS04MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfY2MiOlsiQ1AxIl0sInhtc190Y2R0IjoxMjg5MjQxNTQ3fQ.nqZ82CyP8acm-r9D3ByWngKAcy3QLID1XBykqtj4UccvP8VNc4Aw0NIkQo0DOYcZeNG53LVab4QcAeKjJRhyrJrLjXsaRFXq8mUU3cOJsJW_jbi9sntHY8lEfTOZj1zFklwtbHS3Oq0T-VQDYsNMO0_qGIEK3TidJKBsD6eNYpOaytjuwVuK0CIFcdz5p4kbjy_pgQVg4l4dFeO1l9lh1CGuCUjGLAJpjkH6MAe42Rv9Xm3eOm1ucoCFAYKzDODf6Nhua3-TuH1zBzbawBItG22WvCPxYMnAaH-AyHPDFrk-mxYUqQFDbNAASItEqNkTn9zntw4QMqS-tQYmEulSkw
     headers:
       Accept:
       - '*/*'
@@ -1690,14 +1698,14 @@ interactions:
     uri: https://metadataunittest.azurecr.io/oauth2/exchange
   response:
     body:
-      string: '{"refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJiZjJjMGUyNi1mNzJmLTRiMDUtOTc5Ny02ZDE1MzY5MGZkZjMiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDIyMDE5LCJleHAiOjE2ODIwMzM3MTksImlhdCI6MTY4MjAyMjAxOSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.bVX5yFIesVa_wLOW23mtCCE-7wbWX20k5QRRmzOqpdPHh6idrsp29OJ_g9PrrOCALbw0xc97fem3XnEMgLylwm3Se23T1rKKcCq6Wfdgc-C_omIHNlkly5XIGToqzjOTZNi0XDM2aeUBBFC7b6r0_Yey5e25DbuHlUpmHe6RTQ5btZSK4VTO3o9RFcY5KTDjltDFM7tIzZwxCtepKSPO0XG4p5ll_hE7JbU2sdaE8P-XDeAOVe0NXdMNP300HQ6UYdByoCVPtJU6BWfKaSLh9_IBDAm3eZULN54afjQkdQA6B5bp6HrANUQz54vUCBsXq0pwDa6OS47yJIvhPoXc8w"}'
+      string: '{"refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiIxYzY3NzE0MS1jNWQ1LTQ3YzQtODQwNC0yMWFkNjk4NzM4YzIiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk2Mjk2LCJleHAiOjE2ODIxMDc5OTYsImlhdCI6MTY4MjA5NjI5NiwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.Nsg9AUcWJGh2fqmVkAIIbbr1lFDRCDcl3njFvbupEwAyL-sAcFJ4UqxEVuI_uVOO8Aa7nCEQ-VJvt2WrMkzB5AxVyP7aSLBzURMWqiD-FgS6wYbHnTLvdjwbX-g81hGVPz8giylm1yv-G38hgcb2kBTyyxXUXcdq2GS-IUOtgWm6S5M9XaO3_B-y3jAk9wSHeDyosjYSx9Qdsbx2_VP1hG2bb1sAt75t1Shwrut-jzo-DWVO5pdKhinbyR93DFjMBMzVn8fnveMkhDvdHgJwzCfxNOkovoqiowlRR3e0yVBi5rpAh0bOh2Veh17HkB2uyTOfzDIcnwAn3VV_H5O3VA"}'
     headers:
       connection:
       - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:19 GMT
+      - Fri, 21 Apr 2023 17:13:16 GMT
       server:
       - openresty
       strict-transport-security:
@@ -1705,12 +1713,12 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-ratelimit-remaining-calls-per-second:
-      - '333.316667'
+      - '333.283333'
     status:
       code: 200
       message: OK
 - request:
-    body: grant_type=refresh_token&service=metadataunittest.azurecr.io&scope=repository%3Anginx%3Ametadata_read&refresh_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJiZjJjMGUyNi1mNzJmLTRiMDUtOTc5Ny02ZDE1MzY5MGZkZjMiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDIyMDE5LCJleHAiOjE2ODIwMzM3MTksImlhdCI6MTY4MjAyMjAxOSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.bVX5yFIesVa_wLOW23mtCCE-7wbWX20k5QRRmzOqpdPHh6idrsp29OJ_g9PrrOCALbw0xc97fem3XnEMgLylwm3Se23T1rKKcCq6Wfdgc-C_omIHNlkly5XIGToqzjOTZNi0XDM2aeUBBFC7b6r0_Yey5e25DbuHlUpmHe6RTQ5btZSK4VTO3o9RFcY5KTDjltDFM7tIzZwxCtepKSPO0XG4p5ll_hE7JbU2sdaE8P-XDeAOVe0NXdMNP300HQ6UYdByoCVPtJU6BWfKaSLh9_IBDAm3eZULN54afjQkdQA6B5bp6HrANUQz54vUCBsXq0pwDa6OS47yJIvhPoXc8w
+    body: grant_type=refresh_token&service=metadataunittest.azurecr.io&scope=repository%3Anginx%3Ametadata_read&refresh_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiIxYzY3NzE0MS1jNWQ1LTQ3YzQtODQwNC0yMWFkNjk4NzM4YzIiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk2Mjk2LCJleHAiOjE2ODIxMDc5OTYsImlhdCI6MTY4MjA5NjI5NiwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.Nsg9AUcWJGh2fqmVkAIIbbr1lFDRCDcl3njFvbupEwAyL-sAcFJ4UqxEVuI_uVOO8Aa7nCEQ-VJvt2WrMkzB5AxVyP7aSLBzURMWqiD-FgS6wYbHnTLvdjwbX-g81hGVPz8giylm1yv-G38hgcb2kBTyyxXUXcdq2GS-IUOtgWm6S5M9XaO3_B-y3jAk9wSHeDyosjYSx9Qdsbx2_VP1hG2bb1sAt75t1Shwrut-jzo-DWVO5pdKhinbyR93DFjMBMzVn8fnveMkhDvdHgJwzCfxNOkovoqiowlRR3e0yVBi5rpAh0bOh2Veh17HkB2uyTOfzDIcnwAn3VV_H5O3VA
     headers:
       Accept:
       - '*/*'
@@ -1728,14 +1736,14 @@ interactions:
     uri: https://metadataunittest.azurecr.io/oauth2/token
   response:
     body:
-      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiIzM2FkYzA1OS0zMDJmLTRjMmUtYjE1Yy00ODBlMzk0ZjhlNmUiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDIyMDIwLCJleHAiOjE2ODIwMjY1MjAsImlhdCI6MTY4MjAyMjAyMCwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjIuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiYWNjZXNzIjpbeyJUeXBlIjoicmVwb3NpdG9yeSIsIk5hbWUiOiJuZ2lueCIsIkFjdGlvbnMiOlsibWV0YWRhdGFfcmVhZCJdfV0sInJvbGVzIjpbXSwiZ3JhbnRfdHlwZSI6ImFjY2Vzc190b2tlbiIsImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2In0.ZM2xkM9_jb4_v38tJ3Uck6opCFCvS-M0B0HY4VQiQfCBb-7ioGgwh2meeEMt4c-8yNRm421V6qW6dD6eC0JySEeoSCOc0DwtTmkmVEQ9bLnMA920n3vtpHpQ7qVTilnpzXOlyd5cHdMraXBKnmRbPmJOnN00krSyzaIWVFCdegNIm9rHIw7eN8ZyVvt-MNhnRDY52aUUZJUj-xhYMOyfOATRJD-bh6d4SLf6VHw7rvc8JNE_O3fReF3E-4haItqPPGu3VVMkjwruFzF_njbXmRiCfezCLbms7iv1JRE1OrZwGHiznXA-UoYid82_lEjPzXtPfC0qR15RSKogS9jbKw"}'
+      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJkZDdhMTM2Yy1kZGY1LTQ0ZTMtYjExMC1lY2M1ZmU3MzM5OGUiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk2Mjk3LCJleHAiOjE2ODIxMDA3OTcsImlhdCI6MTY4MjA5NjI5NywiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjIuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiYWNjZXNzIjpbeyJUeXBlIjoicmVwb3NpdG9yeSIsIk5hbWUiOiJuZ2lueCIsIkFjdGlvbnMiOlsibWV0YWRhdGFfcmVhZCJdfV0sInJvbGVzIjpbXSwiZ3JhbnRfdHlwZSI6ImFjY2Vzc190b2tlbiIsImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2In0.MnNx_VHoNyG2uN9UpsJ0O8sMmgfdWTqg7zRPLXUYPuq9l7sfEVKDLxFQWsBMwQJMaMhY7cPR1CctOEVtVr5rDgu8bfHo0DU-8ARPpF_IsbVdiY4bP7wKUcAN6LiTo_eDRXnXcI56zR0lEQKCxAT1t-RqxLxkQveRwgr--nJ9MPpPe5-jv4ulrSdqLrfyrbvwNUMSXjJjgZUayZsPbFnhv9ZbrVAWGotqbjA5qGVmJgTQB0-rT4E_bFbBMtTWgS6h8vYUVq-EvTBLdOXqhtvYwhSJz-Dsz0rYOEoHhK71Ef0Zd9N4c5IvMJCYfXs5JcneB5h8GQjh5kYVNVJD8g81Ug"}'
     headers:
       connection:
       - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:20 GMT
+      - Fri, 21 Apr 2023 17:13:17 GMT
       server:
       - openresty
       strict-transport-security:
@@ -1743,7 +1751,7 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-ratelimit-remaining-calls-per-second:
-      - '333.3'
+      - '333.266667'
     status:
       code: 200
       message: OK
@@ -1782,7 +1790,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:20 GMT
+      - Fri, 21 Apr 2023 17:13:17 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -1828,7 +1836,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:22 GMT
+      - Fri, 21 Apr 2023 17:13:20 GMT
       expires:
       - '-1'
       pragma:
@@ -1873,7 +1881,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:23 GMT
+      - Fri, 21 Apr 2023 17:13:21 GMT
       expires:
       - '-1'
       pragma:
@@ -1923,7 +1931,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:24 GMT
+      - Fri, 21 Apr 2023 17:13:22 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -1969,7 +1977,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:24 GMT
+      - Fri, 21 Apr 2023 17:13:22 GMT
       expires:
       - '-1'
       pragma:
@@ -2019,7 +2027,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:25 GMT
+      - Fri, 21 Apr 2023 17:13:23 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -2035,7 +2043,7 @@ interactions:
       code: 401
       message: Unauthorized
 - request:
-    body: grant_type=access_token&service=metadataunittest.azurecr.io&tenant=72f988bf-86f1-41af-91ab-2d7cd011db47&access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNjgyMDIyNTg1LCJuYmYiOjE2ODIwMjI1ODUsImV4cCI6MTY4MjAyNzk3OCwiX2NsYWltX25hbWVzIjp7Imdyb3VwcyI6InNyYzEifSwiX2NsYWltX3NvdXJjZXMiOnsic3JjMSI6eyJlbmRwb2ludCI6Imh0dHBzOi8vZ3JhcGgud2luZG93cy5uZXQvNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3VzZXJzL2YzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMy9nZXRNZW1iZXJPYmplY3RzIn19LCJhY3IiOiIxIiwiYWlvIjoiQVZRQXEvOFRBQUFBajNjUzRGZEZ4dTRqWVhIRHFLbHNwanRzTXFrb0R1ck9HQmhPam1kTmpXRjlzWk1BaGNSbXNsVENUeHBNRGY5VXZyNTBGNXZXVEd4WUFyZFBvTHBTUitBOEJQYmlqSm5nc2F1RDRRQXZQWUE9IiwiYW1yIjpbInB3ZCIsIm1mYSJdLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsImFwcGlkYWNyIjoiMCIsImZhbWlseV9uYW1lIjoiQmFya2VyIiwiZ2l2ZW5fbmFtZSI6IkNhcm9saW5lIiwiaXBhZGRyIjoiMjQuMTcuMTc5LjUzIiwibmFtZSI6IkNhcm9saW5lIEJhcmtlciIsIm9pZCI6ImYzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMyIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0yMTI3NTIxMTg0LTE2MDQwMTI5MjAtMTg4NzkyNzUyNy02MDAxODI2MCIsInB1aWQiOiIxMDAzMjAwMjFCRDQwNzE5IiwicmgiOiIwLkFSb0F2NGo1Y3ZHR3IwR1JxeTE4MEJIYlIwWklmM2tBdXRkUHVrUGF3ZmoyTUJNYUFDRS4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJFYTFFZ3hfMjhyWXdjcnZLc2xpd1Z1RUZtbzZSWEtKZXdlQy1WczQ0dkJvIiwidGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3IiwidW5pcXVlX25hbWUiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwidXBuIjoiY2FiYXJrZXJAbWljcm9zb2Z0LmNvbSIsInV0aSI6InZVVldVZVlIZjAtSFFoQ0luY29yQUEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbImI3OWZiZjRkLTNlZjktNDY4OS04MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfY2MiOlsiQ1AxIl0sInhtc190Y2R0IjoxMjg5MjQxNTQ3fQ.Ku1TTxdQM8FLVuAs8NFmECx7sh7whFxh12jAIwM5pcx3pTRCUvK9IyYmFv7Kfn4bcaGCunDE8SSyO-i_GEZagEhxrtfB-cxTbp5YudhesaMTmhUkeXVjoXAOMTjEdbBFwGrVa3eQxBwczPfyEJ4CAiCgnws8mDAV8HtGKObZqvtpgS6a9eGb2u6YEB5mQHHOSmTiciVta8mngurHQ9Xkxzzdnk7CCevPCqSVCmi-eegno08Zp-hDsAfGz8xb54b00skoLfYEok8GTWNAm4CQ0uRnipgF9JmGmmFGvpCIda8ikRlE_RoV0_w7G0YSk3RyE9qa3n8LX-UsP5wOY1l7sw
+    body: grant_type=access_token&service=metadataunittest.azurecr.io&tenant=72f988bf-86f1-41af-91ab-2d7cd011db47&access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNjgyMDk2ODQ4LCJuYmYiOjE2ODIwOTY4NDgsImV4cCI6MTY4MjEwMjQxNCwiX2NsYWltX25hbWVzIjp7Imdyb3VwcyI6InNyYzEifSwiX2NsYWltX3NvdXJjZXMiOnsic3JjMSI6eyJlbmRwb2ludCI6Imh0dHBzOi8vZ3JhcGgud2luZG93cy5uZXQvNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3VzZXJzL2YzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMy9nZXRNZW1iZXJPYmplY3RzIn19LCJhY3IiOiIxIiwiYWlvIjoiQVZRQXEvOFRBQUFBemFwY0FSWlcwTVZodE5ibkhaNFp4NFcyQ29JQVhkK3BSVVE5ZWFZbkRSd2Vmbnk3SUhGeFN5OW1DZFdSaGRZTytoakhYMUpXRGxPMjVFQWx2WC8yNEdJRi9idGxCWURuWFF5VFpqZWJOY2c9IiwiYW1yIjpbInB3ZCIsIm1mYSJdLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsImFwcGlkYWNyIjoiMCIsImZhbWlseV9uYW1lIjoiQmFya2VyIiwiZ2l2ZW5fbmFtZSI6IkNhcm9saW5lIiwiaXBhZGRyIjoiMjQuMTcuMTc5LjUzIiwibmFtZSI6IkNhcm9saW5lIEJhcmtlciIsIm9pZCI6ImYzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMyIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0yMTI3NTIxMTg0LTE2MDQwMTI5MjAtMTg4NzkyNzUyNy02MDAxODI2MCIsInB1aWQiOiIxMDAzMjAwMjFCRDQwNzE5IiwicmgiOiIwLkFSb0F2NGo1Y3ZHR3IwR1JxeTE4MEJIYlIwWklmM2tBdXRkUHVrUGF3ZmoyTUJNYUFDRS4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJFYTFFZ3hfMjhyWXdjcnZLc2xpd1Z1RUZtbzZSWEtKZXdlQy1WczQ0dkJvIiwidGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3IiwidW5pcXVlX25hbWUiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwidXBuIjoiY2FiYXJrZXJAbWljcm9zb2Z0LmNvbSIsInV0aSI6ImVkcmNBZzhBT1VPcFRyNzBVd3RVQUEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbImI3OWZiZjRkLTNlZjktNDY4OS04MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfY2MiOlsiQ1AxIl0sInhtc190Y2R0IjoxMjg5MjQxNTQ3fQ.nqZ82CyP8acm-r9D3ByWngKAcy3QLID1XBykqtj4UccvP8VNc4Aw0NIkQo0DOYcZeNG53LVab4QcAeKjJRhyrJrLjXsaRFXq8mUU3cOJsJW_jbi9sntHY8lEfTOZj1zFklwtbHS3Oq0T-VQDYsNMO0_qGIEK3TidJKBsD6eNYpOaytjuwVuK0CIFcdz5p4kbjy_pgQVg4l4dFeO1l9lh1CGuCUjGLAJpjkH6MAe42Rv9Xm3eOm1ucoCFAYKzDODf6Nhua3-TuH1zBzbawBItG22WvCPxYMnAaH-AyHPDFrk-mxYUqQFDbNAASItEqNkTn9zntw4QMqS-tQYmEulSkw
     headers:
       Accept:
       - '*/*'
@@ -2053,14 +2061,14 @@ interactions:
     uri: https://metadataunittest.azurecr.io/oauth2/exchange
   response:
     body:
-      string: '{"refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiI3ZWJmZjQwZi01NTgyLTQ3MDEtYjgyYS05M2IxMjRlNjhlMDUiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDIyMDI1LCJleHAiOjE2ODIwMzM3MjUsImlhdCI6MTY4MjAyMjAyNSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.RAq59ikn0ZYvDCuQgMMjW4GtL_f66D-YKdCyC1o4osCSAOCcoibTiOwoSgdP1QMdQ_obnyQE446SCpwb8jF7LMyWEEcCv8iAGZww2jR-4lkXAVIXxTK6Fv2Hr5-Kv4KUhgiwBSK2bWWraijAUbvTtySWCWE8RBhkLIHO08yJwTV900dmChJgo0DvuKmAhvWUGLNA-VPjsOwSxwpkYsd5xtoTt-z7SvY4znfNn5rGqQmBGHyqG31V_g8fWKsp25gLjRZUTBKNdZ2RJaASg34LEJVckKEvia4H9EFtFHLOmqo-YKTGQTL04gaqdSuayetYLf2K1Lyns0jTcuNIm1ERxQ"}'
+      string: '{"refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiI4YWE3ZWM3NC0yNzY0LTQ1OWMtYjQ2OC1jMmUwOGY3NTcwMjIiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk2MzA0LCJleHAiOjE2ODIxMDgwMDQsImlhdCI6MTY4MjA5NjMwNCwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.Sc9MDtaTpE553p67rB95GQI8wpsXTOhDsbAmqFNwzH1rn6nTpcL5p3ylyk1wam_04WPri_qnoHM1PJatFZewsk73PpKOGUvVPvsNmnY8DGEo0ty8gF79v17_aijvRJConLJOzu5QX4LG9wrSmJXZyWjb3HpH-ftQT5es2h0Ixp3fkUjCd0qY4h-P6btk_UmnEU6Go0LCWijCOEuXyOfHBNNegoj5e9GNaSo3I47hQqj3KnViaIDu0Gg7gNC7C3Kd8e4zfiKVFacyq3V9YSfhLb6lRa4n1cB8wSLcTRCI_T5wSxdLdGzkaGc4qybEc0-bKtRUHyW8XsdwhSwBqjHSBQ"}'
     headers:
       connection:
       - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:25 GMT
+      - Fri, 21 Apr 2023 17:13:24 GMT
       server:
       - openresty
       strict-transport-security:
@@ -2068,12 +2076,12 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-ratelimit-remaining-calls-per-second:
-      - '333.283333'
+      - '333.3'
     status:
       code: 200
       message: OK
 - request:
-    body: grant_type=refresh_token&service=metadataunittest.azurecr.io&scope=registry%3Acatalog%3A%2A&refresh_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiI3ZWJmZjQwZi01NTgyLTQ3MDEtYjgyYS05M2IxMjRlNjhlMDUiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDIyMDI1LCJleHAiOjE2ODIwMzM3MjUsImlhdCI6MTY4MjAyMjAyNSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.RAq59ikn0ZYvDCuQgMMjW4GtL_f66D-YKdCyC1o4osCSAOCcoibTiOwoSgdP1QMdQ_obnyQE446SCpwb8jF7LMyWEEcCv8iAGZww2jR-4lkXAVIXxTK6Fv2Hr5-Kv4KUhgiwBSK2bWWraijAUbvTtySWCWE8RBhkLIHO08yJwTV900dmChJgo0DvuKmAhvWUGLNA-VPjsOwSxwpkYsd5xtoTt-z7SvY4znfNn5rGqQmBGHyqG31V_g8fWKsp25gLjRZUTBKNdZ2RJaASg34LEJVckKEvia4H9EFtFHLOmqo-YKTGQTL04gaqdSuayetYLf2K1Lyns0jTcuNIm1ERxQ
+    body: grant_type=refresh_token&service=metadataunittest.azurecr.io&scope=registry%3Acatalog%3A%2A&refresh_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiI4YWE3ZWM3NC0yNzY0LTQ1OWMtYjQ2OC1jMmUwOGY3NTcwMjIiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk2MzA0LCJleHAiOjE2ODIxMDgwMDQsImlhdCI6MTY4MjA5NjMwNCwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.Sc9MDtaTpE553p67rB95GQI8wpsXTOhDsbAmqFNwzH1rn6nTpcL5p3ylyk1wam_04WPri_qnoHM1PJatFZewsk73PpKOGUvVPvsNmnY8DGEo0ty8gF79v17_aijvRJConLJOzu5QX4LG9wrSmJXZyWjb3HpH-ftQT5es2h0Ixp3fkUjCd0qY4h-P6btk_UmnEU6Go0LCWijCOEuXyOfHBNNegoj5e9GNaSo3I47hQqj3KnViaIDu0Gg7gNC7C3Kd8e4zfiKVFacyq3V9YSfhLb6lRa4n1cB8wSLcTRCI_T5wSxdLdGzkaGc4qybEc0-bKtRUHyW8XsdwhSwBqjHSBQ
     headers:
       Accept:
       - '*/*'
@@ -2091,14 +2099,14 @@ interactions:
     uri: https://metadataunittest.azurecr.io/oauth2/token
   response:
     body:
-      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJiOGU4Y2M1OS0zNjdjLTQ0YmYtOTk3Ni0yMWU5YjJkMDFiMTkiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDIyMDI2LCJleHAiOjE2ODIwMjY1MjYsImlhdCI6MTY4MjAyMjAyNiwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiYWNjZXNzIjpbeyJUeXBlIjoicmVnaXN0cnkiLCJOYW1lIjoiY2F0YWxvZyIsIkFjdGlvbnMiOlsiKiJdfV0sInJvbGVzIjpbXSwiZ3JhbnRfdHlwZSI6ImFjY2Vzc190b2tlbiIsImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2In0.oziLTX201v62C-DROodUdw-dnX3Hbv381Ib27b7pnFQUx-vd0EkAEbF9qo8pO2SxE3vDkaDsKwDQhAjLxBSIyYsF1nXjMZtR5PA1O3SiXDCsUzmET7ziM7UzTIGq-s7aS4mm-19Wm_FzySXOkTaFrGb0X6x2D5hjm6qYOoAH7jEkVViLFG0BBXX-mCezM_dw5BtR96GtbRjWp6FXsMpCSzjkRFoU83yI4MvO6zovgcFHf3fBBLPFdjqctbPzEBUNFwneblMeV710agALAylibtfmfn8M8wBStxg44fhrs2E9K81n2WszAy5b1bE9H-2eug2uZmam8vrElKI7JwCBog"}'
+      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiI3MWEzOGJjYy0yNjU0LTQ1MzktYWNmNS0yNWFlMWY0NDE1MTciLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk2MzA0LCJleHAiOjE2ODIxMDA4MDQsImlhdCI6MTY4MjA5NjMwNCwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiYWNjZXNzIjpbeyJUeXBlIjoicmVnaXN0cnkiLCJOYW1lIjoiY2F0YWxvZyIsIkFjdGlvbnMiOlsiKiJdfV0sInJvbGVzIjpbXSwiZ3JhbnRfdHlwZSI6ImFjY2Vzc190b2tlbiIsImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2In0.Q4V6h4ASQ1ee4PIlMj6bLXdhT6iM5dC79F51c0rnsWonDQuJG6CXTvzxGVFvZtc11ZdFIM-nPL4absY42xnt_lwT12ZxYeWy2zd_CEAhzh6jgm7gUFtW7BPUH3I-5ZSmT9HY_xFNm336HDH2OLneQzyLPVN5Wm0OvNnl5SH9ZCG00zmBXhy29k6MYEdNCrnOsgOZTRM4PGqiu28wI0wvMl-xmFCJzZi-qVGURWUp7jSovU1ofSB237R9YBPOTQp0_viixqxg0vEKfhl8mt9ubP1xPI5nUSFXUbPJ7K3liCgGUaDUzgKxtlBtzEuwKcGANK3XYp1kn3fH8GopsL6A4w"}'
     headers:
       connection:
       - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:26 GMT
+      - Fri, 21 Apr 2023 17:13:24 GMT
       server:
       - openresty
       strict-transport-security:
@@ -2106,7 +2114,7 @@ interactions:
       transfer-encoding:
       - chunked
       x-ms-ratelimit-remaining-calls-per-second:
-      - '333.3'
+      - '333.266667'
     status:
       code: 200
       message: OK
@@ -2143,7 +2151,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 20 Apr 2023 20:35:26 GMT
+      - Fri, 21 Apr 2023 17:13:24 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
