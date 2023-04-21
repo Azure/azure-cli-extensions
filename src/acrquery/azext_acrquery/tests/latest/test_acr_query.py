@@ -16,7 +16,7 @@ REPOSITORY_NAME = "nginx"
 class AcrQueryTests(ScenarioTest):
 
     def test_acrquery(self):
-        # Query with bearer auth
+        # Query with bearer auth and filter by count
         credentials = self.cmd(
             'acr credential show -n {} -g {}'.format(REGISTRY_NAME, RESOURCE_GROUP)).get_output_in_json()
 
@@ -27,27 +27,17 @@ class AcrQueryTests(ScenarioTest):
             'acr query -n {} -q {} --username {} --password {} '.format(REGISTRY_NAME, '"Manifests | limit 1"', username, password),
             checks=[self.check('count', 1)])
 
-        # Query with basic auth
+        # Query with basic auth and filter by repository
         token = self.cmd('acr login -n {} --expose-token'.format(REGISTRY_NAME)).get_output_in_json()
         bearer = token["accessToken"]
 
         self.cmd(
-            'acr query -n {} -q {} --username {} --password {} '.format(REGISTRY_NAME, '"Manifests | limit 1"', EMPTY_GUID, bearer),
+            'acr query -n {} --repository {} -q {} --username {} --password {} '.format(REGISTRY_NAME, REPOSITORY_NAME, '"Manifests | limit 1"', EMPTY_GUID, bearer),
             checks=[self.check('count', 1)])
 
         # Renew credentials
         self.cmd(
             'acr credential renew -n {} --password-name {} '.format(REGISTRY_NAME, 'password'))
-
-        # Filter by count
-        self.cmd(
-            'acr query -n {} -q {}'.format(REGISTRY_NAME, '"Manifests | limit 1"'),
-            checks=[self.check('count', 1)])
-
-        # Filter by repository
-        self.cmd(
-            'acr query -n {} --repository {} -q {}'.format(REGISTRY_NAME, REPOSITORY_NAME, '"Manifests | limit 1"'),
-            checks=[self.check("data[0].repository", REPOSITORY_NAME)])
 
         # Filter by size
         manifests = self.cmd(
