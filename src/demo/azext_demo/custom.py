@@ -30,145 +30,89 @@ class DatabaseFlush(_DatabaseFlush):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.database_name = AAZStrArg(
-            options=["--database-name"],
-            help="The name of the database.",
-            required=False,
-        )
+        args_schema.database_name._registered = False
         return args_schema
 
 class DatabaseForceUnlink(_DatabaseForceUnlink):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.database_name = AAZStrArg(
-            options=["--database-name"],
-            help="The name of the database.",
-            required=False,
-        )
+        args_schema.database_name._registered = False
         return args_schema
 
 class DatabaseCreate(_DatabaseCreate):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.database_name = AAZStrArg(
-            options=["-n", "--name", "--database-name"],
-            help="The name of the database.",
-            required=False,
-        )
+        args_schema.database_name._registered = False
         return args_schema
 
 class DatabaseDelete(_DatabaseDelete):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.database_name = AAZStrArg(
-            options=["-n", "--name", "--database-name"],
-            help="The name of the database.",
-            required=False,
-        )
+        args_schema.database_name._registered = False
         return args_schema
 
 class DatabaseExport(_DatabaseExport):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.database_name = AAZStrArg(
-            options=["--database-name"],
-            help="The name of the database.",
-            required=False,
-        )
+        args_schema.database_name._registered = False
         return args_schema
 
 class DatabaseImport(_DatabaseImport):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.database_name = AAZStrArg(
-            options=["--database-name"],
-            help="The name of the database.",
-            required=False,
-        )
+        args_schema.database_name._registered = False
         return args_schema
 
 class DatabaseRegenerateKey(_DatabaseRegenerateKey):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.database_name = AAZStrArg(
-            options=["--database-name"],
-            help="The name of the database.",
-            required=False,
-        )
+        args_schema.database_name._registered = False
         return args_schema
 
 class DatabaseListKey(_DatabaseListKey):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.database_name = AAZStrArg(
-            options=["--database-name"],
-            help="The name of the database.",
-            required=False,
-        )
+        args_schema.database_name._registered = False
         return args_schema
 
 class DatabaseShow(_DatabaseShow):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.database_name = AAZStrArg(
-            options=["-n", "--name", "--database-name"],
-            help="The name of the database.",
-            required=False,
-        )
+        args_schema.database_name._registered = False
         return args_schema
 
 class DatabaseUpdate(_DatabaseUpdate):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.database_name = AAZStrArg(
-            options=["-n", "--name", "--database-name"],
-            help="The name of the database.",
-            required=False,
-        )
+        args_schema.database_name._registered = False
         return args_schema
 
 class DatabaseWait(_DatabaseWait):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.database_name = AAZStrArg(
-            options=["-n", "--name", "--database-name"],
-            help="The name of the database.",
-            required=False,
-        )
+        args_schema.database_name._registered = False
         return args_schema
-
 
 def redisenterprise_create(cmd,
                            resource_group_name,
@@ -213,8 +157,12 @@ def redisenterprise_create(cmd,
                                                 modules,
                                                 group_nickname,
                                                 linked_databases])):
+        print("inside condition");
         return LongRunningOperation(cmd.cli_ctx)(
             CacheCreate(cli_ctx=cmd.cli_ctx)(command_args={
+                "cluster_name": cluster_name,
+                "resource_group": resource_group_name,
+                "location": location,
                 "tags": tags,
                 "location": location,
                 "sku": sku ,
@@ -223,8 +171,13 @@ def redisenterprise_create(cmd,
                 "minimum_tls_version": minimum_tls_version
             })
         )
+    print("before create");
+    print(type(capacity))
     LongRunningOperation(cmd.cli_ctx)(
             CacheCreate(cli_ctx=cmd.cli_ctx)(command_args={
+                "cluster_name": cluster_name,
+                "resource_group": resource_group_name,
+                "location": location,
                 "tags": tags,
                 "location": location,
                 "sku": sku ,
@@ -233,9 +186,11 @@ def redisenterprise_create(cmd,
                 "minimum_tls_version": minimum_tls_version
             })
         )
-
+    print("after create");
     return LongRunningOperation(cmd.cli_ctx)(
         DatabaseCreate(cli_ctx=cmd.cli_ctx)(command_args={
+            "cluster_name": cluster_name,
+            "resource_group": resource_group_name,
             "client_protocol": client_protocol,
             "port": port,
             "clustering_policy": clustering_policy,
@@ -244,6 +199,7 @@ def redisenterprise_create(cmd,
             "group_nickname": group_nickname,
             "linked_databases": linked_databases,
             "modules": modules,
+            "database_name":'default',
         })
     )
 

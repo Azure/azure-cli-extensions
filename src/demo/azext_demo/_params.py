@@ -8,9 +8,20 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-
+from azure.cli.core.commands.parameters import (
+    get_enum_type,
+    tags_type,
+    zones_type,
+)
 def load_arguments(self, _):  # pylint: disable=unused-argument
-    #with self.argument_context("redisenterprise database") as c:
-    #    c.argument("database_name", help="name of the database.", required=False,
-    #               options_list=["--database-name"])
-    pass
+    with self.argument_context('redisenterprise') as c:
+        c.argument('capacity', type=int, help='The size of the RedisEnterprise cluster. Defaults to 2 or 3 depending on SKU. Valid values are (2, 4, 6, ...) for Enterprise SKUs and (3, 9, 15, ...) for Flash SKUs.', options_list=["--capacity"])
+        c.argument('port', type=int, help='TCP port of the database endpoint. Specified at create time. Defaults to an available port', options_list=["--port"])
+        c.argument('zones', zones_type, options_list=['--zones', '-z'], help='The Availability Zones where this cluster will be deployed.')
+        c.argument('client_protocol', arg_type=get_enum_type(['Encrypted', 'Plaintext']), options_list=['--client-protocol'], help='Specifies whether redis clients can connect using TLS-encrypted or plaintext redis protocols. Default is TLS-encrypted.')
+        c.argument('clustering_policy', arg_type=get_enum_type(['EnterpriseCluster', 'OSSCluster']), options_list=['--clustering-policy'], help='Clustering policy - default is OSSCluster. Specified at create time.')
+        c.argument('eviction_policy', arg_type=get_enum_type(['AllKeysLFU', 'AllKeysLRU','AllKeysRandom', 'NoEviction','VolatileLFU', 'VolatileLRU','VolatileRandom', 'VolatileTTL']), options_list=['--eviction-policy'], help='Redis eviction policy - default is VolatileLRU.')
+        c.argument('minimum_tls_version', arg_type=get_enum_type(['1.0', '1.1','1.2']), options_list=['--minimum-tls-version'], help='The minimum TLS version for the cluster to support.')
+        c.argument('tags', tags_type, options_list=['--tags'], help='Space-separated tags: key[=value] [key[=value] ...]. Use "" to clear existing tags.')
+        c.argument('group_nickname', tags_type, options_list=['--group-nickname'], help='Name for the group of linked database resources')
+    #pass
