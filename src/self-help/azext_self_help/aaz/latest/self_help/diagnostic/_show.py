@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "help diagnostic show",
+    "self-help diagnostic show",
     is_preview=True,
 )
 class Show(AAZCommand):
