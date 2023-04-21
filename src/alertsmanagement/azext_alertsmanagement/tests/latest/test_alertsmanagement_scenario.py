@@ -123,12 +123,27 @@ class PrometheusRuleGroup(ScenarioTest):
         self.kwargs['action_group_id01'] = actionGroup1['id']
         self.kwargs['action_group_id02'] = actionGroup2['id']
         self.cmd('az alerts-management prometheus-rule-group create -n {name} -g {rg} -l {loc} --enabled '
-                 '--description {description} '
+                 '--description test '
                  '--interval {interval} '
                  '--scopes {account_id} '
-                 '--rules [{{"record":"job_type:billing_jobs_duration_seconds:99p5m",'
-                 '"expression":"{expression}",'
-                 '"labels":{{"team":"prod"}}}},{{"alert":"Billing_Processing_Very_Slow","expression":"job_type:billing_jobs_duration_seconds:99p5m > 30",'
-                 '"enabled":"true","severity": 2,"for": "PT5M","labels":{{"team":"prod"}},"annotations":{{"annotationName1":"annotationValue1"}},"resolveConfiguration":{{"autoResolved":"true","timeToResolve":"PT10M"}},'
-                 '"actions":[{{"actionGroupId":{action_group_id01},"actionProperties":{{"key11": "value11","key12": "value12"}}}},'
-                 '{{"actionGroupId":{action_group_id02},"actionProperties":{{"key21": "value21","key22": "value22"}}}}]}}]')
+                 '--rules [{{"record":"test","expression":"test","labels":{{"team":"prod"}}}},'
+                 '{{"alert":"Billing_Processing_Very_Slow","expression":"test","enabled":"true","severity":2,'
+                 '"for":"PT5M","labels":{{"team":"prod"}},"annotations":{{"annotationName1":"annotationValue1"}},'
+                 '"resolveConfiguration":{{"autoResolved":"true","timeToResolve":"PT10M"}},'
+                 '"actions":[{{"actionGroupId":{action_group_id01},"actionProperties":{{"key11":"value11","key12":"value12"}}}},'
+                 '{{"actionGroupId":{action_group_id02},"actionProperties":{{"key21":"value21","key22":"value22"}}}}]}}]',
+                 checks=self.check('name', '{name}'))
+
+        self.cmd('az alerts-management prometheus-rule-group update -n {name} -g {rg} --tags key=value',
+                 checks=[
+                     self.check('name', '{name}'),
+                     self.check('tags.key', 'value')
+                 ])
+
+        self.cmd('az alerts-management prometheus-rule-group list -g {rg}',
+                 checks=self.check('length(@)', 1))
+
+        self.cmd('az alerts-management prometheus-rule-group show -n {name} -g {rg}',
+                 checks=self.check('name', '{name}'))
+
+        self.cmd('az alerts-management prometheus-rule-group delete -n {name} -g {rg}')
