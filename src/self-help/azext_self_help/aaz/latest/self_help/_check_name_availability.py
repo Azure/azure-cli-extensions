@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "help check-name-availability",
+    "self-help check-name-availability",
     is_preview=True,
 )
 class CheckNameAvailability(AAZCommand):

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "help diagnostic",
+    "self-help diagnostic",
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):

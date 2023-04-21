@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "help discovery-solution list",
+    "self-help discovery-solution list",
     is_preview=True,
 )
 class List(AAZCommand):
@@ -163,22 +163,60 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
-            _element.description = AAZStrType()
-            _element.required_parameter_sets = AAZListType(
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.description = AAZStrType()
+            properties.required_parameter_sets = AAZListType(
                 serialized_name="requiredParameterSets",
             )
-            _element.solution_id = AAZStrType(
+            properties.solution_id = AAZStrType(
                 serialized_name="solutionId",
             )
-            _element.solution_type = AAZStrType(
+            properties.solution_type = AAZStrType(
                 serialized_name="solutionType",
             )
 
-            required_parameter_sets = cls._schema_on_200.value.Element.required_parameter_sets
+            required_parameter_sets = cls._schema_on_200.value.Element.properties.required_parameter_sets
             required_parameter_sets.Element = AAZListType()
 
-            _element = cls._schema_on_200.value.Element.required_parameter_sets.Element
+            _element = cls._schema_on_200.value.Element.properties.required_parameter_sets.Element
             _element.Element = AAZStrType()
+
+            system_data = cls._schema_on_200.value.Element.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
 
             return cls._schema_on_200
 
