@@ -804,62 +804,6 @@ def devcenter_environment_type_list_dp(cmd, dev_center, project_name):
     return cf_dataplane.environment_type.list()
 
 
-def devcenter_notification_setting_show_dp(cmd, dev_center, project_name, user_id="me"):
-    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    return cf_dataplane.notification_setting.get(user_id=user_id)
-
-
-def devcenter_notification_setting_list_allowed_culture_dp(
-    cmd, dev_center, project_name, user_id="me"
-):
-    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    return cf_dataplane.notification_setting.list_allowed_cultures(user_id=user_id)
-
-
-def devcenter_notification_setting_create_dp(
-    cmd,
-    dev_center,
-    project_name,
-    enabled,
-    culture,
-    boolean_enabled,
-    email_notification,
-    webhook_notification,
-    user_id="me",
-):
-    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    body = {}
-    body["name"] = "default"
-    body["enabled"] = enabled
-    body["culture"] = culture
-    body["notification_type"] = {}
-    body["notification_type"]["dev_box_provisioning_notification"] = {}
-    body["notification_type"]["dev_box_provisioning_notification"][
-        "enabled"
-    ] = boolean_enabled
-    body["notification_type"]["dev_box_provisioning_notification"][
-        "notification_channel"
-    ] = {}
-    body["notification_type"]["dev_box_provisioning_notification"][
-        "notification_channel"
-    ]["email_notification"] = email_notification
-    body["notification_type"]["dev_box_provisioning_notification"][
-        "notification_channel"
-    ]["webhook_notification"] = webhook_notification
-    if (
-        len(
-            body["notification_type"]["dev_box_provisioning_notification"][
-                "notification_channel"
-            ]
-        )
-        == 0
-    ):
-        del body["notification_type"]["dev_box_provisioning_notification"][
-            "notification_channel"
-        ]
-    return cf_dataplane.notification_setting.create(user_id=user_id, body=body)
-
-
 def devcenter_catalog_list_dp(cmd, dev_center, project_name):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
     return cf_dataplane.catalogs.list()
@@ -889,21 +833,3 @@ def devcenter_environment_definition_show_dp(
         catalog_name=catalog_name, definition_name=definition_name
     )
 
-
-def devcenter_artifact_list_dp(
-    cmd, dev_center, project_name, environment_name, user_id="me", artifact_path=None
-):
-    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    if (
-        user_id is not None
-        and environment_name is not None
-        and artifact_path is not None
-    ):
-        return cf_dataplane.artifacts.list_by_path(
-            user_id=user_id,
-            environment_name=environment_name,
-            artifact_path=artifact_path,
-        )
-    return cf_dataplane.artifacts.list(
-        user_id=user_id, environment_name=environment_name
-    )

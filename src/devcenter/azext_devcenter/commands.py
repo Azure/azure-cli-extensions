@@ -16,8 +16,6 @@ from azext_devcenter._client_factory import (
     cf_catalog_dp,
     cf_environment_definition_dp,
     cf_environment_type_dp,
-    cf_notification_setting_dp,
-    cf_artifact_dp,
 )
 from .custom import (
     AttachedNetworkCreate,
@@ -240,20 +238,6 @@ def load_command_table(self, _):
         client_factory=cf_schedule_dp,
     )
 
-    devcenter_notification_setting_dp = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._notification_setting_operations#NotificationSettingOperations.{}"
-        ),
-        client_factory=cf_notification_setting_dp,
-    )
-
-    devcenter_artifact_dp = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._artifacts_operations#ArtifactsOperations.{}"
-        ),
-        client_factory=cf_artifact_dp,
-    )
-
     with self.command_group("devcenter", is_preview=True):
         pass
 
@@ -315,18 +299,6 @@ def load_command_table(self, _):
         g.custom_command("list", "devcenter_schedule_list_dp")
         g.custom_show_command("show", "devcenter_schedule_show_dp")
 
-    with self.command_group(
-        "devcenter dev notification-setting", devcenter_notification_setting_dp
-    ) as g:
-        g.custom_command(
-            "list-allowed-culture",
-            "devcenter_notification_setting_list_allowed_culture_dp",
-        )
-        g.custom_show_command("show", "devcenter_notification_setting_show_dp")
-        g.custom_command(
-            "create", "devcenter_notification_setting_create_dp", supports_no_wait=True
-        )
-
     with self.command_group("devcenter dev catalog", devcenter_catalog_dp) as g:
         g.custom_command("list", "devcenter_catalog_list_dp")
         g.custom_show_command("show", "devcenter_catalog_show_dp")
@@ -337,5 +309,3 @@ def load_command_table(self, _):
         g.custom_command("list", "devcenter_environment_definition_list_dp")
         g.custom_show_command("show", "devcenter_environment_definition_show_dp")
 
-    with self.command_group("devcenter dev artifact", devcenter_artifact_dp) as g:
-        g.custom_command("list", "devcenter_artifact_list_dp")
