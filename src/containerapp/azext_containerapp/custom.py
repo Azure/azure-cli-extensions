@@ -94,16 +94,28 @@ def process_loaded_yaml(yaml_containerapp):
             # Update (PATCH) ignores them so it's okay to remove them as well
             yaml_containerapp['identity']['userAssignedIdentities'][identity] = {}
 
-    nested_properties = ["provisioningState", "managedEnvironmentId", "environmentId", "latestRevisionName", "latestRevisionFqdn",
-                         "customDomainVerificationId", "configuration", "template", "outboundIPAddresses", "workloadProfileName"]
+    nested_properties = ["provisioningState",
+                         "managedEnvironmentId",
+                         "environmentId",
+                         "latestRevisionName",
+                         "latestRevisionFqdn",
+                         "customDomainVerificationId",
+                         "configuration",
+                         "template",
+                         "outboundIPAddresses",
+                         "workloadProfileName",
+                         "latestReadyRevisionName",
+                         "eventStreamEndpoint"]
     for nested_property in nested_properties:
         tmp = yaml_containerapp.get(nested_property)
-        if tmp:
+        if nested_property in yaml_containerapp:
             yaml_containerapp['properties'][nested_property] = tmp
             del yaml_containerapp[nested_property]
 
     if "managedEnvironmentId" in yaml_containerapp['properties']:
-        yaml_containerapp['properties']["environmentId"] = yaml_containerapp['properties']['managedEnvironmentId']
+        tmp = yaml_containerapp['properties']['managedEnvironmentId']
+        if tmp:
+            yaml_containerapp['properties']["environmentId"] = tmp
         del yaml_containerapp['properties']['managedEnvironmentId']
 
     return yaml_containerapp
