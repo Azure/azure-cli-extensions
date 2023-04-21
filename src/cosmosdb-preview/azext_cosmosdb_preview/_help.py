@@ -7,6 +7,142 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
+helps['cosmosdb mongocluster firewall'] = """
+type: group
+short-summary: Mongo cluster firewall.
+"""
+
+helps['cosmosdb mongocluster firewall rule'] = """
+type: group
+short-summary: Mongo cluster firewall rule.
+"""
+
+helps['cosmosdb mongocluster firewall rule create'] = """
+type: command
+short-summary: Create a Mongo cluster firewall rule.
+examples:
+  - name: Create a Mongo cluster firewall rule.
+    text: |
+      az cosmosdb mongocluster firewall rule create \\
+      --cluster-name MyCluster \\
+      --resource-group MyResourceGroup \\
+      --rule-name MyRule \\
+      --start-ip-address MyStartIpAddress \\
+      --end-ip-address MyEndIpAddress \\
+"""
+
+helps['cosmosdb mongocluster firewall rule update'] = """
+type: command
+short-summary: Create a Mongo cluster firewall rule.
+examples:
+  - name: Update a Mongo cluster firewall rule.
+    text: |
+      az cosmosdb mongocluster firewall rule update \\
+      --cluster-name MyCluster \\
+      --resource-group MyResourceGroup \\
+      --rule-name MyRule \\
+      --start-ip-address MyStartIpAddress \\
+      --end-ip-address MyEndIpAddress \\
+"""
+
+helps['cosmosdb mongocluster firewall rule list'] = """
+type: command
+short-summary: Lists firewall rule on a Mongo cluster.
+examples:
+  - name: Lists a Mongo cluster firewall rule in a resource group.
+    text: |
+      az cosmosdb mongocluster firewall rule list --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb mongocluster firewall rule show'] = """
+type: command
+short-summary: Get a Mongo cluster firewall rule.
+examples:
+  - name: Gets a Mongo cluster firewall rule. If the firewall rule does not exist a NotFound response is returned.
+    text: |
+      az cosmosdb mongocluster firewall rule show --cluster-name MyCluster --resource-group MyResourceGroup --rule-name MyRuleName
+"""
+
+helps['cosmosdb mongocluster firewall rule delete'] = """
+type: command
+short-summary: Delete a Mongo cluster firewall rule.
+examples:
+  - name: Delete a Mongo Cluster firewall rule. If the firewall rule does not exist a NoContent response is returned.
+    text: |
+      az cosmosdb mongocluster firewall rule delete --cluster-name MyCluster --resource-group MyResourceGroup --rule-name MyRuleName
+"""
+
+helps['cosmosdb mongocluster'] = """
+type: group
+short-summary: Mongo cluster.
+"""
+
+helps['cosmosdb mongocluster create'] = """
+type: command
+short-summary: Create a Mongo cluster.
+examples:
+  - name: Create a Mongo cluster.
+    text: |
+      az cosmosdb mongocluster create \\
+      --cluster-name MyCluster \\
+      --resource-group MyResourceGroup \\
+      --location MyLocation \\
+      --administrator-login MyAdminUser \\
+      --administrator-login-password MyAdminPassword \\
+      --server-version 5.0 \\
+      --shard-node-tier "M30" \\
+      --shard-node-ha true \\
+      --shard-node-disk-size-gb 128 \\
+      --shard-node-count 2
+"""
+
+helps['cosmosdb mongocluster update'] = """
+type: command
+short-summary: Update a Mongo cluster.
+examples:
+  - name: Update a Mongo cluster.
+    text: |
+      az cosmosdb mongocluster update \\
+      --cluster-name MyCluster \\
+      --resource-group MyResourceGroup \\
+      --administrator-login MyAdminUser \\
+      --administrator-login-password MyAdminPassword \\
+      --server-version 5.0 \\
+      --shard-node-tier "M30" \\
+      --shard-node-ha true \\
+      --shard-node-disk-size-gb 128
+"""
+
+helps['cosmosdb mongocluster list'] = """
+type: command
+short-summary: List a Mongo Cluster Resource.
+examples:
+  - name: Lists Mongo Cluster Resource list in a resource group.
+    text: |
+      az cosmosdb mongocluster list --resource-group MyResourceGroup
+  - name: Lists a Mongo Cluster Resource list in the subscription.
+    text: |
+      az cosmosdb mongocluster list
+"""
+
+helps['cosmosdb mongocluster show'] = """
+type: command
+short-summary: Get a Mongo Cluster Resource.
+examples:
+  - name: Gets a Mongo Cluster Resource. ProvisioningState tells the state of this cluster. If the cluster does not exist a NotFound response is returned.
+    text: |
+      az cosmosdb mongocluster show --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
+helps['cosmosdb mongocluster delete'] = """
+type: command
+short-summary: Delete a Mongo Cluster Resource.
+examples:
+  - name: Deletes a Mongo Cluster Resource. If the cluster does not exist a NoContent response is returned.
+    text: |
+      az cosmosdb mongocluster delete --cluster-name MyCluster --resource-group MyResourceGroup
+"""
+
 helps['managed-cassandra'] = """
 type: group
 short-summary: Azure Managed Cassandra.
@@ -746,4 +882,34 @@ helps['cosmosdb mongodb collection restore'] = """
       - name: Restore a deleted mongodb collection within the same account.
         text: |-
                az cosmosdb mongodb collection restore --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_collection_needs_to_be_restored --restore-timestamp 2020-07-13T16:03:41+0000
+"""
+
+# in-account restore of a deleted gremlin database
+helps['cosmosdb gremlin database restore'] = """
+    type: command
+    short-summary: "Restore a deleted gremlin database within the same account."
+    examples:
+      - name: Restore a deleted gremlin database within the same account.
+        text: |-
+               az cosmosdb gremlin database restore --resource-group resource_group --account-name database_account_name --name name_of_database_needs_to_be_restored --restore-timestamp 2020-07-13T16:03:41+0000
+"""
+
+# in-account restore of a deleted gremlin graph
+helps['cosmosdb gremlin graph restore'] = """
+    type: command
+    short-summary: "Restore a deleted gremlin graph within the same account."
+    examples:
+      - name: Restore a deleted gremlin graph within the same account.
+        text: |-
+               az cosmosdb gremlin graph restore --resource-group resource_group --account-name database_account_name --database-name parent_database_name --name name_of_graph_needs_to_be_restored --restore-timestamp 2020-07-13T16:03:41+0000
+"""
+
+# in-account restore of a deleted table
+helps['cosmosdb table restore'] = """
+    type: command
+    short-summary: "Restore a deleted table within the same account."
+    examples:
+      - name: Restore a deleted table within the same account.
+        text: |-
+               az cosmosdb table restore --resource-group resource_group --account-name database_account_name --table-name name_of_table_needs_to_be_restored --restore-timestamp 2020-07-13T16:03:41+0000
 """

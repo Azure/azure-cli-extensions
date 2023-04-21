@@ -49,6 +49,10 @@ helps[
           type: boolean
           short-summary: 'When enabled, the generated security policy adds the ability to use /bin/sh or /bin/bash to debug the container. It also enabled stdio access, ability to dump stack traces, and enables runtime logging. It is recommended to only use this option for debugging purposes.'
 
+        - name: --approve-wildcards -y
+          type: boolean
+          short-summary: 'When enabled, all prompts for using wildcards in environment variables are automatically approved.'
+
         - name: --disable-stdio
           type: boolean
           short-summary: 'When enabled, the containers in the container group do not have access to stdio.'

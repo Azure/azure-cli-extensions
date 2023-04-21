@@ -7,7 +7,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - reservations reservation available-scope
+      - reservations reservation list-available-scope
       Connection:
       - keep-alive
       Content-Length:
@@ -17,9 +17,9 @@ interactions:
       ParameterSetName:
       - --reservation-order-id --reservation-id --scopes
       User-Agent:
-      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/ef723fd0-9bd8-44a9-baed-ba4dc95ede38/reservations/a09b9fd7-b277-41f0-a58f-3469368d2088/availableScopes?api-version=2022-03-01
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/85334623-a4b6-4b61-a3f4-e78ff02c33de/reservations/a21526d3-1b94-4b43-a6b3-6f496e893251/availableScopes?api-version=2022-11-01
   response:
     body:
       string: '{"properties":{"scopes":[{"scope":"/subscriptions/00000000-0000-0000-0000-000000000000","valid":true}]}}'
@@ -31,7 +31,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Sat, 01 Oct 2022 22:24:09 GMT
+      - Mon, 06 Mar 2023 23:22:03 GMT
       expires:
       - '-1'
       pragma:
@@ -51,8 +51,8 @@ interactions:
       x-ms-ratelimit-remaining-tenant-writes:
       - '1199'
       x-ms-test:
-      - '{"contact":"v-heachang@microsoft.com","scenarios":"TestInProdcution,CSZ,Inv-v7,crs-vnext,GtmRiPurchase","retention":"12/31/2024
-        00:00:00"}'
+      - '{"contact":"sornaks","scenarios":"MultiCurrencyTesting","retention":"6/2/2023
+        4:17:22 AM"}'
     status:
       code: 200
       message: OK

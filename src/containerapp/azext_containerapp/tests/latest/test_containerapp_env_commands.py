@@ -122,6 +122,13 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.appLogsConfiguration.destination', None),
         ])
 
+        self.cmd('containerapp env update -g {} -n {} --logs-destination none --no-wait'.format(resource_group, env_name))
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', None),
+        ])
+
 
 
     @AllowLargeResponse(8192)
@@ -195,8 +202,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_env_certificate_e2e(self, resource_group):
-        location = 'northcentralusstage'
-        self.cmd('configure --defaults location=northcentralusstage'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
         logs_workspace_name = self.create_random_name(prefix='containerapp-env', length=24)
@@ -412,6 +418,13 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {} --dns-suffix {}'.format(resource_group, env_name, hostname_2))
+
+        self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_2),
         ])
 
 

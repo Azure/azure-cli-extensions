@@ -20,7 +20,6 @@ from azext_confcom.errors import eprint
 from azext_confcom.template_util import (
     extract_confidential_properties,
     is_sidecar,
-    parse_template,
     pretty_print_func,
     print_func,
     readable_diff,
@@ -31,7 +30,8 @@ from azext_confcom.template_util import (
     process_mounts,
     extract_probe,
     process_env_vars_from_template,
-    get_image_info
+    get_image_info,
+    get_tar_location_from_mapping
 )
 from azext_confcom.rootfs_proxy import SecurityPolicyProxy
 
@@ -45,6 +45,9 @@ class OutputType(Enum):
 
 
 class AciPolicy:  # pylint: disable=too-many-instance-attributes
+    all_params = {}
+    all_vars = {}
+
     def __init__(
         self,
         deserialized_config: Any,
@@ -393,12 +396,8 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             action="ignore", message="unclosed", category=ResourceWarning
         )
 
-        client = None
         tar_location = ""
-        layer_cache = {}
-        if not tar_mapping:
-            client = self._get_docker_client()
-        elif isinstance(tar_mapping, str):
+        if isinstance(tar_mapping, str):
             tar_location = tar_mapping
         proxy = self._get_rootfs_proxy()
         container_images = self.get_images()
@@ -419,9 +418,9 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             message_queue = []
             # populate regular container images(s)
             for image in container_images:
-
+                image.parse_all_parameters_and_variables(AciPolicy.all_params, AciPolicy.all_vars)
                 image_name = f"{image.base}:{image.tag}"
-                image_info = get_image_info(progress, message_queue, client, tar_mapping, image)
+                image_info, tar = get_image_info(progress, message_queue, tar_mapping, image)
 
                 # verify and populate the working directory property
                 if not image.get_working_dir() and image_info:
@@ -471,14 +470,14 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                                 }
                             )
 
+                # populate tar location
+                if isinstance(tar_mapping, dict):
+                    tar_location = get_tar_location_from_mapping(tar_mapping, image_name)
                 # populate layer info
-                if layer_cache.get(image_name):
-                    image.set_layers(layer_cache.get(image_name))
-                else:
-                    image.set_layers(proxy.get_policy_image_layers(
-                        image.base, image.tag, tar_location=tar_location
-                    ))
-                    layer_cache[image_name] = image.get_layers()
+                image.set_layers(proxy.get_policy_image_layers(
+                    image.base, image.tag, tar_location=tar_location if tar else ""
+                ))
+
                 progress.update()
             progress.close()
             self.close()
@@ -487,7 +486,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             for message in message_queue:
                 logger.warning(message)
 
-    def get_images(self) -> List[Any]:
+    def get_images(self) -> List[ContainerImage]:
         return self._images
 
     def pull_image(self, image: ContainerImage) -> Any:
@@ -501,6 +500,7 @@ def load_policy_from_arm_template_str(
     infrastructure_svn: str = None,
     debug_mode: bool = False,
     disable_stdio: bool = False,
+    approve_wildcards: bool = False,
 ) -> List[AciPolicy]:
     """Function that converts ARM template string to an ACI Policy"""
     input_arm_json = os_util.load_json_from_str(template_data)
@@ -537,9 +537,8 @@ def load_policy_from_arm_template_str(
 
     get_values_for_params(input_parameter_json, all_params)
 
-    input_arm_json = parse_template(all_params,
-                                    case_insensitive_dict_get(input_arm_json, config.ACI_FIELD_TEMPLATE_VARIABLES)
-                                    or {}, input_arm_json)
+    AciPolicy.all_params = all_params
+    AciPolicy.all_vars = case_insensitive_dict_get(input_arm_json, config.ACI_FIELD_TEMPLATE_VARIABLES) or {}
 
     container_groups = []
 
@@ -612,7 +611,8 @@ def load_policy_from_arm_template_str(
                 {
                     config.ACI_FIELD_CONTAINERS_ID: image_name,
                     config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE: image_name,
-                    config.ACI_FIELD_CONTAINERS_ENVS: process_env_vars_from_template(image_properties),
+                    config.ACI_FIELD_CONTAINERS_ENVS: process_env_vars_from_template(
+                        AciPolicy.all_params, AciPolicy.all_vars, image_properties, approve_wildcards),
                     config.ACI_FIELD_CONTAINERS_COMMAND: case_insensitive_dict_get(
                         image_properties, config.ACI_FIELD_TEMPLATE_COMMAND
                     )
@@ -651,6 +651,7 @@ def load_policy_from_arm_template_file(
     parameter_path: str,
     debug_mode: bool = False,
     disable_stdio: bool = False,
+    approve_wildcards: bool = False,
 ) -> List[AciPolicy]:
     """Utility function: generate policy object from given arm template and parameter file paths"""
     input_arm_json = os_util.load_str_from_file(template_path)
@@ -659,7 +660,7 @@ def load_policy_from_arm_template_file(
         input_parameter_json = os_util.load_str_from_file(parameter_path)
     return load_policy_from_arm_template_str(
         input_arm_json, input_parameter_json, infrastructure_svn,
-        debug_mode=debug_mode, disable_stdio=disable_stdio
+        debug_mode=debug_mode, disable_stdio=disable_stdio, approve_wildcards=approve_wildcards,
     )
 
 

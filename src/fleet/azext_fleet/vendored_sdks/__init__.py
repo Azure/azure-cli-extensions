@@ -6,8 +6,8 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._container_service_client import ContainerServiceClient
-__all__ = ['ContainerServiceClient']
+from ._container_service_fleet_mgmt_client import ContainerServiceFleetMgmtClient
+__all__ = ['ContainerServiceFleetMgmtClient']
 
 try:
     from ._patch import patch_sdk  # type: ignore
