@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Update the Database resource corresponding to the Virtual Instance for SAP solutions resource. This will be used by service only. PUT by end user will return a Bad Request error.
+    """Update the Database resource.
 
     :example: Add tags for an existing Database instance resource
         az workloads sap-database-instance update --sap-virtual-instance-name <VIS name> -g <Resource-group-name> -n <ResourceName> --tags tag=test tag2=test2
@@ -33,8 +33,6 @@ class Update(AAZCommand):
     }
 
     AZ_SUPPORT_NO_WAIT = True
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -73,24 +71,16 @@ class Update(AAZCommand):
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Body",
-            help="Resource tags.",
-            nullable=True,
+            help="Gets or sets the Resource tags.",
         )
 
         tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SAPDatabaseInstancesGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        yield self.SAPDatabaseInstancesCreate(ctx=self.ctx)()
+        yield self.SAPDatabaseInstancesUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -101,106 +91,11 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SAPDatabaseInstancesGet(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Workloads/sapVirtualInstances/{sapVirtualInstanceName}/databaseInstances/{databaseInstanceName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "databaseInstanceName", self.ctx.args.database_instance_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "sapVirtualInstanceName", self.ctx.args.sap_virtual_instance_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2023-04-01",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_sap_database_instance_read(cls._schema_on_200)
-
-            return cls._schema_on_200
-
-    class SAPDatabaseInstancesCreate(AAZHttpOperation):
+    class SAPDatabaseInstancesUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -236,7 +131,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -290,8 +185,14 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=self.ctx.vars.instance,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"client_flatten": True}}
             )
+            _builder.set_prop("tags", AAZDictType, ".tags")
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -311,36 +212,114 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_sap_database_instance_read(cls._schema_on_200_201)
+
+            _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200_201.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200_201.tags = AAZDictType()
+            _schema_on_200_201.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200_201.properties
+            properties.database_sid = AAZStrType(
+                serialized_name="databaseSid",
+                flags={"read_only": True},
+            )
+            properties.database_type = AAZStrType(
+                serialized_name="databaseType",
+                flags={"read_only": True},
+            )
+            properties.errors = AAZObjectType()
+            properties.ip_address = AAZStrType(
+                serialized_name="ipAddress",
+                flags={"read_only": True},
+            )
+            properties.load_balancer_details = AAZObjectType(
+                serialized_name="loadBalancerDetails",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.status = AAZStrType()
+            properties.subnet = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.vm_details = AAZListType(
+                serialized_name="vmDetails",
+                flags={"read_only": True},
+            )
+
+            errors = cls._schema_on_200_201.properties.errors
+            errors.properties = AAZObjectType()
+            _UpdateHelper._build_schema_error_definition_read(errors.properties)
+
+            load_balancer_details = cls._schema_on_200_201.properties.load_balancer_details
+            load_balancer_details.id = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            vm_details = cls._schema_on_200_201.properties.vm_details
+            vm_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.vm_details.Element
+            _element.status = AAZStrType()
+            _element.storage_details = AAZListType(
+                serialized_name="storageDetails",
+                flags={"read_only": True},
+            )
+            _element.virtual_machine_id = AAZStrType(
+                serialized_name="virtualMachineId",
+                flags={"read_only": True},
+            )
+
+            storage_details = cls._schema_on_200_201.properties.vm_details.Element.storage_details
+            storage_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.vm_details.Element.storage_details.Element
+            _element.id = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200_201.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
-            )
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
-
-            return _instance_value
-
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
-            )
 
 
 class _UpdateHelper:
@@ -376,136 +355,6 @@ class _UpdateHelper:
         _schema.code = cls._schema_error_definition_read.code
         _schema.details = cls._schema_error_definition_read.details
         _schema.message = cls._schema_error_definition_read.message
-
-    _schema_sap_database_instance_read = None
-
-    @classmethod
-    def _build_schema_sap_database_instance_read(cls, _schema):
-        if cls._schema_sap_database_instance_read is not None:
-            _schema.id = cls._schema_sap_database_instance_read.id
-            _schema.location = cls._schema_sap_database_instance_read.location
-            _schema.name = cls._schema_sap_database_instance_read.name
-            _schema.properties = cls._schema_sap_database_instance_read.properties
-            _schema.system_data = cls._schema_sap_database_instance_read.system_data
-            _schema.tags = cls._schema_sap_database_instance_read.tags
-            _schema.type = cls._schema_sap_database_instance_read.type
-            return
-
-        cls._schema_sap_database_instance_read = _schema_sap_database_instance_read = AAZObjectType()
-
-        sap_database_instance_read = _schema_sap_database_instance_read
-        sap_database_instance_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        sap_database_instance_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        sap_database_instance_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        sap_database_instance_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-        sap_database_instance_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        sap_database_instance_read.tags = AAZDictType()
-        sap_database_instance_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        properties = _schema_sap_database_instance_read.properties
-        properties.database_sid = AAZStrType(
-            serialized_name="databaseSid",
-            flags={"read_only": True},
-        )
-        properties.database_type = AAZStrType(
-            serialized_name="databaseType",
-            flags={"read_only": True},
-        )
-        properties.errors = AAZObjectType()
-        properties.ip_address = AAZStrType(
-            serialized_name="ipAddress",
-            flags={"read_only": True},
-        )
-        properties.load_balancer_details = AAZObjectType(
-            serialized_name="loadBalancerDetails",
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.status = AAZStrType()
-        properties.subnet = AAZStrType(
-            flags={"read_only": True},
-        )
-        properties.vm_details = AAZListType(
-            serialized_name="vmDetails",
-            flags={"read_only": True},
-        )
-
-        errors = _schema_sap_database_instance_read.properties.errors
-        errors.properties = AAZObjectType()
-        cls._build_schema_error_definition_read(errors.properties)
-
-        load_balancer_details = _schema_sap_database_instance_read.properties.load_balancer_details
-        load_balancer_details.id = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        vm_details = _schema_sap_database_instance_read.properties.vm_details
-        vm_details.Element = AAZObjectType()
-
-        _element = _schema_sap_database_instance_read.properties.vm_details.Element
-        _element.status = AAZStrType()
-        _element.storage_details = AAZListType(
-            serialized_name="storageDetails",
-            flags={"read_only": True},
-        )
-        _element.virtual_machine_id = AAZStrType(
-            serialized_name="virtualMachineId",
-            flags={"read_only": True},
-        )
-
-        storage_details = _schema_sap_database_instance_read.properties.vm_details.Element.storage_details
-        storage_details.Element = AAZObjectType()
-
-        _element = _schema_sap_database_instance_read.properties.vm_details.Element.storage_details.Element
-        _element.id = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        system_data = _schema_sap_database_instance_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_sap_database_instance_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.id = cls._schema_sap_database_instance_read.id
-        _schema.location = cls._schema_sap_database_instance_read.location
-        _schema.name = cls._schema_sap_database_instance_read.name
-        _schema.properties = cls._schema_sap_database_instance_read.properties
-        _schema.system_data = cls._schema_sap_database_instance_read.system_data
-        _schema.tags = cls._schema_sap_database_instance_read.tags
-        _schema.type = cls._schema_sap_database_instance_read.type
 
 
 __all__ = ["Update"]
