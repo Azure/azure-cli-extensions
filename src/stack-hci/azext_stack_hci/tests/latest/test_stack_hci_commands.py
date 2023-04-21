@@ -24,11 +24,14 @@ class StackHciClientTest(ScenarioTest):
         self.kwargs['client_id'] = self.cmd('ad app create --display-name {app_name}').get_output_in_json()['appId']
         self.kwargs['tenant_id'] = self.cmd('account show').get_output_in_json()['tenantId']
 
-        self.cmd('stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id} --tags key0=value0', checks=[
+        cluster = self.cmd('stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id} --tags key0=value0', checks=[
             self.check('name', '{cluster_name}'),
             self.check('tags', {'key0': 'value0'}),
             self.check('type', 'microsoft.azurestackhci/clusters')
-        ])
+        ]).get_output_in_json()
+        self.kwargs.update({
+            'cluster_id': cluster['id']
+        })
         self.cmd('stack-hci cluster create-identity --cluster-name {cluster_name} -g {rg}')
         self.cmd('stack-hci cluster list -g {rg}', checks=[
             self.check('length(@)', 1),
@@ -36,6 +39,13 @@ class StackHciClientTest(ScenarioTest):
         ])
         self.cmd('stack-hci cluster update -n {cluster_name} -g {rg} --tags key0=value1')
         self.cmd('stack-hci cluster show -n {cluster_name} -g {rg}', checks=[
+            self.check('name', '{cluster_name}'),
+            self.check('tags', {'key0': 'value1'}),
+            self.check('type', 'microsoft.azurestackhci/clusters'),
+            self.exists('aadApplicationObjectId'),
+            self.exists('aadServicePrincipalObjectId')
+        ])
+        self.cmd('stack-hci cluster show --ids {cluster_id}', checks=[
             self.check('name', '{cluster_name}'),
             self.check('tags', {'key0': 'value1'}),
             self.check('type', 'microsoft.azurestackhci/clusters'),
