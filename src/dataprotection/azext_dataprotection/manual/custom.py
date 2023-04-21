@@ -288,9 +288,9 @@ def data_protection_backup_instance_initialize(datasource_type, datasource_id, d
     elif manifest["friendlyNameRequired"]:
         if friendly_name is None:
             raise CLIError("friendly-name parameter is required for the given DatasourceType")
-        friendly_name = datasourceset_info["resource_name"] + "\\" + friendly_name
+        friendly_name = datasourceset_info["resource_name"] + "/" + friendly_name
     else:
-        friendly_name = datasourceset_info["resource_name"] + "\\" + datasource_info["resource_name"]
+        friendly_name = datasourceset_info["resource_name"] + "/" + datasource_info["resource_name"]
 
     guid = uuid.uuid1()
     backup_instance_name = ""
@@ -581,8 +581,12 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
                 from azext_dataprotection.vendored_sdks.azure_mgmt_preview_aks import ContainerServiceClient
                 aks_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient, subscription_id=subscription_id)
                 aks_client = getattr(aks_client, 'managed_clusters')
+                aks_name = helper.get_resource_name_from_backup_instance(backup_instance, 'DataSource')
 
-                # aks = aks_client.get(resource_group_name, )
+                aks_cluster = aks_client.get(resource_group_name, aks_name)
+                datasource_principal_id = aks_cluster.identity.principal_id
+            else:
+                raise CLIError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
 
             resource_id = helper.get_resource_id_from_backup_instance(backup_instance, role_object['type'])
             resource_id = helper.truncate_id_using_scope(resource_id, "Resource")

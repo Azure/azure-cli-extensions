@@ -142,6 +142,18 @@ def get_resource_id_from_backup_instance(backup_instance, role_type):
     return resource_id
 
 
+def get_resource_name_from_backup_instance(backup_instance, role_type):
+    resource_name = None
+
+    if role_type == 'DataSource':
+        resource_name = backup_instance['properties']['data_source_info']['resource_name']
+    elif role_type == 'SnapshotRG':
+        data_stores = backup_instance['properties']['policy_info']['policy_parameters']['data_store_parameters_list']
+        resource_name = data_stores[0]['resource_group_id'].split("/")[-1]
+
+    return resource_name
+
+
 def get_secret_params_from_uri(secret_uri):
     secret_params = {}
 
