@@ -64,7 +64,7 @@ class ArtifactsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -150,7 +150,7 @@ class ArtifactsOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):

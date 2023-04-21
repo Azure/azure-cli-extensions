@@ -403,67 +403,6 @@ helps[
 """
 
 helps[
-    "devcenter dev notification-setting"
-] = """
-    type: group
-    short-summary: Manage notification setting with devcenter
-"""
-
-helps[
-    "devcenter dev notification-setting show"
-] = """
-    type: command
-    short-summary: "Gets notification settings for user in the project."
-    examples:
-      - name: DevCenter_GetNotificationSettings
-        text: |-
-               az devcenter dev notification-setting show --dev-center-name "{devCenterName}"  \
-              --project-name "{projectName}" --user-id "me"
-"""
-
-helps[
-    "devcenter dev notification-setting create"
-] = """
-    type: command
-    short-summary: "Creates or updates notification settings."
-    parameters:
-      - name: --email-notification
-        short-summary: "The email notification"
-        long-summary: |
-            Usage: --email-notification enabled=XX recipients=XX cc=XX
-
-            enabled: Required. If email notification is enabled
-            recipients: The recipients of the email notification
-            cc: The cc of the email notification
-      - name: --webhook-notification
-        short-summary: "The webhook notification"
-        long-summary: |
-            Usage: --webhook-notification enabled=XX url=XX
-
-            enabled: Required. If webhook notification is enabled
-            url: The url of the webhook
-    examples:
-      - name: DevCenter_CreateNotificationSettings
-        text: |-
-               az devcenter dev notification-setting create --dev-center-name "{devCenterName}"  \
---project-name "{projectName}" --culture "en-us" --enabled false --boolean-enabled \
-true --email-notification cc="stubcc@domain.com" enabled=true recipients="stubrecipient@domain.com" \
---webhook-notification enabled=false url="https://fake.domain/url/hook" --user-id "me"
-"""
-
-helps[
-    "devcenter dev notification-setting list-allowed-culture"
-] = """
-    type: command
-    short-summary: "Lists allowed culture codes for notification settings."
-    examples:
-      - name: DevCenter_ListNotificationSettingsAllowedCultures
-        text: |-
-              az devcenter dev notification-setting list-allowed-culture --dev-center-name "{devCenterName}"  \
---project-name "{projectName}" --user-id "me"
-"""
-
-helps[
     "devcenter dev environment-definition"
 ] = """
     type: group
@@ -497,30 +436,4 @@ helps[
         text: |-
                az devcenter dev environment-definition show --dev-center-name "{devCenterName}"  \
 --project-name "{projectName}" --catalog-name "myCatalog" --definition-name "foo"
-"""
-
-
-helps[
-    "devcenter dev artifact"
-] = """
-    type: group
-    short-summary: Manage artifact with devcenter
-"""
-
-
-helps[
-    "devcenter dev artifact list"
-] = """
-    type: command
-    short-summary: "Lists the artifacts for an environment at a specified path, or returns the file at the path or lists the artifacts for an environment."
-    examples:
-      - name: Artifacts_List
-        text: |-
-               az devcenter dev artifact list--dev-center-name "{devCenterName}"  \
---project-name "{projectName}" --user-id "me" --environment-name "foo"
-    examples:
-      - name: Artifacts_ListbyPath
-        text: |-
-               az devcenter dev artifact list --dev-center-name "{devCenterName}"  \
---project-name "{projectName}" --user-id "me"  --environment-name  "foo" --artifact-path "/artifacts"
 """

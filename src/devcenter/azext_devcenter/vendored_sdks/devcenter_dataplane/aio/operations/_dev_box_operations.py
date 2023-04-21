@@ -65,7 +65,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -149,7 +149,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -235,7 +235,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -320,7 +320,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
@@ -369,7 +369,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -499,7 +499,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
@@ -598,7 +598,7 @@ class DevBoxOperations:
             'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
 
-        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, lro_options={'final-state-via': 'operation-location'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:
@@ -623,7 +623,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
@@ -720,7 +720,7 @@ class DevBoxOperations:
             'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
 
-        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, lro_options={'final-state-via': 'operation-location'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:
@@ -746,7 +746,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
@@ -849,7 +849,7 @@ class DevBoxOperations:
             'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
 
-        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, lro_options={'final-state-via': 'operation-location'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:
@@ -874,7 +874,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
@@ -971,7 +971,7 @@ class DevBoxOperations:
             'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
 
-        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, lro_options={'final-state-via': 'operation-location'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:
@@ -1008,7 +1008,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
@@ -1068,7 +1068,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -1154,7 +1154,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
@@ -1218,7 +1218,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
@@ -1282,7 +1282,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
@@ -1347,7 +1347,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2023-01-01-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):

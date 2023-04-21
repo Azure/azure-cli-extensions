@@ -1601,35 +1601,6 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             checks=[],
         )
 
-    # TODO: complete once implemented
-    @ResourceGroupPreparer(
-        name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
-    )
-    def test_artifact_dataplane_scenario(self):
-        self.kwargs.update(
-            {
-                "location": "westus3",
-            }
-        )
-
-        create_catalog(self)
-
-        self.cmd(
-            "az devcenter dev artifact list "
-            '--dev-center "{devcenterName}" '
-            '--project "{projectName}" '
-            '--environment-name  "foo" ',
-            checks=[],
-        )
-
-        self.cmd(
-            "az devcenter dev artifact list "
-            '--dev-center "{devcenterName}" '
-            '--project "{projectName}" '
-            '--environment-name  "foo" '
-            '--artifact-path "/artifacts" ',
-            checks=[],
-        )
 
     @ResourceGroupPreparer(
         name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
@@ -1909,99 +1880,6 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             ],
         )
 
-    @ResourceGroupPreparer(
-        name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
-    )
-    def test_notification_setting_dataplane_scenario(self):
-        self.kwargs.update(
-            {
-                "devcenterName": self.create_random_name(prefix="cli", length=24),
-                "location": "westus3",
-            }
-        )
-        create_dev_center(self)
-        create_project(self)
-        add_dev_box_user_role_to_project(self)
-
-        self.cmd(
-            "az devcenter dev notification-setting list-allowed-culture "
-            '--project "{projectName}" '
-            '--dev-center "{devcenterName}" ',
-            checks=[
-                self.check("length(@)", 1),
-            ],
-        )
-
-        self.cmd(
-            "az devcenter dev notification-setting create "
-            '--project "{projectName}" '
-            '--dev-center "{devcenterName}" '
-            '--culture "en-us" '
-            '--enabled "true" '
-            '--boolean-enabled "true" '
-            '--email-notification cc="fake@domain.com" enabled=true recipients="fake@domain.com" '
-            '--webhook-notification enabled=false url="https://fake.domain/url/hook"',
-            checks=[
-                self.check("culture", "en-us"),
-                self.check("enabled", True),
-                self.check(
-                    "notificationType.devBoxProvisioningNotification.enabled", True
-                ),
-                self.check(
-                    "notificationType.devBoxProvisioningNotification.notificationChannel.emailNotification.cc",
-                    "fake@domain.com",
-                ),
-                self.check(
-                    "notificationType.devBoxProvisioningNotification.notificationChannel.emailNotification.enabled",
-                    True,
-                ),
-                self.check(
-                    "notificationType.devBoxProvisioningNotification.notificationChannel.emailNotification.recipients",
-                    "fake@domain.com",
-                ),
-                self.check(
-                    "notificationType.devBoxProvisioningNotification.notificationChannel.webhookNotification.enabled",
-                    False,
-                ),
-                self.check(
-                    "notificationType.devBoxProvisioningNotification.notificationChannel.webhookNotification.url",
-                    "https://fake.domain/url/hook",
-                ),
-            ],
-        )
-
-        self.cmd(
-            "az devcenter dev notification-setting show "
-            '--project "{projectName}" '
-            '--dev-center "{devcenterName}" ',
-            checks=[
-                self.check("culture", "en-us"),
-                self.check("enabled", True),
-                self.check(
-                    "notificationType.devBoxProvisioningNotification.enabled", True
-                ),
-                self.check(
-                    "notificationType.devBoxProvisioningNotification.notificationChannel.emailNotification.cc",
-                    "fake@domain.com",
-                ),
-                self.check(
-                    "notificationType.devBoxProvisioningNotification.notificationChannel.emailNotification.enabled",
-                    True,
-                ),
-                self.check(
-                    "notificationType.devBoxProvisioningNotification.notificationChannel.emailNotification.recipients",
-                    "fake@domain.com",
-                ),
-                self.check(
-                    "notificationType.devBoxProvisioningNotification.notificationChannel.webhookNotification.enabled",
-                    False,
-                ),
-                self.check(
-                    "notificationType.devBoxProvisioningNotification.notificationChannel.webhookNotification.url",
-                    "https://fake.domain/url/hook",
-                ),
-            ],
-        )
 
     @ResourceGroupPreparer(
         name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
