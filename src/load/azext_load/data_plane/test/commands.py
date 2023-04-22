@@ -18,3 +18,4 @@ def load_test_commands(self, _):
         g.custom_command("create", "create_or_update_test")
         g.custom_command("update", "create_or_update_test")
         g.command("delete", "delete_test")
+        g.custom_command("list", "list_tests")

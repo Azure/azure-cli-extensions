@@ -1,6 +1,8 @@
 import yaml
 from yaml.loader import SafeLoader
 
+from azext_load.data_plane.util import get_load_test_resource_endpoint, get_login_credentials
+
 
 def create_or_update_test(
     cmd,
@@ -36,3 +38,17 @@ def create_or_update_test(
                 "env": env,
             },
         )
+
+
+def list_tests(
+    cmd,
+    load_test_resource=None,
+    resource_group=None,
+):
+    from azext_load.data_plane.client_factory import admin_data_plane_client
+
+    credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
+    endpoint = get_load_test_resource_endpoint(credential, load_test_resource, resource_group=resource_group, subscription_id=subscription_id)
+    client = admin_data_plane_client(cmd.cli_ctx, subscription=subscription_id, endpoint=endpoint)
+
+    return client.list_tests()

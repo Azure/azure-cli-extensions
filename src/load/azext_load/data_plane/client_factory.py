@@ -1,36 +1,43 @@
-def testrun_data_plane_client(cli_ctx, _, subscription=None):
-    """Initialize Log Analytics data client for use with CLI."""
+from azext_load.data_plane.util import get_login_credentials
+
+
+def admin_data_plane_client(cli_ctx, subscription=None, endpoint="", credential=None):
+    """Initialize Azure Load Testing data Administration client for use with CLI."""
+    from azure.core.pipeline.policies import UserAgentPolicy
+    from azure.cli.core._profile import Profile
+    from azext_load.vendored_sdks.loadtesting import LoadTestAdministrationClient
+
+    if credential is None:
+        credential, _, _ = get_login_credentials(cli_ctx, subscription_id=subscription)
+
+    user_agent_policy = UserAgentPolicy(user_agent="AZCLI")
+    return LoadTestAdministrationClient(
+        endpoint=endpoint,
+        credential=credential,
+        user_agent_policy=user_agent_policy
+    )
+
+
+def testrun_data_plane_client(cli_ctx, subscription=None, endpoint=None):
+    """Initialize Azure Load Testing data Test Run client for use with CLI."""
+    from azure.core.pipeline.policies import UserAgentPolicy
     from azure.cli.core._profile import Profile
     from azext_load.vendored_sdks.loadtesting import LoadTestRunClient
 
-    # from azure.identity import DefaultAzureCredential
     profile = Profile(cli_ctx=cli_ctx)
     cred, _, _ = profile.get_login_credentials(subscription_id=subscription)
-    # create uri from r-id
+
+    user_agent_policy = UserAgentPolicy(user_agent="AZCLI")
     return LoadTestRunClient(
-        endpoint="e91964d6-832c-46de-98fe-e2620d702cdf.eastus.cnt-prod.loadtesting.azure.com",
+        endpoint=endpoint,
         credential=cred,
+        user_agent_policy=user_agent_policy
     )
 
 
-def admin_data_plane_client(cli_ctx, subscription=None):
-    """Initialize Log Analytics data client for use with CLI."""
-    from azext_load.vendored_sdks.loadtesting import LoadTestAdministrationClient
-    from azure.cli.core._profile import Profile
-
-    profile = Profile(cli_ctx=cli_ctx)
-    cred, _, _ = profile.get_login_credentials()
-    # dp_uri = call show(id)
-
-    return LoadTestAdministrationClient(
-        endpoint="e91964d6-832c-46de-98fe-e2620d702cdf.eastus.cnt-prod.loadtesting.azure.com",
-        credential=cred,
-    )
+def cf_admin(cli_ctx, *_, **kwargs):
+    return admin_data_plane_client(cli_ctx, **kwargs)
 
 
-def cf_testrun(cli_ctx, _):
-    return testrun_data_plane_client(cli_ctx, _)
-
-
-def cf_admin(cli_ctx, _):
-    return admin_data_plane_client(cli_ctx, _)
+def cf_testrun(cli_ctx, *_, **kwargs):
+    return testrun_data_plane_client(cli_ctx, **kwargs)

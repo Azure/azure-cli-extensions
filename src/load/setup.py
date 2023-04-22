@@ -26,7 +26,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = ["azure-core", "pyyaml"]
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()

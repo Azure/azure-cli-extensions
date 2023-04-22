@@ -10,7 +10,9 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-helps['load test create'] = """
+helps[
+    "load test create"
+] = """
 type: command
 short-summary: Create a new test test.
 long-summary: Create a new test test.
@@ -27,7 +29,9 @@ parameters:
           Load test model. Required.
 """
 
-helps['load test update'] = """
+helps[
+    "load test update"
+] = """
 type: command
 short-summary: Update an existing test.
 long-summary: Update an existing test.
@@ -42,4 +46,23 @@ parameters:
       short-summary: 'Load test model'
       long-summary: |
           Load test model. Required.
+"""
+
+helps[
+    "load test list"
+] = """
+type: command
+short-summary: List all tests.
+long-summary: List all tests.
+parameters:
+    - name: --load-test-resource
+      type: string
+      short-summary: 'Name or ARM resource ID of the load test resource'
+      long-summary: |
+          Name or ARM resource ID of the load test resource
+    - name: --resource-group
+      type: string
+      short-summary: 'Name of the resource group'
+      long-summary: |
+          Name of the resource group
 """
