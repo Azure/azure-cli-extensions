@@ -45,8 +45,8 @@ def check_connection(target_iqn, target_portal_hostname, target_portal_port):
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     return f"{target_portal_hostname}:{target_portal_port},-1 {target_iqn}" in result.stdout
         
-def connect_volume(target_iqn, target_portal_hostname, target_portal_port, number_of_sessions):    
-    print(f'Volume name [{target_iqn}]: Connecting to this volume')
+def connect_volume(volume_name, target_iqn, target_portal_hostname, target_portal_port, number_of_sessions):    
+    print(f'{volume_name} [{target_iqn}]: Connecting to this volume')
     # add target and attempt to register a session
     command = f"sudo iscsiadm -m node --targetname {target_iqn} --portal {target_portal_hostname}:{target_portal_port} -o new".split(' ')
     subprocess.run(command, stdout=subprocess.DEVNULL)
@@ -72,6 +72,20 @@ def connect_volume(target_iqn, target_portal_hostname, target_portal_port, numbe
     command = f"sudo iscsiadm -m node --targetname {target_iqn} --portal {target_portal_hostname}:{target_portal_port} --op update -n node.session.nr_sessions -v {number_of_sessions}".split(' ')
     subprocess.run(command)
 
+class VolumeData:
+    volume_name = ''
+    target_iqn = ''
+    target_hostname = ''
+    target_port = ''
+    num_session = 32
+    
+    def __init__(self, volume_name, target_iqn, target_hostname, target_port, num_session=32):
+        self.volume_name = volume_name
+        self.target_iqn = target_iqn
+        self.target_hostname = target_hostname
+        self.target_port = target_port
+        self.num_session = min(32, int(num_session))
+
 if __name__ == "__main__":
     # iSCSI initiator
     check_iscsi()
@@ -79,25 +93,15 @@ if __name__ == "__main__":
     # MPIO
     check_mpio()
     
-    # get parameters
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-v", "--volume-names", nargs='+')
-    parser.add_argument("-i", "--target-iqns", nargs='+')
-    parser.add_argument("-n", "--target-portal-hostnames", nargs='+')
-    parser.add_argument("-p", "--target-portal-ports", nargs='+')
-    parser.add_argument("-s", "--num-of-sessions", nargs='+')
-    args = parser.parse_args(sys.argv[1:])
-    volume_names = args.volume_names if args.volume_names is not None else ["testvolume1"]
-    target_iqns = args.target_iqns if args.target_iqns is not None else ["iqn.2023-03.net.windows.core.blob.ElasticSan.es-4qtreagkjzj0:testvolume1"]
-    target_portal_hostnames = args.target_portal_hostnames if args.target_portal_hostnames is not None else ["es-4qtreagkjzj0.z45.blob.storage.azure.net"]
-    target_portal_ports = args.target_portal_ports if args.target_portal_ports is not None else [3260]
-    number_of_sessions = args.num_of_sessions if args.num_of_sessions is not None else [32] #default 32
-    number_of_sessions = [min(32, int(s)) for s in number_of_sessions]
-    
-    for i, volume_name in enumerate(volume_names):
+    # create VolumeData array
+    volume_data = []
+    # Portal team will need to modify the following lines or add/remove lines in the same format - 
+    # volume_data.append(VolumeData({VolumeName},{TargetIQN}, {TargetHostName}, {TargetPort}, {Number of sessions}))
+
+    for v in volume_data:
         # check connections, if connected, then skip adding new connections
-        connected = check_connection(target_iqns[i], target_portal_hostnames[i], target_portal_ports[i])
+        connected = check_connection(v.target_iqn, v.target_hostname, v.target_port)
         if connected:
-            print(f'Volume name [{target_iqns[i]}]: Skipped as this volume is already connected')
+            print(f'{v.volume_name} [{v.target_iqn}]: Skipped as this volume is already connected')
             continue
-        connect_volume(target_iqns[i], target_portal_hostnames[i], target_portal_ports[i], number_of_sessions[i])
+        connect_volume(v.volume_name, v.target_iqn, v.target_hostname, v.target_port, v.num_session)

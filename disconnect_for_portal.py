@@ -5,10 +5,22 @@ def check_connection(target_iqn, target_portal_hostname, target_portal_port):
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     return f"{target_portal_hostname}:{target_portal_port},-1 {target_iqn}" in result.stdout
         
-def disconnect_volume(target_iqn, target_portal_hostname, target_portal_port):    
-    print(f'Volume name [{target_iqn}]: Disconnecting volume')
+def disconnect_volume(volume_name, target_iqn, target_portal_hostname, target_portal_port):    
+    print(f'{volume_name} [{target_iqn}]: Disconnecting volume')
     command = f"sudo iscsiadm --mode node --target {target_iqn} --portal {target_portal_hostname}:{target_portal_port} --logout".split(' ')
     subprocess.run(command, stdout=subprocess.DEVNULL)
+
+class VolumeData:
+    volume_name = ''
+    target_iqn = ''
+    target_hostname = ''
+    target_port = ''
+    
+    def __init__(self, volume_name, target_iqn, target_hostname, target_port):
+        self.volume_name = volume_name
+        self.target_iqn = target_iqn
+        self.target_hostname = target_hostname
+        self.target_port = target_port
 
 if __name__ == "__main__":
     value = input('\033[93m[Warning: Running this script will remove access to all the selected volumes, all existing sessions to these volumes will be disconnected. \nDo you wish to continue? [Y/Yes/N/No]:\033[00m')
@@ -20,20 +32,15 @@ if __name__ == "__main__":
         else:
             value = input('\033[93mDo you wish to continue? [Y/Yes/N/No]:\033[00m')
     
-    # get parameters
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--target-iqns", nargs='+')
-    parser.add_argument("-n", "--target-portal-hostnames", nargs='+')
-    parser.add_argument("-p", "--target-portal-ports", nargs='+')
-    args = parser.parse_args(sys.argv[1:])
-    target_iqns = args.target_iqns if args.target_iqns is not None else ["iqn.2023-03.net.windows.core.blob.ElasticSan.es-4qtreagkjzj0:testvolume1"]
-    target_portal_hostnames = args.target_portal_hostnames if args.target_portal_hostnames is not None else ["es-4qtreagkjzj0.z45.blob.storage.azure.net"]
-    target_portal_ports = args.target_portal_ports if args.target_portal_ports is not None else [3260]
-    
-    for i, target_iqn in enumerate(target_iqns):
+    # create VolumeData array
+    volume_data = []
+    # Portal team will need to modify the following lines or add/remove lines in the same format - 
+    # volume_data.append(VolumeData({TargetIQN}, {TargetHostName}, {TargetPort}))
+
+    for v in volume_data:
         # check connections, if not connected, then skip disconnection
-        connected = check_connection(target_iqn, target_portal_hostnames[i], target_portal_ports[i])
+        connected = check_connection(v.target_iqn, v.target_hostname, v.target_port)
         if not connected:
-            print(f'Volume name [{target_iqn}]: Skipped as this volume is not connected')
+            print(f'{v.volume_name} [{v.target_iqn}]: Skipped as this volume is not connected')
             continue
-        disconnect_volume(target_iqn, target_portal_hostnames[i], target_portal_ports[i])
+        disconnect_volume(v.volume_name, v.target_iqn, v.target_hostname, v.target_port)
