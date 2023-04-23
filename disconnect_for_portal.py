@@ -1,14 +1,19 @@
-import subprocess, sys, argparse
+import subprocess, sys
+if hasattr(__builtins__, 'raw_input'):
+      input=raw_input
 
 def check_connection(target_iqn, target_portal_hostname, target_portal_port):
-    command = f"sudo iscsiadm -m session".split(' ')
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    return f"{target_portal_hostname}:{target_portal_port},-1 {target_iqn}" in result.stdout
+    command = "sudo iscsiadm -m session".split(' ')
+    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, _ = p.communicate()
+    out = out.decode("utf-8")
+    return "No active sessions." not in out and "{}:{},-1 {}".format(target_portal_hostname, target_portal_port, target_iqn) in out
         
 def disconnect_volume(volume_name, target_iqn, target_portal_hostname, target_portal_port):    
-    print(f'{volume_name} [{target_iqn}]: Disconnecting volume')
-    command = f"sudo iscsiadm --mode node --target {target_iqn} --portal {target_portal_hostname}:{target_portal_port} --logout".split(' ')
-    subprocess.run(command, stdout=subprocess.DEVNULL)
+    print('{} [{}]: Disconnecting volume'.format(volume_name, target_iqn))
+    command = "sudo iscsiadm --mode node --target {} --portal {}:{} --logout".format(target_iqn, target_portal_hostname, target_portal_port).split(' ')
+    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p.communicate()
 
 class VolumeData:
     volume_name = ''
@@ -36,11 +41,12 @@ if __name__ == "__main__":
     volume_data = []
     # Portal team will need to modify the following lines or add/remove lines in the same format - 
     # volume_data.append(VolumeData({TargetIQN}, {TargetHostName}, {TargetPort}))
+    volume_data.append(VolumeData(volume_name="testvolume1",target_iqn="iqn.2023-03.net.windows.core.blob.ElasticSan.es-4qtreagkjzj0:testvolume1", target_hostname="es-4qtreagkjzj0.z45.blob.storage.azure.net", target_port=3260))
 
     for v in volume_data:
         # check connections, if not connected, then skip disconnection
         connected = check_connection(v.target_iqn, v.target_hostname, v.target_port)
         if not connected:
-            print(f'{v.volume_name} [{v.target_iqn}]: Skipped as this volume is not connected')
+            print("{} [{}]: Skipped as this volume is not connected".format(v.volume_name, v.target_iqn))
             continue
         disconnect_volume(v.volume_name, v.target_iqn, v.target_hostname, v.target_port)
