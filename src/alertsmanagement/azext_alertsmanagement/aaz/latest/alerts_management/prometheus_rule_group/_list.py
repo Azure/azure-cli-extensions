@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List Prometheus all rule group definitions in a subscription.
+
+    :example: List a Prometheus rule group definition.
+        az alerts-management prometheus-rule-group list -g MyResourceGroup
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a Prometheus rule group definition.
+
+    :example: Show a Prometheus rule group definition.
+        az alerts-management prometheus-rule-group show -n TestPrometheusRuleGroup -g MyResourceGroup
     """
 
     _aaz_info = {

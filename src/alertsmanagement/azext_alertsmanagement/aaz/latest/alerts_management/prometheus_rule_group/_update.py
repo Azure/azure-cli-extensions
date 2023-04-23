@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a Prometheus rule group definition.
+
+    :example: Update a Prometheus rule group definition.
+        az alerts-management prometheus-rule-group update -n TestPrometheusRuleGroup -g MyResourceGroup --tags key=value
     """
 
     _aaz_info = {

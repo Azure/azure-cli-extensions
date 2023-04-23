@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a Prometheus rule group definition.
+
+    :example: Delete a Prometheus rule group definition.
+        az alerts-management prometheus-rule-group delete -n TestPrometheusRuleGroup -g MyResourceGroup
     """
 
     _aaz_info = {
