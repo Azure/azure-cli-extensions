@@ -27,7 +27,7 @@ def check_iscsi():
     # print('out',out)
     # print('err',err)
     # sys.exit()
-    if (package_manager == "apt" and "ii  open-iscsi" not in out) or (package_manager == 'yum' and "iscsi-initiator-utils is not installed" in out) or (package_manager == 'zypper' and "i | open-iscsi" not in out):
+    if (package_manager == "apt" and "ii  open-iscsi" not in out) or (package_manager == 'yum' and "iscsi-initiator-utils is not installed" in out) or (package_manager == 'zypper' and "open-iscsi" not in out):
         value = input("\033[93mWarning: iSCSI initiator is not installed or enabled. It is required for successful execution of this connect script. \nDo you wish to terminate the script to install it? \n[Y/Yes to terminate; N/No to proceed with rest of the steps]:\033[00m")
         while True:
             if value.lower() == 'yes' or value.lower() == 'y':
@@ -43,7 +43,7 @@ def check_mpio():
     elif package_manager == 'yum':
         command = "rpm -q device-mapper-multipath".split(' ')
     elif package_manager == 'zypper':
-        command = "zypper search -I multipath-tools".split(' ')
+        command = "zypper search -i multipath-tools".split(' ')
     else:
         raise OSError("cannot find a usable package manager")
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -52,7 +52,7 @@ def check_mpio():
     # print('out',out)
     # print('err',err)
     # if err is not None and err!="" or "ii  multipath-tools" not in out:
-    if (package_manager == "apt" and "ii  multipath-tools" not in out) or (package_manager == 'yum' and "device-mapper-multipath is not installed" in out) or (package_manager == 'zypper' and "i | multipath-tools" not in out):
+    if (package_manager == "apt" and "ii  multipath-tools" not in out) or (package_manager == 'yum' and "device-mapper-multipath is not installed" in out) or (package_manager == 'zypper' and "multipath-tools" not in out):
         value = input("\033[93mWarning: Multipath I/O is not installed or enabled. It is recommended for multi-session setup. \nDo you wish to terminate the script to install it? \n[Y/Yes to terminate; N/No to proceed with rest of the steps]:\033[00m")
         while True:
             if value.lower() == 'yes' or value.lower() == 'y':
