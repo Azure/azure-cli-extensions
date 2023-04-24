@@ -23,7 +23,8 @@ from azext_cosmosdb_preview._client_factory import (
     cf_restorable_tables,
     cf_restorable_table_resources,
     cf_restorable_database_accounts,
-    cf_data_transfer_job
+    cf_data_transfer_job,
+    cf_mongo_cluster_job
 )
 
 
@@ -231,3 +232,32 @@ def load_command_table(self, _):
 
     with self.command_group('cosmosdb mongodb collection', cosmosdb_mongo_sdk, client_factory=cf_mongo_db_resources) as g:
         g.custom_command('restore', 'cli_cosmosdb_mongodb_collection_restore', is_preview=True)
+
+    with self.command_group('cosmosdb gremlin database', cosmosdb_gremlin_sdk, client_factory=cf_gremlin_resources) as g:
+        g.custom_command('restore', 'cli_cosmosdb_gremlin_database_restore', is_preview=True)
+
+    with self.command_group('cosmosdb gremlin graph', cosmosdb_gremlin_sdk, client_factory=cf_gremlin_resources) as g:
+        g.custom_command('restore', 'cli_cosmosdb_gremlin_graph_restore', is_preview=True)
+
+    with self.command_group('cosmosdb table', cosmosdb_table_sdk, client_factory=cf_table_resources) as g:
+        g.custom_command('restore', 'cli_cosmosdb_table_restore', is_preview=True)
+
+    # Mongo cluster operations
+    cosmosdb_mongocluster_sdk = CliCommandType(
+        operations_tmpl='azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.operations.#MongoClustersOperations.{}',
+        client_factory=cf_mongo_cluster_job)
+
+    # Mongo Cluster create operations
+    with self.command_group('cosmosdb mongocluster', cosmosdb_mongocluster_sdk, client_factory=cf_mongo_cluster_job, is_preview=True) as g:
+        g.custom_command('create', 'cli_cosmosdb_mongocluster_create', is_preview=True)
+        g.custom_command('update', 'cli_cosmosdb_mongocluster_update', is_preview=True)
+        g.custom_command('list', 'cli_cosmosdb_mongocluster_list', is_preview=True)
+        g.custom_show_command('show', 'cli_cosmosdb_mongocluster_get', is_preview=True)
+        g.custom_command('delete', 'cli_cosmosdb_mongocluster_delete', confirmation=True)
+
+    with self.command_group('cosmosdb mongocluster firewall rule', cosmosdb_mongocluster_sdk, client_factory=cf_mongo_cluster_job, is_preview=True) as g:
+        g.custom_command('create', 'cli_cosmosdb_mongocluster_firewall_rule_create', is_preview=True)
+        g.custom_command('update', 'cli_cosmosdb_mongocluster_firewall_rule_update', is_preview=True)
+        g.custom_command('list', 'cli_cosmosdb_mongocluster_firewall_rule_list', is_preview=True)
+        g.custom_show_command('show', 'cli_cosmosdb_mongocluster_firewall_rule_get', is_preview=True)
+        g.custom_command('delete', 'cli_cosmosdb_mongocluster_firewall_rule_delete', confirmation=True)

@@ -26,10 +26,10 @@ from azext_aks_preview._consts import (
     ADDONS,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IPCONFIGURATION,
-    CONST_OUTBOUND_TYPE_LOAD_BALANCER,
-    CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
-    CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
-    CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
+    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
+    CONST_MANAGED_CLUSTER_SKU_TIER_FREE,
+    CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD,
 )
 from azext_aks_preview._helpers import _fuzzy_match
 
@@ -211,6 +211,15 @@ def validate_load_balancer_outbound_ips(namespace):
         if not all(ip_id_list):
             raise CLIError(
                 "--load-balancer-outbound-ips cannot contain whitespace")
+
+
+def validate_sku_tier(namespace):
+    """Validates the sku tier string."""
+    if namespace.tier is not None:
+        if namespace.tier == '':
+            return
+        if namespace.tier.lower() not in (CONST_MANAGED_CLUSTER_SKU_TIER_FREE, CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD):
+            raise InvalidArgumentValueError("--tier can only be free or standard")
 
 
 def validate_load_balancer_outbound_ip_prefixes(namespace):

@@ -79,6 +79,18 @@ helps['fleet member create'] = """
         - name: --member-cluster-id
           type: string
           short-summary: ID of the managed cluster.
+        - name: --update-group
+          type: string
+          short-summary: Group of the fleet member.
+"""
+
+helps['fleet member update'] = """
+    type: command
+    short-summary: Update a fleet member.
+    parameters:
+        - name: --update-group
+          type: string
+          short-summary: Group of the fleet member.
 """
 
 helps['fleet member list'] = """
