@@ -2313,13 +2313,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         return mc
 
     def set_up_guardrails_profile(self, mc: ManagedCluster) -> ManagedCluster:
-
         excludedNamespaces = self.context.get_guardrails_excluded_namespaces()
         version = self.context.get_guardrails_version()
         level = self.context.get_guardrails_level()
         # provided any value?
         if (level is not None or version is not None or excludedNamespaces is not None) and mc.guardrails_profile is None:
-                mc.guardrails_profile = self.models.GuardrailsProfile()
+            mc.guardrails_profile = self.models.GuardrailsProfile()
         # replace values with provided values
         if level is not None:
             mc.guardrails_profile.level = level
@@ -2918,7 +2917,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 mc.auto_upgrade_profile = self.models.ManagedClusterAutoUpgradeProfile()
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
         return mc
-    
+
     def update_guardrails_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update guardrails profile for the ManagedCluster object
         :return: the ManagedCluster object
@@ -2931,7 +2930,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         level = self.context.get_guardrails_level()
         # provided any value?
         if (level is not None or version is not None or excludedNamespaces is not None) and mc.guardrails_profile is None:
-                mc.guardrails_profile = self.models.GuardrailsProfile()
+            mc.guardrails_profile = self.models.GuardrailsProfile()
         # replace values with provided values
         if level is not None:
             mc.guardrails_profile.level = level

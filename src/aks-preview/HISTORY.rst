@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.132
++++++++
+* Allow options for specifying guardrails profile arguments
+
 0.5.131
 +++++++
 * Allow updating the ssh key value if cluster was created without ssh key
