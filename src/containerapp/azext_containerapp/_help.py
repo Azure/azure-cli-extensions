@@ -56,11 +56,11 @@ helps['containerapp create'] = """
                                     "queueLength": "5" "queueName": "foo" \\
               --scale-rule-auth "connection=my-connection-string-secret-name"
     - name: Create a container app with secrets and mounts them in a volume.
-          text: |
-              az containerapp create -n MyContainerapp -g MyResourceGroup \\
-                  --image my-app:v1.0 --environment MyContainerappEnv \\
-                  --secrets mysecret=secretvalue1 anothersecret="secret value 2" \\
-                  --secret-volume-mount "mnt/secrets"
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+              --image my-app:v1.0 --environment MyContainerappEnv \\
+              --secrets mysecret=secretvalue1 anothersecret="secret value 2" \\
+              --secret-volume-mount "mnt/secrets"
 """
 
 helps['containerapp update'] = """
