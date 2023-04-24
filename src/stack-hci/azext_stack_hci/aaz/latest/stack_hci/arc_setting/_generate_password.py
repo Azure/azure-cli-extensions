@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class GeneratePassword(AAZCommand):
     """Generate password for arc settings.
 
-    :example: Generate Password
+    :example: Generate password
         az stack-hci arc-setting generate-password --name "default" --cluster-name "myCluster" --resource-group "test-rg"
     """
 

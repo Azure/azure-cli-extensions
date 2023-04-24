@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "stack-hci extension create",
 )
 class Create(AAZCommand):
-    """Create Extension for HCI cluster.
+    """Create extension for HCI cluster.
 
-    :example: Create Arc Extension
+    :example: Create arc extension
         az stack-hci extension create --arc-setting-name "default" --cluster-name "myCluster" --type "MicrosoftMonitoringAgent" --protected-settings "{workspaceKey:xx}" --publisher "Microsoft.Compute" --settings "{workspaceId:xx}" --type-handler-version "1.10" --name "MicrosoftMonitoringAgent" --resource-group "test-rg"
     """
 

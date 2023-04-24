@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "stack-hci extension show",
 )
 class Show(AAZCommand):
-    """Get particular Arc Extension of HCI Cluster.
+    """Get particular arc extension of HCI cluster.
 
-    :example: Get ArcSettings Extension
+    :example: Get arc settings extension
         az stack-hci extension show --arc-setting-name "default" --cluster-name "myCluster" --name "MicrosoftMonitoringAgent" --resource-group "test-rg"
     """
 

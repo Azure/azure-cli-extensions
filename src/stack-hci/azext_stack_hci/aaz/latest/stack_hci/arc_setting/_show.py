@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "stack-hci arc-setting show",
 )
 class Show(AAZCommand):
-    """Get ArcSetting resource details of HCI Cluster.
+    """Get arc setting resource details of HCI cluster.
 
-    :example: Get ArcSetting
+    :example: Get arc setting
         az stack-hci arc-setting show --name "default" --cluster-name "myCluster" --resource-group "test-rg"
     """
 

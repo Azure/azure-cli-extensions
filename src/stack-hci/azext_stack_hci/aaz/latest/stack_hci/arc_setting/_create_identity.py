@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "stack-hci arc-setting create-identity",
 )
 class CreateIdentity(AAZCommand):
-    """Create Aad identity for arc settings.
+    """Create AAD identity for arc settings.
 
-    :example: Create Arc Identity
+    :example: Create arc identity
         az stack-hci arc-setting create-identity --name "default" --cluster-name "myCluster" --resource-group "test-rg"
     """
 

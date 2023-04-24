@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class CreateIdentity(AAZCommand):
     """Create cluster identity.
 
-    :example: Create cluster Identity
+    :example: Create cluster identity
         az stack-hci cluster create-identity --name "myCluster" --resource-group "test-rg"
     """
 

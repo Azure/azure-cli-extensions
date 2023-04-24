@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "stack-hci arc-setting create",
 )
 class Create(AAZCommand):
-    """Create ArcSetting for HCI cluster.
+    """Create arc setting for HCI cluster.
 
-    :example: Create ArcSetting
+    :example: Create arc setting
         az stack-hci arc-setting create --name "default" --cluster-name "myCluster" --resource-group "test-rg"
     """
 

@@ -16,9 +16,9 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete ArcSetting resource details of HCI Cluster.
+    """Delete arc setting resource details of HCI cluster.
 
-    :example: Delete ArcSetting
+    :example: Delete arc setting
         az stack-hci arc-setting delete --name "default" --cluster-name "myCluster" --resource-group "test-rg"
     """
 

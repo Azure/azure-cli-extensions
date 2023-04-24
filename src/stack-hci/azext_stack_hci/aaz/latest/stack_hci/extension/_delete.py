@@ -16,9 +16,9 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete particular Arc Extension of HCI Cluster.
+    """Delete particular arc extension of HCI Cluster.
 
-    :example: Delete Arc Extension
+    :example: Delete arc extension
         az stack-hci extension delete --arc-setting-name "default" --cluster-name "myCluster" --name "MicrosoftMonitoringAgent" --resource-group "test-rg"
     """
 

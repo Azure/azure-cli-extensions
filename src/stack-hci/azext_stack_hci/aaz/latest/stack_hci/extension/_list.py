@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "stack-hci extension list",
 )
 class List(AAZCommand):
-    """List all Extensions under ArcSetting resource.
+    """List all extensions under arc setting resource.
 
-    :example: List Extensions under ArcSetting resource
+    :example: List extensions under arc setting resource
         az stack-hci extension list --arc-setting-name "default" --cluster-name "myCluster" --resource-group "test-rg"
     """
 

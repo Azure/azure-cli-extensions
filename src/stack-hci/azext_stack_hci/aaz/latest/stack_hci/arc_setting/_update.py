@@ -15,9 +15,9 @@ from azure.cli.core.aaz import *
     "stack-hci arc-setting update",
 )
 class Update(AAZCommand):
-    """Update ArcSetting for HCI cluster.
+    """Update arc setting for HCI cluster.
 
-    :example: Update ArcSetting
+    :example: Update arc setting
         az stack-hci arc-setting update --resource-group "test-rg" --cluster-name "myCluster" --name "default" --tags "{tag:tag}"
     """
 
