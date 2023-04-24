@@ -246,6 +246,18 @@ def load_arguments(self, _):
         c.argument('rehydration_priority', arg_type=get_enum_type(get_rehydration_priority_values()), help="Specify the rehydration priority for rehydrate restore.")
         c.argument('rehydration_duration', type=int, help="Specify the rehydration duration for rehydrate restore.")
 
+    with self.argument_context('data-protection backup-instance restore initialize-for-item-recovery') as c:
+        c.argument('restore_location', type=str, help="specify the restore location.")
+        c.argument('recovery_point_id', type=str, help="specify the recovery point ID which will be used for restoring the data.")
+        c.argument('point_in_time', type=datetime_type, help="specify the point in time which will be used for restoring the data in UTC (yyyy-mm-ddTHH:MM:SS).")
+        c.argument('source_datastore', arg_type=get_enum_type(get_datastore_type_values()), help="Specify the datastore type of the given recovery point or point in time.")
+        c.argument('backup_instance_id', type=str, help="specify the backup instance ID.")
+        c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type")
+        c.argument('container_list', type=str, nargs='+', help="specify the list of containers to restore.")
+        c.argument('from_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for start range.")
+        c.argument('to_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for end range.")
+        c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService.")
+
     with self.argument_context('dataprotection backup-instance restore initialize-for-item-recovery') as c:
         c.argument('restore_location', type=str, help="specify the restore location.")
         c.argument('recovery_point_id', type=str, help="specify the recovery point ID which will be used for restoring the data.")
