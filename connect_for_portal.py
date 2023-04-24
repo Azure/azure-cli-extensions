@@ -2,20 +2,31 @@ import subprocess, sys, os
 if hasattr(__builtins__, 'raw_input'):
       input = raw_input
 
+package_manager = ''
+if os.path.exists('/usr/bin/apt-get'):
+    package_manager = 'apt'
+elif os.path.exists('/usr/bin/yum'):
+    package_manager = 'yum'
+elif os.path.exists('/usr/bin/zypper'):
+    package_manager = 'zypper'
+else:
+    raise OSError("cannot find a usable package manager")
+
 def check_iscsi():
-    if os.path.exists('/usr/bin/apt-get'):
+    if package_manager == 'apt':
         command = "dpkg -l open-iscsi".split(' ')
-    elif os.path.exists('/usr/bin/yum'):
+    elif package_manager == 'yum':
         command = "rpm -qa | grep iscsi-initiator-utils".split(' ')
-    elif os.path.exists('/usr/bin/zypper'):
-        command = "zypper search -I open-iscsi".split(' ')
+    elif package_manager == 'zypper':
+        command = "zypper search -i open-iscsi".split(' ')
     else:
         raise OSError("cannot find a usable package manager")
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
-    out = out.decode("utf-8") 
-    err = err.decode("utf-8") 
-    if err is not None and err!="" or "ii  open-iscsi" not in out:
+    out, err = out.decode("utf-8"), err.decode("utf-8") 
+    # print(out)
+    # print(err)
+    if (package_manager == "apt" and "ii  open-iscsi" not in out) or (package_manager == 'yum' and "ii  open-iscsi" not in out) or (package_manager == 'zypper' and "i | open-iscsi" not in out):
         value = input("\033[93mWarning: iSCSI initiator is not installed or enabled. It is required for successful execution of this connect script. \nDo you wish to terminate the script to install it? \n[Y/Yes to terminate; N/No to proceed with rest of the steps]:\033[00m")
         while True:
             if value.lower() == 'yes' or value.lower() == 'y':
@@ -26,18 +37,19 @@ def check_iscsi():
                 value = input('\033[93m[Y/Yes to terminate; N/No to proceed with rest of the steps]:\033[00m')
            
 def check_mpio():
-    if os.path.exists('/usr/bin/apt-get'):
+    if package_manager == 'apt':
         command = "dpkg -l multipath-tools".split(' ')
-    elif os.path.exists('/usr/bin/yum'):
+    elif package_manager == 'yum':
         command = "rpm -qa | grep device-mapper-multipath".split(' ')
-    elif os.path.exists('/usr/bin/zypper'):
+    elif package_manager == 'zypper':
         command = "zypper search -I multipath-tools".split(' ')
     else:
         raise OSError("cannot find a usable package manager")
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
     out, err = out.decode("utf-8"), err.decode("utf-8") 
-    if err is not None and err!="" or "ii  multipath-tools" not in out:
+    # if err is not None and err!="" or "ii  multipath-tools" not in out:
+    if (package_manager == "apt" and "ii  multipath-tools" not in out) or (package_manager == 'yum' and "ii  open-iscsi" not in out) or (package_manager == 'zypper' and "i | multipath-tools" not in out):
         value = input("\033[93mWarning: Multipath I/O is not installed or enabled. It is recommended for multi-session setup. \nDo you wish to terminate the script to install it? \n[Y/Yes to terminate; N/No to proceed with rest of the steps]:\033[00m")
         while True:
             if value.lower() == 'yes' or value.lower() == 'y':
@@ -59,10 +71,12 @@ def connect_volume(volume_name, target_iqn, target_portal_hostname, target_porta
     # add target and attempt to register a session
     command = "sudo iscsiadm -m node --targetname {} --portal {}:{} -o new".format(target_iqn, target_portal_hostname, target_portal_port).split(' ')
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    p.communicate()
+    out, _ = p.communicate()
+    # print(out)
     command = "sudo iscsiadm -m node --targetname {} -p {}:{} -l".format(target_iqn, target_portal_hostname, target_portal_port).split(' ')
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    p.communicate()
+    out, _ = p.communicate()
+    # print(out)
     number_of_sessions-=1
 
     # get session id
@@ -76,6 +90,7 @@ def connect_volume(volume_name, target_iqn, target_portal_hostname, target_porta
         if s[2] == "{}:{},-1".format(target_portal_hostname, target_portal_port) and s[3] == target_iqn:
             session_id = s[1][1:-1]
             break
+    # print(sessions)
 
     # register remaining sessions
     command = "sudo iscsiadm -m session -r {} --op new".format(session_id).split(' ')
