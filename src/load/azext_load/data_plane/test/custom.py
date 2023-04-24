@@ -49,6 +49,6 @@ def list_tests(
 
     credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
     endpoint = get_load_test_resource_endpoint(credential, load_test_resource, resource_group=resource_group, subscription_id=subscription_id)
-    client = admin_data_plane_client(cmd.cli_ctx, subscription=subscription_id, endpoint=endpoint)
+    client = admin_data_plane_client(cmd.cli_ctx, subscription=subscription_id, endpoint=endpoint, credential=credential)
 
     return client.list_tests()
