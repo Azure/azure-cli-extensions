@@ -686,33 +686,5 @@ class TestValidateMaintenanceWindow(unittest.TestCase):
         namespace = MaintenanceWindowNameSpace(start_date="00:30")
         validators.validate_start_time(namespace)
 
-
-class TestGuardrailsLevel(unittest.TestCase):
-    def test_invalid_level_off(self):
-        with self.assertRaises(InvalidArgumentValueError) as cm:
-            validators.validate_guardrails_level("off")
-
-    def test_invalid_level_warning(self):
-        with self.assertRaises(InvalidArgumentValueError) as cm:
-            validators.validate_guardrails_level("warning")
-
-    def test_invalid_level_enforcement(self):
-        with self.assertRaises(InvalidArgumentValueError) as cm:
-            validators.validate_guardrails_level("enforcement")
-
-    def test_valid_level_off(self):
-        validators.validate_guardrails_level("Off")
-
-    def test_valid_level_warning(self):
-        validators.validate_guardrails_level("Warning")
-
-    def test_valid_level_enforcement(self):
-        validators.validate_guardrails_level("Enforcement")
-
-    def test_not_found(self):
-        with self.assertRaises(InvalidArgumentValueError) as cm:
-           validators.validate_guardrails_level("notfound")
-
-
 if __name__ == "__main__":
     unittest.main()

@@ -862,14 +862,3 @@ def validate_start_time(namespace):
     if not found:
         raise InvalidArgumentValueError(
             '--start-time must be in format "HH:mm". For example, "09:30" and "17:00".')
-
-
-def validate_guardrails_level(guardrails_level: str):
-    """Validates --guardrails-level for aks guardrailsProfile updates"""
-    if guardrails_level is None:
-        return
-    # Allowed 3 values: Off, Warning, Enforcement
-
-    if guardrails_level not in ["Off", "Warning", "Enforcement"]:
-        raise InvalidArgumentValueError(
-            '--guardrails-level must be in these values: ["Off", "Warning", "Enforcement"].')

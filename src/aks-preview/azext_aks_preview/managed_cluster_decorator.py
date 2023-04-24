@@ -161,15 +161,23 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             external_functions["get_cluster_snapshot_by_snapshot_id"] = get_cluster_snapshot_by_snapshot_id
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
-
+    
+    def get_guardrails_version(self) -> Union[str, None]:
+        """Helper function to get guardrails version specified in parameters
+        :return: str or None
+        """
+        return self.raw_param.get("guardrails_version")
     def get_guardrails_level(self) -> Union[str, None]:
+        """Helper function to get guardrails level specified in parameters
+        :return: str or None
+        """
         return self.raw_param.get("guardrails_level")
 
     def get_guardrails_excluded_namespaces(self) -> Union[str, None]:
+        """Helper function to get guardrails excluded namespaces specified in parameters
+        :return: str or None
+        """
         return self.raw_param.get("guardrails_excluded_namespaces")
-
-    def get_guardails_version(self) -> Union[str, None]:
-        return self.raw_param.get("guardrails_version")
 
     # pylint: disable=no-self-use
 
@@ -2591,12 +2599,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         level = self.context.get_guardrails_level()
         # provided any value?
         if (level is not None or version is not None or excludedNamespaces is not None) and mc.guardrails_profile is None:
-            mc.guardrails_profile = self.models.GuardrailsProfile()
-        # replace values with provided values
-        if level is not None:
-            mc.guardrails_profile.level = level
-        if version is not None:
-            mc.guardrails_profile.version = version
+            mc.guardrails_profile = self.models.GuardrailsProfile(
+                level=level,
+                version=version
+            )
         if excludedNamespaces is not None:
             mc.guardrails_profile.excluded_namespaces = excludedNamespaces.split(",")
         return mc
@@ -3250,12 +3256,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         level = self.context.get_guardrails_level()
         # provided any value?
         if (level is not None or version is not None or excludedNamespaces is not None) and mc.guardrails_profile is None:
-            mc.guardrails_profile = self.models.GuardrailsProfile()
+            mc.guardrails_profile = self.models.GuardrailsProfile(
+                level=level,
+                version=version
+            )
         # replace values with provided values
-        if level is not None:
-            mc.guardrails_profile.level = level
-        if version is not None:
-            mc.guardrails_profile.version = version
         if excludedNamespaces is not None:
             if excludedNamespaces == "[]":
                 mc.guardrails_profile.excluded_namespaces = list()

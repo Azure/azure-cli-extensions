@@ -109,12 +109,6 @@ class AKSPreviewManagedClusterModelsTestCase(unittest.TestCase):
             getattr(module, "ManagedClusterPodIdentityException"),
         )
 
-        # guardrails profile models
-        self.assertEqual(
-            models.pod_identity_models.ManagedClusterGuardrailsProfile,
-            getattr(module, "ManagedClusterGuardrailsProfile"),
-        )
-
 
 class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
     def setUp(self):
@@ -250,7 +244,8 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.CREATE
         )
         mc2 = self.models.ManagedCluster(
-            guardrails_profile=self.models.GuardrailsProfile(level="Warning")
+            location="test_location",
+            guardrails_profile=self.models.GuardrailsProfile(level="Warning", excluded_namespaces=None, version="")
         )
         ctx2.attach_mc(mc2)
         self.assertEqual(ctx2.get_guardrails_level(), "Warning")
@@ -272,7 +267,8 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
 
         mc2 = self.models.ManagedCluster(
-            guardrails_profile=self.models.GuardrailsProfile(version="v1.0.0")
+            location="test_location",
+            guardrails_profile=self.models.GuardrailsProfile(version="v1.0.0", level=None, excluded_namespaces=None)
         )
         ctx2.attach_mc(mc2)
         self.assertEqual(ctx2.get_guardrails_version(), "v1.0.0")
@@ -294,10 +290,11 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
 
         mc2 = self.models.ManagedCluster(
-            guardrails_profile=self.models.GuardrailsProfile(excluded_namespaces="ns1,ns2")
+            location="test_location",
+            guardrails_profile=self.models.GuardrailsProfile(excluded_namespaces=["ns1","ns2"], level=None, version=None)
         )
         ctx2.attach_mc(mc2)
-        self.assertEqual(ctx2.get_guardrails_excluded_namespaces(), "v1.0.0")
+        self.assertEqual(ctx2.get_guardrails_excluded_namespaces(), "ns1,ns2")
 
     def test_get_kube_proxy_config(self):
         # default
@@ -3368,7 +3365,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_1.context.attach_mc(mc_1)
         dec_mc_1 = dec_1.set_up_guardrails_profile(mc_1)
         gt_mc_1 = self.models.ManagedCluster(location="test_location")
-        self.AssertEqual(dec_mc_1,gt_mc_1)
+        self.assertEqual(dec_mc_1,gt_mc_1)
 
         # Make sure GuardrailsProfile is filled out appropriately
         dec_2 = AKSPreviewManagedClusterCreateDecorator(
@@ -3391,7 +3388,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             version="v1.0.0",
             excluded_namespaces=["ns1","ns2"]
         )
-        self.AssertEqual(dec_mc_2,gt_mc_2)
+        self.assertEqual(dec_mc_2,gt_mc_2)
 
     def test_set_up_agentpool_profile(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
