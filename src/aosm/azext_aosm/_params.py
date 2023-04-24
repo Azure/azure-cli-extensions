@@ -4,20 +4,33 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+from argcomplete.completers import FilesCompleter
+from azure.cli.core import AzCommandsLoader
 from knack.arguments import CLIArgumentType
 
 
-def load_arguments(self, _):
+def load_arguments(self: AzCommandsLoader, _):
 
-    from azure.cli.core.commands.parameters import tags_type
-    from azure.cli.core.commands.validators import get_default_location_from_resource_group
+    from azure.cli.core.commands.parameters import file_type, get_enum_type, get_three_state_flag
 
-    aosm_name_type = CLIArgumentType(options_list='--aosm-name-name', help='Name of the Aosm.', id_part='name')
+    definition_type = get_enum_type(["vnf", "cnf", "nsd"])
 
-    with self.argument_context('aosm') as c:
-        c.argument('tags', tags_type)
-        c.argument('location', validator=get_default_location_from_resource_group)
-        c.argument('aosm_name', aosm_name_type, options_list=['--name', '-n'])
+    # Set the argument context so these options are only available when this specific command
+    # is called.
+    with self.argument_context('aosm definition') as c:
+        c.argument(
+            'definition_type',
+            arg_type=definition_type,
+            help='Type of AOSM definition to generate.'
+        )
+        c.argument(
+            'config_file',
+            options_list=["--config-file", "-f"],
+            type=file_type,
+            completer=FilesCompleter(allowednames="*.json"),
+            help='The path to the configuration file.'
+        )
+        c.argument('publish', arg_type=get_three_state_flag(), help='Publishes generated AOSM definition.')
 
-    with self.argument_context('aosm list') as c:
-        c.argument('aosm_name', aosm_name_type, id_part=None)
+    with self.argument_context('aosm generate-config') as c:
+        c.argument('definition_type', arg_type=definition_type, help='Type of AOSM definition config to generate.')

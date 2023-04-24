@@ -9,15 +9,20 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['aosm'] = """
     type: group
-    short-summary: Commands to manage Aosms.
+    short-summary: Commands to interact with Azure Operator Service Manager (AOSM).
 """
 
-helps['aosm create'] = """
-    type: command
-    short-summary: Create a Aosm.
+helps['aosm definition'] = """
+    type: group
+    short-summary: Manage AOSM publisher definitions.
 """
 
-helps['aosm list'] = """
+helps['aosm definition build'] = """
     type: command
-    short-summary: List Aosms.
+    short-summary: Build an AOSM publisher definition.
+"""
+
+helps['aosm definition generate-config'] = """
+    type: command
+    short-summary: Generate configuration file for building an AOSM publisher definition.
 """
