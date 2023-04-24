@@ -16,7 +16,7 @@ def check_iscsi():
     if package_manager == 'apt':
         command = "dpkg -l open-iscsi".split(' ')
     elif package_manager == 'yum':
-        command = "rpm -qa | grep iscsi-initiator-utils".split(' ')
+        command = "rpm -q iscsi-initiator-utils".split(' ')
     elif package_manager == 'zypper':
         command = "zypper search -i open-iscsi".split(' ')
     else:
@@ -24,9 +24,10 @@ def check_iscsi():
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
     out, err = out.decode("utf-8"), err.decode("utf-8") 
-    # print(out)
-    # print(err)
-    if (package_manager == "apt" and "ii  open-iscsi" not in out) or (package_manager == 'yum' and "ii  open-iscsi" not in out) or (package_manager == 'zypper' and "i | open-iscsi" not in out):
+    # print('out',out)
+    # print('err',err)
+    # sys.exit()
+    if (package_manager == "apt" and "ii  open-iscsi" not in out) or (package_manager == 'yum' and "iscsi-initiator-utils is not installed" in out) or (package_manager == 'zypper' and "i | open-iscsi" not in out):
         value = input("\033[93mWarning: iSCSI initiator is not installed or enabled. It is required for successful execution of this connect script. \nDo you wish to terminate the script to install it? \n[Y/Yes to terminate; N/No to proceed with rest of the steps]:\033[00m")
         while True:
             if value.lower() == 'yes' or value.lower() == 'y':
@@ -40,7 +41,7 @@ def check_mpio():
     if package_manager == 'apt':
         command = "dpkg -l multipath-tools".split(' ')
     elif package_manager == 'yum':
-        command = "rpm -qa | grep device-mapper-multipath".split(' ')
+        command = "rpm -q device-mapper-multipath".split(' ')
     elif package_manager == 'zypper':
         command = "zypper search -I multipath-tools".split(' ')
     else:
@@ -48,8 +49,10 @@ def check_mpio():
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
     out, err = out.decode("utf-8"), err.decode("utf-8") 
+    # print('out',out)
+    # print('err',err)
     # if err is not None and err!="" or "ii  multipath-tools" not in out:
-    if (package_manager == "apt" and "ii  multipath-tools" not in out) or (package_manager == 'yum' and "ii  open-iscsi" not in out) or (package_manager == 'zypper' and "i | multipath-tools" not in out):
+    if (package_manager == "apt" and "ii  multipath-tools" not in out) or (package_manager == 'yum' and "device-mapper-multipath is not installed" in out) or (package_manager == 'zypper' and "i | multipath-tools" not in out):
         value = input("\033[93mWarning: Multipath I/O is not installed or enabled. It is recommended for multi-session setup. \nDo you wish to terminate the script to install it? \n[Y/Yes to terminate; N/No to proceed with rest of the steps]:\033[00m")
         while True:
             if value.lower() == 'yes' or value.lower() == 'y':
