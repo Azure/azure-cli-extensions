@@ -13,7 +13,7 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
+      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cabarker/providers/Microsoft.ContainerRegistry/registries/metadataunittest?api-version=2022-02-01-preview
@@ -30,7 +30,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:50:48 GMT
+      - Mon, 24 Apr 2023 18:45:13 GMT
       expires:
       - '-1'
       pragma:
@@ -64,13 +64,13 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
+      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cabarker/providers/Microsoft.ContainerRegistry/registries/metadataunittest/listCredentials?api-version=2022-02-01-preview
   response:
     body:
-      string: '{"username":"metadataUnitTest","passwords":[{"name":"password","value":"YCwrB754Qq/NsKiYFdf0jyY8dNAtl2bGO4jxukkuXx+ACRC45HX1"},{"name":"password2","value":"tPSTpVp6rdoKQy2mhV+PDQyJaAjZ/0G+5Su63L6Xw8+ACRCpHqRC"}]}'
+      string: '{"username":"metadataUnitTest","passwords":[{"name":"password","value":"uv76OyDm9SpaxQu7B/W2sWTVw9HKlGAZFtovWV7qWa+ACRD72M9n"},{"name":"password2","value":"tPSTpVp6rdoKQy2mhV+PDQyJaAjZ/0G+5Su63L6Xw8+ACRCpHqRC"}]}'
     headers:
       api-supported-versions:
       - 2022-02-01-preview
@@ -81,7 +81,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:50:49 GMT
+      - Mon, 24 Apr 2023 18:45:14 GMT
       expires:
       - '-1'
       pragma:
@@ -115,7 +115,8 @@ interactions:
       ParameterSetName:
       - -n -q --username --password
       User-Agent:
-      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.7
+        (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?$filter=resourceType%20eq%20%27Microsoft.ContainerRegistry%2Fregistries%27&api-version=2022-09-01
   response:
@@ -131,7 +132,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:50:50 GMT
+      - Mon, 24 Apr 2023 18:45:17 GMT
       expires:
       - '-1'
       pragma:
@@ -159,7 +160,7 @@ interactions:
       ParameterSetName:
       - -n -q --username --password
       User-Agent:
-      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
+      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cabarker/providers/Microsoft.ContainerRegistry/registries/metadataunittest?api-version=2022-02-01-preview
@@ -176,7 +177,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:50:51 GMT
+      - Mon, 24 Apr 2023 18:45:17 GMT
       expires:
       - '-1'
       pragma:
@@ -226,7 +227,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:50:52 GMT
+      - Mon, 24 Apr 2023 18:45:18 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -273,7 +274,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:50:53 GMT
+      - Mon, 24 Apr 2023 18:45:18 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -289,7 +290,7 @@ interactions:
       code: 401
       message: Unauthorized
 - request:
-    body: service=metadataunittest.azurecr.io&grant_type=password&username=metadataUnitTest&password=YCwrB754Qq%2FNsKiYFdf0jyY8dNAtl2bGO4jxukkuXx%2BACRC45HX1&scope=registry%3Acatalog%3A%2A
+    body: service=metadataunittest.azurecr.io&grant_type=password&username=metadataUnitTest&password=uv76OyDm9SpaxQu7B%2FW2sWTVw9HKlGAZFtovWV7qWa%2BACRD72M9n&scope=registry%3Acatalog%3A%2A
     headers:
       Accept:
       - '*/*'
@@ -307,14 +308,14 @@ interactions:
     uri: https://metadataunittest.azurecr.io/oauth2/token
   response:
     body:
-      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiIwNDcyZDE4Ny05YjEyLTQyZGYtODhiYy1lODlhODI4NjI2YzkiLCJzdWIiOiJtZXRhZGF0YVVuaXRUZXN0IiwibmJmIjoxNjgyMDk4NTUzLCJleHAiOjE2ODIxMDMwNTMsImlhdCI6MTY4MjA5ODU1MywiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiYWNjZXNzIjpbeyJUeXBlIjoicmVnaXN0cnkiLCJOYW1lIjoiY2F0YWxvZyIsIkFjdGlvbnMiOlsiKiJdfV0sInJvbGVzIjpbIk93bmVyIl0sImdyYW50X3R5cGUiOiJhY2Nlc3NfdG9rZW4ifQ.p-0dLPOWmS0GaU6fOkP52WEGsVruyRCf5_uV9fZfsBoi-vpTJ0wnPc5Qu1QSTwIJO_vB6xIjNx8r-Axe_L106pN7fIeK_AwNjPz54SPS0cOKNv4sPQf1zAcjrMZQp3THeFqT3gMYVTuxRlzuFLEFtZOOE2Ybd9rNVfN0WXI7fELwV3tlwt2JN3e4VK1n3OaIClwmzXozk3KUTyoVNU8uKjqogPzqddvBLig5rP5D1IYadcdqQvT4KP6eUjQXz_7G6bNWsXzNZw27SYvxKLDN3D1I2-XIUsQSQaKCeg5i9_8Tarp8KT5A-B5EBAwbesKzV2PYapydWPPD1mWONpgiYg"}'
+      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiIyYzE4MTFkZS04MDA4LTQ1YmItODc4Yi0yMmYxYzA1YmQ5YjQiLCJzdWIiOiJtZXRhZGF0YVVuaXRUZXN0IiwibmJmIjoxNjgyMzYxMDE5LCJleHAiOjE2ODIzNjU1MTksImlhdCI6MTY4MjM2MTAxOSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiYWNjZXNzIjpbeyJUeXBlIjoicmVnaXN0cnkiLCJOYW1lIjoiY2F0YWxvZyIsIkFjdGlvbnMiOlsiKiJdfV0sInJvbGVzIjpbIk93bmVyIl0sImdyYW50X3R5cGUiOiJhY2Nlc3NfdG9rZW4ifQ.Grdrn_KYfE9z_nFMSrdvu39plV_hVXvvCu1IRAnGhQHkZ4yYgMY6b8Alg37yISR-UAzPrSicl1ZI-rXXO19bGHgnxDdB13iW7DcsoFIr4-7Z89weHpYF1j_6Xor4ZYGWa8AuhQUdLdaLwdAeIPAGk8zxFdYzYmI97GTd_v9gPNONyRoNUAtLVUgGV9AJ98mZKdFWTTs9HPGDAp3c-plN7Csjc4x1kIxQdM-ToGp_PC6B2S5n4tuedB44mqWT53ymLyLniq6kp7-TuUHJjIPsp5MJgQej02EknidE-DNJDLUJXEW1ba-tmJC-bOFL_06i6AKw4he52b_6s5MReLL3Eg"}'
     headers:
       connection:
       - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:50:53 GMT
+      - Mon, 24 Apr 2023 18:45:19 GMT
       server:
       - openresty
       strict-transport-security:
@@ -361,7 +362,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:50:54 GMT
+      - Mon, 24 Apr 2023 18:45:19 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -390,7 +391,8 @@ interactions:
       ParameterSetName:
       - -n --expose-token
       User-Agent:
-      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.7
+        (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?$filter=resourceType%20eq%20%27Microsoft.ContainerRegistry%2Fregistries%27&api-version=2022-09-01
   response:
@@ -406,7 +408,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:50:54 GMT
+      - Mon, 24 Apr 2023 18:45:21 GMT
       expires:
       - '-1'
       pragma:
@@ -434,7 +436,7 @@ interactions:
       ParameterSetName:
       - -n --expose-token
       User-Agent:
-      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
+      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cabarker/providers/Microsoft.ContainerRegistry/registries/metadataunittest?api-version=2022-02-01-preview
@@ -451,7 +453,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:50:55 GMT
+      - Mon, 24 Apr 2023 18:45:22 GMT
       expires:
       - '-1'
       pragma:
@@ -501,7 +503,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:50:56 GMT
+      - Mon, 24 Apr 2023 18:45:23 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -530,7 +532,7 @@ interactions:
       ParameterSetName:
       - -n --expose-token
       User-Agent:
-      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
+      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cabarker/providers/Microsoft.ContainerRegistry/registries/metadataunittest?api-version=2022-02-01-preview
@@ -547,7 +549,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:50:57 GMT
+      - Mon, 24 Apr 2023 18:45:23 GMT
       expires:
       - '-1'
       pragma:
@@ -597,7 +599,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:50:58 GMT
+      - Mon, 24 Apr 2023 18:45:24 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -613,7 +615,7 @@ interactions:
       code: 401
       message: Unauthorized
 - request:
-    body: grant_type=access_token&service=metadataunittest.azurecr.io&tenant=72f988bf-86f1-41af-91ab-2d7cd011db47&access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNjgyMDk2ODQ4LCJuYmYiOjE2ODIwOTY4NDgsImV4cCI6MTY4MjEwMjQxNCwiX2NsYWltX25hbWVzIjp7Imdyb3VwcyI6InNyYzEifSwiX2NsYWltX3NvdXJjZXMiOnsic3JjMSI6eyJlbmRwb2ludCI6Imh0dHBzOi8vZ3JhcGgud2luZG93cy5uZXQvNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3VzZXJzL2YzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMy9nZXRNZW1iZXJPYmplY3RzIn19LCJhY3IiOiIxIiwiYWlvIjoiQVZRQXEvOFRBQUFBemFwY0FSWlcwTVZodE5ibkhaNFp4NFcyQ29JQVhkK3BSVVE5ZWFZbkRSd2Vmbnk3SUhGeFN5OW1DZFdSaGRZTytoakhYMUpXRGxPMjVFQWx2WC8yNEdJRi9idGxCWURuWFF5VFpqZWJOY2c9IiwiYW1yIjpbInB3ZCIsIm1mYSJdLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsImFwcGlkYWNyIjoiMCIsImZhbWlseV9uYW1lIjoiQmFya2VyIiwiZ2l2ZW5fbmFtZSI6IkNhcm9saW5lIiwiaXBhZGRyIjoiMjQuMTcuMTc5LjUzIiwibmFtZSI6IkNhcm9saW5lIEJhcmtlciIsIm9pZCI6ImYzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMyIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0yMTI3NTIxMTg0LTE2MDQwMTI5MjAtMTg4NzkyNzUyNy02MDAxODI2MCIsInB1aWQiOiIxMDAzMjAwMjFCRDQwNzE5IiwicmgiOiIwLkFSb0F2NGo1Y3ZHR3IwR1JxeTE4MEJIYlIwWklmM2tBdXRkUHVrUGF3ZmoyTUJNYUFDRS4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJFYTFFZ3hfMjhyWXdjcnZLc2xpd1Z1RUZtbzZSWEtKZXdlQy1WczQ0dkJvIiwidGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3IiwidW5pcXVlX25hbWUiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwidXBuIjoiY2FiYXJrZXJAbWljcm9zb2Z0LmNvbSIsInV0aSI6ImVkcmNBZzhBT1VPcFRyNzBVd3RVQUEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbImI3OWZiZjRkLTNlZjktNDY4OS04MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfY2MiOlsiQ1AxIl0sInhtc190Y2R0IjoxMjg5MjQxNTQ3fQ.nqZ82CyP8acm-r9D3ByWngKAcy3QLID1XBykqtj4UccvP8VNc4Aw0NIkQo0DOYcZeNG53LVab4QcAeKjJRhyrJrLjXsaRFXq8mUU3cOJsJW_jbi9sntHY8lEfTOZj1zFklwtbHS3Oq0T-VQDYsNMO0_qGIEK3TidJKBsD6eNYpOaytjuwVuK0CIFcdz5p4kbjy_pgQVg4l4dFeO1l9lh1CGuCUjGLAJpjkH6MAe42Rv9Xm3eOm1ucoCFAYKzDODf6Nhua3-TuH1zBzbawBItG22WvCPxYMnAaH-AyHPDFrk-mxYUqQFDbNAASItEqNkTn9zntw4QMqS-tQYmEulSkw
+    body: grant_type=access_token&service=metadataunittest.azurecr.io&tenant=72f988bf-86f1-41af-91ab-2d7cd011db47&access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNjgyMzU5NzU2LCJuYmYiOjE2ODIzNTk3NTYsImV4cCI6MTY4MjM2NTI1NywiX2NsYWltX25hbWVzIjp7Imdyb3VwcyI6InNyYzEifSwiX2NsYWltX3NvdXJjZXMiOnsic3JjMSI6eyJlbmRwb2ludCI6Imh0dHBzOi8vZ3JhcGgud2luZG93cy5uZXQvNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3VzZXJzL2YzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMy9nZXRNZW1iZXJPYmplY3RzIn19LCJhY3IiOiIxIiwiYWlvIjoiQVZRQXEvOFRBQUFBMkFFRXBvZkE3UnBNa2ZEUzJLMWNCTEpoR3ZacTF2ZEtKcFpEREJsMEtyZVA3VVNCSHBDemRuSVhIQ1Z1T0hETDY1UEJ0NHRramYvZkVMcGh4Mjg1U3Jxcm5OUXFobUJwbXRSR0VzMVRmSDQ9IiwiYW1yIjpbInB3ZCIsIm1mYSJdLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsImFwcGlkYWNyIjoiMCIsImZhbWlseV9uYW1lIjoiQmFya2VyIiwiZ2l2ZW5fbmFtZSI6IkNhcm9saW5lIiwiaXBhZGRyIjoiMjQuMTcuMTc5LjUzIiwibmFtZSI6IkNhcm9saW5lIEJhcmtlciIsIm9pZCI6ImYzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMyIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0yMTI3NTIxMTg0LTE2MDQwMTI5MjAtMTg4NzkyNzUyNy02MDAxODI2MCIsInB1aWQiOiIxMDAzMjAwMjFCRDQwNzE5IiwicmgiOiIwLkFSb0F2NGo1Y3ZHR3IwR1JxeTE4MEJIYlIwWklmM2tBdXRkUHVrUGF3ZmoyTUJNYUFDRS4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJFYTFFZ3hfMjhyWXdjcnZLc2xpd1Z1RUZtbzZSWEtKZXdlQy1WczQ0dkJvIiwidGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3IiwidW5pcXVlX25hbWUiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwidXBuIjoiY2FiYXJrZXJAbWljcm9zb2Z0LmNvbSIsInV0aSI6InhvZGlEODlvM2tlTDBMM29GdlFqQUEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbImI3OWZiZjRkLTNlZjktNDY4OS04MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfY2MiOlsiQ1AxIl0sInhtc190Y2R0IjoxMjg5MjQxNTQ3fQ.NcMGJ-kuDOzJ8wQXlA6Mqx5eLaId8rqgtPRU9UU9c9nMxQo1Ew1Z4d62d7vkQmnsZ6UFxc7R3TNLM2Td1PH_2KfUL9jJcbpBcnfmu8a4NCOhyIah40rLwRzLm8L9vmbmyONLkTQIsGSSgARn37ct79y7ox3CJKl7nN8_5tArk0rmpvEUOlh0igvcBzqud7dtIcS7DdW1YLEQn-nbsXLSITeZ8SOMzVIBa595C_A-Rl1QM7lFgCMOleQc-hPKiojwih4qkzrNdAAYm6wQKVNC5yJtDm5GeVbLuMQLSOE1f7BzFWyoAuO73QRGnvud7S7bQf_oYxmCW4_VX5IVOxrsBQ
     headers:
       Accept:
       - '*/*'
@@ -631,14 +633,14 @@ interactions:
     uri: https://metadataunittest.azurecr.io/oauth2/exchange
   response:
     body:
-      string: '{"refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJlN2Y4NTYyZS1lMGNiLTQwMTgtYTZhMy1iMGY1YjRkMmIyYjkiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk4NTU5LCJleHAiOjE2ODIxMTAyNTksImlhdCI6MTY4MjA5ODU1OSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.MG3kb6rokyHQAcD4OeFeGB3crk8PZpT5RBvXjmTZLFn-o3mPwM8bSehocTTl5DB7kVIWLC23OXiUIi8grkNvh_WV2i-kxamLReI6744Rk8OBHrTlE_pvXDAxJKQPFW0Trbr94bOTcq5fklzsL2-FghB030eHBOTXquOP9OsXhScHOTr-VkonsE7BQyvUaBpotkGGiIlFwWOnQnSS46MlpAVWx-mnr-S7G_CtpB5SQNp4wj6gu8CUCpWFi_MHFbHjYjguxTsFheT3e082q8yeEmlsZOT1yTCcAx5CTfEMqY6FTIYehU7ulGy3hsU8kIEAYXka0fjMOfsmuKBCy2H6zQ"}'
+      string: '{"refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJiM2JjNTBmNC03ZTRlLTQ4MTMtOTlkYi0xNGFhOGY2ZjlhMWMiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMzYxMDI1LCJleHAiOjE2ODIzNzI3MjUsImlhdCI6MTY4MjM2MTAyNSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.k412nEIGEd2pwG7IsHsCxngPdBCSwNwj8DGITCJ6FBqzOzZ3LNLqx7mvc7A6udI9UnnVx114GPSCaw15gpcrl7m03IAZy2DqLIlPTiUMQSPYqnaC9kY8KZqnciBuFvgVZY7FkBgLwMx2xwpByTtRdlMLnwdknwWphimdPawyJyp2CZmMU2kbOMr67K__6Y07140KDBxZ29VnLklai8Kyt4h2hegUkktgvg-RcUsR_H0CXaKyTgI_VvyBHImcO3tQB8MYqzt9Jx55UbWiDStLHlqP7G0qTcSY2w62VBzqoThPqSiUlAAjHAecr8QFORnbtiXeabQwYRSC8lieXrvm1Q"}'
     headers:
       connection:
       - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:50:59 GMT
+      - Mon, 24 Apr 2023 18:45:25 GMT
       server:
       - openresty
       strict-transport-security:
@@ -664,7 +666,8 @@ interactions:
       ParameterSetName:
       - -n --repository -q --username --password
       User-Agent:
-      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.7
+        (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?$filter=resourceType%20eq%20%27Microsoft.ContainerRegistry%2Fregistries%27&api-version=2022-09-01
   response:
@@ -680,7 +683,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:50:59 GMT
+      - Mon, 24 Apr 2023 18:45:26 GMT
       expires:
       - '-1'
       pragma:
@@ -708,7 +711,7 @@ interactions:
       ParameterSetName:
       - -n --repository -q --username --password
       User-Agent:
-      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
+      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cabarker/providers/Microsoft.ContainerRegistry/registries/metadataunittest?api-version=2022-02-01-preview
@@ -725,7 +728,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:51:00 GMT
+      - Mon, 24 Apr 2023 18:45:27 GMT
       expires:
       - '-1'
       pragma:
@@ -775,7 +778,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:51:01 GMT
+      - Mon, 24 Apr 2023 18:45:28 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -822,7 +825,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:51:01 GMT
+      - Mon, 24 Apr 2023 18:45:29 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -838,7 +841,7 @@ interactions:
       code: 401
       message: Unauthorized
 - request:
-    body: service=metadataunittest.azurecr.io&grant_type=password&username=00000000-0000-0000-0000-000000000000&password=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJlN2Y4NTYyZS1lMGNiLTQwMTgtYTZhMy1iMGY1YjRkMmIyYjkiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk4NTU5LCJleHAiOjE2ODIxMTAyNTksImlhdCI6MTY4MjA5ODU1OSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.MG3kb6rokyHQAcD4OeFeGB3crk8PZpT5RBvXjmTZLFn-o3mPwM8bSehocTTl5DB7kVIWLC23OXiUIi8grkNvh_WV2i-kxamLReI6744Rk8OBHrTlE_pvXDAxJKQPFW0Trbr94bOTcq5fklzsL2-FghB030eHBOTXquOP9OsXhScHOTr-VkonsE7BQyvUaBpotkGGiIlFwWOnQnSS46MlpAVWx-mnr-S7G_CtpB5SQNp4wj6gu8CUCpWFi_MHFbHjYjguxTsFheT3e082q8yeEmlsZOT1yTCcAx5CTfEMqY6FTIYehU7ulGy3hsU8kIEAYXka0fjMOfsmuKBCy2H6zQ&scope=repository%3Anginx%3Ametadata_read
+    body: service=metadataunittest.azurecr.io&grant_type=password&username=00000000-0000-0000-0000-000000000000&password=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJiM2JjNTBmNC03ZTRlLTQ4MTMtOTlkYi0xNGFhOGY2ZjlhMWMiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMzYxMDI1LCJleHAiOjE2ODIzNzI3MjUsImlhdCI6MTY4MjM2MTAyNSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.k412nEIGEd2pwG7IsHsCxngPdBCSwNwj8DGITCJ6FBqzOzZ3LNLqx7mvc7A6udI9UnnVx114GPSCaw15gpcrl7m03IAZy2DqLIlPTiUMQSPYqnaC9kY8KZqnciBuFvgVZY7FkBgLwMx2xwpByTtRdlMLnwdknwWphimdPawyJyp2CZmMU2kbOMr67K__6Y07140KDBxZ29VnLklai8Kyt4h2hegUkktgvg-RcUsR_H0CXaKyTgI_VvyBHImcO3tQB8MYqzt9Jx55UbWiDStLHlqP7G0qTcSY2w62VBzqoThPqSiUlAAjHAecr8QFORnbtiXeabQwYRSC8lieXrvm1Q&scope=repository%3Anginx%3Ametadata_read
     headers:
       Accept:
       - '*/*'
@@ -856,14 +859,14 @@ interactions:
     uri: https://metadataunittest.azurecr.io/oauth2/token
   response:
     body:
-      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiIzNmYyMWUyNi01MzYwLTQ1NmYtODA3ZS0zZWUwNmUwYzViZWMiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk4NTYyLCJleHAiOjE2ODIxMDMwNjIsImlhdCI6MTY4MjA5ODU2MiwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjIuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiYWNjZXNzIjpbeyJUeXBlIjoicmVwb3NpdG9yeSIsIk5hbWUiOiJuZ2lueCIsIkFjdGlvbnMiOlsibWV0YWRhdGFfcmVhZCJdfV0sInJvbGVzIjpbXSwiZ3JhbnRfdHlwZSI6ImFjY2Vzc190b2tlbiIsImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2In0.AKpzAq5A9xOAkd41d-UdKPKgMWcRdyjV2xbFiU-qq0stXAIKfs05i7_JyRMlSjWLSk-9mPzf_OJ00rHzKV4LhuN_JWAHY3tepEm3XNUb9zZ-ihJmJiM-OQB2uBAA5vW8qVHC007cqwpa5ocINwYBuTZ74N0vDInKGG1t1AyzLk0B1IXWZtjD1rM16vKSTeJO1ACPwToYZnxXkxYZ8JHIAoFYIvBH_Ufg5dDlodAAfSsGSd4MBcfwL6l5KwS_nZNcBQLpcZPDhRRJ3YPX4xk12LZ9B2K72Tc1afRSSsd0gbdivvY9iWO7WKrK6lOaWC4fLqidjV-qHmkZc93fuUPAZQ","refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJlN2Y4NTYyZS1lMGNiLTQwMTgtYTZhMy1iMGY1YjRkMmIyYjkiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk4NTU5LCJleHAiOjE2ODIxMTAyNTksImlhdCI6MTY4MjA5ODU1OSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.MG3kb6rokyHQAcD4OeFeGB3crk8PZpT5RBvXjmTZLFn-o3mPwM8bSehocTTl5DB7kVIWLC23OXiUIi8grkNvh_WV2i-kxamLReI6744Rk8OBHrTlE_pvXDAxJKQPFW0Trbr94bOTcq5fklzsL2-FghB030eHBOTXquOP9OsXhScHOTr-VkonsE7BQyvUaBpotkGGiIlFwWOnQnSS46MlpAVWx-mnr-S7G_CtpB5SQNp4wj6gu8CUCpWFi_MHFbHjYjguxTsFheT3e082q8yeEmlsZOT1yTCcAx5CTfEMqY6FTIYehU7ulGy3hsU8kIEAYXka0fjMOfsmuKBCy2H6zQ"}'
+      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiIxZTBhNTIyOC03MGI5LTRlYmMtYTVlNy04NTVmMTY1ZTc3Y2IiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMzYxMDI5LCJleHAiOjE2ODIzNjU1MjksImlhdCI6MTY4MjM2MTAyOSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjIuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiYWNjZXNzIjpbeyJUeXBlIjoicmVwb3NpdG9yeSIsIk5hbWUiOiJuZ2lueCIsIkFjdGlvbnMiOlsibWV0YWRhdGFfcmVhZCJdfV0sInJvbGVzIjpbXSwiZ3JhbnRfdHlwZSI6ImFjY2Vzc190b2tlbiIsImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2In0.nzq-R-LglfjWwPC22YLThFSKXsT17FTaKpFf9sd5BfjD0s9aWdcFeqVO5N2eaKVDSTxTayoMt9YgC8bO2asBEJgHkvdBGKtPsZhYAqmx-3ppMCU-2CgwrAsr4MPk_etSu1RkTmE5XSTdl9rL4aihzFOtAZcQLsbfTycP7IhKf6-Lao3c3tzwQ2IaBA-9dgwblQH2smFt91DGbDI84ohfLqu_Xmvhqr11OEZPUK2lQdRc0a-UFj13-At8sq21zn22KHuGdcI_gnA4HHAC0Y9_ILMKQZ7d7ibVZFr04Xh9rm-1QBi5nrrt2NfcjpcyefsXloCHMNp9AaGRwIIA5tnwzA","refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJiM2JjNTBmNC03ZTRlLTQ4MTMtOTlkYi0xNGFhOGY2ZjlhMWMiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMzYxMDI1LCJleHAiOjE2ODIzNzI3MjUsImlhdCI6MTY4MjM2MTAyNSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.k412nEIGEd2pwG7IsHsCxngPdBCSwNwj8DGITCJ6FBqzOzZ3LNLqx7mvc7A6udI9UnnVx114GPSCaw15gpcrl7m03IAZy2DqLIlPTiUMQSPYqnaC9kY8KZqnciBuFvgVZY7FkBgLwMx2xwpByTtRdlMLnwdknwWphimdPawyJyp2CZmMU2kbOMr67K__6Y07140KDBxZ29VnLklai8Kyt4h2hegUkktgvg-RcUsR_H0CXaKyTgI_VvyBHImcO3tQB8MYqzt9Jx55UbWiDStLHlqP7G0qTcSY2w62VBzqoThPqSiUlAAjHAecr8QFORnbtiXeabQwYRSC8lieXrvm1Q"}'
     headers:
       connection:
       - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:51:02 GMT
+      - Mon, 24 Apr 2023 18:45:29 GMT
       server:
       - openresty
       strict-transport-security:
@@ -910,7 +913,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:51:02 GMT
+      - Mon, 24 Apr 2023 18:45:30 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -939,7 +942,8 @@ interactions:
       ParameterSetName:
       - -n --password-name
       User-Agent:
-      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.7
+        (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?$filter=resourceType%20eq%20%27Microsoft.ContainerRegistry%2Fregistries%27&api-version=2022-09-01
   response:
@@ -950,12 +954,14 @@ interactions:
     headers:
       cache-control:
       - no-cache
+      connection:
+      - close
       content-length:
       - '37322'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:51:02 GMT
+      - Mon, 24 Apr 2023 18:45:30 GMT
       expires:
       - '-1'
       pragma:
@@ -983,7 +989,7 @@ interactions:
       ParameterSetName:
       - -n --password-name
       User-Agent:
-      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
+      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cabarker/providers/Microsoft.ContainerRegistry/registries/metadataunittest?api-version=2022-02-01-preview
@@ -1000,7 +1006,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:51:03 GMT
+      - Mon, 24 Apr 2023 18:45:30 GMT
       expires:
       - '-1'
       pragma:
@@ -1036,13 +1042,13 @@ interactions:
       ParameterSetName:
       - -n --password-name
       User-Agent:
-      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
+      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cabarker/providers/Microsoft.ContainerRegistry/registries/metadataunittest/regenerateCredential?api-version=2022-02-01-preview
   response:
     body:
-      string: '{"username":"metadataUnitTest","passwords":[{"name":"password","value":"WTkjtY9WgFnHsnF98I1X54h7JmbQ8SJT9YQuu3GeZJ+ACRCca1ch"},{"name":"password2","value":"tPSTpVp6rdoKQy2mhV+PDQyJaAjZ/0G+5Su63L6Xw8+ACRCpHqRC"}]}'
+      string: '{"username":"metadataUnitTest","passwords":[{"name":"password","value":"rYB9UC3pMkv70z9MWR+eFBNxLS51qbabpE81/OYbd1+ACRDSiMUR"},{"name":"password2","value":"tPSTpVp6rdoKQy2mhV+PDQyJaAjZ/0G+5Su63L6Xw8+ACRCpHqRC"}]}'
     headers:
       api-supported-versions:
       - 2022-02-01-preview
@@ -1053,7 +1059,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:51:04 GMT
+      - Mon, 24 Apr 2023 18:45:32 GMT
       expires:
       - '-1'
       pragma:
@@ -1087,7 +1093,8 @@ interactions:
       ParameterSetName:
       - -n -q
       User-Agent:
-      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.7
+        (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resources?$filter=resourceType%20eq%20%27Microsoft.ContainerRegistry%2Fregistries%27&api-version=2022-09-01
   response:
@@ -1103,7 +1110,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:51:07 GMT
+      - Mon, 24 Apr 2023 18:45:33 GMT
       expires:
       - '-1'
       pragma:
@@ -1131,7 +1138,7 @@ interactions:
       ParameterSetName:
       - -n -q
       User-Agent:
-      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
+      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cabarker/providers/Microsoft.ContainerRegistry/registries/metadataunittest?api-version=2022-02-01-preview
@@ -1148,7 +1155,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:51:08 GMT
+      - Mon, 24 Apr 2023 18:45:34 GMT
       expires:
       - '-1'
       pragma:
@@ -1198,7 +1205,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:51:08 GMT
+      - Mon, 24 Apr 2023 18:45:35 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -1227,7 +1234,7 @@ interactions:
       ParameterSetName:
       - -n -q
       User-Agent:
-      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
+      - AZURECLI/2.48.0 (PIP) azsdk-python-azure-mgmt-containerregistry/10.1.0 Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cabarker/providers/Microsoft.ContainerRegistry/registries/metadataunittest?api-version=2022-02-01-preview
@@ -1244,7 +1251,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:51:08 GMT
+      - Mon, 24 Apr 2023 18:45:35 GMT
       expires:
       - '-1'
       pragma:
@@ -1294,7 +1301,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:51:10 GMT
+      - Mon, 24 Apr 2023 18:45:36 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
@@ -1310,7 +1317,7 @@ interactions:
       code: 401
       message: Unauthorized
 - request:
-    body: grant_type=access_token&service=metadataunittest.azurecr.io&tenant=72f988bf-86f1-41af-91ab-2d7cd011db47&access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNjgyMDk2ODQ4LCJuYmYiOjE2ODIwOTY4NDgsImV4cCI6MTY4MjEwMjQxNCwiX2NsYWltX25hbWVzIjp7Imdyb3VwcyI6InNyYzEifSwiX2NsYWltX3NvdXJjZXMiOnsic3JjMSI6eyJlbmRwb2ludCI6Imh0dHBzOi8vZ3JhcGgud2luZG93cy5uZXQvNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3VzZXJzL2YzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMy9nZXRNZW1iZXJPYmplY3RzIn19LCJhY3IiOiIxIiwiYWlvIjoiQVZRQXEvOFRBQUFBemFwY0FSWlcwTVZodE5ibkhaNFp4NFcyQ29JQVhkK3BSVVE5ZWFZbkRSd2Vmbnk3SUhGeFN5OW1DZFdSaGRZTytoakhYMUpXRGxPMjVFQWx2WC8yNEdJRi9idGxCWURuWFF5VFpqZWJOY2c9IiwiYW1yIjpbInB3ZCIsIm1mYSJdLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsImFwcGlkYWNyIjoiMCIsImZhbWlseV9uYW1lIjoiQmFya2VyIiwiZ2l2ZW5fbmFtZSI6IkNhcm9saW5lIiwiaXBhZGRyIjoiMjQuMTcuMTc5LjUzIiwibmFtZSI6IkNhcm9saW5lIEJhcmtlciIsIm9pZCI6ImYzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMyIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0yMTI3NTIxMTg0LTE2MDQwMTI5MjAtMTg4NzkyNzUyNy02MDAxODI2MCIsInB1aWQiOiIxMDAzMjAwMjFCRDQwNzE5IiwicmgiOiIwLkFSb0F2NGo1Y3ZHR3IwR1JxeTE4MEJIYlIwWklmM2tBdXRkUHVrUGF3ZmoyTUJNYUFDRS4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJFYTFFZ3hfMjhyWXdjcnZLc2xpd1Z1RUZtbzZSWEtKZXdlQy1WczQ0dkJvIiwidGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3IiwidW5pcXVlX25hbWUiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwidXBuIjoiY2FiYXJrZXJAbWljcm9zb2Z0LmNvbSIsInV0aSI6ImVkcmNBZzhBT1VPcFRyNzBVd3RVQUEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbImI3OWZiZjRkLTNlZjktNDY4OS04MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfY2MiOlsiQ1AxIl0sInhtc190Y2R0IjoxMjg5MjQxNTQ3fQ.nqZ82CyP8acm-r9D3ByWngKAcy3QLID1XBykqtj4UccvP8VNc4Aw0NIkQo0DOYcZeNG53LVab4QcAeKjJRhyrJrLjXsaRFXq8mUU3cOJsJW_jbi9sntHY8lEfTOZj1zFklwtbHS3Oq0T-VQDYsNMO0_qGIEK3TidJKBsD6eNYpOaytjuwVuK0CIFcdz5p4kbjy_pgQVg4l4dFeO1l9lh1CGuCUjGLAJpjkH6MAe42Rv9Xm3eOm1ucoCFAYKzDODf6Nhua3-TuH1zBzbawBItG22WvCPxYMnAaH-AyHPDFrk-mxYUqQFDbNAASItEqNkTn9zntw4QMqS-tQYmEulSkw
+    body: grant_type=access_token&service=metadataunittest.azurecr.io&tenant=72f988bf-86f1-41af-91ab-2d7cd011db47&access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyIsImtpZCI6Ii1LSTNROW5OUjdiUm9meG1lWm9YcWJIWkdldyJ9.eyJhdWQiOiJodHRwczovL21hbmFnZW1lbnQuY29yZS53aW5kb3dzLm5ldC8iLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNjgyMzU5NzU2LCJuYmYiOjE2ODIzNTk3NTYsImV4cCI6MTY4MjM2NTI1NywiX2NsYWltX25hbWVzIjp7Imdyb3VwcyI6InNyYzEifSwiX2NsYWltX3NvdXJjZXMiOnsic3JjMSI6eyJlbmRwb2ludCI6Imh0dHBzOi8vZ3JhcGgud2luZG93cy5uZXQvNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3VzZXJzL2YzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMy9nZXRNZW1iZXJPYmplY3RzIn19LCJhY3IiOiIxIiwiYWlvIjoiQVZRQXEvOFRBQUFBMkFFRXBvZkE3UnBNa2ZEUzJLMWNCTEpoR3ZacTF2ZEtKcFpEREJsMEtyZVA3VVNCSHBDemRuSVhIQ1Z1T0hETDY1UEJ0NHRramYvZkVMcGh4Mjg1U3Jxcm5OUXFobUJwbXRSR0VzMVRmSDQ9IiwiYW1yIjpbInB3ZCIsIm1mYSJdLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsImFwcGlkYWNyIjoiMCIsImZhbWlseV9uYW1lIjoiQmFya2VyIiwiZ2l2ZW5fbmFtZSI6IkNhcm9saW5lIiwiaXBhZGRyIjoiMjQuMTcuMTc5LjUzIiwibmFtZSI6IkNhcm9saW5lIEJhcmtlciIsIm9pZCI6ImYzMTYxNjMzLTRhOWYtNDU3Zi1hOTUwLTQ5MDIyOWM0MGRjMyIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0yMTI3NTIxMTg0LTE2MDQwMTI5MjAtMTg4NzkyNzUyNy02MDAxODI2MCIsInB1aWQiOiIxMDAzMjAwMjFCRDQwNzE5IiwicmgiOiIwLkFSb0F2NGo1Y3ZHR3IwR1JxeTE4MEJIYlIwWklmM2tBdXRkUHVrUGF3ZmoyTUJNYUFDRS4iLCJzY3AiOiJ1c2VyX2ltcGVyc29uYXRpb24iLCJzdWIiOiJFYTFFZ3hfMjhyWXdjcnZLc2xpd1Z1RUZtbzZSWEtKZXdlQy1WczQ0dkJvIiwidGlkIjoiNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3IiwidW5pcXVlX25hbWUiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwidXBuIjoiY2FiYXJrZXJAbWljcm9zb2Z0LmNvbSIsInV0aSI6InhvZGlEODlvM2tlTDBMM29GdlFqQUEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbImI3OWZiZjRkLTNlZjktNDY4OS04MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfY2MiOlsiQ1AxIl0sInhtc190Y2R0IjoxMjg5MjQxNTQ3fQ.NcMGJ-kuDOzJ8wQXlA6Mqx5eLaId8rqgtPRU9UU9c9nMxQo1Ew1Z4d62d7vkQmnsZ6UFxc7R3TNLM2Td1PH_2KfUL9jJcbpBcnfmu8a4NCOhyIah40rLwRzLm8L9vmbmyONLkTQIsGSSgARn37ct79y7ox3CJKl7nN8_5tArk0rmpvEUOlh0igvcBzqud7dtIcS7DdW1YLEQn-nbsXLSITeZ8SOMzVIBa595C_A-Rl1QM7lFgCMOleQc-hPKiojwih4qkzrNdAAYm6wQKVNC5yJtDm5GeVbLuMQLSOE1f7BzFWyoAuO73QRGnvud7S7bQf_oYxmCW4_VX5IVOxrsBQ
     headers:
       Accept:
       - '*/*'
@@ -1328,14 +1335,14 @@ interactions:
     uri: https://metadataunittest.azurecr.io/oauth2/exchange
   response:
     body:
-      string: '{"refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJjYzFjZTMyZC1hZGIxLTRmMDAtYmZhNS1kMDZlN2Q1YjUxYmEiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk4NTcwLCJleHAiOjE2ODIxMTAyNzAsImlhdCI6MTY4MjA5ODU3MCwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.IPNAuZJ6n3EmU4QmLCmDJBjMDIVUXnD_H909nd5Km348z33pdFHLyFUykeIeBJ5kImiwqIJmq6iNVh79lne99fNp7MFmnRs65GA-wXRzzevY8oRYn5sTmNVMw_ANpHz8kF8eUs6EScVMSVZtMWt4b0fv_xlRp3-xqBP6lxjFjKegWFIoz85d6Gmp1ugPXTc2gFx8jATICT2GhRkT3T1SJ1RuwB42sf7zjb0Peqv05DQUVQ1KskOf98_p9LxuBdNyugvlcHeYp8rtWXnXn0S8xUFqlsvy2aFC3e3yjwA675MDlfsDoBlsOujiUb_GIFAD9kTrERyILbO4G0bbpdKDTw"}'
+      string: '{"refresh_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJkOWMzYzcyMC1mZjgwLTQ5YmEtOWRiMy0yOWQwNjUxNDUxOGUiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMzYxMDM3LCJleHAiOjE2ODIzNzI3MzcsImlhdCI6MTY4MjM2MTAzNywiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.Kx2502_EvPC8mAxjzfvhbz8fjwYQv-bDdpr8jxwDi-uPtQuFDKmRpyeTcIUjjT90vGHBcJmTChgxd5uXh6nOeN5F2vFH9GYjRtb6psJuZtQwCNUg8l7POpq_BSzySR7mNbD1T6TV9vGbMt54oZJUC15AmjW10n36EScA3yHoHdkaacCZaxjEyMaaqAldWaRWHTHGyKEkgisoUa73_Nn2MevlvAqjfeMETZ7t5L7Y84qChmUdi72fWFE2DePvulQUWF7wRTAkxr_ZUa8s5weCr9JNsAfLGz1yQ4L8PUgvqUCR5spiMp8sHCOqsO21VxDwFZDBRhY0rCw_tCNClFpbkQ"}'
     headers:
       connection:
       - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:51:10 GMT
+      - Mon, 24 Apr 2023 18:45:37 GMT
       server:
       - openresty
       strict-transport-security:
@@ -1348,7 +1355,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: grant_type=refresh_token&service=metadataunittest.azurecr.io&scope=registry%3Acatalog%3A%2A&refresh_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJjYzFjZTMyZC1hZGIxLTRmMDAtYmZhNS1kMDZlN2Q1YjUxYmEiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk4NTcwLCJleHAiOjE2ODIxMTAyNzAsImlhdCI6MTY4MjA5ODU3MCwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.IPNAuZJ6n3EmU4QmLCmDJBjMDIVUXnD_H909nd5Km348z33pdFHLyFUykeIeBJ5kImiwqIJmq6iNVh79lne99fNp7MFmnRs65GA-wXRzzevY8oRYn5sTmNVMw_ANpHz8kF8eUs6EScVMSVZtMWt4b0fv_xlRp3-xqBP6lxjFjKegWFIoz85d6Gmp1ugPXTc2gFx8jATICT2GhRkT3T1SJ1RuwB42sf7zjb0Peqv05DQUVQ1KskOf98_p9LxuBdNyugvlcHeYp8rtWXnXn0S8xUFqlsvy2aFC3e3yjwA675MDlfsDoBlsOujiUb_GIFAD9kTrERyILbO4G0bbpdKDTw
+    body: grant_type=refresh_token&service=metadataunittest.azurecr.io&scope=registry%3Acatalog%3A%2A&refresh_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJkOWMzYzcyMC1mZjgwLTQ5YmEtOWRiMy0yOWQwNjUxNDUxOGUiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMzYxMDM3LCJleHAiOjE2ODIzNzI3MzcsImlhdCI6MTY4MjM2MTAzNywiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiZ3JhbnRfdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJhcHBpZCI6IjA0YjA3Nzk1LThkZGItNDYxYS1iYmVlLTAyZjllMWJmN2I0NiIsInRlbmFudCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInBlcm1pc3Npb25zIjp7IkFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIiwiZGVsZXRlZC9yZWFkIiwiZGVsZXRlZC9yZXN0b3JlL2FjdGlvbiJdLCJOb3RBY3Rpb25zIjpudWxsfSwicm9sZXMiOltdfQ.Kx2502_EvPC8mAxjzfvhbz8fjwYQv-bDdpr8jxwDi-uPtQuFDKmRpyeTcIUjjT90vGHBcJmTChgxd5uXh6nOeN5F2vFH9GYjRtb6psJuZtQwCNUg8l7POpq_BSzySR7mNbD1T6TV9vGbMt54oZJUC15AmjW10n36EScA3yHoHdkaacCZaxjEyMaaqAldWaRWHTHGyKEkgisoUa73_Nn2MevlvAqjfeMETZ7t5L7Y84qChmUdi72fWFE2DePvulQUWF7wRTAkxr_ZUa8s5weCr9JNsAfLGz1yQ4L8PUgvqUCR5spiMp8sHCOqsO21VxDwFZDBRhY0rCw_tCNClFpbkQ
     headers:
       Accept:
       - '*/*'
@@ -1366,14 +1373,14 @@ interactions:
     uri: https://metadataunittest.azurecr.io/oauth2/token
   response:
     body:
-      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiI5NTZjYjRmNC1jZmRlLTQ2YTEtYmRmNi01YWUzMjQ0NGQwMDIiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMDk4NTcxLCJleHAiOjE2ODIxMDMwNzEsImlhdCI6MTY4MjA5ODU3MSwiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiYWNjZXNzIjpbeyJUeXBlIjoicmVnaXN0cnkiLCJOYW1lIjoiY2F0YWxvZyIsIkFjdGlvbnMiOlsiKiJdfV0sInJvbGVzIjpbXSwiZ3JhbnRfdHlwZSI6ImFjY2Vzc190b2tlbiIsImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2In0.KIdO-MbIAoOPW5kb-2XyZvq0qFbhcpAh3i1v6SVmwdNlWCO4xDngqc71818jT-oryk4MT58wWlX2oBJUjJEBH2UPfMratlzblIQfS6CJpp2N3Gq8i_D_v2yoOYdiaKLHSHvZFH3WZOKT8wbs5icxyuXgRZ-zOBstjwgjBYL9kEefxCdWr3VUyHrLbEpjLGOjaz4uXvRsETn14IOLlJCzuTkiaI2_4JoQT4BdV7Mb1pzZgI3eayjsmV-5-XssWaaFijFGguc7kFKVky7ORLAqCVehUzMJltkWydS4tIvrU-KMaFXzodfBDce0zrollzzyyrs_aFT3CG_qLQ2mNCDuCQ"}'
+      string: '{"access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlczTFk6RVFVQjpFWFlZOk5aSlo6QlpJUjpZUkZaOjJJTkI6UDNYTjo1WURVOjRVVjQ6VjRDRzo0T1hLIn0.eyJqdGkiOiJjZmI1NDIyMy01ZmZhLTRkZWYtYWQ0MS0xMjcxMzczNmEwYzIiLCJzdWIiOiJjYWJhcmtlckBtaWNyb3NvZnQuY29tIiwibmJmIjoxNjgyMzYxMDM3LCJleHAiOjE2ODIzNjU1MzcsImlhdCI6MTY4MjM2MTAzNywiaXNzIjoiQXp1cmUgQ29udGFpbmVyIFJlZ2lzdHJ5IiwiYXVkIjoibWV0YWRhdGF1bml0dGVzdC5henVyZWNyLmlvIiwidmVyc2lvbiI6IjEuMCIsInJpZCI6IjhiMjg4N2U0MjhhMTQ0OTBhOTJhY2JkNTE4M2I1Nzg5IiwiYWNjZXNzIjpbeyJUeXBlIjoicmVnaXN0cnkiLCJOYW1lIjoiY2F0YWxvZyIsIkFjdGlvbnMiOlsiKiJdfV0sInJvbGVzIjpbXSwiZ3JhbnRfdHlwZSI6ImFjY2Vzc190b2tlbiIsImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2In0.d0vrAOrQajiEqnsILBioON03SpvCoKx57_e0Go1ACRyiaenVb7geo8-MVHSYG-HapKInRQwAx32no8x1QkiTIPnrgZf6xv8v3_2fMFfyF6mvYm7DAZDHCqCA4f25Xt0Soq2Xg0rfo8FIkg_d2JgP5C2k1OBnfHGhWwkRFus7ebAyvtIsBQUfaQudUT1HYdP8bmFiUsla1tMw_ipLF3CKLfjVzyBJDoo0nAKlwPtKwMncbtftcUdnlNkdCOPOYZ3FyOQ16_DY8mFD5zlVhovK5RvJkzTisd5E-0YJVWGI2FTG7MF9DWBthtQ603sHc0hkXv65XURlNUlVZ-36ba6qnA"}'
     headers:
       connection:
       - keep-alive
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:51:11 GMT
+      - Mon, 24 Apr 2023 18:45:37 GMT
       server:
       - openresty
       strict-transport-security:
@@ -1418,7 +1425,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 17:51:11 GMT
+      - Mon, 24 Apr 2023 18:45:37 GMT
       docker-distribution-api-version:
       - registry/2.0
       server:
