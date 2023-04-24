@@ -41,7 +41,6 @@ if __name__ == "__main__":
     volume_data = []
     # Portal team will need to modify the following lines or add/remove lines in the same format - 
     # volume_data.append(VolumeData({TargetIQN}, {TargetHostName}, {TargetPort}))
-    volume_data.append(VolumeData(volume_name="testvolume1",target_iqn="iqn.2023-03.net.windows.core.blob.ElasticSan.es-4qtreagkjzj0:testvolume1", target_hostname="es-4qtreagkjzj0.z45.blob.storage.azure.net", target_port=3260))
 
     for v in volume_data:
         # check connections, if not connected, then skip disconnection

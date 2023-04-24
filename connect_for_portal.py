@@ -22,11 +22,8 @@ def check_iscsi():
     else:
         raise OSError("cannot find a usable package manager")
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate()
-    out, err = out.decode("utf-8"), err.decode("utf-8") 
-    # print('out',out)
-    # print('err',err)
-    # sys.exit()
+    out, _ = p.communicate()
+    out = out.decode("utf-8")
     if (package_manager == "apt" and "ii  open-iscsi" not in out) or (package_manager == 'yum' and "iscsi-initiator-utils is not installed" in out) or (package_manager == 'zypper' and "open-iscsi" not in out):
         value = input("\033[93mWarning: iSCSI initiator is not installed or enabled. It is required for successful execution of this connect script. \nDo you wish to terminate the script to install it? \n[Y/Yes to terminate; N/No to proceed with rest of the steps]:\033[00m")
         while True:
@@ -47,11 +44,8 @@ def check_mpio():
     else:
         raise OSError("cannot find a usable package manager")
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate()
-    out, err = out.decode("utf-8"), err.decode("utf-8") 
-    # print('out',out)
-    # print('err',err)
-    # if err is not None and err!="" or "ii  multipath-tools" not in out:
+    out, _ = p.communicate()
+    out = out.decode("utf-8")
     if (package_manager == "apt" and "ii  multipath-tools" not in out) or (package_manager == 'yum' and "device-mapper-multipath is not installed" in out) or (package_manager == 'zypper' and "multipath-tools" not in out):
         value = input("\033[93mWarning: Multipath I/O is not installed or enabled. It is recommended for multi-session setup. \nDo you wish to terminate the script to install it? \n[Y/Yes to terminate; N/No to proceed with rest of the steps]:\033[00m")
         while True:
@@ -74,12 +68,10 @@ def connect_volume(volume_name, target_iqn, target_portal_hostname, target_porta
     # add target and attempt to register a session
     command = "sudo iscsiadm -m node --targetname {} --portal {}:{} -o new".format(target_iqn, target_portal_hostname, target_portal_port).split(' ')
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, _ = p.communicate()
-    # print(out)
+    p.communicate()
     command = "sudo iscsiadm -m node --targetname {} -p {}:{} -l".format(target_iqn, target_portal_hostname, target_portal_port).split(' ')
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, _ = p.communicate()
-    # print(out)
+    p.communicate()
     number_of_sessions-=1
 
     # get session id
@@ -93,7 +85,6 @@ def connect_volume(volume_name, target_iqn, target_portal_hostname, target_porta
         if s[2] == "{}:{},-1".format(target_portal_hostname, target_portal_port) and s[3] == target_iqn:
             session_id = s[1][1:-1]
             break
-    # print(sessions)
 
     # register remaining sessions
     command = "sudo iscsiadm -m session -r {} --op new".format(session_id).split(' ')
@@ -131,7 +122,6 @@ if __name__ == "__main__":
     volume_data = []
     # Portal team will need to modify the following lines or add/remove lines in the same format - 
     # volume_data.append(VolumeData({VolumeName},{TargetIQN}, {TargetHostName}, {TargetPort}, {Number of sessions}))
-    volume_data.append(VolumeData(volume_name="testvolume1",target_iqn="iqn.2023-03.net.windows.core.blob.ElasticSan.es-4qtreagkjzj0:testvolume1", target_hostname="es-4qtreagkjzj0.z45.blob.storage.azure.net", target_port=3260, num_session=2))
 
     for v in volume_data:
         # check connections, if connected, then skip adding new connections
