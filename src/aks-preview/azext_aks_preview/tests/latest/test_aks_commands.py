@@ -1391,6 +1391,50 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_guardrails(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--guardrails-level Warning --guardrails-version "v1.0.0" ' \
+                     '--enable-addons azure-policy'
+        self.cmd(create_cmd, checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('properties.guardrailsProfile.level', 'Warning'),
+            self.check('properties.guardrailsProfile.version','v1.0.0')
+        ])
+    
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_update_with_guardrails(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} '
+        self.cmd(create_cmd, checks=[
+            self.check('properties.provisioningState', 'Succeeded')
+        ])
+    
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--guardrails-level Warning --guardrails-version "v1.0.0" ' \
+                     '--enable-addons azure-policy'
+        
+        self.cmd(update_cmd, checks=[
+            self.check('properties.provisioningState', 'Succeeded'),
+            self.check('properties.guardrailsProfile.level', 'Warning'),
+            self.check('properties.guardrailsProfile.version','v1.0.0')
+        ])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_managed_disk(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({

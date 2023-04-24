@@ -716,6 +716,10 @@ def aks_create(
     nodepool_allowed_host_ports=None,
     nodepool_asg_ids=None,
     node_public_ip_tags=None,
+    # guardrails parameters
+    guardrails_level=None,
+    guardrails_version=None,
+    guardrails_excluded_namespaces=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -850,6 +854,10 @@ def aks_update(
     disable_vpa=False,
     cluster_snapshot_id=None,
     custom_ca_trust_certificates=None,
+    # guardrails parameters
+    guardrails_level=None,
+    guardrails_version=None,
+    guardrails_excluded_namespaces=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -934,7 +942,8 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
     if credential_format:
         credential_format = credential_format.lower()
         if admin:
-            raise InvalidArgumentValueError("--format can only be specified when requesting clusterUser credential.")
+            raise InvalidArgumentValueError(
+                "--format can only be specified when requesting clusterUser credential.")
     if admin:
         credentialResults = client.list_cluster_admin_credentials(
             resource_group_name, name, serverType)
@@ -1041,7 +1050,8 @@ def aks_upgrade(cmd,    # pylint: disable=unused-argument, too-many-return-state
         instance.creation_data = CreationData(
             source_resource_id=cluster_snapshot_id
         )
-        mcsnapshot = get_cluster_snapshot_by_snapshot_id(cmd.cli_ctx, cluster_snapshot_id)
+        mcsnapshot = get_cluster_snapshot_by_snapshot_id(
+            cmd.cli_ctx, cluster_snapshot_id)
         kubernetes_version = mcsnapshot.managed_cluster_properties_read_only.kubernetes_version
 
     if instance.kubernetes_version == kubernetes_version:
@@ -1365,7 +1375,8 @@ def aks_agentpool_upgrade(cmd,
 
     creationData = None
     if snapshot_id:
-        snapshot = get_nodepool_snapshot_by_snapshot_id(cmd.cli_ctx, snapshot_id)
+        snapshot = get_nodepool_snapshot_by_snapshot_id(
+            cmd.cli_ctx, snapshot_id)
         if not kubernetes_version and not node_image_only:
             kubernetes_version = snapshot.kubernetes_version
 
@@ -1378,9 +1389,11 @@ def aks_agentpool_upgrade(cmd,
     if kubernetes_version != '' or instance.orchestrator_version == kubernetes_version:
         msg = "The new kubernetes version is the same as the current kubernetes version."
         if instance.provisioning_state == "Succeeded":
-            msg = "The cluster is already on version {} and is not in a failed state. No operations will occur when upgrading to the same version if the cluster is not in a failed state.".format(instance.orchestrator_version)
+            msg = "The cluster is already on version {} and is not in a failed state. No operations will occur when upgrading to the same version if the cluster is not in a failed state.".format(
+                instance.orchestrator_version)
         elif instance.provisioning_state == "Failed":
-            msg = "Cluster currently in failed state. Proceeding with upgrade to existing version {} to attempt resolution of failed cluster state.".format(instance.orchestrator_version)
+            msg = "Cluster currently in failed state. Proceeding with upgrade to existing version {} to attempt resolution of failed cluster state.".format(
+                instance.orchestrator_version)
         if not yes and not prompt_y_n(msg):
             return None
 
@@ -1546,7 +1559,8 @@ def aks_operation_abort(cmd,   # pylint: disable=unused-argument
     instance = client.get(resource_group_name, name)
     power_state = PowerState(code="Running")
     if instance is None:
-        raise InvalidArgumentValueError("Cluster {} doesnt exist, use 'aks list' to get current cluster list".format(name))
+        raise InvalidArgumentValueError(
+            "Cluster {} doesnt exist, use 'aks list' to get current cluster list".format(name))
     instance.power_state = power_state
     headers = get_aks_custom_headers(aks_custom_headers)
     return sdk_no_wait(no_wait, client.begin_abort_latest_operation, resource_group_name, name, headers=headers)
@@ -1605,7 +1619,8 @@ def aks_addon_show(cmd, client, resource_group_name, name, addon):
     # web_application_routing is a special case, the configuration is stored in a separate profile
     if addon == "web_application_routing":
         if not mc.ingress_profile and not mc.ingress_profile.web_app_routing and not mc.ingress_profile.web_app_routing.enabled:
-            raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
+            raise InvalidArgumentValueError(
+                f'Addon "{addon}" is not enabled in this cluster.')
         return {
             "name": addon,
             "api_key": addon_key,
@@ -1614,7 +1629,8 @@ def aks_addon_show(cmd, client, resource_group_name, name, addon):
 
     # normal addons
     if not mc.addon_profiles or addon_key not in mc.addon_profiles or not mc.addon_profiles[addon_key].enabled:
-        raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
+        raise InvalidArgumentValueError(
+            f'Addon "{addon}" is not enabled in this cluster.')
     return {
         "name": addon,
         "api_key": addon_key,
@@ -1654,11 +1670,13 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
 
     if addon == "web_application_routing":
         if (instance.ingress_profile is None) or (instance.ingress_profile.web_app_routing is None) or not instance.ingress_profile.web_app_routing.enabled:
-            raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
+            raise InvalidArgumentValueError(
+                f'Addon "{addon}" is not enabled in this cluster.')
     else:
         addon_key = ADDONS[addon]
         if not addon_profiles or addon_key not in addon_profiles or not addon_profiles[addon_key].enabled:
-            raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
+            raise InvalidArgumentValueError(
+                f'Addon "{addon}" is not enabled in this cluster.')
 
     return enable_addons(cmd, client, resource_group_name, name, addon, check_enabled=False,
                          workspace_resource_id=workspace_resource_id,
@@ -1756,7 +1774,8 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
                 raise ArgumentUsageError(
                     "--enable-syslog can not be used without MSI auth.")
             if data_collection_settings is not None:
-                raise ArgumentUsageError("--data-collection-settings can not be used without MSI auth.")
+                raise ArgumentUsageError(
+                    "--data-collection-settings can not be used without MSI auth.")
             ensure_container_insights_for_monitoring(
                 cmd,
                 instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
@@ -2022,7 +2041,8 @@ def aks_draft_create(destination='.',
                      dockerfile_only=None,
                      deployment_only=None,
                      path=None):
-    aks_draft_cmd_create(destination, app, language, create_config, dockerfile_only, deployment_only, path)
+    aks_draft_cmd_create(destination, app, language,
+                         create_config, dockerfile_only, deployment_only, path)
 
 
 def aks_draft_setup_gh(app=None,
@@ -2031,7 +2051,8 @@ def aks_draft_setup_gh(app=None,
                        provider="azure",
                        gh_repo=None,
                        path=None):
-    aks_draft_cmd_setup_gh(app, subscription_id, resource_group, provider, gh_repo, path)
+    aks_draft_cmd_setup_gh(app, subscription_id,
+                           resource_group, provider, gh_repo, path)
 
 
 def aks_draft_generate_workflow(cluster_name=None,
@@ -2438,15 +2459,18 @@ def aks_trustedaccess_role_binding_create(cmd, client, resource_group_name, clus
     )
     existedBinding = None
     try:
-        existedBinding = client.get(resource_group_name, cluster_name, role_binding_name)
+        existedBinding = client.get(
+            resource_group_name, cluster_name, role_binding_name)
     except ResourceNotFoundError:
         pass
 
     if existedBinding:
-        raise Exception("TrustedAccess RoleBinding " + role_binding_name + " already existed, please use 'az aks trustedaccess rolebinding update' command to update!")
+        raise Exception("TrustedAccess RoleBinding " + role_binding_name +
+                        " already existed, please use 'az aks trustedaccess rolebinding update' command to update!")
 
     roleList = roles.split(',')
-    roleBinding = TrustedAccessRoleBinding(source_resource_id=source_resource_id, roles=roleList)
+    roleBinding = TrustedAccessRoleBinding(
+        source_resource_id=source_resource_id, roles=roleList)
     return client.create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
 
 
@@ -2456,10 +2480,12 @@ def aks_trustedaccess_role_binding_update(cmd, client, resource_group_name, clus
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="trusted_access_role_bindings",
     )
-    existedBinding = client.get(resource_group_name, cluster_name, role_binding_name)
+    existedBinding = client.get(
+        resource_group_name, cluster_name, role_binding_name)
 
     roleList = roles.split(',')
-    roleBinding = TrustedAccessRoleBinding(source_resource_id=existedBinding.source_resource_id, roles=roleList)
+    roleBinding = TrustedAccessRoleBinding(
+        source_resource_id=existedBinding.source_resource_id, roles=roleList)
     return client.create_or_update(resource_group_name, cluster_name, role_binding_name, roleBinding)
 
 

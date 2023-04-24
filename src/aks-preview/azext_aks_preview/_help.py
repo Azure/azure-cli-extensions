@@ -186,7 +186,7 @@ helps['aks create'] = """
                                                   If monitoring addon is enabled --no-wait argument will have no effect
                 virtual-node                    - enable AKS Virtual Node. Requires --aci-subnet-name to provide the name of an existing subnet for the Virtual Node to use.
                                                   aci-subnet-name must be in the same vnet which is specified by --vnet-subnet-id (required as well).
-                azure-policy                    - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner.
+                azure-policy                    - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Required if enabling Guardrails
                                                   Learn more at aka.ms/aks/policy.
                 ingress-appgw                   - enable Application Gateway Ingress Controller addon (PREVIEW).
                 confcom                         - enable confcom addon, this will enable SGX device plugin by default(PREVIEW).
@@ -515,6 +515,15 @@ helps['aks create'] = """
         - name: --node-public-ip-tags
           type: string
           short-summary: The ipTags of the node public IPs.
+        - name: --guardrails-level
+          type: string
+          short-summary: The Guardrails Level. Accepted Values are [Off, Warning]. Requires azure policy addon to be enabled
+        - name: --guardrails-version
+          type: string
+          short-summary: The version of Guardrails to use. Default "v1.0.0" Use the ListGuardrailsVersions API to discover available versions
+        - name: --guardrails-excluded-namespaces
+          type: string
+          short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -580,6 +589,10 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --network-plugin none
         - name: Create a kubernetes cluster with Custom CA Trust enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-custom-ca-trust
+        - name: Create a kubernetes cluster with guardrails set to "Warning"
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --enable-addons azure-policy
+        - name: Create a kubernetes cluster with guardrails set to "Warning" and some namespaces excluded
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --guardrails-excluded-namespaces ns1,ns2 --enable-addons azure-policy
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -942,6 +955,15 @@ helps['aks update'] = """
           type: string
           short-summary: Path to a file containing up to 10 blank line separated certificates. Only valid for linux nodes.
           long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
+        - name: --guardrails-level
+          type: string
+          short-summary: The Guardrails Level. Accepted Values are [Off, Warning]. Requires azure policy addon to be enabled
+        - name: --guardrails-version
+          type: string
+          short-summary: The version of Guardrails to use. Default "v1.0.0" Use the ListGuardrailsVersions API to discover available versions
+        - name: --guardrails-excluded-namespaces
+          type: string
+          short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails. Use "[]" to clear a previously non-empty list
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1001,6 +1023,12 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-windows-gmsa --gmsa-dns-server "10.240.0.4" --gmsa-root-domain-name "contoso.com"
       - name: Update a existing managed cluster to a managed cluster snapshot.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --cluster-snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedclustersnapshots/mysnapshot1"
+      - name: Update a kubernetes cluster with guardrails set to "Warning"
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --enable-addons azure-policy
+      - name: Update a kubernetes cluster with guardrails set to "Warning" and some namespaces excluded
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --guardrails-excluded-namespaces ns1,ns2 --enable-addons azure-policy
+      - name: Update a kubernetes cluster to clear any namespaces excluded from guardrails. Assumes azure policy addon is already enabled
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-excluded-namespaces "[]"
 """
 
 helps['aks kollect'] = """

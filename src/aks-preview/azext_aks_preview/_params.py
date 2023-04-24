@@ -87,6 +87,9 @@ from azext_aks_preview._consts import (
     CONST_WEEKINDEX_THIRD,
     CONST_WEEKINDEX_FOURTH,
     CONST_WEEKINDEX_LAST,
+    CONST_GUARDRAILSLEVEL_OFF,
+    CONST_GUARDRAILSLEVEL_WARNING,
+    CONST_GUARDRAILSLEVEL_ENFORCEMENT
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -152,12 +155,15 @@ from azext_aks_preview._validators import (
     validate_utc_offset,
     validate_start_date,
     validate_start_time,
+    validate_guardrails_level
 )
 
 # candidates for enumeration
 # consts for AgentPool
-node_priorities = [CONST_SCALE_SET_PRIORITY_REGULAR, CONST_SCALE_SET_PRIORITY_SPOT]
-node_eviction_policies = [CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE]
+node_priorities = [CONST_SCALE_SET_PRIORITY_REGULAR,
+                   CONST_SCALE_SET_PRIORITY_SPOT]
+node_eviction_policies = [
+    CONST_SPOT_EVICTION_POLICY_DELETE, CONST_SPOT_EVICTION_POLICY_DEALLOCATE]
 node_os_disk_types = [CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL]
 node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]
 node_os_skus = [
@@ -167,8 +173,10 @@ node_os_skus = [
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
 ]
-scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
-workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_WORKLOAD_RUNTIME_WASM_WASI, CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION]
+scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE,
+                    CONST_SCALE_DOWN_MODE_DEALLOCATE]
+workload_runtimes = [CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
+                     CONST_WORKLOAD_RUNTIME_WASM_WASI, CONST_WORKLOAD_RUNTIME_KATA_MSHV_VM_ISOLATION]
 gpu_instance_profiles = [
     CONST_GPU_INSTANCE_PROFILE_MIG1_G,
     CONST_GPU_INSTANCE_PROFILE_MIG2_G,
@@ -178,8 +186,10 @@ gpu_instance_profiles = [
 ]
 
 # consts for ManagedCluster
-load_balancer_skus = [CONST_LOAD_BALANCER_SKU_BASIC, CONST_LOAD_BALANCER_SKU_STANDARD]
-network_plugins = [CONST_NETWORK_PLUGIN_KUBENET, CONST_NETWORK_PLUGIN_AZURE, CONST_NETWORK_PLUGIN_NONE]
+load_balancer_skus = [CONST_LOAD_BALANCER_SKU_BASIC,
+                      CONST_LOAD_BALANCER_SKU_STANDARD]
+network_plugins = [CONST_NETWORK_PLUGIN_KUBENET,
+                   CONST_NETWORK_PLUGIN_AZURE, CONST_NETWORK_PLUGIN_NONE]
 network_plugin_modes = [CONST_NETWORK_PLUGIN_MODE_OVERLAY]
 disk_driver_versions = [CONST_DISK_DRIVER_V1, CONST_DISK_DRIVER_V2]
 outbound_types = [
@@ -223,9 +233,18 @@ week_indexes = [
 ]
 
 # consts for credential
-credential_formats = [CONST_CREDENTIAL_FORMAT_AZURE, CONST_CREDENTIAL_FORMAT_EXEC]
+credential_formats = [CONST_CREDENTIAL_FORMAT_AZURE,
+                      CONST_CREDENTIAL_FORMAT_EXEC]
 
-keyvault_network_access_types = [CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC, CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE]
+keyvault_network_access_types = [
+    CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC, CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE]
+
+# consts for guardrails level
+guardrails_levels = [
+    CONST_GUARDRAILSLEVEL_OFF,
+    CONST_GUARDRAILSLEVEL_WARNING,
+    CONST_GUARDRAILSLEVEL_ENFORCEMENT
+]
 
 
 def load_arguments(self, _):
@@ -249,12 +268,15 @@ def load_arguments(self, _):
         c.argument('kubernetes_version',
                    completer=get_k8s_versions_completion_list)
         c.argument('dns_name_prefix', options_list=['--dns-name-prefix', '-p'])
-        c.argument('node_osdisk_diskencryptionset_id', options_list=['--node-osdisk-diskencryptionset-id', '-d'])
+        c.argument('node_osdisk_diskencryptionset_id', options_list=[
+                   '--node-osdisk-diskencryptionset-id', '-d'])
         c.argument('disable_local_accounts', action='store_true')
         c.argument('disable_rbac', action='store_true')
         c.argument('edge_zone', edge_zone_type)
-        c.argument('admin_username', options_list=['--admin-username', '-u'], default='azureuser')
-        c.argument('generate_ssh_keys', action='store_true', validator=validate_create_parameters)
+        c.argument('admin_username', options_list=[
+                   '--admin-username', '-u'], default='azureuser')
+        c.argument('generate_ssh_keys', action='store_true',
+                   validator=validate_create_parameters)
         c.argument('ssh_key_value', required=False, type=file_type, default=os.path.join('~', '.ssh', 'id_rsa.pub'),
                    completer=FilesCompleter(), validator=validate_ssh_key)
         c.argument('no_ssh_key', options_list=['--no-ssh-key', '-x'])
@@ -262,28 +284,41 @@ def load_arguments(self, _):
         c.argument('docker_bridge_address')
         c.argument('pod_cidrs')
         c.argument('service_cidrs')
-        c.argument('load_balancer_sku', arg_type=get_enum_type(load_balancer_skus), validator=validate_load_balancer_sku)
+        c.argument('load_balancer_sku', arg_type=get_enum_type(
+            load_balancer_skus), validator=validate_load_balancer_sku)
         c.argument('load_balancer_managed_outbound_ip_count', type=int)
-        c.argument('load_balancer_outbound_ips', validator=validate_load_balancer_outbound_ips)
-        c.argument('load_balancer_outbound_ip_prefixes', validator=validate_load_balancer_outbound_ip_prefixes)
-        c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
-        c.argument('load_balancer_idle_timeout', type=int, validator=validate_load_balancer_idle_timeout)
-        c.argument('load_balancer_backend_pool_type', validator=validate_load_balancer_backend_pool_type)
-        c.argument('nrg_lockdown_restriction_level', arg_type=get_enum_type(nrg_lockdown_restriction_levels))
-        c.argument('nat_gateway_managed_outbound_ip_count', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
-        c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
+        c.argument('load_balancer_outbound_ips',
+                   validator=validate_load_balancer_outbound_ips)
+        c.argument('load_balancer_outbound_ip_prefixes',
+                   validator=validate_load_balancer_outbound_ip_prefixes)
+        c.argument('load_balancer_outbound_ports', type=int,
+                   validator=validate_load_balancer_outbound_ports)
+        c.argument('load_balancer_idle_timeout', type=int,
+                   validator=validate_load_balancer_idle_timeout)
+        c.argument('load_balancer_backend_pool_type',
+                   validator=validate_load_balancer_backend_pool_type)
+        c.argument('nrg_lockdown_restriction_level',
+                   arg_type=get_enum_type(nrg_lockdown_restriction_levels))
+        c.argument('nat_gateway_managed_outbound_ip_count', type=int,
+                   validator=validate_nat_gateway_managed_outbound_ip_count)
+        c.argument('nat_gateway_idle_timeout', type=int,
+                   validator=validate_nat_gateway_idle_timeout)
         c.argument('outbound_type', arg_type=get_enum_type(outbound_types))
         c.argument('network_plugin', arg_type=get_enum_type(network_plugins))
-        c.argument('network_plugin_mode', arg_type=get_enum_type(network_plugin_modes))
+        c.argument('network_plugin_mode',
+                   arg_type=get_enum_type(network_plugin_modes))
         c.argument('network_policy')
         c.argument('kube_proxy_config')
-        c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
-        c.argument('node_os_upgrade_channel', arg_type=get_enum_type(node_os_upgrade_channels))
+        c.argument('auto_upgrade_channel',
+                   arg_type=get_enum_type(auto_upgrade_channels))
+        c.argument('node_os_upgrade_channel',
+                   arg_type=get_enum_type(node_os_upgrade_channels))
         c.argument('cluster_autoscaler_profile', nargs='+', options_list=["--cluster-autoscaler-profile", "--ca-profile"],
                    help="Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.")
         c.argument('uptime_sla', action='store_true')
         c.argument('fqdn_subdomain')
-        c.argument('api_server_authorized_ip_ranges', validator=validate_ip_ranges)
+        c.argument('api_server_authorized_ip_ranges',
+                   validator=validate_ip_ranges)
         c.argument('enable_private_cluster', action='store_true')
         c.argument('private_dns_zone')
         c.argument('disable_public_fqdn', action='store_true')
@@ -291,12 +326,16 @@ def load_arguments(self, _):
         c.argument('client_secret')
         c.argument('enable_managed_identity', action='store_true')
         c.argument('assign_identity', validator=validate_assign_identity)
-        c.argument('assign_kubelet_identity', validator=validate_assign_kubelet_identity)
+        c.argument('assign_kubelet_identity',
+                   validator=validate_assign_kubelet_identity)
         c.argument('enable_aad', action='store_true')
         c.argument('enable_azure_rbac', action='store_true')
-        c.argument('aad_client_app_id', deprecate_info=c.deprecate(target='--aad-client-app-id', hide=True))
-        c.argument('aad_server_app_id', deprecate_info=c.deprecate(target='--aad-server-app-id', hide=True))
-        c.argument('aad_server_app_secret', deprecate_info=c.deprecate(target='--aad-server-app-secret', hide=True))
+        c.argument('aad_client_app_id', deprecate_info=c.deprecate(
+            target='--aad-client-app-id', hide=True))
+        c.argument('aad_server_app_id', deprecate_info=c.deprecate(
+            target='--aad-server-app-id', hide=True))
+        c.argument('aad_server_app_secret', deprecate_info=c.deprecate(
+            target='--aad-server-app-secret', hide=True))
         c.argument('aad_tenant_id')
         c.argument('aad_admin_group_object_ids')
         c.argument('enable_oidc_issuer', action='store_true')
@@ -310,22 +349,30 @@ def load_arguments(self, _):
         c.argument('skip_subnet_role_assignment', action='store_true')
         c.argument('node_resource_group')
         c.argument('enable_defender', action='store_true')
-        c.argument('defender_config', validator=validate_defender_config_parameter)
-        c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
+        c.argument('defender_config',
+                   validator=validate_defender_config_parameter)
+        c.argument('disk_driver_version',
+                   arg_type=get_enum_type(disk_driver_versions))
         c.argument('disable_disk_driver', action='store_true')
         c.argument('disable_file_driver', action='store_true')
         c.argument('enable_blob_driver', action='store_true')
         c.argument('disable_snapshot_controller', action='store_true')
         c.argument('enable_azure_keyvault_kms', action='store_true')
-        c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id)
-        c.argument('azure_keyvault_kms_key_vault_network_access', arg_type=get_enum_type(keyvault_network_access_types), default=CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC)
-        c.argument('azure_keyvault_kms_key_vault_resource_id', validator=validate_azure_keyvault_kms_key_vault_resource_id)
+        c.argument('azure_keyvault_kms_key_id',
+                   validator=validate_azure_keyvault_kms_key_id)
+        c.argument('azure_keyvault_kms_key_vault_network_access', arg_type=get_enum_type(
+            keyvault_network_access_types), default=CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC)
+        c.argument('azure_keyvault_kms_key_vault_resource_id',
+                   validator=validate_azure_keyvault_kms_key_vault_resource_id)
         c.argument('http_proxy_config')
         # addons
-        c.argument('enable_addons', options_list=['--enable-addons', '-a'], validator=validate_addons)
+        c.argument('enable_addons', options_list=[
+                   '--enable-addons', '-a'], validator=validate_addons)
         c.argument('workspace_resource_id')
-        c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
-        c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_msi_auth_for_monitoring',
+                   arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_syslog',
+                   arg_type=get_three_state_flag(), is_preview=True)
         c.argument('data_collection_settings', is_preview=True)
         c.argument('aci_subnet_name')
         c.argument('appgw_name', arg_group='Application Gateway')
@@ -339,7 +386,8 @@ def load_arguments(self, _):
         # nodepool paramerters
         c.argument('nodepool_name', default='nodepool1',
                    help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
-        c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
+        c.argument('node_vm_size', options_list=[
+                   '--node-vm-size', '-s'], completer=get_vm_size_completion_list)
         c.argument('os_sku', arg_type=get_enum_type(node_os_skus))
         c.argument('snapshot_id', validator=validate_snapshot_id)
         c.argument('vnet_subnet_id', validator=validate_vnet_subnet_id)
@@ -353,12 +401,15 @@ def load_arguments(self, _):
                    help='space-separated tags: key[=value] [key[=value] ...]. Use "" to clear existing tags.')
         c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels,
                    help='space-separated labels: key[=value] [key[=value] ...]. See https://aka.ms/node-labels for syntax of labels.')
-        c.argument('node_osdisk_type', arg_type=get_enum_type(node_os_disk_types))
+        c.argument('node_osdisk_type',
+                   arg_type=get_enum_type(node_os_disk_types))
         c.argument('node_osdisk_size', type=int)
         c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
         c.argument('vm_set_type', validator=validate_vm_set_type)
-        c.argument('enable_vmss', action='store_true', help='To be deprecated. Use vm_set_type instead.', deprecate_info=c.deprecate(redirect='--vm-set-type', hide=True))
-        c.argument('zones', zones_type, options_list=['--zones', '-z'], help='Space-separated list of availability zones where agent nodes will be placed.')
+        c.argument('enable_vmss', action='store_true', help='To be deprecated. Use vm_set_type instead.',
+                   deprecate_info=c.deprecate(redirect='--vm-set-type', hide=True))
+        c.argument('zones', zones_type, options_list=[
+                   '--zones', '-z'], help='Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('ppg')
         c.argument('enable_encryption_at_host', action='store_true')
         c.argument('enable_ultra_ssd', action='store_true')
@@ -366,9 +417,11 @@ def load_arguments(self, _):
         c.argument('kubelet_config')
         c.argument('linux_os_config')
         c.argument('host_group_id', validator=validate_host_group_id)
-        c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
+        c.argument('gpu_instance_profile',
+                   arg_type=get_enum_type(gpu_instance_profiles))
         # misc
-        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('yes', options_list=[
+                   '--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('aks_custom_headers')
         # extensions
         # managed cluster
@@ -376,59 +429,90 @@ def load_arguments(self, _):
         c.argument('pod_cidrs')
         c.argument('service_cidrs')
         c.argument('load_balancer_managed_outbound_ipv6_count', type=int)
-        c.argument('enable_pod_security_policy', action='store_true', deprecate_info=c.deprecate(target='--enable-pod-security-policy', hide=True))
+        c.argument('enable_pod_security_policy', action='store_true', deprecate_info=c.deprecate(
+            target='--enable-pod-security-policy', hide=True))
         c.argument('enable_pod_identity', action='store_true')
         c.argument('enable_pod_identity_with_kubenet', action='store_true')
-        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
-        c.argument('enable_image_cleaner', action='store_true', is_preview=True)
+        c.argument('enable_workload_identity',
+                   arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_image_cleaner',
+                   action='store_true', is_preview=True)
         c.argument('image_cleaner_interval_hours', type=int, is_preview=True)
-        c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
-        c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
-        c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
+        c.argument('cluster_snapshot_id',
+                   validator=validate_cluster_snapshot_id, is_preview=True)
+        c.argument('enable_apiserver_vnet_integration',
+                   action='store_true', is_preview=True)
+        c.argument('apiserver_subnet_id',
+                   validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('dns_zone_resource_id')
         c.argument('enable_keda', action='store_true', is_preview=True)
-        c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
-        c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
-        c.argument('enable_cilium_dataplane', action='store_true', is_preview=True)
-        c.argument('custom_ca_trust_certificates', options_list=["--custom-ca-trust-certificates", "--ca-certs"], is_preview=True, help="path to file containing list of new line separated CAs")
+        c.argument('enable_vpa', action='store_true', is_preview=True,
+                   help="enable vertical pod autoscaler for cluster")
+        c.argument('enable_node_restriction', action='store_true',
+                   is_preview=True, help="enable node restriction for cluster")
+        c.argument('enable_cilium_dataplane',
+                   action='store_true', is_preview=True)
+        c.argument('custom_ca_trust_certificates', options_list=[
+                   "--custom-ca-trust-certificates", "--ca-certs"], is_preview=True, help="path to file containing list of new line separated CAs")
         # nodepool
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
         # no validation for aks create because it already only supports Linux.
         c.argument('message_of_the_day')
-        c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
+        c.argument('workload_runtime', arg_type=get_enum_type(
+            workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
         # no validation for aks create because it already only supports Linux.
         c.argument('enable_custom_ca_trust', action='store_true')
-        c.argument('nodepool_allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True, help="allowed host ports for agentpool")
-        c.argument('nodepool_asg_ids', validator=validate_application_security_groups, is_preview=True, help="application security groups for agentpool")
+        c.argument('nodepool_allowed_host_ports', validator=validate_allowed_host_ports,
+                   is_preview=True, help="allowed host ports for agentpool")
+        c.argument('nodepool_asg_ids', validator=validate_application_security_groups,
+                   is_preview=True, help="application security groups for agentpool")
         c.argument('node_public_ip_tags', arg_type=tags_type, validator=validate_node_public_ip_tags,
                    help='space-separated tags: key[=value] [key[=value] ...].')
+        c.argument('guardrails_level', validator=validate_guardrails_level, arg_type=get_enum_type(guardrails_levels),
+                   help='The guardrails level, one of ["Off", "Warning", "Enforcement"]')
+        c.argument('guardrails_version', type=str,
+                   help='The guardrails version')
+        c.argument('guardrails_excluded_namespaces', type=str,
+                   help='The list of namespaces to exclude in guardrails. Must be in the format "ns1,ns2". Use "[]" to clear the list')
 
     with self.argument_context('aks update') as c:
         # managed cluster paramerters
         c.argument('disable_local_accounts', action='store_true')
         c.argument('enable_local_accounts', action='store_true')
         c.argument('load_balancer_managed_outbound_ip_count', type=int)
-        c.argument('load_balancer_outbound_ips', validator=validate_load_balancer_outbound_ips)
-        c.argument('load_balancer_outbound_ip_prefixes', validator=validate_load_balancer_outbound_ip_prefixes)
-        c.argument('load_balancer_outbound_ports', type=int, validator=validate_load_balancer_outbound_ports)
-        c.argument('load_balancer_idle_timeout', type=int, validator=validate_load_balancer_idle_timeout)
-        c.argument('load_balancer_backend_pool_type', validator=validate_load_balancer_backend_pool_type)
-        c.argument('nrg_lockdown_restriction_level', arg_type=get_enum_type(nrg_lockdown_restriction_levels))
-        c.argument('nat_gateway_managed_outbound_ip_count', type=int, validator=validate_nat_gateway_managed_outbound_ip_count)
-        c.argument('nat_gateway_idle_timeout', type=int, validator=validate_nat_gateway_idle_timeout)
+        c.argument('load_balancer_outbound_ips',
+                   validator=validate_load_balancer_outbound_ips)
+        c.argument('load_balancer_outbound_ip_prefixes',
+                   validator=validate_load_balancer_outbound_ip_prefixes)
+        c.argument('load_balancer_outbound_ports', type=int,
+                   validator=validate_load_balancer_outbound_ports)
+        c.argument('load_balancer_idle_timeout', type=int,
+                   validator=validate_load_balancer_idle_timeout)
+        c.argument('load_balancer_backend_pool_type',
+                   validator=validate_load_balancer_backend_pool_type)
+        c.argument('nrg_lockdown_restriction_level',
+                   arg_type=get_enum_type(nrg_lockdown_restriction_levels))
+        c.argument('nat_gateway_managed_outbound_ip_count', type=int,
+                   validator=validate_nat_gateway_managed_outbound_ip_count)
+        c.argument('nat_gateway_idle_timeout', type=int,
+                   validator=validate_nat_gateway_idle_timeout)
         c.argument('kube_proxy_config')
-        c.argument('auto_upgrade_channel', arg_type=get_enum_type(auto_upgrade_channels))
-        c.argument('node_os_upgrade_channel', arg_type=get_enum_type(node_os_upgrade_channels))
+        c.argument('auto_upgrade_channel',
+                   arg_type=get_enum_type(auto_upgrade_channels))
+        c.argument('node_os_upgrade_channel',
+                   arg_type=get_enum_type(node_os_upgrade_channels))
         c.argument('cluster_autoscaler_profile', nargs='+', options_list=["--cluster-autoscaler-profile", "--ca-profile"],
                    help="Space-separated list of key=value pairs for configuring cluster autoscaler. Pass an empty string to clear the profile.")
         c.argument('uptime_sla', action='store_true')
         c.argument('no_uptime_sla', action='store_true')
-        c.argument('api_server_authorized_ip_ranges', validator=validate_ip_ranges)
+        c.argument('api_server_authorized_ip_ranges',
+                   validator=validate_ip_ranges)
         c.argument('enable_public_fqdn', action='store_true')
         c.argument('disable_public_fqdn', action='store_true')
         c.argument('enable_managed_identity', action='store_true')
         c.argument('assign_identity', validator=validate_assign_identity)
-        c.argument('assign_kubelet_identity', validator=validate_assign_kubelet_identity)
+        c.argument('assign_kubelet_identity',
+                   validator=validate_assign_kubelet_identity)
         c.argument('enable_aad', action='store_true')
         c.argument('enable_azure_rbac', action='store_true')
         c.argument('disable_azure_rbac', action='store_true')
@@ -443,11 +527,14 @@ def load_arguments(self, _):
         c.argument('gmsa_root_domain_name')
         c.argument('attach_acr', acr_arg_type, validator=validate_acr)
         c.argument('detach_acr', acr_arg_type, validator=validate_acr)
-        c.argument('disable_defender', action='store_true', validator=validate_defender_disable_and_enable_parameters)
+        c.argument('disable_defender', action='store_true',
+                   validator=validate_defender_disable_and_enable_parameters)
         c.argument('enable_defender', action='store_true')
-        c.argument('defender_config', validator=validate_defender_config_parameter)
+        c.argument('defender_config',
+                   validator=validate_defender_config_parameter)
         c.argument('enable_disk_driver', action='store_true')
-        c.argument('disk_driver_version', arg_type=get_enum_type(disk_driver_versions))
+        c.argument('disk_driver_version',
+                   arg_type=get_enum_type(disk_driver_versions))
         c.argument('disable_disk_driver', action='store_true')
         c.argument('enable_file_driver', action='store_true')
         c.argument('disable_file_driver', action='store_true')
@@ -457,9 +544,12 @@ def load_arguments(self, _):
         c.argument('disable_snapshot_controller', action='store_true')
         c.argument('enable_azure_keyvault_kms', action='store_true')
         c.argument('disable_azure_keyvault_kms', action='store_true')
-        c.argument('azure_keyvault_kms_key_id', validator=validate_azure_keyvault_kms_key_id)
-        c.argument('azure_keyvault_kms_key_vault_network_access', arg_type=get_enum_type(keyvault_network_access_types))
-        c.argument('azure_keyvault_kms_key_vault_resource_id', validator=validate_azure_keyvault_kms_key_vault_resource_id)
+        c.argument('azure_keyvault_kms_key_id',
+                   validator=validate_azure_keyvault_kms_key_id)
+        c.argument('azure_keyvault_kms_key_vault_network_access',
+                   arg_type=get_enum_type(keyvault_network_access_types))
+        c.argument('azure_keyvault_kms_key_vault_resource_id',
+                   validator=validate_azure_keyvault_kms_key_vault_resource_id)
         c.argument('http_proxy_config')
         # addons
         c.argument('enable_secret_rotation', action='store_true')
@@ -477,61 +567,98 @@ def load_arguments(self, _):
         c.argument('nodepool_labels', nargs='*', validator=validate_nodepool_labels,
                    help='space-separated labels: key[=value] [key[=value] ...]. See https://aka.ms/node-labels for syntax of labels.')
         # misc
-        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('yes', options_list=[
+                   '--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('aks_custom_headers')
         # extensions
         # managed cluster
-        c.argument('ssh_key_value', type=file_type, completer=FilesCompleter(), validator=validate_ssh_key_for_update)
+        c.argument('ssh_key_value', type=file_type, completer=FilesCompleter(
+        ), validator=validate_ssh_key_for_update)
         c.argument('load_balancer_managed_outbound_ipv6_count', type=int)
         c.argument('outbound_type', arg_type=get_enum_type(outbound_types))
-        c.argument('enable_pod_security_policy', action='store_true', deprecate_info=c.deprecate(target='--enable-pod-security-policy', hide=True))
-        c.argument('disable_pod_security_policy', action='store_true', is_preview=True)
+        c.argument('enable_pod_security_policy', action='store_true', deprecate_info=c.deprecate(
+            target='--enable-pod-security-policy', hide=True))
+        c.argument('disable_pod_security_policy',
+                   action='store_true', is_preview=True)
         c.argument('enable_pod_identity', action='store_true')
         c.argument('enable_pod_identity_with_kubenet', action='store_true')
         c.argument('disable_pod_identity', action='store_true')
-        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), is_preview=True)
-        c.argument('enable_image_cleaner', action='store_true', is_preview=True)
-        c.argument('disable_image_cleaner', action='store_true', validator=validate_image_cleaner_enable_disable_mutually_exclusive, is_preview=True)
+        c.argument('enable_workload_identity',
+                   arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_image_cleaner',
+                   action='store_true', is_preview=True)
+        c.argument('disable_image_cleaner', action='store_true',
+                   validator=validate_image_cleaner_enable_disable_mutually_exclusive, is_preview=True)
         c.argument('image_cleaner_interval_hours', type=int, is_preview=True)
-        c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
-        c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
+        c.argument('enable_apiserver_vnet_integration',
+                   action='store_true', is_preview=True)
+        c.argument('apiserver_subnet_id',
+                   validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('enable_keda', action='store_true', is_preview=True)
         c.argument('disable_keda', action='store_true', is_preview=True)
-        c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
-        c.argument('disable_node_restriction', action='store_true', is_preview=True, help="disable node restriction for cluster")
-        c.argument('enable_private_cluster', action='store_true', is_preview=True, help='enable private cluster for apiserver vnet integration')
-        c.argument('disable_private_cluster', action='store_true', is_preview=True, help='disable private cluster for apiserver vnet integration')
+        c.argument('enable_node_restriction', action='store_true',
+                   is_preview=True, help="enable node restriction for cluster")
+        c.argument('disable_node_restriction', action='store_true',
+                   is_preview=True, help="disable node restriction for cluster")
+        c.argument('enable_private_cluster', action='store_true', is_preview=True,
+                   help='enable private cluster for apiserver vnet integration')
+        c.argument('disable_private_cluster', action='store_true', is_preview=True,
+                   help='disable private cluster for apiserver vnet integration')
         c.argument('private_dns_zone', is_preview=True)
-        c.argument('enable_azuremonitormetrics', action='store_true', is_preview=True)
-        c.argument('azure_monitor_workspace_resource_id', validator=validate_azuremonitorworkspaceresourceid, is_preview=True)
-        c.argument('ksm_metric_labels_allow_list', validator=validate_ksm_labels, is_preview=True)
-        c.argument('ksm_metric_annotations_allow_list', validator=validate_ksm_annotations, is_preview=True)
-        c.argument('grafana_resource_id', validator=validate_grafanaresourceid, is_preview=True)
-        c.argument('disable_azuremonitormetrics', action='store_true', is_preview=True)
-        c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
-        c.argument('disable_vpa', action='store_true', is_preview=True, help="disable vertical pod autoscaler for cluster")
-        c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
-        c.argument('custom_ca_trust_certificates', options_list=["--custom-ca-trust-certificates", "--ca-certs"], validator=validate_custom_ca_trust_certificates, is_preview=True, help="path to file containing list of new line separated CAs")
+        c.argument('enable_azuremonitormetrics',
+                   action='store_true', is_preview=True)
+        c.argument('azure_monitor_workspace_resource_id',
+                   validator=validate_azuremonitorworkspaceresourceid, is_preview=True)
+        c.argument('ksm_metric_labels_allow_list',
+                   validator=validate_ksm_labels, is_preview=True)
+        c.argument('ksm_metric_annotations_allow_list',
+                   validator=validate_ksm_annotations, is_preview=True)
+        c.argument('grafana_resource_id',
+                   validator=validate_grafanaresourceid, is_preview=True)
+        c.argument('disable_azuremonitormetrics',
+                   action='store_true', is_preview=True)
+        c.argument('enable_vpa', action='store_true', is_preview=True,
+                   help="enable vertical pod autoscaler for cluster")
+        c.argument('disable_vpa', action='store_true', is_preview=True,
+                   help="disable vertical pod autoscaler for cluster")
+        c.argument('cluster_snapshot_id',
+                   validator=validate_cluster_snapshot_id, is_preview=True)
+        c.argument('custom_ca_trust_certificates', options_list=["--custom-ca-trust-certificates", "--ca-certs"],
+                   validator=validate_custom_ca_trust_certificates, is_preview=True, help="path to file containing list of new line separated CAs")
+        c.argument('guardrails_level', validator=validate_guardrails_level, arg_type=get_enum_type(guardrails_levels),
+                   help='The guardrails level, one of ["Off", "Warning", "Enforcement"]')
+        c.argument('guardrails_version', type=str,
+                   help='The guardrails version')
+        c.argument('guardrails_excluded_namespaces', type=str,
+                   help='The list of namespaces to exclude in guardrails. Must be in the format "ns1,ns2". Use "[]" to clear the list')
 
     with self.argument_context('aks upgrade') as c:
-        c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)
-        c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
-        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('kubernetes_version',
+                   completer=get_k8s_upgrades_completion_list)
+        c.argument('cluster_snapshot_id',
+                   validator=validate_cluster_snapshot_id, is_preview=True)
+        c.argument('yes', options_list=[
+                   '--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('aks scale') as c:
-        c.argument('nodepool_name', help='Node pool name, upto 12 alphanumeric characters', validator=validate_nodepool_name)
+        c.argument('nodepool_name', help='Node pool name, upto 12 alphanumeric characters',
+                   validator=validate_nodepool_name)
 
     with self.argument_context('aks nodepool') as c:
         c.argument('cluster_name', help='The cluster name.')
-        c.argument('nodepool_name', options_list=['--nodepool-name', '--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
+        c.argument('nodepool_name', options_list=[
+                   '--nodepool-name', '--name', '-n'], validator=validate_nodepool_name, help='The node pool name.')
 
     with self.argument_context('aks nodepool wait') as c:
-        c.argument('resource_name', options_list=['--cluster-name'], help='The cluster name.')
+        c.argument('resource_name', options_list=[
+                   '--cluster-name'], help='The cluster name.')
         # the option name '--agent-pool-name' is depracated, left for compatibility only
-        c.argument('agent_pool_name', options_list=['--nodepool-name', '--name', '-n', c.deprecate(target='--agent-pool-name', redirect='--nodepool-name', hide=True)], validator=validate_agent_pool_name, help='The node pool name.')
+        c.argument('agent_pool_name', options_list=['--nodepool-name', '--name', '-n', c.deprecate(
+            target='--agent-pool-name', redirect='--nodepool-name', hide=True)], validator=validate_agent_pool_name, help='The node pool name.')
 
     with self.argument_context('aks nodepool add') as c:
-        c.argument('node_vm_size', options_list=['--node-vm-size', '-s'], completer=get_vm_size_completion_list)
+        c.argument('node_vm_size', options_list=[
+                   '--node-vm-size', '-s'], completer=get_vm_size_completion_list)
         c.argument('os_type')
         c.argument('os_sku', arg_type=get_enum_type(node_os_skus))
         c.argument('snapshot_id', validator=validate_snapshot_id)
@@ -539,22 +666,28 @@ def load_arguments(self, _):
         c.argument('pod_subnet_id', validator=validate_pod_subnet_id)
         c.argument('enable_node_public_ip', action='store_true')
         c.argument('node_public_ip_prefix_id')
-        c.argument('enable_cluster_autoscaler', options_list=["--enable-cluster-autoscaler", "-e"], action='store_true')
+        c.argument('enable_cluster_autoscaler', options_list=[
+                   "--enable-cluster-autoscaler", "-e"], action='store_true')
         c.argument('min_count', type=int, validator=validate_nodes_count)
         c.argument('max_count', type=int, validator=validate_nodes_count)
-        c.argument('priority', arg_type=get_enum_type(node_priorities), validator=validate_priority)
-        c.argument('eviction_policy', arg_type=get_enum_type(node_eviction_policies), validator=validate_eviction_policy)
-        c.argument('spot_max_price', type=float, validator=validate_spot_max_price)
+        c.argument('priority', arg_type=get_enum_type(
+            node_priorities), validator=validate_priority)
+        c.argument('eviction_policy', arg_type=get_enum_type(
+            node_eviction_policies), validator=validate_eviction_policy)
+        c.argument('spot_max_price', type=float,
+                   validator=validate_spot_max_price)
         c.argument('labels', nargs='*', validator=validate_nodepool_labels)
         c.argument('tags', tags_type)
         c.argument('node_taints', validator=validate_taints)
-        c.argument('node_osdisk_type', arg_type=get_enum_type(node_os_disk_types))
+        c.argument('node_osdisk_type',
+                   arg_type=get_enum_type(node_os_disk_types))
         c.argument('node_osdisk_size', type=int)
         c.argument('max_surge', validator=validate_max_surge)
         c.argument('mode', arg_type=get_enum_type(node_mode_types))
         c.argument('scale_down_mode', arg_type=get_enum_type(scale_down_modes))
         c.argument('max_pods', type=int, options_list=['--max-pods', '-m'])
-        c.argument('zones', zones_type, options_list=['--zones', '-z'], help='Space-separated list of availability zones where agent nodes will be placed.')
+        c.argument('zones', zones_type, options_list=[
+                   '--zones', '-z'], help='Space-separated list of availability zones where agent nodes will be placed.')
         c.argument('ppg')
         c.argument('enable_encryption_at_host', action='store_true')
         c.argument('enable_ultra_ssd', action='store_true')
@@ -562,17 +695,23 @@ def load_arguments(self, _):
         c.argument('kubelet_config')
         c.argument('linux_os_config')
         c.argument('host_group_id', validator=validate_host_group_id)
-        c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
+        c.argument('gpu_instance_profile',
+                   arg_type=get_enum_type(gpu_instance_profiles))
         # misc
         c.argument('aks_custom_headers')
         # extensions
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
         c.argument('message_of_the_day', validator=validate_message_of_the_day)
-        c.argument('workload_runtime', arg_type=get_enum_type(workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
-        c.argument('enable_custom_ca_trust', action='store_true', validator=validate_enable_custom_ca_trust)
-        c.argument('disable_windows_outbound_nat', action='store_true', validator=validate_disable_windows_outbound_nat)
-        c.argument('allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True)
-        c.argument('asg_ids', validator=validate_application_security_groups, is_preview=True)
+        c.argument('workload_runtime', arg_type=get_enum_type(
+            workload_runtimes), default=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER)
+        c.argument('enable_custom_ca_trust', action='store_true',
+                   validator=validate_enable_custom_ca_trust)
+        c.argument('disable_windows_outbound_nat', action='store_true',
+                   validator=validate_disable_windows_outbound_nat)
+        c.argument('allowed_host_ports',
+                   validator=validate_allowed_host_ports, is_preview=True)
+        c.argument(
+            'asg_ids', validator=validate_application_security_groups, is_preview=True)
         c.argument('node_public_ip_tags', arg_type=tags_type, validator=validate_node_public_ip_tags,
                    help='space-separated tags: key[=value] [key[=value] ...].')
 
@@ -592,15 +731,20 @@ def load_arguments(self, _):
         c.argument('mode', arg_type=get_enum_type(node_mode_types))
         c.argument('scale_down_mode', arg_type=get_enum_type(scale_down_modes))
         # extensions
-        c.argument('enable_custom_ca_trust', action='store_true', validator=validate_enable_custom_ca_trust)
-        c.argument('disable_custom_ca_trust', options_list=['--disable-custom-ca-trust', '--dcat'], action='store_true')
-        c.argument('allowed_host_ports', validator=validate_allowed_host_ports, is_preview=True)
-        c.argument('asg_ids', validator=validate_application_security_groups, is_preview=True)
+        c.argument('enable_custom_ca_trust', action='store_true',
+                   validator=validate_enable_custom_ca_trust)
+        c.argument('disable_custom_ca_trust', options_list=[
+                   '--disable-custom-ca-trust', '--dcat'], action='store_true')
+        c.argument('allowed_host_ports',
+                   validator=validate_allowed_host_ports, is_preview=True)
+        c.argument(
+            'asg_ids', validator=validate_application_security_groups, is_preview=True)
 
     with self.argument_context('aks nodepool upgrade') as c:
         c.argument('max_surge', validator=validate_max_surge)
         c.argument('snapshot_id', validator=validate_snapshot_id)
-        c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('yes', options_list=[
+                   '--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('aks_custom_headers')
 
     with self.argument_context('aks nodepool delete') as c:
@@ -616,15 +760,22 @@ def load_arguments(self, _):
             c.argument('config_name', options_list=[
                        '--name', '-n'], help='The config name.')
             c.argument('config_file', help='The config json file.')
-            c.argument('weekday', help='Weekday on which maintenance can happen. e.g. Monday')
-            c.argument('start_hour', type=int, help='Maintenance start hour of 1 hour window on the weekday. e.g. 1 means 1:00am - 2:00am')
+            c.argument(
+                'weekday', help='Weekday on which maintenance can happen. e.g. Monday')
+            c.argument('start_hour', type=int,
+                       help='Maintenance start hour of 1 hour window on the weekday. e.g. 1 means 1:00am - 2:00am')
             c.argument('schedule_type', arg_type=get_enum_type(schedule_types),
                        help='Schedule type for non-default maintenance configuration.')
-            c.argument('interval_days', type=int, help='The number of days between each set of occurrences for Daily schedule.')
-            c.argument('interval_weeks', type=int, help='The number of weeks between each set of occurrences for Weekly schedule.')
-            c.argument('interval_months', type=int, help='The number of months between each set of occurrences for AbsoluteMonthly or RelativeMonthly schedule.')
-            c.argument('day_of_week', help='Specify on which day of the week the maintenance occurs for Weekly or RelativeMonthly schedule.')
-            c.argument('day_of_month', help='Specify on which date of the month the maintenance occurs for AbsoluteMonthly schedule.')
+            c.argument('interval_days', type=int,
+                       help='The number of days between each set of occurrences for Daily schedule.')
+            c.argument('interval_weeks', type=int,
+                       help='The number of weeks between each set of occurrences for Weekly schedule.')
+            c.argument('interval_months', type=int,
+                       help='The number of months between each set of occurrences for AbsoluteMonthly or RelativeMonthly schedule.')
+            c.argument(
+                'day_of_week', help='Specify on which day of the week the maintenance occurs for Weekly or RelativeMonthly schedule.')
+            c.argument(
+                'day_of_month', help='Specify on which date of the month the maintenance occurs for AbsoluteMonthly schedule.')
             c.argument('week_index', arg_type=get_enum_type(week_indexes),
                        help='Specify on which instance of the weekday specified in --day-of-week the maintenance occurs for RelativeMonthly schedule.')
             c.argument('duration_hours', options_list=['--duration'], type=int,
@@ -668,7 +819,8 @@ def load_arguments(self, _):
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring',
                    arg_type=get_three_state_flag(), is_preview=True)
-        c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_syslog',
+                   arg_type=get_three_state_flag(), is_preview=True)
         c.argument('data_collection_settings', is_preview=True)
         c.argument('dns-zone-resource-id')
 
@@ -699,20 +851,24 @@ def load_arguments(self, _):
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring',
                    arg_type=get_three_state_flag(), is_preview=True)
-        c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_syslog',
+                   arg_type=get_three_state_flag(), is_preview=True)
         c.argument('data_collection_settings', is_preview=True)
         c.argument('dns-zone-resource-id')
 
     with self.argument_context('aks disable-addons') as c:
-        c.argument('addons', options_list=['--addons', '-a'], validator=validate_addons)
+        c.argument('addons', options_list=[
+                   '--addons', '-a'], validator=validate_addons)
 
     with self.argument_context('aks enable-addons') as c:
-        c.argument('addons', options_list=['--addons', '-a'], validator=validate_addons)
+        c.argument('addons', options_list=[
+                   '--addons', '-a'], validator=validate_addons)
         c.argument('subnet_name', options_list=['--subnet-name', '-s'])
         c.argument('enable_sgxquotehelper', action='store_true')
         c.argument('osm_mesh_name')
         c.argument('appgw_name', arg_group='Application Gateway')
-        c.argument('appgw_subnet_prefix', arg_group='Application Gateway', deprecate_info=c.deprecate(redirect='--appgw-subnet-cidr', hide=True))
+        c.argument('appgw_subnet_prefix', arg_group='Application Gateway',
+                   deprecate_info=c.deprecate(redirect='--appgw-subnet-cidr', hide=True))
         c.argument('appgw_subnet_cidr', arg_group='Application Gateway')
         c.argument('appgw_id', arg_group='Application Gateway')
         c.argument('appgw_subnet_id', arg_group='Application Gateway')
@@ -720,8 +876,10 @@ def load_arguments(self, _):
         c.argument('enable_secret_rotation', action='store_true')
         c.argument('rotation_poll_interval')
         c.argument('workspace_resource_id')
-        c.argument('enable_msi_auth_for_monitoring', arg_type=get_three_state_flag(), is_preview=True)
-        c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_msi_auth_for_monitoring',
+                   arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_syslog',
+                   arg_type=get_three_state_flag(), is_preview=True)
         c.argument('data_collection_settings', is_preview=True)
         c.argument('dns-zone-resource-id')
 
@@ -734,7 +892,8 @@ def load_arguments(self, _):
         c.argument('path', options_list=['--file', '-f'], type=file_type, completer=FilesCompleter(),
                    default=os.path.join(os.path.expanduser('~'), '.kube', 'config'))
         c.argument('public_fqdn', default=False, action='store_true')
-        c.argument('credential_format', options_list=['--format'], arg_type=get_enum_type(credential_formats))
+        c.argument('credential_format', options_list=[
+                   '--format'], arg_type=get_enum_type(credential_formats))
 
     with self.argument_context('aks pod-identity') as c:
         c.argument('cluster_name', help='The cluster name.')
@@ -829,11 +988,14 @@ def load_arguments(self, _):
                        '--name', '-n'], required=True, help='The role binding name.')
 
     with self.argument_context('aks trustedaccess rolebinding create') as c:
-        c.argument('roles', help='comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...')
-        c.argument('source_resource_id', options_list=['--source-resource-id', '-s'], help='The source resource id of the binding')
+        c.argument(
+            'roles', help='comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...')
+        c.argument('source_resource_id', options_list=[
+                   '--source-resource-id', '-s'], help='The source resource id of the binding')
 
     with self.argument_context('aks trustedaccess rolebinding update') as c:
-        c.argument('roles', help='comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...')
+        c.argument(
+            'roles', help='comma-separated roles: Microsoft.Demo/samples/reader,Microsoft.Demo/samples/writer,...')
 
 
 def _get_default_install_location(exe_name):
