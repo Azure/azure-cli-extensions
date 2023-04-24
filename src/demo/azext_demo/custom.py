@@ -200,6 +200,7 @@ def redisenterprise_create(cmd,
             "linked_databases": linked_databases,
             "modules": modules,
             "database_name":'default',
+            "no_wait": no_wait,
         })
     )
 

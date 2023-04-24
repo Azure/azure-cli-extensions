@@ -7,21 +7,288 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
-
+from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.commands.parameters import (
-    get_enum_type,
     tags_type,
-    zones_type,
+    get_enum_type,
+    resource_group_name_type,
+    get_location_type
 )
-def load_arguments(self, _):  # pylint: disable=unused-argument
-    with self.argument_context('redisenterprise') as c:
-        c.argument('capacity', type=int, help='The size of the RedisEnterprise cluster. Defaults to 2 or 3 depending on SKU. Valid values are (2, 4, 6, ...) for Enterprise SKUs and (3, 9, 15, ...) for Flash SKUs.', options_list=["--capacity"])
-        c.argument('port', type=int, help='TCP port of the database endpoint. Specified at create time. Defaults to an available port', options_list=["--port"])
-        c.argument('zones', zones_type, options_list=['--zones', '-z'], help='The Availability Zones where this cluster will be deployed.')
-        c.argument('client_protocol', arg_type=get_enum_type(['Encrypted', 'Plaintext']), options_list=['--client-protocol'], help='Specifies whether redis clients can connect using TLS-encrypted or plaintext redis protocols. Default is TLS-encrypted.')
-        c.argument('clustering_policy', arg_type=get_enum_type(['EnterpriseCluster', 'OSSCluster']), options_list=['--clustering-policy'], help='Clustering policy - default is OSSCluster. Specified at create time.')
-        c.argument('eviction_policy', arg_type=get_enum_type(['AllKeysLFU', 'AllKeysLRU','AllKeysRandom', 'NoEviction','VolatileLFU', 'VolatileLRU','VolatileRandom', 'VolatileTTL']), options_list=['--eviction-policy'], help='Redis eviction policy - default is VolatileLRU.')
-        c.argument('minimum_tls_version', arg_type=get_enum_type(['1.0', '1.1','1.2']), options_list=['--minimum-tls-version'], help='The minimum TLS version for the cluster to support.')
-        c.argument('tags', tags_type, options_list=['--tags'], help='Space-separated tags: key[=value] [key[=value] ...]. Use "" to clear existing tags.')
-        c.argument('group_nickname', tags_type, options_list=['--group-nickname'], help='Name for the group of linked database resources')
-    #pass
+
+def load_arguments(self, _):
+
+    with self.argument_context('redisenterprise operation-status show') as c:
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), id_part='name')
+        c.argument('operation_id', type=str, help='The operation\'s unique identifier.', id_part='child_name_1')
+
+    with self.argument_context('redisenterprise list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+
+    with self.argument_context('redisenterprise show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.', id_part='name')
+
+    with self.argument_context('redisenterprise create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.')
+        c.argument('tags', tags_type)
+        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+                   validator=get_default_location_from_resource_group)
+        c.argument('sku', arg_type=get_enum_type(['Enterprise_E10', 'Enterprise_E20', 'Enterprise_E50',
+                                                  'Enterprise_E100', 'EnterpriseFlash_F300', 'EnterpriseFlash_F700',
+                                                  'EnterpriseFlash_F1500']), help='The type of RedisEnterprise cluster '
+                   'to deploy. Possible values: (Enterprise_E10, EnterpriseFlash_F300 etc.)')
+        c.argument('capacity', type=int, help='The size of the RedisEnterprise cluster. Defaults to 2 or 3 depending '
+                   'on SKU. Valid values are (2, 4, 6, ...) for Enterprise SKUs and (3, 9, 15, ...) for Flash SKUs.')
+        c.argument('zones', options_list=['--zones', '-z'], nargs='+', help='The Availability Zones where this cluster '
+                   'will be deployed.')
+        c.argument('minimum_tls_version', arg_type=get_enum_type(['1.0', '1.1', '1.2']), help='The minimum TLS version '
+                   'for the cluster to support, e.g. \'1.2\'')
+        # Add database create arguments
+        c.argument('client_protocol', arg_type=get_enum_type(['Encrypted', 'Plaintext']), help='Specifies whether redis clients '
+                   'can connect using TLS-encrypted or plaintext redis protocols. Default is TLS-encrypted.')
+        c.argument('port', type=int, help='TCP port of the database endpoint. Specified at create time. Defaults to an '
+                   'available port.')
+        c.argument('clustering_policy', arg_type=get_enum_type(['EnterpriseCluster', 'OSSCluster']), help='Clustering policy - default '
+                   'is OSSCluster. Specified at create time.')
+        c.argument('eviction_policy', arg_type=get_enum_type(['AllKeysLFU', 'AllKeysLRU', 'AllKeysRandom',
+                                                              'VolatileLRU', 'VolatileLFU', 'VolatileTTL',
+                                                              'VolatileRandom', 'NoEviction']), help='Redis eviction policy - default '
+                   'is VolatileLRU')
+        c.argument('persistence', action=AddPersistence, nargs='+', help='Persistence settings', is_preview=True)
+        c.argument('modules', action=AddModules, nargs='+', help='Optional set of redis modules to enable in this '
+                   'database - modules can only be added at creation time.')
+        # Add new argument
+        c.argument('no_database', action='store_true', help='Advanced. Do not automatically create a '
+                   'default database. Warning: the cache will not be usable until you create a database.')
+        c.argument('group_nickname', type=str, help='Name for the group of linked database resources', arg_group='Geo '
+                   'Replication')
+        c.argument('linked_databases', action=AddLinkedDatabases, nargs='+', help='List of database resources to link '
+                   'with this database', arg_group='Geo Replication')
+
+    with self.argument_context('redisenterprise update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.', id_part='name')
+        c.argument('sku', arg_type=get_enum_type(['Enterprise_E10', 'Enterprise_E20', 'Enterprise_E50',
+                                                  'Enterprise_E100', 'EnterpriseFlash_F300', 'EnterpriseFlash_F700',
+                                                  'EnterpriseFlash_F1500']), help='The type of RedisEnterprise cluster '
+                   'to deploy. Possible values: (Enterprise_E10, EnterpriseFlash_F300 etc.)')
+        c.argument('capacity', type=int, help='The size of the RedisEnterprise cluster. Defaults to 2 or 3 depending '
+                   'on SKU. Valid values are (2, 4, 6, ...) for Enterprise SKUs and (3, 9, 15, ...) for Flash SKUs.')
+        c.argument('tags', tags_type)
+        c.argument('minimum_tls_version', arg_type=get_enum_type(['1.0', '1.1', '1.2']), help='The minimum TLS version '
+                   'for the cluster to support, e.g. \'1.2\'')
+
+    with self.argument_context('redisenterprise delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.', id_part='name')
+
+    with self.argument_context('redisenterprise wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.', id_part='name')
+
+    with self.argument_context('redisenterprise database list') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.')
+
+    with self.argument_context('redisenterprise database show') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.', id_part='name')
+
+    with self.argument_context('redisenterprise database create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.')
+        c.argument('client_protocol', arg_type=get_enum_type(['Encrypted', 'Plaintext']), help='Specifies whether '
+                   'redis clients can connect using TLS-encrypted or plaintext redis protocols. Default is '
+                   'TLS-encrypted.')
+        c.argument('port', type=int, help='TCP port of the database endpoint. Specified at create time. Defaults to an '
+                   'available port.')
+        c.argument('clustering_policy', arg_type=get_enum_type(['EnterpriseCluster', 'OSSCluster']), help='Clustering '
+                   'policy - default is OSSCluster. Specified at create time.')
+        c.argument('eviction_policy', arg_type=get_enum_type(['AllKeysLFU', 'AllKeysLRU', 'AllKeysRandom',
+                                                              'VolatileLRU', 'VolatileLFU', 'VolatileTTL',
+                                                              'VolatileRandom', 'NoEviction']), help='Redis eviction '
+                   'policy - default is VolatileLRU')
+        c.argument('persistence', action=AddPersistence, nargs='+', help='Persistence settings', is_preview=True)
+        c.argument('modules', action=AddModules, nargs='+', help='Optional set of redis modules to enable in this '
+                   'database - modules can only be added at creation time.')
+        c.argument('group_nickname', type=str, help='Name for the group of linked database resources', arg_group='Geo '
+                   'Replication')
+        c.argument('linked_databases', action=AddLinkedDatabases, nargs='+', help='List of database resources to link '
+                   'with this database', arg_group='Geo Replication')
+
+    with self.argument_context('redisenterprise database update') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.', id_part='name')
+        c.argument('client_protocol', arg_type=get_enum_type(['Encrypted', 'Plaintext']), help='Specifies whether '
+                   'redis clients can connect using TLS-encrypted or plaintext redis protocols. Default is '
+                   'TLS-encrypted.')
+        c.argument('eviction_policy', arg_type=get_enum_type(['AllKeysLFU', 'AllKeysLRU', 'AllKeysRandom',
+                                                              'VolatileLRU', 'VolatileLFU', 'VolatileTTL',
+                                                              'VolatileRandom', 'NoEviction']), help='Redis eviction '
+                   'policy - default is VolatileLRU')
+        c.argument('persistence', action=AddPersistence, nargs='+', help='Persistence settings', is_preview=True)
+        c.argument('group_nickname', type=str, help='Name for the group of linked database resources', arg_group='Geo '
+                   'Replication')
+        c.argument('linked_databases', action=AddLinkedDatabases, nargs='+', help='List of database resources to link '
+                   'with this database', arg_group='Geo Replication')
+        # Update help
+        c.argument('client_protocol', arg_type=get_enum_type(['Encrypted', 'Plaintext']), help='Specifies whether redis clients '
+                   'can connect using TLS-encrypted or plaintext redis protocols.')
+        c.argument('eviction_policy',arg_type=get_enum_type(['AllKeysLFU', 'AllKeysLRU', 'AllKeysRandom',
+                                                              'VolatileLRU', 'VolatileLFU', 'VolatileTTL',
+                                                              'VolatileRandom', 'NoEviction']), help='Redis eviction policy.')
+
+    with self.argument_context('redisenterprise database delete') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.', id_part='name')
+
+    with self.argument_context('redisenterprise database export') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.', id_part='name')
+        c.argument('sas_uri', type=str, help='SAS URI for the target directory to export to')
+
+    with self.argument_context('redisenterprise database force-unlink') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.', id_part='name')
+        c.argument('unlink_ids', nargs='+', help='The resource IDs of the database resources to be unlinked.')
+
+    with self.argument_context('redisenterprise database import') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.', id_part='name')
+        c.argument('sas_uris', nargs='+', help='SAS URIs for the target blobs to import from')
+
+    with self.argument_context('redisenterprise database list-keys') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.')
+
+    with self.argument_context('redisenterprise database regenerate-key') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.', id_part='name')
+        c.argument('key_type', arg_type=get_enum_type(['Primary', 'Secondary']),
+                   help='Which access key to regenerate.')
+
+    with self.argument_context('redisenterprise database wait') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.', id_part='name')
+
+
+import argparse
+from collections import defaultdict
+from knack.util import CLIError
+
+
+class AddPersistence(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        namespace.persistence = action
+
+    def get_action(self, values, option_string):
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+
+            if kl == 'aof-enabled':
+                d['aof_enabled'] = v[0]
+
+            elif kl == 'rdb-enabled':
+                d['rdb_enabled'] = v[0]
+
+            elif kl == 'aof-frequency':
+                d['aof_frequency'] = v[0]
+
+            elif kl == 'rdb-frequency':
+                d['rdb_frequency'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter persistence. All possible keys are: aof-enabled,'
+                    ' rdb-enabled, aof-frequency, rdb-frequency'.format(k)
+                )
+
+        return d
+
+
+class AddModules(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddModules, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+
+            if kl == 'name':
+                d['name'] = v[0]
+
+            elif kl == 'args':
+                d['args'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter modules. All possible keys are: name, args'.format(k)
+                )
+
+        return d
+
+
+class AddLinkedDatabases(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        action = self.get_action(values, option_string)
+        super(AddLinkedDatabases, self).__call__(parser, namespace, action, option_string)
+
+    def get_action(self, values, option_string):
+        try:
+            properties = defaultdict(list)
+            for (k, v) in (x.split('=', 1) for x in values):
+                properties[k].append(v)
+            properties = dict(properties)
+        except ValueError:
+            raise CLIError('usage error: {} [KEY=VALUE ...]'.format(option_string))
+        d = {}
+        for k in properties:
+            kl = k.lower()
+            v = properties[k]
+
+            if kl == 'id':
+                d['id'] = v[0]
+
+            else:
+                raise CLIError(
+                    'Unsupported Key {} is provided for parameter linked-databases. All possible keys are: id'.format(k)
+                )
+
+        return d
