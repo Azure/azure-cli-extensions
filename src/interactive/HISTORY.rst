@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.5.1
++++++
+* integrate with chatgpt
 
 0.5.0
 +++++
