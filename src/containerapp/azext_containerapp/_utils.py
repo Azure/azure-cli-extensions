@@ -1537,7 +1537,10 @@ def create_acrpull_role_assignment(cmd, registry_server, registry_identity=None,
     try:
         acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
     except ResourceNotFound as e:
-        logger.warning(e.args)
+        message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
+                   f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope myContainerRegistryId --role acrpull'. \n"
+                   "You may have to restart the containerapp with 'az containerapp revision restart'.")
+        logger.warning(message)
         return
 
     retries = 10
