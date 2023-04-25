@@ -531,7 +531,7 @@ helps['aks create'] = """
         - name: --guardrails-version
           type: string
           short-summary: The version of Guardrails to use. Default "v1.0.0" Use the ListGuardrailsVersions API to discover available versions
-        - name: --guardrails-excluded-namespaces
+        - name: --guardrails-excluded-ns
           type: string
           short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails
         - name: --enable-asm --enable-azure-service-mesh
@@ -999,7 +999,7 @@ helps['aks update'] = """
         - name: --guardrails-version
           type: string
           short-summary: The version of Guardrails to use. Default "v1.0.0" Use the ListGuardrailsVersions API to discover available versions
-        - name: --guardrails-excluded-namespaces
+        - name: --guardrails-excluded-ns
           type: string
           short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails. Use "[]" to clear a previously non-empty list
     examples:
@@ -1061,12 +1061,12 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-windows-gmsa --gmsa-dns-server "10.240.0.4" --gmsa-root-domain-name "contoso.com"
       - name: Update a existing managed cluster to a managed cluster snapshot.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --cluster-snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedclustersnapshots/mysnapshot1"
-      - name: Update a kubernetes cluster with guardrails set to "Warning"
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --enable-addons azure-policy
-      - name: Update a kubernetes cluster with guardrails set to "Warning" and some namespaces excluded
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --guardrails-excluded-namespaces ns1,ns2 --enable-addons azure-policy
+      - name: Update a kubernetes cluster with guardrails set to "Warning". Assumes azure policy addon is already enabled
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning
+      - name: Update a kubernetes cluster with guardrails set to "Warning" and some namespaces excluded. Assumes azure policy addon is already enabled
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --guardrails-excluded-ns ns1,ns2
       - name: Update a kubernetes cluster to clear any namespaces excluded from guardrails. Assumes azure policy addon is already enabled
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-excluded-namespaces "[]"
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-excluded-ns "[]"
 """
 
 helps['aks kollect'] = """

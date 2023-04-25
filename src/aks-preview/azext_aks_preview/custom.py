@@ -576,7 +576,7 @@ def aks_create(
     # guardrails parameters
     guardrails_level=None,
     guardrails_version=None,
-    guardrails_excluded_namespaces=None,
+    guardrails_excluded_ns=None,
     # azure service mesh
     enable_azure_service_mesh=None,
 ):
@@ -735,7 +735,7 @@ def aks_update(
     # guardrails parameters
     guardrails_level=None,
     guardrails_version=None,
-    guardrails_excluded_namespaces=None,
+    guardrails_excluded_ns=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

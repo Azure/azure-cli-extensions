@@ -276,7 +276,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
     def test_get_guardrails_excluded_namespaces(self):
         ctx1 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"guardrails_excluded_namespaces": None}),
+            AKSManagedClusterParamDict({"guardrails_excluded_ns": None}),
             self.models,
             decorator_mode=DecoratorMode.CREATE
         )
@@ -284,7 +284,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
 
         ctx2 = AKSPreviewManagedClusterContext(
             self.cmd,
-            AKSManagedClusterParamDict({"guardrails_excluded_namespaces": "ns1,ns2"}),
+            AKSManagedClusterParamDict({"guardrails_excluded_ns": "ns1,ns2"}),
             self.models,
             decorator_mode=DecoratorMode.CREATE
         )
@@ -3374,7 +3374,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             {
             "guardrails_level": "Warning",
             "guardrails_version": "v1.0.0",
-            "guardrails_excluded_namespaces": "ns1,ns2"
+            "guardrails_excluded_ns": "ns1,ns2"
             },
             CUSTOM_MGMT_AKS_PREVIEW
         )

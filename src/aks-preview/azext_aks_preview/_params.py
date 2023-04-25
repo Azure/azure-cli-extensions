@@ -477,7 +477,7 @@ def load_arguments(self, _):
                    help='The guardrails level, one of ["Off", "Warning", "Enforcement"]', is_preview=True)
         c.argument('guardrails_version', type=str,
                    help='The guardrails version', is_preview=True)
-        c.argument('guardrails_excluded_namespaces', type=str,
+        c.argument('guardrails_excluded_ns', type=str,
                    help='The list of namespaces to exclude in guardrails. Must be in the format "ns1,ns2". Use "[]" to clear the list',
                    is_preview=True)
 
@@ -626,7 +626,7 @@ def load_arguments(self, _):
                    help='The guardrails level, one of ["Off", "Warning", "Enforcement"]', is_preview=True)
         c.argument('guardrails_version', type=str,
                    help='The guardrails version', is_preview=True)
-        c.argument('guardrails_excluded_namespaces', type=str,
+        c.argument('guardrails_excluded_ns', type=str,
                    help='The list of namespaces to exclude in guardrails. Must be in the format "ns1,ns2". Use "[]" to clear the list',
                    is_preview=True)
 
