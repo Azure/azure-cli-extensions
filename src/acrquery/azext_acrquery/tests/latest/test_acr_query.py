@@ -37,19 +37,18 @@ class AcrQueryTests(ScenarioTest):
         token = self.cmd('acr login -n {registry_name} --expose-token').get_output_in_json()
         self.kwargs['username'] = EMPTY_GUID
         self.kwargs['password'] = token["accessToken"]
+        self.kwargs['query'] = '"Manifests"'
+        self.kwargs['repository_name'] = 'test/new'
 
         self.cmd(
             'acr query -n {registry_name} --repository {repository_name} -q {query} --username {username} --password {password} ',
-            checks=[self.check('count', 1)])
+            checks=[self.check('count', 12)])
 
         # Renew credentials
         self.cmd(
             'acr credential renew -n {registry_name} --password-name {password_name} ')
 
-        # Filter by size
-        self.kwargs['query'] = '"Manifests | where imageSize > 500"'
-        manifests = self.cmd(
-            'acr query -n {registry_name} -q {query}').get_output_in_json()
-
-        for manifest in manifests["data"]:
-            assert manifest["size"] > 500
+        # Filter by size 
+        self.kwargs['query'] = '"Manifests | where imageSize > 100000000"'
+        self.cmd(
+            'acr query -n {registry_name} -q {query}', checks=[self.check('count', 3)])

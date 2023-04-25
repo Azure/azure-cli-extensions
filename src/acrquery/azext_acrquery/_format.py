@@ -13,5 +13,5 @@ logger = get_logger(__name__)
 
 def transform_metadata_output(result):
     return build_table_output(result, [
-        ('Count', 'properties.count'),
+        ('Count', 'count')
     ])

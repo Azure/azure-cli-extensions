@@ -19,6 +19,9 @@ helps['acr query'] = """
         - name: Fetch a single manifest
           text: az acr query -n $MyRegistry -q "Manifests | limit 1"
 
+        - name: Count all manifests in repository $RepositoryName
+          text: az acr query -n $MyRegistry -q "Manifests" -o table
+
         - name: List all manifests in repository $RepositoryName in order of creation date
           text: az acr query -n $MyRegistry --repository $RepositoryName -q "Manifests | order by createdAt desc"
 
