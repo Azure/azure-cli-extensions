@@ -1322,7 +1322,8 @@ def create_containerappsjob(cmd,
                             system_assigned=False,
                             disable_warnings=False,
                             user_assigned=None,
-                            registry_identity=None):
+                            registry_identity=None,
+                            workload_profile_name=None):
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name)
     validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
@@ -1361,6 +1362,9 @@ def create_containerappsjob(cmd,
 
     location = managed_env_info["location"]
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "jobs")
+    
+    if not workload_profile_name and "workloadProfiles" in managed_env_info:
+        workload_profile_name = get_default_workload_profile_name_from_env(cmd, managed_env_info, managed_env_rg)
 
     manualTriggerConfig_def = None
     if trigger_type is not None and trigger_type.lower() == "manual":
@@ -1491,6 +1495,10 @@ def create_containerappsjob(cmd,
     containerappjob_def["properties"]["configuration"] = config_def
     containerappjob_def["properties"]["template"] = template_def
     containerappjob_def["tags"] = tags
+    
+    if workload_profile_name:
+        containerappjob_def["properties"]["workloadProfileName"] = workload_profile_name
+        ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile_name, managed_env_info)
 
     if registry_identity:
         if is_registry_msi_system(registry_identity):
@@ -2201,7 +2209,6 @@ def stop_containerappsjob(cmd, resource_group_name, name, job_execution_name=Non
 
 def executionhistory_containerappsjob(cmd, resource_group_name, name):
     try:
-        print("get execution history")
         executionHistoryList = []
         executionHistory = ContainerAppsJobClient.execution_history(cmd=cmd, resource_group_name=resource_group_name, name=name)
         return executionHistory['value']
