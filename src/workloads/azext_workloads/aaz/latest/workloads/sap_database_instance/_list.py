@@ -19,7 +19,7 @@ class List(AAZCommand):
     """List the Database resources associated with a Virtual Instance for SAP solutions resource.
 
     :example: List workloads sap database instance
-        az workloads sap-database-instance list -g rg --vis-name name
+        az workloads sap-database-instance list -g <Resource-group-name> --vis-name <VIS name>
     """
 
     _aaz_info = {
