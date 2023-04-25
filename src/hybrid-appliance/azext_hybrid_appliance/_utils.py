@@ -104,8 +104,8 @@ def get_api_server_address() -> str:
 def get_services_cidr():
     try:
         services = subprocess.check_output(['microk8s', 'kubectl', 'get', 'svc', '-A', '-o', 'json']).decode()
-    except:
-        raise CLIInternalError("Failed to connect to kubernetes cluster to get services")
+    except Exception as e:
+        raise CLIInternalError("Failed to connect to kubernetes cluster to get services: {}".format(str(e)))
 
     services = json.loads(services)
     # return services
@@ -143,8 +143,8 @@ def set_no_proxy_from_helm_values():
         os.environ["NO_PROXY"] = helmValues["global"]["noProxy"]
     except KeyError:
         pass # The cluster is not behind proxy.
-    except:
-        print("Failed to check if cluster is behind proxy.")
+    except Exception as e:
+        raise CLIInternalError("Failed to check if cluster is behind proxy: {}".format(str(e)))
 
 def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error occured while connecting to the kubernetes cluster: ',
                                  message_for_unauthorized_request='The user does not have required privileges on the kubernetes cluster to deploy Azure Arc enabled Kubernetes agents. Please ensure you have cluster admin privileges on the cluster to onboard.',
