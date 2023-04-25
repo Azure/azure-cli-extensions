@@ -20,10 +20,10 @@ class Delete(AAZCommand):
     """Delete a Virtual Instance for SAP solutions resource and its child resources, that is the associated Central Services Instance, Application Server Instances and Database Instance.
 
     :example: Delete a Virtual Instance for SAP solutions (VIS)
-        az workloads sap-virtual-instance delete -g <Resource_Group_Name> -n <VIS Name> -y
+        az workloads sap-virtual-instance delete -g <Resource_Group_Name> -n <VIS Name>
 
     :example: Remove a Virtual Instance for SAP solutions (VIS) using the Azure resource ID of the VIS
-        az workloads sap-virtual-instance delete --id <ResourceID> -y
+        az workloads sap-virtual-instance delete --id <ResourceID>
     """
 
     _aaz_info = {
