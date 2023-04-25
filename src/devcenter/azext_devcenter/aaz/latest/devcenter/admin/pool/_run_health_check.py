@@ -23,9 +23,9 @@ class RunHealthCheck(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-01-01-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/runhealthchecks", "2023-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/runhealthchecks", "2023-04-01"],
         ]
     }
 
@@ -145,7 +145,7 @@ class RunHealthCheck(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
