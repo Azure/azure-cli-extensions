@@ -25,6 +25,6 @@ helps['acr query'] = """
         - name: Query for all digests signed by $Signature in the repository $RepositoryName
           text: az acr query -n $MyRegistry --repository $RepositoryName -q "Manifests | where annotations['org.cncf.notary.signature.subject'] == $Signature | project createdAt, digest, subject"
 
-        - name: Query for the digests in a registry using a skip token (for results with pagination)
+        - name: Query for the digests in a registry using a skip token and sort by digest (for results with pagination)
           text: az acr query -n $MyRegistry -q "Manifests | project digest | order by digest asc" --skip-token eyAibm8iOiAibHVjayIsICJidXQiOiAibmljZSIsICJ0cnkiOiAiISIgfQ==
 """
