@@ -134,6 +134,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp update', arg_group='Container') as c:
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile', is_preview=True)
+        c.argument('secret_volume_mount', options_list=['--secret-volume-mount'], help="Path to mount all secrets e.g. mnt/secrets", is_preview=True)
 
     with self.argument_context('containerapp scale') as c:
         c.argument('min_replicas', type=int, help="The minimum number of replicas.")

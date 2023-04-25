@@ -376,7 +376,7 @@ def create_containerapp(cmd,
                         user_assigned=None,
                         registry_identity=None,
                         workload_profile_name=None,
-                        secret_volume_mount=None,):
+                        secret_volume_mount=None):
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name)
     validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
@@ -656,7 +656,8 @@ def update_containerapp_logic(cmd,
                               workload_profile_name=None,
                               registry_server=None,
                               registry_user=None,
-                              registry_pass=None):
+                              registry_pass=None,
+                              secret_volume_mount=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     validate_revision_suffix(revision_suffix)
 
@@ -791,6 +792,22 @@ def update_containerapp_logic(cmd,
                             "cpu": cpu,
                             "memory": memory
                         }
+                if secret_volume_mount is not None:
+                    # check if secret volumes exists in this containerapp 
+                    if "volume_mounts" in c and c["volume_mounts"]:
+                        # if volume mount exists update mount path of first volume mount
+                        c["volume_mounts"][0]["mount_path"] = secret_volume_mount
+                    else:
+                        # if no volume mount exists, create a new volume and then mount
+                        volume_def = VolumeModel
+                        volume_mount_def = VolumeMountModel
+                        volume_def["name"] = _generate_secret_volume_name()
+                        volume_def["storageType"] = "Secret"
+
+                        volume_mount_def["volumeName"] = volume_def["name"]
+                        volume_mount_def["mountPath"] = secret_volume_mount
+                        container_def["volumeMounts"] = [volume_mount_def]
+                        new_containerapp["properties"]["template"]["volumes"].append(volume_def)
 
         # If not updating existing container, add as new container
         if not updating_existing_container:
@@ -835,9 +852,22 @@ def update_containerapp_logic(cmd,
                     container_def["args"] = args
             if resources_def is not None:
                 container_def["resources"] = resources_def
+            
+            if secret_volume_mount is not None:
+                # generate a new volume name
+                volume_def = VolumeModel
+                volume_mount_def = VolumeMountModel
+                volume_def["name"] = _generate_secret_volume_name()
+                volume_def["storageType"] = "Secret"
+
+                # mount the volume to the container
+                volume_mount_def["volumeName"] = volume_def["name"]
+                volume_mount_def["mountPath"] = secret_volume_mount
+                container_def["volumeMounts"] = [volume_mount_def]
+                new_containerapp["properties"]["template"]["volumes"].append(volume_def)
 
             new_containerapp["properties"]["template"]["containers"].append(container_def)
-
+        
     # Scale
     if update_map["scale"]:
         new_containerapp["properties"]["template"] = {} if "template" not in new_containerapp["properties"] else new_containerapp["properties"]["template"]
@@ -989,7 +1019,8 @@ def update_containerapp(cmd,
                         args=None,
                         tags=None,
                         workload_profile_name=None,
-                        no_wait=False):
+                        no_wait=False,
+                        secret_volume_mount=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -1016,7 +1047,8 @@ def update_containerapp(cmd,
                                      args=args,
                                      tags=tags,
                                      workload_profile_name=workload_profile_name,
-                                     no_wait=no_wait)
+                                     no_wait=no_wait
+                                     secret_volume_mount=secret_volume_mount)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
