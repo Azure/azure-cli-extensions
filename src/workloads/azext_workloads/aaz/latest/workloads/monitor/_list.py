@@ -18,7 +18,7 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List a list of SAP monitors in the specified resource group.
 
-    :example: Get a list of monitors
+    :example: Get a list of SAP monitors in the specified resource group.
         az workloads monitor list -g <RG-NAME>
     """
 

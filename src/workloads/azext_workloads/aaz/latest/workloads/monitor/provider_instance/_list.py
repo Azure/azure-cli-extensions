@@ -18,7 +18,7 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List a list of provider instances in the specified SAP monitor. The operations returns various properties of each provider instances.
 
-    :example: Get a list of providers
+    :example: Get a list of provider instances in the specified SAP monitor. The operations returns various properties of each provider instances.
         az workloads monitor provider-instance list --monitor-name <monitor-name> -g <RG-NAME>
     """
 

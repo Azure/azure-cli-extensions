@@ -19,7 +19,7 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete a SAP monitor with the specified subscription, resource group, and SAP monitor name.
 
-    :example: Delete a monitor
+    :example: Delete a SAP monitor with the specified subscription, resource group, and SAP monitor name.
         az workloads monitor delete -g <RG-NAME> -n <monitor-name>
     """
 

@@ -18,7 +18,7 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a SAP Landscape Monitor Dashboard for the specified subscription, resource group, and resource name.
 
-    :example: Update a SAP landscape monitor
+    :example: Update a SAP Landscape Monitor Dashboard for the specified subscription, resource group, and resource name
         az workloads monitor sap-landscape-monitor update -g <RG-NAME> --monitor-name <monitor-name> --grouping <grouping-details>
     """
 
