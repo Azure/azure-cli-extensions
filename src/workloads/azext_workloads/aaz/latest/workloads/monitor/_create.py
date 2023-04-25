@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a SAP monitor for the specified subscription, resource group, and resource name.
 
-    :example: Create workloads monitor
-        az workloads monitor create -n monitor-name -g rg --app-location westus --managed-rg-name rg-name
+    :example: Create a new monitor
+        az workloads monitor create -g <rg-name> -n <ams-name> -l <location> --app-location <app-location> --managed-rg-name <mrg-name> --monitor-subnet <subnet> --routing-preference <routing-preference>
     """
 
     _aaz_info = {

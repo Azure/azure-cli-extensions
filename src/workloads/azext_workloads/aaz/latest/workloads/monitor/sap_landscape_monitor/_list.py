@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List configuration values for Single Pane Of Glass for SAP monitor for the specified subscription, resource group, and resource name.
 
-    :example: List workloads monitor sap landscape monitor
-        az workloads monitor sap-landscape-monitor list -g rg --monitor-name name
+    :example: Get a list of SAP landscape monitors
+        az workloads monitor sap-landscape-monitor list -g <RG-NAME> --monitor-name <monitor-name>
     """
 
     _aaz_info = {

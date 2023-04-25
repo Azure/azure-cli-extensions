@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a SAP monitor for the specified subscription, resource group, and resource name.
 
-    :example: Update monitor tags
-        az workloads monitor update -g rg -n monitor-name --tags "{tag:tag1}"
+    :example: Add monitor tags
+        az workloads monitor update -g <Resource-group-name> -n <monitor-name> --tags tag=test tag2=test2
     """
 
     _aaz_info = {

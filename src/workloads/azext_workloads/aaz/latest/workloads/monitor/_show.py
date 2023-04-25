@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Show properties of a SAP monitor for the specified subscription, resource group, and resource name.
 
-    :example: Show wokloads monitor
-        az workloads monitor show -g rg -n monitor-name
+    :example: Get an overview of any monitor
+        az workloads monitor show -g <RG-NAME> -n <monitor-name>
     """
 
     _aaz_info = {

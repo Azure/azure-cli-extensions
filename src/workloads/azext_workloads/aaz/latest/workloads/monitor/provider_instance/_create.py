@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a provider instance for the specified subscription, resource group, SAP monitor name, and resource name.
 
-    :example: Create workloads monitor provider instance
-        az workloads monitor provider-instance create -g rg --mointor-name name -n instance-name --provider-settings "{sapHana:{hostname:name,dbName:db,sqlPort:0000,instanceNumber:00,dbUsername:user,dbPassword:****,sslPreference:ServerCertificate,sslCertificateUri:'https://storageaccount.blob.core.windows.net/containername/filename',sslHostNameInCertificate:xyz.domain.com,sapSid:SID}}"
+    :example: Create a new provider
+        az workloads monitor provider-instance create --monitor-name <monitor-name> -n <provider-instamce-name> -g <RG-NAME> --provider-settings <provider-settings>
     """
 
     _aaz_info = {
