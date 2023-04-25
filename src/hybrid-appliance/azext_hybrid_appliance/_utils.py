@@ -47,17 +47,20 @@ def install_kubectl_client():
         raise CLIInternalError("Unable to install kubectl. Error: ", str(e))
 
 def get_latest_tested_version():
-    response = requests.get("{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name))
-    jsonDict = json.loads(response.content.decode())
-    major, minor = jsonDict["latestTestedMicrok8s"].split('.')
-    return major, minor, jsonDict["kmsImage"]
+    try:
+        response = requests.get("{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name))
+        jsonDict = json.loads(response.content.decode())
+        major, minor = jsonDict["latestTestedMicrok8s"].split('.')
+        return major, minor, jsonDict["kmsImage"]
+    except Exception as e:
+        raise CLIInternalError("Failed to get the latest tested versions: {}".format(str(e)))
 
 def update_kms_version(new_kms_image):
     kms_yaml_file_path = "/etc/kubernetes/manifests/kms.yaml"
     try:
         kms_yaml = yaml.safe_load(open(kms_yaml_file_path))
-    except:
-        raise CLIInternalError("Failed to get the current yaml for the kms pod.")
+    except Exception as e:
+        raise CLIInternalError("Failed to get the current yaml for the kms pod: {}".format(str(e)))
     
     current_kms_image = kms_yaml["spec"]["containers"][0]["image"]
 
@@ -67,15 +70,31 @@ def update_kms_version(new_kms_image):
         kms_yaml["spec"]["containers"][0]["image"] = new_kms_image
         yaml.safe_dump(kms_yaml, open(kms_yaml_file_path, 'w'))
 
-def check_microk8s():
-    statusYaml = subprocess.check_output(['microk8s', 'status', '--format', 'yaml']).decode()
-    status = yaml.safe_load(statusYaml)
-    if not status["microk8s"]["running"]:
-        print(status)
-        print("Microk8s is not running")
-        subprocess.check_call(['microk8s', 'inspect'])
+def check_microk8s(throw_on_subprocess_exception=True):
+    try:
+        statusYaml = subprocess.check_output(['microk8s', 'status', '--format', 'yaml'], stderr=subprocess.STDOUT).decode()
+        status = yaml.safe_load(statusYaml)
+        if not status["microk8s"]["running"]:
+            print(status)
+            print("Microk8s is not running")
+            subprocess.check_call(['microk8s', 'inspect'])
+            return False
+        return True
+    except subprocess.CalledProcessError as e:  
+        if throw_on_subprocess_exception:      
+            raise CLIInternalError("Failed to check the status of microk8s: {}".format(str(e.output)))
         return False
-    return True
+    except Exception as e:
+        if throw_on_subprocess_exception:
+            raise CLIInternalError("Failed to check the status of microk8s: {}.".format(str(e)))
+        return False
+
+def check_if_microk8s_is_installed():
+    try:
+        _ = subprocess.check_output(['microk8s', 'status'])
+        return True
+    except Exception as e:
+        return False
 
 def get_api_server_address() -> str:
     kubeconfig_path = get_kubeconfig_path()
@@ -116,11 +135,8 @@ def get_no_proxy_parameters(no_proxy):
 def set_no_proxy_from_helm_values():
     try:
         helmValuesYaml = subprocess.check_output(['microk8s', 'helm', 'get', 'values', 'azure-arc', '-n', 'azure-arc-release'], stderr=subprocess.STDOUT)
-    except:
-        if "release: not found" in helmValuesYaml:
-            return
-        print("Failed to get helm values for the azure-arc release.")
-        return
+    except Exception as e:
+        raise CLIInternalError("Failed to get helm values for the azure-arc release: {}".format(str(e)))
     
     helmValues = yaml.safe_load(helmValuesYaml)
     try:
@@ -152,17 +168,6 @@ def kubernetes_exception_handler(ex, fault_type, summary, error_message='Error o
         else:
             logger.debug("Kubernetes Exception: " + str(ex))
 
-def check_if_microk8s_is_running():
-    try:
-        output = subprocess.check_output(['microk8s', 'status'], stderr=subprocess.STDOUT)
-    except:
-        return False
-    
-    if output is None or "not running" in output.decode():
-        return False
-
-    return True
-
 def replace_string_in_file(filepath, fileout, replacements: dict):
     f = open(filepath, "rt")
     data = f.read()
@@ -190,6 +195,8 @@ def validate_cluster_resource_group_and_name(azure_clusterconfig_cm, resource_gr
             raise ValidationError("The parameters passed do not correspond to this appliance. Please check the resource group name and appliance name")
     except KeyError:
         raise KeyError("The required entries were not found in the config map")
+    except Exception as ex:
+        raise CLIInternalError("Failed to validate the configmap: {}".format(str(ex)))
         
 
 def troubleshoot_connectedk8s(resource_group_name, name, filepath):

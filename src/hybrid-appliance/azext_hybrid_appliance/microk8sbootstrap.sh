@@ -10,11 +10,11 @@ cp ~/.azure/cliextensions/hybrid-appliance/azext_hybrid_appliance/encryptionconf
 cp ~/.azure/hybrid_appliance/kms.yaml /etc/kubernetes/manifests
 
 sudo snap install microk8s --channel=$MICROK8S_VERSION --classic
-sudo microk8s start
-sudo microk8s config > $KUBECONFIG_PATH
-sudo microk8s enable dns
-sudo microk8s enable rbac
-sudo microk8s enable metrics-server
+microk8s start
+microk8s config > $KUBECONFIG_PATH
+microk8s enable dns
+microk8s enable rbac
+microk8s enable metrics-server
 echo "Microk8s cluster provisioned"
 
 if grep -q "encryption-provider-config" "/var/snap/microk8s/current/args/kube-apiserver"; then

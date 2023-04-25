@@ -29,6 +29,7 @@ Arc_Onboarding_Failed = "Arc onboarding of k8s cluster failed"
 Endpoints_Reachability_Validation_Failed = "Endpoints reachability validation failed"
 Upgrade_RG_Cluster_Name_Conflict = 'The provided cluster name and rg correspond to different cluster'
 MicroK8s_Upgrade_Failed = "MicroK8s cluster upgrade failed"
+ConfigMap_Not_Found = "Arc config map not found on the cluster"
 Entries_Not_Found_In_ConfigMap = "Name and RG entries not found in configmap"
 Unsupported_K8s_Version = "K8s version greater than latest supported"
 Failed_To_Change_Telemetry_Push_Interval = "Failed_To_Change_Telemetry_Push_Interval"
@@ -38,6 +39,3 @@ Resource_Already_Exists_Fault_Type = "There already exists a resource with the g
 Connectedk8s_Troubleshoot_Failed = "Failed to run connectedk8s troubleshoot"
 No_Storage_Space_Available_Fault_Type = "No storage available on the host machine"
 Diagnostics_Folder_Creation_Failed_Fault_Type = "Failed to create diagnostics folder"
-
-cc_arm_id_format = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Kubernetes/connectedClusters/{}"
-kms_image_path="cckkanukolluacr.azurecr.io/kms-test:v3" # Change this before merging

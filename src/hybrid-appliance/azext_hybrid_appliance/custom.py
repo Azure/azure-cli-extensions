@@ -65,7 +65,7 @@ def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connected
     if endpoints_reachability_check is False:
         telemetry.set_exception(exception="Pre-requisite endpoints reachability validation failed", fault_type=consts.Endpoints_Reachability_Validation_Failed, summary="Pre-requisite endpoints reachability validation failed")
     # Install specific version of connectedk8s
-    get_default_cli().invoke(['extension', 'add', '-n', 'connectedk8s', '--version', '1.3.14'])
+    get_default_cli().invoke(['extension', 'add', '-n', 'connectedk8s', '--version', '1.3.15'])
     
     if validate_connectedk8s_exists:
         try:
@@ -95,6 +95,9 @@ def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connected
         print("All pre-requisite validations have passed successfully")
 
 def create_hybrid_appliance(cmd, resource_group_name, name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None, tags=None):
+    if utils.check_microk8s(throw_on_subprocess_exception=False):
+        raise ValidationError("There is already a microk8s cluster running on this machine. Please remove the existing cluster before attempting to create a new one.")
+
     kubeconfig_path = utils.get_kubeconfig_path()
     kubectl_client_location = utils.install_kubectl_client()
     
@@ -105,11 +108,8 @@ def create_hybrid_appliance(cmd, resource_group_name, name, correlation_id=None,
     os.makedirs(out_path, exist_ok=True)
     latestMajorVersion, latestMinorVersion, kmsImage = utils.get_latest_tested_version()
 
-    subscription_id = get_subscription_id(cmd.cli_ctx)
-    cc_arm_id = consts.cc_arm_id_format.format(subscription_id, resource_group_name, name)
-
     try:
-        kms_replacements = {"__KUBECONFIG_PATH__": kubeconfig_path, "__CC_ARM_ID__": cc_arm_id, "__KMS_IMAGE_PATH__": kmsImage}
+        kms_replacements = {"__KUBECONFIG_PATH__": kubeconfig_path, "__CC_NAME__": name, "__KMS_IMAGE_PATH__": kmsImage}
         utils.replace_string_in_file(os.path.join(current_path, "kms.yaml"), os.path.join(out_path, "kms.yaml"), kms_replacements)
         
         utils.replace_string_in_file(os.path.join(current_path, "kubeletconfig.yaml"), os.path.join(out_path, "kubeletconfig.yaml"), {"__STATIC_POD_PATH__": "/etc/kubernetes/manifests"})
@@ -234,15 +234,17 @@ def upgrade_hybrid_appliance(resource_group_name, name):
 def delete_hybrid_appliance(resource_group_name, name):
     delete_cc = True
     kubeconfig_path = utils.get_kubeconfig_path()
-    if not utils.check_if_microk8s_is_running():
+    if not utils.check_if_microk8s_is_installed():
         telemetry.set_exception()
         raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
     
     try:
         azure_clusterconfig_cm = utils.get_azure_clusterconfig_cm()
+        if azure_clusterconfig_cm is None:
+            raise Exception("Configmap not found on the kubernetes cluster")
     except Exception as ex:
-        telemetry.set_exception(exception=e, fault_type=consts.ConfigMap_Not_Found, summary="Config Map 'azure-clusterconfig' not found on the k8s cluster")
-        raise CLIInternalError("Unable to find the required config map on the kubernetes cluster. Please delete the appliance and create it again.")
+        telemetry.set_exception(exception=ex, fault_type=consts.ConfigMap_Not_Found, summary="Config Map 'azure-clusterconfig' not found on the k8s cluster")
+        logger.warning("The required config map could not be found on the kubernetes cluster.")
         delete_cc = False
 
     if delete_cc:
@@ -261,7 +263,7 @@ def delete_hybrid_appliance(resource_group_name, name):
         if delete_result != 0:
             logger.error("Failed to delete connected cluster resource. The kubernetes cluster will be deleted. To delete the connected cluster resource, please visit the resource group in the Azure portal and delete the corresponding Azure resource.")
     else:
-        logger.warning("The connected cluster resource will not be deleted. The kubernetes cluster will be deleted. To delete the connected cluster resource, please visit the resource group in the Azure portal and delete the corresponding Azure resource.")
+        logger.warning("The connected cluster resource will not be deleted. The kubernetes cluster will be deleted. To check if the connected cluster resource has been deleted, please visit the resource group in the Azure portal and check if the resource is visible.")
 
     process = subprocess.Popen(['snap', 'remove', 'microk8s'])
     process.wait()
@@ -278,7 +280,7 @@ def collect_logs(resource_group_name, name):
         logger.warning("One or more of the required prechecks have failed. Please ensure all the pre-requisites are met.")
 
     troubleshoot_connectedk8s = True
-    if not utils.check_if_microk8s_is_running():
+    if not utils.check_if_microk8s_is_installed():
         telemetry.set_exception()
         raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
     
