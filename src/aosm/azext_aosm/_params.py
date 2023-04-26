@@ -7,13 +7,14 @@
 from argcomplete.completers import FilesCompleter
 from azure.cli.core import AzCommandsLoader
 from knack.arguments import CLIArgumentType
+from ._constants import VNF, CNF, NSD
 
 
 def load_arguments(self: AzCommandsLoader, _):
 
     from azure.cli.core.commands.parameters import file_type, get_enum_type, get_three_state_flag
 
-    definition_type = get_enum_type(["vnf", "cnf", "nsd"])
+    definition_type = get_enum_type([VNF, CNF, NSD])
 
     # Set the argument context so these options are only available when this specific command
     # is called.
