@@ -94,16 +94,28 @@ def process_loaded_yaml(yaml_containerapp):
             # Update (PATCH) ignores them so it's okay to remove them as well
             yaml_containerapp['identity']['userAssignedIdentities'][identity] = {}
 
-    nested_properties = ["provisioningState", "managedEnvironmentId", "environmentId", "latestRevisionName", "latestRevisionFqdn",
-                         "customDomainVerificationId", "configuration", "template", "outboundIPAddresses"]
+    nested_properties = ["provisioningState",
+                         "managedEnvironmentId",
+                         "environmentId",
+                         "latestRevisionName",
+                         "latestRevisionFqdn",
+                         "customDomainVerificationId",
+                         "configuration",
+                         "template",
+                         "outboundIPAddresses",
+                         "workloadProfileName",
+                         "latestReadyRevisionName",
+                         "eventStreamEndpoint"]
     for nested_property in nested_properties:
         tmp = yaml_containerapp.get(nested_property)
-        if tmp:
+        if nested_property in yaml_containerapp:
             yaml_containerapp['properties'][nested_property] = tmp
             del yaml_containerapp[nested_property]
 
     if "managedEnvironmentId" in yaml_containerapp['properties']:
-        yaml_containerapp['properties']["environmentId"] = yaml_containerapp['properties']['managedEnvironmentId']
+        tmp = yaml_containerapp['properties']['managedEnvironmentId']
+        if tmp:
+            yaml_containerapp['properties']["environmentId"] = tmp
         del yaml_containerapp['properties']['managedEnvironmentId']
 
     return yaml_containerapp
@@ -215,7 +227,7 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
         r = ContainerAppClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
 
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+        if not no_wait and "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting":
             logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(
                 name, resource_group_name
             ))
@@ -266,6 +278,10 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
     # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
     _remove_additional_attributes(containerapp_def)
     _remove_readonly_attributes(containerapp_def)
+
+    # Remove extra workloadProfileName introduced in deserialization
+    if "workloadProfileName" in containerapp_def:
+        del containerapp_def["workloadProfileName"]
 
     # Validate managed environment
     if not containerapp_def["properties"].get('environmentId'):
@@ -628,10 +644,10 @@ def update_containerapp_logic(cmd,
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     validate_revision_suffix(revision_suffix)
 
-    # Validate that max_replicas is set to 0-30
+    # Validate that max_replicas is set to 0-1000
     if max_replicas is not None:
-        if max_replicas < 1 or max_replicas > 30:
-            raise ArgumentUsageError('--max-replicas must be in the range [1,30]')
+        if max_replicas < 1 or max_replicas > 1000:
+            raise ArgumentUsageError('--max-replicas must be in the range [1,1000]')
 
     if yaml:
         if image or min_replicas or max_replicas or\
@@ -684,6 +700,20 @@ def update_containerapp_logic(cmd,
 
     if workload_profile_name:
         new_containerapp["properties"]["workloadProfileName"] = workload_profile_name
+
+        parsed_managed_env = parse_resource_id(containerapp_def["properties"]["managedEnvironmentId"])
+        managed_env_name = parsed_managed_env['name']
+        managed_env_rg = parsed_managed_env['resource_group']
+        managed_env_info = None
+        try:
+            managed_env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=managed_env_rg, name=managed_env_name)
+        except:
+            pass
+
+        if not managed_env_info:
+            raise ValidationError("Error parsing the managed environment '{}' from the specified containerapp".format(managed_env_name))
+
+        ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile_name, managed_env_info)
 
     # Containers
     if update_map["container"]:
@@ -911,7 +941,7 @@ def update_containerapp_logic(cmd,
         r = ContainerAppClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=new_containerapp, no_wait=no_wait)
 
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+        if not no_wait and "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting":
             logger.warning('Containerapp update in progress. Please monitor the update using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
 
         return r
@@ -2829,7 +2859,7 @@ def containerapp_up(cmd,
                             _get_registry_details, _create_github_action, _set_up_defaults, up_output,
                             check_env_name_on_rg, get_token, _validate_containerapp_name, _has_dockerfile)
     from ._github_oauth import cache_github_token
-    HELLOWORLD = "mcr.microsoft.com/azuredocs/containerapps-helloworld"
+    HELLOWORLD = "mcr.microsoft.com/k8se/quickstart"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
     _validate_containerapp_name(name)
@@ -2912,9 +2942,9 @@ def create_managed_certificate(cmd, name, resource_group_name, hostname, validat
         cert_name = generate_randomized_managed_cert_name(hostname, resource_group_name)
         if not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
             cert_name = None
-    certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method)
+    certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method.upper())
     try:
-        r = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, True, validation_method == 'TXT')
+        r = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, True, validation_method.upper() == 'TXT')
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -3139,13 +3169,13 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
                     cert_name = random_name
             logger.warning("Creating managed certificate '%s' for %s.\nIt may take up to 20 minutes to create and issue a managed certificate.", cert_name, standardized_hostname)
 
-            validation = validation_method
+            validation = validation_method.upper()
             while validation not in ["TXT", "CNAME", "HTTP"]:
-                validation = prompt_str('\nPlease choose one of the following domain validation methods: TXT, CNAME, HTTP\nYour answer: ')
+                validation = prompt_str('\nPlease choose one of the following domain validation methods: TXT, CNAME, HTTP\nYour answer: ').upper()
 
-            certificate_envelop = prepare_managed_certificate_envelop(cmd, env_name, resource_group_name, standardized_hostname, validation_method, location)
+            certificate_envelop = prepare_managed_certificate_envelop(cmd, env_name, resource_group_name, standardized_hostname, validation, location)
             try:
-                managed_cert = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, env_name, cert_name, certificate_envelop, False, validation_method == 'TXT')
+                managed_cert = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, env_name, cert_name, certificate_envelop, False, validation == 'TXT')
             except Exception as e:
                 handle_raw_exception(e)
             cert_id = managed_cert["id"]
@@ -3972,7 +4002,7 @@ def remove_openid_connect_provider_settings(cmd, resource_group_name, name, prov
 
 def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=None,
                        runtime_version=None, config_file_path=None, unauthenticated_client_action=None,
-                       redirect_provider=None, enable_token_store=None, require_https=None,
+                       redirect_provider=None, require_https=None,
                        proxy_convention=None, proxy_custom_host_header=None,
                        proxy_custom_proto_header=None, excluded_paths=None):
     from ._utils import set_field_in_auth_settings, update_http_settings_in_auth_settings
@@ -4011,13 +4041,6 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
         if "globalValidation" not in existing_auth:
             existing_auth["globalValidation"] = {}
         existing_auth["globalValidation"]["redirectToProvider"] = redirect_provider
-
-    if enable_token_store is not None:
-        if "login" not in existing_auth:
-            existing_auth["login"] = {}
-        if "tokenStore" not in existing_auth["login"]:
-            existing_auth["login"]["tokenStore"] = {}
-        existing_auth["login"]["tokenStore"]["enabled"] = enable_token_store
 
     if excluded_paths is not None:
         if "globalValidation" not in existing_auth:

@@ -89,6 +89,18 @@ def fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster,
         connected_cluster.last_connectivity_time = last_connectivity_time_str
         managed_identity_certificate_expiration_time_str = str(connected_cluster.managed_identity_certificate_expiration_time)
         connected_cluster.managed_identity_certificate_expiration_time = managed_identity_certificate_expiration_time_str
+
+        # Formatting system_data
+        created_at = str(connected_cluster.system_data.created_at)
+        connected_cluster.system_data.created_at = created_at
+        last_modified_at = str(connected_cluster.system_data.last_modified_at)
+        connected_cluster.system_data.last_modified_at = last_modified_at
+        system_data = str(connected_cluster.system_data)
+        connected_cluster.system_data = system_data
+        # Formatting identity
+        identity = str(connected_cluster.identity)
+        connected_cluster.identity = identity
+
         if storage_space_available:
             # If storage space is available then only store the connected cluster resource
             with open(connected_cluster_resource_file_path, 'w+') as cc:

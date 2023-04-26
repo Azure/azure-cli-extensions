@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.1
+++++++
+* Support User-Assigned Managed Identity and Service Principal.
+
 0.3.0
 ++++++
 * Add extension information in API request.

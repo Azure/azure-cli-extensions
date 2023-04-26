@@ -220,5 +220,4 @@ class TunnelServer:
         return self.local_port
 
     def set_host_name(self, hostname):
-        logger.debug("hereeeeeee")
         self.host_name = hostname

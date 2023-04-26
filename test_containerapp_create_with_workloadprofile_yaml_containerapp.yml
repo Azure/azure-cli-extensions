@@ -1,0 +1,40 @@
+
+            location: northcentralus
+            type: Microsoft.App/containerApps
+            tags:
+                tagname: value
+            properties:
+              managedEnvironmentId: /subscriptions/8785504e-5157-426d-84f4-7bd35958cd63/resourceGroups/clitest.rgeiy52m3cwiravfthe34vv3gyt5jcia2pcufbgdwz5wid63a22kkok5sn3pikksujs/providers/Microsoft.App/managedEnvironments/enviuo24itriec32fn4e6r7g
+              workloadProfileName: my-e16
+              configuration:
+                activeRevisionsMode: Multiple
+                ingress:
+                  external: true
+                  allowInsecure: false
+                  targetPort: 80
+                  traffic:
+                    - latestRevision: true
+                      weight: 100
+                  transport: Auto
+                  ipSecurityRestrictions:
+                    - name: name
+                      ipAddressRange: "1.1.1.1/10"
+                      action: "Allow"
+              template:
+                revisionSuffix: myrevision
+                containers:
+                  - image: nginx
+                    name: nginx
+                    env:
+                      - name: HTTP_PORT
+                        value: 80
+                    command:
+                      - npm
+                      - start
+                    resources:
+                      cpu: 3
+                      memory: 5Gi
+                scale:
+                  minReplicas: 1
+                  maxReplicas: 3
+            

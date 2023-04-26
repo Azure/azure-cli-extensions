@@ -3,8 +3,23 @@
 Release History
 ===============
 Upcoming
-+++++++
+++++++
+* 'az containerapp create': support for assigning acrpull permissions to managed identity in cross-subscription; warn when ACR resourceNotFound, do not block the process
+* 'az containerapp hostname bind': fix bug where the prompt for validation method didn't take value in
+* Make --validation-method parameter case insensitive for 'az containerapp hostname bind' and 'az containerapp env certificate create'
+* 'az containerapp auth update': remove unsupported argument --enable-token-store
+* 'az containerapp update'/'az containerapp env update': fix --no-wait
+* 'az containerapp update': fix the --yaml update behavior to respect the empty array in patch-request
+
+0.3.28
+++++++
+* 'az containerapp secret set': fix help typo
+* 'az containerapp secret set': add more format validation for key vault secrets
+* 'az containerapp up': fix --location comparison logic
+* 'az containerapp update': change --max-replicas limit
 * Add CLI support for containerapp ingress sticky-sessions'
+* Change quickstart image
+* 'az containerapp create': fix yaml not detecting workloadProfileName
 
 0.3.27
 ++++++
@@ -12,7 +27,7 @@ Upcoming
 * 'az containerapp secret show': add support for secrets from Key Vault
 
 0.3.26
-+++++++
+++++++
 * 'az containerapp exec': fix bugs for consumption workload based environment
 * 'az containerapp env create': fix bug causing --enable-workload-profiles to require an argument
 

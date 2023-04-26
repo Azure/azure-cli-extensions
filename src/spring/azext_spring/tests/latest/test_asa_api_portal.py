@@ -2,29 +2,71 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-
+import json
+import unittest
 from azure.cli.testsdk import (ScenarioTest, record_only)
+from azure.cli.testsdk.reverse_dependency import (
+    get_dummy_cli,
+)
+from azure.cli.testsdk.preparers import (
+    RoleBasedServicePrincipalPreparer
+)
+from .custom_preparers import SpringPreparer, SpringResourceGroupPreparer, SpringSubResourceWrapper
+from .custom_dev_setting_constant import SpringTestEnvironmentEnum
+from ...vendored_sdks.appplatform.v2023_03_01_preview import models
+from ...api_portal import (api_portal_custom_domain_update, api_portal_custom_domain_unbind)
+try:
+    import unittest.mock as mock
+except ImportError:
+    from unittest import mock
+
+from azure.cli.core.mock import DummyCli
+from azure.cli.core import AzCommandsLoader
+from azure.cli.core.commands import AzCliCommand
+
+
+free_mock_client = mock.MagicMock()
 
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
+
+class ApiPortalWrapper(SpringSubResourceWrapper):
+    def __init__(self,
+                 resource_group_parameter_name='resource_group',
+                 spring_parameter_name='spring'):
+        super(ApiPortalWrapper, self).__init__()
+        self.cli_ctx = get_dummy_cli()
+        self.resource_group_parameter_name = resource_group_parameter_name
+        self.spring_parameter_name = spring_parameter_name
+
+    def create_resource(self, *_, **kwargs):
+        self.resource_group = self._get_resource_group(**kwargs)
+        self.spring = self._get_spring(**kwargs)
+    
+    def remove_resource(self, *_, **__):
+        self.live_only_execute(self.cli_ctx, 'spring api-portal delete -g {}  -s {} --yes'.format(self.resource_group, self.spring))
+        self.live_only_execute(self.cli_ctx, 'spring api-portal create -g {}  -s {}'.format(self.resource_group, self.spring))
 
 
 @record_only()
 class ApiPortalTest(ScenarioTest):
 
-    def test_api_portal(self):
+    @RoleBasedServicePrincipalPreparer()
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
+    @ApiPortalWrapper()
+    def test_api_portal(self, resource_group, spring, sp_name, sp_password):
         
         self.kwargs.update({
-            'serviceName': 'tx-enterprise',
-            'rg': 'tx',
-            'cert': 'cli-unittest',
-            'domain': 'api-portal-cli.asc-test.net',
-            'thumbprint': 'ef16ce1a35ecd6b7a9d4e546a5b1d480b38f3e5d'
+            'serviceName': spring,
+            'rg': resource_group,
+            'clientId': sp_name,
+            'secret': sp_password
         })
 
         self.cmd('spring api-portal update -g {rg} -s {serviceName} '
                  '--assign-endpoint true --https-only true --instance-count 1 '
-                 '--client-id * --client-secret * --issuer-uri https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0 --scope "openid,profile,email"', checks=[
+                 '--client-id {clientId} --client-secret {secret} --issuer-uri https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0 --scope "openid,profile,email"', checks=[
             self.check('properties.public', True),
             self.check('properties.httpsOnly', True),
             self.check('sku.capacity', 1),
@@ -49,32 +91,93 @@ class ApiPortalTest(ScenarioTest):
             self.check('properties.provisioningState', "Succeeded")
         ])
 
-        self.cmd('spring api-portal delete -g {rg} -s {serviceName} --yes')
 
-        self.cmd('spring api-portal create -g {rg} -s {serviceName}', checks=[
-            self.check('properties.public', False),
-            self.check('properties.provisioningState', "Succeeded")
-        ])
+def _get_test_cmd():
+    cli_ctx = DummyCli()
+    cli_ctx.data['subscription_id'] = '00000000-0000-0000-0000-000000000000'
+    loader = AzCommandsLoader(cli_ctx, resource_type='Microsoft.AppPlatform')
+    cmd = AzCliCommand(loader, 'test', None)
+    cmd.command_kwargs = {'resource_type': 'Microsoft.AppPlatform'}
+    cmd.cli_ctx = cli_ctx
+    return cmd
 
-        self.cmd('spring certificate show --name {cert} -g {rg} -s {serviceName}', checks=[
-            self.check('name', '{cert}')
-        ])
 
-        self.cmd('spring api-portal custom-domain bind --domain-name {domain} -g {rg} -s {serviceName}', checks=[
-            self.check('name', '{domain}')
-        ])
+def _get_basic_mock_client(*_):
+    return mock.MagicMock()
 
-        self.cmd('spring api-portal custom-domain show --domain-name {domain} -g {rg} -s {serviceName}', checks=[
-            self.check('name', '{domain}')
-        ])
 
-        result = self.cmd('spring api-portal custom-domain list -g {rg} -s {serviceName}').get_output_in_json()
-        self.assertTrue(len(result) > 0)
+class ApiPortalUnitTest(unittest.TestCase):
 
-        self.cmd('spring api-portal custom-domain update --domain-name {domain} --certificate {cert} -g {rg} -s {serviceName}', checks=[
-            self.check('name', '{domain}'),
-            self.check('properties.thumbprint', '{thumbprint}')
-        ])
+    def _execute(self, method, cmd, client, *kwargs):
+        client = client or _get_basic_mock_client()
+        method(cmd, client, *kwargs)
+        self.custom_domain_request = client.api_portal_custom_domains.begin_create_or_update.call_args_list
+        self.created_resource = self.created_alv_request[0][0][3] if self.created_alv_request else None
+        self.dev_tool_portal_request = client.dev_tool_portals.begin_create_or_update.call_args_list
+        self.dev_tool_portal = self.dev_tool_portal_request[0][0][3] if self.dev_tool_portal_request else None
+        self.deleted = client.application_live_views.begin_delete.call_args_list is not None
 
-        self.cmd('spring api-portal custom-domain unbind --domain-name {domain} -g {rg} -s {serviceName}')
-        self.cmd('spring api-portal custom-domain show --domain-name {domain} -g {rg} -s {serviceName}', expect_failure=True)
+    def test_custom_domain(self):
+        client = _get_basic_mock_client()
+        api_portal_custom_domain_update(_get_test_cmd(),
+                                        client,
+                                        'rg',
+                                        'asa',
+                                        'my-domain.microsoft.com')
+        args = client.api_portal_custom_domains.begin_create_or_update.call_args_list
+        self.assertEqual(1, len(args)) # one call
+        self.assertEqual(5, len(args[0][0])) # 5 parameters
+        self.assertEqual(('rg', 'asa', 'default', 'my-domain.microsoft.com'), args[0][0][0:4])
+        resource = args[0][0][4]
+        self.assertIsNone(resource.properties.thumbprint)
+
+
+    def test_custom_domain_with_cert(self):
+        def _get_cert(*_, **__):
+            resp = models.CertificateResource(
+                properties=models.CertificateProperties()
+            )
+            resp.properties.thumbprint = 'my-thumbprint'
+            return resp
+
+        client = _get_basic_mock_client()
+        client.certificates.get = _get_cert
+        api_portal_custom_domain_update(_get_test_cmd(),
+                                        client,
+                                        'rg',
+                                        'asa',
+                                        'my-domain.microsoft.com',
+                                        'my-cert')
+        args = client.api_portal_custom_domains.begin_create_or_update.call_args_list
+        self.assertEqual(1, len(args)) # one call
+        self.assertEqual(5, len(args[0][0])) # 5 parameters
+        self.assertEqual(('rg', 'asa', 'default', 'my-domain.microsoft.com'), args[0][0][0:4])
+        resource = args[0][0][4]
+        self.assertEqual('my-thumbprint', resource.properties.thumbprint)
+
+    def test_custom_domain_with_invalid_cert(self):
+        def _get_cert(*_, **__):
+            raise RuntimeError('error')
+
+        client = _get_basic_mock_client()
+        client.certificates.get = _get_cert
+        self.assertRaises(RuntimeError,
+                          api_portal_custom_domain_update,
+                          _get_test_cmd(),
+                          client,
+                          'rg',
+                          'asa',
+                          'my-domain.microsoft.com',
+                          'my-cert')
+    
+    def test_custom_domain_unbind(self):
+        client = _get_basic_mock_client()
+        api_portal_custom_domain_unbind(_get_test_cmd(),
+                                        client,
+                                        'rg',
+                                        'asa',
+                                        'my-domain.microsoft.com')
+        args = client.api_portal_custom_domains.begin_delete.call_args_list
+        self.assertEqual(1, len(args)) # one call
+        self.assertEqual(4, len(args[0][0])) # 5 parameters
+        self.assertEqual(('rg', 'asa', 'default', 'my-domain.microsoft.com'), args[0][0])
