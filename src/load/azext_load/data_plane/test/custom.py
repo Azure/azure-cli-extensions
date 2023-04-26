@@ -20,7 +20,9 @@ def create_or_update_test(
 ):
     from azext_load.data_plane.client_factory import admin_data_plane_client
 
-    client = admin_data_plane_client(cmd.cli_ctx)
+    credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
+    endpoint = get_load_test_resource_endpoint(credential, load_test_resource, resource_group=resource_group, subscription_id=subscription_id)
+    client = admin_data_plane_client(cmd.cli_ctx, subscription=subscription_id, endpoint=endpoint, credential=credential)
     if load_test_config_file is not None:
         # exception handling for incorrect filepath or name
         file = open(load_test_config_file)
