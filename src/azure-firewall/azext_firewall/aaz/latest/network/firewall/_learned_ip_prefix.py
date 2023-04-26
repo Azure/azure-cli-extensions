@@ -13,9 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network firewall learned-ip-prefix",
+    is_preview=True,
 )
 class LearnedIpPrefix(AAZCommand):
     """Retrieves a list of all IP prefixes that azure firewall has learned to not SNAT.
+
+    :example: List Learned IP Prefixes
+        az network firewall learned-ip-prefix -g MyResourceGroup -n MyFirewall
     """
 
     _aaz_info = {

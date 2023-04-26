@@ -38,7 +38,6 @@ class AzureFirewallScenario(ScenarioTest):
         ])
         self.cmd('network firewall show -g {rg} -n {af}')
         self.cmd('network firewall list -g {rg}')
-        # self.cmd('network firewall learned-ip-prefix -g {rg} -n {af}')
         self.cmd('network firewall delete -g {rg} -n {af}')
 
     @ResourceGroupPreparer(name_prefix="cli_test_firewall_with_additional_log_", location="westus")
@@ -1031,7 +1030,7 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd("extension add -n virtual-wan")
         self.cmd("network vwan create -n {vwan} -g {rg} --type Standard")
-        vhub = self.cmd('network vhub create -n {vhub} -g {rg} --vwan {vwan}  --address-prefix 10.0.0.0/24 -l westus --sku Standard').get_output_in_json()
+        vhub = self.cmd('network vhub create -n {vhub} -g {rg} --vwan {vwan} --address-prefix 10.0.0.0/24 -l westus --sku Standard').get_output_in_json()
         self.kwargs['route_server_id'] = vhub['id']
 
         self.cmd("network firewall create -n {firewall_name} -g {rg} -l eastus2euap --route-server-id {route_server_id}",
