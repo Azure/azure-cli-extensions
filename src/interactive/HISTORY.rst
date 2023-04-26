@@ -14,7 +14,6 @@ Release History
 * Add value completion mechanism for param value in scenarios
 * Support searching ability for scenarios
 * Optimize param completion mechanism to recommend one parameter at a time
-* Fix some small bugs
 * Remove README.rst and modified setup file
 * Import styled text print from azure-cli-core.style
 
