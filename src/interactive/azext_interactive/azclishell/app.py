@@ -12,8 +12,9 @@ import os
 import re
 import subprocess
 import sys
-from threading import Thread
+import time
 
+from threading import Thread
 from six.moves import configparser
 from knack.log import get_logger
 from knack.util import CLIError
@@ -21,6 +22,10 @@ from azure.cli.core._profile import _SUBSCRIPTION_NAME, Profile
 from azure.cli.core._session import ACCOUNT, CONFIG, SESSION
 from azure.cli.core.api import get_config_dir
 from azure.cli.core.util import handle_exception
+# stylized output
+from azure.cli.core.style import print_styled_text, Style
+# progress bar
+from azure.cli.core.commands.progress import IndeterminateProgressBar
 
 # pylint: disable=import-error
 import jmespath
@@ -47,8 +52,8 @@ from . import telemetry
 from .recommendation import Recommender, _show_details_for_e2e_scenario, gen_command_in_scenario
 from .scenario_suggest import ScenarioAutoSuggest
 from .threads import LoadCommandTableThread
-from .util import get_window_dim, parse_quotes, get_os_clear_screen_word
-
+from .util import get_window_dim, parse_quotes, get_os_clear_screen_word, get_yes_or_no_option, select_option
+from .scenario_search import SearchThread, show_search_item
 
 NOTIFICATIONS = ""
 PART_SCREEN_EXAMPLE = .3
@@ -80,6 +85,16 @@ def space_toolbar(settings_items, empty_space):
 
     empty_space = empty_space[len(NOTIFICATIONS) + len(settings) + 1:]
     return settings, empty_space
+
+
+def whether_continue_module_loading():
+    """ whether continue loading the command table, return True/False """
+    step_msg = [(Style.PRIMARY, "\nDo you want to continue loading?"), (Style.SECONDARY, "(y/n)\n"),
+                (Style.PRIMARY,
+                 "If you choose n, it will start the shell immediately,"
+                 "but it may cause unknown errors due to incomplete module loading.\n")]
+    continue_loading = get_yes_or_no_option(step_msg)
+    return continue_loading
 
 
 # pylint: disable=too-many-instance-attributes
@@ -151,11 +166,12 @@ class AzInteractiveShell(object):
             self.config.firsttime()
 
         if not self.config.has_feedback() and frequency_heuristic(self):
-            print("\n\nAny comments or concerns? You can use the \'feedback\' command!" +
+            print("\nAny comments or concerns? You can use the \'feedback\' command!" +
                   " We would greatly appreciate it.\n")
-
-        print("\nA new Recommender is added which can make the completion ability more intelligent and provide the scenario completion!\n"
-              "If you don't want to enable this feature, you can use 'az config set interactive.enable_recommender=False' to disable it.\n")
+        if self.cli_ctx.config.getboolean("interactive", "enable_recommender", fallback=True):
+            print(
+                "\nA new Recommender is added which can make the completion ability more intelligent and provide the scenario completion!\n"
+                "If you want to disable this feature, you can use 'az config set interactive.enable_recommender=False' to disable it.\n")
 
         self.cli_ctx.data["az_interactive_active"] = True
         self.run()
@@ -222,7 +238,7 @@ class AzInteractiveShell(object):
         scenarios = self.recommender.get_scenarios() or []
         scenarios_rec_info = "Scenario Recommendation: "
         for idx, s in enumerate(scenarios):
-            idx_display = f'[{idx+1}]'
+            idx_display = f'[{idx + 1}]'
             scenario_desc = f'{s["scenario"]}'
             command_size = f'{len(s["nextCommandSet"])} Commands'
             scenarios_rec_info += f'\n {idx_display} {scenario_desc} ({command_size})'
@@ -236,8 +252,8 @@ class AzInteractiveShell(object):
 
         for i, _ in list(enumerate(list_examples)):
             if len(list_examples[i]) > 1:
-                examples_with_index.append("[" + str(i + 1) + "] " + list_examples[i][0] +
-                                           list_examples[i][1])
+                examples_with_index.append("[" + str(i + 1) + "] " + list_examples[i][0] + "\n" +
+                                           list_examples[i][1] + "\n")
 
         example = "".join(exam for exam in examples_with_index)
         num_newline = example.count('\n')
@@ -305,6 +321,7 @@ class AzInteractiveShell(object):
             "[F2]Defaults",
             "[F3]Keys",
             "[Space]Predict",
+            "[Ctrl+C]Clear Screen",
             "[Ctrl+D]Quit",
             tool_val
         ]
@@ -503,7 +520,7 @@ class AzInteractiveShell(object):
                 else:
                     if len(answer.split()) > 1:
                         start_index += 1
-                        cmd += " " + answer.split()[-1] + " " +\
+                        cmd += " " + answer.split()[-1] + " " + \
                                u' '.join(text.split()[start_index:start_index + 1])
             self.completer.enable_scenario_recommender(True)
             example_cli.exit()
@@ -519,11 +536,11 @@ class AzInteractiveShell(object):
         # e.g. :: 1  => `selected_option='1'`
         selected_option = text.partition(SELECT_SYMBOL['example'])[2].strip()
         try:
-            selected_option = int(selected_option) - 1
+            selected_option = int(selected_option)
         except ValueError:
             print("An Integer should follow the colon", file=self.output)
             return
-        if 0 <= selected_option < len(self.recommender.get_scenarios() or []):
+        if 0 <= selected_option <= len(self.recommender.get_scenarios() or []):
             scenario = self.recommender.get_scenarios()[selected_option]
             self.recommender.feedback_scenario(selected_option, scenario)
         else:
@@ -552,6 +569,9 @@ class AzInteractiveShell(object):
             initial_document=Document(scenario.get('reason') or scenario.get('scenario') or 'Running a E2E Scenario. ')
         )
         quit_scenario = False
+        # give notice to users that they can skip a command or quit the scenario
+        print_styled_text([(Style.WARNING, '\nYou can use CTRL C to skip a command of the scenario, '
+                                           'and CTRL D to exit the scenario.')])
         for nx_cmd, sample in gen_command_in_scenario(scenario, file=self.output):
             auto_suggest.update(sample)
             retry = True
@@ -575,6 +595,8 @@ class AzInteractiveShell(object):
                 if not document.text:
                     continue
                 cmd = document.text
+                # Update customized parameter value map
+                auto_suggest.update_customized_cached_param_map(cmd)
                 self.history.append(cmd)
                 # Prefetch the next recommendation using current executing command
                 self.recommender.update_executing(cmd, feedback=False)
@@ -594,7 +616,58 @@ class AzInteractiveShell(object):
         example_cli.exit()
         del example_cli
 
-    # pylint: disable=too-many-statements
+    def handle_search(self, text):
+        """ parses for the scenario search """
+        # If the user's input text is "/ connect a momgodb", we extract the keyword "connect a mongodb" from it
+        keywords = text.partition(SELECT_SYMBOL['search'])[2].strip()
+        if not keywords:
+            print_styled_text([(Style.WARNING, 'Please input search keywords')])
+            return
+        # Max time wait for the search thread to finish
+        prompt_timeout_limit = 10
+        already_prompted = False
+        start_time = time.time()
+        self.recommender.cur_thread = SearchThread(self.recommender.cli_ctx, keywords,
+                                                   self.recommender.recommendation_path,
+                                                   self.recommender.executing_command,
+                                                   self.recommender.on_prepared_callback)
+        self.recommender.cur_thread.start()
+        # Wait for the search thread to finish
+        while self.recommender.cur_thread.is_alive():
+            try:
+                time.sleep(0.1)
+                if self.recommender.cur_thread.result:
+                    break
+            except (KeyboardInterrupt, ValueError):
+                # Catch CTRL + C to quit the search thread
+                break
+        if self.recommender.cur_thread.result is not None:
+            results = self.recommender.cur_thread.result
+            # If the result is a string, it means the search thread has encountered an error
+            if type(results) is str:
+                print_styled_text([(Style.WARNING, results)])
+                self.recommender.cur_thread.result = []
+                return
+            if len(results) == 0:
+                print_styled_text([(Style.WARNING, "We currently can't find the scenario you need. \n"
+                                                   "You can try to change the search keywords or "
+                                                   "submit an issue to ask for the scenario you need.")])
+                # -1 means no result
+                self.recommender.feedback_search("-1", keywords)
+            else:
+                show_search_item(results)
+
+                option_msg = [(Style.ACTION, " ? "), (Style.PRIMARY, "Please select your option "),
+                              (Style.SECONDARY, "(if none, enter 0)"), (Style.PRIMARY, ": ")]
+                option = select_option(option_msg, min_option=0, max_option=len(results), default_option=-1)
+                if option == 0:
+                    # 0 means no selection
+                    self.recommender.feedback_search("0", keywords)
+                if option > 0:
+                    scenario = results[option - 1]
+                    self.recommender.feedback_search(option, keywords, scenario=scenario)
+                    self.scenario_repl(scenario)
+
     def _special_cases(self, cmd, outside):
         break_flag = False
         continue_flag = False
@@ -639,6 +712,9 @@ class AzInteractiveShell(object):
                 pass
         elif cmd.startswith(SELECT_SYMBOL['example']):
             self.handle_scenario(cmd)
+            continue_flag = True
+        elif cmd.strip().startswith(SELECT_SYMBOL['search']):
+            self.handle_search(cmd)
             continue_flag = True
         elif SELECT_SYMBOL['example'] in cmd:
             cmd, continue_flag = self.handle_example(cmd, continue_flag)
@@ -693,6 +769,7 @@ class AzInteractiveShell(object):
                     escaped_symbol = re.escape(query_symbol)
                     # regex captures query symbol and all characters following it in the argument
                     return json.dumps(re.sub(r'%s.*' % escaped_symbol, jmespath_query, arg))
+
                 cmd_base = ' '.join(map(sub_result, args))
                 self.cli_execute(cmd_base)
             continue_flag = True
@@ -809,14 +886,53 @@ class AzInteractiveShell(object):
         self.cli_ctx.progress_controller.init_progress(ShellProgressView())
         return self.cli_ctx.progress_controller
 
+    def load_command_table(self):
+        """ loads the command table """
+        # initialize some variables
+        # whether the customer has been prompted to choose continue loading
+        # unable to use continue_loading to check this because the customer may choose to continue loading
+        already_prompted = False
+        continue_loading = True
+        # load command table
+        self.command_table_thread = LoadCommandTableThread(self.restart_completer, self)
+        self.command_table_thread.start()
+        self.command_table_thread.start_time = time.time()
+        print_styled_text([(Style.ACTION, "Loading command table... Expected time around 1 minute.")])
+        progress_bar = IndeterminateProgressBar(cli_ctx=self.cli_ctx, message="Loading command table")
+        progress_bar.begin()
+
+        # still loading commands, show the time of loading
+        while self.command_table_thread.is_alive():
+            try:
+                time_spent_on_loading = time.time() - self.command_table_thread.start_time
+                progress_bar = IndeterminateProgressBar(cli_ctx=self.cli_ctx,
+                                                        message="Already spent {} seconds on loading.".format(
+                                                            round(time_spent_on_loading, 1)))
+                progress_bar.update_progress()
+                time.sleep(0.1)
+                # setup how long to wait before prompting the customer to continue loading
+                # whether the loading time is too long(>150s)
+                prompt_timeout_limit = 150
+            except KeyboardInterrupt:
+                # if the customer presses Ctrl+C, break the loading loop
+                continue_loading = whether_continue_module_loading()
+            if time_spent_on_loading > prompt_timeout_limit and not already_prompted:
+                print_styled_text([(Style.WARNING,
+                                    '\nLoading command table takes too long, please contact the Azure CLI team for help.')])
+                continue_loading = whether_continue_module_loading()
+                already_prompted = True
+            # if the customer chooses not to continue loading, break the loading loop
+            if not continue_loading:
+                break
+        progress_bar.stop()
+
     def run(self):
         """ starts the REPL """
+        self.load_command_table()
+        # init customized processing bar
         from .progress import ShellProgressView
         self.cli_ctx.get_progress_controller().init_progress(ShellProgressView())
         self.cli_ctx.get_progress_controller = self.progress_patch
-
-        self.command_table_thread = LoadCommandTableThread(self.restart_completer, self)
-        self.command_table_thread.start()
 
         from .configuration import SHELL_HELP
         self.cli.buffers['symbols'].reset(
@@ -839,11 +955,16 @@ class AzInteractiveShell(object):
 
             except AttributeError:
                 # when the user pressed Control D
+                # IDEA: Create learning mode, automatically create temp-resource-group when initialized and put all resources in this temp-resource-group automatically;
+                # IDEA: Automatically delete the whole temp-resource-group when the user logs out or when no operation is invoked for one hour.
+                # TODO: prompt a notice to ask if the user wants to delete all the resources created
                 break
             except (KeyboardInterrupt, ValueError):
                 # CTRL C
+                # Clear the Screen and refresh interface
+                cmd = CLEAR_WORD
                 self.set_prompt()
-                continue
+                subprocess.Popen(cmd, shell=True).communicate()
             else:
                 self.history.append(text)
                 b_flag, c_flag, outside, cmd = self._special_cases(cmd, outside)
@@ -868,6 +989,7 @@ class AzInteractiveShell(object):
                     else:
                         telemetry.set_success()
                     # Update execution result of previous command, fetch recommendation if command failed
-                    self.recommender.update_exec_result(self.last_exit_code, telemetry.get_error_info()['result_summary'])
+                    self.recommender.update_exec_result(self.last_exit_code,
+                                                        telemetry.get_error_info()['result_summary'])
                     telemetry.flush()
         telemetry.conclude()

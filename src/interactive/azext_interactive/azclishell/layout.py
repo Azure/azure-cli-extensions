@@ -218,7 +218,7 @@ def get_height(cli):
 def get_lexers(main_lex, exam_lex, tool_lex, scenario_lex):
     """ gets all the lexer wrappers """
     if not main_lex:
-        return None, None, None
+        return None, None, None, None
     lexer = None
     if main_lex:
         if issubclass(main_lex, PromptLex):
