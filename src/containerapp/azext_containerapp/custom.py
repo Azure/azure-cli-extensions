@@ -704,7 +704,7 @@ def update_containerapp_logic(cmd,
 
     update_map = {}
     update_map['scale'] = min_replicas or max_replicas or scale_rule_name
-    update_map['container'] = image or container_name or set_env_vars is not None or remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None
+    update_map['container'] = image or container_name or set_env_vars is not None or remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None or secret_volume_mount is not None
     update_map['ingress'] = ingress or target_port
     update_map['registry'] = registry_server or registry_user or registry_pass
 
@@ -793,11 +793,8 @@ def update_containerapp_logic(cmd,
                             "memory": memory
                         }
                 if secret_volume_mount is not None:
-                    # check if secret volumes exists in this containerapp 
-                    if "volume_mounts" in c and c["volume_mounts"]:
-                        # if volume mount exists update mount path of first volume mount
-                        c["volume_mounts"][0]["mount_path"] = secret_volume_mount
-                    else:
+                    new_containerapp["properties"]["template"]["volumes"] = containerapp_def["properties"]["template"]["volumes"]
+                    if "volumeMounts" not in c or not c["volumeMounts"]:
                         # if no volume mount exists, create a new volume and then mount
                         volume_def = VolumeModel
                         volume_mount_def = VolumeMountModel
@@ -806,8 +803,24 @@ def update_containerapp_logic(cmd,
 
                         volume_mount_def["volumeName"] = volume_def["name"]
                         volume_mount_def["mountPath"] = secret_volume_mount
-                        container_def["volumeMounts"] = [volume_mount_def]
-                        new_containerapp["properties"]["template"]["volumes"].append(volume_def)
+
+                        if "volumes" not in new_containerapp["properties"]["template"]:
+                            new_containerapp["properties"]["template"]["volumes"] = [volume_def]
+                        else:
+                            new_containerapp["properties"]["template"]["volumes"].append(volume_def)
+                        c["volumeMounts"] = volume_mount_def
+                    else:
+                        if len(c["volumeMounts"]) > 1:
+                            raise ValidationError("Usage error: --secret-volume-mount can only be used with a container that has a single volume mount, to define multiple volumes and mounts please use --yaml")
+                        else:
+                            # check that the only volume is of type secret
+                            volume_name = c["volumeMounts"][0]["volumeName"]
+                            for v in new_containerapp["properties"]["template"]["volumes"]:
+                                if v["name"].lower() == volume_name.lower():
+                                    if v["storageType"] != "Secret":
+                                        raise ValidationError("Usage error: --secret-volume-mount can only be used to update volume mounts with volumes of type secret. To update other types of volumes please use --yaml")
+                                    break
+                            c["volumeMounts"][0]["mountPath"] = secret_volume_mount
 
         # If not updating existing container, add as new container
         if not updating_existing_container:
@@ -852,8 +865,8 @@ def update_containerapp_logic(cmd,
                     container_def["args"] = args
             if resources_def is not None:
                 container_def["resources"] = resources_def
-            
             if secret_volume_mount is not None:
+                new_containerapp["properties"]["template"]["volumes"] = containerapp_def["properties"]["template"]["volumes"]
                 # generate a new volume name
                 volume_def = VolumeModel
                 volume_mount_def = VolumeMountModel
@@ -864,10 +877,12 @@ def update_containerapp_logic(cmd,
                 volume_mount_def["volumeName"] = volume_def["name"]
                 volume_mount_def["mountPath"] = secret_volume_mount
                 container_def["volumeMounts"] = [volume_mount_def]
-                new_containerapp["properties"]["template"]["volumes"].append(volume_def)
+                if "volumes" not in new_containerapp["properties"]["template"]:
+                    new_containerapp["properties"]["template"]["volumes"] = [volume_def]
+                else:
+                    new_containerapp["properties"]["template"]["volumes"].append(volume_def)
 
             new_containerapp["properties"]["template"]["containers"].append(container_def)
-        
     # Scale
     if update_map["scale"]:
         new_containerapp["properties"]["template"] = {} if "template" not in new_containerapp["properties"] else new_containerapp["properties"]["template"]
@@ -1047,7 +1062,7 @@ def update_containerapp(cmd,
                                      args=args,
                                      tags=tags,
                                      workload_profile_name=workload_profile_name,
-                                     no_wait=no_wait
+                                     no_wait=no_wait,
                                      secret_volume_mount=secret_volume_mount)
 
 
