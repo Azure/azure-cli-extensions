@@ -60,7 +60,7 @@ services:
         compose_text = """
 services:
   foo:
-    image: mcr.microsoft.com/azuredocs/containerapps-helloworld:latest
+    image: mcr.microsoft.com/k8se/quickstart:latest
     ports: 8080:80
 """
         compose_file_name = f"{self._testMethodName}_compose.yml"

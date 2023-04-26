@@ -886,10 +886,10 @@ helps['containerapp secret set'] = """
     examples:
     - name: Add secrets to a container app.
       text: |
-          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MySecretName1=MySecretValue1 MySecretName2=keyvaultref:http://example.vault.azure.net/secret/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
+          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MySecretName1=MySecretValue1 MySecretName2=keyvaultref:https://example.vault.azure.net/secrets/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
     - name: Update a secret.
       text: |
-          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue MyExistingSecretName2=keyvaultref:https://example.vault.azure.net/secret/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
+          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue MyExistingSecretName2=keyvaultref:https://example.vault.azure.net/secrets/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
 """
 
 helps['containerapp github-action'] = """

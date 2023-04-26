@@ -107,6 +107,12 @@ class Update(AAZCommand):
             nullable=True,
             enum={"Inbound": "Inbound", "Outbound": "Outbound"},
         )
+        _args_schema.email_addresses = AAZListArg(
+            options=["--email-addresses"],
+            arg_group="Properties",
+            help="Outbound rules email address format.",
+            nullable=True,
+        )
         _args_schema.fqdn = AAZListArg(
             options=["--fqdn"],
             arg_group="Properties",
@@ -119,6 +125,12 @@ class Update(AAZCommand):
             help="Inbound rule specified by the perimeter id.",
             nullable=True,
         )
+        _args_schema.phone_numbers = AAZListArg(
+            options=["--phone-numbers"],
+            arg_group="Properties",
+            help="Outbound rules phone number format.",
+            nullable=True,
+        )
         _args_schema.subscriptions = AAZListArg(
             options=["--subscriptions"],
             arg_group="Properties",
@@ -128,6 +140,11 @@ class Update(AAZCommand):
 
         address_prefixes = cls._args_schema.address_prefixes
         address_prefixes.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        email_addresses = cls._args_schema.email_addresses
+        email_addresses.Element = AAZStrArg(
             nullable=True,
         )
 
@@ -148,6 +165,11 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        phone_numbers = cls._args_schema.phone_numbers
+        phone_numbers.Element = AAZStrArg(
+            nullable=True,
+        )
+
         subscriptions = cls._args_schema.subscriptions
         subscriptions.Element = AAZObjectArg(
             nullable=True,
@@ -162,10 +184,30 @@ class Update(AAZCommand):
         return cls._args_schema
 
     def _execute_operations(self):
+        self.pre_operations()
         self.NspAccessRulesGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
         self.NspAccessRulesCreateOrUpdate(ctx=self.ctx)()
+        self.post_operations()
+
+    @register_callback
+    def pre_operations(self):
+        pass
+
+    @register_callback
+    def post_operations(self):
+        pass
+
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -258,7 +300,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_nsp_access_rule_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_nsp_access_rule_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -361,7 +403,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_nsp_access_rule_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_nsp_access_rule_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -385,13 +427,19 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("addressPrefixes", AAZListType, ".address_prefixes")
                 properties.set_prop("direction", AAZStrType, ".direction")
+                properties.set_prop("emailAddresses", AAZListType, ".email_addresses")
                 properties.set_prop("fullyQualifiedDomainNames", AAZListType, ".fqdn")
                 properties.set_prop("networkSecurityPerimeters", AAZListType, ".nsp")
+                properties.set_prop("phoneNumbers", AAZListType, ".phone_numbers")
                 properties.set_prop("subscriptions", AAZListType, ".subscriptions")
 
             address_prefixes = _builder.get(".properties.addressPrefixes")
             if address_prefixes is not None:
                 address_prefixes.set_elements(AAZStrType, ".")
+
+            email_addresses = _builder.get(".properties.emailAddresses")
+            if email_addresses is not None:
+                email_addresses.set_elements(AAZStrType, ".")
 
             fully_qualified_domain_names = _builder.get(".properties.fullyQualifiedDomainNames")
             if fully_qualified_domain_names is not None:
@@ -404,6 +452,10 @@ class Update(AAZCommand):
             _elements = _builder.get(".properties.networkSecurityPerimeters[]")
             if _elements is not None:
                 _elements.set_prop("id", AAZStrType, ".id")
+
+            phone_numbers = _builder.get(".properties.phoneNumbers")
+            if phone_numbers is not None:
+                phone_numbers.set_elements(AAZStrType, ".")
 
             subscriptions = _builder.get(".properties.subscriptions")
             if subscriptions is not None:
@@ -428,85 +480,99 @@ class Update(AAZCommand):
             )
 
 
-_schema_nsp_access_rule_read = None
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    _schema_nsp_access_rule_read = None
 
-def _build_schema_nsp_access_rule_read(_schema):
-    global _schema_nsp_access_rule_read
-    if _schema_nsp_access_rule_read is not None:
-        _schema.id = _schema_nsp_access_rule_read.id
-        _schema.location = _schema_nsp_access_rule_read.location
-        _schema.name = _schema_nsp_access_rule_read.name
-        _schema.properties = _schema_nsp_access_rule_read.properties
-        _schema.tags = _schema_nsp_access_rule_read.tags
-        _schema.type = _schema_nsp_access_rule_read.type
-        return
+    @classmethod
+    def _build_schema_nsp_access_rule_read(cls, _schema):
+        if cls._schema_nsp_access_rule_read is not None:
+            _schema.id = cls._schema_nsp_access_rule_read.id
+            _schema.location = cls._schema_nsp_access_rule_read.location
+            _schema.name = cls._schema_nsp_access_rule_read.name
+            _schema.properties = cls._schema_nsp_access_rule_read.properties
+            _schema.tags = cls._schema_nsp_access_rule_read.tags
+            _schema.type = cls._schema_nsp_access_rule_read.type
+            return
 
-    _schema_nsp_access_rule_read = AAZObjectType()
+        cls._schema_nsp_access_rule_read = _schema_nsp_access_rule_read = AAZObjectType()
 
-    nsp_access_rule_read = _schema_nsp_access_rule_read
-    nsp_access_rule_read.id = AAZStrType(
-        flags={"read_only": True},
-    )
-    nsp_access_rule_read.location = AAZStrType()
-    nsp_access_rule_read.name = AAZStrType()
-    nsp_access_rule_read.properties = AAZObjectType()
-    nsp_access_rule_read.tags = AAZDictType()
-    nsp_access_rule_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        nsp_access_rule_read = _schema_nsp_access_rule_read
+        nsp_access_rule_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        nsp_access_rule_read.location = AAZStrType()
+        nsp_access_rule_read.name = AAZStrType()
+        nsp_access_rule_read.properties = AAZObjectType()
+        nsp_access_rule_read.tags = AAZDictType()
+        nsp_access_rule_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-    properties = _schema_nsp_access_rule_read.properties
-    properties.address_prefixes = AAZListType(
-        serialized_name="addressPrefixes",
-    )
-    properties.direction = AAZStrType()
-    properties.fully_qualified_domain_names = AAZListType(
-        serialized_name="fullyQualifiedDomainNames",
-    )
-    properties.network_security_perimeters = AAZListType(
-        serialized_name="networkSecurityPerimeters",
-    )
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
-    properties.subscriptions = AAZListType()
+        properties = _schema_nsp_access_rule_read.properties
+        properties.address_prefixes = AAZListType(
+            serialized_name="addressPrefixes",
+        )
+        properties.direction = AAZStrType()
+        properties.email_addresses = AAZListType(
+            serialized_name="emailAddresses",
+        )
+        properties.fully_qualified_domain_names = AAZListType(
+            serialized_name="fullyQualifiedDomainNames",
+        )
+        properties.network_security_perimeters = AAZListType(
+            serialized_name="networkSecurityPerimeters",
+        )
+        properties.phone_numbers = AAZListType(
+            serialized_name="phoneNumbers",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.subscriptions = AAZListType()
 
-    address_prefixes = _schema_nsp_access_rule_read.properties.address_prefixes
-    address_prefixes.Element = AAZStrType()
+        address_prefixes = _schema_nsp_access_rule_read.properties.address_prefixes
+        address_prefixes.Element = AAZStrType()
 
-    fully_qualified_domain_names = _schema_nsp_access_rule_read.properties.fully_qualified_domain_names
-    fully_qualified_domain_names.Element = AAZStrType()
+        email_addresses = _schema_nsp_access_rule_read.properties.email_addresses
+        email_addresses.Element = AAZStrType()
 
-    network_security_perimeters = _schema_nsp_access_rule_read.properties.network_security_perimeters
-    network_security_perimeters.Element = AAZObjectType()
+        fully_qualified_domain_names = _schema_nsp_access_rule_read.properties.fully_qualified_domain_names
+        fully_qualified_domain_names.Element = AAZStrType()
 
-    _element = _schema_nsp_access_rule_read.properties.network_security_perimeters.Element
-    _element.id = AAZStrType()
-    _element.location = AAZStrType(
-        flags={"read_only": True},
-    )
-    _element.perimeter_guid = AAZStrType(
-        serialized_name="perimeterGuid",
-        flags={"read_only": True},
-    )
+        network_security_perimeters = _schema_nsp_access_rule_read.properties.network_security_perimeters
+        network_security_perimeters.Element = AAZObjectType()
 
-    subscriptions = _schema_nsp_access_rule_read.properties.subscriptions
-    subscriptions.Element = AAZObjectType()
+        _element = _schema_nsp_access_rule_read.properties.network_security_perimeters.Element
+        _element.id = AAZStrType()
+        _element.location = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.perimeter_guid = AAZStrType(
+            serialized_name="perimeterGuid",
+            flags={"read_only": True},
+        )
 
-    _element = _schema_nsp_access_rule_read.properties.subscriptions.Element
-    _element.id = AAZStrType()
+        phone_numbers = _schema_nsp_access_rule_read.properties.phone_numbers
+        phone_numbers.Element = AAZStrType()
 
-    tags = _schema_nsp_access_rule_read.tags
-    tags.Element = AAZStrType()
+        subscriptions = _schema_nsp_access_rule_read.properties.subscriptions
+        subscriptions.Element = AAZObjectType()
 
-    _schema.id = _schema_nsp_access_rule_read.id
-    _schema.location = _schema_nsp_access_rule_read.location
-    _schema.name = _schema_nsp_access_rule_read.name
-    _schema.properties = _schema_nsp_access_rule_read.properties
-    _schema.tags = _schema_nsp_access_rule_read.tags
-    _schema.type = _schema_nsp_access_rule_read.type
+        _element = _schema_nsp_access_rule_read.properties.subscriptions.Element
+        _element.id = AAZStrType()
+
+        tags = _schema_nsp_access_rule_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.id = cls._schema_nsp_access_rule_read.id
+        _schema.location = cls._schema_nsp_access_rule_read.location
+        _schema.name = cls._schema_nsp_access_rule_read.name
+        _schema.properties = cls._schema_nsp_access_rule_read.properties
+        _schema.tags = cls._schema_nsp_access_rule_read.tags
+        _schema.type = cls._schema_nsp_access_rule_read.type
 
 
 __all__ = ["Update"]
