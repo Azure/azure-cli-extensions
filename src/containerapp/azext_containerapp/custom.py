@@ -1299,7 +1299,7 @@ def create_containerappsjob(cmd,
                             trigger_type=None,
                             replica_timeout=None,
                             replica_retry_limit=None,
-                            replica_count=None,
+                            replica_completion_count=None,
                             parallelism=None,
                             cron_expression=None,
                             secrets=None,
@@ -1334,7 +1334,7 @@ def create_containerappsjob(cmd,
 
     if yaml:
         if image or managed_env or trigger_type or replica_timeout or replica_retry_limit or\
-            replica_count or parallelism or cron_expression or cpu or memory or registry_server or\
+            replica_completion_count or parallelism or cron_expression or cpu or memory or registry_server or\
             registry_user or registry_pass or secrets or env_vars or\
                 startup_command or args or tags:
             not disable_warnings and logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
@@ -1369,13 +1369,13 @@ def create_containerappsjob(cmd,
     manualTriggerConfig_def = None
     if trigger_type is not None and trigger_type.lower() == "manual":
         manualTriggerConfig_def = ManualTriggerModel
-        manualTriggerConfig_def["replicaCompletionCount"] = replica_count
+        manualTriggerConfig_def["replicaCompletionCount"] = replica_completion_count
         manualTriggerConfig_def["parallelism"] = parallelism
 
     scheduleTriggerConfig_def = None
     if trigger_type is not None and trigger_type.lower() == "schedule":
         scheduleTriggerConfig_def = ScheduleTriggerModel
-        scheduleTriggerConfig_def["replicaCompletionCount"] = replica_count
+        scheduleTriggerConfig_def["replicaCompletionCount"] = replica_completion_count
         scheduleTriggerConfig_def["parallelism"] = parallelism
         scheduleTriggerConfig_def["cronExpression"] = cron_expression
 
@@ -1388,26 +1388,23 @@ def create_containerappsjob(cmd,
             scale_def["maxReplicas"] = max_replicas
 
         if scale_rule_name:
-            if not scale_rule_type:
-                scale_rule_type = "http"
             scale_rule_type = scale_rule_type.lower()
             scale_rule_def = ScaleRuleModel
             curr_metadata = {}
             metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
             auth_def = parse_auth_flags(scale_rule_auth)
             scale_rule_def["name"] = scale_rule_name
-            scale_rule_def["http"] = None
             scale_rule_def["custom"] = {}
             scale_rule_def["custom"]["type"] = scale_rule_type
             scale_rule_def["custom"]["metadata"] = metadata_def
             scale_rule_def["custom"]["auth"] = auth_def
-            
+
             if not scale_def:
                 scale_def = ScaleModel
             scale_def["rules"] = [scale_rule_def]
-        
+
         eventTriggerConfig_def = EventTriggerModel
-        eventTriggerConfig_def["replicaCompletionCount"] = replica_count
+        eventTriggerConfig_def["replicaCompletionCount"] = replica_completion_count
         eventTriggerConfig_def["parallelism"] = parallelism
         eventTriggerConfig_def["scale"] = scale_def
     
@@ -1440,6 +1437,7 @@ def create_containerappsjob(cmd,
     config_def["replicaRetryLimit"] = replica_retry_limit
     config_def["manualTriggerConfig"] = manualTriggerConfig_def if manualTriggerConfig_def is not None else None
     config_def["scheduleTriggerConfig"] = scheduleTriggerConfig_def if scheduleTriggerConfig_def is not None else None
+    config_def["eventTriggerConfig"] = eventTriggerConfig_def if eventTriggerConfig_def is not None else None
     config_def["registries"] = [registries_def] if registries_def is not None else None
 
     # Identity actions
@@ -1592,6 +1590,7 @@ def update_containerappsjob(cmd,
                             min_replicas=None,
                             max_replicas=None,
                             tags=None,
+                            workload_profile_name=None,
                             no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
@@ -1615,6 +1614,7 @@ def update_containerappsjob(cmd,
                                          startup_command=startup_command,
                                          args=args,
                                          tags=tags,
+                                         workload_profile_name=workload_profile_name,
                                          scale_rule_metadata=None,
                                          scale_rule_name=None,
                                          scale_rule_type=None,
@@ -1644,6 +1644,7 @@ def update_containerappsjob_logic(cmd,
                                   startup_command=None,
                                   args=None,
                                   tags=None,
+                                  workload_profile_name=None,
                                   scale_rule_metadata=None,
                                   scale_rule_name=None,
                                   scale_rule_type=None,
@@ -1692,6 +1693,23 @@ def update_containerappsjob_logic(cmd,
     if tags:
         _add_or_update_tags(new_containerappsjob, tags)
 
+    if workload_profile_name:
+        new_containerappsjob["properties"]["workloadProfileName"] = workload_profile_name
+
+        parsed_managed_env = parse_resource_id(containerappsjob_def["properties"]["managedEnvironmentId"])
+        managed_env_name = parsed_managed_env['name']
+        managed_env_rg = parsed_managed_env['resource_group']
+        managed_env_info = None
+        try:
+            managed_env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=managed_env_rg, name=managed_env_name)
+        except:
+            pass
+
+        if not managed_env_info:
+            raise ValidationError("Error parsing the managed environment '{}' from the specified containerappjob".format(managed_env_name))
+
+        ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile_name, managed_env_info)
+
     # replicaConfiguration
     if update_map["replicaConfigurations"]:
         new_containerappsjob["properties"]["configuration"] = {} if "configuration" not in new_containerappsjob["properties"] else new_containerappsjob["properties"]["configuration"]
@@ -1705,7 +1723,6 @@ def update_containerappsjob_logic(cmd,
     if update_map["triggerConfigurations"]:
         new_containerappsjob["properties"]["configuration"] = {} if "configuration" not in new_containerappsjob["properties"] else new_containerappsjob["properties"]["configuration"]
         if containerappsjob_def["properties"]["configuration"]["triggerType"] == "Manual":
-            print(containerappsjob_def)
             manualTriggerConfig_def = None
             manualTriggerConfig_def = containerappsjob_def["properties"]["configuration"]["manualTriggerConfig"]
             if replica_count is not None or parallelism is not None:
@@ -2201,7 +2218,6 @@ def stop_containerappsjob(cmd, resource_group_name, name, job_execution_name=Non
         if job_execution_name_list is not None:
             job_execution_name_list = job_execution_name_list.split(",")
             job_execution_name_list = json.dumps({'jobExecutionName': job_execution_name_list})
-            print(job_execution_name_list)
         return ContainerAppsJobClient.stop_job(cmd=cmd, resource_group_name=resource_group_name, name=name, job_execution_name=job_execution_name, job_execution_names=job_execution_name_list)
     except CLIError as e:
         handle_raw_exception(e)
