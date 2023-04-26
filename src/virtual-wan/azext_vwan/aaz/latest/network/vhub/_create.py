@@ -125,10 +125,13 @@ class Create(AAZCommand):
         # define Arg Group "VirtualWan"
 
         _args_schema = cls._args_schema
-        _args_schema.vwan = AAZStrArg(
+        _args_schema.vwan = AAZResourceIdArg(
             options=["--vwan"],
             arg_group="VirtualWan",
             help="Name or ID of the virtual WAN.",
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualWans/{}",
+            ),
         )
         return cls._args_schema
 
