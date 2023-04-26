@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "devcenter admin attached-network list",
 )
 class List(AAZCommand):
-    """List the attached network connections for a dev center or project.
+    """List the attached network connections configured for a dev center or project.
 
     :example: List by dev center
         az devcenter admin attached-network list --dev-center-name "Contoso" --resource-group "rg1"
