@@ -25,7 +25,8 @@ def validate_upgrade_type(namespace):
 
 def validate_kubernetes_version(namespace):
     try:
-        semver.VersionInfo.parse(namespace.kubernetes_version)
+        if namespace.kubernetes_version:
+            semver.VersionInfo.parse(namespace.kubernetes_version)
     except ValueError:
         raise InvalidArgumentValueError(
             "--kubernetes-version must be set as version x.x.x (eg. 1.2.3)")

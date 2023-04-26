@@ -114,6 +114,11 @@ helps['fleet member wait'] = """
     long-summary: If an operation on fleet member was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
 """
 
+helps['fleet updaterun'] = """
+    type: group
+    short-summary: Commands to manage a fleet update run.
+"""
+
 helps['fleet updaterun create'] = """
     type: command
     short-summary: Creates or updates a fleet update run.
@@ -129,15 +134,15 @@ helps['fleet updaterun create'] = """
           short-summary: Path to a json file that defines stages to upgrade a fleet. See examples for further reference.
     examples:
         - name: Create updaterun for a fleet with 'Full' upgrade type.
-          text: az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.2.3
+          text: az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.25.0
         - name: Create updaterun for a fleet with 'NodeImageOnly' upgrade type.
           text: az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type NodeImageOnly
         - name: Create updaterun for a fleet with 'Full' upgrade type & stages.
           text: |
-            az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.2.3 --stages ./test/stages.json
+            az fleet updaterun create -g MyResourceGroup -f MyFleet -n MyUpdateRun --upgrade-type Full --kubernetes-version 1.25.0 --stages ./test/stages.json
 
-                A sample json to demonstrate the expected format. It takes a stages array. Each stage consists of the stage name, groups array and an optional afterStageWaitInSeconds.
-                Each group consists of group name, given to a fleet's member(s).
+                A sample json to demonstrate the expected format. It takes a stages array. Each stage consists of the stage name, groups array and an optional afterStageWaitInSeconds integer.
+                Within groups, each group consists of group name, given to a fleet's member(s).
                 {
                     "stages": [
                         {
@@ -180,7 +185,7 @@ helps['fleet updaterun show'] = """
 
 helps['fleet updaterun list'] = """
     type: command
-    short-summary: Lists the update runs of a fleet .
+    short-summary: Lists the update runs of a fleet.
 """
 
 helps['fleet updaterun delete'] = """
