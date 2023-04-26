@@ -1533,15 +1533,25 @@ def set_managed_identity(cmd, resource_group_name, containerapp_def, system_assi
 
 
 def create_acrpull_role_assignment(cmd, registry_server, registry_identity=None, service_principal=None, skip_error=False):
+    from azure.cli.command_modules.acr._utils import ResourceNotFound
+
     if registry_identity:
         registry_identity_parsed = parse_resource_id(registry_identity)
-        registry_identity_name, registry_identity_rg = registry_identity_parsed.get("name"), registry_identity_parsed.get("resource_group")
-        sp_id = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI).user_assigned_identities.get(resource_name=registry_identity_name, resource_group_name=registry_identity_rg).principal_id
+        registry_identity_name, registry_identity_rg, registry_identity_sub = registry_identity_parsed.get("name"), registry_identity_parsed.get("resource_group"), registry_identity_parsed.get("subscription")
+        sp_id = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI, subscription_id=registry_identity_sub).user_assigned_identities.get(resource_name=registry_identity_name, resource_group_name=registry_identity_rg).principal_id
     else:
         sp_id = service_principal
 
     client = get_mgmt_service_client(cmd.cli_ctx, ContainerRegistryManagementClient).registries
-    acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
+    try:
+        acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
+    except ResourceNotFound as e:
+        message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
+                   f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope <container-registry-resource-id> --role acrpull'. \n"
+                   "You may have to restart the containerapp with 'az containerapp revision restart'.")
+        logger.warning(message)
+        return
+
     retries = 10
     while retries > 0:
         try:
