@@ -13,14 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin pool delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a machine pool
+    """Delete a pool.
 
     :example: Delete
-        az devcenter admin pool delete --name "poolName" --project-name "{projectName}" --resource-group "rg1"
+        az devcenter admin pool delete --name "DevPool" --project-name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {

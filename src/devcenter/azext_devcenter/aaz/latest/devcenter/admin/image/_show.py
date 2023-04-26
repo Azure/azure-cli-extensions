@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin image show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get a gallery image.
 
-    :example: Show
-        az devcenter admin image show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --name "{imageName}" --resource-group "rg1"
+    :example: Get
+        az devcenter admin image show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --name "ContosoBaseImage" --resource-group "rg1"
     """
 
     _aaz_info = {

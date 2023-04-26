@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin project update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a project.
 
     :example: Update
-        az devcenter admin project update --description "This is my first project." --tags CostCenter="R&D" --name "{projectName}" --resource-group "rg1" --max-dev-boxes-per-user "5"
+        az devcenter admin project update --description "This is my first project." --tags CostCenter="R&D" --name "DevProject" --resource-group "rg1" --max-dev-boxes-per-user "5"
     """
 
     _aaz_info = {
@@ -86,13 +85,13 @@ class Update(AAZCommand):
         _args_schema.dev_center_id = AAZStrArg(
             options=["--dev-center-id"],
             arg_group="Properties",
-            help="Resource Id of an associated DevCenter",
+            help="Resource ID of an associated dev center.",
             nullable=True,
         )
         _args_schema.max_dev_boxes_per_user = AAZIntArg(
             options=["--max-dev-boxes-per-user"],
             arg_group="Properties",
-            help="When specified, limits the maximum number of Dev Boxes a single user can create across all pools in the project. This will have no effect on existing Dev Boxes when reduced.",
+            help="When specified, limits the maximum number of dev boxes a single user can create across all pools in the project. This will have no effect on existing dev boxes when reduced.",
             nullable=True,
             fmt=AAZIntArgFormat(
                 minimum=0,

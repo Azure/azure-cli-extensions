@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin devbox-definition list",
-    is_preview=True,
 )
 class List(AAZCommand):
-    """List Dev Box definitions configured for a project.
+    """List dev box definitions configured for a dev center or project.
 
     :example: List by dev center
         az devcenter admin devbox-definition list --dev-center-name "Contoso" --resource-group "rg1"

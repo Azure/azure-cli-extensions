@@ -13,14 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin gallery delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a gallery resource.
+    """Delete a gallery.
 
     :example: Delete
-        az devcenter admin gallery delete --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1"
+        az devcenter admin gallery delete --dev-center-name "Contoso" --name "StandardGallery" --resource-group "rg1"
     """
 
     _aaz_info = {

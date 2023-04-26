@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin sku list",
-    is_preview=True,
 )
 class List(AAZCommand):
-    """List the Microsoft.DevCenter SKUs available in a subscription
+    """List the Microsoft.DevCenter SKUs available in a subscription.
 
     :example: List
         az devcenter admin sku list

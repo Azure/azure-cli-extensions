@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin catalog list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List catalogs for a dev center.

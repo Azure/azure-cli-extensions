@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin project-environment-type update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a project environment type.
 
     :example: Update
-        az devcenter admin project-environment-type update --identity-type "UserAssigned" --user-assigned-identities "{\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/identityGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testidentity1\":{}}" --deployment-target-id "/subscriptions/00000000-0000-0000-0000-000000000000" --status "Enabled" --user-role-assignments "{\"e45e3m7c-176e-416a-b466-0c5ec8298f8a\":{\"roles\":{\"4cbf0b6c-e750-441c-98a7-10da8387e4d6\":{}}}}" --tags CostCenter="RnD" --environment-type-name "{environmentTypeName}" --project-name "ContosoProj" --resource-group "rg1"
+        az devcenter admin project-environment-type update --identity-type "UserAssigned" --user-assigned-identities "{\"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/identityGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testidentity1\":{}}" --deployment-target-id "/subscriptions/00000000-0000-0000-0000-000000000000" --status "Enabled" --user-role-assignments "{\"e45e3m7c-176e-416a-b466-0c5ec8298f8a\":{\"roles\":{\"4cbf0b6c-e750-441c-98a7-10da8387e4d6\":{}}}}" --tags CostCenter="RnD" --environment-type-name "DevTest" --project-name "ContosoProj" --resource-group "rg1"
     """
 
     _aaz_info = {
@@ -60,20 +59,13 @@ class Update(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Body",
-            help="The geo-location where the resource lives. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
-            nullable=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Body",
@@ -131,20 +123,20 @@ class Update(AAZCommand):
         _args_schema.deployment_target_id = AAZStrArg(
             options=["--deployment-target-id"],
             arg_group="Properties",
-            help="Id of a subscription that the environment type will be mapped to. The environment's resources will be deployed into this subscription.",
+            help="ID of a subscription that the environment type will be mapped to. The environment's resources will be deployed into this subscription.",
             nullable=True,
         )
         _args_schema.status = AAZStrArg(
             options=["--status"],
             arg_group="Properties",
-            help="Defines whether this Environment Type can be used in this Project.",
+            help="Defines whether this environment type can be used in this project.",
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.user_role_assignments = AAZDictArg(
             options=["--user-role-assignments"],
             arg_group="Properties",
-            help="Role Assignments created on environment backing resources. This is a mapping from a user object ID to an object of role definition IDs.",
+            help="Role assignments created on environment backing resources. This is a mapping from a user object ID to an object of role definition IDs.",
             nullable=True,
         )
 
@@ -409,7 +401,6 @@ class Update(AAZCommand):
                 typ=AAZObjectType
             )
             _builder.set_prop("identity", AAZObjectType)
-            _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 

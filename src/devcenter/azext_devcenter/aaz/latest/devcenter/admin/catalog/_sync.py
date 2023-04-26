@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin catalog sync",
-    is_preview=True,
 )
 class Sync(AAZCommand):
     """Syncs templates for a template source.
 
     :example: Sync
-        az devcenter admin catalog sync --name "{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
+        az devcenter admin catalog sync --name "CentralCatalog" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {
@@ -48,7 +47,7 @@ class Sync(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.catalog_name = AAZStrArg(
             options=["-n", "--name", "--catalog-name"],
-            help="The name of the Catalog.",
+            help="The name of the catalog.",
             required=True,
             id_part="child_name_1",
         )
@@ -87,20 +86,12 @@ class Sync(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    None,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+
             return self.on_error(session.http_response)
 
         @property
@@ -150,8 +141,6 @@ class Sync(AAZCommand):
             }
             return parameters
 
-        def on_200(self, session):
-            pass
 
 class _SyncHelper:
     """Helper class for Sync"""

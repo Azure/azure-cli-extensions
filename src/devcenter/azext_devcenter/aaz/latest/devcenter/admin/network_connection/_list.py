@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin network-connection list",
-    is_preview=True,
 )
 class List(AAZCommand):
-    """List network connections in a resource group.
+    """List network connections.
 
     :example: List by resource group
         az devcenter admin network-connection list --resource-group "rg1"
@@ -192,6 +191,7 @@ class List(AAZCommand):
             )
             properties.domain_password = AAZStrType(
                 serialized_name="domainPassword",
+                flags={"secret": True},
             )
             properties.domain_username = AAZStrType(
                 serialized_name="domainUsername",
@@ -359,6 +359,7 @@ class List(AAZCommand):
             )
             properties.domain_password = AAZStrType(
                 serialized_name="domainPassword",
+                flags={"secret": True},
             )
             properties.domain_username = AAZStrType(
                 serialized_name="domainUsername",

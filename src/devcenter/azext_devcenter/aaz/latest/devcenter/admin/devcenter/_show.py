@@ -13,12 +13,11 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin devcenter show",
-    is_preview=True,
 )
 class Show(AAZCommand):
-    """Get a devcenter.
+    """Get a dev center.
 
-    :example: Show
+    :example: Get
         az devcenter admin devcenter show --name "Contoso" --resource-group "rg1"
     """
 
@@ -47,7 +46,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            help="The name of the devcenter.",
+            help="The name of the dev center.",
             required=True,
             id_part="name",
         )

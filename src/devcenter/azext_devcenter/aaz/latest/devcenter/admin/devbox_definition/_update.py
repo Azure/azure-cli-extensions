@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin devbox-definition update",
-    is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a Dev Box definition.
+    """Update a dev box definition.
 
     :example: Update
         az devcenter admin devbox-definition update --image-reference id="/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/Example/providers/Microsoft.DevCenter/devcenters/Contoso/galleries/contosogallery/images/exampleImage/version/2.0.0" --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
@@ -50,7 +49,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.dev_box_definition_name = AAZStrArg(
             options=["-n", "--name", "--dev-box-definition-name"],
-            help="The name of the Dev Box definition.",
+            help="The name of the dev box definition.",
             required=True,
             id_part="child_name_1",
         )
@@ -86,7 +85,7 @@ class Update(AAZCommand):
         _args_schema.hibernate_support = AAZStrArg(
             options=["--hibernate-support"],
             arg_group="Properties",
-            help="Indicates whether Dev Boxes created with this definition are capable of hibernation. Not all images are capable of supporting hibernation. To find out more see https://aka.ms/devbox/hibernate",
+            help="Indicates whether dev boxes created with this definition are capable of hibernation. Not all images are capable of supporting hibernation. To find out more see https://aka.ms/devbox/hibernate",
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
@@ -98,13 +97,13 @@ class Update(AAZCommand):
         _args_schema.os_storage_type = AAZStrArg(
             options=["--os-storage-type"],
             arg_group="Properties",
-            help="The storage type used for the Operating System disk of Dev Boxes created using this definition.",
+            help="The storage type used for the operating system disk of dev boxes created using this definition.",
             nullable=True,
         )
         _args_schema.sku = AAZObjectArg(
             options=["--sku"],
             arg_group="Properties",
-            help="The SKU for Dev Boxes created using this definition.",
+            help="The SKU for dev boxes created using this definition.",
         )
 
         image_reference = cls._args_schema.image_reference

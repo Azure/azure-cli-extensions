@@ -13,16 +13,15 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin attached-network list",
-    is_preview=True,
 )
 class List(AAZCommand):
-    """List the attached network connections configured for a dev center or a project.
+    """List the attached network connections for a dev center or project.
 
     :example: List by dev center
         az devcenter admin attached-network list --dev-center-name "Contoso" --resource-group "rg1"
 
     :example: List by project
-        az devcenter admin attached-network list --project-name "{projectName}" --resource-group "rg1"
+        az devcenter admin attached-network list --project-name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {

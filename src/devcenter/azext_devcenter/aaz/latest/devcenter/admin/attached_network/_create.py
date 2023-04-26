@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin attached-network create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create an attached network connection.
 
     :example: Create
-        az devcenter admin attached-network create --attached-network-connection-name "{attachedNetworkConnectionName}" --network-connection-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/providers/Microsoft.DevCenter/networkConnections/{networkConnectionName}" --dev-center-name "Contoso" --resource-group "rg1"
+        az devcenter admin attached-network create --attached-network-connection-name "network-uswest3" --network-connection-id "/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/rg1/providers/Microsoft.DevCenter/NetworkConnections/network-uswest3" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {

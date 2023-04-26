@@ -13,14 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin catalog delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a catalog.
+    """Delete a catalog resource.
 
     :example: Delete
-        az devcenter admin catalog delete --name "{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
+        az devcenter admin catalog delete --name "CentralCatalog" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {

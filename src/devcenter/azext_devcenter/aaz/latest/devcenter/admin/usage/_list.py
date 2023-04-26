@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin image-version list",
+    "devcenter admin usage list",
 )
 class List(AAZCommand):
-    """List versions for an image.
+    """List the current usages and limits in this location for the provided subscription.
 
     :example: List
-        az devcenter admin image-version list --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --image-name "Win11" --resource-group "rg1"
+        az devcenter admin usage list --location "westus3"
     """
 
     _aaz_info = {
         "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/galleries/{}/images/{}/versions", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/locations/{}/usages", "2023-04-01"],
         ]
     }
 
@@ -43,30 +43,15 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.dev_center_name = AAZStrArg(
-            options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
-            required=True,
-        )
-        _args_schema.gallery_name = AAZStrArg(
-            options=["--gallery-name"],
-            help="The name of the gallery.",
-            required=True,
-        )
-        _args_schema.image_name = AAZStrArg(
-            options=["--image-name"],
-            help="The name of the image.",
-            required=True,
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
+        _args_schema.location = AAZResourceLocationArg(
+            help="The geo-location. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ImageVersionsListByImage(ctx=self.ctx)()
+        self.UsagesListByLocation(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -82,7 +67,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class ImageVersionsListByImage(AAZHttpOperation):
+    class UsagesListByLocation(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -96,7 +81,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters/{devCenterName}/galleries/{galleryName}/images/{imageName}/versions",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.DevCenter/locations/{location}/usages",
                 **self.url_parameters
             )
 
@@ -112,19 +97,7 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "devCenterName", self.ctx.args.dev_center_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "galleryName", self.ctx.args.gallery_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "imageName", self.ctx.args.image_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "location", self.ctx.args.location,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -183,61 +156,18 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
+            _element.current_value = AAZIntType(
+                serialized_name="currentValue",
             )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _element.type = AAZStrType(
-                flags={"read_only": True},
-            )
+            _element.limit = AAZIntType()
+            _element.name = AAZObjectType()
+            _element.unit = AAZStrType()
 
-            properties = cls._schema_on_200.value.Element.properties
-            properties.exclude_from_latest = AAZBoolType(
-                serialized_name="excludeFromLatest",
-                flags={"read_only": True},
+            name = cls._schema_on_200.value.Element.name
+            name.localized_value = AAZStrType(
+                serialized_name="localizedValue",
             )
-            properties.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.os_disk_image_size_in_gb = AAZIntType(
-                serialized_name="osDiskImageSizeInGb",
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.published_date = AAZStrType(
-                serialized_name="publishedDate",
-                flags={"read_only": True},
-            )
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            name.value = AAZStrType()
 
             return cls._schema_on_200
 

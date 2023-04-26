@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin devcenter create",
-    is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a devcenter resource
+    """Create a dev center.
 
     :example: Create
         az devcenter admin devcenter create --location "eastus" --tags CostCode="12345" --name "Contoso" --resource-group "rg1"
@@ -49,7 +48,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            help="The name of the devcenter.",
+            help="The name of the dev center.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(

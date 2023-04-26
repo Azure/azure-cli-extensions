@@ -13,14 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin environment-type delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete an environment type.
 
     :example: Delete
-        az devcenter admin environment-type delete --dev-center-name "Contoso" --name "{environmentTypeName}" --resource-group "rg1"
+        az devcenter admin environment-type delete --dev-center-name "Contoso" --name "DevTest" --resource-group "rg1"
     """
 
     _aaz_info = {

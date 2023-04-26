@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin gallery list",
-    is_preview=True,
 )
 class List(AAZCommand):
-    """List galleries for a devcenter.
+    """List galleries for a dev center.
 
     :example: List
         az devcenter admin gallery list --dev-center-name "Contoso" --resource-group "rg1"

@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin pool run-health-check",
-    is_preview=True,
 )
 class RunHealthCheck(AAZCommand):
     """Triggers a refresh of the pool status.
 
     :example: Run health check
-        az devcenter admin pool run-health-check --name "{poolName}" --project-name "{projectName}" --resource-group "rg1"
+        az devcenter admin pool run-health-check --name "DevPool" --project-name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {
@@ -47,7 +46,7 @@ class RunHealthCheck(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.pool_name = AAZStrArg(
-            options=["--name, -n, --pool-name"],
+            options=["-n", "--name", "--pool-name"],
             help="Name of the pool.",
             required=True,
             id_part="child_name_1",

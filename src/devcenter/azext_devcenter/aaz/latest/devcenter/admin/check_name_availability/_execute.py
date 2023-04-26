@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin check-name-availability execute",
-    is_preview=True,
 )
 class Execute(AAZCommand):
     """Check the availability of name for resource.

@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin devcenter update",
-    is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a devcenter.
+    """Update a dev center.
 
     :example: Update
         az devcenter admin devcenter update --tags CostCode="12345" --name "Contoso" --resource-group "rg1"
@@ -50,7 +49,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            help="The name of the devcenter.",
+            help="The name of the dev center.",
             required=True,
             id_part="name",
         )

@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin catalog update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a catalog.
 
     :example: Update
-        az devcenter admin catalog update --git-hub path="/environments" --name "{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
+        az devcenter admin catalog update --git-hub path="/environments" --name "CentralCatalog" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {
