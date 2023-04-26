@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 from knack.util import CLIError
+from ._constants import VNF, CNF, NSD
 
 @dataclass
 class ArtifactConfig:
@@ -29,11 +30,11 @@ def get_configuration(definition_type, config_as_dict=None):
     if config_as_dict is None:
         config_as_dict = {}
 
-    if definition_type == "vnf":
+    if definition_type == VNF:
         config = VNFConfiguration(**config_as_dict)
-    elif definition_type == "cnf":
+    elif definition_type == CNF:
         config = Configuration(**config_as_dict)
-    elif definition_type == "nsd":
+    elif definition_type == NSD:
         config = Configuration(**config_as_dict)
     else:
         raise CLIError("Definition type not recognized, options are: vnf, cnf or nsd")
