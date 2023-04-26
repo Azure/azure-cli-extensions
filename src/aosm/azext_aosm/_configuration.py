@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
+from knack.util import CLIError
 
 @dataclass
 class ArtifactConfig:
@@ -22,3 +23,19 @@ class VNFConfiguration(Configuration):
     blob_artifact_store_name: str = "Name of the storage account Artifact Store resource"
     arm_template: ArtifactConfig = ArtifactConfig()
     vhd: ArtifactConfig = ArtifactConfig()
+
+
+def get_configuration(definition_type, config_as_dict=None):
+    if config_as_dict is None:
+        config_as_dict = {}
+
+    if definition_type == "vnf":
+        config = VNFConfiguration(**config_as_dict)
+    elif definition_type == "cnf":
+        config = Configuration(**config_as_dict)
+    elif definition_type == "nsd":
+        config = Configuration(**config_as_dict)
+    else:
+        raise CLIError("Definition type not recognized, options are: vnf, cnf or nsd")
+
+    return config
