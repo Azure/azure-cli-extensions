@@ -605,7 +605,7 @@ helps['aks create'] = """
         - name: Create a kubernetes cluster with guardrails set to "Warning"
           text: az aks create -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --enable-addons azure-policy
         - name: Create a kubernetes cluster with guardrails set to "Warning" and some namespaces excluded
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --guardrails-excluded-namespaces ns1,ns2 --enable-addons azure-policy
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --guardrails-excluded-ns ns1,ns2 --enable-addons azure-policy
         - name: Create a kubernetes cluster with Azure Service Mesh enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-service-mesh
 
