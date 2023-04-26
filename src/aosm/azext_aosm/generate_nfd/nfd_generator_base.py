@@ -3,8 +3,10 @@
 # License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------
 """Contains a base class for generating NFDs."""
-from typing import Dict, Any
 from knack.log import get_logger
+from azext_aosm._configuration import Configuration
+
+
 logger = get_logger(__name__)
 
 class NFDGenerator:
@@ -12,14 +14,14 @@ class NFDGenerator:
     
     def __init__(
         self,
-        config: Dict[Any, Any]
+        config: Configuration
     ) -> None:
         """_summary_
 
         :param definition_type: _description_
         :type definition_type: str
         :param config: _description_
-        :type config: Dict[Any, Any]
+        :type config: Configuration
         """
         self.config = config
         

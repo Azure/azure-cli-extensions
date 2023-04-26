@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------
 """Contains a class for generating VNF NFDs and associated resources."""
 from typing import Dict, Any
-from .nfd_generator_base import NFDGenerator
+from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 
 class CnfNfdGenerator(NFDGenerator):
     """_summary_

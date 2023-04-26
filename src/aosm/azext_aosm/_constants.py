@@ -8,7 +8,3 @@
 VNF = "vnf"
 CNF = "cnf"
 NSD = "nsd"
-
-# Artifact Types
-VHD_ARTIFACT = "VhdImageFile"
-ARM_TEMPLATE_ARTIFACT = "ArmTemplate"

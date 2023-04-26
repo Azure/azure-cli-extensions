@@ -6,12 +6,14 @@
 import json
 from dataclasses import asdict
 from typing import Optional, Tuple
-from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
-from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
-from azext_aosm.generate_nfd.vnf_nfd_generator import VnfNfdGenerator
 from knack.log import get_logger
 from azure.cli.core.azclierror import AzCLIError
 from azure.mgmt.resource import ResourceManagementClient
+
+from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
+from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
+from azext_aosm.generate_nfd.vnf_nfd_generator import VnfNfdGenerator
+
 from .vendored_sdks import HybridNetworkManagementClient
 from .vendored_sdks.models import Publisher, NetworkFunctionDefinitionVersion
 from ._client_factory import cf_resources
@@ -84,7 +86,7 @@ def build_definition(
         config_as_dict = json.loads(f)
 
     config = get_configuration(definition_type, config_as_dict)
-
+    validate_config(config)
     # Generate the NFD/NSD and the artifact manifest.
 
 
@@ -118,5 +120,10 @@ def _generate_nfd(definition_type, config):
         nfd_generator = VnfNfdGenerator(config)
     elif definition_type == CNF:
         nfd_generator = CnfNfdGenerator(config)
+    else:
+        from azure.cli.core.azclierror import CLIInternalError
+        raise CLIInternalError(
+                "Generate NFD called for unrecognised definition_type. Only VNF and CNF have been implemented."
+            ) 
         
     nfd_generator.generate_nfd()
