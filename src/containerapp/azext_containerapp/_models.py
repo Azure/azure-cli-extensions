@@ -216,7 +216,7 @@ ScheduleTriggerConfig = {
 EventTriggerConfig = {
     "replicaCompletionCount": None,
     "parallelism": None,
-    "scale": None, #[Scale]
+    "scale": None,  # [Scale]
 }
 
 UserAssignedIdentity = {

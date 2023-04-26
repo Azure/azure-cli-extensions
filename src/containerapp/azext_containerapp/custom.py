@@ -1374,7 +1374,7 @@ def create_containerappsjob(cmd,
 
     location = managed_env_info["location"]
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "jobs")
-    
+
     if not workload_profile_name and "workloadProfiles" in managed_env_info:
         workload_profile_name = get_default_workload_profile_name_from_env(cmd, managed_env_info, managed_env_rg)
 
@@ -1419,7 +1419,7 @@ def create_containerappsjob(cmd,
         eventTriggerConfig_def["replicaCompletionCount"] = replica_completion_count
         eventTriggerConfig_def["parallelism"] = parallelism
         eventTriggerConfig_def["scale"] = scale_def
-    
+
     secrets_def = None
     if secrets is not None:
         secrets_def = parse_secret_flags(secrets)
@@ -1505,7 +1505,7 @@ def create_containerappsjob(cmd,
     containerappjob_def["properties"]["configuration"] = config_def
     containerappjob_def["properties"]["template"] = template_def
     containerappjob_def["tags"] = tags
-    
+
     if workload_profile_name:
         containerappjob_def["properties"]["workloadProfileName"] = workload_profile_name
         ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile_name, managed_env_info)
@@ -1674,7 +1674,7 @@ def update_containerappsjob_logic(cmd,
            set_env_vars or remove_env_vars or replace_env_vars or remove_all_env_vars or cpu or memory or\
            startup_command or args or tags:
             logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
-        return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait, from_revision=from_revision)
+        return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
 
     containerappsjob_def = None
     try:
@@ -1762,7 +1762,7 @@ def update_containerappsjob_logic(cmd,
                     eventTriggerConfig_def["replicaCompletionCount"] = replica_count
                 if parallelism:
                     eventTriggerConfig_def["parallelism"] = parallelism
-                
+
                 # Scale
                 if "scale" not in eventTriggerConfig_def["properties"]["template"]:
                     eventTriggerConfig_def["scale"] = {}
@@ -1797,9 +1797,9 @@ def update_containerappsjob_logic(cmd,
                         scale_def = ScaleModel
                     scale_def["rules"] = [scale_rule_def]
                     eventTriggerConfig_def["scale"]["rules"] = scale_def["rules"]
-                
+
             new_containerappsjob["properties"]["configuration"]["eventTriggerConfig"] = eventTriggerConfig_def
-            
+
     # Containers
     if update_map["container"]:
         new_containerappsjob["properties"]["template"] = {} if "template" not in new_containerappsjob["properties"] else new_containerappsjob["properties"]["template"]
@@ -1908,12 +1908,6 @@ def update_containerappsjob_logic(cmd,
             new_containerappsjob["properties"]["template"]["containers"].append(container_def)
 
         new_containerappsjob["properties"]["configuration"] = {} if "configuration" not in new_containerappsjob["properties"] else new_containerappsjob["properties"]["configuration"]
-        if target_port is not None or ingress is not None:
-            new_containerappsjob["properties"]["configuration"]["ingress"] = {}
-            if ingress:
-                new_containerappsjob["properties"]["configuration"]["ingress"]["external"] = ingress.lower() == "external"
-            if target_port:
-                new_containerappsjob["properties"]["configuration"]["ingress"]["targetPort"] = target_port
 
     # Registry
     if update_map["registry"]:
@@ -2184,10 +2178,10 @@ def update_containerappjob_yaml(cmd, name, resource_group_name, file_name, no_wa
         handle_raw_exception(e)
 
 
-def start_containerappsjob(cmd, 
+def start_containerappsjob(cmd,
                            resource_group_name,
                            name,
-                           image=None, 
+                           image=None,
                            container_name=None,
                            env_vars=None,
                            startup_command=None,
@@ -2196,16 +2190,16 @@ def start_containerappsjob(cmd,
                            memory=None,
                            registry_identity=None):
     template_def = None
-    
+
     if image is not None:
         template_def = JobExecutionTemplateModel
-        container_def = ContainerModel        
+        container_def = ContainerModel
         resources_def = None
         if cpu is not None or memory is not None:
             resources_def = ContainerResourcesModel
             resources_def["cpu"] = cpu
             resources_def["memory"] = memory
-        
+
         container_def["name"] = container_name if container_name else name
         container_def["image"] = image if not is_registry_msi_system(registry_identity) else HELLO_WORLD_IMAGE
         if env_vars is not None:
@@ -2216,9 +2210,9 @@ def start_containerappsjob(cmd,
             container_def["args"] = args
         if resources_def is not None:
             container_def["resources"] = resources_def
-        
+
         template_def["template"]["containers"] = [container_def]
-    
+
     try:
         return ContainerAppsJobClient.start_job(cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_start_envelope=template_def)
     except CLIError as e:
@@ -2237,7 +2231,6 @@ def stop_containerappsjob(cmd, resource_group_name, name, job_execution_name=Non
 
 def executionhistory_containerappsjob(cmd, resource_group_name, name):
     try:
-        executionHistoryList = []
         executionHistory = ContainerAppsJobClient.execution_history(cmd=cmd, resource_group_name=resource_group_name, name=name)
         return executionHistory['value']
     except CLIError as e:

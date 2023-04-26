@@ -423,7 +423,7 @@ def load_arguments(self, _):
         c.argument('replica_retry_limit', options_list=['--replica-retry-limit'], help='maximum number of replica retries before the job execution fails.')
         c.argument('replica_timeout', options_list=['--replica-timeout'], help='Maximum number of seconds a replica can execute.')
         c.argument('parallelism', options_list=['--parallelism'], help='maximum number of tasks that can run in parallel.')
-        
+
     with self.argument_context('containerapp job create') as c:
         c.argument('system_assigned', options_list=['--system-assigned'], help='System assigned identity.')
         c.argument('trigger_type', options_list=['--trigger-type'], help='Trigger type. Schedule | Event | Manual')
