@@ -1949,19 +1949,25 @@ class ContainerApp(TrackedResource):  # pylint: disable=too-many-instance-attrib
     :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar system_data: Azure Resource Manager metadata containing createdBy
-     and modifiedBy information.
-    :vartype system_data: ~commondefinitions.models.SystemData
-    :param tags: Resource tags.
-    :type tags: dict[str, str]
-    :param location: Required. The geo-location where the resource lives
-    :type location: str
-    :param identity: managed identities for the Container App to interact with
-     other Azure services without maintaining any secrets or credentials in
-     code.
-    :type identity: ~commondefinitions.models.ManagedServiceIdentity
-    :ivar provisioning_state: Provisioning state of the Container App.
-     Possible values include: 'InProgress', 'Succeeded', 'Failed', 'Canceled'
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.appcontainers.models.SystemData
+    :ivar tags: Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar location: The geo-location where the resource lives. Required.
+    :vartype location: str
+    :ivar extended_location: The complex type of the extended location.
+    :vartype extended_location: ~azure.mgmt.appcontainers.models.ExtendedLocation
+    :ivar identity: managed identities for the Container App to interact with other Azure services
+     without maintaining any secrets or credentials in code.
+    :vartype identity: ~azure.mgmt.appcontainers.models.ManagedServiceIdentity
+    :ivar managed_by: The fully qualified resource ID of the resource that manages this resource.
+     Indicates if this resource is managed by another Azure resource. If this is present, complete
+     mode deployment will not delete the resource if it is removed from the template since it is
+     managed by another resource.
+    :vartype managed_by: str
+    :ivar provisioning_state: Provisioning state of the Container App. Known values are:
+     "InProgress", "Succeeded", "Failed", "Canceled", and "Deleting".
     :vartype provisioning_state: str or
      ~azure.mgmt.appcontainers.models.ContainerAppProvisioningState
     :ivar managed_environment_id: Deprecated. Resource ID of the Container App's environment.
@@ -1979,44 +1985,104 @@ class ContainerApp(TrackedResource):  # pylint: disable=too-many-instance-attrib
     :vartype latest_revision_fqdn: str
     :ivar custom_domain_verification_id: Id used to verify domain name ownership.
     :vartype custom_domain_verification_id: str
-    :param configuration: Non versioned Container App configuration
-     properties.
-    :type configuration: ~commondefinitions.models.Configuration
-    :param template: Container App versioned application definition.
-    :type template: ~commondefinitions.models.Template
+    :ivar configuration: Non versioned Container App configuration properties.
+    :vartype configuration: ~azure.mgmt.appcontainers.models.Configuration
+    :ivar template: Container App versioned application definition.
+    :vartype template: ~azure.mgmt.appcontainers.models.Template
     :ivar outbound_ip_addresses: Outbound IP Addresses for container app.
     :vartype outbound_ip_addresses: list[str]
+    :ivar event_stream_endpoint: The endpoint of the eventstream of the container app.
+    :vartype event_stream_endpoint: str
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
-        'location': {'required': True},
-        'provisioning_state': {'readonly': True}
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "location": {"required": True},
+        "provisioning_state": {"readonly": True},
+        "latest_revision_name": {"readonly": True},
+        "latest_ready_revision_name": {"readonly": True},
+        "latest_revision_fqdn": {"readonly": True},
+        "custom_domain_verification_id": {"readonly": True},
+        "outbound_ip_addresses": {"readonly": True},
+        "event_stream_endpoint": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'location': {'key': 'location', 'type': 'str'},
-        'identity': {'key': 'identity', 'type': 'ManagedServiceIdentity'},
-        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'managed_environment_id': {'key': 'properties.managedEnvironmentId', 'type': 'str'},
-        'configuration': {'key': 'properties.jobConfiguration', 'type': 'JobConfiguration'},
-        'template': {'key': 'properties.jobTemplate', 'type': 'JobTemplate'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "tags": {"key": "tags", "type": "{str}"},
+        "location": {"key": "location", "type": "str"},
+        "extended_location": {"key": "extendedLocation", "type": "ExtendedLocation"},
+        "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
+        "managed_by": {"key": "managedBy", "type": "str"},
+        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+        "managed_environment_id": {"key": "properties.managedEnvironmentId", "type": "str"},
+        "environment_id": {"key": "properties.environmentId", "type": "str"},
+        "workload_profile_name": {"key": "properties.workloadProfileName", "type": "str"},
+        "latest_revision_name": {"key": "properties.latestRevisionName", "type": "str"},
+        "latest_ready_revision_name": {"key": "properties.latestReadyRevisionName", "type": "str"},
+        "latest_revision_fqdn": {"key": "properties.latestRevisionFqdn", "type": "str"},
+        "custom_domain_verification_id": {"key": "properties.customDomainVerificationId", "type": "str"},
+        "configuration": {"key": "properties.configuration", "type": "Configuration"},
+        "template": {"key": "properties.template", "type": "Template"},
+        "outbound_ip_addresses": {"key": "properties.outboundIpAddresses", "type": "[str]"},
+        "event_stream_endpoint": {"key": "properties.eventStreamEndpoint", "type": "str"},
     }
 
-    def __init__(self, **kwargs):
-        super(ContainerApp, self).__init__(**kwargs)
-        self.identity = kwargs.get('identity', None)
+    def __init__(
+        self,
+        *,
+        location: str,
+        tags: Optional[Dict[str, str]] = None,
+        extended_location: Optional["_models.ExtendedLocation"] = None,
+        identity: Optional["_models.ManagedServiceIdentity"] = None,
+        managed_by: Optional[str] = None,
+        managed_environment_id: Optional[str] = None,
+        environment_id: Optional[str] = None,
+        workload_profile_name: Optional[str] = None,
+        configuration: Optional["_models.Configuration"] = None,
+        template: Optional["_models.Template"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword tags: Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword location: The geo-location where the resource lives. Required.
+        :paramtype location: str
+        :keyword extended_location: The complex type of the extended location.
+        :paramtype extended_location: ~azure.mgmt.appcontainers.models.ExtendedLocation
+        :keyword identity: managed identities for the Container App to interact with other Azure
+         services without maintaining any secrets or credentials in code.
+        :paramtype identity: ~azure.mgmt.appcontainers.models.ManagedServiceIdentity
+        :keyword managed_by: The fully qualified resource ID of the resource that manages this
+         resource. Indicates if this resource is managed by another Azure resource. If this is present,
+         complete mode deployment will not delete the resource if it is removed from the template since
+         it is managed by another resource.
+        :paramtype managed_by: str
+        :keyword managed_environment_id: Deprecated. Resource ID of the Container App's environment.
+        :paramtype managed_environment_id: str
+        :keyword environment_id: Resource ID of environment.
+        :paramtype environment_id: str
+        :keyword workload_profile_name: Workload profile name to pin for container app execution.
+        :paramtype workload_profile_name: str
+        :keyword configuration: Non versioned Container App configuration properties.
+        :paramtype configuration: ~azure.mgmt.appcontainers.models.Configuration
+        :keyword template: Container App versioned application definition.
+        :paramtype template: ~azure.mgmt.appcontainers.models.Template
+        """
+        super().__init__(tags=tags, location=location, **kwargs)
+        self.extended_location = extended_location
+        self.identity = identity
+        self.managed_by = managed_by
         self.provisioning_state = None
-        self.environment_id = kwargs.get('environment_id', None)
-        self.workload_profile_name = kwargs.get('workload_profile_name', None)
+        self.managed_environment_id = managed_environment_id
+        self.environment_id = environment_id
+        self.workload_profile_name = workload_profile_name
         self.latest_revision_name = None
         self.latest_ready_revision_name = None
         self.latest_revision_fqdn = None
@@ -2025,80 +2091,6 @@ class ContainerApp(TrackedResource):  # pylint: disable=too-many-instance-attrib
         self.template = template
         self.outbound_ip_addresses = None
         self.event_stream_endpoint = None
-
-
-class ContainerAppsJob(TrackedResource):
-    """Container Apps Job.
-
-    Variables are only populated by the server, and will be ignored when
-    sending a request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}
-    :vartype id: str
-    :ivar name: The name of the resource
-    :vartype name: str
-    :ivar type: The type of the resource. E.g.
-     "Microsoft.Compute/virtualMachines" or "Microsoft.Storage/storageAccounts"
-    :vartype type: str
-    :ivar system_data: Azure Resource Manager metadata containing createdBy
-     and modifiedBy information.
-    :vartype system_data: ~commondefinitions.models.SystemData
-    :param tags: Resource tags.
-    :type tags: dict[str, str]
-    :param location: Required. The geo-location where the resource lives
-    :type location: str
-    :param identity: managed identities for the Container App to interact with
-     other Azure services without maintaining any secrets or credentials in
-     code.
-    :type identity: ~commondefinitions.models.ManagedServiceIdentity
-    :ivar provisioning_state: Provisioning state of the Container App.
-     Possible values include: 'InProgress', 'Succeeded', 'Failed', 'Canceled'
-    :vartype provisioning_state: str or
-     ~commondefinitions.models.ContainerAppProvisioningState
-    :param managed_environment_id: Resource ID of the Container App's
-     environment.
-    :type managed_environment_id: str
-    :param jobConfiguration: Non versioned Container Apps job configuration
-     properties.
-    :type jobConfiguration: ~commondefinitions.models.JobConfiguration
-    :param jobTemplate: Container App versioned application definition.
-    :type template: ~commondefinitions.models.JobTemplate
-    """
-
-    _validation = {
-        'id': {'readonly': True},
-        'name': {'readonly': True},
-        'type': {'readonly': True},
-        'system_data': {'readonly': True},
-        'location': {'required': True},
-        'provisioning_state': {'readonly': True}
-    }
-
-    _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'type': {'key': 'type', 'type': 'str'},
-        'system_data': {'key': 'systemData', 'type': 'SystemData'},
-        'tags': {'key': 'tags', 'type': '{str}'},
-        'location': {'key': 'location', 'type': 'str'},
-        'identity': {'key': 'identity', 'type': 'ManagedServiceIdentity'},
-        'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
-        'managed_environment_id': {'key': 'properties.managedEnvironmentId', 'type': 'str'},
-        'configuration': {'key': 'properties.jobConfiguration', 'type': 'JobConfiguration'},
-        'template': {'key': 'properties.jobTemplate', 'type': 'JobTemplate'},
-    }
-
-    def __init__(self, **kwargs):
-        super(ContainerAppsJob, self).__init__(**kwargs)
-        self.identity = kwargs.get('identity', None)
-        self.provisioning_state = None
-        self.managed_environment_id = kwargs.get('managed_environment_id', None)
-        self.configuration = kwargs.get('configuration', None)
-        self.template = kwargs.get('template', None)
-        self.outbound_ip_addresses = None
 
 
 class ContainerAppAuthToken(TrackedResource):
