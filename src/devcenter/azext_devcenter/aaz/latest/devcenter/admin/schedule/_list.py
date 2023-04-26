@@ -10,13 +10,9 @@
 
 from azure.cli.core.aaz import *
 
-#TODO: amlim see if this command will have more than one result
-# @register_command(
-#     "devcenter admin schedule list",
-#     is_preview=True,
-# )
+
 class List(AAZCommand):
-    """List schedules for a pool
+    """List schedules for a pool.
 
     :example: List
         az devcenter admin schedule list --pool-name "DevPool" --project-name "TestProject" --resource-group "rg1"

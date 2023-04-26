@@ -13,16 +13,15 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin network-connection create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a network connection.
 
     :example: Create hybrid join
-        az devcenter admin network-connection create --location "eastus" --domain-join-type "HybridAzureADJoin" --domain-name "mydomaincontroller.local" --domain-password "Password value for user" --domain-username "testuser@mydomaincontroller.local" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExampleRG/providers/Microsoft.Network/virtualNetworks/ExampleVNet/subnets/default" --name "{networkConnectionName}" --resource-group "rg1"
+        az devcenter admin network-connection create --location "eastus" --domain-join-type "HybridAzureADJoin" --domain-name "mydomaincontroller.local" --domain-password "Password value for user" --domain-username "testuser@mydomaincontroller.local" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExampleRG/providers/Microsoft.Network/virtualNetworks/ExampleVNet/subnets/default" --name "uswest3network" --resource-group "rg1"
 
     :example: Create Azure AD join
-        az devcenter admin network-connection create --location "eastus" --domain-join-type "AzureADJoin" --networking-resource-group-name "NetworkInterfacesRG" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExampleRG/providers/Microsoft.Network/virtualNetworks/ExampleVNet/subnets/default" --name "{networkConnectionName}" --resource-group "rg1"
+        az devcenter admin network-connection create --location "eastus" --domain-join-type "AzureADJoin" --networking-resource-group-name "NetworkInterfacesRG" --subnet-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ExampleRG/providers/Microsoft.Network/virtualNetworks/ExampleVNet/subnets/default" --name "uswest3network" --resource-group "rg1"
     """
 
     _aaz_info = {
@@ -51,11 +50,10 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.network_connection_name = AAZStrArg(
             options=["-n", "--name", "--network-connection-name"],
-            help="Name of the Network Connection that can be applied to a Pool.",
+            help="Name of the network connection that can be applied to a pool.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -91,12 +89,12 @@ class Create(AAZCommand):
         _args_schema.domain_name = AAZStrArg(
             options=["--domain-name"],
             arg_group="Properties",
-            help="Active Directory domain name",
+            help="Active Directory domain name.",
         )
         _args_schema.domain_password = AAZStrArg(
             options=["--domain-password"],
             arg_group="Properties",
-            help="The password for the account used to join domain",
+            help="The password for the account used to join domain.",
         )
         _args_schema.domain_username = AAZStrArg(
             options=["--domain-username"],
@@ -104,19 +102,19 @@ class Create(AAZCommand):
             help="The username of an Active Directory account (user or service account) that has permissions to create computer objects in Active Directory. Required format: admin@contoso.com.",
         )
         _args_schema.networking_resource_group_name = AAZStrArg(
-            options=["-r", "--networking-resource-group-name"],
+            options=["--networking-resource-group-name"],
             arg_group="Properties",
             help="The name for resource group where NICs will be placed.",
         )
         _args_schema.organization_unit = AAZStrArg(
             options=["--organization-unit"],
             arg_group="Properties",
-            help="Active Directory domain Organization Unit (OU)",
+            help="Active Directory domain Organization Unit (OU).",
         )
         _args_schema.subnet_id = AAZStrArg(
             options=["--subnet-id"],
             arg_group="Properties",
-            help="The subnet to attach Virtual Machines to",
+            help="The subnet to attach dev boxes to.",
         )
         return cls._args_schema
 
@@ -234,7 +232,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("domainJoinType", AAZStrType, ".domain_join_type", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("domainName", AAZStrType, ".domain_name")
-                properties.set_prop("domainPassword", AAZStrType, ".domain_password")
+                properties.set_prop("domainPassword", AAZStrType, ".domain_password", typ_kwargs={"flags": {"secret": True}})
                 properties.set_prop("domainUsername", AAZStrType, ".domain_username")
                 properties.set_prop("networkingResourceGroupName", AAZStrType, ".networking_resource_group_name")
                 properties.set_prop("organizationUnit", AAZStrType, ".organization_unit")
@@ -295,6 +293,7 @@ class Create(AAZCommand):
             )
             properties.domain_password = AAZStrType(
                 serialized_name="domainPassword",
+                flags={"secret": True},
             )
             properties.domain_username = AAZStrType(
                 serialized_name="domainUsername",

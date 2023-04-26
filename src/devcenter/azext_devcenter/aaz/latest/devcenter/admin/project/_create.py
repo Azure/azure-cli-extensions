@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin project create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a project.
 
     :example: Create
-        az devcenter admin project create --location "eastus" --description "This is my first project." --dev-center-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/providers/Microsoft.DevCenter/devcenters/{devCenterName}" --tags CostCenter="R&D" --name "{projectName}" --resource-group "rg1" --max-dev-boxes-per-user "3"
+        az devcenter admin project create --location "eastus" --description "This is my first project." --dev-center-id "/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/rg1/providers/Microsoft.DevCenter/devcenters/Contoso" --tags CostCenter="R&D" --name "DevProject" --resource-group "rg1" --max-dev-boxes-per-user "3"
     """
 
     _aaz_info = {
@@ -87,12 +86,12 @@ class Create(AAZCommand):
         _args_schema.dev_center_id = AAZStrArg(
             options=["--dev-center-id"],
             arg_group="Properties",
-            help="Resource Id of an associated DevCenter",
+            help="Resource ID of an associated dev center.",
         )
         _args_schema.max_dev_boxes_per_user = AAZIntArg(
             options=["--max-dev-boxes-per-user"],
             arg_group="Properties",
-            help="When specified, limits the maximum number of Dev Boxes a single user can create across all pools in the project. This will have no effect on existing Dev Boxes when reduced.",
+            help="When specified, limits the maximum number of dev boxes a single user can create across all pools in the project. This will have no effect on existing dev boxes when reduced.",
             fmt=AAZIntArgFormat(
                 minimum=0,
             ),

@@ -13,12 +13,11 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin network-connection list-health-check",
-    is_preview=True,
 )
 class ListHealthCheck(AAZCommand):
-    """List health check status details.
+    """List health check status details
 
-    :example: List health checks
+    :example: List health check status details
         az devcenter admin network-connection list-health-check --name "uswest3network" --resource-group "rg1"
     """
 
@@ -46,7 +45,7 @@ class ListHealthCheck(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.network_connection_name = AAZStrArg(
             options=["-n", "--name", "--network-connection-name"],
-            help="Name of the Network Connection that can be applied to a Pool.",
+            help="Name of the network connection that can be applied to a pool.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(

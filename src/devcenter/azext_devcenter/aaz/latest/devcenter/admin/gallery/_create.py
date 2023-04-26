@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin gallery create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a gallery.
 
     :example: Create
-        az devcenter admin gallery create --gallery-resource-id "/subscriptions/{subscriptionId}/resourceGroups/rg1/providers/Microsoft.Compute/galleries/{galleryName}" --dev-center-name "Contoso" --name "{galleryName}" --resource-group "rg1"
+        az devcenter admin gallery create --gallery-resource-id "/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff/resourceGroups/rg1/providers/Microsoft.Compute/galleries/StandardGallery" --dev-center-name "Contoso" --name "StandardGallery" --resource-group "rg1"
     """
 
     _aaz_info = {

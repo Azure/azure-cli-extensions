@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin environment-type show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get an environment type.
 
-    :example: Show
-        az devcenter admin environment-type show --dev-center-name "Contoso" --name "{environmentTypeName}" --resource-group "rg1"
+    :example: Get
+        az devcenter admin environment-type show --dev-center-name "Contoso" --name "DevTest" --resource-group "rg1"
     """
 
     _aaz_info = {

@@ -42,7 +42,7 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            help="The name of the devcenter.",
+            help="The name of the dev center.",
             required=True,
             id_part="name",
         )

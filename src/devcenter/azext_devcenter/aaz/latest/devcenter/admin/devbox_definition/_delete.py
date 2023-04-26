@@ -13,11 +13,10 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin devbox-definition delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a Dev Box definition
+    """Delete a dev box definition.
 
     :example: Delete
         az devcenter admin devbox-definition delete --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
@@ -49,7 +48,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.dev_box_definition_name = AAZStrArg(
             options=["-n", "--name", "--dev-box-definition-name"],
-            help="The name of the Dev Box definition.",
+            help="The name of the dev box definition.",
             required=True,
             id_part="child_name_1",
         )

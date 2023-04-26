@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin image-version show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get an image version.
 
-    :example: Show
-        az devcenter admin image-version show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --image-name "Win11" --resource-group "rg1" --version-name "{versionName}"
+    :example: Get
+        az devcenter admin image-version show --dev-center-name "Contoso" --gallery-name "DefaultDevGallery" --image-name "Win11" --resource-group "rg1" --version-name "1.0.0"
     """
 
     _aaz_info = {

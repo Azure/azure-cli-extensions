@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin project list",
-    is_preview=True,
 )
 class List(AAZCommand):
-    """List all projects in the subscription.
+    """List projects.
 
     :example: List by resource group
         az devcenter admin project list --resource-group "rg1"

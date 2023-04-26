@@ -8,16 +8,5 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "devcenter admin project-allowed-environment-type",
-)
-class __CMDGroup(AAZCommandGroup):
-    """Manage project allowed environment types.
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._list import *

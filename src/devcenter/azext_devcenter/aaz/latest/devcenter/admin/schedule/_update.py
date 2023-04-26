@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin schedule update",
-    is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a Schedule.
+    """Update a schedule.
 
     :example: Update
         az devcenter admin schedule update --time "18:00" --pool-name "DevPool" --project-name "TestProject" --resource-group "rg1"

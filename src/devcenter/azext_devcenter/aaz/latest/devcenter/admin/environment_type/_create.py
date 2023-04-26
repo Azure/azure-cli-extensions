@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin environment-type create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create an environment type.
 
     :example: Create
-        az devcenter admin environment-type create --tags Owner="superuser" --dev-center-name "Contoso" --name "{environmentTypeName}" --resource-group "rg1"
+        az devcenter admin environment-type create --tags Owner="superuser" --dev-center-name "Contoso" --name "DevTest" --resource-group "rg1"
     """
 
     _aaz_info = {

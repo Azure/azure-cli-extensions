@@ -13,14 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin attached-network delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete an attached network connection.
 
     :example: Delete
-        az devcenter admin attached-network delete --attached-network-connection-name "{attachedNetworkConnectionName}" --dev-center-name "Contoso" --resource-group "rg1"
+        az devcenter admin attached-network delete --attached-network-connection-name "network-uswest3" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {

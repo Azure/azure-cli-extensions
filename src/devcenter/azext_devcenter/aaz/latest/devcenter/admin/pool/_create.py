@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin pool create",
-    is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a machine pool.
+    """Create a pool.
 
     :example: Create
-        az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --network-connection-name "Network1-westus2" --pool-name "{poolName}" --project-name "{projectName}" --resource-group "rg1" --local-administrator "Enabled" --stop-on-disconnect grace-period-minutes="60" status="Enabled"
+        az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --network-connection-name "Network1-westus2" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --local-administrator "Enabled" --stop-on-disconnect grace-period-minutes="60" status="Enabled"
     """
 
     _aaz_info = {
@@ -87,39 +86,40 @@ class Create(AAZCommand):
         _args_schema.dev_box_definition_name = AAZStrArg(
             options=["-d", "--dev-box-definition-name"],
             arg_group="Properties",
-            help="Name of a Dev Box definition in parent Project of this Pool",
+            help="Name of a dev box definition in parent project of this pool.",
         )
         _args_schema.license_type = AAZStrArg(
             options=["--license-type"],
             arg_group="Properties",
-            help="Specifies the license type indicating the caller has already acquired licenses for the Dev Boxes that will be created.",
+            help="Specifies the license type indicating the caller has already acquired licenses for the dev boxes that will be created.",
+            default="Windows_Client",
             enum={"Windows_Client": "Windows_Client"},
         )
         _args_schema.local_administrator = AAZStrArg(
             options=["--local-administrator"],
             arg_group="Properties",
-            help="Indicates whether owners of Dev Boxes in this pool are added as local administrators on the Dev Box.",
+            help="Indicates whether owners of dev boxes in this pool are added as local administrators on the dev box.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.network_connection_name = AAZStrArg(
             options=["-c", "--network-connection-name"],
             arg_group="Properties",
-            help="Name of a Network Connection in parent Project of this Pool",
+            help="Name of a network connection in parent project of this pool.",
         )
         _args_schema.stop_on_disconnect = AAZObjectArg(
             options=["--stop-on-disconnect"],
             arg_group="Properties",
-            help="Stop on disconnect configuration settings for Dev Boxes created in this pool.",
+            help="Stop on disconnect configuration settings for dev boxes created in this pool.",
         )
 
         stop_on_disconnect = cls._args_schema.stop_on_disconnect
         stop_on_disconnect.grace_period_minutes = AAZIntArg(
             options=["grace-period-minutes"],
-            help="The specified time in minutes to wait before stopping a Dev Box once disconnect is detected.",
+            help="The specified time in minutes to wait before stopping a dev box once disconnect is detected.",
         )
         stop_on_disconnect.status = AAZStrArg(
             options=["status"],
-            help="Whether the feature to stop the Dev Box on disconnect once the grace period has lapsed is enabled.",
+            help="Whether the feature to stop the dev box on disconnect once the grace period has lapsed is enabled.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         return cls._args_schema

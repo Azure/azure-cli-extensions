@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "devcenter admin project-allowed-environment-type",
+    "devcenter admin usage",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage project allowed environment types.
+    """Manage usages.
     """
     pass
 

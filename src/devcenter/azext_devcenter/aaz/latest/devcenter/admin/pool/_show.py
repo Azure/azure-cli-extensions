@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin pool show",
-    is_preview=True,
 )
 class Show(AAZCommand):
-    """Get a machine pool
+    """Get a pool.
 
-    :example: Show
-        az devcenter admin pool show --name "{poolName}" --project-name "{projectName}" --resource-group "rg1"
+    :example: Get
+        az admin pool show --name "DevPool" --project-name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {

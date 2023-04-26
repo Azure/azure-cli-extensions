@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin catalog show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get a catalog.
 
-    :example: Show
-        az devcenter admin catalog show --name "{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
+    :example: Get
+        az devcenter admin catalog show --name "CentralCatalog" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {

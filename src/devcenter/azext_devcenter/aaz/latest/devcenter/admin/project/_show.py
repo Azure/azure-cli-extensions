@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin project show",
-    is_preview=True,
 )
 class Show(AAZCommand):
-    """Get a specific project.
+    """Get a project.
 
-    :example: Show
-        az devcenter admin project show --name "{projectName}" --resource-group "rg1"
+    :example: Get
+        az devcenter admin project show --name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin project-environment-type list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List environment types for a project.

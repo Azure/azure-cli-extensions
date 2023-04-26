@@ -13,13 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin environment-type update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update an environment type.
 
     :example: Update
-        az devcenter admin environment-type update --tags Owner="superuser" --dev-center-name "Contoso" --name "{environmentTypeName}" --resource-group "rg1"
+        az devcenter admin environment-type update --tags Owner="superuser" --dev-center-name "Contoso" --name "DevTest" --resource-group "rg1"
     """
 
     _aaz_info = {

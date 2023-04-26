@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin schedule create",
-    is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a Schedule.
+    """Create a schedule.
 
     :example: Create
         az devcenter admin schedule create --state "Enabled" --time "17:30" --time-zone "America/Los_Angeles" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1"
@@ -102,6 +101,7 @@ class Create(AAZCommand):
             options=["--type"],
             arg_group="Properties",
             help="Supported type this scheduled task represents.",
+            default="StopDevBox",
             enum={"StopDevBox": "StopDevBox"},
         )
         return cls._args_schema

@@ -13,12 +13,11 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin schedule show",
-    is_preview=True,
 )
 class Show(AAZCommand):
-    """Get a schedule resource.
+    """Get a schedule.
 
-    :example: Show
+    :example: Get
         az devcenter admin schedule show --pool-name "DevPool" --project-name "TestProject" --resource-group "rg1"
     """
 

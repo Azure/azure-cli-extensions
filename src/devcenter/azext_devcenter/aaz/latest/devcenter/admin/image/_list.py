@@ -13,15 +13,14 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin image list",
-    is_preview=True,
 )
 class List(AAZCommand):
-    """List images for a gallery.
+    """List images for a dev center or gallery.
 
     :example: List by dev center
         az devcenter admin image list --dev-center-name "Contoso" --resource-group "rg1"
 
-    :example: List by project
+    :example: List by gallery
         az devcenter admin image list --dev-center-name "Contoso" --gallery-name "DevGallery" --resource-group "rg1"
     """
 

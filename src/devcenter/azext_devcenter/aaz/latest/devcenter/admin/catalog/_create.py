@@ -13,16 +13,15 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin catalog create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a catalog.
 
     :example: Create using an Azure DevOps repository
-        az devcenter admin catalog create --ado-git path="/templates" branch="main" secret-identifier="https://contosokv.vault.azure.net/secrets/CentralRepoPat" uri="https://contoso@dev.azure.com/contoso/contosoOrg/_git/centralrepo-fakecontoso" --name "{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
+        az devcenter admin catalog create --ado-git path="/templates" branch="main" secret-identifier="https://contosokv.vault.azure.net/secrets/CentralRepoPat" uri="https://contoso@dev.azure.com/contoso/contosoOrg/_git/centralrepo-fakecontoso" --name "CentralCatalog" --dev-center-name "Contoso" --resource-group "rg1"
 
     :example: Create using a GitHub repository
-        az devcenter admin catalog create --git-hub path="/templates" branch="main" secret-identifier="https://contosokv.vault.azure.net/secrets/CentralRepoPat" uri="https://github.com/Contoso/centralrepo-fake.git" --name "{catalogName}" --dev-center-name "Contoso" --resource-group "rg1"
+        az devcenter admin catalog create --git-hub path="/templates" branch="main" secret-identifier="https://contosokv.vault.azure.net/secrets/CentralRepoPat" uri="https://github.com/Contoso/centralrepo-fake.git" --name "CentralCatalog" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {

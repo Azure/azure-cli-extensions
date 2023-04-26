@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin network-connection run-health-check",
-    is_preview=True,
 )
 class RunHealthCheck(AAZCommand):
-    """Triggers a new health check run. The execution and health check result can be tracked via the network connection health check details.
+    """Triggers a new health check run. The execution and health check result can be tracked via the network Connection health check details
 
     :example: Run health check
         az devcenter admin network-connection run-health-check --name "uswest3network" --resource-group "rg1"
@@ -48,7 +47,7 @@ class RunHealthCheck(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.network_connection_name = AAZStrArg(
             options=["-n", "--name", "--network-connection-name"],
-            help="Name of the Network Connection that can be applied to a Pool.",
+            help="Name of the network connection that can be applied to a pool.",
             required=True,
             id_part="name",
         )

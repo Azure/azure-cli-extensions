@@ -13,14 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin project delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete a project.
 
     :example: Delete
-        az devcenter admin project delete --name "{projectName}" --resource-group "rg1"
+        az devcenter admin project delete --name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {

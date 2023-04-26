@@ -13,11 +13,10 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin devcenter delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a devcenter
+    """Delete a dev center.
 
     :example: Delete
         az devcenter admin devcenter delete --name "Contoso" --resource-group "rg1"
@@ -49,7 +48,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            help="The name of the devcenter.",
+            help="The name of the dev center.",
             required=True,
             id_part="name",
         )

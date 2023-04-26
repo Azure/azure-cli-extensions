@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin network-connection list-outbound-network-dependencies-endpoint",
-    is_preview=True,
 )
 class ListOutboundNetworkDependenciesEndpoint(AAZCommand):
     """List the endpoints that agents may call as part of Dev Box service administration. These FQDNs should be allowed for outbound access in order for the Dev Box service to function.
@@ -46,7 +45,7 @@ class ListOutboundNetworkDependenciesEndpoint(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.network_connection_name = AAZStrArg(
             options=["-n", "--name", "--network-connection-name"],
-            help="Name of the Network Connection that can be applied to a Pool.",
+            help="Name of the network connection that can be applied to a pool.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
