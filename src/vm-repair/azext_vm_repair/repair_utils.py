@@ -350,7 +350,9 @@ def _fetch_encryption_settings(source_vm):
     encryption_type, enabled, key_vault, kekurl, secreturl = loads(_call_az_command(show_disk_command))
     if [encryption_type, key_vault, kekurl] == [None, None, None]:
         return Encryption.NONE, key_vault, kekurl, secreturl
-    if (not enabled) or enabled == 'false':
+    if not enabled:
+        return Encryption.NONE, key_vault, kekurl, secreturl
+    if enabled.tolower() == 'false':
         return Encryption.NONE, key_vault, kekurl, secreturl
     if kekurl == []:
         key_vault, secreturl = key_vault[0], secreturl[0]
