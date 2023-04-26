@@ -13,21 +13,21 @@ interactions:
       ParameterSetName:
       - -n -g --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_firewall_basic_sku_000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001","name":"cli_test_firewall_basic_sku_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-04-06T09:13:20Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001","name":"cli_test_firewall_basic_sku_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_firewall_basic_sku","date":"2023-04-26T07:45:18Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '346'
+      - '379'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:13:24 GMT
+      - Wed, 26 Apr 2023 07:45:33 GMT
       expires:
       - '-1'
       pragma:
@@ -55,21 +55,21 @@ interactions:
       ParameterSetName:
       - -n -g --address-prefixes --subnet-name --subnet-prefixes
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_firewall_basic_sku_000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001","name":"cli_test_firewall_basic_sku_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-04-06T09:13:20Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001","name":"cli_test_firewall_basic_sku_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_firewall_basic_sku","date":"2023-04-26T07:45:18Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '346'
+      - '379'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:13:25 GMT
+      - Wed, 26 Apr 2023 07:45:36 GMT
       expires:
       - '-1'
       pragma:
@@ -104,19 +104,19 @@ interactions:
       ParameterSetName:
       - -n -g --address-prefixes --subnet-name --subnet-prefixes
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualNetworks/vnet-000003?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"vnet-000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualNetworks/vnet-000003\",\r\n
-        \ \"etag\": \"W/\\\"ea20faf8-05f9-4eea-aadd-23af3e8bbe15\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"0d9be89b-1090-49a7-bbbd-8f08011ce641\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"resourceGuid\":
-        \"477cfbed-fab4-400c-8877-6f453dc15615\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        \"5bf09614-d39f-494c-8a4b-a30a874ce2ac\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
         [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
         \     {\r\n        \"name\": \"AzureFirewallSubnet\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualNetworks/vnet-000003/subnets/AzureFirewallSubnet\",\r\n
-        \       \"etag\": \"W/\\\"ea20faf8-05f9-4eea-aadd-23af3e8bbe15\\\"\",\r\n
+        \       \"etag\": \"W/\\\"0d9be89b-1090-49a7-bbbd-8f08011ce641\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Updating\",\r\n
         \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -127,7 +127,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/02d63199-112d-429a-9da3-bd22f06cb497?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d60ab440-678a-416a-b118-310b2b572c1d?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -135,7 +135,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:13:27 GMT
+      - Wed, 26 Apr 2023 07:45:40 GMT
       expires:
       - '-1'
       pragma:
@@ -148,9 +148,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 9653ab67-ef5d-4ace-832c-a554a55a48fc
+      - 40ff601f-090b-4768-ad0f-f6b0a300b2c6
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -168,9 +168,9 @@ interactions:
       ParameterSetName:
       - -n -g --address-prefixes --subnet-name --subnet-prefixes
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/02d63199-112d-429a-9da3-bd22f06cb497?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d60ab440-678a-416a-b118-310b2b572c1d?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -182,7 +182,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:13:31 GMT
+      - Wed, 26 Apr 2023 07:45:44 GMT
       expires:
       - '-1'
       pragma:
@@ -199,7 +199,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 5eb4b016-2cb5-4eb6-837f-5504d651e59d
+      - 321384a6-341c-44c9-9697-4fc820a08c01
     status:
       code: 200
       message: OK
@@ -217,19 +217,19 @@ interactions:
       ParameterSetName:
       - -n -g --address-prefixes --subnet-name --subnet-prefixes
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualNetworks/vnet-000003?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"vnet-000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualNetworks/vnet-000003\",\r\n
-        \ \"etag\": \"W/\\\"3bdaf021-6304-404e-8ca1-9468657fd299\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"697fef82-d36e-4746-9bf6-516f8681f338\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"westus\",\r\n
         \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\":
-        \"477cfbed-fab4-400c-8877-6f453dc15615\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
+        \"5bf09614-d39f-494c-8a4b-a30a874ce2ac\",\r\n    \"addressSpace\": {\r\n      \"addressPrefixes\":
         [\r\n        \"10.0.0.0/16\"\r\n      ]\r\n    },\r\n    \"subnets\": [\r\n
         \     {\r\n        \"name\": \"AzureFirewallSubnet\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualNetworks/vnet-000003/subnets/AzureFirewallSubnet\",\r\n
-        \       \"etag\": \"W/\\\"3bdaf021-6304-404e-8ca1-9468657fd299\\\"\",\r\n
+        \       \"etag\": \"W/\\\"697fef82-d36e-4746-9bf6-516f8681f338\\\"\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"addressPrefix\": \"10.0.0.0/24\",\r\n          \"delegations\":
         [],\r\n          \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n          \"privateLinkServiceNetworkPolicies\":
@@ -244,9 +244,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:13:31 GMT
+      - Wed, 26 Apr 2023 07:45:44 GMT
       etag:
-      - W/"3bdaf021-6304-404e-8ca1-9468657fd299"
+      - W/"697fef82-d36e-4746-9bf6-516f8681f338"
       expires:
       - '-1'
       pragma:
@@ -263,7 +263,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 166a2f1d-5abb-4bdf-baf0-55d006aad033
+      - eeb10b58-60a6-4a02-b3a7-b1871b9a7a0a
     status:
       code: 200
       message: OK
@@ -286,13 +286,13 @@ interactions:
       ParameterSetName:
       - -n -g --vnet-name --address-prefixes
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualNetworks/vnet-000003/subnets/AzureFirewallManagementSubnet?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"AzureFirewallManagementSubnet\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualNetworks/vnet-000003/subnets/AzureFirewallManagementSubnet\",\r\n
-        \ \"etag\": \"W/\\\"945d375b-7ee5-471c-98de-7752af2f9c26\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"cb8b4523-0d25-467c-94ad-bfeac3b1378e\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"addressPrefix\": \"10.0.1.0/24\",\r\n
         \   \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n
         \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
@@ -301,7 +301,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/08780d5c-7004-4d90-8557-5f53b2364860?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/3ea428aa-03cb-4f7f-988f-20b471d7b7d8?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -309,7 +309,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:13:32 GMT
+      - Wed, 26 Apr 2023 07:45:48 GMT
       expires:
       - '-1'
       pragma:
@@ -322,9 +322,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 88f89dd2-e190-48bf-9a32-a522710e0c27
+      - c9cf42eb-23fc-45d9-a0d8-f71d52448662
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -342,9 +342,9 @@ interactions:
       ParameterSetName:
       - -n -g --vnet-name --address-prefixes
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/08780d5c-7004-4d90-8557-5f53b2364860?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/3ea428aa-03cb-4f7f-988f-20b471d7b7d8?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -356,7 +356,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:13:35 GMT
+      - Wed, 26 Apr 2023 07:45:51 GMT
       expires:
       - '-1'
       pragma:
@@ -373,7 +373,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f604371e-d313-4f09-858b-aa4bd5d5b8b7
+      - bd0e8486-4d69-4017-aa2c-b79ea56ed531
     status:
       code: 200
       message: OK
@@ -391,13 +391,13 @@ interactions:
       ParameterSetName:
       - -n -g --vnet-name --address-prefixes
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualNetworks/vnet-000003/subnets/AzureFirewallManagementSubnet?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"AzureFirewallManagementSubnet\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualNetworks/vnet-000003/subnets/AzureFirewallManagementSubnet\",\r\n
-        \ \"etag\": \"W/\\\"813ffb1f-91f0-4e85-973a-8c1e5bf69548\\\"\",\r\n  \"properties\":
+        \ \"etag\": \"W/\\\"c53f87d8-f64c-4052-8c38-3ec463b62846\\\"\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"addressPrefix\": \"10.0.1.0/24\",\r\n
         \   \"delegations\": [],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\",\r\n
         \   \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"type\":
@@ -410,9 +410,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:13:36 GMT
+      - Wed, 26 Apr 2023 07:45:51 GMT
       etag:
-      - W/"813ffb1f-91f0-4e85-973a-8c1e5bf69548"
+      - W/"c53f87d8-f64c-4052-8c38-3ec463b62846"
       expires:
       - '-1'
       pragma:
@@ -429,7 +429,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f9d9e5d4-ca5c-4f8a-9bd0-289cb857533b
+      - 9fa63081-7198-4621-9852-36010cd0bc1e
     status:
       code: 200
       message: OK
@@ -447,21 +447,21 @@ interactions:
       ParameterSetName:
       - -n -g --sku
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_firewall_basic_sku_000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001","name":"cli_test_firewall_basic_sku_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-04-06T09:13:20Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001","name":"cli_test_firewall_basic_sku_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_firewall_basic_sku","date":"2023-04-26T07:45:18Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '346'
+      - '379'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:13:37 GMT
+      - Wed, 26 Apr 2023 07:45:54 GMT
       expires:
       - '-1'
       pragma:
@@ -494,15 +494,15 @@ interactions:
       ParameterSetName:
       - -n -g --sku
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/publicIPAddresses/public-ip-000006?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"public-ip-000006\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/publicIPAddresses/public-ip-000006\",\r\n
-        \ \"etag\": \"W/\\\"0b88ce03-364b-4854-b3f1-4ed31d449eb8\\\"\",\r\n  \"location\":
+        \ \"etag\": \"W/\\\"e0b2ae07-c004-4dfc-90df-cd58b9c72d70\\\"\",\r\n  \"location\":
         \"westus\",\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n
-        \   \"resourceGuid\": \"9807946a-4fe9-425f-8678-52ff238a0a88\",\r\n    \"publicIPAddressVersion\":
+        \   \"resourceGuid\": \"54af129c-bc40-4ce1-aaed-8880b390ad37\",\r\n    \"publicIPAddressVersion\":
         \"IPv4\",\r\n    \"publicIPAllocationMethod\": \"Static\",\r\n    \"idleTimeoutInMinutes\":
         4,\r\n    \"ipTags\": [],\r\n    \"ddosSettings\": {\r\n      \"protectionMode\":
         \"VirtualNetworkInherited\"\r\n    }\r\n  },\r\n  \"type\": \"Microsoft.Network/publicIPAddresses\",\r\n
@@ -512,7 +512,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/e684b630-ee5b-4f35-a2cc-876b2eefb0f2?api-version=2022-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/606b0d98-8191-444b-b756-51732656028c?api-version=2022-05-01
       cache-control:
       - no-cache
       content-length:
@@ -520,7 +520,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:13:41 GMT
+      - Wed, 26 Apr 2023 07:45:58 GMT
       expires:
       - '-1'
       pragma:
@@ -533,9 +533,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 5b9198d4-f550-44e7-9bc2-a5abc51bb53f
+      - ba3fde46-401d-4a76-b63c-35d775943e32
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -553,9 +553,9 @@ interactions:
       ParameterSetName:
       - -n -g --sku
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/e684b630-ee5b-4f35-a2cc-876b2eefb0f2?api-version=2022-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/606b0d98-8191-444b-b756-51732656028c?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -567,7 +567,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:13:42 GMT
+      - Wed, 26 Apr 2023 07:46:00 GMT
       expires:
       - '-1'
       pragma:
@@ -584,7 +584,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - e23f8425-4527-46b2-94af-e07536c6245d
+      - dbafe3c4-725e-4fc9-acdc-e534269b9901
     status:
       code: 200
       message: OK
@@ -602,16 +602,16 @@ interactions:
       ParameterSetName:
       - -n -g --sku
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/publicIPAddresses/public-ip-000006?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"public-ip-000006\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/publicIPAddresses/public-ip-000006\",\r\n
-        \ \"etag\": \"W/\\\"5e52d2a6-8646-4895-8068-668af989961f\\\"\",\r\n  \"location\":
+        \ \"etag\": \"W/\\\"3bb1b1cf-b453-4325-8fe8-660509ae687b\\\"\",\r\n  \"location\":
         \"westus\",\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n
-        \   \"resourceGuid\": \"9807946a-4fe9-425f-8678-52ff238a0a88\",\r\n    \"ipAddress\":
-        \"137.135.10.204\",\r\n    \"publicIPAddressVersion\": \"IPv4\",\r\n    \"publicIPAllocationMethod\":
+        \   \"resourceGuid\": \"54af129c-bc40-4ce1-aaed-8880b390ad37\",\r\n    \"ipAddress\":
+        \"168.62.210.52\",\r\n    \"publicIPAddressVersion\": \"IPv4\",\r\n    \"publicIPAllocationMethod\":
         \"Static\",\r\n    \"idleTimeoutInMinutes\": 4,\r\n    \"ipTags\": [],\r\n
         \   \"ddosSettings\": {\r\n      \"protectionMode\": \"VirtualNetworkInherited\"\r\n
         \   }\r\n  },\r\n  \"type\": \"Microsoft.Network/publicIPAddresses\",\r\n
@@ -621,13 +621,13 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '785'
+      - '784'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:13:42 GMT
+      - Wed, 26 Apr 2023 07:46:00 GMT
       etag:
-      - W/"5e52d2a6-8646-4895-8068-668af989961f"
+      - W/"3bb1b1cf-b453-4325-8fe8-660509ae687b"
       expires:
       - '-1'
       pragma:
@@ -644,7 +644,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 2ad50d4d-bd02-449b-9556-a2dafab284af
+      - 54ac0247-1394-439e-af89-df5c66829acc
     status:
       code: 200
       message: OK
@@ -662,21 +662,23 @@ interactions:
       ParameterSetName:
       - -n -g --sku --tier --vnet-name --conf-name --m-conf-name --m-public-ip
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_firewall_basic_sku_000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001","name":"cli_test_firewall_basic_sku_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-04-06T09:13:20Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001","name":"cli_test_firewall_basic_sku_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_firewall_basic_sku","date":"2023-04-26T07:45:18Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
+      connection:
+      - close
       content-length:
-      - '346'
+      - '379'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:13:43 GMT
+      - Wed, 26 Apr 2023 07:46:02 GMT
       expires:
       - '-1'
       pragma:
@@ -713,26 +715,26 @@ interactions:
       ParameterSetName:
       - -n -g --sku --tier --vnet-name --conf-name --m-conf-name --m-public-ip
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/azureFirewalls/firewall-000002?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"firewall-000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/azureFirewalls/firewall-000002\",\r\n
-        \ \"etag\": \"W/\\\"b41377d9-2422-4d5e-a30a-626a82ef124a\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"b17f2c9e-d281-4c2e-babb-3047adcd4091\\\"\",\r\n  \"type\":
         \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"sku\": {\r\n      \"name\":
         \"AZFW_VNet\",\r\n      \"tier\": \"Basic\"\r\n    },\r\n    \"threatIntelMode\":
         \"Alert\",\r\n    \"additionalProperties\": {},\r\n    \"managementIpConfiguration\":
         {\r\n      \"name\": \"ipconfig-000005\",\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/azureFirewalls/firewall-000002/azureFirewallIpConfigurations/ipconfig-000005\",\r\n
-        \     \"etag\": \"W/\\\"b41377d9-2422-4d5e-a30a-626a82ef124a\\\"\",\r\n      \"type\":
+        \     \"etag\": \"W/\\\"b17f2c9e-d281-4c2e-babb-3047adcd4091\\\"\",\r\n      \"type\":
         \"Microsoft.Network/azureFirewalls/azureFirewallIpConfigurations\",\r\n      \"properties\":
         {\r\n        \"provisioningState\": \"Succeeded\",\r\n        \"privateIPAllocationMethod\":
         \"Dynamic\",\r\n        \"publicIPAddress\": {\r\n          \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/publicIPAddresses/public-ip-000006\"\r\n
         \       },\r\n        \"subnet\": {\r\n          \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualNetworks/vnet-000003/subnets/AzureFirewallManagementSubnet\"\r\n
         \       }\r\n      }\r\n    },\r\n    \"ipConfigurations\": [\r\n      {\r\n
         \       \"name\": \"ipconfig-000004\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/azureFirewalls/firewall-000002/azureFirewallIpConfigurations/ipconfig-000004\",\r\n
-        \       \"etag\": \"W/\\\"b41377d9-2422-4d5e-a30a-626a82ef124a\\\"\",\r\n
+        \       \"etag\": \"W/\\\"b17f2c9e-d281-4c2e-babb-3047adcd4091\\\"\",\r\n
         \       \"type\": \"Microsoft.Network/azureFirewalls/azureFirewallIpConfigurations\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"privateIPAllocationMethod\": \"Dynamic\",\r\n          \"subnet\":
@@ -744,7 +746,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/94f38a02-336b-4ab8-8e28-4456c9e7ef13?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/628b4a06-d8a3-443b-b1c9-77194337bcba?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -752,7 +754,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:13:46 GMT
+      - Wed, 26 Apr 2023 07:46:08 GMT
       expires:
       - '-1'
       pragma:
@@ -765,9 +767,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 9e6e1cf5-0879-4c32-8044-e46a1f2b0ae6
+      - 13fcbaeb-e6df-4ae4-acc0-6fc19ba1b7a5
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -785,9 +787,9 @@ interactions:
       ParameterSetName:
       - -n -g --sku --tier --vnet-name --conf-name --m-conf-name --m-public-ip
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/94f38a02-336b-4ab8-8e28-4456c9e7ef13?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/628b4a06-d8a3-443b-b1c9-77194337bcba?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -799,7 +801,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:13:57 GMT
+      - Wed, 26 Apr 2023 07:46:18 GMT
       expires:
       - '-1'
       pragma:
@@ -816,7 +818,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - a2d64dbc-4fce-4053-b2a3-b107a7fa43a7
+      - a44e1ab2-570b-43c2-9bb9-dbb7d3540522
     status:
       code: 200
       message: OK
@@ -834,9 +836,9 @@ interactions:
       ParameterSetName:
       - -n -g --sku --tier --vnet-name --conf-name --m-conf-name --m-public-ip
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/94f38a02-336b-4ab8-8e28-4456c9e7ef13?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/628b4a06-d8a3-443b-b1c9-77194337bcba?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -848,7 +850,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:14:06 GMT
+      - Wed, 26 Apr 2023 07:46:28 GMT
       expires:
       - '-1'
       pragma:
@@ -865,7 +867,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 368458c0-e679-40d3-86c2-f5f152a831c0
+      - 8b01cbf6-42d4-45a4-9f4c-a684e4c36a30
     status:
       code: 200
       message: OK
@@ -883,9 +885,9 @@ interactions:
       ParameterSetName:
       - -n -g --sku --tier --vnet-name --conf-name --m-conf-name --m-public-ip
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/94f38a02-336b-4ab8-8e28-4456c9e7ef13?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/628b4a06-d8a3-443b-b1c9-77194337bcba?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -897,7 +899,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:14:27 GMT
+      - Wed, 26 Apr 2023 07:46:49 GMT
       expires:
       - '-1'
       pragma:
@@ -914,7 +916,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 5ee144d4-0375-4321-8368-e85ad773909c
+      - 5f2a7c62-3688-40a8-877a-343484727fc5
     status:
       code: 200
       message: OK
@@ -932,9 +934,9 @@ interactions:
       ParameterSetName:
       - -n -g --sku --tier --vnet-name --conf-name --m-conf-name --m-public-ip
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/94f38a02-336b-4ab8-8e28-4456c9e7ef13?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/628b4a06-d8a3-443b-b1c9-77194337bcba?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -946,7 +948,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:14:47 GMT
+      - Wed, 26 Apr 2023 07:47:09 GMT
       expires:
       - '-1'
       pragma:
@@ -963,7 +965,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 50c12b54-c985-4df2-b96e-4fb81e8bf220
+      - 0a6ec930-8fef-4f73-ba8d-083b1e454268
     status:
       code: 200
       message: OK
@@ -981,9 +983,9 @@ interactions:
       ParameterSetName:
       - -n -g --sku --tier --vnet-name --conf-name --m-conf-name --m-public-ip
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/94f38a02-336b-4ab8-8e28-4456c9e7ef13?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/628b4a06-d8a3-443b-b1c9-77194337bcba?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -995,7 +997,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:15:28 GMT
+      - Wed, 26 Apr 2023 07:47:50 GMT
       expires:
       - '-1'
       pragma:
@@ -1012,7 +1014,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 487fefc3-1d84-4abe-9fd1-55a04cb274af
+      - 80ba2006-e815-4e50-9787-c028ed958c93
     status:
       code: 200
       message: OK
@@ -1030,9 +1032,9 @@ interactions:
       ParameterSetName:
       - -n -g --sku --tier --vnet-name --conf-name --m-conf-name --m-public-ip
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/94f38a02-336b-4ab8-8e28-4456c9e7ef13?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/628b4a06-d8a3-443b-b1c9-77194337bcba?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1044,7 +1046,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:16:08 GMT
+      - Wed, 26 Apr 2023 07:48:31 GMT
       expires:
       - '-1'
       pragma:
@@ -1061,7 +1063,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f27d8a91-992b-49ca-826c-98315737c812
+      - 2b15e375-1b60-46d6-a367-59f9250324d2
     status:
       code: 200
       message: OK
@@ -1079,26 +1081,26 @@ interactions:
       ParameterSetName:
       - -n -g --sku --tier --vnet-name --conf-name --m-conf-name --m-public-ip
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/azureFirewalls/firewall-000002?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"firewall-000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/azureFirewalls/firewall-000002\",\r\n
-        \ \"etag\": \"W/\\\"4085d393-761f-4fdf-af43-daa1ec5cdc4e\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"1e86a412-3af9-4f22-bab8-e68f18cf9ccd\\\"\",\r\n  \"type\":
         \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"sku\": {\r\n      \"name\":
         \"AZFW_VNet\",\r\n      \"tier\": \"Basic\"\r\n    },\r\n    \"threatIntelMode\":
         \"Alert\",\r\n    \"additionalProperties\": {},\r\n    \"managementIpConfiguration\":
         {\r\n      \"name\": \"ipconfig-000005\",\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/azureFirewalls/firewall-000002/azureFirewallIpConfigurations/ipconfig-000005\",\r\n
-        \     \"etag\": \"W/\\\"4085d393-761f-4fdf-af43-daa1ec5cdc4e\\\"\",\r\n      \"type\":
+        \     \"etag\": \"W/\\\"1e86a412-3af9-4f22-bab8-e68f18cf9ccd\\\"\",\r\n      \"type\":
         \"Microsoft.Network/azureFirewalls/azureFirewallIpConfigurations\",\r\n      \"properties\":
         {\r\n        \"provisioningState\": \"Succeeded\",\r\n        \"privateIPAllocationMethod\":
         \"Dynamic\",\r\n        \"publicIPAddress\": {\r\n          \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/publicIPAddresses/public-ip-000006\"\r\n
         \       },\r\n        \"subnet\": {\r\n          \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualNetworks/vnet-000003/subnets/AzureFirewallManagementSubnet\"\r\n
         \       }\r\n      }\r\n    },\r\n    \"ipConfigurations\": [\r\n      {\r\n
         \       \"name\": \"ipconfig-000004\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/azureFirewalls/firewall-000002/azureFirewallIpConfigurations/ipconfig-000004\",\r\n
-        \       \"etag\": \"W/\\\"4085d393-761f-4fdf-af43-daa1ec5cdc4e\\\"\",\r\n
+        \       \"etag\": \"W/\\\"1e86a412-3af9-4f22-bab8-e68f18cf9ccd\\\"\",\r\n
         \       \"type\": \"Microsoft.Network/azureFirewalls/azureFirewallIpConfigurations\",\r\n
         \       \"properties\": {\r\n          \"provisioningState\": \"Succeeded\",\r\n
         \         \"privateIPAddress\": \"10.0.0.4\",\r\n          \"privateIPAllocationMethod\":
@@ -1114,9 +1116,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:16:08 GMT
+      - Wed, 26 Apr 2023 07:48:32 GMT
       etag:
-      - W/"4085d393-761f-4fdf-af43-daa1ec5cdc4e"
+      - W/"1e86a412-3af9-4f22-bab8-e68f18cf9ccd"
       expires:
       - '-1'
       pragma:
@@ -1133,7 +1135,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - ca2b4f55-aba1-4c54-92c5-9a9329b309ed
+      - e6780307-4c46-436c-a9b1-8a86c2006821
     status:
       code: 200
       message: OK
@@ -1153,7 +1155,7 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/azureFirewalls/firewall-000002?api-version=2022-01-01
   response:
@@ -1163,17 +1165,17 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2005f2a1-9a72-4e9c-9c2f-f0099f248805?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/5fcf68f5-cb77-4155-a4e1-2ca6cd962c1f?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Thu, 06 Apr 2023 09:16:11 GMT
+      - Wed, 26 Apr 2023 07:48:34 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operationResults/2005f2a1-9a72-4e9c-9c2f-f0099f248805?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operationResults/5fcf68f5-cb77-4155-a4e1-2ca6cd962c1f?api-version=2022-01-01
       pragma:
       - no-cache
       server:
@@ -1184,9 +1186,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f2b44c26-3f24-4879-90d7-706a7449c9df
+      - ad2ecd05-c5eb-4bad-ac0a-b993c48135ba
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14997'
+      - '14999'
     status:
       code: 202
       message: Accepted
@@ -1204,9 +1206,9 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2005f2a1-9a72-4e9c-9c2f-f0099f248805?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/5fcf68f5-cb77-4155-a4e1-2ca6cd962c1f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1218,7 +1220,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:16:21 GMT
+      - Wed, 26 Apr 2023 07:48:44 GMT
       expires:
       - '-1'
       pragma:
@@ -1235,7 +1237,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - e7e4d8ee-dd81-4138-be2e-af948676e5c8
+      - 6a8dde67-bc51-4054-83fe-e00256cfeba6
     status:
       code: 200
       message: OK
@@ -1253,9 +1255,9 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2005f2a1-9a72-4e9c-9c2f-f0099f248805?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/5fcf68f5-cb77-4155-a4e1-2ca6cd962c1f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1267,7 +1269,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:16:32 GMT
+      - Wed, 26 Apr 2023 07:48:54 GMT
       expires:
       - '-1'
       pragma:
@@ -1284,7 +1286,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 074eb657-bac1-4947-94e2-c09868329a89
+      - 48f97a9e-633c-43fa-9154-e8dfc2461ded
     status:
       code: 200
       message: OK
@@ -1302,9 +1304,9 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2005f2a1-9a72-4e9c-9c2f-f0099f248805?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/5fcf68f5-cb77-4155-a4e1-2ca6cd962c1f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1316,7 +1318,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:16:51 GMT
+      - Wed, 26 Apr 2023 07:49:15 GMT
       expires:
       - '-1'
       pragma:
@@ -1333,7 +1335,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - ec04b089-a73d-4bc8-b130-8e1413af496b
+      - 739fa0cf-604b-468b-ae64-3dd6bb883065
     status:
       code: 200
       message: OK
@@ -1351,9 +1353,9 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2005f2a1-9a72-4e9c-9c2f-f0099f248805?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/5fcf68f5-cb77-4155-a4e1-2ca6cd962c1f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1365,7 +1367,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:17:12 GMT
+      - Wed, 26 Apr 2023 07:49:36 GMT
       expires:
       - '-1'
       pragma:
@@ -1382,7 +1384,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - c922c5ba-7368-4514-b5db-ba1cc4474fd3
+      - e0d91ff2-9d85-438b-b262-3d805da6e952
     status:
       code: 200
       message: OK
@@ -1400,9 +1402,9 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2005f2a1-9a72-4e9c-9c2f-f0099f248805?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/5fcf68f5-cb77-4155-a4e1-2ca6cd962c1f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1414,7 +1416,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:17:53 GMT
+      - Wed, 26 Apr 2023 07:50:16 GMT
       expires:
       - '-1'
       pragma:
@@ -1431,7 +1433,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - dba3f71e-3582-4982-bf86-50893f2dae1f
+      - 736ed195-b977-414f-96ac-c094ee97884e
     status:
       code: 200
       message: OK
@@ -1449,9 +1451,9 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2005f2a1-9a72-4e9c-9c2f-f0099f248805?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/5fcf68f5-cb77-4155-a4e1-2ca6cd962c1f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1463,7 +1465,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:18:33 GMT
+      - Wed, 26 Apr 2023 07:50:57 GMT
       expires:
       - '-1'
       pragma:
@@ -1480,7 +1482,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - ecb69def-8a6d-417a-8ace-c4f7da0204d0
+      - f06c2e40-b94d-4b45-ac22-239bf3fe3ee6
     status:
       code: 200
       message: OK
@@ -1498,9 +1500,9 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2005f2a1-9a72-4e9c-9c2f-f0099f248805?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/5fcf68f5-cb77-4155-a4e1-2ca6cd962c1f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -1512,7 +1514,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:19:53 GMT
+      - Wed, 26 Apr 2023 07:52:17 GMT
       expires:
       - '-1'
       pragma:
@@ -1529,7 +1531,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 44b22da3-0d89-4345-8c90-43400873cc3f
+      - 8465d7e6-472b-4448-b520-e48d3c2d0d4e
     status:
       code: 200
       message: OK
@@ -1547,9 +1549,9 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2005f2a1-9a72-4e9c-9c2f-f0099f248805?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/5fcf68f5-cb77-4155-a4e1-2ca6cd962c1f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -1561,7 +1563,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:22:34 GMT
+      - Wed, 26 Apr 2023 07:54:58 GMT
       expires:
       - '-1'
       pragma:
@@ -1578,7 +1580,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 74850eaf-5d50-4497-a8ea-bd54596ed477
+      - 9a3325a4-7c4d-46ef-8f76-19282ed5b6b8
     status:
       code: 200
       message: OK
@@ -1596,9 +1598,9 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operationResults/2005f2a1-9a72-4e9c-9c2f-f0099f248805?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operationResults/5fcf68f5-cb77-4155-a4e1-2ca6cd962c1f?api-version=2022-01-01
   response:
     body:
       string: ''
@@ -1606,17 +1608,17 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2005f2a1-9a72-4e9c-9c2f-f0099f248805?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/5fcf68f5-cb77-4155-a4e1-2ca6cd962c1f?api-version=2022-01-01
       cache-control:
       - no-cache
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:22:34 GMT
+      - Wed, 26 Apr 2023 07:54:59 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operationResults/2005f2a1-9a72-4e9c-9c2f-f0099f248805?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operationResults/5fcf68f5-cb77-4155-a4e1-2ca6cd962c1f?api-version=2022-01-01
       pragma:
       - no-cache
       server:
@@ -1627,7 +1629,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f2b44c26-3f24-4879-90d7-706a7449c9df
+      - ad2ecd05-c5eb-4bad-ac0a-b993c48135ba
     status:
       code: 204
       message: No Content
@@ -1655,15 +1657,15 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 06 Apr 2023 09:22:36 GMT
+      - Wed, 26 Apr 2023 07:55:02 GMT
       expires:
-      - Thu, 06 Apr 2023 09:22:36 GMT
+      - Wed, 26 Apr 2023 07:55:02 GMT
       location:
       - https://azcliextensionsync.blob.core.windows.net/index1/index.json
       pragma:
       - no-cache
       request-context:
-      - appId=cid-v1:b47e5e27-bf85-45ba-a97c-0377ce0e5779
+      - appId=cid-v1:7d63747b-487e-492a-872d-762362f77974
       server:
       - Kestrel
       strict-transport-security:
@@ -1817,6 +1819,33 @@ interactions:
         \"account\",\n                    \"summary\": \"Microsoft Azure Command-Line
         Tools SubscriptionClient Extension\",\n                    \"version\": \"0.2.5\"\n
         \               },\n                \"sha256Digest\": \"0b94df323acfc48ea3141904649106bb85695187dbf63aa3b8448ec12bc00c23\"\n
+        \           }\n        ],\n        \"acrquery\": [\n            {\n                \"downloadUrl\":
+        \"https://azcliprod.blob.core.windows.net/cli-extensions/acrquery-1.0.0-py3-none-any.whl\",\n
+        \               \"filename\": \"acrquery-1.0.0-py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.isPreview\": true,\n                    \"azext.minCliCoreVersion\":
+        \"2.48.0\",\n                    \"classifiers\": [\n                        \"Development
+        Status :: 4 - Beta\",\n                        \"Intended Audience :: Developers\",\n
+        \                       \"Intended Audience :: System Administrators\",\n
+        \                       \"Programming Language :: Python\",\n                        \"Programming
+        Language :: Python :: 3\",\n                        \"Programming Language
+        :: Python :: 3.7\",\n                        \"Programming Language :: Python
+        :: 3.8\",\n                        \"Programming Language :: Python :: 3.9\",\n
+        \                       \"Programming Language :: Python :: 3.10\",\n                        \"License
+        :: OSI Approved :: MIT License\"\n                    ],\n                    \"extensions\":
+        {\n                        \"python.details\": {\n                            \"contacts\":
+        [\n                                {\n                                    \"email\":
+        \"KraterDev@microsoft.com\",\n                                    \"name\":
+        \"Microsoft Corporation\",\n                                    \"role\":
+        \"author\"\n                                }\n                            ],\n
+        \                           \"document_names\": {\n                                \"description\":
+        \"DESCRIPTION.rst\"\n                            },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/acrquery\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"acrquery\",\n                    \"summary\": \"Microsoft Azure Command-Line
+        Tools AcrQuery Extension\",\n                    \"version\": \"1.0.0\"\n
+        \               },\n                \"sha256Digest\": \"07f5f253de7e3eb8b2ec2726e3b899474f71ebef9ba2d3c0acbca7a1a0a05c54\"\n
         \           }\n        ],\n        \"acrtransfer\": [\n            {\n                \"downloadUrl\":
         \"https://azcliprod.blob.core.windows.net/cli-extensions/acrtransfer-1.0.0-py3-none-any.whl\",\n
         \               \"filename\": \"acrtransfer-1.0.0-py3-none-any.whl\",\n                \"metadata\":
@@ -6517,6 +6546,58 @@ interactions:
         \"aks-preview\",\n                    \"summary\": \"Provides a preview for
         upcoming AKS features\",\n                    \"version\": \"0.5.135\"\n                },\n
         \               \"sha256Digest\": \"eb0b780c84f51cbbe48f037e388b2be95692bd2d5c36daf53faa8f5251ec7ae5\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/aks_preview-0.5.136-py2.py3-none-any.whl\",\n
+        \               \"filename\": \"aks_preview-0.5.136-py2.py3-none-any.whl\",\n
+        \               \"metadata\": {\n                    \"azext.isPreview\":
+        true,\n                    \"azext.minCliCoreVersion\": \"2.44.0\",\n                    \"classifiers\":
+        [\n                        \"Development Status :: 4 - Beta\",\n                        \"Intended
+        Audience :: Developers\",\n                        \"Intended Audience ::
+        System Administrators\",\n                        \"Programming Language ::
+        Python\",\n                        \"Programming Language :: Python :: 3\",\n
+        \                       \"Programming Language :: Python :: 3.6\",\n                        \"Programming
+        Language :: Python :: 3.7\",\n                        \"Programming Language
+        :: Python :: 3.8\",\n                        \"License :: OSI Approved ::
+        MIT License\"\n                    ],\n                    \"extensions\":
+        {\n                        \"python.details\": {\n                            \"contacts\":
+        [\n                                {\n                                    \"email\":
+        \"azpycli@microsoft.com\",\n                                    \"name\":
+        \"Microsoft Corporation\",\n                                    \"role\":
+        \"author\"\n                                }\n                            ],\n
+        \                           \"document_names\": {\n                                \"description\":
+        \"DESCRIPTION.rst\"\n                            },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/aks-preview\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"aks-preview\",\n                    \"summary\": \"Provides a preview for
+        upcoming AKS features\",\n                    \"version\": \"0.5.136\"\n                },\n
+        \               \"sha256Digest\": \"3901766ce0200e6dfed5d1f877a27036b57732caf2f0a3955a7aeb7c5183dac6\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/aks_preview-0.5.137-py2.py3-none-any.whl\",\n
+        \               \"filename\": \"aks_preview-0.5.137-py2.py3-none-any.whl\",\n
+        \               \"metadata\": {\n                    \"azext.isPreview\":
+        true,\n                    \"azext.minCliCoreVersion\": \"2.44.0\",\n                    \"classifiers\":
+        [\n                        \"Development Status :: 4 - Beta\",\n                        \"Intended
+        Audience :: Developers\",\n                        \"Intended Audience ::
+        System Administrators\",\n                        \"Programming Language ::
+        Python\",\n                        \"Programming Language :: Python :: 3\",\n
+        \                       \"Programming Language :: Python :: 3.6\",\n                        \"Programming
+        Language :: Python :: 3.7\",\n                        \"Programming Language
+        :: Python :: 3.8\",\n                        \"License :: OSI Approved ::
+        MIT License\"\n                    ],\n                    \"extensions\":
+        {\n                        \"python.details\": {\n                            \"contacts\":
+        [\n                                {\n                                    \"email\":
+        \"azpycli@microsoft.com\",\n                                    \"name\":
+        \"Microsoft Corporation\",\n                                    \"role\":
+        \"author\"\n                                }\n                            ],\n
+        \                           \"document_names\": {\n                                \"description\":
+        \"DESCRIPTION.rst\"\n                            },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/aks-preview\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"aks-preview\",\n                    \"summary\": \"Provides a preview for
+        upcoming AKS features\",\n                    \"version\": \"0.5.137\"\n                },\n
+        \               \"sha256Digest\": \"37c4ca90690b6e48c1ae52e7e0912eee4cbb1a10c9953e2de2fc3a9926186294\"\n
         \           }\n        ],\n        \"alertsmanagement\": [\n            {\n
         \               \"downloadUrl\": \"https://azurecliprod.blob.core.windows.net/cli-extensions/alertsmanagement-0.1.0-py2.py3-none-any.whl\",\n
         \               \"filename\": \"alertsmanagement-0.1.0-py2.py3-none-any.whl\",\n
@@ -6648,6 +6729,32 @@ interactions:
         \"alertsmanagement\",\n                    \"summary\": \"Microsoft Azure
         Command-Line Tools AlertsManagementClient Extension\",\n                    \"version\":
         \"0.2.2\"\n                },\n                \"sha256Digest\": \"2221f34f874532e4c5324f821a40a49f6cecca70b72e594144e6baf60b08508e\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/alertsmanagement-0.2.3-py3-none-any.whl\",\n
+        \               \"filename\": \"alertsmanagement-0.2.3-py3-none-any.whl\",\n
+        \               \"metadata\": {\n                    \"azext.isPreview\":
+        true,\n                    \"azext.minCliCoreVersion\": \"2.45.0\",\n                    \"classifiers\":
+        [\n                        \"Development Status :: 4 - Beta\",\n                        \"Intended
+        Audience :: Developers\",\n                        \"Intended Audience ::
+        System Administrators\",\n                        \"Programming Language ::
+        Python\",\n                        \"Programming Language :: Python :: 3\",\n
+        \                       \"Programming Language :: Python :: 3.6\",\n                        \"Programming
+        Language :: Python :: 3.7\",\n                        \"Programming Language
+        :: Python :: 3.8\",\n                        \"License :: OSI Approved ::
+        MIT License\"\n                    ],\n                    \"extensions\":
+        {\n                        \"python.details\": {\n                            \"contacts\":
+        [\n                                {\n                                    \"email\":
+        \"azpycli@microsoft.com\",\n                                    \"name\":
+        \"Microsoft Corporation\",\n                                    \"role\":
+        \"author\"\n                                }\n                            ],\n
+        \                           \"document_names\": {\n                                \"description\":
+        \"DESCRIPTION.rst\"\n                            },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/alertsmanagement\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"alertsmanagement\",\n                    \"summary\": \"Microsoft Azure
+        Command-Line Tools AlertsManagementClient Extension\",\n                    \"version\":
+        \"0.2.3\"\n                },\n                \"sha256Digest\": \"b45a5752924ab1205ff5862f03a4a465eccb4dd8e79900023498d674aa68665b\"\n
         \           }\n        ],\n        \"alias\": [\n            {\n                \"downloadUrl\":
         \"https://azurecliprod.blob.core.windows.net/cli-extensions/alias-0.5.2-py2.py3-none-any.whl\",\n
         \               \"filename\": \"alias-0.5.2-py2.py3-none-any.whl\",\n                \"metadata\":
@@ -7022,6 +7129,32 @@ interactions:
         \"amg\",\n                    \"summary\": \"Microsoft Azure Command-Line
         Tools Azure Managed Grafana Extension\",\n                    \"version\":
         \"1.2.2\"\n                },\n                \"sha256Digest\": \"65903b31502c1405bbc0c0cedce6939e039825522ee2a0f85f3e4d8cb154531c\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/amg-1.2.3-py3-none-any.whl\",\n
+        \               \"filename\": \"amg-1.2.3-py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.isPreview\": false,\n                    \"azext.maxCliCoreVersion\":
+        \"2.99.0\",\n                    \"azext.minCliCoreVersion\": \"2.38.0\",\n
+        \                   \"classifiers\": [\n                        \"Development
+        Status :: 4 - Beta\",\n                        \"Intended Audience :: Developers\",\n
+        \                       \"Intended Audience :: System Administrators\",\n
+        \                       \"Programming Language :: Python\",\n                        \"Programming
+        Language :: Python :: 3\",\n                        \"Programming Language
+        :: Python :: 3.6\",\n                        \"Programming Language :: Python
+        :: 3.7\",\n                        \"Programming Language :: Python :: 3.8\",\n
+        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
+        \                   \"extensions\": {\n                        \"python.details\":
+        {\n                            \"contacts\": [\n                                {\n
+        \                                   \"email\": \"ad4g@microsoft.com\",\n                                    \"name\":
+        \"Microsoft Corporation\",\n                                    \"role\":
+        \"author\"\n                                }\n                            ],\n
+        \                           \"document_names\": {\n                                \"description\":
+        \"DESCRIPTION.rst\"\n                            },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/master/src/amg\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"amg\",\n                    \"summary\": \"Microsoft Azure Command-Line
+        Tools Azure Managed Grafana Extension\",\n                    \"version\":
+        \"1.2.3\"\n                },\n                \"sha256Digest\": \"ecc4dc8bf92c722de40390ba8cbf90c45ea80d0bbb44596c80efb157f2d330b2\"\n
         \           }\n        ],\n        \"application-insights\": [\n            {\n
         \               \"downloadUrl\": \"https://azurecliprod.blob.core.windows.net/cli-extensions/application_insights-0.1.3-py2.py3-none-any.whl\",\n
         \               \"filename\": \"application_insights-0.1.3-py2.py3-none-any.whl\",\n
@@ -7862,7 +7995,39 @@ interactions:
         Extension\",\n                    \"version\": \"0.2.31\"\n                },\n
         \               \"sha256Digest\": \"bf5bc6569b94c744acc417831b8dc58055a8e8437492231f2bca4cf0752e34ad\"\n
         \           }\n        ],\n        \"arcdata\": [\n            {\n                \"downloadUrl\":
-        \"https://azurearcdatacli.blob.core.windows.net/cli-extensions/arcdata-1.4.12-py2.py3-none-any.whl\",\n
+        \"https://azurearcdatacli.blob.core.windows.net/cli-extensions/arcdata-1.4.13-py2.py3-none-any.whl\",\n
+        \               \"filename\": \"arcdata-1.4.13-py2.py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.isExperimental\": false,\n                    \"azext.minCliCoreVersion\":
+        \"2.3.1\",\n                    \"classifiers\": [\n                        \"Development
+        Status :: 1 - Beta\",\n                        \"Intended Audience :: Developers\",\n
+        \                       \"Programming Language :: Python :: 3\",\n                        \"Programming
+        Language :: Python :: 3.6\",\n                        \"Programming Language
+        :: Python :: 3.7\",\n                        \"Programming Language :: Python
+        :: 3.8\",\n                        \"License :: OSI Approved :: MIT License\"\n
+        \                   ],\n                    \"extensions\": {\n                        \"python.details\":
+        {\n                            \"contacts\": [\n                                {\n
+        \                                   \"email\": \"dpgswdist@microsoft.com\",\n
+        \                                   \"name\": \"Microsoft Corporation\",\n
+        \                                   \"role\": \"author\"\n                                }\n
+        \                           ],\n                            \"document_names\":
+        {\n                                \"description\": \"DESCRIPTION.rst\"\n
+        \                           },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://docs.microsoft.com/en-us/azure/azure-arc/data/\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"extras\": [],\n                    \"generator\": \"bdist_wheel
+        (0.30.0)\",\n                    \"license\": \"MIT\",\n                    \"license_file\":
+        \"LICENSE\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"arcdata\",\n                    \"run_requires\": [\n                        {\n
+        \                           \"requires\": [\n                                \"colorama
+        (==0.4.4)\",\n                                \"jinja2 (==3.0.3)\",\n                                \"jsonpatch
+        (==1.24)\",\n                                \"jsonpath-ng (==1.4.3)\",\n
+        \                               \"jsonschema (==3.2.0)\",\n                                \"kubernetes
+        (==23.3.0)\",\n                                \"ndjson (==0.3.1)\",\n                                \"pem
+        (==21.2.0)\",\n                                \"pydash (==4.8.0)\"\n                            ]\n
+        \                       }\n                    ],\n                    \"summary\":
+        \"Tools for managing ArcData.\",\n                    \"version\": \"1.4.13\"\n
+        \               },\n                \"sha256Digest\": \"4241f12e3e45007cc55ded3361527ee8f67c683486039185c8a6075b75a8d35c\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azurearcdatacli.blob.core.windows.net/cli-extensions/arcdata-1.4.12-py2.py3-none-any.whl\",\n
         \               \"filename\": \"arcdata-1.4.12-py2.py3-none-any.whl\",\n                \"metadata\":
         {\n                    \"azext.isExperimental\": false,\n                    \"azext.minCliCoreVersion\":
         \"2.3.1\",\n                    \"classifiers\": [\n                        \"Development
@@ -11367,6 +11532,32 @@ interactions:
         \"bastion\",\n                    \"summary\": \"Microsoft Azure Command-Line
         Tools Bastion Extension.\",\n                    \"version\": \"0.2.3\"\n
         \               },\n                \"sha256Digest\": \"fa0750de72dd8645c6fc64d38fb271d8e8c928b101a097a709df6f08932d27dc\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/bastion-0.2.4-py3-none-any.whl\",\n
+        \               \"filename\": \"bastion-0.2.4-py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.isPreview\": true,\n                    \"azext.minCliCoreVersion\":
+        \"2.43.0\",\n                    \"classifiers\": [\n                        \"Development
+        Status :: 4 - Beta\",\n                        \"Intended Audience :: Developers\",\n
+        \                       \"Intended Audience :: System Administrators\",\n
+        \                       \"Programming Language :: Python\",\n                        \"Programming
+        Language :: Python :: 3\",\n                        \"Programming Language
+        :: Python :: 3.7\",\n                        \"Programming Language :: Python
+        :: 3.8\",\n                        \"Programming Language :: Python :: 3.9\",\n
+        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
+        \                   \"extensions\": {\n                        \"python.details\":
+        {\n                            \"contacts\": [\n                                {\n
+        \                                   \"email\": \"azpycli@microsoft.com\",\n
+        \                                   \"name\": \"Microsoft Corporation\",\n
+        \                                   \"role\": \"author\"\n                                }\n
+        \                           ],\n                            \"document_names\":
+        {\n                                \"description\": \"DESCRIPTION.rst\"\n
+        \                           },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/bastion\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"bastion\",\n                    \"summary\": \"Microsoft Azure Command-Line
+        Tools Bastion Extension.\",\n                    \"version\": \"0.2.4\"\n
+        \               },\n                \"sha256Digest\": \"f765a3443cc8d37da6efe4b6e14544916a0367a86a74b4c557ce3a52866d87b3\"\n
         \           }\n        ],\n        \"billing-benefits\": [\n            {\n
         \               \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/billing_benefits-0.1.0-py3-none-any.whl\",\n
         \               \"filename\": \"billing_benefits-0.1.0-py3-none-any.whl\",\n
@@ -13487,37 +13678,6 @@ interactions:
         \                   \"summary\": \"Microsoft Azure Command-Line Tools Connectedk8s
         Extension\",\n                    \"version\": \"1.2.11\"\n                },\n
         \               \"sha256Digest\": \"0cc9fb7514b040ec8deb4269282c16a1d382c95a3b3a7def04ed6e795f85d62d\"\n
-        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/connectedk8s-1.3.0-py2.py3-none-any.whl\",\n
-        \               \"filename\": \"connectedk8s-1.3.0-py2.py3-none-any.whl\",\n
-        \               \"metadata\": {\n                    \"azext.minCliCoreVersion\":
-        \"2.16.0\",\n                    \"classifiers\": [\n                        \"Development
-        Status :: 4 - Beta\",\n                        \"Intended Audience :: Developers\",\n
-        \                       \"Intended Audience :: System Administrators\",\n
-        \                       \"Programming Language :: Python\",\n                        \"Programming
-        Language :: Python :: 3\",\n                        \"Programming Language
-        :: Python :: 3.6\",\n                        \"Programming Language :: Python
-        :: 3.7\",\n                        \"Programming Language :: Python :: 3.8\",\n
-        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
-        \                   \"description_content_type\": \"text/markdown\",\n                    \"extensions\":
-        {\n                        \"python.details\": {\n                            \"contacts\":
-        [\n                                {\n                                    \"email\":
-        \"k8connect@microsoft.com\",\n                                    \"name\":
-        \"Microsoft Corporation\",\n                                    \"role\":
-        \"author\"\n                                }\n                            ],\n
-        \                           \"document_names\": {\n                                \"description\":
-        \"DESCRIPTION.rst\"\n                            },\n                            \"project_urls\":
-        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/connectedk8s\"\n
-        \                           }\n                        }\n                    },\n
-        \                   \"extras\": [],\n                    \"generator\": \"bdist_wheel
-        (0.30.0)\",\n                    \"license\": \"MIT\",\n                    \"metadata_version\":
-        \"2.0\",\n                    \"name\": \"connectedk8s\",\n                    \"run_requires\":
-        [\n                        {\n                            \"requires\": [\n
-        \                               \"azure-mgmt-hybridcompute (==7.0.0)\",\n
-        \                               \"kubernetes (==11.0.0)\",\n                                \"pycryptodome
-        (==3.14.1)\"\n                            ]\n                        }\n                    ],\n
-        \                   \"summary\": \"Microsoft Azure Command-Line Tools Connectedk8s
-        Extension\",\n                    \"version\": \"1.3.0\"\n                },\n
-        \               \"sha256Digest\": \"c3edd32939e90e2b1cb9af32e46c065cfa0cb869f1d5438fbab9d77215513b2a\"\n
         \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/connectedk8s-1.3.1-py2.py3-none-any.whl\",\n
         \               \"filename\": \"connectedk8s-1.3.1-py2.py3-none-any.whl\",\n
         \               \"metadata\": {\n                    \"azext.minCliCoreVersion\":
@@ -13983,6 +14143,37 @@ interactions:
         \                   \"summary\": \"Microsoft Azure Command-Line Tools Connectedk8s
         Extension\",\n                    \"version\": \"1.3.15\"\n                },\n
         \               \"sha256Digest\": \"719aa6e73bd25309ab1275ec06cce036cb650204e306606bee741e2488b0a1d2\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/connectedk8s-1.3.16-py2.py3-none-any.whl\",\n
+        \               \"filename\": \"connectedk8s-1.3.16-py2.py3-none-any.whl\",\n
+        \               \"metadata\": {\n                    \"azext.minCliCoreVersion\":
+        \"2.38.0\",\n                    \"classifiers\": [\n                        \"Development
+        Status :: 4 - Beta\",\n                        \"Intended Audience :: Developers\",\n
+        \                       \"Intended Audience :: System Administrators\",\n
+        \                       \"Programming Language :: Python\",\n                        \"Programming
+        Language :: Python :: 3\",\n                        \"Programming Language
+        :: Python :: 3.6\",\n                        \"Programming Language :: Python
+        :: 3.7\",\n                        \"Programming Language :: Python :: 3.8\",\n
+        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
+        \                   \"description_content_type\": \"text/markdown\",\n                    \"extensions\":
+        {\n                        \"python.details\": {\n                            \"contacts\":
+        [\n                                {\n                                    \"email\":
+        \"k8connect@microsoft.com\",\n                                    \"name\":
+        \"Microsoft Corporation\",\n                                    \"role\":
+        \"author\"\n                                }\n                            ],\n
+        \                           \"document_names\": {\n                                \"description\":
+        \"DESCRIPTION.rst\"\n                            },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/connectedk8s\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"extras\": [],\n                    \"generator\": \"bdist_wheel
+        (0.30.0)\",\n                    \"license\": \"MIT\",\n                    \"metadata_version\":
+        \"2.0\",\n                    \"name\": \"connectedk8s\",\n                    \"run_requires\":
+        [\n                        {\n                            \"requires\": [\n
+        \                               \"azure-mgmt-hybridcompute (==7.0.0)\",\n
+        \                               \"kubernetes (==24.2.0)\",\n                                \"pycryptodome
+        (==3.14.1)\"\n                            ]\n                        }\n                    ],\n
+        \                   \"summary\": \"Microsoft Azure Command-Line Tools Connectedk8s
+        Extension\",\n                    \"version\": \"1.3.16\"\n                },\n
+        \               \"sha256Digest\": \"614823c043de311a609cd257176cf611e56ddec8f6f3855ed444d77519dc50e6\"\n
         \           }\n        ],\n        \"connectedmachine\": [\n            {\n
         \               \"downloadUrl\": \"https://azurecliprod.blob.core.windows.net/cli-extensions/connectedmachine-0.1.1-py2.py3-none-any.whl\",\n
         \               \"filename\": \"connectedmachine-0.1.1-py2.py3-none-any.whl\",\n
@@ -15363,6 +15554,37 @@ interactions:
         \                       }\n                    ],\n                    \"summary\":
         \"Microsoft Azure Command-Line Tools Containerapp Extension\",\n                    \"version\":
         \"0.3.27\"\n                },\n                \"sha256Digest\": \"dd74e5182921a7d38bfa2a29ba22bc8cb2308695b2ffdc8a1054d7ff7712205f\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/containerapp-0.3.28-py2.py3-none-any.whl\",\n
+        \               \"filename\": \"containerapp-0.3.28-py2.py3-none-any.whl\",\n
+        \               \"metadata\": {\n                    \"azext.isPreview\":
+        true,\n                    \"azext.minCliCoreVersion\": \"2.45.0\",\n                    \"classifiers\":
+        [\n                        \"Development Status :: 4 - Beta\",\n                        \"Intended
+        Audience :: Developers\",\n                        \"Intended Audience ::
+        System Administrators\",\n                        \"Programming Language ::
+        Python\",\n                        \"Programming Language :: Python :: 3\",\n
+        \                       \"Programming Language :: Python :: 3.6\",\n                        \"Programming
+        Language :: Python :: 3.7\",\n                        \"Programming Language
+        :: Python :: 3.8\",\n                        \"Programming Language :: Python
+        :: 3.9\",\n                        \"Programming Language :: Python :: 3.10\",\n
+        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
+        \                   \"extensions\": {\n                        \"python.details\":
+        {\n                            \"contacts\": [\n                                {\n
+        \                                   \"email\": \"azpycli@microsoft.com\",\n
+        \                                   \"name\": \"Microsoft Corporation\",\n
+        \                                   \"role\": \"author\"\n                                }\n
+        \                           ],\n                            \"document_names\":
+        {\n                                \"description\": \"DESCRIPTION.rst\"\n
+        \                           },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"extras\": [],\n                    \"generator\": \"bdist_wheel
+        (0.30.0)\",\n                    \"license\": \"MIT\",\n                    \"metadata_version\":
+        \"2.0\",\n                    \"name\": \"containerapp\",\n                    \"run_requires\":
+        [\n                        {\n                            \"requires\": [\n
+        \                               \"pycomposefile (>=0.0.29)\"\n                            ]\n
+        \                       }\n                    ],\n                    \"summary\":
+        \"Microsoft Azure Command-Line Tools Containerapp Extension\",\n                    \"version\":
+        \"0.3.28\"\n                },\n                \"sha256Digest\": \"150df41ec23a399240ab9cac6600d570d7c0c4354744e258cc8507935304ebd5\"\n
         \           }\n        ],\n        \"cosmosdb-preview\": [\n            {\n
         \               \"downloadUrl\": \"https://azurecliprod.blob.core.windows.net/cli-extensions/cosmosdb_preview-0.1.0-py2.py3-none-any.whl\",\n
         \               \"filename\": \"cosmosdb_preview-0.1.0-py2.py3-none-any.whl\",\n
@@ -15988,6 +16210,58 @@ interactions:
         \"cosmosdb-preview\",\n                    \"summary\": \"Microsoft Azure
         Command-Line Tools Cosmosdb-preview Extension\",\n                    \"version\":
         \"0.22.0\"\n                },\n                \"sha256Digest\": \"38a16ca955f74f0ad697a50a7e744897bc3c8ccd9ba9a1255156b318c4011c19\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/cosmosdb_preview-0.23.0-py2.py3-none-any.whl\",\n
+        \               \"filename\": \"cosmosdb_preview-0.23.0-py2.py3-none-any.whl\",\n
+        \               \"metadata\": {\n                    \"azext.isPreview\":
+        true,\n                    \"azext.minCliCoreVersion\": \"2.17.1\",\n                    \"classifiers\":
+        [\n                        \"Development Status :: 4 - Beta\",\n                        \"Intended
+        Audience :: Developers\",\n                        \"Intended Audience ::
+        System Administrators\",\n                        \"Programming Language ::
+        Python\",\n                        \"Programming Language :: Python :: 3\",\n
+        \                       \"Programming Language :: Python :: 3.6\",\n                        \"Programming
+        Language :: Python :: 3.7\",\n                        \"Programming Language
+        :: Python :: 3.8\",\n                        \"License :: OSI Approved ::
+        MIT License\"\n                    ],\n                    \"extensions\":
+        {\n                        \"python.details\": {\n                            \"contacts\":
+        [\n                                {\n                                    \"email\":
+        \"kakhandr@microsoft.com\",\n                                    \"name\":
+        \"Kalyan khandrika\",\n                                    \"role\": \"author\"\n
+        \                               }\n                            ],\n                            \"document_names\":
+        {\n                                \"description\": \"DESCRIPTION.rst\"\n
+        \                           },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/cosmosdb-preview\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"cosmosdb-preview\",\n                    \"summary\": \"Microsoft Azure
+        Command-Line Tools Cosmosdb-preview Extension\",\n                    \"version\":
+        \"0.23.0\"\n                },\n                \"sha256Digest\": \"48bfbb7f278c721a249124023a097c68f89286ad37a5d871fe8d081a4b95b9d8\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/cosmosdb_preview-0.24.0-py2.py3-none-any.whl\",\n
+        \               \"filename\": \"cosmosdb_preview-0.24.0-py2.py3-none-any.whl\",\n
+        \               \"metadata\": {\n                    \"azext.isPreview\":
+        true,\n                    \"azext.minCliCoreVersion\": \"2.17.1\",\n                    \"classifiers\":
+        [\n                        \"Development Status :: 4 - Beta\",\n                        \"Intended
+        Audience :: Developers\",\n                        \"Intended Audience ::
+        System Administrators\",\n                        \"Programming Language ::
+        Python\",\n                        \"Programming Language :: Python :: 3\",\n
+        \                       \"Programming Language :: Python :: 3.6\",\n                        \"Programming
+        Language :: Python :: 3.7\",\n                        \"Programming Language
+        :: Python :: 3.8\",\n                        \"License :: OSI Approved ::
+        MIT License\"\n                    ],\n                    \"extensions\":
+        {\n                        \"python.details\": {\n                            \"contacts\":
+        [\n                                {\n                                    \"email\":
+        \"kakhandr@microsoft.com\",\n                                    \"name\":
+        \"Kalyan khandrika\",\n                                    \"role\": \"author\"\n
+        \                               }\n                            ],\n                            \"document_names\":
+        {\n                                \"description\": \"DESCRIPTION.rst\"\n
+        \                           },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/cosmosdb-preview\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"cosmosdb-preview\",\n                    \"summary\": \"Microsoft Azure
+        Command-Line Tools Cosmosdb-preview Extension\",\n                    \"version\":
+        \"0.24.0\"\n                },\n                \"sha256Digest\": \"60dd2f7b0dda74ccffec6adaf37dee10be09c03d13c9a664848933e052c5a4de\"\n
         \           }\n        ],\n        \"costmanagement\": [\n            {\n
         \               \"downloadUrl\": \"https://azurecliprod.blob.core.windows.net/cli-extensions/costmanagement-0.1.0-py3-none-any.whl\",\n
         \               \"filename\": \"costmanagement-0.1.0-py3-none-any.whl\",\n
@@ -17936,6 +18210,31 @@ interactions:
         \"devcenter\",\n                    \"summary\": \"Microsoft Azure Command-Line
         Tools DevCenter Extension\",\n                    \"version\": \"0.1.1\"\n
         \               },\n                \"sha256Digest\": \"e220902d40257c4124654b0026eb682fe4c51f0dff6e406539359b9adc4be43b\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/devcenter-0.1.2-py3-none-any.whl\",\n
+        \               \"filename\": \"devcenter-0.1.2-py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.isPreview\": true,\n                    \"azext.minCliCoreVersion\":
+        \"2.45.0\",\n                    \"classifiers\": [\n                        \"Development
+        Status :: 4 - Beta\",\n                        \"Intended Audience :: Developers\",\n
+        \                       \"Intended Audience :: System Administrators\",\n
+        \                       \"Programming Language :: Python\",\n                        \"Programming
+        Language :: Python :: 3\",\n                        \"Programming Language
+        :: Python :: 3.6\",\n                        \"Programming Language :: Python
+        :: 3.7\",\n                        \"Programming Language :: Python :: 3.8\",\n
+        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
+        \                   \"extensions\": {\n                        \"python.details\":
+        {\n                            \"contacts\": [\n                                {\n
+        \                                   \"email\": \"tm-azurefidalgo@microsoft.com\",\n
+        \                                   \"name\": \"DevCenter\",\n                                    \"role\":
+        \"author\"\n                                }\n                            ],\n
+        \                           \"document_names\": {\n                                \"description\":
+        \"DESCRIPTION.rst\"\n                            },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/master/src/devcenter\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"devcenter\",\n                    \"summary\": \"Microsoft Azure Command-Line
+        Tools DevCenter Extension\",\n                    \"version\": \"0.1.2\"\n
+        \               },\n                \"sha256Digest\": \"7957288ab151cca2945f0c26f76c5aab25df4d410342e056c34c5e41f9aec1e1\"\n
         \           }\n        ],\n        \"diskpool\": [\n            {\n                \"downloadUrl\":
         \"https://azcliprod.blob.core.windows.net/cli-extensions/diskpool-0.1.0-py3-none-any.whl\",\n
         \               \"filename\": \"diskpool-0.1.0-py3-none-any.whl\",\n                \"metadata\":
@@ -18658,6 +18957,58 @@ interactions:
         \"fleet\",\n                    \"summary\": \"Microsoft Azure Command-Line
         Tools Fleet Extension\",\n                    \"version\": \"0.1.1\"\n                },\n
         \               \"sha256Digest\": \"b885481b31de89103b7ceb94770bdbb561f9ad086574ba68b09bd53e5f9e08ed\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/fleet-0.2.0-py3-none-any.whl\",\n
+        \               \"filename\": \"fleet-0.2.0-py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.isPreview\": true,\n                    \"azext.minCliCoreVersion\":
+        \"2.39.0\",\n                    \"classifiers\": [\n                        \"Development
+        Status :: 4 - Beta\",\n                        \"Intended Audience :: Developers\",\n
+        \                       \"Intended Audience :: System Administrators\",\n
+        \                       \"Programming Language :: Python\",\n                        \"Programming
+        Language :: Python :: 3\",\n                        \"Programming Language
+        :: Python :: 3.6\",\n                        \"Programming Language :: Python
+        :: 3.7\",\n                        \"Programming Language :: Python :: 3.8\",\n
+        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
+        \                   \"extensions\": {\n                        \"python.details\":
+        {\n                            \"contacts\": [\n                                {\n
+        \                                   \"email\": \"azpycli@microsoft.com\",\n
+        \                                   \"name\": \"Microsoft Corporation\",\n
+        \                                   \"role\": \"author\"\n                                }\n
+        \                           ],\n                            \"document_names\":
+        {\n                                \"description\": \"DESCRIPTION.rst\"\n
+        \                           },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/fleet\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"fleet\",\n                    \"summary\": \"Microsoft Azure Command-Line
+        Tools Fleet Extension\",\n                    \"version\": \"0.2.0\"\n                },\n
+        \               \"sha256Digest\": \"bbcad15099156a964fcfe102670b7b75531da74de29b960518b868ab78d4f45f\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/fleet-0.2.1-py3-none-any.whl\",\n
+        \               \"filename\": \"fleet-0.2.1-py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.isPreview\": true,\n                    \"azext.minCliCoreVersion\":
+        \"2.39.0\",\n                    \"classifiers\": [\n                        \"Development
+        Status :: 4 - Beta\",\n                        \"Intended Audience :: Developers\",\n
+        \                       \"Intended Audience :: System Administrators\",\n
+        \                       \"Programming Language :: Python\",\n                        \"Programming
+        Language :: Python :: 3\",\n                        \"Programming Language
+        :: Python :: 3.6\",\n                        \"Programming Language :: Python
+        :: 3.7\",\n                        \"Programming Language :: Python :: 3.8\",\n
+        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
+        \                   \"extensions\": {\n                        \"python.details\":
+        {\n                            \"contacts\": [\n                                {\n
+        \                                   \"email\": \"azpycli@microsoft.com\",\n
+        \                                   \"name\": \"Microsoft Corporation\",\n
+        \                                   \"role\": \"author\"\n                                }\n
+        \                           ],\n                            \"document_names\":
+        {\n                                \"description\": \"DESCRIPTION.rst\"\n
+        \                           },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/fleet\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"fleet\",\n                    \"summary\": \"Microsoft Azure Command-Line
+        Tools Fleet Extension\",\n                    \"version\": \"0.2.1\"\n                },\n
+        \               \"sha256Digest\": \"880d6a3596534a1f06c7d98d8e14030f43d5e6194430705b9261d31262f01f73\"\n
         \           }\n        ],\n        \"fluid-relay\": [\n            {\n                \"downloadUrl\":
         \"https://azcliprod.blob.core.windows.net/cli-extensions/fluid_relay-0.1.0-py3-none-any.whl\",\n
         \               \"filename\": \"fluid_relay-0.1.0-py3-none-any.whl\",\n                \"metadata\":
@@ -24147,6 +24498,46 @@ interactions:
         \                   \"summary\": \"Microsoft Azure Command-Line Tools AzureMachineLearningWorkspaces
         Extension\",\n                    \"version\": \"2.15.0\"\n                },\n
         \               \"sha256Digest\": \"89002fd24b1096dab8dadd02c13930113f7f9044b1632baafe13e63cfda022bf\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azuremlsdktestpypi.blob.core.windows.net/wheels/sdk-cli-v2-public/ml-2.15.1-py3-none-any.whl\",\n
+        \               \"filename\": \"ml-2.15.1-py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.minCliCoreVersion\": \"2.15.0\",\n                    \"classifiers\":
+        [\n                        \"Development Status :: 5 - Production/Stable\",\n
+        \                       \"Intended Audience :: Developers\",\n                        \"Intended
+        Audience :: System Administrators\",\n                        \"Environment
+        :: Console\",\n                        \"Programming Language :: Python\",\n
+        \                       \"Programming Language :: Python :: 3\",\n                        \"Programming
+        Language :: Python :: 3.7\",\n                        \"Programming Language
+        :: Python :: 3.8\",\n                        \"Programming Language :: Python
+        :: 3.9\",\n                        \"Programming Language :: Python :: 3.10\",\n
+        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
+        \                   \"description_content_type\": \"text/x-rst\",\n                    \"extensions\":
+        {\n                        \"python.details\": {\n                            \"contacts\":
+        [\n                                {\n                                    \"email\":
+        \"azuremlsdk@microsoft.com\",\n                                    \"name\":
+        \"Microsoft Corporation\",\n                                    \"role\":
+        \"author\"\n                                }\n                            ],\n
+        \                           \"document_names\": {\n                                \"description\":
+        \"DESCRIPTION.rst\"\n                            },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azureml-examples\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"extras\": [],\n                    \"generator\": \"bdist_wheel
+        (0.30.0)\",\n                    \"license\": \"MIT\",\n                    \"metadata_version\":
+        \"2.0\",\n                    \"name\": \"ml\",\n                    \"run_requires\":
+        [\n                        {\n                            \"requires\": [\n
+        \                               \"azure-common (<2.0.0,>=1.1)\",\n                                \"azure-storage-blob
+        (<13.0.0,>=12.10.0)\",\n                                \"azure-storage-file-datalake
+        (<13.0.0)\",\n                                \"azure-storage-file-share (<13.0.0)\",\n
+        \                               \"colorama (<0.5.0)\",\n                                \"cryptography\",\n
+        \                               \"docker\",\n                                \"isodate\",\n
+        \                               \"jsonschema (<5.0.0,>=4.0.0)\",\n                                \"marshmallow
+        (<4.0.0,>=3.5)\",\n                                \"opencensus-ext-azure
+        (<2.0.0)\",\n                                \"pydash (<6.0.0)\",\n                                \"pyjwt
+        (<3.0.0)\",\n                                \"strictyaml (<2.0.0)\",\n                                \"tqdm
+        (<5.0.0)\",\n                                \"typing-extensions (<5.0.0)\"\n
+        \                           ]\n                        }\n                    ],\n
+        \                   \"summary\": \"Microsoft Azure Command-Line Tools AzureMachineLearningWorkspaces
+        Extension\",\n                    \"version\": \"2.15.1\"\n                },\n
+        \               \"sha256Digest\": \"b195ed8e627c36a34a7aac6f7c261a80714cf7ae9fbfd01981a39119dd1a70a5\"\n
         \           }\n        ],\n        \"mobile-network\": [\n            {\n
         \               \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/mobile_network-0.1.0-py3-none-any.whl\",\n
         \               \"filename\": \"mobile_network-0.1.0-py3-none-any.whl\",\n
@@ -24540,6 +24931,32 @@ interactions:
         \"nsp\",\n                    \"summary\": \"Microsoft Azure Command-Line
         Tools Nsp Extension.\",\n                    \"version\": \"0.1.0\"\n                },\n
         \               \"sha256Digest\": \"14d995890f7f7bf14ce4a92a8d0de0252595d017ead7a49bffecbb741c074fb5\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/nsp-0.2.0-py3-none-any.whl\",\n
+        \               \"filename\": \"nsp-0.2.0-py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.isExperimental\": true,\n                    \"azext.minCliCoreVersion\":
+        \"2.45.0\",\n                    \"classifiers\": [\n                        \"Development
+        Status :: 4 - Beta\",\n                        \"Intended Audience :: Developers\",\n
+        \                       \"Intended Audience :: System Administrators\",\n
+        \                       \"Programming Language :: Python\",\n                        \"Programming
+        Language :: Python :: 3\",\n                        \"Programming Language
+        :: Python :: 3.7\",\n                        \"Programming Language :: Python
+        :: 3.8\",\n                        \"Programming Language :: Python :: 3.9\",\n
+        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
+        \                   \"extensions\": {\n                        \"python.details\":
+        {\n                            \"contacts\": [\n                                {\n
+        \                                   \"email\": \"azpycli@microsoft.com\",\n
+        \                                   \"name\": \"Microsoft Corporation\",\n
+        \                                   \"role\": \"author\"\n                                }\n
+        \                           ],\n                            \"document_names\":
+        {\n                                \"description\": \"DESCRIPTION.rst\"\n
+        \                           },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/nsp\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"nsp\",\n                    \"summary\": \"Microsoft Azure Command-Line
+        Tools Nsp Extension.\",\n                    \"version\": \"0.2.0\"\n                },\n
+        \               \"sha256Digest\": \"c6227fc8fcf084c37effb6c22c27b2b4843704e231177776c938e3461ebe6b2d\"\n
         \           }\n        ],\n        \"offazure\": [\n            {\n                \"downloadUrl\":
         \"https://azcliprod.blob.core.windows.net/cli-extensions/offazure-0.1.0-py3-none-any.whl\",\n
         \               \"filename\": \"offazure-0.1.0-py3-none-any.whl\",\n                \"metadata\":
@@ -26869,6 +27286,38 @@ interactions:
         \                   \"summary\": \"Microsoft Azure Command-Line Tools Serviceconnector-passwordless
         Extension\",\n                    \"version\": \"0.3.0\"\n                },\n
         \               \"sha256Digest\": \"5364760a136655207f5f970431882d5d6c844818e43fbb81ffb311d19a21700a\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/serviceconnector_passwordless-0.3.1-py3-none-any.whl\",\n
+        \               \"filename\": \"serviceconnector_passwordless-0.3.1-py3-none-any.whl\",\n
+        \               \"metadata\": {\n                    \"azext.isPreview\":
+        true,\n                    \"azext.minCliCoreVersion\": \"2.46.0\",\n                    \"classifiers\":
+        [\n                        \"Development Status :: 4 - Beta\",\n                        \"Intended
+        Audience :: Developers\",\n                        \"Intended Audience ::
+        System Administrators\",\n                        \"Programming Language ::
+        Python\",\n                        \"Programming Language :: Python :: 3\",\n
+        \                       \"Programming Language :: Python :: 3.6\",\n                        \"Programming
+        Language :: Python :: 3.7\",\n                        \"Programming Language
+        :: Python :: 3.8\",\n                        \"License :: OSI Approved ::
+        MIT License\"\n                    ],\n                    \"extensions\":
+        {\n                        \"python.details\": {\n                            \"contacts\":
+        [\n                                {\n                                    \"email\":
+        \"azpycli@microsoft.com\",\n                                    \"name\":
+        \"Microsoft Corporation\",\n                                    \"role\":
+        \"author\"\n                                }\n                            ],\n
+        \                           \"document_names\": {\n                                \"description\":
+        \"DESCRIPTION.rst\"\n                            },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/master/src/serviceconnector-passwordless\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"extras\": [],\n                    \"generator\": \"bdist_wheel
+        (0.30.0)\",\n                    \"license\": \"MIT\",\n                    \"metadata_version\":
+        \"2.0\",\n                    \"name\": \"serviceconnector-passwordless\",\n
+        \                   \"run_requires\": [\n                        {\n                            \"requires\":
+        [\n                                \"PyMySQL (==1.0.2)\",\n                                \"azure-core\",\n
+        \                               \"azure-mgmt-servicelinker (==1.2.0b1)\",\n
+        \                               \"psycopg2-binary (==2.9.5)\",\n                                \"pyodbc
+        (==4.0.35)\"\n                            ]\n                        }\n                    ],\n
+        \                   \"summary\": \"Microsoft Azure Command-Line Tools Serviceconnector-passwordless
+        Extension\",\n                    \"version\": \"0.3.1\"\n                },\n
+        \               \"sha256Digest\": \"d61dd33d4fe9542c506a91a9f7876bcb4dd14e27ffe0aeae5f1cbf76eda93413\"\n
         \           }\n        ],\n        \"spring\": [\n            {\n                \"downloadUrl\":
         \"https://azcliprod.blob.core.windows.net/cli-extensions/spring-1.0.0-py3-none-any.whl\",\n
         \               \"filename\": \"spring-1.0.0-py3-none-any.whl\",\n                \"metadata\":
@@ -27832,6 +28281,162 @@ interactions:
         \"spring\",\n                    \"summary\": \"Microsoft Azure Command-Line
         Tools spring Extension\",\n                    \"version\": \"1.9.1\"\n                },\n
         \               \"sha256Digest\": \"3b07830d1a32c045af46de4c77250db5ea65fba26f1d9bb8f7f8582a923d34b2\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/spring-1.9.2-py3-none-any.whl\",\n
+        \               \"filename\": \"spring-1.9.2-py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.isPreview\": false,\n                    \"azext.minCliCoreVersion\":
+        \"2.45.0\",\n                    \"classifiers\": [\n                        \"Development
+        Status :: 4 - Beta\",\n                        \"Intended Audience :: Developers\",\n
+        \                       \"Intended Audience :: System Administrators\",\n
+        \                       \"Programming Language :: Python\",\n                        \"Programming
+        Language :: Python :: 3\",\n                        \"Programming Language
+        :: Python :: 3.6\",\n                        \"Programming Language :: Python
+        :: 3.7\",\n                        \"Programming Language :: Python :: 3.8\",\n
+        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
+        \                   \"extensions\": {\n                        \"python.details\":
+        {\n                            \"contacts\": [\n                                {\n
+        \                                   \"email\": \"azpycli@microsoft.com\",\n
+        \                                   \"name\": \"Microsoft Corporation\",\n
+        \                                   \"role\": \"author\"\n                                }\n
+        \                           ],\n                            \"document_names\":
+        {\n                                \"description\": \"DESCRIPTION.rst\"\n
+        \                           },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/spring\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"spring\",\n                    \"summary\": \"Microsoft Azure Command-Line
+        Tools spring Extension\",\n                    \"version\": \"1.9.2\"\n                },\n
+        \               \"sha256Digest\": \"36b30260e23bef6398eb153090379d8784d6b3868fa41d1748e447a37a21c874\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/spring-1.10.0-py3-none-any.whl\",\n
+        \               \"filename\": \"spring-1.10.0-py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.isPreview\": false,\n                    \"azext.minCliCoreVersion\":
+        \"2.45.0\",\n                    \"classifiers\": [\n                        \"Development
+        Status :: 4 - Beta\",\n                        \"Intended Audience :: Developers\",\n
+        \                       \"Intended Audience :: System Administrators\",\n
+        \                       \"Programming Language :: Python\",\n                        \"Programming
+        Language :: Python :: 3\",\n                        \"Programming Language
+        :: Python :: 3.6\",\n                        \"Programming Language :: Python
+        :: 3.7\",\n                        \"Programming Language :: Python :: 3.8\",\n
+        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
+        \                   \"extensions\": {\n                        \"python.details\":
+        {\n                            \"contacts\": [\n                                {\n
+        \                                   \"email\": \"azpycli@microsoft.com\",\n
+        \                                   \"name\": \"Microsoft Corporation\",\n
+        \                                   \"role\": \"author\"\n                                }\n
+        \                           ],\n                            \"document_names\":
+        {\n                                \"description\": \"DESCRIPTION.rst\"\n
+        \                           },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/spring\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"spring\",\n                    \"summary\": \"Microsoft Azure Command-Line
+        Tools spring Extension\",\n                    \"version\": \"1.10.0\"\n                },\n
+        \               \"sha256Digest\": \"031895d8e91ad28eb8edda87b34bd704d8ed8b471597bcaaa0064ff2c408c101\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/spring-1.11.0-py3-none-any.whl\",\n
+        \               \"filename\": \"spring-1.11.0-py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.isPreview\": false,\n                    \"azext.minCliCoreVersion\":
+        \"2.45.0\",\n                    \"classifiers\": [\n                        \"Development
+        Status :: 4 - Beta\",\n                        \"Intended Audience :: Developers\",\n
+        \                       \"Intended Audience :: System Administrators\",\n
+        \                       \"Programming Language :: Python\",\n                        \"Programming
+        Language :: Python :: 3\",\n                        \"Programming Language
+        :: Python :: 3.6\",\n                        \"Programming Language :: Python
+        :: 3.7\",\n                        \"Programming Language :: Python :: 3.8\",\n
+        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
+        \                   \"extensions\": {\n                        \"python.details\":
+        {\n                            \"contacts\": [\n                                {\n
+        \                                   \"email\": \"azpycli@microsoft.com\",\n
+        \                                   \"name\": \"Microsoft Corporation\",\n
+        \                                   \"role\": \"author\"\n                                }\n
+        \                           ],\n                            \"document_names\":
+        {\n                                \"description\": \"DESCRIPTION.rst\"\n
+        \                           },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/spring\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"spring\",\n                    \"summary\": \"Microsoft Azure Command-Line
+        Tools spring Extension\",\n                    \"version\": \"1.11.0\"\n                },\n
+        \               \"sha256Digest\": \"a02e5fe4531399d9e2d790004e55ce21d19dd384e2da377244beeb7342239291\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/spring-1.11.1-py3-none-any.whl\",\n
+        \               \"filename\": \"spring-1.11.1-py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.isPreview\": false,\n                    \"azext.minCliCoreVersion\":
+        \"2.45.0\",\n                    \"classifiers\": [\n                        \"Development
+        Status :: 4 - Beta\",\n                        \"Intended Audience :: Developers\",\n
+        \                       \"Intended Audience :: System Administrators\",\n
+        \                       \"Programming Language :: Python\",\n                        \"Programming
+        Language :: Python :: 3\",\n                        \"Programming Language
+        :: Python :: 3.6\",\n                        \"Programming Language :: Python
+        :: 3.7\",\n                        \"Programming Language :: Python :: 3.8\",\n
+        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
+        \                   \"extensions\": {\n                        \"python.details\":
+        {\n                            \"contacts\": [\n                                {\n
+        \                                   \"email\": \"azpycli@microsoft.com\",\n
+        \                                   \"name\": \"Microsoft Corporation\",\n
+        \                                   \"role\": \"author\"\n                                }\n
+        \                           ],\n                            \"document_names\":
+        {\n                                \"description\": \"DESCRIPTION.rst\"\n
+        \                           },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/spring\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"spring\",\n                    \"summary\": \"Microsoft Azure Command-Line
+        Tools spring Extension\",\n                    \"version\": \"1.11.1\"\n                },\n
+        \               \"sha256Digest\": \"7cb83c3cb8811f10c724d7d321510821b9c8ca7103927820c8aab8257a063f44\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/spring-1.11.2-py3-none-any.whl\",\n
+        \               \"filename\": \"spring-1.11.2-py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.isPreview\": false,\n                    \"azext.minCliCoreVersion\":
+        \"2.45.0\",\n                    \"classifiers\": [\n                        \"Development
+        Status :: 4 - Beta\",\n                        \"Intended Audience :: Developers\",\n
+        \                       \"Intended Audience :: System Administrators\",\n
+        \                       \"Programming Language :: Python\",\n                        \"Programming
+        Language :: Python :: 3\",\n                        \"Programming Language
+        :: Python :: 3.6\",\n                        \"Programming Language :: Python
+        :: 3.7\",\n                        \"Programming Language :: Python :: 3.8\",\n
+        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
+        \                   \"extensions\": {\n                        \"python.details\":
+        {\n                            \"contacts\": [\n                                {\n
+        \                                   \"email\": \"azpycli@microsoft.com\",\n
+        \                                   \"name\": \"Microsoft Corporation\",\n
+        \                                   \"role\": \"author\"\n                                }\n
+        \                           ],\n                            \"document_names\":
+        {\n                                \"description\": \"DESCRIPTION.rst\"\n
+        \                           },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/spring\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"spring\",\n                    \"summary\": \"Microsoft Azure Command-Line
+        Tools spring Extension\",\n                    \"version\": \"1.11.2\"\n                },\n
+        \               \"sha256Digest\": \"6122206a0eb4de9bde73b8a8975b8f1b7ccf120e8b419dadbd890921c068120a\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/spring-1.11.3-py3-none-any.whl\",\n
+        \               \"filename\": \"spring-1.11.3-py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.isPreview\": false,\n                    \"azext.minCliCoreVersion\":
+        \"2.45.0\",\n                    \"classifiers\": [\n                        \"Development
+        Status :: 4 - Beta\",\n                        \"Intended Audience :: Developers\",\n
+        \                       \"Intended Audience :: System Administrators\",\n
+        \                       \"Programming Language :: Python\",\n                        \"Programming
+        Language :: Python :: 3\",\n                        \"Programming Language
+        :: Python :: 3.6\",\n                        \"Programming Language :: Python
+        :: 3.7\",\n                        \"Programming Language :: Python :: 3.8\",\n
+        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
+        \                   \"extensions\": {\n                        \"python.details\":
+        {\n                            \"contacts\": [\n                                {\n
+        \                                   \"email\": \"azpycli@microsoft.com\",\n
+        \                                   \"name\": \"Microsoft Corporation\",\n
+        \                                   \"role\": \"author\"\n                                }\n
+        \                           ],\n                            \"document_names\":
+        {\n                                \"description\": \"DESCRIPTION.rst\"\n
+        \                           },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/spring\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"spring\",\n                    \"summary\": \"Microsoft Azure Command-Line
+        Tools spring Extension\",\n                    \"version\": \"1.11.3\"\n                },\n
+        \               \"sha256Digest\": \"415dce682cd5636d234e0b36f015322b0fb5062a0a7955bc8f9a122cdd7f9c0e\"\n
         \           }\n        ],\n        \"spring-cloud\": [\n            {\n                \"downloadUrl\":
         \"https://azurecliprod.blob.core.windows.net/cli-extensions/spring_cloud-0.1.0-py2.py3-none-any.whl\",\n
         \               \"filename\": \"spring_cloud-0.1.0-py2.py3-none-any.whl\",\n
@@ -29624,6 +30229,35 @@ interactions:
         \                       }\n                    ],\n                    \"summary\":
         \"SSH into Azure VMs using RBAC and AAD OpenSSH Certificates\",\n                    \"version\":
         \"1.1.5\"\n                },\n                \"sha256Digest\": \"c0377075050af03caf70b27449efac36b2151fb34fd11f184de8bf79041a9de9\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/ssh-1.1.6-py3-none-any.whl\",\n
+        \               \"filename\": \"ssh-1.1.6-py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.isPreview\": false,\n                    \"azext.minCliCoreVersion\":
+        \"2.45.0\",\n                    \"classifiers\": [\n                        \"Development
+        Status :: 4 - Beta\",\n                        \"Intended Audience :: Developers\",\n
+        \                       \"Intended Audience :: System Administrators\",\n
+        \                       \"Programming Language :: Python\",\n                        \"Programming
+        Language :: Python :: 3\",\n                        \"Programming Language
+        :: Python :: 3.6\",\n                        \"Programming Language :: Python
+        :: 3.7\",\n                        \"Programming Language :: Python :: 3.8\",\n
+        \                       \"License :: OSI Approved :: MIT License\"\n                    ],\n
+        \                   \"extensions\": {\n                        \"python.details\":
+        {\n                            \"contacts\": [\n                                {\n
+        \                                   \"email\": \"azpycli@microsoft.com\",\n
+        \                                   \"name\": \"Microsoft Corporation\",\n
+        \                                   \"role\": \"author\"\n                                }\n
+        \                           ],\n                            \"document_names\":
+        {\n                                \"description\": \"DESCRIPTION.rst\"\n
+        \                           },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/ssh\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"extras\": [],\n                    \"generator\": \"bdist_wheel
+        (0.30.0)\",\n                    \"license\": \"MIT\",\n                    \"metadata_version\":
+        \"2.0\",\n                    \"name\": \"ssh\",\n                    \"run_requires\":
+        [\n                        {\n                            \"requires\": [\n
+        \                               \"oschmod (==0.3.12)\"\n                            ]\n
+        \                       }\n                    ],\n                    \"summary\":
+        \"SSH into Azure VMs using RBAC and AAD OpenSSH Certificates\",\n                    \"version\":
+        \"1.1.6\"\n                },\n                \"sha256Digest\": \"ed727dbe18994db27d22b4c1fdc28a6bfa0a91670042389b0534838f9eb235e1\"\n
         \           }\n        ],\n        \"stack-hci\": [\n            {\n                \"downloadUrl\":
         \"https://azurecliprod.blob.core.windows.net/cli-extensions/stack_hci-0.1.0-py3-none-any.whl\",\n
         \               \"filename\": \"stack_hci-0.1.0-py3-none-any.whl\",\n                \"metadata\":
@@ -29802,6 +30436,31 @@ interactions:
         \"stack-hci\",\n                    \"summary\": \"Microsoft Azure Command-Line
         Tools AzureStackHCIClient Extension\",\n                    \"version\": \"0.1.6\"\n
         \               },\n                \"sha256Digest\": \"35077970e30adc39d6bd2292d29fba35b274a09fc7f271d8ee0e9c01ceeba20e\"\n
+        \           },\n            {\n                \"downloadUrl\": \"https://azcliprod.blob.core.windows.net/cli-extensions/stack_hci-0.1.7-py3-none-any.whl\",\n
+        \               \"filename\": \"stack_hci-0.1.7-py3-none-any.whl\",\n                \"metadata\":
+        {\n                    \"azext.minCliCoreVersion\": \"2.45.0\",\n                    \"classifiers\":
+        [\n                        \"Development Status :: 4 - Beta\",\n                        \"Intended
+        Audience :: Developers\",\n                        \"Intended Audience ::
+        System Administrators\",\n                        \"Programming Language ::
+        Python\",\n                        \"Programming Language :: Python :: 3\",\n
+        \                       \"Programming Language :: Python :: 3.6\",\n                        \"Programming
+        Language :: Python :: 3.7\",\n                        \"Programming Language
+        :: Python :: 3.8\",\n                        \"License :: OSI Approved ::
+        MIT License\"\n                    ],\n                    \"extensions\":
+        {\n                        \"python.details\": {\n                            \"contacts\":
+        [\n                                {\n                                    \"email\":
+        \"azpycli@microsoft.com\",\n                                    \"name\":
+        \"Microsoft Corporation\",\n                                    \"role\":
+        \"author\"\n                                }\n                            ],\n
+        \                           \"document_names\": {\n                                \"description\":
+        \"DESCRIPTION.rst\"\n                            },\n                            \"project_urls\":
+        {\n                                \"Home\": \"https://github.com/Azure/azure-cli-extensions/tree/main/src/stack-hci\"\n
+        \                           }\n                        }\n                    },\n
+        \                   \"generator\": \"bdist_wheel (0.30.0)\",\n                    \"license\":
+        \"MIT\",\n                    \"metadata_version\": \"2.0\",\n                    \"name\":
+        \"stack-hci\",\n                    \"summary\": \"Microsoft Azure Command-Line
+        Tools AzureStackHCIClient Extension\",\n                    \"version\": \"0.1.7\"\n
+        \               },\n                \"sha256Digest\": \"e94f1fa190d504d080a6ad34f631f95aacfd1a0c56268d6d479267c9af8e27ba\"\n
         \           }\n        ],\n        \"staticwebapp\": [\n            {\n                \"downloadUrl\":
         \"https://azcliprod.blob.core.windows.net/cli-extensions/staticwebapp-1.0.0-py3-none-any.whl\",\n
         \               \"filename\": \"staticwebapp-1.0.0-py3-none-any.whl\",\n                \"metadata\":
@@ -33146,17 +33805,17 @@ interactions:
         \           }\n        ]\n    },\n    \"formatVersion\": \"1\"\n}"
     headers:
       content-length:
-      - '2672563'
+      - '2728575'
       content-md5:
-      - +KpxQwuQZwSVw5ro/bhLlg==
+      - TYyz1NjzocCy2oKJxc+N8Q==
       content-type:
       - application/json
       date:
-      - Thu, 06 Apr 2023 09:22:36 GMT
+      - Wed, 26 Apr 2023 07:55:03 GMT
       etag:
-      - '0x8DB36487C0AC2AD'
+      - '0x8DB460AD9C502F3'
       last-modified:
-      - Thu, 06 Apr 2023 02:41:54 GMT
+      - Wed, 26 Apr 2023 04:01:02 GMT
       server:
       - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
       x-ms-blob-type:
@@ -33182,21 +33841,21 @@ interactions:
       ParameterSetName:
       - -n -g --type
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_firewall_basic_sku_000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001","name":"cli_test_firewall_basic_sku_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-04-06T09:13:20Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001","name":"cli_test_firewall_basic_sku_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_firewall_basic_sku","date":"2023-04-26T07:45:18Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '346'
+      - '379'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:22:41 GMT
+      - Wed, 26 Apr 2023 07:55:30 GMT
       expires:
       - '-1'
       pragma:
@@ -33228,20 +33887,20 @@ interactions:
       ParameterSetName:
       - -n -g --type
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualWans/vwan-000007?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"vwan-000007\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualWans/vwan-000007\",\r\n
-        \ \"etag\": \"W/\\\"dba5a6b7-3853-4b2a-92dd-f68be49af6c7\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"fdf118a0-4e74-4536-b398-6d886a799c1c\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualWans\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"disableVpnEncryption\":
         false,\r\n    \"allowBranchToBranchTraffic\": true,\r\n    \"office365LocalBreakoutCategory\":
         \"None\",\r\n    \"type\": \"Standard\"\r\n  }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/9792317e-5539-42f4-ae04-8ddfa1a98949?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/f35890d2-d318-44a0-b002-7f12c518aec9?api-version=2021-08-01
       cache-control:
       - no-cache
       content-length:
@@ -33249,7 +33908,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:22:45 GMT
+      - Wed, 26 Apr 2023 07:55:36 GMT
       expires:
       - '-1'
       pragma:
@@ -33279,9 +33938,9 @@ interactions:
       ParameterSetName:
       - -n -g --type
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/9792317e-5539-42f4-ae04-8ddfa1a98949?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/f35890d2-d318-44a0-b002-7f12c518aec9?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -33293,7 +33952,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:22:55 GMT
+      - Wed, 26 Apr 2023 07:55:46 GMT
       expires:
       - '-1'
       pragma:
@@ -33310,7 +33969,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 19513971-ba54-4944-8002-5958ab7e7bcc
+      - 945162b2-f58a-4247-b57b-fa8c85bd4151
     status:
       code: 200
       message: OK
@@ -33328,13 +33987,13 @@ interactions:
       ParameterSetName:
       - -n -g --type
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualWans/vwan-000007?api-version=2021-08-01
   response:
     body:
       string: "{\r\n  \"name\": \"vwan-000007\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualWans/vwan-000007\",\r\n
-        \ \"etag\": \"W/\\\"d67050f5-c01f-43ba-9752-0156db1999d8\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"f7cc853b-16d5-4552-8513-01212f8a1582\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualWans\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"disableVpnEncryption\":
         false,\r\n    \"allowBranchToBranchTraffic\": true,\r\n    \"office365LocalBreakoutCategory\":
@@ -33347,9 +34006,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:22:55 GMT
+      - Wed, 26 Apr 2023 07:55:47 GMT
       etag:
-      - W/"d67050f5-c01f-43ba-9752-0156db1999d8"
+      - W/"f7cc853b-16d5-4552-8513-01212f8a1582"
       expires:
       - '-1'
       pragma:
@@ -33386,13 +34045,13 @@ interactions:
       ParameterSetName:
       - -n -g --vwan --address-prefix -l --sku
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualHubs/vhub-000008?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"vhub-000008\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualHubs/vhub-000008\",\r\n
-        \ \"etag\": \"W/\\\"12783fe0-1377-4a68-9517-c05831533c97\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"eca229ad-5a74-4e17-87ed-eca5a3d90a28\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualHubs\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"virtualHubRouteTableV2s\":
         [],\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n    \"virtualRouterAsn\":
@@ -33406,7 +34065,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/763e26e2-981f-43a1-866c-ade912386568?api-version=2022-05-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/a5b6b952-fde8-4ac3-be98-afb1a0a68bd9?api-version=2022-05-01
       cache-control:
       - no-cache
       content-length:
@@ -33414,7 +34073,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:23:02 GMT
+      - Wed, 26 Apr 2023 07:55:55 GMT
       expires:
       - '-1'
       pragma:
@@ -33427,7 +34086,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 13ea8b09-74c9-4c5f-a882-9e5965056bc9
+      - e5021092-1bbe-4bfd-bbaa-67ffa560b452
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
     status:
@@ -33447,9 +34106,9 @@ interactions:
       ParameterSetName:
       - -n -g --vwan --address-prefix -l --sku
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/763e26e2-981f-43a1-866c-ade912386568?api-version=2022-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/a5b6b952-fde8-4ac3-be98-afb1a0a68bd9?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -33461,7 +34120,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:23:13 GMT
+      - Wed, 26 Apr 2023 07:56:05 GMT
       expires:
       - '-1'
       pragma:
@@ -33478,7 +34137,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 847b32df-6c44-477a-8dd6-8189acef3e0b
+      - 920a50a9-a62d-4bbd-a465-786b3689aa83
     status:
       code: 200
       message: OK
@@ -33496,9 +34155,9 @@ interactions:
       ParameterSetName:
       - -n -g --vwan --address-prefix -l --sku
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/763e26e2-981f-43a1-866c-ade912386568?api-version=2022-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/a5b6b952-fde8-4ac3-be98-afb1a0a68bd9?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -33510,7 +34169,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:23:23 GMT
+      - Wed, 26 Apr 2023 07:56:16 GMT
       expires:
       - '-1'
       pragma:
@@ -33527,7 +34186,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 48b31881-6c81-406b-a33a-50f9ee595276
+      - d661b191-4c93-46f9-a86d-6ef9385cb0b2
     status:
       code: 200
       message: OK
@@ -33545,9 +34204,9 @@ interactions:
       ParameterSetName:
       - -n -g --vwan --address-prefix -l --sku
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/763e26e2-981f-43a1-866c-ade912386568?api-version=2022-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/a5b6b952-fde8-4ac3-be98-afb1a0a68bd9?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -33559,7 +34218,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:23:43 GMT
+      - Wed, 26 Apr 2023 07:56:37 GMT
       expires:
       - '-1'
       pragma:
@@ -33576,7 +34235,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - b5e79aa7-499c-4059-a88a-a22a05c3d5a9
+      - a4374805-9d18-4fc4-baf9-07ed4e18bf71
     status:
       code: 200
       message: OK
@@ -33594,9 +34253,9 @@ interactions:
       ParameterSetName:
       - -n -g --vwan --address-prefix -l --sku
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/763e26e2-981f-43a1-866c-ade912386568?api-version=2022-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/a5b6b952-fde8-4ac3-be98-afb1a0a68bd9?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -33608,7 +34267,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:24:04 GMT
+      - Wed, 26 Apr 2023 07:56:57 GMT
       expires:
       - '-1'
       pragma:
@@ -33625,7 +34284,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 28af661e-e21b-4f14-abad-e79a63db3a28
+      - cf9d8558-ecd1-4bdb-b0d8-009d0ac67853
     status:
       code: 200
       message: OK
@@ -33643,9 +34302,9 @@ interactions:
       ParameterSetName:
       - -n -g --vwan --address-prefix -l --sku
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/763e26e2-981f-43a1-866c-ade912386568?api-version=2022-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/a5b6b952-fde8-4ac3-be98-afb1a0a68bd9?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -33657,7 +34316,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:24:44 GMT
+      - Wed, 26 Apr 2023 07:57:38 GMT
       expires:
       - '-1'
       pragma:
@@ -33674,7 +34333,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 49e0dc81-f9b0-4192-842a-ba5c457c84a1
+      - b56464c2-b960-4310-9b39-b0390bd2708f
     status:
       code: 200
       message: OK
@@ -33692,9 +34351,9 @@ interactions:
       ParameterSetName:
       - -n -g --vwan --address-prefix -l --sku
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/763e26e2-981f-43a1-866c-ade912386568?api-version=2022-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/a5b6b952-fde8-4ac3-be98-afb1a0a68bd9?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -33706,7 +34365,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:25:24 GMT
+      - Wed, 26 Apr 2023 07:58:18 GMT
       expires:
       - '-1'
       pragma:
@@ -33723,7 +34382,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - c37f992d-3690-401e-8336-52b91b0aeddf
+      - 9134d47f-de48-4052-ac7f-c37dd76aaf9f
     status:
       code: 200
       message: OK
@@ -33741,9 +34400,58 @@ interactions:
       ParameterSetName:
       - -n -g --vwan --address-prefix -l --sku
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/763e26e2-981f-43a1-866c-ade912386568?api-version=2022-05-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/a5b6b952-fde8-4ac3-be98-afb1a0a68bd9?api-version=2022-05-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '30'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 26 Apr 2023 07:59:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 3fc15f17-114f-47a1-91e6-4dfe5bd9fe97
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vhub create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --vwan --address-prefix -l --sku
+      User-Agent:
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/a5b6b952-fde8-4ac3-be98-afb1a0a68bd9?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -33755,7 +34463,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:26:45 GMT
+      - Wed, 26 Apr 2023 08:02:20 GMT
       expires:
       - '-1'
       pragma:
@@ -33772,7 +34480,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 4b89de98-4b9c-4984-a194-0cffc1ea3e63
+      - 7117df33-df21-47d4-9b65-42ef11edd232
     status:
       code: 200
       message: OK
@@ -33790,13 +34498,13 @@ interactions:
       ParameterSetName:
       - -n -g --vwan --address-prefix -l --sku
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualHubs/vhub-000008?api-version=2022-05-01
   response:
     body:
       string: "{\r\n  \"name\": \"vhub-000008\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualHubs/vhub-000008\",\r\n
-        \ \"etag\": \"W/\\\"7b38a6de-5430-4064-a301-8ffa478cbb3f\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"9ad7600d-6ce3-46a1-b091-c19f7f133796\\\"\",\r\n  \"type\":
         \"Microsoft.Network/virtualHubs\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"virtualHubRouteTableV2s\":
         [],\r\n    \"addressPrefix\": \"10.0.0.0/24\",\r\n    \"virtualRouterAsn\":
@@ -33814,7 +34522,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:26:46 GMT
+      - Wed, 26 Apr 2023 08:02:21 GMT
       expires:
       - '-1'
       pragma:
@@ -33831,7 +34539,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - d7d45e49-2a8e-4f65-824f-5191c107739e
+      - 0c66b234-8c96-4c26-94ec-9030be0cf761
     status:
       code: 200
       message: OK
@@ -33849,21 +34557,21 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_firewall_basic_sku_000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001","name":"cli_test_firewall_basic_sku_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-04-06T09:13:20Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001","name":"cli_test_firewall_basic_sku_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_firewall_basic_sku","date":"2023-04-26T07:45:18Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '346'
+      - '379'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:26:46 GMT
+      - Wed, 26 Apr 2023 08:02:21 GMT
       expires:
       - '-1'
       pragma:
@@ -33897,13 +34605,13 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/azureFirewalls/firewall-000002?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"firewall-000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/azureFirewalls/firewall-000002\",\r\n
-        \ \"etag\": \"W/\\\"335f9dfe-f293-4fa5-82f1-9808456e8421\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"1a96d6e3-117a-4966-9c11-b0b2cc99ac41\\\"\",\r\n  \"type\":
         \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Updating\",\r\n    \"sku\": {\r\n      \"name\":
         \"AZFW_Hub\",\r\n      \"tier\": \"Basic\"\r\n    },\r\n    \"additionalProperties\":
@@ -33914,7 +34622,7 @@ interactions:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d93466d8-5477-450e-bd76-f3bc3a409d3f?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -33922,7 +34630,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:26:51 GMT
+      - Wed, 26 Apr 2023 08:02:26 GMT
       expires:
       - '-1'
       pragma:
@@ -33935,9 +34643,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 622705f3-fa02-47cd-ad65-b9df35af5a64
+      - 89dd81b4-515f-4420-8f8c-4360b1fc3377
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -33955,9 +34663,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d93466d8-5477-450e-bd76-f3bc3a409d3f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -33969,7 +34677,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:27:01 GMT
+      - Wed, 26 Apr 2023 08:02:37 GMT
       expires:
       - '-1'
       pragma:
@@ -33986,7 +34694,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 54c1faeb-212c-4667-8d95-b7ac6b2ee890
+      - d909aeef-152b-48ff-88dc-2a7835f3042b
     status:
       code: 200
       message: OK
@@ -34004,9 +34712,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d93466d8-5477-450e-bd76-f3bc3a409d3f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -34018,7 +34726,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:27:12 GMT
+      - Wed, 26 Apr 2023 08:02:49 GMT
       expires:
       - '-1'
       pragma:
@@ -34035,7 +34743,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - e5335caa-060e-4996-9384-c62e6c9baf1b
+      - f72042e8-5e2e-4e07-b2fb-5ee495235632
     status:
       code: 200
       message: OK
@@ -34053,9 +34761,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d93466d8-5477-450e-bd76-f3bc3a409d3f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -34067,7 +34775,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:27:33 GMT
+      - Wed, 26 Apr 2023 08:03:09 GMT
       expires:
       - '-1'
       pragma:
@@ -34084,7 +34792,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 6127b418-9570-4390-958b-0216b06dca53
+      - bd133a55-b2cb-48e9-bce5-759ac962b658
     status:
       code: 200
       message: OK
@@ -34102,9 +34810,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d93466d8-5477-450e-bd76-f3bc3a409d3f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -34116,7 +34824,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:27:53 GMT
+      - Wed, 26 Apr 2023 08:03:30 GMT
       expires:
       - '-1'
       pragma:
@@ -34133,7 +34841,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 2e1f5844-261b-437a-bab5-b42c7280329c
+      - b9dc20d6-d7ec-46a9-8b8c-68b43aff856a
     status:
       code: 200
       message: OK
@@ -34151,9 +34859,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d93466d8-5477-450e-bd76-f3bc3a409d3f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -34165,7 +34873,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:28:33 GMT
+      - Wed, 26 Apr 2023 08:04:11 GMT
       expires:
       - '-1'
       pragma:
@@ -34182,7 +34890,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - fa539b24-c496-47aa-8884-684290bf8ea2
+      - 626636c3-628d-464c-9902-f8030dec7e8f
     status:
       code: 200
       message: OK
@@ -34200,9 +34908,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d93466d8-5477-450e-bd76-f3bc3a409d3f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -34214,7 +34922,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:29:13 GMT
+      - Wed, 26 Apr 2023 08:04:52 GMT
       expires:
       - '-1'
       pragma:
@@ -34231,7 +34939,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 19f9bfe8-f1aa-455b-b01a-dfb43e2a5fa9
+      - 80c51022-f01e-47e0-9e1d-350ba061db3f
     status:
       code: 200
       message: OK
@@ -34249,9 +34957,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d93466d8-5477-450e-bd76-f3bc3a409d3f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -34263,7 +34971,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:30:34 GMT
+      - Wed, 26 Apr 2023 08:06:12 GMT
       expires:
       - '-1'
       pragma:
@@ -34280,7 +34988,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 48bf756a-6714-4768-95ac-d01037db43c3
+      - 75d9788c-bee4-45fa-93f7-9f43575d5d47
     status:
       code: 200
       message: OK
@@ -34298,9 +35006,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d93466d8-5477-450e-bd76-f3bc3a409d3f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -34312,7 +35020,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:33:15 GMT
+      - Wed, 26 Apr 2023 08:08:53 GMT
       expires:
       - '-1'
       pragma:
@@ -34329,7 +35037,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - ff3edd41-5a4a-4382-ad3b-938f80617c76
+      - d440ecec-d819-4bf7-a02f-b2e622e58baf
     status:
       code: 200
       message: OK
@@ -34347,9 +35055,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d93466d8-5477-450e-bd76-f3bc3a409d3f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -34361,7 +35069,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:34:56 GMT
+      - Wed, 26 Apr 2023 08:10:34 GMT
       expires:
       - '-1'
       pragma:
@@ -34378,7 +35086,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - c666ad10-75e5-47fb-827b-4d3eac8949b2
+      - f8ea6824-d17b-40ca-afdf-0f07aec5e507
     status:
       code: 200
       message: OK
@@ -34396,9 +35104,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d93466d8-5477-450e-bd76-f3bc3a409d3f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -34410,7 +35118,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:36:36 GMT
+      - Wed, 26 Apr 2023 08:12:14 GMT
       expires:
       - '-1'
       pragma:
@@ -34427,7 +35135,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 4077fc5c-dcf5-42be-af8b-31421e75872c
+      - cdb50347-c2b2-4128-aac2-3e70239d9b10
     status:
       code: 200
       message: OK
@@ -34445,9 +35153,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d93466d8-5477-450e-bd76-f3bc3a409d3f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -34459,7 +35167,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:38:17 GMT
+      - Wed, 26 Apr 2023 08:13:55 GMT
       expires:
       - '-1'
       pragma:
@@ -34476,7 +35184,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 54a0c290-abb1-472e-8e52-b8ac3b9a9682
+      - 88b3c7c7-c407-459c-9908-bd550479af32
     status:
       code: 200
       message: OK
@@ -34494,9 +35202,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d93466d8-5477-450e-bd76-f3bc3a409d3f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -34508,7 +35216,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:39:57 GMT
+      - Wed, 26 Apr 2023 08:15:36 GMT
       expires:
       - '-1'
       pragma:
@@ -34525,7 +35233,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - f8a4bfd6-33a9-4f33-bc26-d61e5887488f
+      - 7c565fe4-59b8-4b3a-b1fb-c069951a7cc0
     status:
       code: 200
       message: OK
@@ -34543,9 +35251,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d93466d8-5477-450e-bd76-f3bc3a409d3f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"InProgress\"\r\n}"
@@ -34557,7 +35265,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:41:38 GMT
+      - Wed, 26 Apr 2023 08:17:15 GMT
       expires:
       - '-1'
       pragma:
@@ -34574,7 +35282,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - b915f983-82c2-4842-8434-0db764fe9ca8
+      - 4d3ff7ef-38f4-40b8-8079-8c4943fef53b
     status:
       code: 200
       message: OK
@@ -34592,107 +35300,9 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 06 Apr 2023 09:43:18 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - ad51682f-a01f-4f6b-a43c-b1110ab50711
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --vhub --public-ip-count --sku --tier
-      User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
-  response:
-    body:
-      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '30'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Thu, 06 Apr 2023 09:44:58 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-arm-service-request-id:
-      - c5688881-2f38-469c-9339-c2d1635d7d87
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - network firewall create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --vhub --public-ip-count --sku --tier
-      User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2e3938a5-d3c0-4ce7-88a5-f5e78ae4e252?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/d93466d8-5477-450e-bd76-f3bc3a409d3f?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -34704,7 +35314,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:46:39 GMT
+      - Wed, 26 Apr 2023 08:18:57 GMT
       expires:
       - '-1'
       pragma:
@@ -34721,7 +35331,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 8c9f0371-4786-412a-a895-5501c583842f
+      - 856ea187-585a-47dd-bc4a-0021214e4c73
     status:
       code: 200
       message: OK
@@ -34739,33 +35349,33 @@ interactions:
       ParameterSetName:
       - -n -g --vhub --public-ip-count --sku --tier
       User-Agent:
-      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/azureFirewalls/firewall-000002?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"name\": \"firewall-000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/azureFirewalls/firewall-000002\",\r\n
-        \ \"etag\": \"W/\\\"44959545-11ae-47a6-af9f-c717ab3fb6d9\\\"\",\r\n  \"type\":
+        \ \"etag\": \"W/\\\"730b8e29-c402-4a1b-83f2-8fbfbea73dcb\\\"\",\r\n  \"type\":
         \"Microsoft.Network/azureFirewalls\",\r\n  \"location\": \"westus\",\r\n  \"properties\":
         {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"sku\": {\r\n      \"name\":
         \"AZFW_Hub\",\r\n      \"tier\": \"Basic\"\r\n    },\r\n    \"additionalProperties\":
         {},\r\n    \"virtualHub\": {\r\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_firewall_basic_sku_000001/providers/Microsoft.Network/virtualHubs/vhub-000008\"\r\n
         \   },\r\n    \"hubIPAddresses\": {\r\n      \"privateIPAddress\": \"10.0.0.132\",\r\n
         \     \"publicIPs\": {\r\n        \"addresses\": [\r\n          {\r\n            \"address\":
-        \"20.237.200.185\"\r\n          },\r\n          {\r\n            \"address\":
-        \"20.237.203.224\"\r\n          }\r\n        ],\r\n        \"count\": 2\r\n
+        \"40.83.194.224\"\r\n          },\r\n          {\r\n            \"address\":
+        \"40.83.195.236\"\r\n          }\r\n        ],\r\n        \"count\": 2\r\n
         \     }\r\n    }\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '997'
+      - '995'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 06 Apr 2023 09:46:39 GMT
+      - Wed, 26 Apr 2023 08:19:04 GMT
       etag:
-      - W/"44959545-11ae-47a6-af9f-c717ab3fb6d9"
+      - W/"730b8e29-c402-4a1b-83f2-8fbfbea73dcb"
       expires:
       - '-1'
       pragma:
@@ -34782,7 +35392,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - bc92d4ec-d682-4191-891c-2720634acbaa
+      - 60491557-99ba-4ce4-b7c7-749f630b9080
     status:
       code: 200
       message: OK
