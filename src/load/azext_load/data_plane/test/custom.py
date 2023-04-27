@@ -76,28 +76,20 @@ def download_test_files(
     cmd,
     load_test_resource,
     test_id,
+    path,
     resource_group=None,
 ):
     from azext_load.data_plane.client_factory import admin_data_plane_client
-    import requests, os, shutil
+    import requests, os
     credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
     endpoint = get_load_test_resource_endpoint(credential, load_test_resource, resource_group=resource_group, subscription_id=subscription_id)
     client = admin_data_plane_client(cmd.cli_ctx, subscription=subscription_id, endpoint=endpoint, credential=credential)
     list_of_file_details = client.list_test_files(test_id)
-    #downloading the files in response to local as per doc
-    directory = ""
     if list_of_file_details:
-        current_path = os.getcwd()
-        directory = current_path +"\\" +test_id + "_files"
-        count = 1
-        while os.path.exists(directory):
-            directory = current_path +"\\" +test_id + "_files" + str(count)
-            count = count+1
-        os.mkdir(directory)
+        if not os.path.exists(path):
+            os.mkdir(path)
         for file_detail in list_of_file_details:
-            current_file = requests.get(file_detail["url"])
-            with open(directory+"\\"+file_detail["fileName"], 'w+') as f:
-                f.write(current_file.text)
-    if directory != "": 
-        return "files downloaded at "+directory       
-    return "no files to download"
+            with requests.get(file_detail["url"]) as current_file:
+                with open(path+"\\"+file_detail["fileName"], 'w+') as f:
+                    f.write(current_file.text) 
+    return "Files belonging to test "+test_id+" are downloaded in "+path+" location."
