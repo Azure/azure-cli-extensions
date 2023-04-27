@@ -1980,6 +1980,75 @@ network vwan update:
     security_provider_name:
       rule_exclusions:
       - option_length_too_long
+networkcloud cloudservicesnetwork create:
+  parameters:
+    enable_default_egress_endpoints:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+      - option_length_too_long
+    additional_egress_endpoints:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud cloudservicesnetwork update:
+  parameters:
+    enable_default_egress_endpoints:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+      - option_length_too_long
+    additional_egress_endpoints:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud cluster create:
+  parameters:
+    aggregator_or_single_rack_definition:
+      rule_exclusions:
+      - option_length_too_long
+    cluster_service_principal:
+      rule_exclusions:
+      - option_length_too_long
+    compute_deployment_threshold:
+      rule_exclusions:
+      - option_length_too_long
+    compute_rack_definitions:
+      rule_exclusions:
+      - option_length_too_long
+    managed_resource_group_configuration:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud cluster update:
+  parameters:      
+    aggregator_or_single_rack_definition:
+      rule_exclusions:
+      - option_length_too_long
+    cluster_service_principal:
+      rule_exclusions:
+      - option_length_too_long
+    compute_deployment_threshold:
+      rule_exclusions:
+      - option_length_too_long
+    compute_rack_definitions:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud cluster deploy:
+  parameters:      
+    skip_validations_for_machines:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud clustermanager create:
+  parameters:  
+    managed_resource_group_configuration:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud l3network create:
+  parameters:        
+    hybrid_aks_ipam_enabled:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud virtualmachine create:
+  parameters:        
+    isolate_emulator_thread:
+      rule_exclusions:
+      - option_length_too_long 
 notification-hub authorization-rule create:
   parameters:
     notification_hub_name:
