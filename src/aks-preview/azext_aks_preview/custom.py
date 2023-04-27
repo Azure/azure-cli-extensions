@@ -575,6 +575,13 @@ def aks_create(
     node_public_ip_tags=None,
     # azure service mesh
     enable_azure_service_mesh=None,
+    # azure monitor profile
+    enable_azuremonitormetrics=False,
+    azure_monitor_workspace_resource_id=None,
+    ksm_metric_labels_allow_list=None,
+    ksm_metric_annotations_allow_list=None,
+    grafana_resource_id=None,
+    enable_windows_recording_rules=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
