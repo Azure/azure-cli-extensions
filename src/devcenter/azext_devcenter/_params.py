@@ -14,10 +14,6 @@ from azure.cli.core.commands.parameters import (
 from azure.cli.core.commands.validators import (
     validate_file_or_dict,
 )
-from azext_devcenter.action import (
-    AddEmailNotification,
-    AddWebhookNotification,
-)
 
 from ._validators import validate_dev_box_list, validate_time
 
@@ -34,6 +30,12 @@ project_type = CLIArgumentType(
     configured_default="project",
 )
 
+endpoint = CLIArgumentType(
+    options_list=["--endpoint"],
+    help="The API endpoint for the developer resources. Use az configure -d endpoint=<endpoint_uri> to configure a default.",
+    configured_default="endpoint",
+)
+
 
 def load_arguments(self, _):
     with self.argument_context("devcenter dev project list") as c:
@@ -41,11 +43,19 @@ def load_arguments(self, _):
             "dev_center",
             arg_type=dev_center_type,
         )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
 
     with self.argument_context("devcenter dev project show") as c:
         c.argument(
             "dev_center",
             arg_type=dev_center_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "project_name",
@@ -63,6 +73,10 @@ def load_arguments(self, _):
             "project_name",
             arg_type=project_type,
         )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
 
     with self.argument_context("devcenter dev pool show") as c:
         c.argument(
@@ -72,6 +86,10 @@ def load_arguments(self, _):
         c.argument(
             "project_name",
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "pool_name",
@@ -90,6 +108,10 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "pool_name",
             options_list=["--pool-name", "--pool"],
             type=str,
@@ -104,6 +126,10 @@ def load_arguments(self, _):
         c.argument(
             "project_name",
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "pool_name",
@@ -124,6 +150,10 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
             help="The AAD object id of the user. If value is 'me', the identity is taken from the "
@@ -138,6 +168,10 @@ def load_arguments(self, _):
         c.argument(
             "project_name",
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "user_id",
@@ -160,6 +194,10 @@ def load_arguments(self, _):
         c.argument(
             "project_name",
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "user_id",
@@ -196,6 +234,10 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
             help="The AAD object id of the user. If value is 'me', the identity is taken from the "
@@ -216,6 +258,10 @@ def load_arguments(self, _):
         c.argument(
             "project_name",
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "user_id",
@@ -240,6 +286,10 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
             help="The AAD object id of the user. If value is 'me', the identity is taken from the "
@@ -262,6 +312,10 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
             help="The AAD object id of the user. If value is 'me', the identity is taken "
@@ -282,6 +336,10 @@ def load_arguments(self, _):
         c.argument(
             "project_name",
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "user_id",
@@ -311,6 +369,10 @@ def load_arguments(self, _):
         c.argument(
             "project_name",
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "user_id",
@@ -346,6 +408,10 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
             help="The AAD object id of the user. If value is 'me', the identity is taken "
@@ -372,6 +438,10 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
             help="The AAD object id of the user. If value is 'me', the identity is taken "
@@ -392,6 +462,10 @@ def load_arguments(self, _):
         c.argument(
             "project_name",
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "user_id",
@@ -421,6 +495,10 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
             help="The AAD object id of the user. If value is 'me', the identity is taken "
@@ -448,6 +526,10 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
             help="The AAD object id of the user. If value is 'me', the identity is taken "
@@ -462,6 +544,10 @@ def load_arguments(self, _):
         c.argument(
             "project_name",
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "user_id",
@@ -484,6 +570,10 @@ def load_arguments(self, _):
         c.argument(
             "project_name",
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument(
             "user_id",
@@ -522,6 +612,10 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
             help="The AAD object id of the user. If value is 'me', the identity is taken "
@@ -550,6 +644,10 @@ def load_arguments(self, _):
             arg_type=project_type,
         )
         c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
             "user_id",
             type=str,
             help="The AAD object id of the user. If value is 'me', the identity is taken from the "
@@ -571,6 +669,10 @@ def load_arguments(self, _):
             "project_name",
             arg_type=project_type,
         )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
 
     with self.argument_context("devcenter dev catalog show") as c:
         c.argument(
@@ -580,6 +682,10 @@ def load_arguments(self, _):
         c.argument(
             "project_name",
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument("catalog_name", type=str, help="The name of the catalog")
 
@@ -592,6 +698,10 @@ def load_arguments(self, _):
             "project_name",
             arg_type=project_type,
         )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
 
     with self.argument_context("devcenter dev environment-definition list") as c:
         c.argument(
@@ -602,6 +712,10 @@ def load_arguments(self, _):
             "project_name",
             required=True,
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument("catalog_name", type=str, help="The name of the catalog")
 
@@ -614,6 +728,10 @@ def load_arguments(self, _):
             "project_name",
             required=True,
             arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
         )
         c.argument("catalog_name", type=str, help="The name of the catalog")
         c.argument(

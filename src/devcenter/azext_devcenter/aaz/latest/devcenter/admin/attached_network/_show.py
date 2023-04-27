@@ -75,10 +75,10 @@ class Show(AAZCommand):
         self.pre_operations()
         condition_0 = has_value(self.ctx.args.attached_network_connection_name) and has_value(self.ctx.args.project_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         condition_1 = has_value(self.ctx.args.attached_network_connection_name) and has_value(self.ctx.args.dev_center_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
-        if condition_0:
-            self.AttachedNetworksGetByProject(ctx=self.ctx)()
         if condition_1:
-            self.AttachedNetworksGetByDevCenter(ctx=self.ctx)()
+            self.AttachedNetworksGetByDevCenter(ctx=self.ctx)()    
+        elif condition_0:
+            self.AttachedNetworksGetByProject(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback

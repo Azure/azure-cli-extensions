@@ -6,7 +6,7 @@
 # --------------------------------------------------------------------------
 import json
 from datetime import timedelta
-from azure.cli.core.azclierror import ResourceNotFoundError
+from azure.cli.core.azclierror import ResourceNotFoundError, AzureInternalError
 from azure.cli.core.util import send_raw_request
 from azure.cli.core._profile import Profile
 
@@ -38,6 +38,13 @@ def get_project_arg(cli_ctx, dev_center_name, project_name=None):
         body=json.dumps(content),
         resource=cli_ctx.cloud.endpoints.active_directory_resource_id,
     )
+
+    response_code = int(response.status_code)
+    if response_code != 200:
+        error_details = json.loads(response.text, strict=False)
+        error_message = f"""Azure Resource Graph encountered an error. \
+Please try using the endpoint parameter instead of the dev center parameter. Error details: {error_details}"""
+        raise AzureInternalError(error_message)
     return response.json()["data"]
 
 
