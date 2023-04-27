@@ -65,6 +65,7 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
     except ResourceNotFoundError:
         _create_default_endpoint(cmd, resource_uri)
     except HttpResponseError as e:
+        # TODO: confirm exact precondition failed syntax
         if e.reason != "Precondition Failed":
             raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
     except Exception as e:
@@ -102,7 +103,10 @@ def _check_service_configuration(cmd, resource_uri, port):
         # The more likely scenario is that the request failed with a "Authorization Error",
         # in case the user isn't an owner/contributor.
         return True
-    return service_config['port'] == int(port)
+    if port:
+        return serviceConfig['port'] == int(port)
+    else:
+        return True
 
 
 # def _get_or_create_endpoint(cmd, resource_uri):
@@ -291,12 +295,12 @@ def format_relay_info_string(relay_info):
     relay_info_string = json.dumps(
         {
             "relay": {
-                "namespaceName": relay_info.namespace_name,
-                "namespaceNameSuffix": relay_info.namespace_name_suffix,
-                "hybridConnectionName": relay_info.hybrid_connection_name,
-                "accessKey": relay_info.access_key,
-                "expiresOn": relay_info.expires_on,
-                "serviceConfigurationToken": relay_info.serviceConfigurationToken
+                "namespaceName": relay_info['namespaceName'],
+                "namespaceNameSuffix": relay_info['namespaceNameSuffix'],
+                "hybridConnectionName": relay_info['hybridConnectionName'],
+                "accessKey": relay_info['accessKey'],
+                "expiresOn": relay_info['expiresOn'],
+                "serviceConfigurationToken": relay_info['serviceConfigurationToken']
             }
         })
     result_bytes = relay_info_string.encode("ascii")
