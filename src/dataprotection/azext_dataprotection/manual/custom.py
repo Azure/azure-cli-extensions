@@ -130,7 +130,7 @@ def data_protection_backup_instance_create(cmd, vault_name, resource_group_name,
                 )
 
                 return {
-                    "backupInstance": helper.convert_dict_keys_snake_to_camel(backup_instance["properties"])
+                    "backupInstance": self.serialize_content(_content_value)
                 }
 
             def on_200(self, session):
@@ -144,8 +144,7 @@ def data_protection_backup_instance_create(cmd, vault_name, resource_group_name,
                     self.ctx.args,
                     value=self.ctx.vars.instance,
                 )
-                # return self.serialize_content(_content_value)
-                return backup_instance
+                return self.serialize_content(_content_value)
 
     backup_instance_name = backup_instance["backup_instance_name"]
     
@@ -186,7 +185,7 @@ def data_protection_backup_instance_validate_for_backup(cmd, vault_name, resourc
                 )
 
                 return {
-                    "backupInstance": helper.convert_dict_keys_snake_to_camel(backup_instance["properties"])
+                    "backupInstance": self.serialize_content(_content_value)
                 }
 
             def on_200(self, session):
@@ -314,7 +313,8 @@ def data_protection_backup_instance_initialize(datasource_type, datasource_id, d
                            Use command az dataprotection backup-instance initialize-backupconfig \
                            for creating the backup-configuration")
         backup_configuration["object_type"] = "KubernetesClusterBackupDatasourceParameters"
-        policy_info["policy_parameters"]["backup_data_source_parameters_list"] = backup_configuration
+        policy_info["policy_parameters"]["backup_datasource_parameters_list"] = []
+        policy_info["policy_parameters"]["backup_datasource_parameters_list"].append(backup_configuration)
     else:
         if not backup_configuration is None:
             # Raise a warning for user?
