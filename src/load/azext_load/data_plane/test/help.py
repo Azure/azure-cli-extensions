@@ -41,8 +41,8 @@ test_helps[
     "load test list"
 ] = """
 type: command
-short-summary: List all tests.3
-long-summary: List all tests.
+short-summary: List all tests.
+long-summary: List all tests in the given load test resource.
 parameters:
     - name: --load-test-resource
       type: string
@@ -53,5 +53,5 @@ parameters:
       type: string
       short-summary: 'Name of the resource group'
       long-summary: |
-          Name of the resource group 2
+          Name of the resource group
 """
