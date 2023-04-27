@@ -16,7 +16,6 @@ from .utils import create_containerapp_env
 class ContainerAppMountSecretTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
-    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_container_app_mount_secret_e2e(self, resource_group):
         import requests
 
