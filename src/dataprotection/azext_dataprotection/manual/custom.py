@@ -433,7 +433,8 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
     datasource_map = {
         "AzureDisk": "Microsoft.Compute/disks",
         "AzureBlob": "Microsoft.Storage/storageAccounts/blobServices",
-        "AzureDatabaseForPostgreSQL": "Microsoft.DBforPostgreSQL/servers/databases"
+        "AzureDatabaseForPostgreSQL": "Microsoft.DBforPostgreSQL/servers/databases",
+        "AzureKubernetesService": "Microsoft.ContainerService/managedclusters"
     }
 
     if datasource_map[datasource_type] != backup_instance["properties"]["data_source_info"]["datasource_type"]:
