@@ -67,7 +67,7 @@ class List(AAZCommand):
         condition_1 = has_value(self.ctx.args.project_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
             self.DevBoxDefinitionsListByDevCenter(ctx=self.ctx)()
-        if condition_1:
+        elif condition_1:
             self.DevBoxDefinitionsListByProject(ctx=self.ctx)()
         self.post_operations()
 

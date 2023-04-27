@@ -8,23 +8,30 @@
 # regenerated.
 # --------------------------------------------------------------------------
 from .utils import get_project_data
+from ._validators import validate_endpoint
 
 # Data plane
 
 
-def cf_devcenter_dataplane(cli_ctx, dev_center, project_name=None):
+def cf_devcenter_dataplane(cli_ctx, endpoint=None, dev_center=None, project_name=None):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_devcenter.vendored_sdks.devcenter_dataplane import (
         DevCenterDataplaneClient,
     )
 
-    project = get_project_data(cli_ctx, dev_center, project_name)
+    validate_endpoint(endpoint, dev_center)
 
-    # We need to set the project name even if we don't need this information
-    # since initializing DevCenterDataplaneClient requires this param
+    if endpoint is None and dev_center is not None:
+        project = get_project_data(cli_ctx, dev_center, project_name)
+
+        # We need to set the project name even if we don't need this information
+        # since initializing DevCenterDataplaneClient requires this param
+        if project_name is None:
+            project_name = project["name"]
+        endpoint = project["devCenterUri"]
+
     if project_name is None:
-        project_name = project["name"]
-    endpoint = project["devCenterUri"]
+        project_name = "placeholder"  # see comment above
 
     cli_ctx.cloud.endpoints.active_directory_resource_id = "https://devcenter.azure.com"
 

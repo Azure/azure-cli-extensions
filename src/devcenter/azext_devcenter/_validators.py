@@ -8,10 +8,19 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
 )
 from azure.cli.core.aaz import has_value
+from knack.log import get_logger
+
+logger = get_logger(__name__)
 
 
 # Control plane
 def validate_attached_network_or_dev_box_def(dev_center_name, project_name):
+    if has_value(dev_center_name) and has_value(project_name):
+        warning_message = """Both the dev-center and project parameters were provided. \
+Only the dev-center parameter will be used and the command will only reference the child \
+resource(s) under the dev center. To reference the child resource(s) under the project, \
+remove the dev-center parameter and set the project parameter. """
+        logger.warning(warning_message)
     if not has_value(dev_center_name) and not has_value(project_name):
         error_message = """Either project (--project --project-name) \
 or dev center (--dev-center --dev-center-name -d) should be set."""
@@ -39,3 +48,20 @@ def validate_time(namespace):
     validation = pattern.match(namespace.delay_time)
     if validation is None:
         raise InvalidArgumentValueError("--delay-time should be in the format HH:MM")
+
+
+def validate_endpoint(endpoint, dev_center):
+    if endpoint is not None and dev_center is not None:
+        logger.warning(
+            "Both the endpoint and dev-center parameters were provided. Only the endpoint parameter will be used."
+        )
+    if endpoint is not None:
+        check_valid_uri = re.match(
+            r"(https)://.+.*\.(devcenter.azure-test.net|devcenter.azure.com)$", endpoint
+        )
+        if check_valid_uri is None:
+            raise InvalidArgumentValueError("The endpoint is invalid.")
+    if endpoint is None and dev_center is None:
+        error_message = """Either an endpoint (--endpoint) \
+or dev-center (--dev-center) should be set."""
+        raise RequiredArgumentMissingError(error_message)
