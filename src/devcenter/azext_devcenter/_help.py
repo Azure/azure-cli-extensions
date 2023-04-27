@@ -10,13 +10,13 @@ helps[
     "devcenter dev"
 ] = """
     type: group
-    short-summary: "Manages devcenter developer resources"
+    short-summary: "Manages devcenter developer resources."
 """
 helps[
     "devcenter dev project"
 ] = """
     type: group
-    short-summary: Manage project with devcenter
+    short-summary: Manage projects.
 """
 
 helps[
@@ -25,9 +25,9 @@ helps[
     type: command
     short-summary: "Lists all projects."
     examples:
-      - name: Project_ListByDevCenter
+      - name: List
         text: |-
-               az devcenter dev project list --dev-center-name "{devCenterName}"
+               az devcenter dev project list --dev-center-name "ContosoDevCenter"
 """
 
 helps[
@@ -36,17 +36,17 @@ helps[
     type: command
     short-summary: "Gets a project."
     examples:
-      - name: Project_Get
+      - name: Get
         text: |-
-               az devcenter dev project show --dev-center-name "{devCenterName}" \
---name "{projectName}"
+               az devcenter dev project show --dev-center-name "ContosoDevCenter" \
+--name "DevProject"
 """
 
 helps[
     "devcenter dev pool"
 ] = """
     type: group
-    short-summary: Manage pool with devcenter
+    short-summary: Manage pools.
 """
 
 helps[
@@ -55,10 +55,10 @@ helps[
     type: command
     short-summary: "Lists available pools."
     examples:
-      - name: listPools
+      - name: List
         text: |-
-               az devcenter dev pool list --dev-center-name "{devCenterName}" \
---project-name "{projectName}"
+               az devcenter dev pool list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject"
 """
 
 helps[
@@ -67,29 +67,17 @@ helps[
     type: command
     short-summary: "Gets a pool."
     examples:
-      - name: Pools_Get
+      - name: Get
         text: |-
-               az devcenter dev pool show --dev-center-name "{devCenterName}" --name \
-"{poolName}" --project-name "{projectName}"
+               az devcenter dev pool show --dev-center-name "ContosoDevCenter" --name \
+"DevPool" --project-name "DevProject"
 """
 
 helps[
     "devcenter dev schedule"
 ] = """
     type: group
-    short-summary: Manage schedule with devcenter
-"""
-
-helps[
-    "devcenter dev schedule list"
-] = """
-    type: command
-    short-summary: "Lists available schedules for a pool."
-    examples:
-      - name: listSchedules
-        text: |-
-               az devcenter dev schedule list --dev-center-name "{devCenterName}" \
---pool-name "{poolName}" --project-name "{projectName}"
+    short-summary: Manage schedules.
 """
 
 helps[
@@ -98,37 +86,37 @@ helps[
     type: command
     short-summary: "Gets a schedule."
     examples:
-      - name: Schedule_Get
+      - name: Get
         text: |-
-               az devcenter dev schedule show --dev-center-name "{devCenterName}" \
---pool-name "{poolName}" --project-name "{projectName}" --name "{scheduleName}"
+               az devcenter dev schedule show --dev-center-name "ContosoDevCenter" \
+--pool-name "DevPool" --project-name "DevProject"
 """
 
 helps[
     "devcenter dev dev-box"
 ] = """
     type: group
-    short-summary: Manage dev box with devcenter
+    short-summary: Manage dev boxes.
 """
 
 helps[
     "devcenter dev dev-box list"
 ] = """
     type: command
-    short-summary: "Lists dev boxes in the project for a particular user, lists dev boxes in the dev center for a \
-particular user, or lists dev boxes that the caller has access to in the dev center."
+    short-summary: "Lists dev boxes for a user, lists dev boxes in the dev center for a \
+project and user, or lists dev boxes that the caller has access to in the dev center."
     examples:
-      - name: DevBox_ListByUserByProject
+      - name: List by user and project
         text: |-
-               az devcenter dev dev-box list --dev-center-name "{devCenterName}" \
---project-name "{projectName}" --user-id "me"
-      - name: DevBox_ListByUser
+               az devcenter dev dev-box list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: List by user
         text: |-
-               az devcenter dev dev-box list --dev-center-name "{devCenterName}" \
---user-id "me"
-      - name: DevBox_List
+               az devcenter dev dev-box list --dev-center-name "ContosoDevCenter" \
+--user-id "00000000-0000-0000-0000-000000000000"
+      - name: List
         text: |-
-               az devcenter dev dev-box list --dev-center-name "{devCenterName}"
+               az devcenter dev dev-box list --dev-center-name "ContosoDevCenter"
 """
 
 helps[
@@ -137,10 +125,10 @@ helps[
     type: command
     short-summary: "Gets a dev box."
     examples:
-      - name: getDevBoxForUser
+      - name: Get
         text: |-
-               az devcenter dev dev-box show --name "MyDevBox" --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}" --user-id "me"
+               az devcenter dev dev-box show --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
@@ -149,10 +137,10 @@ helps[
     type: command
     short-summary: "Creates a dev box."
     examples:
-      - name: createDevBox
+      - name: Create
         text: |-
                az devcenter dev dev-box create --pool-name "LargeDevWorkStationPool" --name "MyDevBox" --dev-center-name \
-"{devCenterName}" --project-name "{projectName}" --user-id "me"
+"ContosoDevCenter" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
@@ -161,22 +149,22 @@ helps[
     type: command
     short-summary: "Deletes a dev box."
     examples:
-      - name: deleteDevBox
+      - name: Delete
         text: |-
-               az devcenter dev dev-box delete --name "MyDevBox" --dev-center-name "{devCenterName}"  \
-               --project-name "{projectName}" --user-id "me"
+               az devcenter dev dev-box delete --name "MyDevBox" --dev-center-name "ContosoDevCenter"  \
+               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
     "devcenter dev dev-box show-remote-connection"
 ] = """
     type: command
-    short-summary: "Gets Connection info."
+    short-summary: "Gets remote connection info."
     examples:
-      - name: DevBox_GetRemoteConnection
+      - name: Get remote connection
         text: |-
-               az devcenter dev dev-box show-remote-connection --name "MyDevBox" --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}" --user-id "me"
+               az devcenter dev dev-box show-remote-connection --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
@@ -185,22 +173,22 @@ helps[
     type: command
     short-summary: "Starts a dev box."
     examples:
-      - name: DevBoxes_StartDevBox
+      - name: Start
         text: |-
-               az devcenter dev dev-box start --name "MyDevBox" --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}" --user-id "me"
+               az devcenter dev dev-box start --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
     "devcenter dev dev-box restart"
 ] = """
     type: command
-    short-summary: "Restarts a Dev Box."
+    short-summary: "Restarts a dev box."
     examples:
-      - name: DevBoxes_StartDevBox
+      - name: Restart
         text: |-
-               az devcenter dev dev-box restart --name "MyDevBox" --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}" --user-id "me"
+               az devcenter dev dev-box restart --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
@@ -209,22 +197,22 @@ helps[
     type: command
     short-summary: "Stops a dev box."
     examples:
-      - name: DevBoxes_StopDevBox
+      - name: Stop
         text: |-
-               az devcenter dev dev-box stop --name "MyDevBox" --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}" --user-id "me" --hibernate "true"
+               az devcenter dev dev-box stop --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --hibernate "true"
 """
 
 helps[
     "devcenter dev dev-box list-action"
 ] = """
     type: command
-    short-summary: "Lists actions on a Dev Box."
+    short-summary: "Lists actions on a dev box."
     examples:
-      - name: DevBoxes_ListActions
+      - name: List actions
         text: |-
-               az devcenter dev dev-box list-action --dev-center-name "{devCenterName}" \
---project-name "{projectName}" --name "myDevBox" --user-id "me"
+               az devcenter dev dev-box list-action --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --name "myDevBox" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
@@ -233,10 +221,10 @@ helps[
     type: command
     short-summary: "Delays an action."
     examples:
-      - name: DevBoxes_DelayAction
+      - name: Delay action
         text: |-
-               az devcenter dev dev-box delay-action --dev-center-name "{devCenterName}" \
---project-name "{projectName}" --delay-time "04:30" --name "myDevBox" \
+               az devcenter dev dev-box delay-action --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --delay-time "04:30" --name "myDevBox" \
 --action-name "schedule-default" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
@@ -246,10 +234,10 @@ helps[
     type: command
     short-summary: "Delays all actions."
     examples:
-      - name: DevBoxes_DelayActions
+      - name: Delay all actions
         text: |-
-               az devcenter dev dev-box delay-all-actions --dev-center-name "{devCenterName}" \
---project-name "{projectName}" --delay-time "04:30" --name "myDevBox" \
+               az devcenter dev dev-box delay-all-actions --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --delay-time "04:30" --name "myDevBox" \
 --user-id "00000000-0000-0000-0000-000000000000"
 """
 
@@ -259,11 +247,11 @@ helps[
     type: command
     short-summary: "Gets an action."
     examples:
-      - name: DevBoxes_GetAction
+      - name: Get action
         text: |-
-               az devcenter dev dev-box show-action --dev-center-name "{devCenterName}" \
---project-name "{projectName}" --name "myDevBox" --action-name \
-"schedule-default" --user-id "me"
+               az devcenter dev dev-box show-action --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --name "myDevBox" --action-name \
+"schedule-default" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
@@ -272,18 +260,18 @@ helps[
     type: command
     short-summary: "Skips an action."
     examples:
-      - name: DevBoxes_SkipAction
+      - name: Skip action
         text: |-
-               az devcenter dev dev-box skip-action --dev-center-name "{devCenterName}" \
---project-name "{projectName}" --name "myDevBox" --action-name \
-"schedule-default" --user-id "me"
+               az devcenter dev dev-box skip-action --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --name "myDevBox" --action-name \
+"schedule-default" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
     "devcenter dev environment"
 ] = """
     type: group
-    short-summary: Manage environment with devcenter
+    short-summary: Manage environments.
 """
 
 helps[
@@ -292,14 +280,14 @@ helps[
     type: command
     short-summary: "Lists the environments for a project or lists the environments for a user within a project."
     examples:
-      - name: Environments_ListByProject
+      - name: List by project
         text: |-
-              az devcenter dev environment list --dev-center-name "{devCenterName}" \
---project-name "{projectName}"
-      - name: Environments_ListEnvironmentsByUser
+              az devcenter dev environment list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject"
+      - name: List by user and project
         text: |-
-               az devcenter dev environment list --dev-center-name "{devCenterName}" \
---project-name "{projectName}" --user-id "me"
+               az devcenter dev environment list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
@@ -308,10 +296,10 @@ helps[
     type: command
     short-summary: "Gets an environment."
     examples:
-      - name: Environments_Get
+      - name: Get
         text: |-
-              az devcenter dev environment show --dev-center-name "{devCenterName}" \
---name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
+              az devcenter dev environment show --dev-center-name "ContosoDevCenter" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
@@ -320,11 +308,11 @@ helps[
     type: command
     short-summary: "Create an environment."
     examples:
-      - name: Environments_CreateByEnvironmentDefinition
+      - name: Create
         text: |-
-               az devcenter dev environment create --dev-center-name "{devCenterName}" --project-name "{projectName}" \
+               az devcenter dev environment create --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
 --catalog-name "main" --environment-definition-name "helloworld" --environment-type "DevTest" --parameters "{\\"functionAppRuntime\\":\\"node\
-\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "mydevenv" --user-id "me"
+\\",\\"storageAccountType\\":\\"Standard_LRS\\"}" --name "mydevenv" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
@@ -333,10 +321,10 @@ helps[
     type: command
     short-summary: "Updates an environment."
     examples:
-      - name: Environments_UpdateByEnvironmentDefinition
+      - name: Update
         text: |-
-               az devcenter dev environment update --dev-center-name "{devCenterName}" --project-name "{projectName}" \
---name "mydevenv" --user-id "me" --parameters "{\\"functionAppRuntime\\":\\"node\
+               az devcenter dev environment update --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--name "mydevenv" --user-id "00000000-0000-0000-0000-000000000000" --parameters "{\\"functionAppRuntime\\":\\"node\
 \\",\\"storageAccountType\\":\\"Standard_LRS\\"}"
 """
 
@@ -346,17 +334,17 @@ helps[
     type: command
     short-summary: "Deletes an environment and all its associated resources."
     examples:
-      - name: Environments_Delete
+      - name: Delete
         text: |-
-              az devcenter dev environment delete --dev-center-name "{devCenterName}"  \
-              --name "{environmentName}" --project-name "{projectName}" --user-id "{userId}"
+              az devcenter dev environment delete --dev-center-name "ContosoDevCenter"  \
+              --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
     "devcenter dev catalog"
 ] = """
     type: group
-    short-summary: Manage catalog with devcenter
+    short-summary: Manage catalogs.
 """
 
 helps[
@@ -365,10 +353,10 @@ helps[
     type: command
     short-summary: "Lists all of the catalogs available for a project."
     examples:
-      - name: Environments_ListCatalogsByProject
+      - name: List
         text: |-
-               az devcenter dev catalog list --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}"
+               az devcenter dev catalog list --dev-center-name "ContosoDevCenter" \
+               --project-name "DevProject"
 """
 
 helps[
@@ -377,17 +365,17 @@ helps[
     type: command
     short-summary: "Gets the specified catalog within the project."
     examples:
-      - name: Environments_GetCatalog
+      - name: Get
         text: |-
-               az devcenter dev catalog show --dev-center-name "{devCenterName}" \
-               --project-name "{projectName}" --catalog-name "foo"
+               az devcenter dev catalog show --dev-center-name "ContosoDevCenter" \
+               --project-name "DevProject" --catalog-name "foo"
 """
 
 helps[
     "devcenter dev environment-type"
 ] = """
     type: group
-    short-summary: Manage environment type with devcenter
+    short-summary: Manage environment types.
 """
 
 helps[
@@ -396,34 +384,34 @@ helps[
     type: command
     short-summary: "Lists all environment types configured for a project."
     examples:
-      - name: EnvironmentType_ListByProject
+      - name: List
         text: |-
-               az devcenter dev environment-type list --dev-center-name "{devCenterName}"  \
-              --project-name "{projectName}"
+               az devcenter dev environment-type list --dev-center-name "ContosoDevCenter"  \
+              --project-name "DevProject"
 """
 
 helps[
     "devcenter dev environment-definition"
 ] = """
     type: group
-    short-summary: Manage environment definition with devcenter
+    short-summary: Manage environment definitions.
 """
 
 helps[
     "devcenter dev environment-definition list"
 ] = """
     type: command
-    short-summary: "Lists all environment definitions available within a catalog. And Lists all environment \
+    short-summary: "Lists all environment definitions available within a catalog or lists all environment \
 definitions available for a project."
     examples:
-      - name: Environments_ListEnvironmentDefinitionsByCatalog
+      - name: List by catalog
         text: |-
-               az devcenter dev environment-definition list --dev-center-name "{devCenterName}"  \
---project-name "{projectName}" --catalog-name "myCatalog"
-      - name: Environments_ListEnvironmentDefinitions
+               az devcenter dev environment-definition list --dev-center-name "ContosoDevCenter"  \
+--project-name "DevProject" --catalog-name "myCatalog"
+      - name: List
         text: |-
-               az devcenter dev environment-definition list --dev-center-name "{devCenterName}"  \
---project-name "{projectName}"
+               az devcenter dev environment-definition list --dev-center-name "ContosoDevCenter"  \
+--project-name "DevProject"
 """
 
 helps[
@@ -432,8 +420,8 @@ helps[
     type: command
     short-summary: "Get an environment definition from a catalog."
     examples:
-      - name: Environments_GetEnvironmentDefinition
+      - name: Get
         text: |-
-               az devcenter dev environment-definition show --dev-center-name "{devCenterName}"  \
---project-name "{projectName}" --catalog-name "myCatalog" --definition-name "foo"
+               az devcenter dev environment-definition show --dev-center-name "ContosoDevCenter"  \
+--project-name "DevProject" --catalog-name "myCatalog" --definition-name "foo"
 """

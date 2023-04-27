@@ -23,6 +23,7 @@ from .custom import (
     AttachedNetworkList,
     AttachedNetworkShow,
     AttachedNetworkWait,
+    CheckNameAvailabilityExecute,
     CatalogCreate,
     CatalogDelete,
     CatalogList,
@@ -50,6 +51,7 @@ from .custom import (
     ImageShow,
     ImageVersionList,
     ImageVersionShow,
+    NetworkConnectionCreate,
     PoolCreate,
     PoolDelete,
     PoolList,
@@ -57,6 +59,7 @@ from .custom import (
     PoolShow,
     PoolUpdate,
     PoolWait,
+    ProjectCreate,
     ProjectAllowedEnvironmentTypeList,
     ProjectAllowedEnvironmentTypeShow,
     ProjectEnvironmentTypeCreate,
@@ -89,6 +92,10 @@ def load_command_table(self, _):
     self.command_table["devcenter admin attached-network wait"] = AttachedNetworkWait(
         loader=self
     )
+
+    self.command_table[
+        "devcenter admin check-name-availability execute"
+    ] = CheckNameAvailabilityExecute(loader=self)
 
     self.command_table["devcenter admin catalog create"] = CatalogCreate(loader=self)
     self.command_table["devcenter admin catalog delete"] = CatalogDelete(loader=self)
@@ -149,6 +156,10 @@ def load_command_table(self, _):
         loader=self
     )
 
+    self.command_table[
+        "devcenter admin network-connection create"
+    ] = NetworkConnectionCreate(loader=self)
+
     self.command_table["devcenter admin pool create"] = PoolCreate(loader=self)
     self.command_table["devcenter admin pool delete"] = PoolDelete(loader=self)
     self.command_table["devcenter admin pool list"] = PoolList(loader=self)
@@ -158,6 +169,8 @@ def load_command_table(self, _):
     self.command_table["devcenter admin pool show"] = PoolShow(loader=self)
     self.command_table["devcenter admin pool update"] = PoolUpdate(loader=self)
     self.command_table["devcenter admin pool wait"] = PoolWait(loader=self)
+
+    self.command_table["devcenter admin project create"] = ProjectCreate(loader=self)
 
     self.command_table[
         "devcenter admin project-allowed-environment-type list"
@@ -298,7 +311,6 @@ def load_command_table(self, _):
         g.custom_command("list", "devcenter_environment_type_list_dp")
 
     with self.command_group("devcenter dev schedule", devcenter_schedule_dp) as g:
-        g.custom_command("list", "devcenter_schedule_list_dp")
         g.custom_show_command("show", "devcenter_schedule_show_dp")
 
     with self.command_group("devcenter dev catalog", devcenter_catalog_dp) as g:

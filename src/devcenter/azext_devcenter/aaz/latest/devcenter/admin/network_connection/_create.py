@@ -102,7 +102,7 @@ class Create(AAZCommand):
             help="The username of an Active Directory account (user or service account) that has permissions to create computer objects in Active Directory. Required format: admin@contoso.com.",
         )
         _args_schema.networking_resource_group_name = AAZStrArg(
-            options=["--networking-resource-group-name"],
+            options=["--networking-resource-group-name", "-r"],
             arg_group="Properties",
             help="The name for resource group where NICs will be placed.",
         )

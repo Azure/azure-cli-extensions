@@ -18,6 +18,13 @@ or dev center (--dev-center --dev-center-name -d) should be set."""
         raise RequiredArgumentMissingError(error_message)
 
 
+def validate_repo_git(ado_git, git_hub):
+    if not has_value(ado_git) and not has_value(git_hub):
+        error_message = """Either an AdoGit (--ado-git) \
+or GitHub source control definition (--git-hub) should be set."""
+        raise RequiredArgumentMissingError(error_message)
+
+
 # Data plane
 def validate_dev_box_list(namespace):
     if namespace.project_name is not None and namespace.user_id is None:

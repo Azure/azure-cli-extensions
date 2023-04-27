@@ -25,6 +25,9 @@ from .aaz.latest.devcenter.admin.catalog import (
     Update as _CatalogUpdate,
     Wait as _CatalogWait,
 )
+from .aaz.latest.devcenter.admin.check_name_availability import (
+    Execute as _CheckNameAvailabilityExecute,
+)
 from .aaz.latest.devcenter.admin.devbox_definition import (
     Create as _DevBoxDefinitionCreate,
     Delete as _DevBoxDefinitionDelete,
@@ -55,6 +58,9 @@ from .aaz.latest.devcenter.admin.image_version import (
     List as _ImageVersionList,
     Show as _ImageVersionShow,
 )
+from .aaz.latest.devcenter.admin.network_connection import (
+    Create as _NetworkConnectionCreate,
+)
 from .aaz.latest.devcenter.admin.pool import (
     Create as _PoolCreate,
     Delete as _PoolDelete,
@@ -64,6 +70,7 @@ from .aaz.latest.devcenter.admin.pool import (
     Wait as _PoolWait,
     RunHealthCheck as _PoolRunHealthCheck,
 )
+from .aaz.latest.devcenter.admin.project import Create as _ProjectCreate
 from .aaz.latest.devcenter.admin.project_allowed_environment_type import (
     List as _ProjectAllowedEnvironmentTypeList,
     Show as _ProjectAllowedEnvironmentTypeShow,
@@ -82,7 +89,7 @@ from .aaz.latest.devcenter.admin.schedule import (
     Update as _ScheduleUpdate,
     Wait as _ScheduleWait,
 )
-from ._validators import validate_attached_network_or_dev_box_def
+from ._validators import validate_attached_network_or_dev_box_def, validate_repo_git
 
 # Control plane
 
@@ -144,10 +151,23 @@ class AttachedNetworkWait(_AttachedNetworkWait):
         return set_configured_defaults(args)
 
 
+class CheckNameAvailabilityExecute(_CheckNameAvailabilityExecute):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.name._required = True
+        args_schema.type._required = True
+        return args_schema
+
+
 class CatalogCreate(_CatalogCreate):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
+
+    @register_callback
+    def pre_operations(self):
+        validate_repo_git(self.ctx.args.ado_git, self.ctx.args.git_hub)
 
 
 class CatalogDelete(_CatalogDelete):
@@ -187,6 +207,14 @@ class CatalogWait(_CatalogWait):
 
 
 class DevBoxDefinitionCreate(_DevBoxDefinitionCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.image_reference._required = True
+        args_schema.sku._required = True
+        args_schema.os_storage_type._required = True
+        return args_schema
+
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -265,6 +293,12 @@ class EnvironmentTypeUpdate(_EnvironmentTypeUpdate):
 
 
 class GalleryCreate(_GalleryCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.gallery_resource_id._required = True
+        return args_schema
+
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -318,11 +352,23 @@ class ImageVersionShow(_ImageVersionShow):
         return set_configured_defaults(args)
 
 
+class NetworkConnectionCreate(_NetworkConnectionCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.subnet_id._required = True
+        args_schema.domain_join_type._required = True
+        return args_schema
+
+
 class PoolCreate(_PoolCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.license_type._registered = False
+        args_schema.dev_box_definition_name._required = True
+        args_schema.local_administrator._required = True
+        args_schema.network_connection_name._required = True
         return args_schema
 
     @register_callback
@@ -371,6 +417,14 @@ class PoolWait(_PoolWait):
         return set_configured_defaults(args)
 
 
+class ProjectCreate(_ProjectCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.dev_center_id._required = True
+        return args_schema
+
+
 class ProjectAllowedEnvironmentTypeList(_ProjectAllowedEnvironmentTypeList):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
@@ -384,6 +438,13 @@ class ProjectAllowedEnvironmentTypeShow(_ProjectAllowedEnvironmentTypeShow):
 
 
 class ProjectEnvironmentTypeCreate(_ProjectEnvironmentTypeCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.deployment_target_id._required = True
+        args_schema.status._required = True
+        return args_schema
+
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
@@ -421,6 +482,8 @@ class ScheduleCreate(_ScheduleCreate):
         args_schema.schedule_name._required = False
         args_schema.frequency._registered = False
         args_schema.type._registered = False
+        args_schema.time_zone._required = True
+        args_schema.time._required = True
         return args_schema
 
     @register_callback
@@ -538,9 +601,9 @@ def devcenter_schedule_list_dp(cmd, dev_center, project_name, pool_name):
     return cf_dataplane.schedule.list(pool_name=pool_name)
 
 
-def devcenter_schedule_show_dp(cmd, dev_center, project_name, pool_name, schedule_name):
+def devcenter_schedule_show_dp(cmd, dev_center, project_name, pool_name):
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, dev_center, project_name)
-    return cf_dataplane.schedule.get(pool_name=pool_name, schedule_name=schedule_name)
+    return cf_dataplane.schedule.get(pool_name=pool_name, schedule_name="default")
 
 
 def devcenter_dev_box_list(cmd, dev_center, project_name=None, user_id=None):
