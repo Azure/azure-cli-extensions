@@ -243,7 +243,12 @@ def convert_dict_keys_snake_to_camel(dictionary):
     '''
     Recursively converts all dictionary and nested dictionary keys from snake case to camel case
     '''
-    if not isinstance(dictionary, dict):
+    if isinstance(dictionary, list):
+        new_list = []
+        for item in dictionary:
+            new_list.append(convert_dict_keys_snake_to_camel(item))
+        return new_list
+    elif not isinstance(dictionary, dict):
         return dictionary
 
     new_dictionary = {}

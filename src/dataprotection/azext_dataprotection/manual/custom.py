@@ -130,7 +130,7 @@ def data_protection_backup_instance_create(cmd, vault_name, resource_group_name,
                 )
 
                 return {
-                    "backupInstance": self.serialize_content(_content_value)
+                    "backupInstance": helper.convert_dict_keys_snake_to_camel(backup_instance["properties"])
                 }
 
             def on_200(self, session):
@@ -144,7 +144,8 @@ def data_protection_backup_instance_create(cmd, vault_name, resource_group_name,
                     self.ctx.args,
                     value=self.ctx.vars.instance,
                 )
-                return self.serialize_content(_content_value)
+                # return self.serialize_content(_content_value)
+                return backup_instance
 
     backup_instance_name = backup_instance["backup_instance_name"]
     
@@ -185,7 +186,7 @@ def data_protection_backup_instance_validate_for_backup(cmd, vault_name, resourc
                 )
 
                 return {
-                    "backupInstance": self.serialize_content(_content_value)
+                    "backupInstance": helper.convert_dict_keys_snake_to_camel(backup_instance["properties"])
                 }
 
             def on_200(self, session):
@@ -242,7 +243,10 @@ def data_protection_backup_instance_initialize(datasource_type, datasource_id, d
     # For AKS, we need datasource (and datasourceset).ResourceUri, and it matches datasource.ResourceId
     if manifest["resourceType"] == "Microsoft.ContainerService/managedclusters":
         datasource_info["resource_uri"] = datasource_info["resource_id"]
-        datasourceset_info["resource_uri"] = datasourceset_info["resource_id"]
+        datasourceset_info["resource_uri"] = datasource_info["resource_id"]
+        datasourceset_info["resource_id"] = datasource_info["resource_id"]
+        datasourceset_info["resource_name"] = datasource_info["resource_name"]
+        datasourceset_info["resource_type"] = datasource_info["resource_type"]
 
     policy_parameters = None
     # Azure Disk and AKS specific code for adding datastoreparameter list in the json
@@ -309,6 +313,8 @@ def data_protection_backup_instance_initialize(datasource_type, datasource_id, d
             raise CLIError("Please input parameter backup-configuration for AKS cluster backup. \
                            Use command az dataprotection backup-instance initialize-backupconfig \
                            for creating the backup-configuration")
+        backup_configuration["object_type"] = "KubernetesClusterBackupDatasourceParameters"
+        policy_info["policy_parameters"]["backup_data_source_parameters_list"] = backup_configuration
     else:
         if not backup_configuration is None:
             # Raise a warning for user?
@@ -322,7 +328,6 @@ def data_protection_backup_instance_initialize(datasource_type, datasource_id, d
             "policy_info": policy_info,
             "datasource_auth_credentials": datasource_auth_credentials_info,
             "friendly_name": friendly_name,
-            "backup_configuration": backup_configuration,
             "object_type": "BackupInstance"
         },
         "tags": tags
