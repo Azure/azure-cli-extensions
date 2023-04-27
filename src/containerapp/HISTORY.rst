@@ -4,6 +4,9 @@ Release History
 ===============
 Upcoming
 ++++++
+* 'az containerapp create': support for assigning acrpull permissions to managed identity in cross-subscription; warn when ACR resourceNotFound, do not block the process
+* 'az containerapp hostname bind': fix bug where the prompt for validation method didn't take value in
+* Make --validation-method parameter case insensitive for 'az containerapp hostname bind' and 'az containerapp env certificate create'
 * 'az containerapp auth update': remove unsupported argument --enable-token-store
 * 'az containerapp update'/'az containerapp env update': fix --no-wait
 * 'az containerapp update': fix the --yaml update behavior to respect the empty array in patch-request
