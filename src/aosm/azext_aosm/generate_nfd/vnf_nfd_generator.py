@@ -15,7 +15,11 @@ from azext_aosm.vendored_sdks.models import (
     VersionState, 
     NetworkFunctionType,
     NFVIType,
-    ArtifactType
+    ArtifactType,
+    VirtualNetworkFunctionDefinitionVersion, # this is actually properties, badly named
+    AzureCoreNetworkFunctionTemplate,
+    AzureCoreNetworkFunctionVhdApplication,
+    AzureCoreNetworkFunctionArmTemplateApplication
 )
 
 from azext_aosm._configuration import VNFConfiguration
@@ -63,21 +67,22 @@ class VnfNfdGenerator(NFDGenerator):
         :return: _description_
         :rtype: NetworkFunctionDefinitionVersion
         """
+        
+        vnf_props = VirtualNetworkFunctionDefinitionVersion(
+            version_state=VersionState.PREVIEW,
+            deploy_parameters= "TODO",
+            network_function_femplate=AzureCoreNetworkFunctionTemplate(
+                network_function_applications= [
+                    AzureCoreNetworkFunctionVhdApplication(),
+                    AzureCoreNetworkFunctionArmTemplateApplication()
+                ]
+        ))
+        
         nfdv = NetworkFunctionDefinitionVersion(location=self.config.location,
-                                                # Think kwargs map magically to properties in bicep, somehow
-                                                kwargs=
-                                                {
-                                                    "versionState": VersionState.PREVIEW,
-                                                    "deployParameters": "TODO",
-                                                    "networkFunctionType": NetworkFunctionType.VIRTUAL_NETWORK_FUNCTION,
-                                                    "networkFunctionTemplate" : {
-                                                        "nfviType": NFVIType.AZURE_CORE,
-                                                        "networkFunctionApplications": [
-                                                            
-                                                        ]
-                                                    }
-                                                    
-                                                })
+                                                # Think kwargs map magically to properties in bicep, somehow                                                
+                                                kwargs=vnf_props)
+        
+        return nfdv
         
 
         
