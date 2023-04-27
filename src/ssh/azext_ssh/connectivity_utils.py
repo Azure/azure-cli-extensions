@@ -45,7 +45,6 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
     # A lot of the functions for getting the relay information are written down here, 
     # but we need to make it work.
     # What I think it's the best way to handle retrieving the relay information is the following steps:
-
     # - Call list credential
     #   - if it throws a resource not found that means the endpoint doesn't exist
     #       - create endpoint (fail if user is not owner/contributor)
@@ -58,11 +57,35 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
     #       - ensure that the provided port matches the allowed port in service configuration
     #           - if it doesn't prompt user for confirmation if they want to repair the port
     #           - if it does, return credential
-
     # This is just how I think it's the best way to do this. I've been trying to figure out the best way to 
     # minimize calls to the ACRP. If you think of a better way to do this feel free to try it.
+    cred = None
+    try: 
+        cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
+    except ResourceNotFoundError:
+        _create_default_endpoint(cmd, resource_uri)
+    except HttpResponseError as e:
+        if e.reason != "Precondition Failed":
+            raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
+    except Exception as e:
+        raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
 
-def _check_and_fix_service_configuration(cmd, resource_uri, port):
+    if not cred:
+        _create_service_configuration(cmd, resource_uri, port)
+        try:
+            cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
+        except Exception as e:
+            raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
+    else:
+        if not _check_service_configuration(cmd, resource_uri, port):
+            _create_service_configuration(cmd, resource_uri, port)
+            try:
+                cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
+            except Exception as e:
+                raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
+    return cred
+
+def _check_service_configuration(cmd, resource_uri, port):
     from .aaz.latest.hybrid_connectivity.endpoint.service_configuration import Show as ShowServiceConfig
     show_service_config_args = {
         'endpoint_name': 'default',
@@ -72,38 +95,30 @@ def _check_and_fix_service_configuration(cmd, resource_uri, port):
     serviceConfig = None
     try:
         serviceConfig = ShowServiceConfig(cli_ctx=cmd.cli_ctx)(command_args=show_service_config_args)
-    except ResourceNotFoundError:
-        _get_or_create_endpoint(cmd, resource_uri)
-        serviceConfig = _create_service_configuration(cmd, resource_uri, port)
     except Exception:
         # If for some reason the request for Service Configuration fails,
         # we will still attempt to get relay information and connect. If the service configuration
         # is not setup correctly, the connection will fail.
         # The more likely scenario is that the request failed with a "Authorization Error",
         # in case the user isn't an owner/contributor.
-        return
-    
-    #if serviceConfig['port'] != int(port):
-    #    raise azclierror.ForbiddenError(f"The provided port {port} is not configured to allow SSH connections.",
-    #                                    consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
-    #check if SSH configuration matches port
-    #if it doesn't match port, offer to fix it
+        return True
+    return service_config['port'] == int(port)
 
 
-def _get_or_create_endpoint(cmd, resource_uri):
-    from .aaz.latest.hybrid_connectivity.endpoint import Show as ShowEndpoint
-    show_endpoint_args = {
-        'endpoint_name': 'default',
-        'resource_uri': resource_uri,
-    }
-    try:
-        ShowEndpoint(cli_ctx=cmd.cli_ctx)(command_args=show_endpoint_args)
-    except ResourceNotFoundError:
-        _create_default_endpoint(cmd, resource_uri)
-    except Exception as e:
-        # if for some reason the request for endpoint fails, we will still try to move
-        # forward. 
-        return
+# def _get_or_create_endpoint(cmd, resource_uri):
+#     from .aaz.latest.hybrid_connectivity.endpoint import Show as ShowEndpoint
+#     show_endpoint_args = {
+#         'endpoint_name': 'default',
+#         'resource_uri': resource_uri,
+#     }
+#     try:
+#         ShowEndpoint(cli_ctx=cmd.cli_ctx)(command_args=show_endpoint_args)
+#     except ResourceNotFoundError:
+#         _create_default_endpoint(cmd, resource_uri)
+#     except Exception as e:
+#         # if for some reason the request for endpoint fails, we will still try to move
+#         # forward. 
+#         return
 
 
 def _create_default_endpoint(cmd, resource_uri):
@@ -175,10 +190,9 @@ def _create_service_configuration(cmd, resource_uri, port):
                                                f"{vm_name} in {resource_group} to allow SSH connection to port {port}."
                                                f"\nError: {str(e)}",
                                                consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
-
     return serviceConfig
 
-def _list_cretendials(cmd, resource_uri, certificate_validity_in_seconds):
+def _list_credentials(cmd, resource_uri, certificate_validity_in_seconds):
     from .aaz.latest.hybrid_connectivity.endpoint import ListCredential
 
     list_cred_args = {
@@ -188,7 +202,7 @@ def _list_cretendials(cmd, resource_uri, certificate_validity_in_seconds):
         'service_name': "SSH"
     }
 
-    ListCredential(cli_ctx=cmd.cli_ctx)(command_args=list_cred_args)  
+    return ListCredential(cli_ctx=cmd.cli_ctx)(command_args=list_cred_args)  
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
 def get_client_side_proxy(arc_proxy_folder):
@@ -274,7 +288,6 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
 
 
 def format_relay_info_string(relay_info):
-    # Add service config token to formated string
     relay_info_string = json.dumps(
         {
             "relay": {
@@ -282,7 +295,8 @@ def format_relay_info_string(relay_info):
                 "namespaceNameSuffix": relay_info.namespace_name_suffix,
                 "hybridConnectionName": relay_info.hybrid_connection_name,
                 "accessKey": relay_info.access_key,
-                "expiresOn": relay_info.expires_on
+                "expiresOn": relay_info.expires_on,
+                "serviceConfigurationToken": relay_info.serviceConfigurationToken
             }
         })
     result_bytes = relay_info_string.encode("ascii")
