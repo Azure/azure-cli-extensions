@@ -239,6 +239,11 @@ def data_protection_backup_instance_initialize(datasource_type, datasource_id, d
     if manifest["isProxyResource"]:
         datasourceset_info = helper.get_datasourceset_info(datasource_type, datasource_id, datasource_location)
 
+    # For AKS, we need datasource (and datasourceset).ResourceUri, and it matches datasource.ResourceId
+    if manifest["resourceType"] == "Microsoft.ContainerService/managedclusters":
+        datasource_info["resource_uri"] = datasource_info["resource_id"]
+        datasourceset_info["resource_uri"] = datasourceset_info["resource_id"]
+
     policy_parameters = None
     # Azure Disk and AKS specific code for adding datastoreparameter list in the json
     if manifest["addDataStoreParametersList"]:
