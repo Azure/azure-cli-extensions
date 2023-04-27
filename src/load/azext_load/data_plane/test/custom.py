@@ -79,8 +79,25 @@ def download_test_files(
     resource_group=None,
 ):
     from azext_load.data_plane.client_factory import admin_data_plane_client
-
+    import requests, os, shutil
     credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
     endpoint = get_load_test_resource_endpoint(credential, load_test_resource, resource_group=resource_group, subscription_id=subscription_id)
     client = admin_data_plane_client(cmd.cli_ctx, subscription=subscription_id, endpoint=endpoint, credential=credential)
-    return client.list_test_files(test_id)
+    list_of_file_details = client.list_test_files(test_id)
+    #downloading the files in response to local as per doc
+    directory = ""
+    if list_of_file_details:
+        current_path = os.getcwd()
+        directory = current_path +"\\" +test_id + "_files"
+        count = 1
+        while os.path.exists(directory):
+            directory = current_path +"\\" +test_id + "_files" + str(count)
+            count = count+1
+        os.mkdir(directory)
+        for file_detail in list_of_file_details:
+            current_file = requests.get(file_detail["url"])
+            with open(directory+"\\"+file_detail["fileName"], 'w+') as f:
+                f.write(current_file.text)
+    if directory != "": 
+        return "files downloaded at "+directory       
+    return "no files to download"
