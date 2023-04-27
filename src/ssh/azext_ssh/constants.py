@@ -5,8 +5,8 @@
 from colorama import Fore
 from colorama import Style
 
-CLIENT_PROXY_VERSION = "1.3.017634"
-CLIENT_PROXY_RELEASE = "release01-11-21"
+CLIENT_PROXY_VERSION = "1.3.022941"
+CLIENT_PROXY_RELEASE = "release21-04-23"
 CLIENT_PROXY_STORAGE_URL = "https://sshproxysa.blob.core.windows.net"
 CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS = 120
 CLEANUP_TIME_INTERVAL_IN_SECONDS = 10
