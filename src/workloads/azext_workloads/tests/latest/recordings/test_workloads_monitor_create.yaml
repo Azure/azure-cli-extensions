@@ -1,0 +1,614 @@
+interactions:
+- request:
+    body: '{"location": "eastus2euap", "properties": {"appLocation": "eastus", "managedResourceGroupConfiguration":
+      {"name": "ams-test-cli-mrg"}, "monitorSubnet": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/looptest-rg/providers/Microsoft.Network/virtualNetworks/loop-test-rg-vnet/subnets/cli-testing-00",
+      "routingPreference": "RouteAll"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '352'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n -l --app-location --managed-rg-name --monitor-subnet --routing-preference
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor","name":"ams-test-cli-monitor","type":"microsoft.workloads/monitors","location":"eastus2euap","systemData":{"createdBy":"srivastavap@microsoft.com","createdByType":"User","createdAt":"2023-04-17T08:35:45.125233Z","lastModifiedBy":"srivastavap@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-17T08:35:45.125233Z"},"properties":{"appLocation":"eastus","managedResourceGroupConfiguration":{"name":"ams-test-cli-mrg"},"monitorSubnet":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/looptest-rg/providers/Microsoft.Network/virtualNetworks/loop-test-rg-vnet/subnets/cli-testing-00","routingPreference":"RouteAll","provisioningState":"Accepted"}}'
+    headers:
+      api-supported-versions:
+      - 2021-12-01-preview, 2022-10-15-preview, 2022-11-01-preview, 2023-04-01
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E?api-version=2023-04-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '826'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 08:35:47 GMT
+      etag:
+      - '"0800bf91-0000-3400-0000-643d04e20000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 38b68cb9-ed5a-472c-9f50-4d5601af548a
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --app-location --managed-rg-name --monitor-subnet --routing-preference
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","name":"e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor","status":"Accepted","startTime":"2023-04-17T08:35:46.2110747Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '560'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 08:36:17 GMT
+      etag:
+      - '"0b00d716-0000-3400-0000-643d04e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --app-location --managed-rg-name --monitor-subnet --routing-preference
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","name":"e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor","status":"Accepted","startTime":"2023-04-17T08:35:46.2110747Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '560'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 08:36:48 GMT
+      etag:
+      - '"0b00d716-0000-3400-0000-643d04e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --app-location --managed-rg-name --monitor-subnet --routing-preference
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","name":"e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor","status":"Accepted","startTime":"2023-04-17T08:35:46.2110747Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '560'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 08:37:18 GMT
+      etag:
+      - '"0b00d716-0000-3400-0000-643d04e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --app-location --managed-rg-name --monitor-subnet --routing-preference
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","name":"e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor","status":"Accepted","startTime":"2023-04-17T08:35:46.2110747Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '560'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 08:37:48 GMT
+      etag:
+      - '"0b00d716-0000-3400-0000-643d04e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --app-location --managed-rg-name --monitor-subnet --routing-preference
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","name":"e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor","status":"Accepted","startTime":"2023-04-17T08:35:46.2110747Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '560'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 08:38:19 GMT
+      etag:
+      - '"0b00d716-0000-3400-0000-643d04e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --app-location --managed-rg-name --monitor-subnet --routing-preference
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","name":"e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor","status":"Accepted","startTime":"2023-04-17T08:35:46.2110747Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '560'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 08:38:48 GMT
+      etag:
+      - '"0b00d716-0000-3400-0000-643d04e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --app-location --managed-rg-name --monitor-subnet --routing-preference
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","name":"e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor","status":"Accepted","startTime":"2023-04-17T08:35:46.2110747Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '560'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 08:39:19 GMT
+      etag:
+      - '"0b00d716-0000-3400-0000-643d04e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --app-location --managed-rg-name --monitor-subnet --routing-preference
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","name":"e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor","status":"Accepted","startTime":"2023-04-17T08:35:46.2110747Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '560'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 08:39:50 GMT
+      etag:
+      - '"0b00d716-0000-3400-0000-643d04e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --app-location --managed-rg-name --monitor-subnet --routing-preference
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","name":"e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor","status":"Accepted","startTime":"2023-04-17T08:35:46.2110747Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '560'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 08:40:20 GMT
+      etag:
+      - '"0b00d716-0000-3400-0000-643d04e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --app-location --managed-rg-name --monitor-subnet --routing-preference
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","name":"e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor","status":"Accepted","startTime":"2023-04-17T08:35:46.2110747Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '560'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 08:40:50 GMT
+      etag:
+      - '"0b00d716-0000-3400-0000-643d04e20000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --app-location --managed-rg-name --monitor-subnet --routing-preference
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Workloads/locations/EASTUS2EUAP/operationStatuses/e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","name":"e7afa0fa-3507-4ab4-867c-dcbe0b3ec9e0*37D6C2B39A32E43FEFE140C6C9A7E6E443D622C7E7A7EE31D46B21A7E264313E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor","status":"Succeeded","startTime":"2023-04-17T08:35:46.2110747Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '579'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 08:41:22 GMT
+      etag:
+      - '"0b005319-0000-3400-0000-643d06160000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - workloads monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n -l --app-location --managed-rg-name --monitor-subnet --routing-preference
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.12 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/CLI-TESTING/providers/Microsoft.Workloads/monitors/ams-test-cli-monitor","name":"ams-test-cli-monitor","type":"microsoft.workloads/monitors","location":"eastus2euap","systemData":{"createdBy":"srivastavap@microsoft.com","createdByType":"User","createdAt":"2023-04-17T08:35:45.125233Z","lastModifiedBy":"srivastavap@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-17T08:35:45.125233Z"},"properties":{"appLocation":"eastus","routingPreference":"RouteAll","managedResourceGroupConfiguration":{"name":"ams-test-cli-mrg"},"monitorSubnet":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/looptest-rg/providers/Microsoft.Network/virtualNetworks/loop-test-rg-vnet/subnets/cli-testing-00","provisioningState":"Succeeded","logAnalyticsWorkspaceArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ams-test-cli-mrg/providers/microsoft.operationalinsights/workspaces/sapmon-laws-d7451ad7f9d221","msiArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ams-test-cli-mrg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/sapmon-msi-d7451ad7f9d221","storageAccountArmId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/ams-test-cli-mrg/providers/Microsoft.Storage/storageAccounts/sapstod7451ad7f9d221"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1375'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 08:41:22 GMT
+      etag:
+      - '"08001593-0000-3400-0000-643d05da0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+version: 1
