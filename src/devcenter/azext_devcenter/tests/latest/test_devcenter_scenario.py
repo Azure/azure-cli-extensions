@@ -1505,19 +1505,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         )
 
         self.cmd(
-            "az devcenter dev schedule list "
-            '--pool "{poolName}" '
-            '--dev-center "{devcenterName}" '
-            '--project "{projectName}" ',
-            checks=[
-                self.check("length(@)", 1),
-                self.check("[0].name", "default"),
-            ],
-        )
-
-        self.cmd(
             "az devcenter dev schedule show "
-            '-n "default" '
             '--pool "{poolName}" '
             '--dev-center "{devcenterName}" '
             '--project "{projectName}" ',

@@ -111,12 +111,6 @@ def load_arguments(self, _):
             type=str,
             help="The name of a pool of Dev Boxes.",
         )
-        c.argument(
-            "schedule_name",
-            options_list=["--name", "-n", "--schedule-name"],
-            type=str,
-            help="The name of a " "schedule.",
-        )
 
     with self.argument_context(
         "devcenter dev dev-box list", validator=validate_dev_box_list
