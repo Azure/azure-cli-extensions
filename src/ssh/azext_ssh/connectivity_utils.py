@@ -59,6 +59,9 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
     #           - if it doesn't prompt user for confirmation if they want to repair the port
     #           - if it does, return credential
 
+    # This is just how I think it's the best way to do this. I've been trying to figure out the best way to 
+    # minimize calls to the ACRP. If you think of a better way to do this feel free to try it.
+
 def _check_and_fix_service_configuration(cmd, resource_uri, port):
     from .aaz.latest.hybrid_connectivity.endpoint.service_configuration import Show as ShowServiceConfig
     show_service_config_args = {
@@ -271,6 +274,7 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
 
 
 def format_relay_info_string(relay_info):
+    # Add service config token to formated string
     relay_info_string = json.dumps(
         {
             "relay": {

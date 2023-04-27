@@ -34,12 +34,13 @@ def handle_target_os_type(cmd, op_info):
         recommendation = colorama.Fore.YELLOW + "Please provide --local-user." + colorama.Style.RESET_ALL
         raise azclierror.RequiredArgumentMissingError(error_message, recommendation)
     
+    '''
     if agent_version:
         major, minor, fix, build = agent_version.Split('.')
         if int(major) < 1 or int(minor) < 29:
             logger.warning(f"The target machine is using an old version of the agent {agent_version}." +
                            "Please update to the latest version.")
-
+    '''
 
 def _get_azure_vm_os(cmd, resource_group_name, vm_name):
     from azure.cli.core.commands import client_factory
