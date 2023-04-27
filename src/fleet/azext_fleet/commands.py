@@ -29,7 +29,7 @@ def load_command_table(self, _):
     )
 
     # fleets command group
-    with self.command_group("fleet", fleets_sdk, client_factory=cf_fleets) as g:
+    with self.command_group("fleet", fleets_sdk, client_factory=cf_fleets, is_preview=True) as g:
         g.custom_command("create", "create_fleet", supports_no_wait=True)
         g.custom_command("update", "update_fleet")
         g.custom_show_command("show", "show_fleet")
@@ -48,10 +48,10 @@ def load_command_table(self, _):
         g.wait_command("wait")
 
     # fleet update runs command group
-    with self.command_group("fleet updaterun", update_runs_sdk, client_factory=cf_update_runs) as g:
-        g.custom_command("create", "create_update_run", supports_no_wait=True)
-        g.custom_show_command("show", "show_update_run")
-        g.custom_command("list", "list_update_run")
-        g.custom_command("delete", "delete_update_run", supports_no_wait=True)
-        g.custom_command("start", "start_update_run", supports_no_wait=True)
-        g.custom_command("stop", "stop_update_run", supports_no_wait=True)
+    # with self.command_group("fleet updaterun", update_runs_sdk, client_factory=cf_update_runs) as g:
+    #     g.custom_command("create", "create_update_run", supports_no_wait=True)
+    #     g.custom_show_command("show", "show_update_run")
+    #     g.custom_command("list", "list_update_run")
+    #     g.custom_command("delete", "delete_update_run", supports_no_wait=True)
+    #     g.custom_command("start", "start_update_run", supports_no_wait=True)
+    #     g.custom_command("stop", "stop_update_run", supports_no_wait=True)
