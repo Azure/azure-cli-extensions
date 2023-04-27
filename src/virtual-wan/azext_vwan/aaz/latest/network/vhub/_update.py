@@ -56,24 +56,38 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
         )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
         _args_schema.address_prefix = AAZStrArg(
             options=["--address-prefix"],
+            arg_group="Properties",
             help="CIDR address prefix for the virtual hub.",
+            nullable=True,
+        )
+        _args_schema.allow_b2b_traffic = AAZBoolArg(
+            options=["--allow-b2b-traffic"],
+            arg_group="Properties",
+            help="Flag to control branch-to-branch traffic for VirtualRouter hub.",
             nullable=True,
         )
         _args_schema.hub_routing_preference = AAZStrArg(
             options=["--hub-routing-preference"],
+            arg_group="Properties",
             help="The hub routing preference gateway types.",
             nullable=True,
             enum={"ASPath": "ASPath", "ExpressRoute": "ExpressRoute", "VpnGateway": "VpnGateway"},
         )
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
+            arg_group="Properties",
             help="The sku of the VirtualHub.",
             nullable=True,
         )
         _args_schema.asn = AAZIntArg(
             options=["--asn"],
+            arg_group="Properties",
             help="VirtualRouter ASN.",
             nullable=True,
             fmt=AAZIntArgFormat(
@@ -81,16 +95,29 @@ class Update(AAZCommand):
                 minimum=0,
             ),
         )
-        _args_schema.vwan = AAZResourceIdArg(
-            options=["--vwan"],
-            help="Name or ID of the virtual WAN.",
+        _args_schema.auto_scale_config = AAZObjectArg(
+            options=["--auto-scale-config"],
+            arg_group="Properties",
+            help="The VirtualHub Router autoscale configuration.",
             nullable=True,
-            fmt=AAZResourceIdArgFormat(
-                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualWans/{}",
+        )
+
+        auto_scale_config = cls._args_schema.auto_scale_config
+        auto_scale_config.min_capacity = AAZIntArg(
+            options=["min-capacity"],
+            help="The minimum number of scale units for VirtualHub Router.",
+            nullable=True,
+            fmt=AAZIntArgFormat(
+                minimum=0,
             ),
         )
+
+        # define Arg Group "VirtualHubParameters"
+
+        _args_schema = cls._args_schema
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
+            arg_group="VirtualHubParameters",
             help="Space-separated tags: key[=value] [key[=value] ...].",
             nullable=True,
         )
@@ -100,9 +127,15 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        # define Arg Group "Properties"
+        # define Arg Group "VirtualWan"
 
-        # define Arg Group "VirtualHubParameters"
+        _args_schema = cls._args_schema
+        _args_schema.vwan = AAZStrArg(
+            options=["--vwan"],
+            arg_group="VirtualWan",
+            help="Name or ID of the virtual WAN.",
+            nullable=True,
+        )
         return cls._args_schema
 
     _args_sub_resource_update = None
@@ -136,19 +169,19 @@ class Update(AAZCommand):
         yield self.VirtualHubsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def pre_instance_update(self, instance):
         pass
 
-    # @register_callback
+    @register_callback
     def post_instance_update(self, instance):
         pass
 
@@ -235,7 +268,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _build_schema_virtual_hub_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_virtual_hub_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -346,7 +379,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _build_schema_virtual_hub_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_virtual_hub_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -367,10 +400,16 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("addressPrefix", AAZStrType, ".address_prefix")
+                properties.set_prop("allowBranchToBranchTraffic", AAZBoolType, ".allow_b2b_traffic")
                 properties.set_prop("hubRoutingPreference", AAZStrType, ".hub_routing_preference")
                 properties.set_prop("sku", AAZStrType, ".sku")
                 properties.set_prop("virtualRouterAsn", AAZIntType, ".asn")
+                properties.set_prop("virtualRouterAutoScaleConfiguration", AAZObjectType, ".auto_scale_config")
                 properties.set_prop("virtualWan", AAZObjectType)
+
+            virtual_router_auto_scale_configuration = _builder.get(".properties.virtualRouterAutoScaleConfiguration")
+            if virtual_router_auto_scale_configuration is not None:
+                virtual_router_auto_scale_configuration.set_prop("minCapacity", AAZIntType, ".min_capacity")
 
             virtual_wan = _builder.get(".properties.virtualWan")
             if virtual_wan is not None:
@@ -391,243 +430,241 @@ class Update(AAZCommand):
             )
 
 
-def _build_schema_sub_resource_update(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("id", AAZStrType, ".id")
+class _UpdateHelper:
+    """Helper class for Update"""
 
+    @classmethod
+    def _build_schema_sub_resource_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("id", AAZStrType, ".id")
 
-_schema_sub_resource_read = None
+    _schema_sub_resource_read = None
 
+    @classmethod
+    def _build_schema_sub_resource_read(cls, _schema):
+        if cls._schema_sub_resource_read is not None:
+            _schema.id = cls._schema_sub_resource_read.id
+            return
 
-def _build_schema_sub_resource_read(_schema):
-    global _schema_sub_resource_read
-    if _schema_sub_resource_read is not None:
-        _schema.id = _schema_sub_resource_read.id
-        return
+        cls._schema_sub_resource_read = _schema_sub_resource_read = AAZObjectType()
 
-    _schema_sub_resource_read = AAZObjectType()
+        sub_resource_read = _schema_sub_resource_read
+        sub_resource_read.id = AAZStrType()
 
-    sub_resource_read = _schema_sub_resource_read
-    sub_resource_read.id = AAZStrType()
+        _schema.id = cls._schema_sub_resource_read.id
 
-    _schema.id = _schema_sub_resource_read.id
+    _schema_virtual_hub_read = None
 
+    @classmethod
+    def _build_schema_virtual_hub_read(cls, _schema):
+        if cls._schema_virtual_hub_read is not None:
+            _schema.etag = cls._schema_virtual_hub_read.etag
+            _schema.id = cls._schema_virtual_hub_read.id
+            _schema.kind = cls._schema_virtual_hub_read.kind
+            _schema.location = cls._schema_virtual_hub_read.location
+            _schema.name = cls._schema_virtual_hub_read.name
+            _schema.properties = cls._schema_virtual_hub_read.properties
+            _schema.tags = cls._schema_virtual_hub_read.tags
+            _schema.type = cls._schema_virtual_hub_read.type
+            return
 
-_schema_virtual_hub_read = None
+        cls._schema_virtual_hub_read = _schema_virtual_hub_read = AAZObjectType()
 
+        virtual_hub_read = _schema_virtual_hub_read
+        virtual_hub_read.etag = AAZStrType(
+            flags={"read_only": True},
+        )
+        virtual_hub_read.id = AAZStrType()
+        virtual_hub_read.kind = AAZStrType(
+            flags={"read_only": True},
+        )
+        virtual_hub_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        virtual_hub_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        virtual_hub_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        virtual_hub_read.tags = AAZDictType()
+        virtual_hub_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
 
-def _build_schema_virtual_hub_read(_schema):
-    global _schema_virtual_hub_read
-    if _schema_virtual_hub_read is not None:
-        _schema.etag = _schema_virtual_hub_read.etag
-        _schema.id = _schema_virtual_hub_read.id
-        _schema.kind = _schema_virtual_hub_read.kind
-        _schema.location = _schema_virtual_hub_read.location
-        _schema.name = _schema_virtual_hub_read.name
-        _schema.properties = _schema_virtual_hub_read.properties
-        _schema.tags = _schema_virtual_hub_read.tags
-        _schema.type = _schema_virtual_hub_read.type
-        return
+        properties = _schema_virtual_hub_read.properties
+        properties.address_prefix = AAZStrType(
+            serialized_name="addressPrefix",
+        )
+        properties.allow_branch_to_branch_traffic = AAZBoolType(
+            serialized_name="allowBranchToBranchTraffic",
+        )
+        properties.azure_firewall = AAZObjectType(
+            serialized_name="azureFirewall",
+        )
+        cls._build_schema_sub_resource_read(properties.azure_firewall)
+        properties.bgp_connections = AAZListType(
+            serialized_name="bgpConnections",
+            flags={"read_only": True},
+        )
+        properties.express_route_gateway = AAZObjectType(
+            serialized_name="expressRouteGateway",
+        )
+        cls._build_schema_sub_resource_read(properties.express_route_gateway)
+        properties.hub_routing_preference = AAZStrType(
+            serialized_name="hubRoutingPreference",
+        )
+        properties.ip_configurations = AAZListType(
+            serialized_name="ipConfigurations",
+            flags={"read_only": True},
+        )
+        properties.p2_s_vpn_gateway = AAZObjectType(
+            serialized_name="p2SVpnGateway",
+        )
+        cls._build_schema_sub_resource_read(properties.p2_s_vpn_gateway)
+        properties.preferred_routing_gateway = AAZStrType(
+            serialized_name="preferredRoutingGateway",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.route_maps = AAZListType(
+            serialized_name="routeMaps",
+            flags={"read_only": True},
+        )
+        properties.route_table = AAZObjectType(
+            serialized_name="routeTable",
+        )
+        properties.routing_state = AAZStrType(
+            serialized_name="routingState",
+            flags={"read_only": True},
+        )
+        properties.security_partner_provider = AAZObjectType(
+            serialized_name="securityPartnerProvider",
+        )
+        cls._build_schema_sub_resource_read(properties.security_partner_provider)
+        properties.security_provider_name = AAZStrType(
+            serialized_name="securityProviderName",
+        )
+        properties.sku = AAZStrType()
+        properties.virtual_hub_route_table_v2s = AAZListType(
+            serialized_name="virtualHubRouteTableV2s",
+        )
+        properties.virtual_router_asn = AAZIntType(
+            serialized_name="virtualRouterAsn",
+        )
+        properties.virtual_router_auto_scale_configuration = AAZObjectType(
+            serialized_name="virtualRouterAutoScaleConfiguration",
+        )
+        properties.virtual_router_ips = AAZListType(
+            serialized_name="virtualRouterIps",
+        )
+        properties.virtual_wan = AAZObjectType(
+            serialized_name="virtualWan",
+        )
+        cls._build_schema_sub_resource_read(properties.virtual_wan)
+        properties.vpn_gateway = AAZObjectType(
+            serialized_name="vpnGateway",
+        )
+        cls._build_schema_sub_resource_read(properties.vpn_gateway)
 
-    _schema_virtual_hub_read = AAZObjectType()
+        bgp_connections = _schema_virtual_hub_read.properties.bgp_connections
+        bgp_connections.Element = AAZObjectType()
+        cls._build_schema_sub_resource_read(bgp_connections.Element)
 
-    virtual_hub_read = _schema_virtual_hub_read
-    virtual_hub_read.etag = AAZStrType(
-        flags={"read_only": True},
-    )
-    virtual_hub_read.id = AAZStrType()
-    virtual_hub_read.kind = AAZStrType(
-        flags={"read_only": True},
-    )
-    virtual_hub_read.location = AAZStrType(
-        flags={"required": True},
-    )
-    virtual_hub_read.name = AAZStrType(
-        flags={"read_only": True},
-    )
-    virtual_hub_read.properties = AAZObjectType(
-        flags={"client_flatten": True},
-    )
-    virtual_hub_read.tags = AAZDictType()
-    virtual_hub_read.type = AAZStrType(
-        flags={"read_only": True},
-    )
+        ip_configurations = _schema_virtual_hub_read.properties.ip_configurations
+        ip_configurations.Element = AAZObjectType()
+        cls._build_schema_sub_resource_read(ip_configurations.Element)
 
-    properties = _schema_virtual_hub_read.properties
-    properties.address_prefix = AAZStrType(
-        serialized_name="addressPrefix",
-    )
-    properties.allow_branch_to_branch_traffic = AAZBoolType(
-        serialized_name="allowBranchToBranchTraffic",
-    )
-    properties.azure_firewall = AAZObjectType(
-        serialized_name="azureFirewall",
-    )
-    _build_schema_sub_resource_read(properties.azure_firewall)
-    properties.bgp_connections = AAZListType(
-        serialized_name="bgpConnections",
-        flags={"read_only": True},
-    )
-    properties.express_route_gateway = AAZObjectType(
-        serialized_name="expressRouteGateway",
-    )
-    _build_schema_sub_resource_read(properties.express_route_gateway)
-    properties.hub_routing_preference = AAZStrType(
-        serialized_name="hubRoutingPreference",
-    )
-    properties.ip_configurations = AAZListType(
-        serialized_name="ipConfigurations",
-        flags={"read_only": True},
-    )
-    properties.p2_s_vpn_gateway = AAZObjectType(
-        serialized_name="p2SVpnGateway",
-    )
-    _build_schema_sub_resource_read(properties.p2_s_vpn_gateway)
-    properties.preferred_routing_gateway = AAZStrType(
-        serialized_name="preferredRoutingGateway",
-    )
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
-    properties.route_maps = AAZListType(
-        serialized_name="routeMaps",
-        flags={"read_only": True},
-    )
-    properties.route_table = AAZObjectType(
-        serialized_name="routeTable",
-    )
-    properties.routing_state = AAZStrType(
-        serialized_name="routingState",
-        flags={"read_only": True},
-    )
-    properties.security_partner_provider = AAZObjectType(
-        serialized_name="securityPartnerProvider",
-    )
-    _build_schema_sub_resource_read(properties.security_partner_provider)
-    properties.security_provider_name = AAZStrType(
-        serialized_name="securityProviderName",
-    )
-    properties.sku = AAZStrType()
-    properties.virtual_hub_route_table_v2s = AAZListType(
-        serialized_name="virtualHubRouteTableV2s",
-    )
-    properties.virtual_router_asn = AAZIntType(
-        serialized_name="virtualRouterAsn",
-    )
-    properties.virtual_router_auto_scale_configuration = AAZObjectType(
-        serialized_name="virtualRouterAutoScaleConfiguration",
-    )
-    properties.virtual_router_ips = AAZListType(
-        serialized_name="virtualRouterIps",
-    )
-    properties.virtual_wan = AAZObjectType(
-        serialized_name="virtualWan",
-    )
-    properties.vpn_gateway = AAZObjectType(
-        serialized_name="vpnGateway",
-    )
-    _build_schema_sub_resource_read(properties.vpn_gateway)
+        route_maps = _schema_virtual_hub_read.properties.route_maps
+        route_maps.Element = AAZObjectType()
+        cls._build_schema_sub_resource_read(route_maps.Element)
 
-    bgp_connections = _schema_virtual_hub_read.properties.bgp_connections
-    bgp_connections.Element = AAZObjectType()
-    _build_schema_sub_resource_read(bgp_connections.Element)
+        route_table = _schema_virtual_hub_read.properties.route_table
+        route_table.routes = AAZListType()
 
-    ip_configurations = _schema_virtual_hub_read.properties.ip_configurations
-    ip_configurations.Element = AAZObjectType()
-    _build_schema_sub_resource_read(ip_configurations.Element)
+        routes = _schema_virtual_hub_read.properties.route_table.routes
+        routes.Element = AAZObjectType()
 
-    route_maps = _schema_virtual_hub_read.properties.route_maps
-    route_maps.Element = AAZObjectType()
-    _build_schema_sub_resource_read(route_maps.Element)
+        _element = _schema_virtual_hub_read.properties.route_table.routes.Element
+        _element.address_prefixes = AAZListType(
+            serialized_name="addressPrefixes",
+        )
+        _element.next_hop_ip_address = AAZStrType(
+            serialized_name="nextHopIpAddress",
+        )
 
-    route_table = _schema_virtual_hub_read.properties.route_table
-    route_table.routes = AAZListType()
+        address_prefixes = _schema_virtual_hub_read.properties.route_table.routes.Element.address_prefixes
+        address_prefixes.Element = AAZStrType()
 
-    routes = _schema_virtual_hub_read.properties.route_table.routes
-    routes.Element = AAZObjectType()
+        virtual_hub_route_table_v2s = _schema_virtual_hub_read.properties.virtual_hub_route_table_v2s
+        virtual_hub_route_table_v2s.Element = AAZObjectType()
 
-    _element = _schema_virtual_hub_read.properties.route_table.routes.Element
-    _element.address_prefixes = AAZListType(
-        serialized_name="addressPrefixes",
-    )
-    _element.next_hop_ip_address = AAZStrType(
-        serialized_name="nextHopIpAddress",
-    )
+        _element = _schema_virtual_hub_read.properties.virtual_hub_route_table_v2s.Element
+        _element.etag = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.id = AAZStrType()
+        _element.name = AAZStrType()
+        _element.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
 
-    address_prefixes = _schema_virtual_hub_read.properties.route_table.routes.Element.address_prefixes
-    address_prefixes.Element = AAZStrType()
+        properties = _schema_virtual_hub_read.properties.virtual_hub_route_table_v2s.Element.properties
+        properties.attached_connections = AAZListType(
+            serialized_name="attachedConnections",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.routes = AAZListType()
 
-    virtual_hub_route_table_v2s = _schema_virtual_hub_read.properties.virtual_hub_route_table_v2s
-    virtual_hub_route_table_v2s.Element = AAZObjectType()
+        attached_connections = _schema_virtual_hub_read.properties.virtual_hub_route_table_v2s.Element.properties.attached_connections
+        attached_connections.Element = AAZStrType()
 
-    _element = _schema_virtual_hub_read.properties.virtual_hub_route_table_v2s.Element
-    _element.etag = AAZStrType(
-        flags={"read_only": True},
-    )
-    _element.id = AAZStrType()
-    _element.name = AAZStrType()
-    _element.properties = AAZObjectType(
-        flags={"client_flatten": True},
-    )
+        routes = _schema_virtual_hub_read.properties.virtual_hub_route_table_v2s.Element.properties.routes
+        routes.Element = AAZObjectType()
 
-    properties = _schema_virtual_hub_read.properties.virtual_hub_route_table_v2s.Element.properties
-    properties.attached_connections = AAZListType(
-        serialized_name="attachedConnections",
-    )
-    properties.provisioning_state = AAZStrType(
-        serialized_name="provisioningState",
-        flags={"read_only": True},
-    )
-    properties.routes = AAZListType()
+        _element = _schema_virtual_hub_read.properties.virtual_hub_route_table_v2s.Element.properties.routes.Element
+        _element.destination_type = AAZStrType(
+            serialized_name="destinationType",
+        )
+        _element.destinations = AAZListType()
+        _element.next_hop_type = AAZStrType(
+            serialized_name="nextHopType",
+        )
+        _element.next_hops = AAZListType(
+            serialized_name="nextHops",
+        )
 
-    attached_connections = _schema_virtual_hub_read.properties.virtual_hub_route_table_v2s.Element.properties.attached_connections
-    attached_connections.Element = AAZStrType()
+        destinations = _schema_virtual_hub_read.properties.virtual_hub_route_table_v2s.Element.properties.routes.Element.destinations
+        destinations.Element = AAZStrType()
 
-    routes = _schema_virtual_hub_read.properties.virtual_hub_route_table_v2s.Element.properties.routes
-    routes.Element = AAZObjectType()
+        next_hops = _schema_virtual_hub_read.properties.virtual_hub_route_table_v2s.Element.properties.routes.Element.next_hops
+        next_hops.Element = AAZStrType()
 
-    _element = _schema_virtual_hub_read.properties.virtual_hub_route_table_v2s.Element.properties.routes.Element
-    _element.destination_type = AAZStrType(
-        serialized_name="destinationType",
-    )
-    _element.destinations = AAZListType()
-    _element.next_hop_type = AAZStrType(
-        serialized_name="nextHopType",
-    )
-    _element.next_hops = AAZListType(
-        serialized_name="nextHops",
-    )
+        virtual_router_auto_scale_configuration = _schema_virtual_hub_read.properties.virtual_router_auto_scale_configuration
+        virtual_router_auto_scale_configuration.min_capacity = AAZIntType(
+            serialized_name="minCapacity",
+        )
 
-    destinations = _schema_virtual_hub_read.properties.virtual_hub_route_table_v2s.Element.properties.routes.Element.destinations
-    destinations.Element = AAZStrType()
+        virtual_router_ips = _schema_virtual_hub_read.properties.virtual_router_ips
+        virtual_router_ips.Element = AAZStrType()
 
-    next_hops = _schema_virtual_hub_read.properties.virtual_hub_route_table_v2s.Element.properties.routes.Element.next_hops
-    next_hops.Element = AAZStrType()
+        tags = _schema_virtual_hub_read.tags
+        tags.Element = AAZStrType()
 
-    virtual_router_auto_scale_configuration = _schema_virtual_hub_read.properties.virtual_router_auto_scale_configuration
-    virtual_router_auto_scale_configuration.min_capacity = AAZIntType(
-        serialized_name="minCapacity",
-    )
-
-    virtual_router_ips = _schema_virtual_hub_read.properties.virtual_router_ips
-    virtual_router_ips.Element = AAZStrType()
-
-    virtual_wan = _schema_virtual_hub_read.properties.virtual_wan
-    virtual_wan.id = AAZStrType()
-
-    tags = _schema_virtual_hub_read.tags
-    tags.Element = AAZStrType()
-
-    _schema.etag = _schema_virtual_hub_read.etag
-    _schema.id = _schema_virtual_hub_read.id
-    _schema.kind = _schema_virtual_hub_read.kind
-    _schema.location = _schema_virtual_hub_read.location
-    _schema.name = _schema_virtual_hub_read.name
-    _schema.properties = _schema_virtual_hub_read.properties
-    _schema.tags = _schema_virtual_hub_read.tags
-    _schema.type = _schema_virtual_hub_read.type
+        _schema.etag = cls._schema_virtual_hub_read.etag
+        _schema.id = cls._schema_virtual_hub_read.id
+        _schema.kind = cls._schema_virtual_hub_read.kind
+        _schema.location = cls._schema_virtual_hub_read.location
+        _schema.name = cls._schema_virtual_hub_read.name
+        _schema.properties = cls._schema_virtual_hub_read.properties
+        _schema.tags = cls._schema_virtual_hub_read.tags
+        _schema.type = cls._schema_virtual_hub_read.type
 
 
 __all__ = ["Update"]
