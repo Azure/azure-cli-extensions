@@ -25,7 +25,9 @@ from .aaz.latest.devcenter.admin.catalog import (
     Update as _CatalogUpdate,
     Wait as _CatalogWait,
 )
-from .aaz.latest.devcenter.admin.check_name_availability import Execute as _CheckNameAvailabilityExecute
+from .aaz.latest.devcenter.admin.check_name_availability import (
+    Execute as _CheckNameAvailabilityExecute,
+)
 from .aaz.latest.devcenter.admin.devbox_definition import (
     Create as _DevBoxDefinitionCreate,
     Delete as _DevBoxDefinitionDelete,
@@ -87,7 +89,7 @@ from .aaz.latest.devcenter.admin.schedule import (
     Update as _ScheduleUpdate,
     Wait as _ScheduleWait,
 )
-from ._validators import (validate_attached_network_or_dev_box_def, validate_repo_git)
+from ._validators import validate_attached_network_or_dev_box_def, validate_repo_git
 
 # Control plane
 
@@ -148,6 +150,7 @@ class AttachedNetworkWait(_AttachedNetworkWait):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
+
 class CheckNameAvailabilityExecute(_CheckNameAvailabilityExecute):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -156,6 +159,7 @@ class CheckNameAvailabilityExecute(_CheckNameAvailabilityExecute):
         args_schema.type._required = True
         return args_schema
 
+
 class CatalogCreate(_CatalogCreate):
     def _cli_arguments_loader(self):
         args = super()._cli_arguments_loader()
@@ -163,9 +167,8 @@ class CatalogCreate(_CatalogCreate):
 
     @register_callback
     def pre_operations(self):
-        validate_repo_git(
-            self.ctx.args.ado_git, self.ctx.args.git_hub
-        )
+        validate_repo_git(self.ctx.args.ado_git, self.ctx.args.git_hub)
+
 
 class CatalogDelete(_CatalogDelete):
     def _cli_arguments_loader(self):
@@ -288,6 +291,7 @@ class EnvironmentTypeUpdate(_EnvironmentTypeUpdate):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
+
 class GalleryCreate(_GalleryCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -347,6 +351,7 @@ class ImageVersionShow(_ImageVersionShow):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
+
 class NetworkConnectionCreate(_NetworkConnectionCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -354,6 +359,7 @@ class NetworkConnectionCreate(_NetworkConnectionCreate):
         args_schema.subnet_id._required = True
         args_schema.domain_join_type._required = True
         return args_schema
+
 
 class PoolCreate(_PoolCreate):
     @classmethod
@@ -410,12 +416,14 @@ class PoolWait(_PoolWait):
         args = super()._cli_arguments_loader()
         return set_configured_defaults(args)
 
+
 class ProjectCreate(_ProjectCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.dev_center_id._required = True
         return args_schema
+
 
 class ProjectAllowedEnvironmentTypeList(_ProjectAllowedEnvironmentTypeList):
     def _cli_arguments_loader(self):

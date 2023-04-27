@@ -93,7 +93,9 @@ def load_command_table(self, _):
         loader=self
     )
 
-    self.command_table["devcenter admin check-name-availability execute"] = CheckNameAvailabilityExecute(loader=self)
+    self.command_table[
+        "devcenter admin check-name-availability execute"
+    ] = CheckNameAvailabilityExecute(loader=self)
 
     self.command_table["devcenter admin catalog create"] = CatalogCreate(loader=self)
     self.command_table["devcenter admin catalog delete"] = CatalogDelete(loader=self)
@@ -154,9 +156,9 @@ def load_command_table(self, _):
         loader=self
     )
 
-    self.command_table["devcenter admin network-connection create"] = NetworkConnectionCreate(
-        loader=self
-    )
+    self.command_table[
+        "devcenter admin network-connection create"
+    ] = NetworkConnectionCreate(loader=self)
 
     self.command_table["devcenter admin pool create"] = PoolCreate(loader=self)
     self.command_table["devcenter admin pool delete"] = PoolDelete(loader=self)
@@ -168,9 +170,7 @@ def load_command_table(self, _):
     self.command_table["devcenter admin pool update"] = PoolUpdate(loader=self)
     self.command_table["devcenter admin pool wait"] = PoolWait(loader=self)
 
-
     self.command_table["devcenter admin project create"] = ProjectCreate(loader=self)
-
 
     self.command_table[
         "devcenter admin project-allowed-environment-type list"

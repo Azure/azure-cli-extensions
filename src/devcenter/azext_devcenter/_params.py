@@ -51,7 +51,7 @@ def load_arguments(self, _):
             "project_name",
             options_list=["--name", "-n"],
             type=str,
-            help="The DevCenter " "Project upon which to execute operations.",
+            help="The dev center " "project upon which to execute operations.",
         )
 
     with self.argument_context("devcenter dev pool list") as c:
@@ -77,7 +77,7 @@ def load_arguments(self, _):
             "pool_name",
             options_list=["--name", "-n", "--pool-name"],
             type=str,
-            help="The name of a pool of " "Dev Boxes.",
+            help="The name of a pool of " "dev boxes.",
         )
 
     with self.argument_context("devcenter dev schedule list") as c:
@@ -93,7 +93,7 @@ def load_arguments(self, _):
             "pool_name",
             options_list=["--pool-name", "--pool"],
             type=str,
-            help="The name of a pool of Dev Boxes.",
+            help="The name of a pool of dev boxes.",
         )
 
     with self.argument_context("devcenter dev schedule show") as c:
@@ -109,7 +109,7 @@ def load_arguments(self, _):
             "pool_name",
             options_list=["--pool-name", "--pool"],
             type=str,
-            help="The name of a pool of Dev Boxes.",
+            help="The name of a pool of dev boxes.",
         )
 
     with self.argument_context(
@@ -149,7 +149,7 @@ def load_arguments(self, _):
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
 
     with self.argument_context("devcenter dev dev-box create") as c:
@@ -171,19 +171,19 @@ def load_arguments(self, _):
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
         c.argument(
             "pool_name",
             options_list=["--pool-name", "--pool"],
             type=str,
-            help="The name of the Dev Box pool this machine belongs to.",
+            help="The name of the dev box pool this machine belongs to.",
         )
         c.argument(
             "local_administrator",
             arg_type=get_enum_type(["Enabled", "Disabled"]),
             help="Indicates whether the "
-            "owner of the Dev Box is a local administrator.",
+            "owner of the dev box is a local administrator.",
         )
 
     with self.argument_context("devcenter dev dev-box delete") as c:
@@ -205,7 +205,7 @@ def load_arguments(self, _):
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
 
     with self.argument_context("devcenter dev dev-box show-remote-connection") as c:
@@ -227,7 +227,7 @@ def load_arguments(self, _):
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
 
     with self.argument_context("devcenter dev dev-box start") as c:
@@ -249,7 +249,7 @@ def load_arguments(self, _):
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
 
     with self.argument_context("devcenter dev dev-box restart") as c:
@@ -271,7 +271,7 @@ def load_arguments(self, _):
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
 
     with self.argument_context("devcenter dev dev-box stop") as c:
@@ -293,7 +293,7 @@ def load_arguments(self, _):
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
         c.argument(
             "hibernate",
@@ -322,16 +322,16 @@ def load_arguments(self, _):
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
         c.argument(
             "action_name",
             type=str,
-            help="The name of an action that will take place on a Dev Box.",
+            help="The name of an action that will take place on a dev box.",
         )
         c.argument(
             "delay_time",
-            help="The delayed timespan from the most recent scheduled time. Format HH:MM",
+            help="The delayed timespan from the scheduled action time. Format HH:MM",
         )
 
     with self.argument_context(
@@ -355,11 +355,11 @@ def load_arguments(self, _):
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
         c.argument(
             "delay_time",
-            help="The delayed timespan from the most recent scheduled time. Format HH:MM",
+            help="The delayed timespan from the earliest scheduled time of all actions. Format HH:MM",
         )
 
     with self.argument_context("devcenter dev dev-box list-action") as c:
@@ -381,7 +381,7 @@ def load_arguments(self, _):
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
 
     with self.argument_context("devcenter dev dev-box show-action") as c:
@@ -403,12 +403,12 @@ def load_arguments(self, _):
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
         c.argument(
             "action_name",
             type=str,
-            help="The name of an action that will take place on a Dev Box.",
+            help="The name of an action that will take place on a dev box.",
         )
 
     with self.argument_context("devcenter dev dev-box skip-action") as c:
@@ -430,12 +430,12 @@ def load_arguments(self, _):
             "dev_box_name",
             options_list=["--name", "-n", "--dev-box-name"],
             type=str,
-            help="The name of a Dev " "Box.",
+            help="The name of a dev " "box.",
         )
         c.argument(
             "action_name",
             type=str,
-            help="The name of an action that will take place on a Dev Box.",
+            help="The name of an action that will take place on a dev box.",
         )
 
     with self.argument_context("devcenter dev environment list") as c:

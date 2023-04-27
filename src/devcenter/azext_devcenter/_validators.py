@@ -17,6 +17,7 @@ def validate_attached_network_or_dev_box_def(dev_center_name, project_name):
 or dev center (--dev-center --dev-center-name -d) should be set."""
         raise RequiredArgumentMissingError(error_message)
 
+
 def validate_repo_git(ado_git, git_hub):
     if not has_value(ado_git) and not has_value(git_hub):
         error_message = """Either an AdoGit (--ado-git) \
