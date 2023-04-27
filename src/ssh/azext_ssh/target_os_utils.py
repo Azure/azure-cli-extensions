@@ -13,26 +13,32 @@ logger = log.get_logger(__name__)
 
 # Send target OS type telemetry and check if authentication options are valid for that OS.
 def handle_target_os_type(cmd, op_info):
-
     os_type = None
+    agent_version = None
 
     if op_info.resource_type.lower() == "microsoft.compute/virtualmachines":
         os_type = _get_azure_vm_os(cmd, op_info.resource_group_name, op_info.vm_name)
     elif op_info.resource_type.lower() == "microsoft.hybridcompute/machines":
-        os_type = _get_arc_server_os(cmd, op_info.resource_group_name, op_info.vm_name)
+        os_type, agent_version = _get_arc_server_os(cmd, op_info.resource_group_name, op_info.vm_name)
     elif op_info.resource_type.lower() == "microsoft.connectedvmwarevsphere/virtualmachines":
-        os_type = _get_connected_vmware_os(cmd, op_info.resource_group_name, op_info.vm_name)
+        os_type, agent_version = _get_connected_vmware_os(cmd, op_info.resource_group_name, op_info.vm_name)
 
     if os_type:
         logger.debug("Target OS Type: %s", os_type)
         telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.TargetOSType': os_type})
-
+    
     # Note 2: This is a temporary check while AAD login is not enabled for Windows.
     if os_type and os_type.lower() == 'windows' and not op_info.local_user:
         colorama.init()
         error_message = "SSH Login using AAD credentials is not currently supported for Windows."
         recommendation = colorama.Fore.YELLOW + "Please provide --local-user." + colorama.Style.RESET_ALL
         raise azclierror.RequiredArgumentMissingError(error_message, recommendation)
+    
+    if agent_version:
+        major, minor, fix, build = agent_version.Split('.')
+        if int(major) < 1 or int(minor) < 29:
+            logger.warning(f"The target machine is using an old version of the agent {agent_version}." +
+                           "Please update to the latest version.")
 
 
 def _get_azure_vm_os(cmd, resource_group_name, vm_name):
@@ -57,6 +63,7 @@ def _get_arc_server_os(cmd, resource_group_name, vm_name):
     from .aaz.latest.hybrid_compute.machine import Show as ArcServerShow
     arc_server = None
     os_type = None
+    agent_version = None
     get_args = {
             'resource_group': resource_group_name,
             'machine_name': vm_name
@@ -69,14 +76,18 @@ def _get_arc_server_os(cmd, resource_group_name, vm_name):
 
     if arc_server and arc_server.get('osName', None):
         os_type = arc_server['osName']
+    
+    if arc_server and arc_server.get('properties'):
+        agent_version = arc_server.get('properties').get('agentVersion')
 
-    return os_type
+    return os_type, agent_version
 
 
 def _get_connected_vmware_os(cmd, resource_group_name, vm_name):
     from .aaz.latest.connected_v_mwarev_sphere.virtual_machine import Show as VMwarevSphereShow
     vmware = None
     os_type = None
+    agent_version = None
     get_args = {
             'resource_group': resource_group_name,
             'virtual_machine_name': vm_name
@@ -89,5 +100,9 @@ def _get_connected_vmware_os(cmd, resource_group_name, vm_name):
 
     if vmware and vmware.get("osProfile") and vmware.get("osProfile").get("osType"):
         os_type = vmware.get("osProfile").get("osType")
+    
+    if vmware and vmware.get("properties") and vmware.get("properties").get('guestAgentProfile') and\
+       vmware.get("properties").get('guestAgentProfile').get('agentVersion'):
+        agent_version = vmware.get("properties").get('guestAgentProfile').get('agentVersion')
 
-    return os_type
+    return os_type, agent_version

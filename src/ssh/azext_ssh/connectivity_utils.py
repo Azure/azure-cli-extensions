@@ -31,7 +31,7 @@ logger = log.get_logger(__name__)
 # Get the Access Details to connect to Arc Connectivity platform from the HybridConnectivity RP
 def get_relay_information(cmd, resource_group, vm_name, resource_type, certificate_validity_in_seconds, port):
     from .aaz.latest.hybrid_connectivity.endpoint import ListCredential
-    print("GET RELAY INFORMATION")
+
     if not certificate_validity_in_seconds or \
        certificate_validity_in_seconds > consts.RELAY_INFO_MAXIMUM_DURATION_IN_SECONDS:
         certificate_validity_in_seconds = consts.RELAY_INFO_MAXIMUM_DURATION_IN_SECONDS
@@ -41,8 +41,23 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
     resource_uri = resource_id(subscription=get_subscription_id(cmd.cli_ctx), resource_group=resource_group,
                                  namespace=namespace, type=arc_type, name=vm_name)
     
-    _check_and_fix_service_configuration(cmd, resource_uri, port)
+    # TO DO:
+    # A lot of the functions for getting the relay information are written down here, 
+    # but we need to make it work.
+    # What I think it's the best way to handle retrieving the relay information is the following steps:
 
+    # - Call list credential
+    #   - if it throws a resource not found that means the endpoint doesn't exist
+    #       - create endpoint (fail if user is not owner/contributor)
+    #       - create service config (fail is user is not owner/contributor, prompt user for confirmation)
+    #       - call list credential again
+    #   - if it throws a "precondition failed" that means the service config doesn't exist
+    #       - create service config (fail is user is not owner/contributor, prompt user for confirmation)
+    #       - call list credential again
+    #   - list credential call suceeds
+    #       - ensure that the provided port matches the allowed port in service configuration
+    #           - if it doesn't prompt user for confirmation if they want to repair the port
+    #           - if it does, return credential
 
 def _check_and_fix_service_configuration(cmd, resource_uri, port):
     from .aaz.latest.hybrid_connectivity.endpoint.service_configuration import Show as ShowServiceConfig
@@ -55,9 +70,19 @@ def _check_and_fix_service_configuration(cmd, resource_uri, port):
     try:
         serviceConfig = ShowServiceConfig(cli_ctx=cmd.cli_ctx)(command_args=show_service_config_args)
     except ResourceNotFoundError:
-        endpoint = _get_or_create_endpoint(cmd, resource_uri)
+        _get_or_create_endpoint(cmd, resource_uri)
         serviceConfig = _create_service_configuration(cmd, resource_uri, port)
+    except Exception:
+        # If for some reason the request for Service Configuration fails,
+        # we will still attempt to get relay information and connect. If the service configuration
+        # is not setup correctly, the connection will fail.
+        # The more likely scenario is that the request failed with a "Authorization Error",
+        # in case the user isn't an owner/contributor.
+        return
     
+    #if serviceConfig['port'] != int(port):
+    #    raise azclierror.ForbiddenError(f"The provided port {port} is not configured to allow SSH connections.",
+    #                                    consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
     #check if SSH configuration matches port
     #if it doesn't match port, offer to fix it
 
@@ -69,11 +94,13 @@ def _get_or_create_endpoint(cmd, resource_uri):
         'resource_uri': resource_uri,
     }
     try:
-        endpoint = ShowEndpoint(cli_ctx=cmd.cli_ctx)(command_args=show_endpoint_args)
+        ShowEndpoint(cli_ctx=cmd.cli_ctx)(command_args=show_endpoint_args)
     except ResourceNotFoundError:
-        endpoint = _create_default_endpoint(cmd, resource_uri)
-
-    return endpoint
+        _create_default_endpoint(cmd, resource_uri)
+    except Exception as e:
+        # if for some reason the request for endpoint fails, we will still try to move
+        # forward. 
+        return
 
 
 def _create_default_endpoint(cmd, resource_uri):
@@ -88,6 +115,7 @@ def _create_default_endpoint(cmd, resource_uri):
     try:
         endpoint = CreateHybridConnectivityEndpoint(cli_ctx=cmd.cli_ctx)(command_args=create_endpoint_args)
     except HttpResponseError as e:
+        colorama.init()
         if e.reason == "Forbidden":
              raise azclierror.UnauthorizedError("Client is not authorized to create the default connectivity " +
                                                f"endpoint for \'{vm_name}\' in Resource Group \'{resource_group}\'. " +
@@ -117,19 +145,47 @@ def _create_service_configuration(cmd, resource_uri, port):
         'endpoint_name': 'default',
         'resource_uri': resource_uri,
         'service_configuration_name': 'SSH',
-        'Properties': {
-            'port': int(port),
-            'service_name': 'SSH'
-        }
+        'port': int(port),
+        'service_name': 'SSH'
     }
     try:
         serviceConfig = CreateServiceConfig(cli_ctx=cmd.cli_ctx)(command_args=create_service_conf_args)
-    except Exception as e:
-        raise azclierror.ClientRequestError({str(e)})
+    except HttpResponseError as e:
+        colorama.init()
+        vm_name = parse_resource_id(resource_uri)["name"]
+        resource_group = parse_resource_id(resource_uri)["resource_group"]
+        if e.reason == "Forbidden":
+             raise azclierror.UnauthorizedError("Client is not authorized to create a new service configuration " +
+                                                f"to allow SSH connection to port {port} on default endpoint for " +
+                                                f"\'{vm_name}\' in Resource Group \'{resource_group}\'. " +
+                                                "This is a one-time operation that must be performed by someone " +
+                                                "with Owner or Contributor role to allow SSH connections on a " +
+                                                "specific port in the target resource.",
+                                                consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
+        
+        raise azclierror.UnclassifiedUserFault(f"Unable to create Service Configuration for " +
+                                               f"{vm_name} in {resource_group} to allow SSH connection to port {port}."
+                                               f"\nError: {str(e)}",
+                                               consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
+    except:
+        raise azclierror.UnclassifiedUserFault(f"Unable to create Service Configuration for " +
+                                               f"{vm_name} in {resource_group} to allow SSH connection to port {port}."
+                                               f"\nError: {str(e)}",
+                                               consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
 
     return serviceConfig
 
-   
+def _list_cretendials(cmd, resource_uri, certificate_validity_in_seconds):
+    from .aaz.latest.hybrid_connectivity.endpoint import ListCredential
+
+    list_cred_args = {
+        'endpoint_name': 'default',
+        'resource_uri': resource_uri,
+        'expiresin':certificate_validity_in_seconds,
+        'service_name': "SSH"
+    }
+
+    ListCredential(cli_ctx=cmd.cli_ctx)(command_args=list_cred_args)  
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
 def get_client_side_proxy(arc_proxy_folder):
