@@ -7,12 +7,21 @@ import copy
 import json
 import os
 from typing import Any, List, Dict
-from azext_confcom.template_util import case_insensitive_dict_get, replace_params_and_vars
+from itertools import product
+from azext_confcom.template_util import (
+    case_insensitive_dict_get,
+    replace_params_and_vars,
+    str_to_sha256,
+    process_seccomp_policy
+)
 from azext_confcom import config
 from azext_confcom.errors import eprint
+from azext_confcom.os_util import base64_to_str
 
 
 _DEFAULT_MOUNTS = config.DEFAULT_MOUNTS_USER
+
+_DEFAULT_USER = config.DEFAULT_USER
 
 _INJECTED_CUSTOMER_ENV_RULES = (
     config.OPENGCS_ENV_RULES
@@ -20,6 +29,14 @@ _INJECTED_CUSTOMER_ENV_RULES = (
     + config.MANAGED_IDENTITY_ENV_RULES
     + config.ENABLE_RESTART_ENV_RULE
 )
+
+_CAPABILITIES = {
+    config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_BOUNDING: [],
+    config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_EFFECTIVE: [],
+    config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_INHERITABLE: [],
+    config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_PERMITTED: [],
+    config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_AMBIENT: [],
+}
 
 
 def extract_container_image(container_json: Any) -> str:
@@ -207,7 +224,7 @@ def extract_exec_process(container_json: Any) -> List:
             exec_processes_output.append(
                 {
                     config.POLICY_FIELD_CONTAINERS_ELEMENTS_COMMANDS: exec_command,
-                    config.POLICY_FIELD_CONTAINER_SIGNAL_CONTAINER_PROCESSES: exec_signals,
+                    config.POLICY_FIELD_CONTAINERS_ELEMENTS_SIGNAL_CONTAINER_PROCESSES: exec_signals,
                 }
             )
     return exec_processes_output
@@ -233,24 +250,22 @@ def extract_allow_elevated(container_json: Any) -> bool:
     if isinstance(privileged_value, str):
         privileged_value = privileged_value.lower() == "true"
 
-    if privileged_value is not None:
+    if privileged_value:
         return privileged_value
 
     # allow_elevated is used for input.json
     _allow_elevated = case_insensitive_dict_get(
         container_json, config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED
     )
-    if _allow_elevated:
+    if _allow_elevated is not None:
         if not isinstance(_allow_elevated, bool):
             eprint(
                 f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
                 + f'["{config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED}"] can only be boolean value.'
             )
-
-    if _allow_elevated is not None:
         return _allow_elevated
-    # default value is true
-    return True
+    # default value is false
+    return False
 
 
 def extract_allow_stdio_access(container_json: Any) -> bool:
@@ -260,6 +275,210 @@ def extract_allow_stdio_access(container_json: Any) -> bool:
     )
     allow_stdio_access = allow_stdio_value if allow_stdio_value is not None else True
     return allow_stdio_access
+
+
+def extract_user(container_json: Any) -> Dict:
+    security_context = case_insensitive_dict_get(
+        container_json, config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT
+    )
+
+    user = copy.deepcopy(_DEFAULT_USER)
+    # assumes that securityContext field is optional
+    if security_context:
+        # To-Do: figure out how to determine if regex patterns
+        # get the field for run as user
+        run_as_user_value = case_insensitive_dict_get(
+            security_context, config.ACI_FIELD_CONTAINERS_RUN_AS_USER
+        )
+
+        if isinstance(run_as_user_value, int) and run_as_user_value >= 0:
+            user[config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_USER_IDNAME] = {
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_PATTERN: str(run_as_user_value),
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_STRATEGY: "id"
+            }
+        elif run_as_user_value is not None:
+            eprint(
+                f'Field ["{config.ACI_FIELD_CONTAINERS}"]["{config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT}"]'
+                + f'["{config.ACI_FIELD_CONTAINERS_RUN_AS_USER}"] can only be an integer value.'
+            )
+
+        # get the field for run as group
+        run_as_group_value = case_insensitive_dict_get(
+            security_context, config.ACI_FIELD_CONTAINERS_RUN_AS_GROUP
+        )
+
+        if isinstance(run_as_group_value, int) and run_as_group_value >= 0:
+            user[config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_GROUP_IDNAMES][0] = {
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_PATTERN: str(run_as_group_value),
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_STRATEGY: "id"
+            }
+        elif run_as_group_value is not None:
+            eprint(
+                f'Field ["{config.ACI_FIELD_CONTAINERS}"]["{config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT}"]'
+                + f'["{config.ACI_FIELD_CONTAINERS_RUN_AS_GROUP}"] can only be an integer value.'
+            )
+
+    return user
+
+
+def extract_capabilities(container_json: Any, allow_elevated: bool):
+    security_context = case_insensitive_dict_get(
+        container_json, config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT
+    )
+    # get the field for privileged, default to false
+    privileged_value = case_insensitive_dict_get(
+        security_context, config.ACI_FIELD_CONTAINERS_PRIVILEGED
+    )
+    if privileged_value and not isinstance(privileged_value, bool) and not isinstance(privileged_value, str):
+        eprint(
+            f'Field ["{config.ACI_FIELD_CONTAINERS}"]["{config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT}"]'
+            + f'["{config.ACI_FIELD_CONTAINERS_PRIVILEGED}"] can only be a boolean or string value.'
+        )
+
+    # force the field into a bool
+    if isinstance(privileged_value, str):
+        privileged_value = privileged_value.lower() == "true"
+
+    output_capabilities = copy.deepcopy(_CAPABILITIES)
+
+    # if privileged and allow elevated is true, then set all capabilities to true
+    # else, get the capabilities field from the ARM Template
+    if privileged_value and allow_elevated:
+        for key in output_capabilities:
+            # we still want the ambient set to be empty
+            if key != config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_AMBIENT:
+                output_capabilities[key] = copy.deepcopy(config.DEFAULT_PRIVILEGED_CAPABILITIES)
+    else:
+        non_added_fields = [
+            config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_BOUNDING,
+            config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_EFFECTIVE,
+            config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_PERMITTED,
+        ]
+
+        # add the default capabilities to the output
+        for key in non_added_fields:
+            output_capabilities[key] = copy.deepcopy(config.DEFAULT_UNPRIVILEGED_CAPABILITIES)
+        # get the capabilities field
+        capabilities = case_insensitive_dict_get(
+            security_context, config.ACI_FIELD_CONTAINERS_CAPABILITIES
+        )
+        # if allow elevated is true and container is not privileged,
+        # user can ADD and DROP capabilities in the ARM template
+        # if not allow elevated and container is not privileged, use default unprivileged capabilities
+        if capabilities and allow_elevated:
+            # error check if capabilities is not a dict
+            if not isinstance(capabilities, dict):
+                eprint(
+                    f'Field ["{config.ACI_FIELD_CONTAINERS}"]["{config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT}"]'
+                    + f'["{config.ACI_FIELD_CONTAINERS_CAPABILITIES}"] can only be a dictionary.'
+                )
+
+            # get the add field
+            add = case_insensitive_dict_get(
+                capabilities, config.ACI_FIELD_CONTAINERS_CAPABILITIES_ADD
+            )
+            if add:
+                # error check if add is not a list
+                if not isinstance(add, list):
+                    eprint(
+                        f'Field ["{config.ACI_FIELD_CONTAINERS}"]["{config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT}"]'
+                        + f'["{config.ACI_FIELD_CONTAINERS_CAPABILITIES_ADD}"] can only be a list.'
+                    )
+                for key, capability in product(output_capabilities, add):
+                    # error check that all the items in "add" are strings
+                    if not isinstance(capability, str):
+                        eprint(
+                            f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
+                            + f'["{config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT}"]'
+                            + f'["{config.ACI_FIELD_CONTAINERS_CAPABILITIES_ADD}"] can only contain strings.'
+                        )
+                    # add the capabilities to the output, except ambient list
+                    # we still want the ambient set to be empty
+                    if key != config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES_AMBIENT:
+                        output_capabilities[key].append(capability)
+
+            # get the drop field
+            drop = case_insensitive_dict_get(
+                capabilities, config.ACI_FIELD_CONTAINERS_CAPABILITIES_DROP
+            )
+            if drop:
+                # error check if drop is not a list
+                if not isinstance(drop, list):
+                    eprint(
+                        f'Field ["{config.ACI_FIELD_CONTAINERS}"]["{config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT}"]'
+                        + f'["{config.ACI_FIELD_CONTAINERS_CAPABILITIES_DROP}"] can only be a list.'
+                    )
+                # error check that all the items in "drop" are strings
+                for capability in drop:
+                    if not isinstance(capability, str):
+                        eprint(
+                            f'Field ["{config.ACI_FIELD_CONTAINERS}"]'
+                            + f'["{config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT}"]'
+                            + f'["{config.ACI_FIELD_CONTAINERS_CAPABILITIES_DROP}"] can only contain strings.'
+                        )
+                # drop the capabilities from the output
+                for value in non_added_fields:
+                    output_capabilities[value] = [x for x in output_capabilities[value] if x not in drop]
+    # de-duplicate the capabilities
+    for key, value in output_capabilities.items():
+        output_capabilities[key] = sorted(list(set(value)))
+    return output_capabilities
+
+
+def extract_seccomp_profile_sha256(container_json: Any) -> Dict:
+    security_context = case_insensitive_dict_get(
+        container_json, config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT
+    )
+
+    seccomp_profile_sha256 = ""
+    # assumes that securityContext field is optional
+    if security_context:
+        # get the field for seccomp_profile
+        seccomp_profile_base64 = case_insensitive_dict_get(
+            security_context, config.ACI_FIELD_CONTAINERS_SECCOMP_PROFILE
+        )
+
+        if seccomp_profile_base64 is not None and not isinstance(seccomp_profile_base64, str):
+            eprint(
+                f'Field ["{config.ACI_FIELD_CONTAINERS}"]["{config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT}"]'
+                + f'["{config.ACI_FIELD_CONTAINERS_SECCOMP_PROFILE}"] can only be a string.'
+            )
+        elif seccomp_profile_base64 is not None:
+            # clean up and jsonify the seccomp profile
+            seccomp_profile = process_seccomp_policy(base64_to_str(seccomp_profile_base64))
+            seccomp_profile_str = json.dumps(seccomp_profile, separators=(',', ':'))
+            # hash the seccomp profile
+            seccomp_profile_sha256 = str_to_sha256(seccomp_profile_str)
+    return seccomp_profile_sha256
+
+
+def extract_allow_privilege_escalation(container_json: Any) -> bool:
+    security_context = case_insensitive_dict_get(
+        container_json, config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT
+    )
+
+    # default to false so that no_new_privileges defaults to true
+    allow_privilege_escalation = False
+    # assumes that securityContext field is optional
+    if security_context:
+
+        # get the field for allow privilege escalation, default to true
+        temp_privilege_escalation = case_insensitive_dict_get(
+            security_context,
+            config.ACI_FIELD_CONTAINERS_ALLOW_PRIVILEGE_ESCALATION
+        )
+        if temp_privilege_escalation is not None:
+            if not isinstance(temp_privilege_escalation, bool) and not isinstance(temp_privilege_escalation, str):
+                eprint(
+                    f'Field ["{config.ACI_FIELD_CONTAINERS}"]["{config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT}"]'
+                    + f'["{config.ACI_FIELD_CONTAINERS_PRIVILEGED}"] can only be a boolean or string value.'
+                )
+
+            # force the field into a bool
+            if isinstance(temp_privilege_escalation, str):
+                temp_privilege_escalation = temp_privilege_escalation.lower() == "true"
+            allow_privilege_escalation = temp_privilege_escalation
+    return allow_privilege_escalation
 
 
 def extract_get_signals(container_json: Any) -> List:
@@ -307,7 +526,11 @@ class ContainerImage:
             container_json
         )
         signals = extract_get_signals(container_json)
+        user = extract_user(container_json)
+        capabilities = extract_capabilities(container_json, allow_elevated)
+        seccomp_profile_sha256 = extract_seccomp_profile_sha256(container_json)
         allow_stdio_access = extract_allow_stdio_access(container_json)
+        allow_privilege_escalation = extract_allow_privilege_escalation(container_json)
         return ContainerImage(
             containerImage=container_image,
             environmentRules=environment_rules,
@@ -318,7 +541,11 @@ class ContainerImage:
             extraEnvironmentRules=[],
             execProcesses=exec_processes,
             signals=signals,
+            user=user,
+            capabilities=capabilities,
+            seccomp_profile_sha256=seccomp_profile_sha256,
             allowStdioAccess=allow_stdio_access,
+            allowPrivilegeEscalation=allow_privilege_escalation,
             id_val=id_val,
         )
 
@@ -332,7 +559,11 @@ class ContainerImage:
         allow_elevated: bool,
         id_val: str,
         extraEnvironmentRules: Dict,
+        capabilities: Dict = copy.deepcopy(_CAPABILITIES),
+        user: Dict = copy.deepcopy(_DEFAULT_USER),
+        seccomp_profile_sha256: str = "",
         allowStdioAccess: bool = True,
+        allowPrivilegeEscalation: bool = True,
         execProcesses: List = None,
         signals: List = None,
     ) -> None:
@@ -348,6 +579,10 @@ class ContainerImage:
         self._mounts = mounts
         self._allow_elevated = allow_elevated
         self._allow_stdio_access = allowStdioAccess
+        self._seccomp_profile_sha256 = seccomp_profile_sha256
+        self._user = user or {}
+        self._capabilities = capabilities
+        self._allow_privilege_escalation = allowPrivilegeEscalation
         self._policy_json = None
         self._policy_json_str = None
         self._policy_json_str_pp = None
@@ -359,7 +594,6 @@ class ContainerImage:
     def get_policy_json(self) -> str:
         if not self._policy_json:
             self._policy_json_serialization()
-
         return self._policy_json
 
     def get_id(self) -> str:
@@ -386,8 +620,17 @@ class ContainerImage:
     def set_layers(self, layers: List[str]) -> None:
         self._layers = layers
 
+    def get_user(self) -> Dict:
+        return self._user
+
+    def set_user(self, user: Dict) -> None:
+        self._user = user
+
     def get_mounts(self) -> List:
         return self._mounts
+
+    def get_seccomp_profile_sha256(self) -> str:
+        return self._seccomp_profile_sha256
 
     def set_extra_environment_rules(self, rules: Dict) -> None:
         self._extraEnvironmentRules = rules
@@ -480,11 +723,14 @@ class ContainerImage:
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_WORKINGDIR: self._workingDir,
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS: self._get_mounts_json(),
             config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_ELEVATED: self._allow_elevated,
-            config.POLICY_FIELD_CONTAINER_EXEC_PROCESSES: self._exec_processes,
-            config.POLICY_FIELD_CONTAINER_SIGNAL_CONTAINER_PROCESSES: self._signals,
-            config.POLICY_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS: self._allow_stdio_access,
+            config.POLICY_FIELD_CONTAINERS_ELEMENTS_EXEC_PROCESSES: self._exec_processes,
+            config.POLICY_FIELD_CONTAINERS_ELEMENTS_SIGNAL_CONTAINER_PROCESSES: self._signals,
+            config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER: self.get_user(),
+            config.POLICY_FIELD_CONTAINERS_ELEMENTS_CAPABILITIES: self._capabilities,
+            config.POLICY_FIELD_CONTAINERS_ELEMENTS_SECCOMP_PROFILE_SHA256: self._seccomp_profile_sha256,
+            config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS: self._allow_stdio_access,
+            config.POLICY_FIELD_CONTAINERS_ELEMENTS_NO_NEW_PRIVILEGES: not self._allow_privilege_escalation
         }
-
         self._policy_json = elements
         return self._policy_json
 
@@ -510,32 +756,6 @@ class UserContainerImage(ContainerImage):
 
         image.set_extra_environment_rules(_INJECTED_CUSTOMER_ENV_RULES)
         return image
-
-    def __init__(
-        self,
-        containerImage: str,
-        environmentRules: List[Dict],
-        command: List[str],
-        mounts: List[Dict],
-        workingDir: str,
-        allowElevated: bool,
-        id_val: str,
-        execProcesses: List = None,
-        signals: List = None,
-        extraEnvironmentRules: Dict = _INJECTED_CUSTOMER_ENV_RULES,
-    ) -> None:
-        super().__init__(
-            containerImage=containerImage,
-            environmentRules=environmentRules,
-            command=command,
-            mounts=mounts,
-            workingDir=workingDir,
-            allow_elevated=allowElevated,
-            id_val=id_val,
-            signals=signals or [],
-            extraEnvironmentRules=extraEnvironmentRules,
-            execProcesses=execProcesses or [],
-        )
 
     def _populate_policy_json_elements(self) -> Dict[str, Any]:
         elements = super()._populate_policy_json_elements()

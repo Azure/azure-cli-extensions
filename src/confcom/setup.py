@@ -17,8 +17,6 @@ except ImportError:
 
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
-# TODO: Confirm this is the right version number you want and it matches your
-# HISTORY.rst entry.
 VERSION = "0.2.14"
 
 # The full list of classifiers is available at
@@ -37,7 +35,7 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
 ]
 
-DEPENDENCIES = ["docker", "tqdm", "deepdiff"]
+DEPENDENCIES = ["docker", "tqdm", "deepdiff", "pydash"]
 
 SecurityPolicyProxy.download_binaries()
 

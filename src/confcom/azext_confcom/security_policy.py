@@ -64,6 +64,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self._fragments = rego_fragments
         self._existing_fragments = existing_rego_fragments
         self._api_version = config.API_VERSION
+
         if debug_mode:
             self._allow_properties_access = config.DEBUG_MODE_SETTINGS.get(
                 "allowPropertiesAccess"
@@ -80,12 +81,16 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             self._allow_unencrypted_scratch = config.DEBUG_MODE_SETTINGS.get(
                 "allowUnencryptedScratch"
             )
+            self._allow_capability_dropping = config.DEBUG_MODE_SETTINGS.get(
+                "allowCapabilityDropping"
+            )
         else:
             self._allow_properties_access = False
             self._allow_dump_stacks = False
             self._allow_runtime_logging = False
             self._allow_environment_variable_dropping = True
             self._allow_unencrypted_scratch = False
+            self._allow_capability_dropping = True
 
         self.version = case_insensitive_dict_get(
             deserialized_config, config.ACI_FIELD_VERSION
@@ -173,7 +178,10 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         # determine if we're outputting for a sidecar or not
         if self._images[0].get_id() and is_sidecar(self._images[0].get_id()):
-            return config.SIDECAR_REGO_POLICY % (pretty_print_func(self._api_version), output)
+            return config.SIDECAR_REGO_POLICY % (
+                pretty_print_func(self._api_version),
+                output
+            )
         return config.CUSTOMER_REGO_POLICY % (
             pretty_print_func(self._api_version),
             pretty_print_func(self._fragments),
@@ -183,6 +191,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             pretty_print_func(self._allow_runtime_logging),
             pretty_print_func(self._allow_environment_variable_dropping),
             pretty_print_func(self._allow_unencrypted_scratch),
+            pretty_print_func(self._allow_capability_dropping),
         )
 
     def validate_cce_policy(self) -> Tuple[bool, Dict]:
@@ -335,7 +344,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             policy += copy.deepcopy(config.DEFAULT_CONTAINERS)
             if self._disable_stdio:
                 for container in policy:
-                    container[config.POLICY_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS] = False
+                    container[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS] = False
 
         if pretty_print:
             return pretty_print_func(policy)
@@ -422,6 +431,32 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                                     config.POLICY_FIELD_CONTAINERS_ELEMENTS_REQUIRED: False,
                                 }
                             )
+
+                    if (deepdiff.DeepDiff(image.get_user(), config.DEFAULT_USER, ignore_order=True) == {}
+                            and image_info.get("User") != ""):
+                        # valid values are in the form "user", "user:group", "uid", "uid:gid", "user:gid", "uid:group"
+                        # where each entry is either a string or an unsigned integer
+                        # "" means any user (use default)
+                        # TO-DO figure out why groups is a list
+                        user = copy.deepcopy(config.DEFAULT_USER)
+                        parts = image_info.get("User").split(":", 1)
+
+                        strategy = ["name", "name"]
+                        if parts[0].isdigit():
+                            strategy[0] = "id"
+                        user[config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_USER_IDNAME] = {
+                            config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_PATTERN: parts[0],
+                            config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_STRATEGY: strategy[0]
+                        }
+                        if len(parts) == 2:
+                            # group also specified
+                            if parts[1].isdigit():
+                                strategy[1] = "id"
+                            user[config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_GROUP_IDNAMES][0] = {
+                                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_PATTERN: parts[1],
+                                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_STRATEGY: strategy[1]
+                            }
+                        image.set_user(user)
 
                 # populate tar location
                 if isinstance(tar_mapping, dict):
@@ -519,7 +554,7 @@ def load_policy_from_arm_template_str(
         # add init containers to the list of other containers since they aren't treated differently
         # in the security policy
         if init_container_list:
-            container_list = container_list + init_container_list
+            container_list.extend(init_container_list)
 
         existing_containers, fragments = extract_confidential_properties(
             container_group_properties
@@ -571,6 +606,9 @@ def load_policy_from_arm_template_str(
                     )
                     or [],
                     config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts(image_properties, volumes),
+                    config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED: case_insensitive_dict_get(
+                        image_properties, config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED
+                    ),
                     config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
                     + config.DEBUG_MODE_SETTINGS.get("execProcesses")
                     if debug_mode

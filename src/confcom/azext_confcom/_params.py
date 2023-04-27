@@ -89,7 +89,7 @@ def load_arguments(self, _):
             help="Validate that the image used to generate the CCE Policy for a sidecar container will be allowed by its generated policy",
         )
         c.argument(
-            "print-existing-policy",
+            "print_existing_policy",
             options_list=("--print-existing-policy"),
             required=False,
             action="store_true",
