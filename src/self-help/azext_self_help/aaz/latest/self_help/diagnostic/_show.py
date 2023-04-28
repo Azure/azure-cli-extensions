@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the diagnostics using the 'diagnosticsResourceName' you chose while creating the diagnostic.
+
+    :example: Show Diagnostic at Resource Level
+        az self-help diagnostic show --diagnostic-name {diagnostic-name} --scope {scope}
     """
 
     _aaz_info = {

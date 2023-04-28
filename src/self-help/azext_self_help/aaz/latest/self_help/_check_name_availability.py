@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class CheckNameAvailability(AAZCommand):
     """This API is used to check the uniqueness of a resource name used for a diagnostic check.
+
+    :example: Check Diagnostic Resource Uniqueness
+        az self-help check-name-availability --scope subscriptionId/{subId} --name {diagnostic-name} --type 'Microsoft.Help/diagnostics'
     """
 
     _aaz_info = {

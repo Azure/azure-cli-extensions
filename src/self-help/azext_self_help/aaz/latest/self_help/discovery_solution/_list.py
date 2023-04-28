@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """list the existing available solutions for the problemClassificationId or the resourceUri for the Azure resource.
+
+    :example: List DiscoverySolution results for a resource
+        az self-help discovery-solution list --scope {scope}
     """
 
     _aaz_info = {
