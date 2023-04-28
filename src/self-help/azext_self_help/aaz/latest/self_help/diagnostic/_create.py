@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Creates a diagnostics that will help you troubleshoot an issue with your azure resource.
+
+    :example: Create Diagnostic at Resource Level
+        az self-help diagnostic create --diagnostic-name {diagnostic-name}  --insights [{solutionId:Demo2InsightV2}] --scope {scope}
     """
 
     _aaz_info = {
