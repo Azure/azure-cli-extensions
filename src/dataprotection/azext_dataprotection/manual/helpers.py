@@ -130,6 +130,10 @@ def get_rg_id_from_arm_id(arm_id):
     return truncate_id_using_scope(arm_id, "ResourceGroup")
 
 
+def get_resource_id_from_restore_request_object(restore_request_object, role_type):
+    return get_resource_id_from_backup_instance(restore_request_object, role_type)
+
+
 def get_resource_id_from_backup_instance(backup_instance, role_type):
     resource_id = None
 

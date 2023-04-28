@@ -66,7 +66,7 @@ def get_secret_store_type_values():
 
 
 def get_backup_operation_values():
-    return ['Backup']
+    return ['Backup', 'Restore']
 
 
 def get_permission_scope_values():

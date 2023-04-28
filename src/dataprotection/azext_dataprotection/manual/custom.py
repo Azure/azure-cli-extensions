@@ -427,11 +427,13 @@ def dataprotection_backup_instance_list_from_resourcegraph(client, datasource_ty
     return response.data
 
 
-def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_group_name, datasource_type, vault_name, operation, permissions_scope, backup_instance=None, keyvault_id=None, yes=False):
+def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_group_name, datasource_type, vault_name, operation, permissions_scope, backup_instance=None, restore_request_object=None, keyvault_id=None, yes=False):
     from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
     if operation == 'Backup' and backup_instance is None:
         raise CLIError("--backup-instance needs to be given when --operation is given as Backup")
+    elif operation == "Restore" and restore_request_object is None:
+        raise CLIError("--restore-request-object needs to be given when --operation is given as Restore")
 
     if datasource_type == 'AzureDatabaseForPostgreSQL':
         if not keyvault_id:
@@ -444,20 +446,19 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
         "AzureDisk": "Microsoft.Compute/disks",
         "AzureBlob": "Microsoft.Storage/storageAccounts/blobServices",
         "AzureDatabaseForPostgreSQL": "Microsoft.DBforPostgreSQL/servers/databases",
-        "AzureKubernetesService": "Microsoft.ContainerService/managedclusters"
+        "AzureKubernetesService": "Microsoft.ContainerService/managedClusters"
     }
 
-    if datasource_map[datasource_type] != backup_instance["properties"]["data_source_info"]["datasource_type"]:
-        raise CLIError("--backup-instance provided is not compatible with the --datasource-type.")
-
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
+    manifest = helper.load_manifest(datasource_type)
 
     from knack.prompting import prompt_y_n
     msg = helper.get_help_text_on_grant_permissions(datasource_type)
     if not yes and not prompt_y_n(msg):
         return None
 
+    from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
     from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Show as BackupVaultGet
+
     backup_vault = BackupVaultGet(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
         "vault_name": vault_name
@@ -466,177 +467,230 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
     role_assignments_arr = []
 
-    if backup_instance['properties']['data_source_info']['resource_location'] != backup_vault['location']:
-        raise CLIError("Location of data source needs to be the same as backup vault.\nMake sure the datasource "
-                       "and vault are chosen properly")
 
-    from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
+    if operation == "Backup":
+        if datasource_map[datasource_type] != backup_instance["properties"]["data_source_info"]["datasource_type"]:
+            raise CLIError("--backup-instance provided is not compatible with the --datasource-type.")
 
-    manifest = helper.load_manifest(datasource_type)
+        from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
-    keyvault_client = None
-    keyvault = None
-    keyvault_subscription = None
-    keyvault_name = None
-    keyvault_rg = None
-    if manifest['supportSecretStoreAuthentication']:
-        cmd.command_kwargs['operation_group'] = 'vaults'
-        keyvault_update = False
+        if backup_instance['properties']['data_source_info']['resource_location'] != backup_vault['location']:
+            raise CLIError("Location of data source needs to be the same as backup vault.\nMake sure the datasource "
+                        "and vault are chosen properly")
 
-        from azure.cli.core.profiles import ResourceType
-        from azure.cli.command_modules.keyvault._client_factory import Clients, get_client
+        keyvault_client = None
+        keyvault = None
+        keyvault_subscription = None
+        keyvault_name = None
+        keyvault_rg = None
+        if manifest['supportSecretStoreAuthentication']:
+            cmd.command_kwargs['operation_group'] = 'vaults'
+            keyvault_update = False
 
-        keyvault_params = parse_resource_id(keyvault_id)
-        keyvault_subscription = keyvault_params['subscription']
-        keyvault_name = keyvault_params['name']
-        keyvault_rg = keyvault_params['resource_group']
+            from azure.cli.core.profiles import ResourceType
+            from azure.cli.command_modules.keyvault._client_factory import Clients, get_client
 
-        keyvault_client = getattr(get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_KEYVAULT, subscription_id=keyvault_subscription), Clients.vaults)
+            keyvault_params = parse_resource_id(keyvault_id)
+            keyvault_subscription = keyvault_params['subscription']
+            keyvault_name = keyvault_params['name']
+            keyvault_rg = keyvault_params['resource_group']
 
-        keyvault = keyvault_client.get(resource_group_name=keyvault_rg, vault_name=keyvault_name)
+            keyvault_client = getattr(get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_KEYVAULT, subscription_id=keyvault_subscription), Clients.vaults)
 
-        # Check if keyvault is not publicly accessible
-        if keyvault.properties.public_network_access == 'Disabled':
-            raise CLIError("Keyvault has public access disabled. Please enable public access, or grant access to your client IP")
+            keyvault = keyvault_client.get(resource_group_name=keyvault_rg, vault_name=keyvault_name)
 
-        # Check if the secret URI provided in backup instance is a valid secret
-        data_entity = get_client(cmd.cli_ctx, ResourceType.DATA_KEYVAULT)
-        data_client = data_entity.client_factory(cmd.cli_ctx, None)
-        secrets_list = data_client.get_secrets(vault_base_url=keyvault.properties.vault_uri)
-        given_secret_uri = backup_instance['properties']['datasource_auth_credentials']['secret_store_resource']['uri']
-        given_secret_id = helper.get_secret_params_from_uri(given_secret_uri)['secret_id']
-        valid_secret = False
-        for secret in secrets_list:
-            if given_secret_id == secret.id:
-                valid_secret = True
-                break
+            # Check if keyvault is not publicly accessible
+            if keyvault.properties.public_network_access == 'Disabled':
+                raise CLIError("Keyvault has public access disabled. Please enable public access, or grant access to your client IP")
 
-        if not valid_secret:
-            raise CLIError("The secret URI provided in the --backup-instance is not associated with the "
-                           "--keyvault-id provided. Please input a valid combination of secret URI and "
-                           "--keyvault-id.")
-
-        keyvault_permission_models = manifest['secretStorePermissions']
-        if keyvault.properties.enable_rbac_authorization:
-            role = keyvault_permission_models['rbacModel']['roleDefinitionName']
-
-            keyvault_assignment_scope = helper.truncate_id_using_scope(keyvault_id, permissions_scope)
-
-            role_assignment = list_role_assignments(cmd, assignee=principal_id, role=role, scope=keyvault_id, include_inherited=True)
-            if not role_assignment:
-                assignment = create_role_assignment(cmd, assignee=principal_id, role=role, scope=keyvault_assignment_scope)
-                role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
-
-        else:
-            from azure.cli.command_modules.keyvault.custom import set_policy
-            vault_secret_permissions = (keyvault_permission_models['vaultAccessPolicyModel']
-                                        ['accessPolicies']
-                                        ['permissions']
-                                        ['secrets'])
-
-            secrets_array = []
-            for policy in keyvault.properties.access_policies:
-                if policy.object_id == principal_id:
-                    secrets_array = policy.permissions.secrets
+            # Check if the secret URI provided in backup instance is a valid secret
+            data_entity = get_client(cmd.cli_ctx, ResourceType.DATA_KEYVAULT)
+            data_client = data_entity.client_factory(cmd.cli_ctx, None)
+            secrets_list = data_client.get_secrets(vault_base_url=keyvault.properties.vault_uri)
+            given_secret_uri = backup_instance['properties']['datasource_auth_credentials']['secret_store_resource']['uri']
+            given_secret_id = helper.get_secret_params_from_uri(given_secret_uri)['secret_id']
+            valid_secret = False
+            for secret in secrets_list:
+                if given_secret_id == secret.id:
+                    valid_secret = True
                     break
 
-            permissions_set = True
-            for permission in vault_secret_permissions:
-                if permission not in secrets_array:
-                    permissions_set = False
-                    secrets_array.append(permission)
+            if not valid_secret:
+                raise CLIError("The secret URI provided in the --backup-instance is not associated with the "
+                            "--keyvault-id provided. Please input a valid combination of secret URI and "
+                            "--keyvault-id.")
 
-            if not permissions_set:
-                keyvault_update = True
-                keyvault = set_policy(cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=principal_id, secret_permissions=secrets_array)
-                keyvault = keyvault.result()
+            keyvault_permission_models = manifest['secretStorePermissions']
+            if keyvault.properties.enable_rbac_authorization:
+                role = keyvault_permission_models['rbacModel']['roleDefinitionName']
 
-        from azure.cli.command_modules.keyvault.custom import update_vault_setter
+                keyvault_assignment_scope = helper.truncate_id_using_scope(keyvault_id, permissions_scope)
 
-        if keyvault.properties.network_acls:
-            if keyvault.properties.network_acls.bypass == 'None':
-                keyvault_update = True
-                keyvault.properties.network_acls.bypass = 'AzureServices'
-                update_vault_setter(cmd, keyvault_client, keyvault, resource_group_name=keyvault_rg, vault_name=keyvault_name)
+                role_assignment = list_role_assignments(cmd, assignee=principal_id, role=role, scope=keyvault_id, include_inherited=True)
+                if not role_assignment:
+                    assignment = create_role_assignment(cmd, assignee=principal_id, role=role, scope=keyvault_assignment_scope)
+                    role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
 
-        if keyvault_update:
-            role_assignments_arr.append(helper.get_permission_object_from_keyvault(keyvault))
-
-    for role_object in manifest['backupVaultPermissions']:
-        print("principal_id: ", principal_id)
-        resource_id = helper.get_resource_id_from_backup_instance(backup_instance, role_object['type'])
-        print("resource ID after first GET:", resource_id)
-        resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
-        print("resource ID after truncate using scope:", resource_id)
-
-        assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
-        print("assignment scope after i truncated id using scope on the resource ID:", assignment_scope)
-
-        role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
-                                                 scope=resource_id, include_inherited=True)
-        print("Role assignments: ", role_assignments)
-        if not role_assignments:
-            assignment = create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
-                                                scope=assignment_scope)
-            role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
-
-    if manifest['dataSourcePermissions']:
-        for role_object in manifest['dataSourcePermissions']:
-            datasource_principal_id = None
-
-            if datasource_type == "AzureKubernetesService":
-                datasource_arm_id = helper.get_resource_id_from_backup_instance(backup_instance, 'DataSource')
-                subscription_arm_id = helper.get_sub_id_from_arm_id(datasource_arm_id)
-                subscription_id = subscription_arm_id.split("/")[-1]
-
-                from azext_dataprotection.vendored_sdks.azure_mgmt_preview_aks import ContainerServiceClient
-                aks_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient, subscription_id=subscription_id)
-                aks_client = getattr(aks_client, 'managed_clusters')
-                aks_name = helper.get_resource_name_from_backup_instance(backup_instance, 'DataSource')
-
-                aks_cluster = aks_client.get(resource_group_name, aks_name)
-                datasource_principal_id = aks_cluster.identity.principal_id
             else:
-                raise CLIError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
+                from azure.cli.command_modules.keyvault.custom import set_policy
+                vault_secret_permissions = (keyvault_permission_models['vaultAccessPolicyModel']
+                                            ['accessPolicies']
+                                            ['permissions']
+                                            ['secrets'])
 
+                secrets_array = []
+                for policy in keyvault.properties.access_policies:
+                    if policy.object_id == principal_id:
+                        secrets_array = policy.permissions.secrets
+                        break
+
+                permissions_set = True
+                for permission in vault_secret_permissions:
+                    if permission not in secrets_array:
+                        permissions_set = False
+                        secrets_array.append(permission)
+
+                if not permissions_set:
+                    keyvault_update = True
+                    keyvault = set_policy(cmd, keyvault_client, keyvault_rg, keyvault_name, object_id=principal_id, secret_permissions=secrets_array)
+                    keyvault = keyvault.result()
+
+            from azure.cli.command_modules.keyvault.custom import update_vault_setter
+
+            if keyvault.properties.network_acls:
+                if keyvault.properties.network_acls.bypass == 'None':
+                    keyvault_update = True
+                    keyvault.properties.network_acls.bypass = 'AzureServices'
+                    update_vault_setter(cmd, keyvault_client, keyvault, resource_group_name=keyvault_rg, vault_name=keyvault_name)
+
+            if keyvault_update:
+                role_assignments_arr.append(helper.get_permission_object_from_keyvault(keyvault))
+
+        for role_object in manifest['backupVaultPermissions']:
             resource_id = helper.get_resource_id_from_backup_instance(backup_instance, role_object['type'])
             resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
+
             assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
 
-            role_assignments = list_role_assignments(cmd, assignee=datasource_principal_id, 
-                                                     role=role_object['roleDefinitionName'], scope=resource_id, 
-                                                     include_inherited=True)
+            role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
+                                                    scope=resource_id, include_inherited=True)
             if not role_assignments:
-                assignment = create_role_assignment(cmd, assignee=datasource_principal_id, 
-                                                    role=role_object['roleDefinitionName'], scope=assignment_scope)
+                assignment = create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
+                                                    scope=assignment_scope)
                 role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
 
-    # Network line of sight access on server, if that is the datasource type
-    if datasource_type == 'AzureDatabaseForPostgreSQL':
-        server_params = parse_resource_id(backup_instance['properties']['data_source_info']['resource_id'])
-        server_sub = server_params['subscription']
-        server_name = server_params['name']
-        server_rg = server_params['resource_group']
+        if manifest['dataSourcePermissions']:
+            for role_object in manifest['dataSourcePermissions']:
+                datasource_principal_id = None
 
-        from azure.mgmt.rdbms.postgresql import PostgreSQLManagementClient
-        postgres_firewall_client = getattr(get_mgmt_service_client(cmd.cli_ctx, PostgreSQLManagementClient, subscription_id=server_sub), 'firewall_rules')
+                if datasource_type == "AzureKubernetesService":
+                    datasource_arm_id = helper.get_resource_id_from_backup_instance(backup_instance, 'DataSource')
+                    subscription_arm_id = helper.get_sub_id_from_arm_id(datasource_arm_id)
+                    subscription_id = subscription_arm_id.split("/")[-1]
 
-        firewall_rule_list = postgres_firewall_client.list_by_server(resource_group_name=server_rg, server_name=server_name)
+                    print('datasource arm id', datasource_arm_id)
+                    from azext_dataprotection.vendored_sdks.azure_mgmt_preview_aks import ContainerServiceClient
+                    aks_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient, subscription_id=subscription_id)
+                    aks_client = getattr(aks_client, 'managed_clusters')
+                    aks_name = helper.get_resource_name_from_backup_instance(backup_instance, 'DataSource')
+                    print(aks_name, ' is the aks name')
 
-        allow_access_to_azure_ips = False
-        for rule in firewall_rule_list:
-            if rule.start_ip_address == rule.end_ip_address and rule.start_ip_address == '0.0.0.0':
-                allow_access_to_azure_ips = True
-                break
+                    aks_cluster = aks_client.get(resource_group_name, aks_name)
+                    datasource_principal_id = aks_cluster.identity.principal_id
+                    print('datasource principal id', datasource_principal_id)
+                else:
+                    raise CLIError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
 
-        if not allow_access_to_azure_ips:
-            firewall_rule_name = 'AllowAllWindowsAzureIps'
-            parameters = {'name': firewall_rule_name, 'start_ip_address': '0.0.0.0', 'end_ip_address': '0.0.0.0'}
+                resource_id = helper.get_resource_id_from_backup_instance(backup_instance, role_object['type'])
+                resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
+                assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
 
-            rule = postgres_firewall_client.begin_create_or_update(server_rg, server_name, firewall_rule_name, parameters)
-            role_assignments_arr.append(helper.get_permission_object_from_server_firewall_rule(rule.result()))
+                role_assignments = list_role_assignments(cmd, assignee=datasource_principal_id, 
+                                                        role=role_object['roleDefinitionName'], scope=resource_id, 
+                                                        include_inherited=True)
+                if not role_assignments:
+                    print('creating role assignments for datasource permissions')
+                    assignment = create_role_assignment(cmd, assignee=datasource_principal_id, 
+                                                        role=role_object['roleDefinitionName'], scope=assignment_scope)
+                    role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
 
-    # print("Role assignments ARR: ", role_assignments_arr)
+        # Network line of sight access on server, if that is the datasource type
+        if datasource_type == 'AzureDatabaseForPostgreSQL':
+            server_params = parse_resource_id(backup_instance['properties']['data_source_info']['resource_id'])
+            server_sub = server_params['subscription']
+            server_name = server_params['name']
+            server_rg = server_params['resource_group']
+
+            from azure.mgmt.rdbms.postgresql import PostgreSQLManagementClient
+            postgres_firewall_client = getattr(get_mgmt_service_client(cmd.cli_ctx, PostgreSQLManagementClient, subscription_id=server_sub), 'firewall_rules')
+
+            firewall_rule_list = postgres_firewall_client.list_by_server(resource_group_name=server_rg, server_name=server_name)
+
+            allow_access_to_azure_ips = False
+            for rule in firewall_rule_list:
+                if rule.start_ip_address == rule.end_ip_address and rule.start_ip_address == '0.0.0.0':
+                    allow_access_to_azure_ips = True
+                    break
+
+            if not allow_access_to_azure_ips:
+                firewall_rule_name = 'AllowAllWindowsAzureIps'
+                parameters = {'name': firewall_rule_name, 'start_ip_address': '0.0.0.0', 'end_ip_address': '0.0.0.0'}
+
+                rule = postgres_firewall_client.begin_create_or_update(server_rg, server_name, firewall_rule_name, parameters)
+                role_assignments_arr.append(helper.get_permission_object_from_server_firewall_rule(rule.result()))
+    elif operation == "Restore":
+        if datasource_type != "AzureKubernetesService":
+            raise CLIError("Set permissions for restore is currently not supported for given DataSourceType")
+
+        for role_object in manifest['backupVaultPermissions']:
+            resource_id = helper.get_resource_id_from_restore_request_object(restore_request_object, role_object['type'])
+            resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
+
+            assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
+
+            role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
+                                                    scope=resource_id, include_inherited=True)
+            if not role_assignments:
+                assignment = create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
+                                                    scope=assignment_scope)
+                role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
+
+        if manifest['dataSourcePermissions']:
+            for role_object in manifest['dataSourcePermissions']:
+                datasource_principal_id = None
+
+                if datasource_type == "AzureKubernetesService":
+                    datasource_arm_id = helper.get_resource_id_from_restore_request_object(restore_request_object, 'DataSource')
+                    subscription_arm_id = helper.get_sub_id_from_arm_id(datasource_arm_id)
+                    subscription_id = subscription_arm_id.split("/")[-1]
+
+                    print('datasource arm id', datasource_arm_id)
+                    from azext_dataprotection.vendored_sdks.azure_mgmt_preview_aks import ContainerServiceClient
+                    aks_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient, subscription_id=subscription_id)
+                    aks_client = getattr(aks_client, 'managed_clusters')
+                    aks_name = helper.get_resource_name_from_restore_request_object(restore_request_object, 'DataSource')
+                    print(aks_name, ' is the aks name')
+
+                    aks_cluster = aks_client.get(resource_group_name, aks_name)
+                    datasource_principal_id = aks_cluster.identity.principal_id
+                    print('datasource principal id', datasource_principal_id)
+                else:
+                    raise CLIError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
+
+                resource_id = helper.get_resource_id_from_restore_request(restore_request, role_object['type'])
+                resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
+                assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
+
+                role_assignments = list_role_assignments(cmd, assignee=datasource_principal_id, 
+                                                        role=role_object['roleDefinitionName'], scope=resource_id, 
+                                                        include_inherited=True)
+                if not role_assignments:
+                    print('creating role assignments for datasource permissions')
+                    assignment = create_role_assignment(cmd, assignee=datasource_principal_id, 
+                                                        role=role_object['roleDefinitionName'], scope=assignment_scope)
+                    role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
+
+    print("Role assignments ARR: ", role_assignments_arr)
 
     if not role_assignments_arr:
         logger.warning("The required permissions are already assigned!")
