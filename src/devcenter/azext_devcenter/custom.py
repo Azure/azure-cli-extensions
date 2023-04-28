@@ -630,10 +630,10 @@ def devcenter_schedule_show_dp(
 def devcenter_dev_box_list(
     cmd, dev_center=None, endpoint=None, project_name=None, user_id=None
 ):
+    cf_dataplane = cf_devcenter_dataplane(
+        cmd.cli_ctx, endpoint, dev_center, project_name
+    )
     if project_name is not None and user_id is not None:
-        cf_dataplane = cf_devcenter_dataplane(
-            cmd.cli_ctx, endpoint, dev_center, project_name
-        )
         return cf_dataplane.dev_box.list_by_project(user_id=user_id)
     cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, endpoint, dev_center)
     if user_id is not None:
