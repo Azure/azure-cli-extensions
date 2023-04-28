@@ -229,6 +229,7 @@ def load_arguments(self, _):
 
     with self.argument_context('data-protection backup-instance restore initialize-for-data-recovery') as c:
         c.argument('target_resource_id', type=str, help="specify the resource ID to which the data will be restored.")
+        c.argument('backup_instance_id', type=str, help="specify the backup instance ID.")
         c.argument('recovery_point_id', type=str, help="specify the recovery point ID which will be used for restoring the data.")
         c.argument('point_in_time', type=datetime_type, help="specify the point in time which will be used for restoring the data in UTC (yyyy-mm-ddTHH:MM:SS)")
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type")
@@ -263,6 +264,7 @@ def load_arguments(self, _):
         c.argument('rehydration_duration', type=int, help="Specify the rehydration duration for rehydrate restore.")
 
     with self.argument_context('data-protection backup-instance restore initialize-for-item-recovery') as c:
+        c.argument('target_resource_id', type=str, help="specify the resource ID to which the data will be restored.")
         c.argument('restore_location', type=str, help="specify the restore location.")
         c.argument('recovery_point_id', type=str, help="specify the recovery point ID which will be used for restoring the data.")
         c.argument('point_in_time', type=datetime_type, help="specify the point in time which will be used for restoring the data in UTC (yyyy-mm-ddTHH:MM:SS).")

@@ -1056,10 +1056,10 @@ def data_protection_backup_instance_restore_trigger(cmd, vault_name, resource_gr
         "no_wait": no_wait
     })
 
-def restore_initialize_for_data_recovery(target_resource_id, datasource_type, source_datastore, restore_location,
+def restore_initialize_for_data_recovery(datasource_type, source_datastore, restore_location, target_resource_id=None,
                                          recovery_point_id=None, point_in_time=None, secret_store_type=None,
                                          secret_store_uri=None, rehydration_priority=None, rehydration_duration=15,
-                                         restore_configuration=None):
+                                         restore_configuration=None, backup_instance_id=None):
 
     restore_request = {}
     restore_mode = None
@@ -1103,7 +1103,34 @@ def restore_initialize_for_data_recovery(target_resource_id, datasource_type, so
     restore_request["restore_target_info"] = {}
     restore_request["restore_target_info"]["restore_location"] = restore_location
     restore_request["restore_target_info"]["recovery_option"] = "FailIfExists"
-    restore_request["restore_target_info"]["datasource_info"] = helper.get_datasource_info(datasource_type, target_resource_id, restore_location)
+
+    # Alternate/Original Location - setting the Target's datasource info accordingly
+    if target_resource_id is not None and backup_instance_id is not None:
+        raise CLIError("Please provide either target-resource-id (for alternate location restore) of backup-instance-id \
+                       (for original location restore), not both.")
+    
+    if target_resource_id is not None:
+        # TODO Verify that the alternate location restore is allowed for datasource type
+        restore_request["restore_target_info"]["datasource_info"] = helper.get_datasource_info(datasource_type, target_resource_id, restore_location)
+
+    if backup_instance_id is not None:
+        # TODO Verify that the original location restore is allowed for datasource type
+        vault_resource_group = backup_instance_id.split('/')[4]
+        vault_name = backup_instance_id.split('/')[8]
+        backup_instance_name = backup_instance_id.split('/')[-1]
+
+        from azext_dataprotection.aaz.latest.data_protection.backup_instance import Show as _Show
+        backup_instance = _Show(cli_ctx=cmd.cli_ctx)(command_args={
+            "vault_name": vault_name,
+            "resource_group": vault_resource_group,
+            "backup_instance_name": backup_instance_name
+        })
+        datasource_id = backup_instance['properties']['dataSourceInfo']['resourceId']
+        restore_request["restore_target_info"]["datasource_info"] = helper.get_datasource_info(datasource_type, datasource_id, restore_location)
+
+    if backup_instance_id is None and target_resource_id is not None:
+        raise CLIError("Please provide either target-resource-id (for alternate location restore) of backup-instance-id \
+                       (for original location restore).")
 
     if datasource_type != 'AzureKubernetesService':
         restore_request["restore_target_info"]["object_type"] = "RestoreTargetInfo"
@@ -1318,8 +1345,8 @@ def restore_initialize_for_item_recovery(client, datasource_type, source_datasto
 
     return restore_request
 
-def restore_initialize_for_item_recovery_dp(cmd, datasource_type, source_datastore, restore_location, backup_instance_id,
-                                         recovery_point_id=None, point_in_time=None, container_list=None,
+def restore_initialize_for_item_recovery_dp(cmd, datasource_type, source_datastore, restore_location, backup_instance_id=None,
+                                         target_resource_id=None, recovery_point_id=None, point_in_time=None, container_list=None,
                                          from_prefix_pattern=None, to_prefix_pattern=None, restore_configuration=None):
 
     restore_request = {}
@@ -1447,20 +1474,33 @@ def restore_initialize_for_item_recovery_dp(cmd, datasource_type, source_datasto
 
     restore_request["restore_target_info"]["restore_criteria"] = restore_criteria_list
 
-    vault_resource_group = backup_instance_id.split('/')[4]
-    vault_name = backup_instance_id.split('/')[8]
-    backup_instance_name = backup_instance_id.split('/')[-1]
+    # Alternate/Original Location - setting the Target's datasource info accordingly
+    if target_resource_id is not None and backup_instance_id is not None:
+        raise CLIError("Please provide either target-resource-id (for alternate location restore) of backup-instance-id \
+                       (for original location restore), not both.")
+    
+    if target_resource_id is not None:
+        # TODO Verify that the alternate location restore is allowed for datasource type
+        restore_request["restore_target_info"]["datasource_info"] = helper.get_datasource_info(datasource_type, target_resource_id, restore_location)
 
-    from azext_dataprotection.aaz.latest.data_protection.backup_instance import Show as _Show
-    backup_instance = _Show(cli_ctx=cmd.cli_ctx)(command_args={
-        "vault_name": vault_name,
-        "resource_group": vault_resource_group,
-        "backup_instance_name": backup_instance_name
-    })
-    # datasource_id = backup_instance.properties.data_source_info.resource_id
-    datasource_id = backup_instance['properties']['dataSourceInfo']['resourceId']
+    if backup_instance_id is not None:
+        # TODO Verify that the original location restore is allowed for datasource type
+        vault_resource_group = backup_instance_id.split('/')[4]
+        vault_name = backup_instance_id.split('/')[8]
+        backup_instance_name = backup_instance_id.split('/')[-1]
 
-    restore_request["restore_target_info"]["datasource_info"] = helper.get_datasource_info(datasource_type, datasource_id, restore_location)
+        from azext_dataprotection.aaz.latest.data_protection.backup_instance import Show as _Show
+        backup_instance = _Show(cli_ctx=cmd.cli_ctx)(command_args={
+            "vault_name": vault_name,
+            "resource_group": vault_resource_group,
+            "backup_instance_name": backup_instance_name
+        })
+        datasource_id = backup_instance['properties']['dataSourceInfo']['resourceId']
+        restore_request["restore_target_info"]["datasource_info"] = helper.get_datasource_info(datasource_type, datasource_id, restore_location)
+
+    if backup_instance_id is None and target_resource_id is not None:
+        raise CLIError("Please provide either target-resource-id (for alternate location restore) of backup-instance-id \
+                       (for original location restore).")
 
     if manifest["isProxyResource"]:
         restore_request["restore_target_info"]["datasource_set_info"] = helper.get_datasourceset_info(datasource_type, datasource_id, restore_location)
