@@ -1,4 +1,7 @@
-def load_dataplane_arguments(self, _):
+from . import custom_argtypes as argtypes
+
+
+def load_arguments(self, _):
     with self.argument_context('load test') as c:
-        c.argument('load_test_resource', options_list=['--name'],type=str, help='The name of load test resource.' )
-        c.argument('resource_group', type=str, help='The resource group name where the load test resource is present')
+        c.argument('load_test_resource', argtypes.load_test_resource)
+        c.argument('resource_group_name', argtypes.resource_group)

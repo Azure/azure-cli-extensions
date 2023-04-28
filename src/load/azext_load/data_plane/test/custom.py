@@ -1,14 +1,16 @@
+from knack.log import get_logger
 import yaml
 from yaml.loader import SafeLoader
 
 from azext_load.data_plane.util import get_load_test_resource_endpoint, get_login_credentials
 
+log = get_logger(__name__)
 
 def create_or_update_test(
     cmd,
     test_name,
     load_test_resource=None,
-    resource_group=None,
+    resource_group_name=None,
     load_test_config_file=None,
     test_description=None,
     test_plan=None,
@@ -21,7 +23,7 @@ def create_or_update_test(
     from azext_load.data_plane.client_factory import admin_data_plane_client
 
     credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
-    endpoint = get_load_test_resource_endpoint(credential, load_test_resource, resource_group=resource_group, subscription_id=subscription_id)
+    endpoint = get_load_test_resource_endpoint(credential, load_test_resource, resource_group=resource_group_name, subscription_id=subscription_id)
     client = admin_data_plane_client(cmd.cli_ctx, subscription=subscription_id, endpoint=endpoint, credential=credential)
     if load_test_config_file is not None:
         # exception handling for incorrect filepath or name
@@ -29,6 +31,7 @@ def create_or_update_test(
         data = yaml.load(file, SafeLoader)
         response_obj = client.create_or_update_test(test_name, data) 
     else:
+        log.debug("env var is %s", env)
         response_obj = client.create_or_update_test(
             test_name,
             {
@@ -37,7 +40,7 @@ def create_or_update_test(
                 "description": test_description,
                 "engineInstances": engine_instances,
                 "testId": test_name,
-                "env": env,
+                "environmentVariables": {env},
             },
         )
     if test_plan is not None:
@@ -48,12 +51,12 @@ def create_or_update_test(
 def list_tests(
     cmd,
     load_test_resource,
-    resource_group=None,
+    resource_group_name=None,
 ):
     from azext_load.data_plane.client_factory import admin_data_plane_client
 
     credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
-    endpoint = get_load_test_resource_endpoint(credential, load_test_resource, resource_group=resource_group, subscription_id=subscription_id)
+    endpoint = get_load_test_resource_endpoint(credential, load_test_resource, resource_group=resource_group_name, subscription_id=subscription_id)
     client = admin_data_plane_client(cmd.cli_ctx, subscription=subscription_id, endpoint=endpoint, credential=credential)
 
     return client.list_tests()
@@ -62,12 +65,12 @@ def get_test(
     cmd,
     load_test_resource,
     test_id,
-    resource_group=None,
+    resource_group_name=None,
 ):
     from azext_load.data_plane.client_factory import admin_data_plane_client
 
     credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
-    endpoint = get_load_test_resource_endpoint(credential, load_test_resource, resource_group=resource_group, subscription_id=subscription_id)
+    endpoint = get_load_test_resource_endpoint(credential, load_test_resource, resource_group=resource_group_name, subscription_id=subscription_id)
     client = admin_data_plane_client(cmd.cli_ctx, subscription=subscription_id, endpoint=endpoint, credential=credential)
     return client.get_test(test_id)
 
@@ -77,12 +80,12 @@ def download_test_files(
     load_test_resource,
     test_id,
     path,
-    resource_group=None,
+    resource_group_name=None,
 ):
     from azext_load.data_plane.client_factory import admin_data_plane_client
     import requests, os
     credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
-    endpoint = get_load_test_resource_endpoint(credential, load_test_resource, resource_group=resource_group, subscription_id=subscription_id)
+    endpoint = get_load_test_resource_endpoint(credential, load_test_resource, resource_group=resource_group_name, subscription_id=subscription_id)
     client = admin_data_plane_client(cmd.cli_ctx, subscription=subscription_id, endpoint=endpoint, credential=credential)
     list_of_file_details = client.list_test_files(test_id)
     if list_of_file_details:
