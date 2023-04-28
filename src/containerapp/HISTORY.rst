@@ -2,10 +2,15 @@
 
 Release History
 ===============
-Upcoming
+0.3.29
 ++++++
 * 'az containerapp update'/'az containerapp env update': fix --no-wait
 * 'az containerapp update': fix the --yaml update behavior to respect the empty array in patch-request
+* Remove 'az containerapp env workload-profile set' split into 'az containerapp env workload-profile add' and 'az containerapp env workload-profile update'
+* Add 'az containerapp env workload-profile add' to support creating a workload profile in an environment
+* Add 'az containerapp env workload-profile update' to support updating an existing workload profile in an environment
+* 'az containerapp auth update': fix excluded paths first and last character being cutoff
+
 
 0.3.28
 ++++++
