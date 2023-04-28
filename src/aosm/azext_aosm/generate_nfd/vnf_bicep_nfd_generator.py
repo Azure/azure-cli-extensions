@@ -15,10 +15,17 @@ from typing import Any, Dict, Optional
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 
 from azext_aosm._configuration import VNFConfiguration
-from azext_aosm.publisher_resources.publisher_resources import PublisherResourceGenerator
+from azext_aosm.publisher_resources.publisher_resources import (
+    PublisherResourceGenerator,
+)
+from azext_aosm._constants import (
+    VNF_DEFINITION_BICEP_SOURCE_TEMPLATE,
+    VNF_DEFINITION_OUTPUT_BICEP_PREFIX,
+)
 
 
 logger = get_logger(__name__)
+
 
 class VnfBicepNfdGenerator(NFDGenerator):
     """_summary_
@@ -26,25 +33,22 @@ class VnfBicepNfdGenerator(NFDGenerator):
     :param NFDGenerator: _description_
     :type NFDGenerator: _type_
     """
-    def __init__(
-        self,
-        config: VNFConfiguration
-    ):
+
+    def __init__(self, config: VNFConfiguration):
         super(NFDGenerator, self).__init__(
-            #config=config,
+            # config=config,
         )
         self.config = config
-        self.bicep_template_name = "vnfdefinition.bicep"
+        self.bicep_template_name = VNF_DEFINITION_BICEP_SOURCE_TEMPLATE
 
         self.arm_template_path = self.config.arm_template["file_path"]
-        self.folder_name = f"nfd-bicep-{Path(str(self.arm_template_path)).stem}"
+        self.folder_name = f"{VNF_DEFINITION_OUTPUT_BICEP_PREFIX}{Path(str(self.arm_template_path)).stem}"
 
         self._bicep_path = os.path.join(self.folder_name, self.bicep_template_name)
-        
+
     def generate_nfd(self) -> None:
-        """Generate a VNF NFD which comprises an group, an Artifact Manifest and a NFDV.
-        """
-        #assert isinstance(self.config, VNFConfiguration)
+        """Generate a VNF NFD which comprises an group, an Artifact Manifest and a NFDV."""
+        # assert isinstance(self.config, VNFConfiguration)
         if self.bicep_path:
             logger.info("Using the existing NFD bicep template %s.", self.bicep_path)
             logger.info(
@@ -53,27 +57,7 @@ class VnfBicepNfdGenerator(NFDGenerator):
             )
         else:
             self.write()
-        
-    def construct_parameters(self) -> Dict[str, Any]:
-        """
-        Create the parmeters dictionary for nfdefinitions.bicep.
 
-        :param config: The contents of the configuration file.
-        """
-        #assert isinstance(self.config, VNFConfiguration)
-        return {
-            "publisherName": {"value": self.config.publisher_name},
-            "acrArtifactStoreName": {"value": f"{self.config.publisher_name}-artifact-store"},
-            "saArtifactStoreName": {"value": f"{self.config.publisher_name}-storage-account"},
-            "nfName": {"value": self.config.name},
-            "nfDefinitionGroup": {"value": f"{self.config.name}-nfdg"},
-            "nfDefinitionVersion": {"value": self.config.version},
-            "vhdName": {"value": self.config.vhd["artifact_name"]},
-            "vhdVersion": {"value": self.config.vhd["version"]},
-            "armTemplateName": {"value": self.config.arm_template["artifact_name"]},
-            "armTemplateVersion": {"value": self.config.arm_template["version"]},
-        }
-        
     def write(self) -> None:
         """
         Create a bicep template for an NFD from the ARM template for the VNF.
@@ -84,10 +68,12 @@ class VnfBicepNfdGenerator(NFDGenerator):
         :return: Path to the bicep file.
         """
         logger.info("Generate NFD bicep template for %s", self.arm_template_path)
+        print(f"Generate NFD bicep template for {self.arm_template_path}")
 
         self._create_nfd_folder()
         self.create_parameter_files()
         self.copy_bicep()
+        print(f"Generated NFD bicep template created in {self.folder_name}")
 
     @property
     def bicep_path(self) -> Optional[str]:
@@ -180,7 +166,7 @@ class VnfBicepNfdGenerator(NFDGenerator):
         :param folder_path: The folder to put this file in.
         """
         vhd_parameters = {
-            "imageName": f"{self.config.name}Image",
+            "imageName": f"{self.config.nf_name}Image",
             "azureDeployLocation": "{deployParameters.location}",
         }
 
@@ -204,8 +190,3 @@ class VnfBicepNfdGenerator(NFDGenerator):
         bicep_path = os.path.join(code_dir, "templates", self.bicep_template_name)
 
         shutil.copy(bicep_path, self.folder_name)
-
-        
-
-        
-        

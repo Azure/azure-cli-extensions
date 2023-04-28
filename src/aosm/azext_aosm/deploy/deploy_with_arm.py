@@ -12,19 +12,14 @@ from functools import cached_property
 from typing import Any, Dict
 
 from knack.log import get_logger
-from azure.identity import DefaultAzureCredential
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.resource.resources.v2021_04_01.models import DeploymentExtended
+from pathlib import Path
 
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
-from azext_aosm.vendored_sdks.models import (
-    NetworkFunctionDefinitionVersion,
-    NetworkServiceDesignVersion,
-    ArtifactStoreType,
-    ArtifactType,
-    ArtifactManifest,
-)
 from azext_aosm.deploy.pre_deploy import PreDeployerViaSDK
+from azext_aosm._configuration import Configuration, VNFConfiguration
+from azext_aosm._constants import VNF_DEFINITION_OUTPUT_BICEP_PREFIX, VNF_DEFINITION_BICEP_SOURCE_TEMPLATE
 
 
 logger = get_logger(__name__)
@@ -32,15 +27,14 @@ logger = get_logger(__name__)
 
 class DeployerViaArm:
     """A class to deploy Artifact Manifests, NFDs and NSDs from a bicep template using ARM."""
+
     # @@@TODO - not sure this class is required as we can't publish complex objects
     # using the SDK
-    
     def __init__(
         self,
         aosm_client: HybridNetworkManagementClient,
         resource_client: ResourceManagementClient,
-        subscription_id: str, 
-        resource_group: str
+        config: Configuration,
     ) -> None:
         """
         Initializes a new instance of the Deployer class.
@@ -52,21 +46,66 @@ class DeployerViaArm:
         """
         logger.debug("Create ARM/Bicep Deployer")
         self.aosm_client = aosm_client
+        self.resource_client = resource_client
+        self.config = config
+        self.pre_deployer = PreDeployerViaSDK(
+            aosm_client, self.resource_client, self.config
+        )
 
-        self.subscription_id = subscription_id
-        self.credentials = DefaultAzureCredential()
-        self.resource_group = resource_group
-        self.pre_deployer = PreDeployerViaSDK(aosm_client, self.resource_client)
+    def deploy_vnfd_from_bicep(self) -> Any:
+        """Deploy the bicep template defining the VNFD.
+
+        Also ensure that all required predeploy resources are deployed.
+
+        :param bicep_template_path: The path to the bicep template of the
+        :type bicep_template_path: str
+        """
+        assert isinstance(self.config, VNFConfiguration)
         
-    @cached_property
-    def resource_client(self) -> ResourceManagementClient:
-        """
-        Create a client that can create resources on Azure.
+        # TODO - duplicated from vnf_bicep_nfd_generator and won't work if file exists
+        arm_template_path = self.config.arm_template["file_path"]
+        folder_name = f"{VNF_DEFINITION_OUTPUT_BICEP_PREFIX}{Path(str(arm_template_path)).stem}"
+        bicep_template_name = VNF_DEFINITION_BICEP_SOURCE_TEMPLATE
+        bicep_path = os.path.join(folder_name, bicep_template_name)
+        
+        parameters = self.construct_vnfd_parameters()
+        # Create or check required resources
+        self.vnfd_predeploy()
+        output = self.deploy_bicep_template(bicep_path, parameters)
 
-        :return: A ResourceManagementClient
+        return output
+
+    def vnfd_predeploy(self):
         """
-        logger.debug("Create resource client")
-        return ResourceManagementClient(self.credentials, self.subscription_id)
+        All the predeploy steps for a VNF. Create publisher, artifact stores and NFDG.
+
+        VNF specific
+        """
+        logger.debug("Ensure all required resources exist")
+        self.pre_deployer.ensure_config_publisher_exists()
+        self.pre_deployer.ensure_acr_artifact_store_exists()
+        self.pre_deployer.ensure_sa_artifact_store_exists()
+        self.pre_deployer.ensure_config_nfdg_exists()
+
+    def construct_vnfd_parameters(self) -> Dict[str, Any]:
+        """
+        Create the parmeters dictionary for vnfdefinitions.bicep. VNF specific.
+
+        :param config: The contents of the configuration file.
+        """
+        assert isinstance(self.config, VNFConfiguration)
+        return {
+            "publisherName": {"value": self.config.publisher_name},
+            "acrArtifactStoreName": {"value": self.config.acr_artifact_store_name},
+            "saArtifactStoreName": {"value": self.config.blob_artifact_store_name},
+            "nfName": {"value": self.config.nf_name},
+            "nfDefinitionGroup": {"value": self.config.nfdg_name},
+            "nfDefinitionVersion": {"value": self.config.version},
+            "vhdName": {"value": self.config.vhd["artifact_name"]},
+            "vhdVersion": {"value": self.config.vhd["version"]},
+            "armTemplateName": {"value": self.config.arm_template["artifact_name"]},
+            "armTemplateVersion": {"value": self.config.arm_template["version"]},
+        }
 
     def deploy_bicep_template(
         self, bicep_template_path: str, parameters: Dict[Any, Any]
@@ -81,7 +120,7 @@ class DeployerViaArm:
         arm_template_json = self.convert_bicep_to_arm(bicep_template_path)
 
         return self.validate_and_deploy_arm_template(
-            arm_template_json, parameters, self.resource_group
+            arm_template_json, parameters, self.config.publisher_resource_group_name
         )
 
     def resource_exists(self, resource_name: str) -> bool:
@@ -92,7 +131,7 @@ class DeployerViaArm:
         """
         logger.debug("Check if %s exists", resource_name)
         resources = self.resource_client.resources.list_by_resource_group(
-            resource_group_name=self.resource_group
+            resource_group_name=self.config.publisher_resource_group_name
         )
 
         resource_exists = False
@@ -241,4 +280,3 @@ class DeployerViaArm:
         os.remove(arm_template_name)
 
         return arm_json
-        

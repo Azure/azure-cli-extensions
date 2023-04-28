@@ -16,11 +16,15 @@ class ArtifactConfig:
 class Configuration():
     publisher_name: str = "Name of the Publisher resource you want you definition published to"
     publisher_resource_group_name: str = "Resource group the Publisher resource is in or you want it to be in"
-    name: str = "Name of NF definition"
+    nf_name: str = "Name of NF definition"
     version: str = "Version of the NF definition"
     acr_artifact_store_name: str = "Name of the ACR Artifact Store resource"
-    location: str = "azure location of the resources"
+    location: str = "Azure location of the resources"
 
+    @property
+    def nfdg_name(self) -> str:
+        """Return the NFD Group name from the NFD name."""
+        return f"{self.nf_name}-nfdg"
 
 @dataclass
 class VNFConfiguration(Configuration):
@@ -32,7 +36,7 @@ class VNFConfiguration(Configuration):
 def get_configuration(definition_type, config_as_dict=None) -> Configuration:
     if config_as_dict is None:
         config_as_dict = {}
-
+    # TODO - fix up the fact that ArtifactConfig remains as a Dict.
     if definition_type == VNF:
         config = VNFConfiguration(**config_as_dict)
     elif definition_type == CNF:

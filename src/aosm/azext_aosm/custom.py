@@ -17,63 +17,26 @@ from azext_aosm.generate_nfd.vnf_bicep_nfd_generator import VnfBicepNfdGenerator
 from .vendored_sdks import HybridNetworkManagementClient
 from .vendored_sdks.models import Publisher, NetworkFunctionDefinitionVersion
 from ._client_factory import cf_resources
-from ._configuration import Configuration, VNFConfiguration, get_configuration, validate_configuration
+from ._configuration import (
+    Configuration,
+    VNFConfiguration,
+    get_configuration,
+    validate_configuration,
+)
+from azext_aosm.deploy.deploy_with_arm import DeployerViaArm
 from ._constants import VNF, CNF, NSD
+
 
 
 logger = get_logger(__name__)
 
 PUBLISHER_RESOURCE_TYPE = "Microsoft.HybridNetwork/publishers"
 ARTIFACT_STORE_RESOURCE_TYPE = "Microsoft.HybridNetwork/publishers/artifactstores"
-NFDG_RESOURCE_TYPE = "Microsoft.HybridNetwork/publishers/networkfunctiondefinitiongroups"
+NFDG_RESOURCE_TYPE = (
+    "Microsoft.HybridNetwork/publishers/networkfunctiondefinitiongroups"
+)
 NSDG_RESOURCE_TYPE = "Microsoft.HybridNetwork/publishers/networkservicedesigngroups"
 
-def _required_resources_exist(
-    cli_ctx, definition_type: str, config: Configuration
-) -> bool:
-    resource_client = cf_resources(cli_ctx)
-
-    if resource_client.check_existence(
-        config.publisher_resource_group_name,
-        PUBLISHER_RESOURCE_TYPE,
-        config.publisher_name,
-    ):
-        if not resource_client.check_existence(
-            config.publisher_resource_group_name,
-            "Microsoft.HybridNetwork/publishers/artifactstores",
-            config.acr_artifact_store_name,
-        ):
-            return False
-        if definition_type == VNF:
-            if not resource_client.check_existence(
-                config.publisher_resource_group_name,
-                NFDG_RESOURCE_TYPE,
-                config.name,
-            ):
-                return False
-        elif definition_type == NSD:
-            if not resource_client.check_existence(
-                config.publisher_resource_group_name,
-                NSDG_RESOURCE_TYPE,
-                config.name,
-            ):
-                return False
-        elif definition_type == CNF:
-            if not resource_client.check_existence(
-                config.publisher_resource_group_name,
-                NFDG_RESOURCE_TYPE,
-                config.name,
-            ):
-                return False
-        else:
-            raise AzCLIError(
-                "Invalid definition type. Valid values are vnf, nsd and cnf."
-            )
-    else:
-        return False
-
-def _create_required_resources(definition_type, config):
-    pass
 
 def build_definition(
     cmd,
@@ -84,7 +47,7 @@ def build_definition(
 ):
     with open(config_file, "r", encoding="utf-8") as f:
         config_as_dict = json.loads(f.read())
-    
+
     # TODO - this isn't deserializing the config properly - any sub-objects are left
     # as a dictionary instead of being converted to the object (e.g. ArtifactConfig)
     # se we have to reference them as dictionary values
@@ -96,8 +59,13 @@ def build_definition(
 
     # Publish the definition if publish is true
     if publish:
-        if not _required_resources_exist(cmd.cli_ctx, definition_type, config):
-            _create_required_resources(definition_type, config)
+        if definition_type == VNF:
+            deployer = DeployerViaArm(aosm_client=client, 
+                                      resource_client=cf_resources(cmd.cli_ctx),
+                                      config=config)
+            output = deployer.deploy_vnfd_from_bicep()
+        else:
+            print("TODO - cannot publish CNF or NSD yet.")
 
 
 def generate_definition_config(cmd, definition_type, output_file="input.json"):
@@ -106,11 +74,16 @@ def generate_definition_config(cmd, definition_type, output_file="input.json"):
 
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(config_as_dict)
+        print(
+            "Empty definition configuration has been written to %s",
+            output_file,
+        )
         logger.info(
             "Empty definition configuration has been written to %s",
             output_file,
         )
-        
+
+
 def _generate_nfd(definition_type, config):
     """_summary_
 
@@ -124,12 +97,13 @@ def _generate_nfd(definition_type, config):
         nfd_generator = CnfNfdGenerator(config)
     else:
         from azure.cli.core.azclierror import CLIInternalError
+
         raise CLIInternalError(
-                "Generate NFD called for unrecognised definition_type. Only VNF and CNF have been implemented."
-            ) 
-        
+            "Generate NFD called for unrecognised definition_type. Only VNF and CNF have been implemented."
+        )
+
     nfd_generator.generate_nfd()
 
-def publish_nfd
+
 def show_publisher():
     pass

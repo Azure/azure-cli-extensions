@@ -23,33 +23,28 @@ param armTemplateName string
 @description('The version that you want to name the NFM template artifact, in format A.B.C. e.g. 6.13.0. If testing for development, you can use any numbers you like.')
 param armTemplateVersion string
 
+// Created by the az aosm definition publish command before the template is deployed
 resource publisher 'Microsoft.HybridNetwork/publishers@2022-09-01-preview' existing = {
   name: publisherName
   scope: resourceGroup()
 }
 
-resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2022-09-01-preview' = {
+// Created by the az aosm definition publish command before the template is deployed
+resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2022-09-01-preview' existing = {
   parent: publisher
   name: acrArtifactStoreName
-  location: location
-  properties: {
-    storeType: 'AzureContainerRegistry'
-  }
 }
 
-resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2022-09-01-preview' = {
+// Created by the az aosm definition publish command before the template is deployed
+resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2022-09-01-preview' existing = {
   parent: publisher
   name: saArtifactStoreName
-  location: location
-  properties: {
-    storeType: 'AzureStorageAccount'
-  }
 }
 
-resource nfdg 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups@2022-09-01-preview' = {
+// Created by the az aosm definition publish command before the template is deployed
+resource nfdg 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups@2022-09-01-preview' existing = {
   parent: publisher
   name: nfDefinitionGroup
-  location: location
 }
 
 resource saArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2022-09-01-preview' = {

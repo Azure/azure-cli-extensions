@@ -6,6 +6,7 @@
 
 from knack.log import get_logger
 from azure.mgmt.resource import ResourceManagementClient
+from azure.cli.core.azclierror import AzCLIError
 
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
 from azext_aosm.vendored_sdks.models import (
@@ -15,6 +16,7 @@ from azext_aosm.vendored_sdks.models import (
     NetworkServiceDesignGroup,
     Publisher,
 )
+from azext_aosm._configuration import Configuration, VNFConfiguration
 
 logger = get_logger(__name__)
 
@@ -26,6 +28,7 @@ class PreDeployerViaSDK:
         self,
         aosm_client: HybridNetworkManagementClient,
         resource_client: ResourceManagementClient,
+        config: Configuration,
     ) -> None:
         """
         Initializes a new instance of the Deployer class.
@@ -38,6 +41,7 @@ class PreDeployerViaSDK:
 
         self.aosm_client = aosm_client
         self.resource_client = resource_client
+        self.config = config
 
     def ensure_publisher_exists(
         self, resource_group_name: str, publisher_name: str, location: str
@@ -56,7 +60,7 @@ class PreDeployerViaSDK:
         logger.info(
             "Creating publisher %s if it does not exist", publisher_name
         )
-        if not self.resource_client.resources.check_existance(
+        if not self.resource_client.check_existence(
             resource_group_name=resource_group_name,
             resource_type="Microsoft.HybridNetwork/publishers",
             resource_name=publisher_name,
@@ -66,6 +70,16 @@ class PreDeployerViaSDK:
                 publisher_name=publisher_name,
                 parameters=Publisher(location=location, scope="Public"),
             )
+            
+    def ensure_config_publisher_exists(self) -> None:
+        """
+        Ensures that the publisher exists in the resource group.
+
+        Finds the parameters from self.config
+        """
+        self.ensure_publisher_exists(self.config.publisher_resource_group_name,
+                                     self.config.publisher_name,
+                                     self.config.location)
 
     def ensure_artifact_store_exists(
         self,
@@ -103,6 +117,36 @@ class PreDeployerViaSDK:
                 artifact_store_type=artifact_store_type,
             ),
         )
+        
+    def ensure_acr_artifact_store_exists(self) -> None:
+        """
+        Ensures that the ACR Artifact store exists.
+
+        Finds the parameters from self.config
+        """
+        self.ensure_artifact_store_exists(self.config.publisher_resource_group_name,
+                                          self.config.publisher_name,
+                                          self.config.acr_artifact_store_name,
+                                          ArtifactStoreType.AZURE_CONTAINER_REGISTRY,
+                                          self.config.location)
+        
+        
+    def ensure_sa_artifact_store_exists(self) -> None:
+        """
+        Ensures that the Storage Account Artifact store for VNF exists.
+
+        Finds the parameters from self.config
+        """
+        if not isinstance(self.config, VNFConfiguration):
+            raise AzCLIError(
+                "Check that storage account artifact store exists failed as requires VNFConfiguration file"
+            )
+
+        self.ensure_artifact_store_exists(self.config.publisher_resource_group_name,
+                                          self.config.publisher_name,
+                                          self.config.blob_artifact_store_name,
+                                          ArtifactStoreType.AZURE_STORAGE_ACCOUNT,
+                                          self.config.location)
 
     def ensure_nfdg_exists(
         self,
@@ -134,6 +178,19 @@ class PreDeployerViaSDK:
             network_function_definition_group_name=nfdg_name,
             parameters=NetworkFunctionDefinitionGroup(location=location),
         )
+        
+    def ensure_config_nfdg_exists(
+        self,
+    ):
+        """
+        Ensures that the Network Function Definition Group exists.
+
+        Finds the parameters from self.config
+        """
+        self.ensure_nfdg_exists(self.config.publisher_resource_group_name,
+                                self.config.publisher_name,
+                                self.config.nfdg_name,
+                                self.config.location)
 
     def ensure_nsdg_exists(
         self,
