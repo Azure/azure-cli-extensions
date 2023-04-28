@@ -18,8 +18,9 @@ def load_command_table(self: AzCommandsLoader, _):
 
     with self.command_group('aosm definition', client_factory=cf_aosm) as g:
         # Add each command and bind it to a function in custom.py
-        g.custom_command('build', 'build_definition')
         g.custom_command('generate-config', 'generate_definition_config')
+        g.custom_command('build', 'build_definition')
+        g.custom_command('publish', 'publish_definition')
         g.custom_command('show', 'show_publisher')
 
     with self.command_group('aosm', is_preview=True):

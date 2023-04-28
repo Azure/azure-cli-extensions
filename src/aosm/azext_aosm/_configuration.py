@@ -54,8 +54,8 @@ def validate_configuration(config: Configuration) -> None:
     # had good error messages I'd say let the service do the validation. But it would
     # certainly be quicker to catch here.
     if isinstance(config, VNFConfiguration):
-        if "." in config.vhd.version or "-" not in config.vhd.version:
+        if "." in config.vhd["version"] or "-" not in config.vhd["version"]:
             # Not sure about raising this particular one.
             raise ValidationError("Config validation error. VHD artifact version should be in format A-B-C")
-        if "." not in config.arm_template.version or "-" in config.arm_template.version:
+        if "." not in config.arm_template["version"] or "-" in config.arm_template["version"]:
             raise ValidationError("Config validation error. ARM template artifact version should be in format A.B.C")

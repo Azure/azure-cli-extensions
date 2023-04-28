@@ -12,12 +12,12 @@ from azure.mgmt.resource import ResourceManagementClient
 
 from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
-from azext_aosm.generate_nfd.vnf_nfd_generator import VnfNfdGenerator
+from azext_aosm.generate_nfd.vnf_bicep_nfd_generator import VnfBicepNfdGenerator
 
 from .vendored_sdks import HybridNetworkManagementClient
 from .vendored_sdks.models import Publisher, NetworkFunctionDefinitionVersion
 from ._client_factory import cf_resources
-from ._configuration import Configuration, VNFConfiguration, get_configuration
+from ._configuration import Configuration, VNFConfiguration, get_configuration, validate_configuration
 from ._constants import VNF, CNF, NSD
 
 
@@ -83,13 +83,15 @@ def build_definition(
     publish=False,
 ):
     with open(config_file, "r", encoding="utf-8") as f:
-        config_as_dict = json.loads(f)
-
+        config_as_dict = json.loads(f.read())
+    
+    # TODO - this isn't deserializing the config properly - any sub-objects are left
+    # as a dictionary instead of being converted to the object (e.g. ArtifactConfig)
+    # se we have to reference them as dictionary values
     config = get_configuration(definition_type, config_as_dict)
-    validate_config(config)
+    validate_configuration(config)
     # Generate the NFD/NSD and the artifact manifest.
-
-
+    _generate_nfd(definition_type=definition_type, config=config)
     # Write the ARM/bicep template if that's what we are doing
 
     # Publish the definition if publish is true
@@ -117,7 +119,7 @@ def _generate_nfd(definition_type, config):
     """
     nfd_generator: NFDGenerator
     if definition_type == VNF:
-        nfd_generator = VnfNfdGenerator(config)
+        nfd_generator = VnfBicepNfdGenerator(config)
     elif definition_type == CNF:
         nfd_generator = CnfNfdGenerator(config)
     else:
@@ -127,3 +129,7 @@ def _generate_nfd(definition_type, config):
             ) 
         
     nfd_generator.generate_nfd()
+
+def publish_nfd
+def show_publisher():
+    pass

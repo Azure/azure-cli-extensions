@@ -11,10 +11,10 @@ logger = get_logger(__name__)
 
 class NFDGenerator:
     """A class for generating an NFD from a config file."""
-    
+
     def __init__(
         self,
-        config: Configuration
+        #config: Configuration
     ) -> None:
         """_summary_
 
@@ -23,8 +23,8 @@ class NFDGenerator:
         :param config: _description_
         :type config: Configuration
         """
-        self.config = config
-        
+        #self.config = config
+
     def generate_nfd(self) -> None:
         """No-op on base class
         """
