@@ -636,7 +636,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
             rule = postgres_firewall_client.begin_create_or_update(server_rg, server_name, firewall_rule_name, parameters)
             role_assignments_arr.append(helper.get_permission_object_from_server_firewall_rule(rule.result()))
 
-    print("Role assignments ARR: ", role_assignments_arr)
+    # print("Role assignments ARR: ", role_assignments_arr)
 
     if not role_assignments_arr:
         logger.warning("The required permissions are already assigned!")
@@ -934,6 +934,32 @@ def data_protection_backup_instance_validate_for_restore(cmd, vault_name, resour
     })
 
 
+def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, excluded_resource_types=None,
+                                                                   included_resource_types=None, excluded_namespaces=None,
+                                                                   included_namespaces=None, label_selectors=None,
+                                                                   persistent_volume_restore_mode=None,
+                                                                   include_cluster_scope_resources=None,
+                                                                   namespace_mappings=None, conflict_policy=None):
+    if persistent_volume_restore_mode is None:
+        persistent_volume_restore_mode = "RestoreWithVolumeData"
+    if conflict_policy is None:
+        conflict_policy = "Skip"
+    if include_cluster_scope_resources is None:
+        include_cluster_scope_resources = True
+
+    return {
+        "excluded_resource_types": excluded_resource_types,
+        "included_resource_types": included_resource_types,
+        "excluded_namespaces": excluded_namespaces,
+        "included_namespaces": included_namespaces,
+        "label_selectors": label_selectors,
+        "persistent_volume_restore_mode": persistent_volume_restore_mode,
+        "include_cluster_scope_resources": include_cluster_scope_resources,
+        "conflict_policy": conflict_policy,
+        "namespace_mappings": namespace_mappings,
+    }
+
+
 def data_protection_backup_instance_restore_trigger(cmd, vault_name, resource_group_name, backup_instance_name,
                                                          restore_request_object, no_wait=False):
     from azext_dataprotection.aaz.latest.data_protection.backup_instance.restore import Trigger as _Trigger
@@ -962,7 +988,6 @@ def data_protection_backup_instance_restore_trigger(cmd, vault_name, resource_gr
 
             def on_200(self, session):
                 data = self.deserialize_http_content(session)
-                print('fancy data', data)
                 self.ctx.set_var(
                     "instance",
                     data["properties"],
@@ -984,6 +1009,8 @@ def restore_initialize_for_data_recovery(target_resource_id, datasource_type, so
 
     restore_request = {}
     restore_mode = None
+
+    # Input Validation and variable-assignment from params for recovery via RP or point-in-time
     if recovery_point_id is not None and point_in_time is not None:
         raise CLIError("Please provide either recovery point id or point in time parameter, not both.")
 
@@ -1001,6 +1028,8 @@ def restore_initialize_for_data_recovery(target_resource_id, datasource_type, so
         raise CLIError("Please provide either recovery point id or point in time parameter.")
 
     manifest = helper.load_manifest(datasource_type)
+
+    # Restore mode (assigned during recovery style earlier) should be supported for the workload
     if manifest is not None and manifest["allowedRestoreModes"] is not None and restore_mode not in manifest["allowedRestoreModes"]:
         raise CLIError(restore_mode + " restore mode is not supported for datasource type " + datasource_type +
                        ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
@@ -1241,6 +1270,8 @@ def restore_initialize_for_item_recovery_dp(cmd, datasource_type, source_datasto
 
     restore_request = {}
     restore_mode = None
+
+    # Input Validation and variable-assignment from params for recovery via RP or point-in-time
     if recovery_point_id is not None and point_in_time is not None:
         raise CLIError("Please provide either recovery point id or point in time parameter, not both.")
 
@@ -1258,10 +1289,13 @@ def restore_initialize_for_item_recovery_dp(cmd, datasource_type, source_datasto
         raise CLIError("Please provide either recovery point id or point in time parameter.")
 
     manifest = helper.load_manifest(datasource_type)
+
+    # Restore mode (assigned during recovery style earlier) should be supported for the workload
     if manifest is not None and manifest["allowedRestoreModes"] is not None and restore_mode not in manifest["allowedRestoreModes"]:
         raise CLIError(restore_mode + " restore mode is not supported for datasource type " + datasource_type +
                        ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
 
+    # Workload should allow for item level recovery
     if manifest is not None and not manifest["itemLevelRecoveyEnabled"]:
         raise CLIError("Specified DatasourceType " + datasource_type + " doesn't support Item Level Recovery")
 
@@ -1271,6 +1305,8 @@ def restore_initialize_for_item_recovery_dp(cmd, datasource_type, source_datasto
     restore_request["restore_target_info"]["restore_location"] = restore_location
     restore_request["restore_target_info"]["recovery_option"] = "FailIfExists"
 
+    # We set the restore criteria depending on the datasource type and on the prefix pattern/container list as provided
+    # AKS directly uses the restore configuration
     restore_criteria_list = []
     if datasource_type != "AzureKubernetesService":
         if container_list is not None and (from_prefix_pattern is not None or to_prefix_pattern is not None):

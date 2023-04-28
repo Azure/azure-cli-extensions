@@ -38,7 +38,9 @@ from azext_dataprotection.manual.enums import (
     get_backup_operation_values,
     get_permission_scope_values,
     get_resource_type_values,
-    get_critical_operation_values
+    get_critical_operation_values,
+    get_persistent_volume_restore_mode_values,
+    get_conflict_policy_values
 )
 
 
@@ -202,6 +204,18 @@ def load_arguments(self, _):
                    help='The name of the backup instance', id_part='child_name_1')
         c.argument('restore_request_object', type=validate_file_or_dict, help='Gets or sets the restore request '
                    'object. Expected value: json-string/@json-file.')
+
+    with self.argument_context('data-protection backup-instance initialize-restoreconfig') as c:
+        c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
+        c.argument('excluded_resource_types', type=str, nargs='+', help="")
+        c.argument('included_resource_types', type=str, nargs='+', help="")
+        c.argument('excluded_namespaces', type=str, nargs='+', help="")
+        c.argument('included_namespaces', type=str, nargs='+', help="")
+        c.argument('label_selectors', type=str, nargs='+', help="")
+        c.argument("persistent_volume_restore_mode", arg_type=get_enum_type(get_persistent_volume_restore_mode_values()), help="")
+        c.argument('conflict_policy', arg_type=get_enum_type(get_conflict_policy_values()), help="")
+        c.argument('namespace_mappings', type=str, help="")
+        c.argument('include_cluster_scope_resources', type=bool, help="")
 
     with self.argument_context('data-protection backup-instance restore trigger') as c:
         c.argument('resource_group_name', resource_group_name_type)
