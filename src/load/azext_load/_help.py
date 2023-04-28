@@ -10,4 +10,6 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 from azext_load.data_plane.test.help import test_helps
+from azext_load.data_plane.helps import dataplane_helps
+helps.update(dataplane_helps)
 helps.update(test_helps)

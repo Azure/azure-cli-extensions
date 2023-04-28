@@ -8,7 +8,7 @@ admin_custom_sdk = CliCommandType(
 
 
 def load_test_commands(self, _):
-    with self.command_group("load test", custom_command_type=admin_custom_sdk) as g:
+    with self.command_group("load test", custom_command_type=admin_custom_sdk, is_preview=True) as g:
         g.custom_command("create", "create_or_update_test")
         g.custom_command("update", "create_or_update_test")
         g.custom_command("list", "list_tests")
