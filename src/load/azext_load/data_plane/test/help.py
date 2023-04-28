@@ -26,3 +26,13 @@ type: command
 short-summary: List all tests.
 long-summary: List all tests in the given load test resource.
 """
+
+helps[
+    "load test show"
+] = """
+type: command
+short-summary: Show details of a test.
+long-summary: Show details of the test identified by given test-id.
+"""
+
+

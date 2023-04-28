@@ -4,8 +4,8 @@ helps[
     "load test"
 ] = """
 type: group
-short-summary: Common test parameters.
-long-summary: Common test parameters.
+short-summary: Command group with commands related to test.
+long-summary: Command group with commands related to test such as create, update, delete, list, etc.
 parameters:
     - name: --load-test-resource, --name, -n
       type: string
