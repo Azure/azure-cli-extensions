@@ -53,7 +53,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
         self.assertEqual(profiles[0]["properties"]["name"].lower(), "consumption")
         self.assertEqual(profiles[0]["properties"]["workloadProfileType"].lower(), "consumption")
 
-        self.cmd("az containerapp env workload-profile set -g {} -n {} --workload-profile-name my-d4 --workload-profile-type D4 --min-nodes 2 --max-nodes 3".format(resource_group, env))
+        self.cmd("az containerapp env workload-profile add -g {} -n {} --workload-profile-name my-d4 --workload-profile-type D4 --min-nodes 2 --max-nodes 3".format(resource_group, env))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
@@ -69,7 +69,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             JMESPathCheck("properties.workloadProfileType", "D4"),
         ])
 
-        self.cmd("az containerapp env workload-profile set -g {} -n {} --workload-profile-name my-d4 --min-nodes 1 --max-nodes 2".format(resource_group, env))
+        self.cmd("az containerapp env workload-profile update -g {} -n {} --workload-profile-name my-d4 --min-nodes 1 --max-nodes 2".format(resource_group, env))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
@@ -111,7 +111,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
             containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
         time.sleep(30)
 
-        self.cmd("az containerapp env workload-profile set -g {} -n {} --workload-profile-name my-d8 --workload-profile-type D8 --min-nodes 1 --max-nodes 1".format(resource_group, env))
+        self.cmd("az containerapp env workload-profile add -g {} -n {} --workload-profile-name my-d8 --workload-profile-type D8 --min-nodes 1 --max-nodes 1".format(resource_group, env))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
@@ -157,7 +157,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
 
         workload_profile_name = "my-e16"
 
-        self.cmd("az containerapp env workload-profile set -g {} -n {} --workload-profile-name {} --workload-profile-type E16 --min-nodes 1 --max-nodes 3".format(resource_group, env, workload_profile_name))
+        self.cmd("az containerapp env workload-profile add -g {} -n {} --workload-profile-name {} --workload-profile-type E16 --min-nodes 1 --max-nodes 3".format(resource_group, env, workload_profile_name))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 

@@ -535,13 +535,22 @@ helps['containerapp env workload-profile list-supported'] = """
           az containerapp env workload-profile list-supported -l region
 """
 
-helps['containerapp env workload-profile set'] = """
+helps['containerapp env workload-profile add'] = """
     type: command
-    short-summary: Create or update an existing workload profile in a Container Apps environment
+    short-summary: Create a workload profile in a Container Apps environment
     examples:
-    - name: Create or update an existing workload profile in a Container Apps environment
+    - name: Create a workload profile in a Container Apps environment
       text: |
-          az containerapp env workload-profile set -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 2
+          az containerapp env workload-profile add -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 2
+"""
+
+helps['containerapp env workload-profile update'] = """
+    type: command
+    short-summary: Update an existing workload profile in a Container Apps environment
+    examples:
+    - name: Update an existing workload profile in a Container Apps environment
+      text: |
+          az containerapp env workload-profile update -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 3
 """
 
 # Certificates Commands

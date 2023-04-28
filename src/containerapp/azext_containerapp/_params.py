@@ -409,7 +409,12 @@ def load_arguments(self, _):
         c.argument('env_name', options_list=['--name', '-n'], help="The name of the Container App environment")
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
 
-    with self.argument_context('containerapp env workload-profile set') as c:
-        c.argument('workload_profile_type', help="The type of workload profile to add or update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
+    with self.argument_context('containerapp env workload-profile add') as c:
+        c.argument('workload_profile_type', help="The type of workload profile to add to this environment. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
+        c.argument('min_nodes', help="The minimum node count for the workload profile")
+        c.argument('max_nodes', help="The maximum node count for the workload profile")
+
+    with self.argument_context('containerapp env workload-profile update') as c:
+        c.argument('workload_profile_type', help="The type of workload profile to update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
         c.argument('min_nodes', help="The minimum node count for the workload profile")
         c.argument('max_nodes', help="The maximum node count for the workload profile")
