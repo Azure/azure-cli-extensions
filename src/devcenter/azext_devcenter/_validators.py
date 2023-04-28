@@ -57,10 +57,10 @@ def validate_endpoint(endpoint, dev_center):
         )
     if endpoint is not None:
         check_valid_uri = re.match(
-            r"(https)://.+.*\.(devcenter.azure-test.net|devcenter.azure.com)$", endpoint
+            r"(https)://.+.*\.(devcenter.azure-test.net|devcenter.azure.com)[/]?$", endpoint
         )
         if check_valid_uri is None:
-            raise InvalidArgumentValueError("The endpoint is invalid.")
+            raise InvalidArgumentValueError(f"""The endpoint '{endpoint}' is invalid.""")
     if endpoint is None and dev_center is None:
         error_message = """Either an endpoint (--endpoint) \
 or dev-center (--dev-center) should be set."""
