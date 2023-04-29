@@ -427,7 +427,9 @@ def dataprotection_backup_instance_list_from_resourcegraph(client, datasource_ty
     return response.data
 
 
-def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_group_name, datasource_type, vault_name, operation, permissions_scope, backup_instance=None, restore_request_object=None, keyvault_id=None, yes=False):
+def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_group_name, datasource_type, vault_name, operation,
+                                                          permissions_scope, backup_instance=None, restore_request_object=None, 
+                                                          keyvault_id=None, snapshot_resource_group_id=None, yes=False):
     from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
     if operation == 'Backup' and backup_instance is None:
@@ -456,8 +458,10 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
     if not yes and not prompt_y_n(msg):
         return None
 
+    from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
     from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Show as BackupVaultGet
+
 
     backup_vault = BackupVaultGet(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
@@ -471,8 +475,6 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
     if operation == "Backup":
         if datasource_map[datasource_type] != backup_instance["properties"]["data_source_info"]["datasource_type"]:
             raise CLIError("--backup-instance provided is not compatible with the --datasource-type.")
-
-        from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
         if backup_instance['properties']['data_source_info']['resource_location'] != backup_vault['location']:
             raise CLIError("Location of data source needs to be the same as backup vault.\nMake sure the datasource "
@@ -643,6 +645,10 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
             raise CLIError("Set permissions for restore is currently not supported for given DataSourceType")
 
         for role_object in manifest['backupVaultPermissions']:
+            if role_object['type'] == 'SnapshotRG' and snapshot_resource_group_id is None:
+                logger.warning("snapshot-resource-group-id parameter is required to assign permissions over snapshot resource group, skipping")
+                continue
+
             resource_id = helper.get_resource_id_from_restore_request_object(restore_request_object, role_object['type'])
             resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
 
@@ -657,6 +663,10 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
         if manifest['dataSourcePermissions']:
             for role_object in manifest['dataSourcePermissions']:
+                if role_object['type'] == 'SnapshotRG' and snapshot_resource_group_id is None:
+                    logger.warning("snapshot-resource-group-id parameter is required to assign permissions over snapshot resource group, skipping")
+                    continue
+
                 datasource_principal_id = None
 
                 if datasource_type == "AzureKubernetesService":
