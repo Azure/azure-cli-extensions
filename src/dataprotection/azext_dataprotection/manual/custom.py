@@ -240,12 +240,13 @@ def data_protection_backup_instance_initialize(datasource_type, datasource_id, d
         datasourceset_info = helper.get_datasourceset_info(datasource_type, datasource_id, datasource_location)
 
     # For AKS, we need datasource (and datasourceset).ResourceUri, and it matches datasource.ResourceId
-    if manifest["resourceType"] == "Microsoft.ContainerService/managedclusters":
-        datasource_info["resource_uri"] = datasource_info["resource_id"]
-        datasourceset_info["resource_uri"] = datasource_info["resource_id"]
-        datasourceset_info["resource_id"] = datasource_info["resource_id"]
-        datasourceset_info["resource_name"] = datasource_info["resource_name"]
-        datasourceset_info["resource_type"] = datasource_info["resource_type"]
+    # TODO This should be sorted out in the helper itself, at least sections of it.
+    # if manifest["resourceType"] == "Microsoft.ContainerService/managedclusters":
+    #     datasource_info["resource_uri"] = datasource_info["resource_id"]
+    #     datasourceset_info["resource_uri"] = datasource_info["resource_id"]
+    #     datasourceset_info["resource_id"] = datasource_info["resource_id"]
+    #     datasourceset_info["resource_name"] = datasource_info["resource_name"]
+    #     datasourceset_info["resource_type"] = datasource_info["resource_type"]
 
     policy_parameters = None
     # Azure Disk and AKS specific code for adding datastoreparameter list in the json
@@ -645,17 +646,25 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
             raise CLIError("Set permissions for restore is currently not supported for given DataSourceType")
 
         for role_object in manifest['backupVaultPermissions']:
-            if role_object['type'] == 'SnapshotRG' and snapshot_resource_group_id is None:
-                logger.warning("snapshot-resource-group-id parameter is required to assign permissions over snapshot resource group, skipping")
-                continue
-
+            print("role_object: ", role_object)
             resource_id = helper.get_resource_id_from_restore_request_object(restore_request_object, role_object['type'])
+
+            if role_object['type'] == 'SnapshotRG':
+                if snapshot_resource_group_id is None:
+                    logger.warning("snapshot-resource-group-id parameter is required to assign permissions over snapshot resource group, skipping")
+                    continue
+                else:
+                    # TODO need to also validate the snapshot rg id input is valid
+                    resource_id = snapshot_resource_group_id
+
             resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
 
             assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
 
+            print("Assigning to backup vault, over ", resource_id)
             role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
                                                     scope=resource_id, include_inherited=True)
+            print("roles-assignmetns, ", role_assignments)
             if not role_assignments:
                 assignment = create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
                                                     scope=assignment_scope)
@@ -663,9 +672,21 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
 
         if manifest['dataSourcePermissions']:
             for role_object in manifest['dataSourcePermissions']:
-                if role_object['type'] == 'SnapshotRG' and snapshot_resource_group_id is None:
-                    logger.warning("snapshot-resource-group-id parameter is required to assign permissions over snapshot resource group, skipping")
-                    continue
+                print("role_object: ", role_object)
+                resource_id = helper.get_resource_id_from_restore_request_object(restore_request_object, role_object['type'])
+
+                if role_object['type'] == 'SnapshotRG':
+                    if snapshot_resource_group_id is None:
+                        logger.warning("snapshot-resource-group-id parameter is required to assign permissions over snapshot resource group, skipping")
+                        continue
+                    else:
+                        # TODO need to also validate the snapshot rg id input is valid
+                        resource_id = snapshot_resource_group_id
+
+                resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
+                print("in DSperms AKS, ressource_id after truncate using scope: ", resource_id)
+                assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
+                print("in DSperms AKS, assignment_scope after truncate using scope: ", assignment_scope)
 
                 datasource_principal_id = None
 
@@ -687,13 +708,10 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_
                 else:
                     raise CLIError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
 
-                resource_id = helper.get_resource_id_from_restore_request(restore_request, role_object['type'])
-                resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
-                assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
-
                 role_assignments = list_role_assignments(cmd, assignee=datasource_principal_id, 
                                                         role=role_object['roleDefinitionName'], scope=resource_id, 
                                                         include_inherited=True)
+                print("roles-assignmetns, ", role_assignments)
                 if not role_assignments:
                     print('creating role assignments for datasource permissions')
                     assignment = create_role_assignment(cmd, assignee=datasource_principal_id, 
@@ -1004,6 +1022,11 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
                                                                    persistent_volume_restore_mode=None,
                                                                    include_cluster_scope_resources=None,
                                                                    namespace_mappings=None, conflict_policy=None):
+    if datasource_type != "AzureKubernetesService":
+        raise CLIError("This command is currently not supported for datasource types other than AzureKubernetesService")
+    
+    object_type = "KubernetesClusterRestoreCriteria"
+
     if persistent_volume_restore_mode is None:
         persistent_volume_restore_mode = "RestoreWithVolumeData"
     if conflict_policy is None:
@@ -1012,6 +1035,7 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
         include_cluster_scope_resources = True
 
     return {
+        "object_type": object_type,
         "excluded_resource_types": excluded_resource_types,
         "included_resource_types": included_resource_types,
         "excluded_namespaces": excluded_namespaces,
@@ -1066,7 +1090,7 @@ def data_protection_backup_instance_restore_trigger(cmd, vault_name, resource_gr
         "no_wait": no_wait
     })
 
-def restore_initialize_for_data_recovery(datasource_type, source_datastore, restore_location, target_resource_id=None,
+def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore, restore_location, target_resource_id=None,
                                          recovery_point_id=None, point_in_time=None, secret_store_type=None,
                                          secret_store_uri=None, rehydration_priority=None, rehydration_duration=15,
                                          restore_configuration=None, backup_instance_id=None):
@@ -1114,6 +1138,7 @@ def restore_initialize_for_data_recovery(datasource_type, source_datastore, rest
     restore_request["restore_target_info"]["restore_location"] = restore_location
     restore_request["restore_target_info"]["recovery_option"] = "FailIfExists"
 
+    datasource_id = None
     # Alternate/Original Location - setting the Target's datasource info accordingly
     if target_resource_id is not None and backup_instance_id is not None:
         raise CLIError("Please provide either target-resource-id (for alternate location restore) of backup-instance-id \
@@ -1121,7 +1146,7 @@ def restore_initialize_for_data_recovery(datasource_type, source_datastore, rest
     
     if target_resource_id is not None:
         # TODO Verify that the alternate location restore is allowed for datasource type
-        restore_request["restore_target_info"]["datasource_info"] = helper.get_datasource_info(datasource_type, target_resource_id, restore_location)
+        datasource_id = target_resource_id
 
     if backup_instance_id is not None:
         # TODO Verify that the original location restore is allowed for datasource type
@@ -1135,13 +1160,14 @@ def restore_initialize_for_data_recovery(datasource_type, source_datastore, rest
             "resource_group": vault_resource_group,
             "backup_instance_name": backup_instance_name
         })
-        datasource_id = backup_instance['properties']['dataSourceInfo']['resourceId']
-        restore_request["restore_target_info"]["datasource_info"] = helper.get_datasource_info(datasource_type, datasource_id, restore_location)
+        datasource_id = backup_instance['properties']['dataSourceInfo']['resourceID']
 
-    if backup_instance_id is None and target_resource_id is not None:
-        raise CLIError("Please provide either target-resource-id (for alternate location restore) of backup-instance-id \
-                       (for original location restore).")
+    if backup_instance_id is None and target_resource_id is None:
+        raise CLIError("Please provide either target-resource-id (for alternate location restore) of backup-instance-id (for original location restore).")
 
+    restore_request["restore_target_info"]["datasource_info"] = helper.get_datasource_info(datasource_type, datasource_id, restore_location)
+
+    # AKS Data-level and Item-level are identical in their configuration, for our purpose
     if datasource_type != 'AzureKubernetesService':
         restore_request["restore_target_info"]["object_type"] = "RestoreTargetInfo"
     else:
@@ -1158,7 +1184,7 @@ def restore_initialize_for_data_recovery(datasource_type, source_datastore, rest
 
 
     if manifest["isProxyResource"]:
-        restore_request["restore_target_info"]["datasource_set_info"] = helper.get_datasourceset_info(datasource_type, target_resource_id, restore_location)
+        restore_request["restore_target_info"]["datasource_set_info"] = helper.get_datasourceset_info(datasource_type, datasource_id, restore_location)
 
     if manifest["supportSecretStoreAuthentication"]:
         if secret_store_uri and secret_store_type:
@@ -1484,6 +1510,7 @@ def restore_initialize_for_item_recovery_dp(cmd, datasource_type, source_datasto
 
     restore_request["restore_target_info"]["restore_criteria"] = restore_criteria_list
 
+    datasource_id = None
     # Alternate/Original Location - setting the Target's datasource info accordingly
     if target_resource_id is not None and backup_instance_id is not None:
         raise CLIError("Please provide either target-resource-id (for alternate location restore) of backup-instance-id \
@@ -1491,7 +1518,7 @@ def restore_initialize_for_item_recovery_dp(cmd, datasource_type, source_datasto
     
     if target_resource_id is not None:
         # TODO Verify that the alternate location restore is allowed for datasource type
-        restore_request["restore_target_info"]["datasource_info"] = helper.get_datasource_info(datasource_type, target_resource_id, restore_location)
+        datasource_id = target_resource_id
 
     if backup_instance_id is not None:
         # TODO Verify that the original location restore is allowed for datasource type
@@ -1505,12 +1532,12 @@ def restore_initialize_for_item_recovery_dp(cmd, datasource_type, source_datasto
             "resource_group": vault_resource_group,
             "backup_instance_name": backup_instance_name
         })
-        datasource_id = backup_instance['properties']['dataSourceInfo']['resourceId']
-        restore_request["restore_target_info"]["datasource_info"] = helper.get_datasource_info(datasource_type, datasource_id, restore_location)
+        datasource_id = backup_instance['properties']['dataSourceInfo']['resourceID']
 
-    if backup_instance_id is None and target_resource_id is not None:
-        raise CLIError("Please provide either target-resource-id (for alternate location restore) of backup-instance-id \
-                       (for original location restore).")
+    if backup_instance_id is None and target_resource_id is None:
+        raise CLIError("Please provide either target-resource-id (for alternate location restore) of backup-instance-id (for original location restore).")
+
+    restore_request["restore_target_info"]["datasource_info"] = helper.get_datasource_info(datasource_type, datasource_id, restore_location)
 
     if manifest["isProxyResource"]:
         restore_request["restore_target_info"]["datasource_set_info"] = helper.get_datasourceset_info(datasource_type, datasource_id, restore_location)

@@ -38,12 +38,18 @@ def get_client_datasource_type(service_datasource_type):
 
 def get_datasource_info(datasource_type, resource_id, resource_location):
     manifest = load_manifest(datasource_type)
+
+    resource_uri = ""
+
+    if datasource_type == "AzureKubernetesService":
+        resource_uri = resource_id
+
     return {
         "datasource_type": manifest["datasourceType"],
         "object_type": "Datasource",
         "resource_name": resource_id.split("/")[-1],
         "resource_type": manifest["resourceType"],
-        "resource_uri": "",
+        "resource_uri": resource_uri,
         "resource_id": resource_id,
         "resource_location": resource_location
     }
@@ -53,13 +59,25 @@ def get_datasourceset_info(datasource_type, resource_id, resource_location):
     manifest = load_manifest(datasource_type)
     if len(resource_id.split("/")) < 3:
         raise CLIError(resource_id + " is not a valid resource id")
+    
+    resource_name = resource_id.split("/")[-3]
+    resource_type = "/".join(manifest["resourceType"].split("/")[:-1])
+    resource_uri = ""
+    resource_id_return = "/".join(resource_id.split("/")[:-2])
+
+    if datasource_type == "AzureKubernetesService":
+        resource_name = resource_id.split("/")[-1]
+        resource_type = manifest["resourceType"]
+        resource_uri = resource_id
+        resource_id_return = resource_id
+
     return {
         "datasource_type": manifest["datasourceType"],
         "object_type": "DatasourceSet",
-        "resource_name": resource_id.split("/")[-3],
-        "resource_type": "/".join(manifest["resourceType"].split("/")[:-1]),
-        "resource_uri": "",
-        "resource_id": "/".join(resource_id.split("/")[:-2]),
+        "resource_name": resource_name,
+        "resource_type": resource_type,
+        "resource_uri": resource_uri,
+        "resource_id": resource_id_return,
         "resource_location": resource_location
     }
 
@@ -134,9 +152,18 @@ def get_resource_id_from_restore_request_object(restore_request_object, role_typ
     resource_id = None
 
     if role_type == 'DataSource':
-        resource_id = restore_request_object['properties']['data_source_info']['resource_id']
+        resource_id = restore_request_object['restore_target_info']['datasource_info']['resource_id']
 
     return resource_id
+
+
+def get_resource_name_from_restore_request_object(restore_request_object, role_type):
+    resource_name = None
+
+    if role_type == 'DataSource':
+        resource_name = restore_request_object['restore_target_info']['datasource_info']['resource_name']
+
+    return resource_name
 
 
 def get_resource_id_from_backup_instance(backup_instance, role_type):

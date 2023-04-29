@@ -241,6 +241,7 @@ def load_arguments(self, _):
         c.argument('secret_store_uri', type=str, help="Specify the secret store uri to use for authentication")
         c.argument('rehydration_priority', arg_type=get_enum_type(get_rehydration_priority_values()), help="Specify the rehydration priority for rehydrate restore.")
         c.argument('rehydration_duration', type=int, help="Specify the rehydration duration for rehydrate restore.")
+        c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService.")
 
     with self.argument_context('dataprotection backup-instance restore initialize-for-data-recovery') as c:
         c.argument('target_resource_id', type=str, help="specify the resource ID to which the data will be restored.")
