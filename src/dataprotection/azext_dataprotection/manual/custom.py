@@ -84,22 +84,22 @@ def dataprotection_resource_guard_update(client,
                       parameters=parameters)
 
 
-def dataprotection_backup_instance_create(client, vault_name, resource_group_name, backup_instance, no_wait=False):
-    backup_instance_name = backup_instance["backup_instance_name"]
-    validate_backup_instance = copy.deepcopy(backup_instance)
-    backup_instance["backup_instance_name"] = None
+# def dataprotection_backup_instance_create(client, vault_name, resource_group_name, backup_instance, no_wait=False):
+#     backup_instance_name = backup_instance["backup_instance_name"]
+#     validate_backup_instance = copy.deepcopy(backup_instance)
+#     backup_instance["backup_instance_name"] = None
 
-    validate_for_backup_request = {}
-    validate_for_backup_request['backup_instance'] = validate_backup_instance['properties']
+#     validate_for_backup_request = {}
+#     validate_for_backup_request['backup_instance'] = validate_backup_instance['properties']
 
-    sdk_no_wait(no_wait, client.begin_validate_for_backup, vault_name=vault_name,
-                resource_group_name=resource_group_name, parameters=validate_for_backup_request).result()
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       vault_name=vault_name,
-                       resource_group_name=resource_group_name,
-                       backup_instance_name=backup_instance_name,
-                       parameters=backup_instance)
+#     sdk_no_wait(no_wait, client.begin_validate_for_backup, vault_name=vault_name,
+#                 resource_group_name=resource_group_name, parameters=validate_for_backup_request).result()
+#     return sdk_no_wait(no_wait,
+#                        client.begin_create_or_update,
+#                        vault_name=vault_name,
+#                        resource_group_name=resource_group_name,
+#                        backup_instance_name=backup_instance_name,
+#                        parameters=backup_instance)
 
 
 def data_protection_backup_instance_create(cmd, vault_name, resource_group_name, backup_instance, no_wait=False):
@@ -428,7 +428,7 @@ def dataprotection_backup_instance_list_from_resourcegraph(client, datasource_ty
     return response.data
 
 
-def dataprotection_backup_instance_update_msi_permissions(cmd, client, resource_group_name, datasource_type, vault_name, operation,
+def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_name, datasource_type, vault_name, operation,
                                                           permissions_scope, backup_instance=None, restore_request_object=None, 
                                                           keyvault_id=None, snapshot_resource_group_id=None, yes=False):
     from msrestazure.tools import is_valid_resource_id, parse_resource_id

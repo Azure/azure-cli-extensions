@@ -17,6 +17,8 @@ from ._exception_handler import exception_handler
 
 
 def load_command_table(self, _):
+
+    # Manual backup-instance commmands currently migrated to AAZ-dev-tools
     with self.command_group('data-protection backup-instance') as g:
         g.custom_command('initialize-backupconfig', "dataprotection_backup_instance_initialize_backupconfig")
         g.custom_command('initialize-restoreconfig', "dataprotection_backup_instance_initialize_restoreconfig")
@@ -25,6 +27,7 @@ def load_command_table(self, _):
         g.custom_command('validate-for-backup', 'data_protection_backup_instance_validate_for_backup', supports_no_wait=True)
         g.custom_command('list-from-resourcegraph', 'dataprotection_backup_instance_list_from_resourcegraph', client_factory=cf_resource_graph_client)
         g.custom_command('validate-for-restore', 'data_protection_backup_instance_validate_for_restore', supports_no_wait=True)
+        g.custom_command('update-msi-permissions', 'dataprotection_backup_instance_update_msi_permissions')
         
     with self.command_group('data-protection backup-instance restore') as g:
         g.custom_command('trigger', 'data_protection_backup_instance_restore_trigger')
@@ -33,19 +36,17 @@ def load_command_table(self, _):
         g.custom_command('initialize-for-item-recovery', 'restore_initialize_for_item_recovery_dp')
 
     with self.command_group('dataprotection backup-instance', client_factory=cf_backup_instance, exception_handler=exception_handler) as g:
-        g.custom_command('initialize', "dataprotection_backup_instance_initialize")
-        g.custom_command(
-            'validate-for-backup', 'dataprotection_backup_instance_validate_for_backup', supports_no_wait=True
-        )
-        g.custom_command('create', 'dataprotection_backup_instance_create', supports_no_wait=True)
-        g.custom_command('adhoc-backup', 'dataprotection_backup_instance_adhoc_backup', supports_no_wait=True)
-        g.custom_command(
-            'validate-for-restore', 'dataprotection_backup_instance_validate_for_restore', supports_no_wait=True
-        )
-        g.custom_command('restore trigger', 'dataprotection_backup_instance_restore_trigger', supports_no_wait=True)
         g.custom_command('update-policy', "dataprotection_backup_instance_update_policy", supports_no_wait=True)
-        g.custom_command('list-from-resourcegraph', 'dataprotection_backup_instance_list_from_resourcegraph', client_factory=cf_resource_graph_client)
-        g.custom_command('update-msi-permissions', 'dataprotection_backup_instance_update_msi_permissions', client_factory=cf_backup_vault)
+        # g.custom_command('initialize', "dataprotection_backup_instance_initialize")
+        # g.custom_command(
+        #     'validate-for-backup', 'dataprotection_backup_instance_validate_for_backup', supports_no_wait=True
+        # )
+        # g.custom_command('create', 'dataprotection_backup_instance_create', supports_no_wait=True)
+        # g.custom_command(
+        #     'validate-for-restore', 'dataprotection_backup_instance_validate_for_restore', supports_no_wait=True
+        # )
+        # g.custom_command('restore trigger', 'dataprotection_backup_instance_restore_trigger', supports_no_wait=True)
+        # g.custom_command('list-from-resourcegraph', 'dataprotection_backup_instance_list_from_resourcegraph', client_factory=cf_resource_graph_client)
 
     with self.command_group('dataprotection backup-policy', exception_handler=exception_handler) as g:
         g.custom_command('get-default-policy-template', "dataprotection_backup_policy_get_default_policy_template")
@@ -75,9 +76,9 @@ def load_command_table(self, _):
     )
 
     with self.command_group('dataprotection backup-instance restore', dataprotection_backup_instance, client_factory=cf_backup_instance, exception_handler=exception_handler) as g:
-        g.custom_command('initialize-for-data-recovery', 'restore_initialize_for_data_recovery')
+    #     g.custom_command('initialize-for-data-recovery', 'restore_initialize_for_data_recovery')
         g.custom_command('initialize-for-data-recovery-as-files', 'restore_initialize_for_data_recovery_as_files')
-        g.custom_command('initialize-for-item-recovery', 'restore_initialize_for_item_recovery')
+    #     g.custom_command('initialize-for-item-recovery', 'restore_initialize_for_item_recovery')
 
     with self.command_group('dataprotection resource-guard', exception_handler=exception_handler, client_factory=cf_resource_guard) as g:
         g.custom_command('list', 'dataprotection_resource_guard_list')
