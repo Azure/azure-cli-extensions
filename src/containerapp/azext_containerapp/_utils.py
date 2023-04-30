@@ -350,7 +350,7 @@ def parse_secret_flags(secret_list):
     for secret in secret_list:
         key_val = secret.split('=', 1)
         if len(key_val) != 2:
-            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\.")
+            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\".")
         if key_val[0] in secret_entries:
             raise ValidationError("Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
         secret_entries.append(key_val[0])
@@ -363,9 +363,9 @@ def parse_secret_flags(secret_list):
         kv_identity = value.split(',', 2)
         if len(kv_identity) == 1:
             if kv_identity[0].startswith('keyvaultref:'):
-                raise ValidationError("Identityref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\.")
+                raise ValidationError("Identityref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\".")
             if kv_identity[0].startswith('identityref:'):
-                raise ValidationError("Keyvaultref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\.")
+                raise ValidationError("Keyvaultref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\".")
 
         if len(kv_identity) == 2:
             kv = kv_identity[0]
@@ -554,6 +554,24 @@ def _new_tiny_guid():
     import random
     import string
     return ''.join(random.choices(string.ascii_letters + string.digits, k=4))
+
+
+#  Generate a random volume name using same method as log analytics workspace
+def _generate_secret_volume_name():
+    import re
+    prefix = "secret-volume"
+    # volume name must be lowercase
+    suffix = _new_tiny_guid().lower()
+    maxLength = 40
+
+    name = "{}-{}".format(
+        prefix,
+        suffix
+    )
+
+    if len(name) > maxLength:
+        name = name[:maxLength]
+    return name
 
 
 # Follow same naming convention as Portal
