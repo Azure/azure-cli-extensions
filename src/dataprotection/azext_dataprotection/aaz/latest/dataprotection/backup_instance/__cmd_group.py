@@ -12,11 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "data-protection backup-instance restore",
+    "dataprotection backup-instance",
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Restore backed up instances from recovery points in a backup vault
+    """Manage backup instance with dataprotection
     """
     pass
 

@@ -8,4 +8,17 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "dataprotection backup-instance restore",
+    is_preview=True,
+)
+class __CMDGroup(AAZCommandGroup):
+    """Restore backed up instances from recovery points in a backup vault
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

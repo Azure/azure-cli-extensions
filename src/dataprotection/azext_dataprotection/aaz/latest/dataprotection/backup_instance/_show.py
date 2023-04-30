@@ -12,13 +12,15 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "data-protection backup-instance wait",
+    "dataprotection backup-instance show",
+    is_preview=True,
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class Show(AAZCommand):
+    """Get a backup instance with name in a backup vault
     """
 
     _aaz_info = {
+        "version": "2023-01-01",
         "resources": [
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2023-01-01"],
         ]
@@ -71,7 +73,7 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
     class BackupInstancesGet(AAZHttpOperation):
@@ -204,7 +206,7 @@ class Wait(AAZWaitCommand):
             properties.protection_error_details = AAZObjectType(
                 serialized_name="protectionErrorDetails",
             )
-            _WaitHelper._build_schema_user_facing_error_read(properties.protection_error_details)
+            _ShowHelper._build_schema_user_facing_error_read(properties.protection_error_details)
             properties.protection_status = AAZObjectType(
                 serialized_name="protectionStatus",
             )
@@ -384,7 +386,7 @@ class Wait(AAZWaitCommand):
             protection_status.error_details = AAZObjectType(
                 serialized_name="errorDetails",
             )
-            _WaitHelper._build_schema_user_facing_error_read(protection_status.error_details)
+            _ShowHelper._build_schema_user_facing_error_read(protection_status.error_details)
             protection_status.status = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
@@ -413,8 +415,8 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _ShowHelper:
+    """Helper class for Show"""
 
     _schema_inner_error_read = None
 
@@ -504,4 +506,4 @@ class _WaitHelper:
         _schema.target = cls._schema_user_facing_error_read.target
 
 
-__all__ = ["Wait"]
+__all__ = ["Show"]

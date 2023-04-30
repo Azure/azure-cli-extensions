@@ -84,26 +84,8 @@ def dataprotection_resource_guard_update(client,
                       parameters=parameters)
 
 
-# def dataprotection_backup_instance_create(client, vault_name, resource_group_name, backup_instance, no_wait=False):
-#     backup_instance_name = backup_instance["backup_instance_name"]
-#     validate_backup_instance = copy.deepcopy(backup_instance)
-#     backup_instance["backup_instance_name"] = None
-
-#     validate_for_backup_request = {}
-#     validate_for_backup_request['backup_instance'] = validate_backup_instance['properties']
-
-#     sdk_no_wait(no_wait, client.begin_validate_for_backup, vault_name=vault_name,
-#                 resource_group_name=resource_group_name, parameters=validate_for_backup_request).result()
-#     return sdk_no_wait(no_wait,
-#                        client.begin_create_or_update,
-#                        vault_name=vault_name,
-#                        resource_group_name=resource_group_name,
-#                        backup_instance_name=backup_instance_name,
-#                        parameters=backup_instance)
-
-
-def data_protection_backup_instance_create(cmd, vault_name, resource_group_name, backup_instance, no_wait=False):
-    from azext_dataprotection.aaz.latest.data_protection.backup_instance import Create as _Create, ValidateForBackup as _ValidateForBackup, Update as _Update
+def dataprotection_backup_instance_create(cmd, vault_name, resource_group_name, backup_instance, no_wait=False):
+    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Create as _Create, ValidateForBackup as _ValidateForBackup, Update as _Update
 
     class ValidateAndCreate(_Update):
 
@@ -156,10 +138,10 @@ def data_protection_backup_instance_create(cmd, vault_name, resource_group_name,
     })
 
 
-def data_protection_backup_instance_validate_for_backup(cmd, vault_name, resource_group_name, backup_instance,
+def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource_group_name, backup_instance,
                                                         no_wait=False):
     
-    from azext_dataprotection.aaz.latest.data_protection.backup_instance import Create as _Create, ValidateForBackup as _ValidateForBackup, Update as _Update
+    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Create as _Create, ValidateForBackup as _ValidateForBackup, Update as _Update
 
     class Validate(_Update):
 
@@ -201,14 +183,6 @@ def data_protection_backup_instance_validate_for_backup(cmd, vault_name, resourc
     })
 
 
-def dataprotection_backup_instance_validate_for_backup(client, vault_name, resource_group_name, backup_instance,
-                                                       no_wait=False):
-    validate_for_backup_request = {}
-    validate_for_backup_request['backup_instance'] = backup_instance['properties']
-    return sdk_no_wait(no_wait, client.begin_validate_for_backup, vault_name=vault_name,
-                       resource_group_name=resource_group_name, parameters=validate_for_backup_request)
-
-
 def dataprotection_backup_instance_initialize_backupconfig(datasource_type, excluded_resource_types=None,
                                                                    included_resource_types=None, excluded_namespaces=None,
                                                                    included_namespaces=None, label_selectors=None,
@@ -229,7 +203,7 @@ def dataprotection_backup_instance_initialize_backupconfig(datasource_type, excl
         "include_cluster_scope_resources": include_cluster_scope_resources
     }
 
-def data_protection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
+def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
                                                friendly_name=None, backup_configuration=None,
                                                secret_store_type=None, secret_store_uri=None,
                                                snapshot_resource_group_name=None, tags=None):
@@ -238,15 +212,6 @@ def data_protection_backup_instance_initialize(datasource_type, datasource_id, d
     manifest = helper.load_manifest(datasource_type)
     if manifest["isProxyResource"]:
         datasourceset_info = helper.get_datasourceset_info(datasource_type, datasource_id, datasource_location)
-
-    # For AKS, we need datasource (and datasourceset).ResourceUri, and it matches datasource.ResourceId
-    # TODO This should be sorted out in the helper itself, at least sections of it.
-    # if manifest["resourceType"] == "Microsoft.ContainerService/managedclusters":
-    #     datasource_info["resource_uri"] = datasource_info["resource_id"]
-    #     datasourceset_info["resource_uri"] = datasource_info["resource_id"]
-    #     datasourceset_info["resource_id"] = datasource_info["resource_id"]
-    #     datasourceset_info["resource_name"] = datasource_info["resource_name"]
-    #     datasourceset_info["resource_type"] = datasource_info["resource_type"]
 
     policy_parameters = None
     # Azure Disk and AKS specific code for adding datastoreparameter list in the json
@@ -329,72 +294,6 @@ def data_protection_backup_instance_initialize(datasource_type, datasource_id, d
             "policy_info": policy_info,
             "datasource_auth_credentials": datasource_auth_credentials_info,
             "friendly_name": friendly_name,
-            "object_type": "BackupInstance"
-        },
-        "tags": tags
-    }
-
-
-def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
-                                              secret_store_type=None, secret_store_uri=None,
-                                              snapshot_resource_group_name=None, tags=None):
-    datasource_info = helper.get_datasource_info(datasource_type, datasource_id, datasource_location)
-    datasourceset_info = None
-    manifest = helper.load_manifest(datasource_type)
-    if manifest["isProxyResource"]:
-        datasourceset_info = helper.get_datasourceset_info(datasource_type, datasource_id, datasource_location)
-
-    policy_parameters = None
-    # Azure Disk specific code for adding datastoreparameter list in the json
-    if datasource_type == "AzureDisk":
-        policy_parameters = {
-            "data_store_parameters_list": [
-                {
-                    "object_type": "AzureOperationalStoreParameters",
-                    "data_store_type": "OperationalStore",
-                    "resource_group_id": helper.get_rg_id_from_arm_id(datasource_id)
-                }
-            ]
-        }
-
-        if snapshot_resource_group_name:
-            disk_sub_id = helper.get_sub_id_from_arm_id(datasource_id)
-            policy_parameters["data_store_parameters_list"][0]["resource_group_id"] = (disk_sub_id + "/resourceGroups/"
-                                                                                       + snapshot_resource_group_name)
-
-    datasource_auth_credentials_info = None
-    if manifest["supportSecretStoreAuthentication"]:
-        if secret_store_uri and secret_store_type:
-            datasource_auth_credentials_info = {
-                "secret_store_resource": {
-                    "uri": secret_store_uri,
-                    "value": None,
-                    "secret_store_type": secret_store_type
-                },
-                "object_type": "SecretStoreBasedAuthCredentials"
-            }
-        elif secret_store_uri or secret_store_type:
-            raise CLIError("Either secret store uri or secret store type not provided.")
-
-    policy_info = {
-        "policy_id": policy_id,
-        "policy_parameters": policy_parameters
-    }
-
-    guid = uuid.uuid1()
-    backup_instance_name = ""
-    if manifest["isProxyResource"]:
-        backup_instance_name = datasourceset_info["resource_name"] + "-" + datasource_info["resource_name"] + "-" + str(guid)
-    else:
-        backup_instance_name = datasource_info["resource_name"] + "-" + datasource_info["resource_name"] + "-" + str(guid)
-
-    return {
-        "backup_instance_name": backup_instance_name,
-        "properties": {
-            "data_source_info": datasource_info,
-            "data_source_set_info": datasourceset_info,
-            "policy_info": policy_info,
-            "datasource_auth_credentials": datasource_auth_credentials_info,
             "object_type": "BackupInstance"
         },
         "tags": tags
@@ -978,9 +877,9 @@ def dataprotection_backup_policy_tag_remove_in_policy(name, policy):
 
     return policy
 
-def data_protection_backup_instance_validate_for_restore(cmd, vault_name, resource_group_name, backup_instance_name,
+def dataprotection_backup_instance_validate_for_restore(cmd, vault_name, resource_group_name, backup_instance_name,
                                                          restore_request_object, no_wait=False):
-    from azext_dataprotection.aaz.latest.data_protection.backup_instance import ValidateForRestore as _ValidateForRestore
+    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import ValidateForRestore as _ValidateForRestore
 
     class ValidateForRestore(_ValidateForRestore):
 
@@ -1048,9 +947,9 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
     }
 
 
-def data_protection_backup_instance_restore_trigger(cmd, vault_name, resource_group_name, backup_instance_name,
+def dataprotection_backup_instance_restore_trigger(cmd, vault_name, resource_group_name, backup_instance_name,
                                                          restore_request_object, no_wait=False):
-    from azext_dataprotection.aaz.latest.data_protection.backup_instance.restore import Trigger as _Trigger
+    from azext_dataprotection.aaz.latest.dataprotection.backup_instance.restore import Trigger as _Trigger
 
     class Trigger(_Trigger):
 
@@ -1089,6 +988,7 @@ def data_protection_backup_instance_restore_trigger(cmd, vault_name, resource_gr
         "restore_request_object": restore_request_object,
         "no_wait": no_wait
     })
+
 
 def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore, restore_location, target_resource_id=None,
                                          recovery_point_id=None, point_in_time=None, secret_store_type=None,
@@ -1154,7 +1054,7 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
         vault_name = backup_instance_id.split('/')[8]
         backup_instance_name = backup_instance_id.split('/')[-1]
 
-        from azext_dataprotection.aaz.latest.data_protection.backup_instance import Show as _Show
+        from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Show as _Show
         backup_instance = _Show(cli_ctx=cmd.cli_ctx)(command_args={
             "vault_name": vault_name,
             "resource_group": vault_resource_group,
@@ -1253,135 +1153,7 @@ def restore_initialize_for_data_recovery_as_files(target_blob_container_url, tar
     return restore_request
 
 
-def restore_initialize_for_item_recovery(client, datasource_type, source_datastore, restore_location, backup_instance_id,
-                                         recovery_point_id=None, point_in_time=None, container_list=None,
-                                         from_prefix_pattern=None, to_prefix_pattern=None):
-
-    restore_request = {}
-    restore_mode = None
-    if recovery_point_id is not None and point_in_time is not None:
-        raise CLIError("Please provide either recovery point id or point in time parameter, not both.")
-
-    if recovery_point_id is not None:
-        restore_request["object_type"] = "AzureBackupRecoveryPointBasedRestoreRequest"
-        restore_request["recovery_point_id"] = recovery_point_id
-        restore_mode = "RecoveryPointBased"
-
-    if point_in_time is not None:
-        restore_request["object_type"] = "AzureBackupRecoveryTimeBasedRestoreRequest"
-        restore_request["recovery_point_time"] = point_in_time
-        restore_mode = "PointInTimeBased"
-
-    if recovery_point_id is None and point_in_time is None:
-        raise CLIError("Please provide either recovery point id or point in time parameter.")
-
-    manifest = helper.load_manifest(datasource_type)
-    if manifest is not None and manifest["allowedRestoreModes"] is not None and restore_mode not in manifest["allowedRestoreModes"]:
-        raise CLIError(restore_mode + " restore mode is not supported for datasource type " + datasource_type +
-                       ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
-
-    if manifest is not None and not manifest["itemLevelRecoveyEnabled"]:
-        raise CLIError("Specified DatasourceType " + datasource_type + " doesn't support Item Level Recovery")
-
-    restore_request["source_data_store_type"] = source_datastore
-    restore_request["restore_target_info"] = {}
-    restore_request["restore_target_info"]["object_type"] = "ItemLevelRestoreTargetInfo"
-    restore_request["restore_target_info"]["restore_location"] = restore_location
-    restore_request["restore_target_info"]["recovery_option"] = "FailIfExists"
-
-    restore_criteria_list = []
-    if container_list is not None and (from_prefix_pattern is not None or to_prefix_pattern is not None):
-        raise CLIError("Please specify either container list or prefix pattern.")
-
-    if container_list is not None:
-        if len(container_list) > 10:
-            raise CLIError("A maximum of 10 containers can be restored. Please choose up to 10 containers.")
-        for container in container_list:
-            if container[0] == '$':
-                raise CLIError("container name can not start with '$'. Please retry with different sets of containers.")
-            restore_criteria = {}
-            restore_criteria["object_type"] = "RangeBasedItemLevelRestoreCriteria"
-            restore_criteria["min_matching_value"] = container
-            restore_criteria["max_matching_value"] = container + "-0"
-
-            restore_criteria_list.append(restore_criteria)
-
-    if from_prefix_pattern is not None or to_prefix_pattern is not None:
-        if from_prefix_pattern is None or to_prefix_pattern is None or \
-           len(from_prefix_pattern) != len(to_prefix_pattern) or len(from_prefix_pattern) > 10:
-            raise CLIError(
-                "from-prefix-pattern and to-prefix-pattern should not be null, both of them should have "
-                "equal length and can have a maximum of 10 patterns."
-            )
-
-        for index, _ in enumerate(from_prefix_pattern):
-            if from_prefix_pattern[index][0] == '$' or to_prefix_pattern[index][0] == '$':
-                raise CLIError(
-                    "Prefix patterns should not start with '$'. Please provide valid prefix patterns and try again."
-                )
-
-            if not 3 <= len(from_prefix_pattern[index]) <= 63 or not 3 <= len(to_prefix_pattern[index]) <= 63:
-                raise CLIError(
-                    "Prefix patterns needs to be between 3 to 63 characters."
-                )
-
-            if from_prefix_pattern[index] >= to_prefix_pattern[index]:
-                raise CLIError(
-                    "From prefix pattern must be less than to prefix pattern."
-                )
-
-            regex_pattern = r"^[a-z0-9](?!.*--)[a-z0-9-]{1,61}[a-z0-9](\/.{1,60})*$"
-            if re.match(regex_pattern, from_prefix_pattern[index]) is None:
-                raise CLIError(
-                    "prefix patterns must start or end with a letter or number,"
-                    "and can contain only lowercase letters, numbers, and the dash (-) character. "
-                    "consecutive dashes are not permitted."
-                    "Given pattern " + from_prefix_pattern[index] + " violates the above rule."
-                )
-
-            if re.match(regex_pattern, to_prefix_pattern[index]) is None:
-                raise CLIError(
-                    "prefix patterns must start or end with a letter or number,"
-                    "and can contain only lowercase letters, numbers, and the dash (-) character. "
-                    "consecutive dashes are not permitted."
-                    "Given pattern " + to_prefix_pattern[index] + " violates the above rule."
-                )
-
-            for compareindex in range(index + 1, len(from_prefix_pattern)):
-                if (from_prefix_pattern[index] <= from_prefix_pattern[compareindex] and to_prefix_pattern[index] >= from_prefix_pattern[compareindex]) or \
-                   (from_prefix_pattern[index] >= from_prefix_pattern[compareindex] and from_prefix_pattern[index] <= to_prefix_pattern[compareindex]):
-                    raise CLIError(
-                        "overlapping ranges are not allowed."
-                    )
-
-        for index, _ in enumerate(from_prefix_pattern):
-            restore_criteria = {}
-            restore_criteria["object_type"] = "RangeBasedItemLevelRestoreCriteria"
-            restore_criteria["min_matching_value"] = from_prefix_pattern[index]
-            restore_criteria["max_matching_value"] = to_prefix_pattern[index]
-
-            restore_criteria_list.append(restore_criteria)
-
-    if container_list is None and from_prefix_pattern is None and to_prefix_pattern is None:
-        raise CLIError("Provide ContainersList or Prefixes for Item Level Recovery")
-
-    restore_request["restore_target_info"]["restore_criteria"] = restore_criteria_list
-
-    vault_resource_group = backup_instance_id.split('/')[4]
-    vault_name = backup_instance_id.split('/')[8]
-    backup_instance_name = backup_instance_id.split('/')[-1]
-
-    backup_instance = client.get(vault_name=vault_name, resource_group_name=vault_resource_group, backup_instance_name=backup_instance_name)
-    datasource_id = backup_instance.properties.data_source_info.resource_id
-
-    restore_request["restore_target_info"]["datasource_info"] = helper.get_datasource_info(datasource_type, datasource_id, restore_location)
-
-    if manifest["isProxyResource"]:
-        restore_request["restore_target_info"]["datasource_set_info"] = helper.get_datasourceset_info(datasource_type, datasource_id, restore_location)
-
-    return restore_request
-
-def restore_initialize_for_item_recovery_dp(cmd, datasource_type, source_datastore, restore_location, backup_instance_id=None,
+def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore, restore_location, backup_instance_id=None,
                                          target_resource_id=None, recovery_point_id=None, point_in_time=None, container_list=None,
                                          from_prefix_pattern=None, to_prefix_pattern=None, restore_configuration=None):
 
@@ -1526,7 +1298,7 @@ def restore_initialize_for_item_recovery_dp(cmd, datasource_type, source_datasto
         vault_name = backup_instance_id.split('/')[8]
         backup_instance_name = backup_instance_id.split('/')[-1]
 
-        from azext_dataprotection.aaz.latest.data_protection.backup_instance import Show as _Show
+        from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Show as _Show
         backup_instance = _Show(cli_ctx=cmd.cli_ctx)(command_args={
             "vault_name": vault_name,
             "resource_group": vault_resource_group,

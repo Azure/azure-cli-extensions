@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "data-protection backup-instance update",
+    "dataprotection backup-instance update",
     is_preview=True,
 )
 class Update(AAZCommand):

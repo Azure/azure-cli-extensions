@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "data-protection backup-instance validate-for-backup",
+    "dataprotection backup-instance validate-for-backup",
     is_preview=True,
 )
 class ValidateForBackup(AAZCommand):

@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "data-protection backup-instance restore trigger",
+    "dataprotection backup-instance validate-for-restore",
     is_preview=True,
 )
-class Trigger(AAZCommand):
-    """Triggers restore for a BackupInstance
+class ValidateForRestore(AAZCommand):
+    """Validates if Restore can be triggered for a DataSource
     """
 
     _aaz_info = {
         "version": "2023-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/restore", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}/validaterestore", "2023-01-01"],
         ]
     }
 
@@ -59,57 +59,56 @@ class Trigger(AAZCommand):
             id_part="name",
         )
 
-        # define Arg Group "Properties"
+        # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
-        _args_schema.azure_backup_recovery_point_based_restore_request = AAZObjectArg(
-            options=["--azure-backup-recovery-point-based-restore-request"],
-            arg_group="Properties",
-            help="-",
+        _args_schema.restore_request_object = AAZObjectArg(
+            options=["--restore-request-object"],
+            arg_group="Parameters",
+            help="Gets or sets the restore request object.",
+            required=True,
         )
-        _args_schema.azure_backup_recovery_time_based_restore_request = AAZObjectArg(
-            options=["--azure-backup-recovery-time-based-restore-request"],
-            arg_group="Properties",
-            help="-",
+
+        restore_request_object = cls._args_schema.restore_request_object
+        restore_request_object.azure_backup_recovery_point_based_restore_request = AAZObjectArg(
+            options=["azure-backup-recovery-point-based-restore-request"],
         )
-        _args_schema.azure_backup_restore_with_rehydration_request = AAZObjectArg(
-            options=["--azure-backup-restore-with-rehydration-request"],
-            arg_group="Properties",
-            help="-",
+        restore_request_object.azure_backup_recovery_time_based_restore_request = AAZObjectArg(
+            options=["azure-backup-recovery-time-based-restore-request"],
         )
-        _args_schema.restore_target_info = AAZObjectArg(
-            options=["--restore-target-info"],
-            arg_group="Properties",
+        restore_request_object.azure_backup_restore_with_rehydration_request = AAZObjectArg(
+            options=["azure-backup-restore-with-rehydration-request"],
+        )
+        restore_request_object.restore_target_info = AAZObjectArg(
+            options=["restore-target-info"],
             help="Gets or sets the restore target information.",
             required=True,
         )
-        _args_schema.source_data_store_type = AAZStrArg(
-            options=["--source-data-store-type"],
-            arg_group="Properties",
+        restore_request_object.source_data_store_type = AAZStrArg(
+            options=["source-data-store-type"],
             help="Gets or sets the type of the source data store.",
             required=True,
             enum={"ArchiveStore": "ArchiveStore", "OperationalStore": "OperationalStore", "SnapshotStore": "SnapshotStore", "VaultStore": "VaultStore"},
         )
-        _args_schema.source_resource_id = AAZStrArg(
-            options=["--source-resource-id"],
-            arg_group="Properties",
+        restore_request_object.source_resource_id = AAZStrArg(
+            options=["source-resource-id"],
             help="Fully qualified Azure Resource Manager ID of the datasource which is being recovered.",
         )
 
-        azure_backup_recovery_point_based_restore_request = cls._args_schema.azure_backup_recovery_point_based_restore_request
+        azure_backup_recovery_point_based_restore_request = cls._args_schema.restore_request_object.azure_backup_recovery_point_based_restore_request
         azure_backup_recovery_point_based_restore_request.recovery_point_id = AAZStrArg(
             options=["recovery-point-id"],
             required=True,
         )
 
-        azure_backup_recovery_time_based_restore_request = cls._args_schema.azure_backup_recovery_time_based_restore_request
+        azure_backup_recovery_time_based_restore_request = cls._args_schema.restore_request_object.azure_backup_recovery_time_based_restore_request
         azure_backup_recovery_time_based_restore_request.recovery_point_time = AAZStrArg(
             options=["recovery-point-time"],
             help="The recovery time in ISO 8601 format example - 2020-08-14T17:30:00.0000000Z.",
             required=True,
         )
 
-        azure_backup_restore_with_rehydration_request = cls._args_schema.azure_backup_restore_with_rehydration_request
+        azure_backup_restore_with_rehydration_request = cls._args_schema.restore_request_object.azure_backup_restore_with_rehydration_request
         azure_backup_restore_with_rehydration_request.recovery_point_id = AAZStrArg(
             options=["recovery-point-id"],
             required=True,
@@ -126,7 +125,7 @@ class Trigger(AAZCommand):
             required=True,
         )
 
-        restore_target_info = cls._args_schema.restore_target_info
+        restore_target_info = cls._args_schema.restore_request_object.restore_target_info
         restore_target_info.item_level_restore_target_info = AAZObjectArg(
             options=["item-level-restore-target-info"],
         )
@@ -147,7 +146,7 @@ class Trigger(AAZCommand):
             help="Target Restore region",
         )
 
-        item_level_restore_target_info = cls._args_schema.restore_target_info.item_level_restore_target_info
+        item_level_restore_target_info = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info
         item_level_restore_target_info.datasource_auth_credentials = AAZObjectArg(
             options=["datasource-auth-credentials"],
             help="Credentials to use to authenticate with data source provider.",
@@ -170,10 +169,10 @@ class Trigger(AAZCommand):
             required=True,
         )
 
-        restore_criteria = cls._args_schema.restore_target_info.item_level_restore_target_info.restore_criteria
+        restore_criteria = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria
         restore_criteria.Element = AAZObjectArg()
 
-        _element = cls._args_schema.restore_target_info.item_level_restore_target_info.restore_criteria.Element
+        _element = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element
         _element.item_path_based_restore_criteria = AAZObjectArg(
             options=["item-path-based-restore-criteria"],
         )
@@ -190,7 +189,7 @@ class Trigger(AAZCommand):
             options=["range-based-item-level-restore-criteria"],
         )
 
-        item_path_based_restore_criteria = cls._args_schema.restore_target_info.item_level_restore_target_info.restore_criteria.Element.item_path_based_restore_criteria
+        item_path_based_restore_criteria = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.item_path_based_restore_criteria
         item_path_based_restore_criteria.is_path_relative_to_backup_item = AAZBoolArg(
             options=["is-path-relative-to-backup-item"],
             help="Flag to specify if the path is relative to backup item or full path",
@@ -206,10 +205,10 @@ class Trigger(AAZCommand):
             help="The list of prefix strings to be used as filter criteria during restore. These are relative to the item path specified.",
         )
 
-        sub_item_path_prefix = cls._args_schema.restore_target_info.item_level_restore_target_info.restore_criteria.Element.item_path_based_restore_criteria.sub_item_path_prefix
+        sub_item_path_prefix = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.item_path_based_restore_criteria.sub_item_path_prefix
         sub_item_path_prefix.Element = AAZStrArg()
 
-        kubernetes_cluster_restore_criteria = cls._args_schema.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria
+        kubernetes_cluster_restore_criteria = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria
         kubernetes_cluster_restore_criteria.conflict_policy = AAZStrArg(
             options=["conflict-policy"],
             help="Gets or sets the Conflict Policy property. This property sets policy during conflict of resources during restore.",
@@ -250,25 +249,25 @@ class Trigger(AAZCommand):
             enum={"RestoreWithVolumeData": "RestoreWithVolumeData", "RestoreWithoutVolumeData": "RestoreWithoutVolumeData"},
         )
 
-        excluded_namespaces = cls._args_schema.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.excluded_namespaces
+        excluded_namespaces = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.excluded_namespaces
         excluded_namespaces.Element = AAZStrArg()
 
-        excluded_resource_types = cls._args_schema.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.excluded_resource_types
+        excluded_resource_types = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.excluded_resource_types
         excluded_resource_types.Element = AAZStrArg()
 
-        included_namespaces = cls._args_schema.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.included_namespaces
+        included_namespaces = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.included_namespaces
         included_namespaces.Element = AAZStrArg()
 
-        included_resource_types = cls._args_schema.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.included_resource_types
+        included_resource_types = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.included_resource_types
         included_resource_types.Element = AAZStrArg()
 
-        label_selectors = cls._args_schema.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.label_selectors
+        label_selectors = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.label_selectors
         label_selectors.Element = AAZStrArg()
 
-        namespace_mappings = cls._args_schema.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.namespace_mappings
+        namespace_mappings = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_cluster_restore_criteria.namespace_mappings
         namespace_mappings.Element = AAZStrArg()
 
-        kubernetes_pv_restore_criteria = cls._args_schema.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_pv_restore_criteria
+        kubernetes_pv_restore_criteria = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_pv_restore_criteria
         kubernetes_pv_restore_criteria.name = AAZStrArg(
             options=["name"],
             help="Selected persistent volume claim name",
@@ -278,7 +277,7 @@ class Trigger(AAZCommand):
             help="Selected storage class name for restore operation",
         )
 
-        kubernetes_storage_class_restore_criteria = cls._args_schema.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_storage_class_restore_criteria
+        kubernetes_storage_class_restore_criteria = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.kubernetes_storage_class_restore_criteria
         kubernetes_storage_class_restore_criteria.provisioner = AAZStrArg(
             options=["provisioner"],
             help="Provisioner of the storage class",
@@ -288,7 +287,7 @@ class Trigger(AAZCommand):
             help="Selected storage class name",
         )
 
-        range_based_item_level_restore_criteria = cls._args_schema.restore_target_info.item_level_restore_target_info.restore_criteria.Element.range_based_item_level_restore_criteria
+        range_based_item_level_restore_criteria = cls._args_schema.restore_request_object.restore_target_info.item_level_restore_target_info.restore_criteria.Element.range_based_item_level_restore_criteria
         range_based_item_level_restore_criteria.max_matching_value = AAZStrArg(
             options=["max-matching-value"],
             help="maximum value for range prefix match",
@@ -298,14 +297,14 @@ class Trigger(AAZCommand):
             help="minimum value for range prefix match",
         )
 
-        restore_files_target_info = cls._args_schema.restore_target_info.restore_files_target_info
+        restore_files_target_info = cls._args_schema.restore_request_object.restore_target_info.restore_files_target_info
         restore_files_target_info.target_details = AAZObjectArg(
             options=["target-details"],
             help="Destination of RestoreAsFiles operation, when destination is not a datasource",
             required=True,
         )
 
-        target_details = cls._args_schema.restore_target_info.restore_files_target_info.target_details
+        target_details = cls._args_schema.restore_request_object.restore_target_info.restore_files_target_info.target_details
         target_details.file_prefix = AAZStrArg(
             options=["file-prefix"],
             help="Restore operation may create multiple files inside location pointed by Url Below will be the common prefix for all of them",
@@ -319,7 +318,7 @@ class Trigger(AAZCommand):
         )
         target_details.target_resource_arm_id = AAZStrArg(
             options=["target-resource-arm-id"],
-            help="Full ARM Id denoting the restore destination. It is the ARM Id pointing to container / file share This is optional if the target subscription can be identified with the URL field. If not then this is needed if CrossSubscriptionRestore field of BackupVault is in any of the disabled states",
+            help="Full ARM Id denoting the restore destination. It is the ARM Id pointing to container / file share. This is optional if the target subscription can be identified with the URL field. If not then this is needed if CrossSubscriptionRestore field of BackupVault is in any of the disabled states",
         )
         target_details.url = AAZStrArg(
             options=["url"],
@@ -327,7 +326,7 @@ class Trigger(AAZCommand):
             required=True,
         )
 
-        restore_target_info = cls._args_schema.restore_target_info.restore_target_info
+        restore_target_info = cls._args_schema.restore_request_object.restore_target_info.restore_target_info
         restore_target_info.datasource_auth_credentials = AAZObjectArg(
             options=["datasource-auth-credentials"],
             help="Credentials to use to authenticate with data source provider.",
@@ -497,7 +496,7 @@ class Trigger(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.BackupInstancesTriggerRestore(ctx=self.ctx)()
+        yield self.BackupInstancesValidateForRestore(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -512,7 +511,7 @@ class Trigger(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class BackupInstancesTriggerRestore(AAZHttpOperation):
+    class BackupInstancesValidateForRestore(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -542,7 +541,7 @@ class Trigger(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}/restore",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataProtection/backupVaults/{vaultName}/backupInstances/{backupInstanceName}/validateRestore",
                 **self.url_parameters
             )
 
@@ -605,17 +604,21 @@ class Trigger(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_const("objectType", "AzureBackupRecoveryPointBasedRestoreRequest", AAZStrType, ".azure_backup_recovery_point_based_restore_request", typ_kwargs={"flags": {"required": True}})
-            _builder.set_const("objectType", "AzureBackupRecoveryTimeBasedRestoreRequest", AAZStrType, ".azure_backup_recovery_time_based_restore_request", typ_kwargs={"flags": {"required": True}})
-            _builder.set_const("objectType", "AzureBackupRestoreWithRehydrationRequest", AAZStrType, ".azure_backup_restore_with_rehydration_request", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("restoreTargetInfo", AAZObjectType, ".restore_target_info", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("sourceDataStoreType", AAZStrType, ".source_data_store_type", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("sourceResourceId", AAZStrType, ".source_resource_id")
-            _builder.discriminate_by("objectType", "AzureBackupRecoveryPointBasedRestoreRequest")
-            _builder.discriminate_by("objectType", "AzureBackupRecoveryTimeBasedRestoreRequest")
-            _builder.discriminate_by("objectType", "AzureBackupRestoreWithRehydrationRequest")
+            _builder.set_prop("restoreRequestObject", AAZObjectType, ".restore_request_object", typ_kwargs={"flags": {"required": True}})
 
-            restore_target_info = _builder.get(".restoreTargetInfo")
+            restore_request_object = _builder.get(".restoreRequestObject")
+            if restore_request_object is not None:
+                restore_request_object.set_const("objectType", "AzureBackupRecoveryPointBasedRestoreRequest", AAZStrType, ".azure_backup_recovery_point_based_restore_request", typ_kwargs={"flags": {"required": True}})
+                restore_request_object.set_const("objectType", "AzureBackupRecoveryTimeBasedRestoreRequest", AAZStrType, ".azure_backup_recovery_time_based_restore_request", typ_kwargs={"flags": {"required": True}})
+                restore_request_object.set_const("objectType", "AzureBackupRestoreWithRehydrationRequest", AAZStrType, ".azure_backup_restore_with_rehydration_request", typ_kwargs={"flags": {"required": True}})
+                restore_request_object.set_prop("restoreTargetInfo", AAZObjectType, ".restore_target_info", typ_kwargs={"flags": {"required": True}})
+                restore_request_object.set_prop("sourceDataStoreType", AAZStrType, ".source_data_store_type", typ_kwargs={"flags": {"required": True}})
+                restore_request_object.set_prop("sourceResourceId", AAZStrType, ".source_resource_id")
+                restore_request_object.discriminate_by("objectType", "AzureBackupRecoveryPointBasedRestoreRequest")
+                restore_request_object.discriminate_by("objectType", "AzureBackupRecoveryTimeBasedRestoreRequest")
+                restore_request_object.discriminate_by("objectType", "AzureBackupRestoreWithRehydrationRequest")
+
+            restore_target_info = _builder.get(".restoreRequestObject.restoreTargetInfo")
             if restore_target_info is not None:
                 restore_target_info.set_const("objectType", "ItemLevelRestoreTargetInfo", AAZStrType, ".item_level_restore_target_info", typ_kwargs={"flags": {"required": True}})
                 restore_target_info.set_const("objectType", "RestoreFilesTargetInfo", AAZStrType, ".restore_files_target_info", typ_kwargs={"flags": {"required": True}})
@@ -626,18 +629,18 @@ class Trigger(AAZCommand):
                 restore_target_info.discriminate_by("objectType", "RestoreFilesTargetInfo")
                 restore_target_info.discriminate_by("objectType", "RestoreTargetInfo")
 
-            disc_item_level_restore_target_info = _builder.get(".restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}")
+            disc_item_level_restore_target_info = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}")
             if disc_item_level_restore_target_info is not None:
-                _TriggerHelper._build_schema_auth_credentials_create(disc_item_level_restore_target_info.set_prop("datasourceAuthCredentials", AAZObjectType, ".item_level_restore_target_info.datasource_auth_credentials"))
-                _TriggerHelper._build_schema_datasource_create(disc_item_level_restore_target_info.set_prop("datasourceInfo", AAZObjectType, ".item_level_restore_target_info.datasource_info", typ_kwargs={"flags": {"required": True}}))
-                _TriggerHelper._build_schema_datasource_set_create(disc_item_level_restore_target_info.set_prop("datasourceSetInfo", AAZObjectType, ".item_level_restore_target_info.datasource_set_info"))
+                _ValidateForRestoreHelper._build_schema_auth_credentials_create(disc_item_level_restore_target_info.set_prop("datasourceAuthCredentials", AAZObjectType, ".item_level_restore_target_info.datasource_auth_credentials"))
+                _ValidateForRestoreHelper._build_schema_datasource_create(disc_item_level_restore_target_info.set_prop("datasourceInfo", AAZObjectType, ".item_level_restore_target_info.datasource_info", typ_kwargs={"flags": {"required": True}}))
+                _ValidateForRestoreHelper._build_schema_datasource_set_create(disc_item_level_restore_target_info.set_prop("datasourceSetInfo", AAZObjectType, ".item_level_restore_target_info.datasource_set_info"))
                 disc_item_level_restore_target_info.set_prop("restoreCriteria", AAZListType, ".item_level_restore_target_info.restore_criteria", typ_kwargs={"flags": {"required": True}})
 
-            restore_criteria = _builder.get(".restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria")
+            restore_criteria = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria")
             if restore_criteria is not None:
                 restore_criteria.set_elements(AAZObjectType, ".")
 
-            _elements = _builder.get(".restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]")
+            _elements = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]")
             if _elements is not None:
                 _elements.set_const("objectType", "ItemPathBasedRestoreCriteria", AAZStrType, ".item_path_based_restore_criteria", typ_kwargs={"flags": {"required": True}})
                 _elements.set_const("objectType", "KubernetesClusterRestoreCriteria", AAZStrType, ".kubernetes_cluster_restore_criteria", typ_kwargs={"flags": {"required": True}})
@@ -650,17 +653,17 @@ class Trigger(AAZCommand):
                 _elements.discriminate_by("objectType", "KubernetesStorageClassRestoreCriteria")
                 _elements.discriminate_by("objectType", "RangeBasedItemLevelRestoreCriteria")
 
-            disc_item_path_based_restore_criteria = _builder.get(".restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:ItemPathBasedRestoreCriteria}")
+            disc_item_path_based_restore_criteria = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:ItemPathBasedRestoreCriteria}")
             if disc_item_path_based_restore_criteria is not None:
                 disc_item_path_based_restore_criteria.set_prop("isPathRelativeToBackupItem", AAZBoolType, ".item_path_based_restore_criteria.is_path_relative_to_backup_item", typ_kwargs={"flags": {"required": True}})
                 disc_item_path_based_restore_criteria.set_prop("itemPath", AAZStrType, ".item_path_based_restore_criteria.item_path", typ_kwargs={"flags": {"required": True}})
                 disc_item_path_based_restore_criteria.set_prop("subItemPathPrefix", AAZListType, ".item_path_based_restore_criteria.sub_item_path_prefix")
 
-            sub_item_path_prefix = _builder.get(".restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:ItemPathBasedRestoreCriteria}.subItemPathPrefix")
+            sub_item_path_prefix = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:ItemPathBasedRestoreCriteria}.subItemPathPrefix")
             if sub_item_path_prefix is not None:
                 sub_item_path_prefix.set_elements(AAZStrType, ".")
 
-            disc_kubernetes_cluster_restore_criteria = _builder.get(".restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}")
+            disc_kubernetes_cluster_restore_criteria = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}")
             if disc_kubernetes_cluster_restore_criteria is not None:
                 disc_kubernetes_cluster_restore_criteria.set_prop("conflictPolicy", AAZStrType, ".kubernetes_cluster_restore_criteria.conflict_policy")
                 disc_kubernetes_cluster_restore_criteria.set_prop("excludedNamespaces", AAZListType, ".kubernetes_cluster_restore_criteria.excluded_namespaces")
@@ -672,71 +675,71 @@ class Trigger(AAZCommand):
                 disc_kubernetes_cluster_restore_criteria.set_prop("namespaceMappings", AAZDictType, ".kubernetes_cluster_restore_criteria.namespace_mappings")
                 disc_kubernetes_cluster_restore_criteria.set_prop("persistentVolumeRestoreMode", AAZStrType, ".kubernetes_cluster_restore_criteria.persistent_volume_restore_mode")
 
-            excluded_namespaces = _builder.get(".restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.excludedNamespaces")
+            excluded_namespaces = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.excludedNamespaces")
             if excluded_namespaces is not None:
                 excluded_namespaces.set_elements(AAZStrType, ".")
 
-            excluded_resource_types = _builder.get(".restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.excludedResourceTypes")
+            excluded_resource_types = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.excludedResourceTypes")
             if excluded_resource_types is not None:
                 excluded_resource_types.set_elements(AAZStrType, ".")
 
-            included_namespaces = _builder.get(".restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.includedNamespaces")
+            included_namespaces = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.includedNamespaces")
             if included_namespaces is not None:
                 included_namespaces.set_elements(AAZStrType, ".")
 
-            included_resource_types = _builder.get(".restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.includedResourceTypes")
+            included_resource_types = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.includedResourceTypes")
             if included_resource_types is not None:
                 included_resource_types.set_elements(AAZStrType, ".")
 
-            label_selectors = _builder.get(".restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.labelSelectors")
+            label_selectors = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.labelSelectors")
             if label_selectors is not None:
                 label_selectors.set_elements(AAZStrType, ".")
 
-            namespace_mappings = _builder.get(".restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.namespaceMappings")
+            namespace_mappings = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesClusterRestoreCriteria}.namespaceMappings")
             if namespace_mappings is not None:
                 namespace_mappings.set_elements(AAZStrType, ".")
 
-            disc_kubernetes_pv_restore_criteria = _builder.get(".restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesPVRestoreCriteria}")
+            disc_kubernetes_pv_restore_criteria = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesPVRestoreCriteria}")
             if disc_kubernetes_pv_restore_criteria is not None:
                 disc_kubernetes_pv_restore_criteria.set_prop("name", AAZStrType, ".kubernetes_pv_restore_criteria.name")
                 disc_kubernetes_pv_restore_criteria.set_prop("storageClassName", AAZStrType, ".kubernetes_pv_restore_criteria.storage_class_name")
 
-            disc_kubernetes_storage_class_restore_criteria = _builder.get(".restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesStorageClassRestoreCriteria}")
+            disc_kubernetes_storage_class_restore_criteria = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:KubernetesStorageClassRestoreCriteria}")
             if disc_kubernetes_storage_class_restore_criteria is not None:
                 disc_kubernetes_storage_class_restore_criteria.set_prop("provisioner", AAZStrType, ".kubernetes_storage_class_restore_criteria.provisioner")
                 disc_kubernetes_storage_class_restore_criteria.set_prop("selectedStorageClassName", AAZStrType, ".kubernetes_storage_class_restore_criteria.selected_storage_class_name")
 
-            disc_range_based_item_level_restore_criteria = _builder.get(".restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:RangeBasedItemLevelRestoreCriteria}")
+            disc_range_based_item_level_restore_criteria = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:ItemLevelRestoreTargetInfo}.restoreCriteria[]{objectType:RangeBasedItemLevelRestoreCriteria}")
             if disc_range_based_item_level_restore_criteria is not None:
                 disc_range_based_item_level_restore_criteria.set_prop("maxMatchingValue", AAZStrType, ".range_based_item_level_restore_criteria.max_matching_value")
                 disc_range_based_item_level_restore_criteria.set_prop("minMatchingValue", AAZStrType, ".range_based_item_level_restore_criteria.min_matching_value")
 
-            disc_restore_files_target_info = _builder.get(".restoreTargetInfo{objectType:RestoreFilesTargetInfo}")
+            disc_restore_files_target_info = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:RestoreFilesTargetInfo}")
             if disc_restore_files_target_info is not None:
                 disc_restore_files_target_info.set_prop("targetDetails", AAZObjectType, ".restore_files_target_info.target_details", typ_kwargs={"flags": {"required": True}})
 
-            target_details = _builder.get(".restoreTargetInfo{objectType:RestoreFilesTargetInfo}.targetDetails")
+            target_details = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:RestoreFilesTargetInfo}.targetDetails")
             if target_details is not None:
                 target_details.set_prop("filePrefix", AAZStrType, ".file_prefix", typ_kwargs={"flags": {"required": True}})
                 target_details.set_prop("restoreTargetLocationType", AAZStrType, ".restore_target_location_type", typ_kwargs={"flags": {"required": True}})
                 target_details.set_prop("targetResourceArmId", AAZStrType, ".target_resource_arm_id")
                 target_details.set_prop("url", AAZStrType, ".url", typ_kwargs={"flags": {"required": True}})
 
-            disc_restore_target_info = _builder.get(".restoreTargetInfo{objectType:RestoreTargetInfo}")
+            disc_restore_target_info = _builder.get(".restoreRequestObject.restoreTargetInfo{objectType:RestoreTargetInfo}")
             if disc_restore_target_info is not None:
-                _TriggerHelper._build_schema_auth_credentials_create(disc_restore_target_info.set_prop("datasourceAuthCredentials", AAZObjectType, ".restore_target_info.datasource_auth_credentials"))
-                _TriggerHelper._build_schema_datasource_create(disc_restore_target_info.set_prop("datasourceInfo", AAZObjectType, ".restore_target_info.datasource_info", typ_kwargs={"flags": {"required": True}}))
-                _TriggerHelper._build_schema_datasource_set_create(disc_restore_target_info.set_prop("datasourceSetInfo", AAZObjectType, ".restore_target_info.datasource_set_info"))
+                _ValidateForRestoreHelper._build_schema_auth_credentials_create(disc_restore_target_info.set_prop("datasourceAuthCredentials", AAZObjectType, ".restore_target_info.datasource_auth_credentials"))
+                _ValidateForRestoreHelper._build_schema_datasource_create(disc_restore_target_info.set_prop("datasourceInfo", AAZObjectType, ".restore_target_info.datasource_info", typ_kwargs={"flags": {"required": True}}))
+                _ValidateForRestoreHelper._build_schema_datasource_set_create(disc_restore_target_info.set_prop("datasourceSetInfo", AAZObjectType, ".restore_target_info.datasource_set_info"))
 
-            disc_azure_backup_recovery_point_based_restore_request = _builder.get("{objectType:AzureBackupRecoveryPointBasedRestoreRequest}")
+            disc_azure_backup_recovery_point_based_restore_request = _builder.get(".restoreRequestObject{objectType:AzureBackupRecoveryPointBasedRestoreRequest}")
             if disc_azure_backup_recovery_point_based_restore_request is not None:
                 disc_azure_backup_recovery_point_based_restore_request.set_prop("recoveryPointId", AAZStrType, ".azure_backup_recovery_point_based_restore_request.recovery_point_id", typ_kwargs={"flags": {"required": True}})
 
-            disc_azure_backup_recovery_time_based_restore_request = _builder.get("{objectType:AzureBackupRecoveryTimeBasedRestoreRequest}")
+            disc_azure_backup_recovery_time_based_restore_request = _builder.get(".restoreRequestObject{objectType:AzureBackupRecoveryTimeBasedRestoreRequest}")
             if disc_azure_backup_recovery_time_based_restore_request is not None:
                 disc_azure_backup_recovery_time_based_restore_request.set_prop("recoveryPointTime", AAZStrType, ".azure_backup_recovery_time_based_restore_request.recovery_point_time", typ_kwargs={"flags": {"required": True}})
 
-            disc_azure_backup_restore_with_rehydration_request = _builder.get("{objectType:AzureBackupRestoreWithRehydrationRequest}")
+            disc_azure_backup_restore_with_rehydration_request = _builder.get(".restoreRequestObject{objectType:AzureBackupRestoreWithRehydrationRequest}")
             if disc_azure_backup_restore_with_rehydration_request is not None:
                 disc_azure_backup_restore_with_rehydration_request.set_prop("recoveryPointId", AAZStrType, ".azure_backup_restore_with_rehydration_request.recovery_point_id", typ_kwargs={"flags": {"required": True}})
                 disc_azure_backup_restore_with_rehydration_request.set_prop("rehydrationPriority", AAZStrType, ".azure_backup_restore_with_rehydration_request.rehydration_priority", typ_kwargs={"flags": {"required": True}})
@@ -773,8 +776,8 @@ class Trigger(AAZCommand):
             return cls._schema_on_200
 
 
-class _TriggerHelper:
-    """Helper class for Trigger"""
+class _ValidateForRestoreHelper:
+    """Helper class for ValidateForRestore"""
 
     @classmethod
     def _build_schema_auth_credentials_create(cls, _builder):
@@ -818,4 +821,4 @@ class _TriggerHelper:
         _builder.set_prop("resourceUri", AAZStrType, ".resource_uri")
 
 
-__all__ = ["Trigger"]
+__all__ = ["ValidateForRestore"]

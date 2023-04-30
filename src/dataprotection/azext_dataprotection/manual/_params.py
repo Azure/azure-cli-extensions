@@ -45,30 +45,18 @@ from azext_dataprotection.manual.enums import (
 
 
 def load_arguments(self, _):
-    with self.argument_context('data-protection backup-instance create') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
-        c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation Expected value: '
-                   'json-string/@json-file.')
-
     with self.argument_context('dataprotection backup-instance create') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation Expected value: '
                    'json-string/@json-file.')
 
-    with self.argument_context('data-protection backup-instance validate-for-backup') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation Expected value: '
-                   'json-string/@json-file.')
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
-
     with self.argument_context('dataprotection backup-instance validate-for-backup') as c:
         c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation Expected value: '
                    'json-string/@json-file.')
 
-    with self.argument_context('data-protection backup-instance initialize-backupconfig') as c:
-        c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
+    with self.argument_context('dataprotection backup-instance initialize-backupconfig') as c:
+        c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up.")
         c.argument('excluded_resource_types', type=str, nargs='+', help="")
         c.argument('included_resource_types', type=str, nargs='+', help="")
         c.argument('excluded_namespaces', type=str, nargs='+', help="")
@@ -77,22 +65,12 @@ def load_arguments(self, _):
         c.argument('snapshot_volumes', type=bool, help="")
         c.argument('include_cluster_scope_resources', type=bool, help="")
 
-    with self.argument_context('data-protection backup-instance initialize') as c:
+    with self.argument_context('dataprotection backup-instance initialize') as c:
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
         c.argument('datasource_id', type=str, help="ARM Id of the resource to be backed up")
         c.argument('datasource_location', options_list=['--datasource-location', '-l'], arg_type=get_location_type(self.cli_ctx))
         c.argument('friendly_name', type=str, help="")
         c.argument('backup_configuration', type=validate_file_or_dict, help="")
-        c.argument('policy_id', type=str, help="Id of the backup policy the datasource will be associated")
-        c.argument('secret_store_type', arg_type=get_enum_type(get_secret_store_type_values()), help="Specify the secret store type to use for authentication")
-        c.argument('secret_store_uri', type=str, help="specify the secret store uri to use for authentication")
-        c.argument('snapshot_resource_group_name', options_list=['--snapshot-resource-group-name', '--snapshot-rg'], type=str, help="Name of the resource group in which the backup snapshots should be stored")
-        c.argument('tags', tags_type)
-
-    with self.argument_context('dataprotection backup-instance initialize') as c:
-        c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
-        c.argument('datasource_id', type=str, help="ARM Id of the resource to be backed up")
-        c.argument('datasource_location', options_list=['--datasource-location', '-l'], arg_type=get_location_type(self.cli_ctx))
         c.argument('policy_id', type=str, help="Id of the backup policy the datasource will be associated")
         c.argument('secret_store_type', arg_type=get_enum_type(get_secret_store_type_values()), help="Specify the secret store type to use for authentication")
         c.argument('secret_store_uri', type=str, help="specify the secret store uri to use for authentication")
@@ -116,15 +94,6 @@ def load_arguments(self, _):
     with self.argument_context('dataprotection backup-policy get-default-policy-template') as c:
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
 
-    with self.argument_context('data-protection backup-instance list-from-resourcegraph') as c:
-        c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
-        c.argument('resource_groups', type=str, nargs='+', help="List of resource groups.")
-        c.argument('vaults', type=str, nargs='+', help="List of vault names.")
-        c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type")
-        c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
-        c.argument('protection_status', arg_type=get_enum_type(get_protection_status_values()), nargs='+', help="specify protection status.")
-        c.argument('datasource_id', type=str, nargs='+', help="specify datasource id filter to apply.")
-
     with self.argument_context('dataprotection backup-instance list-from-resourcegraph') as c:
         c.argument('subscriptions', type=str, nargs='+', help="List of subscription Ids.")
         c.argument('resource_groups', type=str, nargs='+', help="List of resource groups.")
@@ -141,8 +110,8 @@ def load_arguments(self, _):
         c.argument('permissions_scope', arg_type=get_enum_type(get_permission_scope_values()), help="Scope for assigning permissions to the backup vault")
         c.argument('keyvault_id', type=str, help='ARM id of the key vault. Required when --datasource-type is AzureDatabaseForPostgreSQL')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
-        c.argument('snapshot_resource_group_id', type=str, help='ARM id of the snapshot resource group. Required when'
-                   'assigning permissions over snapshot resource group and the --operation is Restore')
+        c.argument('snapshot_resource_group_id', options_list=['--snapshot-resource-group-id', '--snapshot-rg-id'], type=str, 
+                   help='ARM id of the snapshot resource group. Required when assigning permissions over snapshot resource group and the --operation is Restore')
         c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation "Backup" Expected value: '
                    'json-string/@json-file. Required when --operation is Backup')
         c.argument('restore_request_object', type=validate_file_or_dict, help='Request body for operation "Restore" Expected value: '
@@ -203,15 +172,15 @@ def load_arguments(self, _):
         c.argument('name', arg_type=get_enum_type(get_tag_name_values()), help="Specify the tag name to be removed in policy.")
         c.argument('policy', type=validate_file_or_dict, help="Existing policy Json string or file.")
 
-    with self.argument_context('data-protection backup-instance validate-for-restore') as c:
+    with self.argument_context('dataprotection backup-instance validate-for-restore') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault. experimental code.', id_part='name')
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
                    help='The name of the backup instance', id_part='child_name_1')
         c.argument('restore_request_object', type=validate_file_or_dict, help='Gets or sets the restore request '
                    'object. Expected value: json-string/@json-file.')
 
-    with self.argument_context('data-protection backup-instance initialize-restoreconfig') as c:
+    with self.argument_context('dataprotection backup-instance initialize-restoreconfig') as c:
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
         c.argument('excluded_resource_types', type=str, nargs='+', help="")
         c.argument('included_resource_types', type=str, nargs='+', help="")
@@ -223,15 +192,15 @@ def load_arguments(self, _):
         c.argument('namespace_mappings', type=str, help="")
         c.argument('include_cluster_scope_resources', type=bool, help="")
 
-    with self.argument_context('data-protection backup-instance restore trigger') as c:
+    with self.argument_context('dataprotection backup-instance restore trigger') as c:
         c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault. experimental code.', id_part='name')
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
                    help='The name of the backup instance', id_part='child_name_1')
         c.argument('restore_request_object', type=validate_file_or_dict, help='Gets or sets the restore request '
                    'object. Expected value: json-string/@json-file.')
 
-    with self.argument_context('data-protection backup-instance restore initialize-for-data-recovery') as c:
+    with self.argument_context('dataprotection backup-instance restore initialize-for-data-recovery') as c:
         c.argument('target_resource_id', type=str, help="specify the resource ID to which the data will be restored.")
         c.argument('backup_instance_id', type=str, help="specify the backup instance ID.")
         c.argument('recovery_point_id', type=str, help="specify the recovery point ID which will be used for restoring the data.")
@@ -244,18 +213,6 @@ def load_arguments(self, _):
         c.argument('rehydration_priority', arg_type=get_enum_type(get_rehydration_priority_values()), help="Specify the rehydration priority for rehydrate restore.")
         c.argument('rehydration_duration', type=int, help="Specify the rehydration duration for rehydrate restore.")
         c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService.")
-
-    with self.argument_context('dataprotection backup-instance restore initialize-for-data-recovery') as c:
-        c.argument('target_resource_id', type=str, help="specify the resource ID to which the data will be restored.")
-        c.argument('recovery_point_id', type=str, help="specify the recovery point ID which will be used for restoring the data.")
-        c.argument('point_in_time', type=datetime_type, help="specify the point in time which will be used for restoring the data in UTC (yyyy-mm-ddTHH:MM:SS)")
-        c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type")
-        c.argument('source_datastore', arg_type=get_enum_type(get_datastore_type_values()), help="Specify the datastore type of the given recovery point or point in time.")
-        c.argument('restore_location', type=str, help="Specify the restore location.")
-        c.argument('secret_store_type', arg_type=get_enum_type(get_secret_store_type_values()), help="Specify the secret store type to use for authentication")
-        c.argument('secret_store_uri', type=str, help="Specify the secret store uri to use for authentication")
-        c.argument('rehydration_priority', arg_type=get_enum_type(get_rehydration_priority_values()), help="Specify the rehydration priority for rehydrate restore.")
-        c.argument('rehydration_duration', type=int, help="Specify the rehydration duration for rehydrate restore.")
 
     with self.argument_context('dataprotection backup-instance restore initialize-for-data-recovery-as-files') as c:
         c.argument('target_blob_container_url', type=str, help="specify the blob container url to which the data will be restored.")
@@ -268,7 +225,7 @@ def load_arguments(self, _):
         c.argument('rehydration_priority', arg_type=get_enum_type(get_rehydration_priority_values()), help="Specify the rehydration priority for rehydrate restore.")
         c.argument('rehydration_duration', type=int, help="Specify the rehydration duration for rehydrate restore.")
 
-    with self.argument_context('data-protection backup-instance restore initialize-for-item-recovery') as c:
+    with self.argument_context('dataprotection backup-instance restore initialize-for-item-recovery') as c:
         c.argument('target_resource_id', type=str, help="specify the resource ID to which the data will be restored.")
         c.argument('restore_location', type=str, help="specify the restore location.")
         c.argument('recovery_point_id', type=str, help="specify the recovery point ID which will be used for restoring the data.")
@@ -280,17 +237,6 @@ def load_arguments(self, _):
         c.argument('from_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for start range.")
         c.argument('to_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for end range.")
         c.argument('restore_configuration', type=validate_file_or_dict, help="Restore configuration for restore. Use this parameter to restore with AzureKubernetesService.")
-
-    with self.argument_context('dataprotection backup-instance restore initialize-for-item-recovery') as c:
-        c.argument('restore_location', type=str, help="specify the restore location.")
-        c.argument('recovery_point_id', type=str, help="specify the recovery point ID which will be used for restoring the data.")
-        c.argument('point_in_time', type=datetime_type, help="specify the point in time which will be used for restoring the data in UTC (yyyy-mm-ddTHH:MM:SS).")
-        c.argument('source_datastore', arg_type=get_enum_type(get_datastore_type_values()), help="Specify the datastore type of the given recovery point or point in time.")
-        c.argument('backup_instance_id', type=str, help="specify the backup instance ID.")
-        c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type")
-        c.argument('container_list', type=str, nargs='+', help="specify the list of containers to restore.")
-        c.argument('from_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for start range.")
-        c.argument('to_prefix_pattern', type=str, nargs='+', help="specify the prefix pattern for end range.")
 
     with self.argument_context('dataprotection backup-vault list') as c:
         c.argument('resource_group_name', resource_group_name_type)
