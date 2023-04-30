@@ -37,6 +37,7 @@ def load_command_table(self, _):
 
     with self.command_group('dataprotection backup-instance', client_factory=cf_backup_instance, exception_handler=exception_handler) as g:
         g.custom_command('update-policy', "dataprotection_backup_instance_update_policy", supports_no_wait=True)
+        g.custom_command('create', 'data_protection_backup_instance_create', supports_no_wait=True)
         # g.custom_command('initialize', "dataprotection_backup_instance_initialize")
         # g.custom_command(
         #     'validate-for-backup', 'dataprotection_backup_instance_validate_for_backup', supports_no_wait=True

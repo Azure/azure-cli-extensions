@@ -51,9 +51,11 @@ def load_arguments(self, _):
         c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation Expected value: '
                    'json-string/@json-file.')
 
-    # with self.argument_context('dataprotection backup-instance create') as c:
-    #     c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation Expected value: '
-    #                'json-string/@json-file.')
+    with self.argument_context('dataprotection backup-instance create') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
+        c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation Expected value: '
+                   'json-string/@json-file.')
 
     with self.argument_context('data-protection backup-instance validate-for-backup') as c:
         c.argument('resource_group_name', resource_group_name_type)
