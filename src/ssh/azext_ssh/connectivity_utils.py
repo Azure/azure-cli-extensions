@@ -41,31 +41,12 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
     resource_uri = resource_id(subscription=get_subscription_id(cmd.cli_ctx), resource_group=resource_group,
                                  namespace=namespace, type=arc_type, name=vm_name)
     
-    # TO DO:
-    # A lot of the functions for getting the relay information are written down here, 
-    # but we need to make it work.
-    # What I think it's the best way to handle retrieving the relay information is the following steps:
-    # - Call list credential
-    #   - if it throws a resource not found that means the endpoint doesn't exist
-    #       - create endpoint (fail if user is not owner/contributor)
-    #       - create service config (fail is user is not owner/contributor, prompt user for confirmation)
-    #       - call list credential again
-    #   - if it throws a "precondition failed" that means the service config doesn't exist
-    #       - create service config (fail is user is not owner/contributor, prompt user for confirmation)
-    #       - call list credential again
-    #   - list credential call suceeds
-    #       - ensure that the provided port matches the allowed port in service configuration
-    #           - if it doesn't prompt user for confirmation if they want to repair the port
-    #           - if it does, return credential
-    # This is just how I think it's the best way to do this. I've been trying to figure out the best way to 
-    # minimize calls to the ACRP. If you think of a better way to do this feel free to try it.
     cred = None
     try: 
         cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
     except ResourceNotFoundError:
         _create_default_endpoint(cmd, resource_uri)
     except HttpResponseError as e:
-        # TODO: confirm exact precondition failed syntax
         if e.reason != "Precondition Failed":
             raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
     except Exception as e:
@@ -77,6 +58,9 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
             cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
         except Exception as e:
             raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
+        # seem to be hitting a race condition when the SSH connection
+        # is being tried too soon after creating service configuration
+        time.sleep(10)
     else:
         if not _check_service_configuration(cmd, resource_uri, port):
             _create_service_configuration(cmd, resource_uri, port)
@@ -84,6 +68,9 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
                 cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
             except Exception as e:
                 raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
+            # seem to be hitting a race condition when the SSH connection
+            # is being tried too soon after creating service configuration
+            time.sleep(10)
     return cred
 
 def _check_service_configuration(cmd, resource_uri, port):
