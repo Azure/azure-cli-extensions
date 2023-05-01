@@ -95,23 +95,6 @@ def _check_service_configuration(cmd, resource_uri, port):
     else:
         return True
 
-
-# def _get_or_create_endpoint(cmd, resource_uri):
-#     from .aaz.latest.hybrid_connectivity.endpoint import Show as ShowEndpoint
-#     show_endpoint_args = {
-#         'endpoint_name': 'default',
-#         'resource_uri': resource_uri,
-#     }
-#     try:
-#         ShowEndpoint(cli_ctx=cmd.cli_ctx)(command_args=show_endpoint_args)
-#     except ResourceNotFoundError:
-#         _create_default_endpoint(cmd, resource_uri)
-#     except Exception as e:
-#         # if for some reason the request for endpoint fails, we will still try to move
-#         # forward. 
-#         return
-
-
 def _create_default_endpoint(cmd, resource_uri):
     from .aaz.latest.hybrid_connectivity.endpoint import Create as CreateHybridConnectivityEndpoint
     vm_name = parse_resource_id(resource_uri)["name"]
