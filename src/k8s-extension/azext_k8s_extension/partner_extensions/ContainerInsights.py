@@ -7,6 +7,7 @@
 
 import datetime
 import json
+import re
 
 from ..utils import get_cluster_rp_api_version
 from .. import consts
@@ -36,7 +37,8 @@ class ContainerInsights(DefaultExtension):
     def Create(self, cmd, client, resource_group_name, cluster_name, name, cluster_type, cluster_rp,
                extension_type, scope, auto_upgrade_minor_version, release_train, version, target_namespace,
                release_namespace, configuration_settings, configuration_protected_settings,
-               configuration_settings_file, configuration_protected_settings_file):
+               configuration_settings_file, configuration_protected_settings_file,
+               plan_name, plan_publisher, plan_product):
         """ExtensionType 'microsoft.azuremonitor.containers' specific validations & defaults for Create
            Must create and return a valid 'Extension' object.
 
@@ -453,6 +455,7 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
     subscription_id = get_subscription_id(cmd.cli_ctx)
     workspace_resource_id = ''
     useAADAuth = False
+    extensionSettings = {}
 
     if configuration_settings is not None:
         if 'loganalyticsworkspaceresourceid' in configuration_settings:
@@ -473,6 +476,26 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
             logger.info("provided useAADAuth flag is : %s", useAADAuthSetting)
             if (isinstance(useAADAuthSetting, str) and str(useAADAuthSetting).lower() == "true") or (isinstance(useAADAuthSetting, bool) and useAADAuthSetting):
                 useAADAuth = True
+        if useAADAuth and ('dataCollectionSettings' in configuration_settings):
+            dataCollectionSettingsString = configuration_settings["dataCollectionSettings"]
+            logger.info("provided dataCollectionSettings  is : %s", dataCollectionSettingsString)
+            dataCollectionSettings = json.loads(dataCollectionSettingsString)
+            if 'interval' in dataCollectionSettings.keys():
+                intervalValue = dataCollectionSettings["interval"]
+                if (bool(re.match(r'^[0-9]+[m]$', intervalValue))) is False:
+                    raise InvalidArgumentValueError('interval format must be in <number>m')
+                intervalValue = int(intervalValue.rstrip("m"))
+                if intervalValue <= 0 or intervalValue > 30:
+                    raise InvalidArgumentValueError('interval value MUST be in the range from 1m to 30m')
+            if 'namespaceFilteringMode' in dataCollectionSettings.keys():
+                namespaceFilteringModeValue = dataCollectionSettings["namespaceFilteringMode"].lower()
+                if namespaceFilteringModeValue not in ["off", "exclude", "include"]:
+                    raise InvalidArgumentValueError('namespaceFilteringMode value MUST be either Off or Exclude or Include')
+            if 'namespaces' in dataCollectionSettings.keys():
+                namspaces = dataCollectionSettings["namespaces"]
+                if isinstance(namspaces, list) is False:
+                    raise InvalidArgumentValueError('namespaces must be an array type')
+            extensionSettings["dataCollectionSettings"] = dataCollectionSettings
 
     workspace_resource_id = workspace_resource_id.strip()
 
@@ -502,7 +525,7 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
     if is_ci_extension_type:
         if useAADAuth:
             logger.info("creating data collection rule and association")
-            _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name, workspace_resource_id)
+            _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name, workspace_resource_id, extensionSettings)
         elif not _is_container_insights_solution_exists(cmd, workspace_resource_id):
             logger.info("Creating ContainerInsights solution resource, since it doesn't exist and it is using legacy authentication")
             _ensure_container_insights_for_monitoring(cmd, workspace_resource_id).result()
@@ -520,6 +543,7 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
 
     # workspace key not used in case of AAD MSI auth
     configuration_protected_settings['omsagent.secret.key'] = "<not_used>"
+    configuration_protected_settings['amalogs.secret.key'] = "<not_used>"
     if not useAADAuth:
         shared_keys = log_analytics_client.shared_keys.get_shared_keys(
             workspace_rg_name, workspace_name)
@@ -570,7 +594,7 @@ def get_existing_container_insights_extension_dcr_tags(cmd, dcr_url):
     return tags
 
 
-def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name, workspace_resource_id):
+def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_resource_group_name, cluster_rp, cluster_type, cluster_name, workspace_resource_id, extensionSettings):
     from azure.core.exceptions import HttpResponseError
 
     cluster_region = ''
@@ -600,7 +624,9 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
     except HttpResponseError as ex:
         raise ex
 
-    dataCollectionRuleName = f"MSCI-{cluster_name}-{cluster_region}"
+    dataCollectionRuleName = f"MSCI-{workspace_region}-{cluster_name}"
+    # Max length of the DCR name is 64 chars
+    dataCollectionRuleName = dataCollectionRuleName[0:64]
     dcr_resource_id = f"/subscriptions/{subscription_id}/resourceGroups/{cluster_resource_group_name}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}"
 
     # first get the association between region display names and region IDs (because for some reason
@@ -665,6 +691,7 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
                                 "Microsoft-ContainerInsights-Group-Default"
                             ],
                             "extensionName": "ContainerInsights",
+                            "extensionSettings": extensionSettings
                         }
                     ]
                 },

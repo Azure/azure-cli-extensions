@@ -19,3 +19,4 @@ def load_command_table(self, _):
         g.custom_command('performance-data-collection', 'datamigration_performance_data_collection')
         g.custom_command('get-sku-recommendation', 'datamigration_get_sku_recommendation')
         g.custom_command('register-integration-runtime', 'datamigration_register_ir')
+        g.custom_command('login-migration', 'datamigration_login_migration')

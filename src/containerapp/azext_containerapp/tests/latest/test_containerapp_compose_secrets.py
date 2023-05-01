@@ -7,10 +7,11 @@ import unittest  # pylint: disable=unused-import
 
 from azure.cli.testsdk import (ResourceGroupPreparer)
 from azure.cli.testsdk.decorators import serial_test
-from azext_containerapp.tests.latest.common import (ContainerappComposePreviewScenarioTest,  # pylint: disable=unused-import
-                                                    write_test_file,
-                                                    clean_up_test_file,
-                                                    TEST_DIR)
+from azext_containerapp.tests.latest.common import (
+    ContainerappComposePreviewScenarioTest,  # pylint: disable=unused-import
+    write_test_file,
+    clean_up_test_file,
+    TEST_DIR, TEST_LOCATION)
 
 from .utils import create_containerapp_env
 
@@ -19,10 +20,7 @@ class ContainerappComposePreviewSecretsScenarioTest(ContainerappComposePreviewSc
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_secrets(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         compose_text = """
 services:
@@ -73,10 +71,7 @@ secrets:
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_secrets_and_existing_environment(self, resource_group):
-        location = os.getenv("CLITestLocation")
-        if not location:
-            location = 'eastus'
-        self.cmd('configure --defaults location={}'.format(location))
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         compose_text = """
 services:
@@ -131,6 +126,8 @@ secrets:
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')
     def test_containerapp_compose_create_with_secrets_and_existing_environment_conflict(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
         compose_text = """
 services:
   foo:

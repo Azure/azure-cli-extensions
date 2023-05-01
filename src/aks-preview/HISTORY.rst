@@ -11,7 +11,55 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Raise InvalidArgumentValueError for azure cni + pod_cidr without overlay.
+* Vendor new SDK and bump API version to 2023-03-02-preview.
+
+0.5.137
++++++++
+* Fix role assignment failure caused by the breaking change of default API version bump of the auth SDK
+
+0.5.136
++++++++
+* fix: remove uneeded location check for DCR, DCRA in azure monitor metrics addon (aks)
+* Refactor: use decorator mode in pod_cidr and network_plugin_mode getters to read from mc only during CREATE
+
+0.5.135
++++++++
+* Add `--network-dataplane` flag to `az aks create`.
+* Allow updating the pod CIDR and network plugin mode to migrate clusters to Azure CNI Overlay.
+
+0.5.134
++++++++
+* Add cluster upgrade settings options `--upgrade-settings`, and `--upgrade-override-until`.
+
+0.5.133
++++++++
+* Add `az aks mesh` commands for Azure Service Mesh.
+* `az aks create/update`: Replace `--uptime-sla` and `--no-uptime-sla` argument with `--tier` argument.
+* Raise a ClientRequestError when creating the same cluster again in command `az aks create`.
+* Vendor new SDK and bump API version to 2023-02-02-preview.
+
+0.5.132
++++++++
+* Change the short name of option `--source-resource-id` in command `az aks trustedaccess rolebinding create` from `-s` to `-r`.
+* Add parameter to enable windows recording rules `--enable-windows-recording-rules` for the Azure Monitor Metrics addon
+
+0.5.131
++++++++
+* Allow updating the ssh key value if cluster was created without ssh key
+
+0.5.130
++++++++
+* Enable outbound migration from/to udr
+* Update description after Azure Keyvault Secrets Provider addon is GA
+
+0.5.129
++++++++
+* Vendor new SDK and bump API version to 2023-01-02-preview.
+* Mark AAD-legacy properties `--aad-client-app-id`, `--aad-server-app-id` and `--aad-server-app-secret` deprecated
+
+0.5.128
++++++++
+* Fix option name `--duration` for command group `az aks maintenanceconfiguration`
 
 0.5.127
 +++++++
@@ -20,6 +68,7 @@ Pending
 0.5.126
 +++++++
 * Add `--nrg-lockdown-restriction-level <restriction level>` option for chosing the node resource group restriction level in `aks create` and `aks update`
+* Raise InvalidArgumentValueError for azure cni + pod_cidr without overlay.
 
 0.5.125
 +++++++

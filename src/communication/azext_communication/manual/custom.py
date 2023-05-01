@@ -293,3 +293,90 @@ def communication_rooms_remove_participants(client, room_id, participants):
         raise
     except Exception as ex:
         sys.exit(str(ex))
+
+
+def __get_attachment_content(filename, filetype):
+    import base64
+    import os
+    from azure.communication.email import EmailAttachment
+
+    _, tail = os.path.split(filename)
+    with open(filename, "r", encoding="utf-8") as file:
+        file_content = file.read()
+
+    base64_content = base64.b64encode(bytes(file_content, 'utf-8'))
+
+    return EmailAttachment(
+        name=tail,
+        attachment_type=filetype,
+        content_bytes_base64=base64_content.decode(),
+    )
+
+
+def communication_email_send(client,
+                             subject,
+                             sender,
+                             recipients_to,
+                             disable_tracking=False,
+                             text=None,
+                             html=None,
+                             importance='normal',
+                             recipients_cc=None,
+                             recipients_bcc=None,
+                             reply_to=None,
+                             attachments=None,
+                             attachment_types=None):
+
+    from azure.communication.email import EmailContent, EmailAddress, EmailMessage, EmailRecipients
+    from knack.util import CLIError
+
+    try:
+        email_content = EmailContent(
+            subject=subject,
+            plain_text=text,
+            html=html,
+        )
+
+        to_address = [EmailAddress(email=r) for r in recipients_to]
+
+        reply_to_address = None if reply_to is None else [EmailAddress(email=reply_to)]
+
+        if attachments is None and attachment_types is None:
+            attachments_list = None
+        elif attachments is None or attachment_types is None:
+            raise CLIError('Number of attachments and attachment-types should match.')
+        elif len(attachments) != len(attachment_types):
+            raise CLIError('Number of attachments and attachment-types should match.')
+        else:
+            attachments_list = [
+                __get_attachment_content(attachments[i], attachment_types[i])
+                for i in range(len(attachments))
+            ]
+
+        message = EmailMessage(
+            sender=sender,
+            content=email_content,
+            recipients=EmailRecipients(
+                to=to_address,
+                cc=[] if recipients_cc is None else [EmailAddress(email=r) for r in recipients_cc],
+                bcc=[] if recipients_bcc is None else [EmailAddress(email=r) for r in recipients_bcc]),
+            importance=importance,
+            reply_to=reply_to_address,
+            disable_user_engagement_tracking=disable_tracking,
+            attachments=attachments_list,
+        )
+
+        return client.send(message)
+    except HttpResponseError:
+        raise
+    except Exception as ex:
+        sys.exit(str(ex))
+
+
+def communication_email_get_status(client, message_id):
+    try:
+        return client.get_send_status(message_id)
+    except HttpResponseError:
+        raise
+    except Exception as ex:
+        sys.exit(str(ex))

@@ -1,0 +1,28 @@
+workloads monitor create:
+  parameters:
+    log_analytics_workspace_arm_id:
+      rule_exclusions:
+      - option_length_too_long
+    zone_redundancy_preference:
+      rule_exclusions:
+        - option_length_too_long
+workloads sap-central-instance stop:
+  parameters:
+    soft_stop_timeout_seconds:
+      rule_exclusions:
+      - option_length_too_long
+workloads sap-database-instance stop:
+  parameters:
+    soft_stop_timeout_seconds:
+      rule_exclusions:
+      - option_length_too_long
+workloads sap-virtual-instance stop:
+  parameters:
+    soft_stop_timeout_seconds:
+      rule_exclusions:
+      - option_length_too_long
+workloads sap-application-server-instance stop:
+  parameters:
+    soft_stop_timeout_seconds:
+      rule_exclusions:
+      - option_length_too_long

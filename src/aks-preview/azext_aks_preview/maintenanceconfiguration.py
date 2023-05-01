@@ -97,7 +97,7 @@ def constructMaintenanceWindow(cmd, raw_parameters):
     if start_time is None:
         raise RequiredArgumentMissingError('Please specify --start-time for maintenance window.')
     if duration_hours is None:
-        raise RequiredArgumentMissingError('Please specify --duration-hours for maintenance window.')
+        raise RequiredArgumentMissingError('Please specify --duration for maintenance window.')
 
     MaintenanceWindow = cmd.get_models('MaintenanceWindow', resource_type=CUSTOM_MGMT_AKS_PREVIEW, operation_group='maintenance_configurations')
     maintenanceWindow = MaintenanceWindow(

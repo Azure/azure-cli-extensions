@@ -34,6 +34,12 @@ def handle_raw_exception(e):
 
     stringErr = str(e)
 
+    if "WorkloadProfileNameRequired" in stringErr:
+        raise CLIInternalError("Workload profile name is required. Please provide --workload-profile-name.")
+
+    if "Unknown properties Name in Microsoft.ContainerApps.WebApi.Views.Version20221101Preview.WorkloadProfile are not supported" in stringErr:
+        raise CLIInternalError("Bad Request: Workload profile name is not yet supported in this region.")
+
     if "{" in stringErr and "}" in stringErr:
         jsonError = stringErr[stringErr.index("{"):stringErr.rindex("}") + 1]
         jsonError = json.loads(jsonError)
@@ -45,6 +51,33 @@ def handle_raw_exception(e):
                 code = jsonError['code']
                 message = jsonError['message']
                 raise CLIInternalError('({}) {}'.format(code, message))
+        elif "Message" in jsonError:
+            message = jsonError["Message"]
+            raise CLIInternalError(message)
+        elif "message" in jsonError:
+            message = jsonError["message"]
+            raise CLIInternalError(message)
+    raise e
+
+
+def handle_non_404_exception(e):
+    import json
+
+    stringErr = str(e)
+
+    if "{" in stringErr and "}" in stringErr:
+        jsonError = stringErr[stringErr.index("{"):stringErr.rindex("}") + 1]
+        jsonError = json.loads(jsonError)
+
+        if 'error' in jsonError:
+            jsonError = jsonError['error']
+
+            if 'code' in jsonError and 'message' in jsonError:
+                code = jsonError['code']
+                message = jsonError['message']
+                if code != "ResourceNotFound":
+                    raise CLIInternalError('({}) {}'.format(code, message))
+                return jsonError
         elif "Message" in jsonError:
             message = jsonError["Message"]
             raise CLIInternalError(message)

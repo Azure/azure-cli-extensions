@@ -22,25 +22,6 @@ def show_directory(client, container_name, directory_name, snapshot=None, lease_
     return directory
 
 
-def show_blob(cmd, client, container_name, blob_name, snapshot=None, lease_id=None,
-              if_modified_since=None, if_unmodified_since=None, if_match=None,
-              if_none_match=None, timeout=None):
-    blob = client.get_blob_properties(
-        container_name, blob_name, snapshot=snapshot, lease_id=lease_id,
-        if_modified_since=if_modified_since, if_unmodified_since=if_unmodified_since, if_match=if_match,
-        if_none_match=if_none_match, timeout=timeout)
-
-    page_ranges = None
-    if blob.properties.blob_type == cmd.get_models('blob.models#_BlobTypes').PageBlob:
-        page_ranges = client.get_page_ranges(
-            container_name, blob_name, snapshot=snapshot, lease_id=lease_id, if_modified_since=if_modified_since,
-            if_unmodified_since=if_unmodified_since, if_match=if_match, if_none_match=if_none_match, timeout=timeout)
-
-    blob.properties.page_ranges = page_ranges
-
-    return blob
-
-
 # pylint: disable=unused-variable,logging-format-interpolation
 def delete_directory(client, container_name, directory_name):
 
@@ -55,12 +36,6 @@ def delete_directory(client, container_name, directory_name):
         deleted, marker = client.delete_directory(container_name, directory_name, marker=marker, recursive=True)
         count += 1
     logger.info("Took {} call(s) to finish moving.".format(count))
-
-
-def list_blobs(client, container_name, prefix=None, num_results=None, include='mc',
-               delimiter=None, marker=None, timeout=None):
-    client.list_blobs(container_name, prefix, num_results, include,
-                      delimiter, marker, timeout)
 
 
 def list_directory(client, container_name, directory_path, prefix=None, num_results=None, include='mc',

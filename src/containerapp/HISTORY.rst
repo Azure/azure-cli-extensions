@@ -2,9 +2,76 @@
 
 Release History
 ===============
+Upcoming
+++++++
+* 'az containerapp create': support for assigning acrpull permissions to managed identity in cross-subscription; warn when ACR resourceNotFound, do not block the process
+* 'az containerapp hostname bind': fix bug where the prompt for validation method didn't take value in
+* Make --validation-method parameter case insensitive for 'az containerapp hostname bind' and 'az containerapp env certificate create'
+* 'az containerapp auth update': remove unsupported argument --enable-token-store
+* 'az containerapp update'/'az containerapp env update': fix --no-wait
+* 'az containerapp update': fix the --yaml update behavior to respect the empty array in patch-request
+* 'az containerapp create/update': add support for secret volumes yaml and --secret-volume-mount
+
+0.3.28
+++++++
+* 'az containerapp secret set': fix help typo
+* 'az containerapp secret set': add more format validation for key vault secrets
+* 'az containerapp up': fix --location comparison logic
+* 'az containerapp update': change --max-replicas limit
+* Add CLI support for containerapp ingress sticky-sessions'
+* Change quickstart image
+* 'az containerapp create': fix yaml not detecting workloadProfileName
+
+0.3.27
+++++++
+* 'az containerapp secret set': add support for secrets from Key Vault
+* 'az containerapp secret show': add support for secrets from Key Vault
+
+0.3.26
+++++++
+* 'az containerapp exec': fix bugs for consumption workload based environment
+* 'az containerapp env create': fix bug causing --enable-workload-profiles to require an argument
+
+0.3.25
+++++++
+* 'az containerapp create/update': --yaml support properties for api-version 2022-10-01 (e.g. exposedPort,clientCertificateMode,corsPolicy)
+* 'az containerapp env update': fix bugs in update environment.
+* Fix YAML create with user-assigned identity
+* Fix polling logic for long running operations.
+* 'az containerapp env create': add support for workload profiles
+* 'az containerapp env update': add support for workload profiles
+* 'az containerapp create': add support for workload profiles
+* 'az containerapp update': add support for workload profiles
+* Add 'az containerapp env workload-profile delete' to support deleting a workload profile from an environment
+* Add 'az containerapp env workload-profile list' to support listing all workload profiles in an environment
+* Add 'az containerapp env workload-profile list-supported' to support listing all available workload profile types in a region
+* Add 'az containerapp env workload-profile set' to support creating or updating an existing workload profile in an environment
+* Add 'az containerapp env workload-profile show' to support showing details of a single workload profile in an environment
+* Upgrade api-version from 2022-10-01 to 2022-11-01-preview
+* Add `az containerapp ingress update` Command to Update Container App Ingress
+
+0.3.24
+++++++
+* Decouple with the `network` module.
+
+0.3.23
+++++++
+* BREAKING CHANGE: 'az containerapp env certificate list' returns [] if certificate not found, instead of raising an error.
+* Added 'az containerapp env certificate create' to create managed certificate in a container app environment
+* Added 'az containerapp hostname add' to add hostname to a container app without binding
+* 'az containerapp env certificate delete': add support for managed certificate deletion
+* 'az containerapp env certificate list': add optional parameters --managed-certificates-only and --private-key-certificates-only to list certificates by type
+* 'az containerapp hostname bind': change --thumbprint to an optional parameter and add optional parameter --validation-method to support managed certificate bindings
+* 'az containerapp ssl upload': log messages to indicate which step is in progress
+* Upgrade api-version from 2022-06-01-preview to 2022-10-01
+* Fix error when running `az containerapp up` on local source that doesn't contain a Dockerfile
+* Fix the 'TypeError: 'NoneType' object does not support item assignment' error obtained while running the CLI command 'az containerapp dapr enable'
+
 0.3.21
 ++++++
 * Fix the PermissionError caused for the Temporary files while running `az containerapp up` command on Windows
+* Fix the empty IP Restrictions object caused running `az containerapp update` command on Windows with a pre existing .yaml file
+* Added model mapping to support add/update of init Containers via `az containerapp create` & `az containerapp update` commands.
 
 0.3.20
 ++++++

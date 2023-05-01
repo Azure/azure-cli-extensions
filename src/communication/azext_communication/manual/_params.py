@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag
+
 
 def load_arguments(self, _):
     with self.argument_context('communication update') as c:
@@ -13,6 +15,7 @@ def load_arguments(self, _):
     _load_phonenumber_arguments(self)
     _load_chat_arguments(self)
     _load_rooms_arguments(self)
+    _load_email_arguments(self)
 
 
 def _load_identity_arguments(self):
@@ -242,3 +245,32 @@ def _load_rooms_arguments(self):
                    type=str, help='Room Id')
         c.argument('participants', options_list=['--participants'],
                    nargs='+', help='Collection of identities that will be removed from the room.')
+
+
+def _load_email_arguments(self):
+    with self.argument_context('communication email send') as c:
+        c.argument('sender', options_list=['--sender'], type=str, help='Sender email address from a verified domain.')
+        c.argument('subject', options_list=['--subject'], type=str, help='Subject of the email message.')
+        c.argument('text', options_list=['--text'], type=str, help='Plain text version of the email message. Optional.')
+        c.argument('html', options_list=['--html'], type=str, help='Html version of the email message. Optional.')
+        c.argument('importance', options_list=['--importance'], arg_type=get_enum_type(['normal', 'low', 'high']),
+                   help='The importance type for the email. Known values are: high,'
+                   ' normal, and low. Default is normal. Optional')
+        c.argument('recipients_to', options_list=['--to'], nargs='+', help='Recepients email addresses.')
+        c.argument('recipients_cc', options_list=['--cc'], nargs='+', help='Carbon copy email addresses.')
+        c.argument('recipients_bcc', options_list=['--bcc'], nargs='+', help='Blind carbon copy email addresses.')
+        c.argument('reply_to', options_list=['--reply-to'], type=str, help='Reply-to email address. Optional.')
+        c.argument('disable_tracking', options_list=['--disable-tracking'], arg_type=get_three_state_flag(),
+                   help='Indicates whether user engagement tracking should be disabled for this request if'
+                   'the resource-level user engagement tracking setting was already enabled. Optional.')
+        c.argument('attachments', options_list=['--attachments'], nargs='+',
+                   help='List of email attachments. Optional.')
+        c.argument('attachment_types', options_list=['--attachment-types'], nargs='+',
+                   help='List of email attachment types, in the same order of attachments.'
+                   ' Required for each attachment. Known values are: avi, bmp, doc, docm,'
+                   ' docx, gif, jpeg, mp3, one, pdf, png, ppsm, ppsx, ppt, pptm, pptx,'
+                   ' pub, rpmsg, rtf, tif, txt, vsd, wav, wma, xls, xlsb, xlsm, and xlsx')
+
+    with self.argument_context('communication email status get') as c:
+        c.argument('message_id', options_list=['--message-id'], type=str,
+                   help='System generated message id (GUID) returned from a previous call to send email')

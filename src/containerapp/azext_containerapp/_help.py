@@ -55,6 +55,12 @@ helps['containerapp create'] = """
                                     "cloud=AzurePublicCloud" \\
                                     "queueLength": "5" "queueName": "foo" \\
               --scale-rule-auth "connection=my-connection-string-secret-name"
+    - name: Create a container app with secrets and mounts them in a volume.
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+              --image my-app:v1.0 --environment MyContainerappEnv \\
+              --secrets mysecret=secretvalue1 anothersecret="secret value 2" \\
+              --secret-volume-mount "mnt/secrets"
 """
 
 helps['containerapp update'] = """
@@ -494,10 +500,69 @@ helps['containerapp env storage remove'] = """
           az containerapp env storage remove -g MyResourceGroup --storage-name MyStorageName -n MyEnvironment
 """
 
+helps['containerapp env workload-profile'] = """
+    type: group
+    short-summary: Manage the workload profiles of a Container Apps environment
+"""
+
+helps['containerapp env workload-profile delete'] = """
+    type: command
+    short-summary: Delete a workload profile from a Container Apps environment
+    examples:
+    - name: Delete a workload profile from a Container Apps environment
+      text: |
+          az containerapp env workload-profile delete -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp
+"""
+
+helps['containerapp env workload-profile list'] = """
+    type: command
+    short-summary: List the workload profiles from a Container Apps environment
+    examples:
+    - name: List the workload profiles from a Container Apps environment
+      text: |
+          az containerapp env workload-profile list -g MyResourceGroup -n MyEnvironment
+"""
+
+helps['containerapp env workload-profile show'] = """
+    type: command
+    short-summary: Show a workload profile from a Container Apps environment
+    examples:
+    - name: Show a workload profile from a Container Apps environment
+      text: |
+          az containerapp env workload-profile show -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp
+"""
+
+helps['containerapp env workload-profile list-supported'] = """
+    type: command
+    short-summary: List the supported workload profiles in a region
+    examples:
+    - name: List the supported workload profiles in a region
+      text: |
+          az containerapp env workload-profile list-supported -l region
+"""
+
+helps['containerapp env workload-profile set'] = """
+    type: command
+    short-summary: Create or update an existing workload profile in a Container Apps environment
+    examples:
+    - name: Create or update an existing workload profile in a Container Apps environment
+      text: |
+          az containerapp env workload-profile set -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 2
+"""
+
 # Certificates Commands
 helps['containerapp env certificate'] = """
     type: group
     short-summary: Commands to manage certificates for the Container Apps environment.
+"""
+
+helps['containerapp env certificate create'] = """
+    type: command
+    short-summary: Create a managed certificate.
+    examples:
+    - name: Create a managed certificate.
+      text: |
+          az containerapp env certificate create -g MyResourceGroup --name MyEnvironment --certificate-name MyCertificate --hostname MyHostname --validation-method CNAME
 """
 
 helps['containerapp env certificate list'] = """
@@ -507,7 +572,7 @@ helps['containerapp env certificate list'] = """
     - name: List certificates for an environment.
       text: |
           az containerapp env certificate list -g MyResourceGroup --name MyEnvironment
-    - name: List certificates by certificate id.
+    - name: Show a certificate by certificate id.
       text: |
           az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --certificate MyCertificateId
     - name: List certificates by certificate name.
@@ -516,6 +581,12 @@ helps['containerapp env certificate list'] = """
     - name: List certificates by certificate thumbprint.
       text: |
           az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --thumbprint MyCertificateThumbprint
+    - name: List managed certificates for an environment.
+      text: |
+          az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --managed-certificates-only
+    - name: List private key certificates for an environment.
+      text: |
+          az containerapp env certificate list -g MyResourceGroup --name MyEnvironment --private-key-certificates-only
 """
 
 helps['containerapp env certificate upload'] = """
@@ -540,7 +611,7 @@ helps['containerapp env certificate delete'] = """
     - name: Delete a certificate from the Container Apps environment by certificate id
       text: |
           az containerapp env certificate delete -g MyResourceGroup --name MyEnvironment --certificate MyCertificateId
-    - name: Delete a certificate from the Container Apps environment by certificate thumbprint
+    - name: Delete all certificates that have a matching thumbprint from the Container Apps environment
       text: |
           az containerapp env certificate delete -g MyResourceGroup --name MyEnvironment --thumbprint MyCertificateThumbprint
 """
@@ -639,6 +710,16 @@ helps['containerapp ingress disable'] = """
           az containerapp ingress disable -n MyContainerapp -g MyResourceGroup
 """
 
+helps['containerapp ingress update'] = """
+    type: command
+    short-summary: Update ingress for a container app.
+    examples:
+    - name: Update ingress for a container app.
+      text: |
+          az containerapp ingress update -n MyContainerapp -g MyResourceGroup \\
+              --target-port 8080
+"""
+
 helps['containerapp ingress traffic'] = """
     type: group
     short-summary: Commands to manage traffic-splitting.
@@ -701,6 +782,32 @@ helps['containerapp ingress access-restriction list'] = """
     - name: List IP access restrictions.
       text: |
           az containerapp ingress access-restriction list -n MyContainerapp -g MyResourceGroup
+"""
+
+helps['containerapp ingress sticky-sessions'] = """
+    type: group
+    short-summary: Commands to set Sticky session affinity for a container app.
+"""
+
+helps['containerapp ingress sticky-sessions set'] = """
+    type: command
+    short-summary: Configure Sticky session for a container app.
+    examples:
+    - name: Set affinity to sticky for a container app.
+      text: |
+          az containerapp ingress sticky-sessions set -n MyContainerapp -g MyResourceGroup --affinity sticky
+    - name: Set affinity to none for a container app.
+      text: |
+          az containerapp ingress sticky-sessions set -n MyContainerapp -g MyResourceGroup --affinity none
+"""
+
+helps['containerapp ingress sticky-sessions show'] = """
+    type: command
+    short-summary: Show the Affinity for a container app.
+    examples:
+    - name: Show a container app's Sticky affinity configuration.
+      text: |
+          az containerapp ingress sticky-sessions show -n MyContainerapp -g MyResourceGroup
 """
 
 # Registry Commands
@@ -785,10 +892,10 @@ helps['containerapp secret set'] = """
     examples:
     - name: Add secrets to a container app.
       text: |
-          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MySecretName1=MySecretValue1 MySecretName2=MySecretValue2
+          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MySecretName1=MySecretValue1 MySecretName2=keyvaultref:https://example.vault.azure.net/secrets/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
     - name: Update a secret.
       text: |
-          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue
+          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue MyExistingSecretName2=keyvaultref:https://example.vault.azure.net/secrets/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
 """
 
 helps['containerapp github-action'] = """
@@ -884,13 +991,25 @@ helps['containerapp hostname'] = """
     short-summary: Commands to manage hostnames of a container app.
 """
 
+helps['containerapp hostname add'] = """
+    type: command
+    short-summary: Add the hostname to a container app without binding.
+    examples:
+    - name: Add hostname without binding.
+      text: |
+          az containerapp hostname add -n MyContainerapp -g MyResourceGroup --hostname MyHostname
+"""
+
 helps['containerapp hostname bind'] = """
     type: command
-    short-summary: Add or update the hostname and binding with an existing certificate.
+    short-summary: Add or update the hostname and binding with a certificate.
     examples:
-    - name: Add or update hostname and binding.
+    - name: Add or update hostname and binding with a provided certificate.
       text: |
           az containerapp hostname bind -n MyContainerapp -g MyResourceGroup --hostname MyHostname --certificate MyCertificateId
+    - name: Look for or create a managed certificate and bind with the hostname if no certificate or thumbprint is provided.
+      text: |
+          az containerapp hostname bind -n MyContainerapp -g MyResourceGroup --hostname MyHostname
 """
 
 helps['containerapp hostname delete'] = """

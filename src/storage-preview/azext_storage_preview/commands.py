@@ -5,12 +5,8 @@
 
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
-from ._client_factory import (cf_sa, cf_blob_data_gen_update,
-                              blob_data_service_factory, adls_blob_data_service_factory,
-                              cf_sa_blob_inventory, cf_mgmt_file_services, cf_share_client, cf_share_file_client,
-                              cf_adls_service, cf_adls_file_system, cf_local_users)
-from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_STORAGE,
-                       CUSTOM_DATA_STORAGE_FILESHARE, CUSTOM_DATA_STORAGE_FILEDATALAKE)
+from ._client_factory import (cf_sa, blob_data_service_factory, adls_blob_data_service_factory)
+from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_STORAGE)
 
 
 def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-statements
@@ -44,37 +40,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.generic_update_command('update', getter_name='get_properties', setter_name='update',
                                  custom_func_name='update_storage_account')
 
-    with self.command_group('storage account network-rule', storage_account_sdk,
-                            custom_command_type=storage_account_custom_type,
-                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2017-06-01') as g:
-        g.custom_command('add', 'add_network_rule')
-        g.custom_command('list', 'list_network_rules')
-        g.custom_command('remove', 'remove_network_rule')
-
-    local_users_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_storage.operations#'
-                        'LocalUsersOperations.{}',
-        client_factory=cf_local_users,
-        resource_type=CUSTOM_MGMT_STORAGE
-    )
-
-    local_users_custom_type = CliCommandType(
-        operations_tmpl='azext_storage_preview.operations.account#{}',
-        client_factory=cf_local_users,
-        resource_type=CUSTOM_MGMT_STORAGE
-    )
-
-    with self.command_group('storage account local-user', local_users_sdk,
-                            custom_command_type=local_users_custom_type,
-                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2021-08-01', is_preview=True) as g:
-        g.custom_command('create', 'create_local_user')
-        g.custom_command('update', 'update_local_user')
-        g.command('delete', 'delete')
-        g.command('list', 'list')
-        g.show_command('show', 'get')
-        g.command('list-keys', 'list_keys')
-        g.command('regenerate-password', 'regenerate_password')
-
     block_blob_sdk = CliCommandType(
         operations_tmpl='azure.multiapi.storage.blob.blockblobservice#BlockBlobService.{}',
         client_factory=blob_data_service_factory,
@@ -103,15 +68,6 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         msg += " For more information go to"
         msg += " https://github.com/Azure/azure-cli/blob/dev/src/azure-cli/azure/cli/command_modules/storage/docs/ADLS%20Gen2.md"
         return msg
-
-    # Change existing Blob Commands
-    with self.command_group('storage blob', command_type=adls_base_blob_sdk) as g:
-        from ._format import transform_blob_output
-        from ._transformers import transform_storage_list_output
-        g.storage_command_oauth('list', 'list_blobs', transform=transform_storage_list_output,
-                                table_transformer=transform_blob_output,
-                                deprecate_info=self.deprecate(redirect="az storage fs file list", hide=True,
-                                                              message_func=_adls_deprecate_message))
 
     # New Blob Commands
     with self.command_group('storage blob', command_type=adls_base_blob_sdk,
@@ -170,42 +126,3 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                             deprecate_info=self.deprecate(redirect="az storage fs directory", hide=True,
                                                           message_func=_adls_deprecate_message)) as g:
         pass
-
-    file_client_sdk = CliCommandType(
-        operations_tmpl='azure.multiapi.storagev2.fileshare._file_client#ShareFileClient.{}',
-        client_factory=cf_share_client,
-        resource_type=CUSTOM_DATA_STORAGE_FILESHARE
-    )
-
-    with self.command_group('storage file', file_client_sdk, resource_type=CUSTOM_DATA_STORAGE_FILESHARE,
-                            min_api='2019-02-02',
-                            custom_command_type=get_custom_sdk('file', client_factory=cf_share_file_client,
-                                                               resource_type=CUSTOM_DATA_STORAGE_FILESHARE)) as g:
-        from ._transformers import transform_file_upload
-
-        g.storage_custom_command('upload', 'storage_file_upload', transform=transform_file_upload)
-        g.storage_custom_command('upload-batch', 'storage_file_upload_batch',
-                                 custom_command_type=get_custom_sdk('file', client_factory=cf_share_client))
-
-    adls_fs_service_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage_filedatalake._data_lake_service_client#DataLakeServiceClient.{}',
-        client_factory=cf_adls_service,
-        resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE
-    )
-
-    with self.command_group('storage fs service-properties', command_type=adls_fs_service_sdk,
-                            custom_command_type=get_custom_sdk('filesystem', cf_adls_service),
-                            resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE, min_api='2020-06-12', is_preview=True) as g:
-        g.storage_command_oauth('show', 'get_service_properties', exception_handler=show_exception_handler)
-        g.storage_custom_command_oauth('update', 'set_service_properties')
-
-    adls_fs_sdk = CliCommandType(
-        operations_tmpl='azext_storage_preview.vendored_sdks.azure_storage_filedatalake._file_system_client#FileSystemClient.{}',
-        client_factory=cf_adls_file_system,
-        resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE
-    )
-    with self.command_group('storage fs', command_type=adls_fs_sdk,
-                            custom_command_type=get_custom_sdk('filesystem', cf_adls_file_system),
-                            resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE, min_api='2020-06-12', is_preview=True) as g:
-        g.storage_custom_command_oauth('list-deleted-path', 'list_deleted_path')
-        g.storage_command_oauth('undelete-path', '_undelete_path')
