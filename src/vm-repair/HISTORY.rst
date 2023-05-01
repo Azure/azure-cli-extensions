@@ -1,6 +1,11 @@
 
 Release History
 ===============
+
+0.5.2
+++++++
+Adding repair-and-restore command to create a one command flow for vm-repair with fstab scripts.
+
 0.5.1
 ++++++
 Updated exsiting privateIpAddress field to privateIPAddress and privateIpAllocationMethod to privateIPAllocationMethod.
