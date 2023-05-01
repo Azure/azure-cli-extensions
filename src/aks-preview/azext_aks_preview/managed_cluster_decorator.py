@@ -3249,7 +3249,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         level = self.context.get_guardrails_level()
         # provided any value?
         if (level is not None or version is not None or excludedNamespaces is not None) and mc.guardrails_profile is None:
-            mc.guardrails_profile = self.models.GuardrailsProfile()
+            mc.guardrails_profile = self.models.GuardrailsProfile(
+                level=level,
+                version=version
+            )
         # replace values with provided values
         if level is not None:
             mc.guardrails_profile.level = level
