@@ -720,6 +720,11 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
 
     if run_out['script_status'] == 'ERROR':
         logger.info('fstab run command errored')
+        if existing_rg:
+            _clean_up_resources(repair_group_name, confirm=True)
+        else:
+            _clean_up_resources(repair_group_name, confirm=False)
+        return
 
 
     logger.info('Running restore command')
