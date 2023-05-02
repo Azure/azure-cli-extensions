@@ -68,10 +68,14 @@ class DeployerViaArm:
         bicep_path = os.path.join(folder_name, bicep_template_name)
         
         parameters = self.construct_vnfd_parameters()
-        print(parameters)
+        logger.debug(parameters)
+
         # Create or check required resources
         self.vnfd_predeploy()
         output = self.deploy_bicep_template(bicep_path, parameters)
+        print(f"Deployed NFD {self.config.nf_name} version {self.config.version} "
+              f"into {self.config.publisher_resource_group_name} under publisher "
+              f"{self.config.publisher_name}")
 
         return output
 
