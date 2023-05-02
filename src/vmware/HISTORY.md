@@ -1,6 +1,7 @@
 # Release History
 
 ## 5.0.2 (2023-05)
+
 - Update `az vmware cluster` subcommand descriptions
 
 ## 5.0.1 (2022-12)
