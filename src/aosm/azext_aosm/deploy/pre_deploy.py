@@ -5,9 +5,15 @@
 """Contains class for deploying resources required by NFDs/NSDs via the SDK."""
 
 from knack.log import get_logger
-from azure.mgmt.resource import ResourceManagementClient
-from azure.cli.core.azclierror import AzCLIError
 
+from azure.core import exceptions as azure_exceptions
+from azure.cli.core.azclierror import AzCLIError
+from azure.mgmt.resource.resources.v2022_09_01.models import (
+    ResourceGroup
+)
+
+from azure.mgmt.resource import ResourceManagementClient
+from azext_aosm.util.management_clients import ApiClientsAndCaches
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
 from azext_aosm.vendored_sdks.models import (
     ArtifactStore,
@@ -17,6 +23,7 @@ from azext_aosm.vendored_sdks.models import (
     Publisher,
 )
 from azext_aosm._configuration import Configuration, VNFConfiguration
+from azext_aosm._constants import AOSM_API_VERSION
 
 logger = get_logger(__name__)
 
@@ -26,8 +33,7 @@ class PreDeployerViaSDK:
 
     def __init__(
         self,
-        aosm_client: HybridNetworkManagementClient,
-        resource_client: ResourceManagementClient,
+        apiClientsAndCaches: ApiClientsAndCaches,
         config: Configuration,
     ) -> None:
         """
@@ -39,9 +45,37 @@ class PreDeployerViaSDK:
         :type resource_client: ResourceManagementClient
         """
 
-        self.aosm_client = aosm_client
-        self.resource_client = resource_client
+        self.api_clients = apiClientsAndCaches
         self.config = config
+        
+    def ensure_resource_group_exists(self, resource_group_name: str)-> None:
+        """
+        Checks whether a particular resource group exists on the subscription.
+        Copied from virtutils
+
+        :param resource_group_name: The name of the resource group
+
+        Raises a NotFoundError exception if the resource group does not exist.
+        Raises a PermissionsError exception if we don't have permissions to check resource group existence.
+        """
+        rg: ResourceGroup
+        if not self.api_clients.resource_client.resource_groups.check_existence(resource_group_name):
+            logger.info(f"RG {resource_group_name} not found. Create it.")
+            print(f"Creating resource group {resource_group_name}.")
+            rg_params: ResourceGroup = ResourceGroup(location=self.config.location)
+            rg = self.api_clients.resource_client.resource_groups.create_or_update(resource_group_name, rg_params)
+        else:
+            print(f"Resource group {resource_group_name} exists.")
+            rg = self.api_clients.resource_client.resource_groups.get(resource_group_name)
+    
+    def ensure_config_resource_group_exists(self) -> None:
+        """
+        Ensures that the publisher exists in the resource group.
+
+        Finds the parameters from self.config
+        """
+        self.ensure_resource_group_exists(self.config.publisher_resource_group_name)
+
 
     def ensure_publisher_exists(
         self, resource_group_name: str, publisher_name: str, location: str
@@ -56,20 +90,21 @@ class PreDeployerViaSDK:
         :param location: The location of the publisher.
         :type location: str
         """
-
         logger.info(
             "Creating publisher %s if it does not exist", publisher_name
         )
-        if not self.resource_client.check_existence(
-            resource_group_name=resource_group_name,
-            resource_type="Microsoft.HybridNetwork/publishers",
-            resource_name=publisher_name,
-        ):
-            self.aosm_client.publishers.begin_create_or_update(
+        try:
+            pubby = self.api_clients.aosm_client.publishers.get(resource_group_name, publisher_name)
+            print(f"Publisher {pubby.name} exists in resource group {resource_group_name}")
+        except azure_exceptions.ResourceNotFoundError:
+            # Create the publisher
+            print(f"Creating publisher {publisher_name} in resource group {resource_group_name}")
+            self.api_clients.aosm_client.publishers.begin_create_or_update(
                 resource_group_name=resource_group_name,
                 publisher_name=publisher_name,
-                parameters=Publisher(location=location, scope="Public"),
+                parameters=Publisher(location=location, scope="Private"),
             )
+
             
     def ensure_config_publisher_exists(self) -> None:
         """
@@ -77,9 +112,9 @@ class PreDeployerViaSDK:
 
         Finds the parameters from self.config
         """
-        self.ensure_publisher_exists(self.config.publisher_resource_group_name,
-                                     self.config.publisher_name,
-                                     self.config.location)
+        self.ensure_publisher_exists(resource_group_name=self.config.publisher_resource_group_name,
+                                     publisher_name=self.config.publisher_name,
+                                     location=self.config.location)
 
     def ensure_artifact_store_exists(
         self,
@@ -103,21 +138,21 @@ class PreDeployerViaSDK:
         :param location: The location of the artifact store.
         :type location: str
         """
-
         logger.info(
             "Creating artifact store %s if it does not exist",
             artifact_store_name,
         )
-        self.aosm_client.artifact_stores.begin_create_or_update(
+
+        self.api_clients.aosm_client.artifact_stores.begin_create_or_update(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             artifact_store_name=artifact_store_name,
             parameters=ArtifactStore(
                 location=location,
-                artifact_store_type=artifact_store_type,
+                store_type=artifact_store_type,
             ),
         )
-        
+
     def ensure_acr_artifact_store_exists(self) -> None:
         """
         Ensures that the ACR Artifact store exists.
@@ -172,7 +207,7 @@ class PreDeployerViaSDK:
             "Creating network function definition group %s if it does not exist",
             nfdg_name,
         )
-        self.aosm_client.network_function_definition_groups.begin_create_or_update(
+        self.api_clients.aosm_client.network_function_definition_groups.begin_create_or_update(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_function_definition_group_name=nfdg_name,
@@ -216,7 +251,7 @@ class PreDeployerViaSDK:
             "Creating network service design group %s if it does not exist",
             nsdg_name,
         )
-        self.aosm_client.network_service_design_groups.begin_create_or_update(
+        self.api_clients.aosm_client.network_service_design_groups.begin_create_or_update(
             resource_group_name=resource_group_name,
             publisher_name=publisher_name,
             network_service_design_group_name=nsdg_name,

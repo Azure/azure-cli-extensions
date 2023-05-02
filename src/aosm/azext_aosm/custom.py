@@ -24,7 +24,8 @@ from ._configuration import (
     validate_configuration,
 )
 from azext_aosm.deploy.deploy_with_arm import DeployerViaArm
-from ._constants import VNF, CNF, NSD
+from azext_aosm._constants import VNF, CNF, NSD
+from azext_aosm.util.management_clients import ApiClientsAndCaches
 
 
 
@@ -48,6 +49,9 @@ def build_definition(
     with open(config_file, "r", encoding="utf-8") as f:
         config_as_dict = json.loads(f.read())
 
+    apiClientsAndCaches = ApiClientsAndCaches(aosm_client=client,
+                                              resource_client=cf_resources(cmd.cli_ctx))
+
     # TODO - this isn't deserializing the config properly - any sub-objects are left
     # as a dictionary instead of being converted to the object (e.g. ArtifactConfig)
     # se we have to reference them as dictionary values
@@ -60,8 +64,7 @@ def build_definition(
     # Publish the definition if publish is true
     if publish:
         if definition_type == VNF:
-            deployer = DeployerViaArm(aosm_client=client, 
-                                      resource_client=cf_resources(cmd.cli_ctx),
+            deployer = DeployerViaArm(apiClientsAndCaches,
                                       config=config)
             output = deployer.deploy_vnfd_from_bicep()
         else:

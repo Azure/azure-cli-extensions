@@ -13,6 +13,7 @@ from typing import Any, Dict
 
 from knack.log import get_logger
 from azure.mgmt.resource import ResourceManagementClient
+from azext_aosm.util.management_clients import ApiClientsAndCaches
 from azure.mgmt.resource.resources.v2021_04_01.models import DeploymentExtended
 from pathlib import Path
 
@@ -32,8 +33,7 @@ class DeployerViaArm:
     # using the SDK
     def __init__(
         self,
-        aosm_client: HybridNetworkManagementClient,
-        resource_client: ResourceManagementClient,
+        apiClientsAndCaches: ApiClientsAndCaches,
         config: Configuration,
     ) -> None:
         """
@@ -45,11 +45,10 @@ class DeployerViaArm:
         :type resource_client: ResourceManagementClient
         """
         logger.debug("Create ARM/Bicep Deployer")
-        self.aosm_client = aosm_client
-        self.resource_client = resource_client
+        self.api_clients = apiClientsAndCaches
         self.config = config
         self.pre_deployer = PreDeployerViaSDK(
-            aosm_client, self.resource_client, self.config
+            apiClientsAndCaches, self.config
         )
 
     def deploy_vnfd_from_bicep(self) -> Any:
@@ -69,6 +68,7 @@ class DeployerViaArm:
         bicep_path = os.path.join(folder_name, bicep_template_name)
         
         parameters = self.construct_vnfd_parameters()
+        print(parameters)
         # Create or check required resources
         self.vnfd_predeploy()
         output = self.deploy_bicep_template(bicep_path, parameters)
@@ -82,6 +82,7 @@ class DeployerViaArm:
         VNF specific
         """
         logger.debug("Ensure all required resources exist")
+        self.pre_deployer.ensure_config_resource_group_exists()
         self.pre_deployer.ensure_config_publisher_exists()
         self.pre_deployer.ensure_acr_artifact_store_exists()
         self.pre_deployer.ensure_sa_artifact_store_exists()
@@ -130,7 +131,7 @@ class DeployerViaArm:
         :param resource_name: The name of the resource to check.
         """
         logger.debug("Check if %s exists", resource_name)
-        resources = self.resource_client.resources.list_by_resource_group(
+        resources = self.api_clients.resource_client.resources.list_by_resource_group(
             resource_group_name=self.config.publisher_resource_group_name
         )
 
@@ -160,7 +161,7 @@ class DeployerViaArm:
         """
         deployment_name = f"nfd_into_{resource_group}"
 
-        validation = self.resource_client.deployments.begin_validate(
+        validation = self.api_clients.resource_client.deployments.begin_validate(
             resource_group_name=resource_group,
             deployment_name=deployment_name,
             parameters={
@@ -190,7 +191,7 @@ class DeployerViaArm:
         # Validation succeeded so proceed with deployment
         logger.debug(f"Successfully validated resources for {resource_group}")
 
-        poller = self.resource_client.deployments.begin_create_or_update(
+        poller = self.api_clients.resource_client.deployments.begin_create_or_update(
             resource_group_name=resource_group,
             deployment_name=deployment_name,
             parameters={
