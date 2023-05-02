@@ -29,6 +29,7 @@ def load_command_table(self, _):
         g.custom_command('validate-for-restore', 'dataprotection_backup_instance_validate_for_restore', supports_no_wait=True)
         g.custom_command('update-msi-permissions', 'dataprotection_backup_instance_update_msi_permissions')
         
+    # All backup-instance restore commands have been "migrated" to AAZ (Dataprotection SDK calls being made have been replaced, others remain)
     with self.command_group('dataprotection backup-instance restore') as g:
         g.custom_command('trigger', 'dataprotection_backup_instance_restore_trigger')
         g.custom_command('initialize-for-data-recovery', 'restore_initialize_for_data_recovery')
@@ -59,16 +60,6 @@ def load_command_table(self, _):
 
     with self.command_group('dataprotection job') as g:
         g.custom_command('list-from-resourcegraph', "dataprotection_job_list_from_resourcegraph", client_factory=cf_resource_graph_client)
-
-    # dataprotection_backup_instance = CliCommandType(
-    #     operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._backup_instances_operations#BackupInstancesOperations.{}',
-    #     client_factory=cf_backup_instance
-    # )
-
-    # with self.command_group('dataprotection backup-instance restore', dataprotection_backup_instance, client_factory=cf_backup_instance, exception_handler=exception_handler) as g:
-    #     g.custom_command('initialize-for-data-recovery', 'restore_initialize_for_data_recovery')
-        # g.custom_command('initialize-for-data-recovery-as-files', 'restore_initialize_for_data_recovery_as_files')
-    #     g.custom_command('initialize-for-item-recovery', 'restore_initialize_for_item_recovery')
 
     with self.command_group('dataprotection resource-guard', exception_handler=exception_handler, client_factory=cf_resource_guard) as g:
         g.custom_command('list', 'dataprotection_resource_guard_list')

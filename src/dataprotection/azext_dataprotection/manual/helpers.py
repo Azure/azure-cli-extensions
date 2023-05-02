@@ -140,6 +140,18 @@ def truncate_id_using_scope(arm_id, scope):
     return result_id
 
 
+def get_vault_rg_from_bi_id(backup_instance_id):
+    return backup_instance_id.split('/')[4]
+
+
+def get_vault_name_from_bi_id(backup_instance_id):
+    return backup_instance_id.split('/')[8]
+
+
+def get_bi_name_from_bi_id(backup_instance_id):
+    return backup_instance_id.split('/')[-1]
+
+
 def get_sub_id_from_arm_id(arm_id):
     return truncate_id_using_scope(arm_id, "Subscription")
 

@@ -1050,9 +1050,9 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
 
     if backup_instance_id is not None:
         # TODO Verify that the original location restore is allowed for datasource type
-        vault_resource_group = backup_instance_id.split('/')[4]
-        vault_name = backup_instance_id.split('/')[8]
-        backup_instance_name = backup_instance_id.split('/')[-1]
+        vault_resource_group = helper.get_vault_rg_from_bi_id(backup_instance_id)
+        vault_name = helper.get_vault_name_from_bi_id((backup_instance_id))
+        backup_instance_name = helper.get_bi_name_from_bi_id(backup_instance_id)
 
         from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Show as _Show
         backup_instance = _Show(cli_ctx=cmd.cli_ctx)(command_args={
@@ -1294,9 +1294,9 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
 
     if backup_instance_id is not None:
         # TODO Verify that the original location restore is allowed for datasource type
-        vault_resource_group = backup_instance_id.split('/')[4]
-        vault_name = backup_instance_id.split('/')[8]
-        backup_instance_name = backup_instance_id.split('/')[-1]
+        vault_resource_group = helper.get_vault_rg_from_bi_id(backup_instance_id)
+        vault_name = helper.get_vault_name_from_bi_id((backup_instance_id))
+        backup_instance_name = helper.get_bi_name_from_bi_id(backup_instance_id)
 
         from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Show as _Show
         backup_instance = _Show(cli_ctx=cmd.cli_ctx)(command_args={

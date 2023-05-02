@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Configure backup for a resource in a backup vault
+
+    :example: create a backup instance in a backup vault
+        az dataprotection backup-instance create -g MyResourceGroup --vault-name MyVault --backup-instance backupinstance.json
     """
 
     _aaz_info = {

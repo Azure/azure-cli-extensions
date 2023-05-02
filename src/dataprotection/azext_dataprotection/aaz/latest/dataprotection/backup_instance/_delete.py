@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a backup instance in a backup vault
+
+    :example: Delete BackupInstance
+        az dataprotection backup-instance delete --name "testInstance1" --resource-group "000pikumar" --vault-name "PratikPrivatePreviewVault1"
     """
 
     _aaz_info = {

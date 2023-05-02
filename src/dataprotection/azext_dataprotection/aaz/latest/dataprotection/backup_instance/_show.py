@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a backup instance with name in a backup vault
+
+    :example: Get BackupInstance
+        az dataprotection backup-instance show --name "testInstance1" --resource-group "000pikumar" --vault-name "PratikPrivatePreviewVault1"
     """
 
     _aaz_info = {
