@@ -44,7 +44,7 @@ helps['vmware private-cloud'] = """
 
 helps['vmware cluster'] = """
     type: group
-    short-summary: Commands to manage clusters in a private cloud.
+    short-summary: Commands to manage all the clusters in a private cloud, except the first cluster which is the default management cluster. The default management cluster is created and managed as part of the private cloud. See az vmware private-cloud (commands to manage private clouds).
 """
 
 helps['vmware authorization'] = """
@@ -74,27 +74,27 @@ helps['vmware cluster create'] = """
 
 helps['vmware cluster delete'] = """
     type: command
-    short-summary: Delete a cluster in a private cloud.
+    short-summary: Delete a cluster in a private cloud, except the first cluster which is the default management cluster. The default management cluster is created and managed as part of the private cloud. See az vmware private-cloud delete.
 """
 
 helps['vmware cluster list'] = """
     type: command
-    short-summary: List clusters in a private cloud.
+    short-summary: List clusters in a private cloud, except the first cluster which is the default management cluster. The default management cluster is created and managed as part of the private cloud. See az vmware private-cloud show.
 """
 
 helps['vmware cluster show'] = """
     type: command
-    short-summary: Show details of a cluster in a private cloud.
+    short-summary: Show details of a cluster in a private cloud, except the first cluster which is the default management cluster. The default management cluster is created and managed as part of the private cloud. See az vmware private-cloud show.
 """
 
 helps['vmware cluster update'] = """
     type: command
-    short-summary: Update a cluster in a private cloud.
+    short-summary: Update a cluster in a private cloud, except the first cluster which is the default management cluster. The default management cluster is created and managed as part of the private cloud. See az vmware private-cloud update.
 """
 
 helps['vmware cluster list-zones'] = """
     type: command
-    short-summary: List hosts by zone in a cluster.
+    short-summary: List hosts by zone in a cluster in a private cloud, including the first cluster which is the default management cluster. The default management cluster is created and managed as part of the private cloud.
 """
 
 helps['vmware private-cloud add-identity-source'] = """
