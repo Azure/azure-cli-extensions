@@ -50,10 +50,9 @@ class VnfBicepNfdGenerator(NFDGenerator):
         """Generate a VNF NFD which comprises an group, an Artifact Manifest and a NFDV."""
         # assert isinstance(self.config, VNFConfiguration)
         if self.bicep_path:
-            logger.info("Using the existing NFD bicep template %s.", self.bicep_path)
-            logger.info(
-                'To generate a new NFD, delete the folder "%s" and re-run this command.',
-                os.path.dirname(self.bicep_path),
+            print(f"Using the existing NFD bicep template {self.bicep_path}." )
+            print(
+                f'To generate a new NFD, delete the folder {os.path.dirname(self.bicep_path)} and re-run this command.'
             )
         else:
             self.write()
@@ -135,9 +134,17 @@ class VnfBicepNfdGenerator(NFDGenerator):
         deployment_parameters_path = os.path.join(
             folder_path, "deploymentParameters.json"
         )
+        
+        # Heading for the deployParameters schema
+        deploy_parameters_full: Dict[str, Any] = {
+            "$schema": "https://json-schema.org/draft-07/schema#",
+            "title": "DeployParametersSchema",
+            "type": "object",
+            "properties": nfd_parameters
+        }
 
         with open(deployment_parameters_path, "w") as _file:
-            _file.write(json.dumps(nfd_parameters, indent=4))
+            _file.write(json.dumps(deploy_parameters_full, indent=4))
 
         logger.debug("%s created", deployment_parameters_path)
 
@@ -165,9 +172,18 @@ class VnfBicepNfdGenerator(NFDGenerator):
 
         :param folder_path: The folder to put this file in.
         """
+        azureDeployLocation: str
+        if self.vm_parameters.get("location"):
+            # Location can be passed in as deploy parameter
+            azureDeployLocation = "{deployParameters.location}"
+        else:
+            # Couldn't find a location parameter in the source template, so hard code to
+            # the location we are deploying the publisher to.
+            azureDeployLocation = self.config.location
+
         vhd_parameters = {
             "imageName": f"{self.config.nf_name}Image",
-            "azureDeployLocation": "{deployParameters.location}",
+            "azureDeployLocation": azureDeployLocation,
         }
 
         vhd_parameters_path = os.path.join(folder_path, "vhdParameters.json")

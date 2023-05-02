@@ -23,7 +23,7 @@ from azext_aosm.vendored_sdks.models import (
     Publisher,
 )
 from azext_aosm._configuration import Configuration, VNFConfiguration
-from azext_aosm._constants import AOSM_API_VERSION
+from azext_aosm._constants import PROV_STATE_SUCCEEDED
 
 logger = get_logger(__name__)
 
@@ -99,11 +99,12 @@ class PreDeployerViaSDK:
         except azure_exceptions.ResourceNotFoundError:
             # Create the publisher
             print(f"Creating publisher {publisher_name} in resource group {resource_group_name}")
-            self.api_clients.aosm_client.publishers.begin_create_or_update(
+            pub = self.api_clients.aosm_client.publishers.begin_create_or_update(
                 resource_group_name=resource_group_name,
                 publisher_name=publisher_name,
                 parameters=Publisher(location=location, scope="Private"),
             )
+            pub.result()
 
             
     def ensure_config_publisher_exists(self) -> None:
@@ -142,16 +143,37 @@ class PreDeployerViaSDK:
             "Creating artifact store %s if it does not exist",
             artifact_store_name,
         )
+        try:
+            self.api_clients.aosm_client.artifact_stores.get(resource_group_name=resource_group_name,
+                                                             publisher_name=publisher_name,
+                                                             artifact_store_name=artifact_store_name)
+            print(f"Artifact store {artifact_store_name} exists in resource group {resource_group_name}")
+        except azure_exceptions.ResourceNotFoundError:
+            print(f"Create Artifact Store {artifact_store_name} of type {artifact_store_type}")
+            poller = self.api_clients.aosm_client.artifact_stores.begin_create_or_update(
+                resource_group_name=resource_group_name,
+                publisher_name=publisher_name,
+                artifact_store_name=artifact_store_name,
+                parameters=ArtifactStore(
+                    location=location,
+                    store_type=artifact_store_type,
+                ),
+            )
+            # Asking for result waits for provisioning state Succeeded before carrying
+            # on
+            arty: ArtifactStore = poller.result()
 
-        self.api_clients.aosm_client.artifact_stores.begin_create_or_update(
-            resource_group_name=resource_group_name,
-            publisher_name=publisher_name,
-            artifact_store_name=artifact_store_name,
-            parameters=ArtifactStore(
-                location=location,
-                store_type=artifact_store_type,
-            ),
-        )
+            if arty.provisioning_state != PROV_STATE_SUCCEEDED:
+                logger.debug(f"Failed to provision artifact store: {arty.name}")
+                raise RuntimeError(
+                    f"Creation of artifact store proceeded, but the provisioning"
+                    f" state returned is {arty.provisioning_state}. "
+                    f"\nAborting"
+                )
+            logger.debug(
+                f"Provisioning state of {artifact_store_name}"
+                f": {arty.provisioning_state}"
+            )
 
     def ensure_acr_artifact_store_exists(self) -> None:
         """
@@ -164,8 +186,8 @@ class PreDeployerViaSDK:
                                           self.config.acr_artifact_store_name,
                                           ArtifactStoreType.AZURE_CONTAINER_REGISTRY,
                                           self.config.location)
-        
-        
+
+
     def ensure_sa_artifact_store_exists(self) -> None:
         """
         Ensures that the Storage Account Artifact store for VNF exists.
@@ -257,3 +279,24 @@ class PreDeployerViaSDK:
             network_service_design_group_name=nsdg_name,
             parameters=NetworkServiceDesignGroup(location=location),
         )
+        
+    def resource_exists_by_name(self, rg_name: str, resource_name: str) -> bool:
+        """
+        Determine if a resource with the given name exists. No checking is done as 
+        to the type.
+
+        :param resource_name: The name of the resource to check.
+        """
+        logger.debug("Check if %s exists", resource_name)
+        resources = self.api_clients.resource_client.resources.list_by_resource_group(
+            resource_group_name=rg_name
+        )
+
+        resource_exists = False
+
+        for resource in resources:
+            if resource.name == resource_name:
+                resource_exists = True
+                break
+
+        return resource_exists
