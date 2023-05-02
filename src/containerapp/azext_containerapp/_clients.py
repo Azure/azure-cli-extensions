@@ -196,7 +196,7 @@ class ContainerAppClient():
         r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(container_app_envelope))
 
         if no_wait:
-            return r.json()
+            return
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
             response = poll_results(cmd, operation_url)
@@ -540,7 +540,7 @@ class ManagedEnvironmentClient():
         r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(managed_environment_envelope))
 
         if no_wait:
-            return r.json()
+            return
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
             if "managedEnvironmentOperationStatuses" in operation_url:

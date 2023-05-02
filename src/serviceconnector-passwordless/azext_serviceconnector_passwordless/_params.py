@@ -21,11 +21,11 @@ from azure.cli.command_modules.serviceconnector._validators import (
 )
 from azure.cli.command_modules.serviceconnector._resource_config import (
     SOURCE_RESOURCES_PARAMS,
-    AUTH_TYPE_PARAMS,
     AUTH_TYPE,
     RESOURCE
 )
 from ._resource_config import (
+    AUTH_TYPE_PARAMS,
     SUPPORTED_AUTH_TYPE,
     TARGET_RESOURCES_PARAMS,
 )

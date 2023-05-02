@@ -61,12 +61,10 @@ def load_command_table(self, _):
     )
 
     # region AzureFirewalls
-    with self.command_group('network firewall', network_firewall_sdk) as g:
-        g.custom_command('create', 'create_azure_firewall')
-        g.command('delete', 'begin_delete')
-        g.custom_command('list', 'list_azure_firewalls')
-        g.show_command('show')
-        g.generic_update_command('update', setter_name="begin_create_or_update", custom_func_name='update_azure_firewall')
+    with self.command_group('network firewall'):
+        from .custom import AzureFirewallCreate, AzureFirewallUpdate
+        self.command_table['network firewall create'] = AzureFirewallCreate(loader=self)
+        self.command_table['network firewall update'] = AzureFirewallUpdate(loader=self)
 
     with self.command_group('network firewall threat-intel-allowlist', network_firewall_sdk, is_preview=True, min_api='2019-09-01') as g:
         g.custom_command('create', 'create_azure_firewall_threat_intel_allowlist')
