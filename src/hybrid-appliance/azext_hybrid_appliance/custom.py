@@ -5,6 +5,7 @@
 
 import json
 import os
+import shutil
 import time
 import psutil
 import requests
@@ -65,10 +66,10 @@ def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connected
     if endpoints_reachability_check is False:
         telemetry.set_exception(exception="Pre-requisite endpoints reachability validation failed", fault_type=consts.Endpoints_Reachability_Validation_Failed, summary="Pre-requisite endpoints reachability validation failed")
     # Install specific version of connectedk8s
-    get_default_cli().invoke(['extension', 'add', '-n', 'connectedk8s', '--version', '1.3.15'])
     
     if validate_connectedk8s_exists:
         try:
+            get_default_cli().invoke(['extension', 'add', '-n', 'connectedk8s', '--version', '1.3.15', '--upgrade', '--only-show-errors'])
             cmd_show_arc= ['az', 'connectedk8s', 'show', '-n', name, '-g', resource_group_name, '-o', 'none']
             process = subprocess.Popen(cmd_show_arc, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if process.wait() == 0:
@@ -103,9 +104,18 @@ def create_hybrid_appliance(cmd, resource_group_name, name, correlation_id=None,
     
     home_dir = os.path.expanduser('~')
 
+
     current_path = os.path.abspath(os.path.dirname(__file__))
     out_path = os.path.join(home_dir, ".azure", "hybrid_appliance")
-    os.makedirs(out_path, exist_ok=True)
+    log_file_path = os.environ.get(consts.Log_file_path_env_variable_name, out_path)
+    log_file_name = os.environ.get(consts.Log_file_name_env_variable_name, "{}_log.txt".format(name))
+    log_path = os.path.join(log_file_path, log_file_name)
+    os.environ["LOG_FILE"] = log_path
+    try:
+        os.makedirs(out_path, exist_ok=True)
+    except Exception as ex:
+        raise CLIInternalError("Failed to create the hybrid_appliance folder: {}".format(str(ex)))
+    
     latestMajorVersion, latestMinorVersion, kmsImage = utils.get_latest_tested_version()
 
     try:
@@ -172,8 +182,7 @@ def upgrade_hybrid_appliance(resource_group_name, name):
     try:
         azure_clusterconfig_cm = utils.get_azure_clusterconfig_cm()
     except:
-        raise ValidationError("Failed to get config map from the cluster. Please make sure you are running this on the machine where the hybrid appliance is running.")
-
+        raise ValidationError("Failed to get config map from the cluster. Please make sure you are running this on the machine where the hybrid appliance is running and was successfully onboarded to arc.")
             
     try:
         if azure_clusterconfig_cm.data["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm.data["AZURE_RESOURCE_NAME"] != name:
@@ -227,7 +236,7 @@ def upgrade_hybrid_appliance(resource_group_name, name):
 
             if not utils.check_microk8s():
                 telemetry.set_exception(exception="Microk8s not healthy after upgrade from {} to {}".format(currentMajorVersion, currentMinorVersion), fault_type=consts.MicroK8s_Unhealthy_Post_Upgrade, summary="MicroK8s cluster is unhealthy post upgradefrom {} to {}".format(currentMajorVersion, currentMinorVersion))
-                raise CLIInternalError("Cluster is not healthy after upgrading to {}.{}. Please check the logs at /var/snap/microk8s/current.".format(currentMajorVersion, currentMinorVersion))
+                raise CLIInternalError("Cluster is not healthy after upgrading to {}.{}. Please find the logs at /var/snap/microk8s/current.".format(currentMajorVersion, currentMinorVersion))
 
             print("Upgraded cluster to {}.{}".format(currentMajorVersion, currentMinorVersion))
 
@@ -268,15 +277,16 @@ def delete_hybrid_appliance(resource_group_name, name):
     process = subprocess.Popen(['snap', 'remove', 'microk8s'])
     process.wait()
     if process.returncode != 0:
-        logger.error("Failed to remove microk8s cluster")
         return_code = subprocess.Popen(['microk8s', 'inspect']).wait()
         if return_code == 0:
             logger.warning("Please share the logs generated at the above path, under /var/snap/microk8s/current")
+        raise CLIInternalError("Failed to remove microk8s cluster.")
 
-def collect_logs(resource_group_name, name):
+def collect_logs(cmd, resource_group_name, name):
     try:
-        validate_hybrid_appliance(resource_group_name, name, validate_connectedk8s_exists=False)
+        validate_hybrid_appliance(cmd, resource_group_name, name, validate_connectedk8s_exists=False)
     except Exception as ex:
+        logger.warning(ex.with_traceback())
         logger.warning("One or more of the required prechecks have failed. Please ensure all the pre-requisites are met.")
 
     troubleshoot_connectedk8s = True
@@ -324,5 +334,30 @@ def collect_logs(resource_group_name, name):
         telemetry.set_exception(exception="Failed to run microk8s inspect", fault_type=consts.Microk8s_Inspect_Failed, summary="Microk8s inspect failed")
         raise CLIInternalError("Failed to run microk8s inspect")
     
-    logger.warning("The logs have been stored at {}".format(filepath_with_timestamp))
+    if consts.Log_file_path_env_variable_name in os.environ.keys():
+        files = os.listdir(os.environ[consts.Log_file_path_env_variable_name])
+        max_timestamp = ""
+        max_timestamp_file = ""
+
+        # For each file in the directory, check if the mode was create and if the appliance name matches, 
+        # and then find the most recent one based on the timestamp.
+        for file in files:
+            file_split = file.split('_', 1)
+            if len(file_split) != 2 or file_split[0] != "create":
+                continue
+
+            file_split = file_split[1].rsplit('_', 1)
+            if len(file_split) != 2 or file_split[0] != name:
+                continue
+            
+            if max_timestamp == "":
+                max_timestamp = file_split[1]
+                max_timestamp_file = file
+
+            if utils.compare_timestamps(file_split[1], max_timestamp):
+                max_timestamp = file_split[1]
+                max_timestamp_file = file
+        
+        shutil.copy(os.path.join(os.environ[consts.Log_file_path_env_variable_name], max_timestamp_file), filepath_with_timestamp)
     
+    logger.warning("The logs have been stored at {}".format(filepath_with_timestamp))

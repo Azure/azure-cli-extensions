@@ -6,9 +6,9 @@
 
 # pylint: disable=line-too-long
 # common constants
-Snap_Config_Storage_End_Point = "https://kkanukollubatch.blob.core.windows.net"
-Snap_Config_Container_Name = "pipelinetest"
-Snap_Config_File_Name = "snap-configuration-test.json"
+Snap_Config_Storage_End_Point = "https://k8connecthelm.azureedge.net"
+Snap_Config_Container_Name = "snapconfig"
+Snap_Config_File_Name = "snap-configuration.json"
 Snap_Pull_Public_Api_Endpoint = "api.snapcraft.io"
 Snap_Pull_Public_Storage_Endpoint = "https://storage.snapcraftcontent.com"
 App_Insights_Endpoint = "https://dc.services.visualstudio.com/v2/track"
@@ -16,6 +16,7 @@ MCR_Endpoint = "https://mcr.microsoft.com"
 Memory_Threshold = 4
 Disk_Threshold = 20
 diagnostics_folder_name = "diagnostics_logs"
+onboarding_logs_folder_name = "onboarding_logs"
 # Fault types
 Download_And_Install_Kubectl_Fault_Type = "Failed to download and install kubectl"
 Non_Linux_Machine = "User's machine is not a Linux machine"
@@ -39,3 +40,5 @@ Resource_Already_Exists_Fault_Type = "There already exists a resource with the g
 Connectedk8s_Troubleshoot_Failed = "Failed to run connectedk8s troubleshoot"
 No_Storage_Space_Available_Fault_Type = "No storage available on the host machine"
 Diagnostics_Folder_Creation_Failed_Fault_Type = "Failed to create diagnostics folder"
+Log_file_path_env_variable_name = "LOG_FILE_PATH"
+Log_file_name_env_variable_name = "LOG_FILE_NAME"

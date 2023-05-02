@@ -1,3 +1,4 @@
+import datetime
 import os
 import json
 import shutil
@@ -261,3 +262,12 @@ def create_folder_diagnosticlogs(folder_name, appliance_name):
         logger.warning("An exception has occured while creating the diagnostic logs folder in your local machine. Exception: {}".format(str(e)) + "\n")
         telemetry.set_exception(exception=e, fault_type=consts.Diagnostics_Folder_Creation_Failed_Fault_Type, summary="Error while trying to create diagnostic logs folder")
         return "", False
+    
+def compare_timestamps(timestamp: str, max_timestamp: str):
+    if len(timestamp) != 12 or len(max_timestamp) != 12:
+        raise CLIInternalError("Timestamps are in invalid format")
+
+    timestamp = datetime.datetime.strptime(timestamp, '%d%m%Y%H%M%S')
+    max_timestamp = datetime.datetime.strptime(max_timestamp, '%d%m%Y%H%M%S')
+
+    return timestamp > max_timestamp
