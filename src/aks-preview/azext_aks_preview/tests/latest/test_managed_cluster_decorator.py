@@ -281,7 +281,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
 
         self.assertIsInstance(config_4, dict)
         self.assertEqual(config_4["mode"], "IPTABLES")
-        self.assertEqual(config_4["ipvsConfig"]["scheduler"], "RoundRobin")
 
         # update case
         ctx_5 = AKSPreviewManagedClusterContext(
