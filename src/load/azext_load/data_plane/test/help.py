@@ -34,5 +34,3 @@ type: command
 short-summary: Show details of a test.
 long-summary: Show details of the test identified by given test-id.
 """
-
-

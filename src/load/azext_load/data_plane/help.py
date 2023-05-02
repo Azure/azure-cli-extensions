@@ -12,7 +12,7 @@ parameters:
       short-summary: 'Name or ARM resource ID of the load test resource'
       long-summary: |
           Name or ARM resource ID of the load test resource
-    - name: --resource-group, --rg, -g
+    - name: --resource-group, -g
       type: string
       short-summary: 'Name of the resource group'
       long-summary: |
