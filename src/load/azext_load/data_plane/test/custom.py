@@ -68,13 +68,6 @@ def create_test(
         try:
             with open(load_test_config_file) as file:
                 data = yaml.safe_load(file)
-                body = json.loads(json.dumps(data))
-                if body.get("loadTestConfiguration") is None:
-                    body["loadTestConfiguration"] = {}
-                    body["loadTestConfiguration"]["engineInstances"] = 1
-                body["loadTestConfiguration"]["quickStartTest"] = False
-                body["loadTestConfiguration"]["splitAllCSVs"] = False
-                """
                 if "displayName" in data.keys():
                     body["displayName"] = data["displayName"]
                 if "description" in data.keys():
@@ -92,7 +85,8 @@ def create_test(
                     body["subnetId"] = data["subnetId"]
                 # quick test and split csv not supported currently in CLI
                 body["loadTestConfiguration"]["quickStartTest"] = False
-                body["loadTestConfiguration"]["splitAllCSVs"] = False"""
+                body["loadTestConfiguration"]["splitAllCSVs"] = False
+                # implementation of failure criteria is pending
         except (IOError, OSError) as ex:
             if getattr(ex, "errno", 0) == errno.ENOENT:
                 raise ValidationError(
@@ -194,9 +188,6 @@ def update_test(
         try:
             with open(load_test_config_file) as file:
                 data = yaml.safe_load(file)
-                body = json.dumps(data)
-
-                """
                 if "displayName" in data.keys():
                     body["displayName"] = data["displayName"]
                 if "description" in data.keys():
@@ -207,11 +198,15 @@ def update_test(
                     body["loadTestConfiguration"]["engineInstances"] = "1"
                 if "keyvaultReferenceIdentityId" in data.keys():
                     body["keyvaultReferenceIdentityId"] = data["keyvaultReferenceIdentityId"]
-                    body["keyvaultReferenceIdentityId"] = IdentityType["UserAssigned"]
+                    body["keyvaultReferenceIdentityType"] = IdentityType["UserAssigned"]
                 else:
-                    body["keyvaultReferenceIdentityId"] = IdentityType["SystemAssigned"]
+                    body["keyvaultReferenceIdentityType"] = IdentityType["SystemAssigned"]
                 if "subnetId" in data.keys():
-                    body["subnetId"] = data["subnetId"]"""
+                    body["subnetId"] = data["subnetId"]
+                # quick test and split csv not supported currently in CLI
+                body["loadTestConfiguration"]["quickStartTest"] = False
+                body["loadTestConfiguration"]["splitAllCSVs"] = False
+                # implementation of failure criteria is pending
         except (IOError, OSError) as ex:
             if getattr(ex, "errno", 0) == errno.ENOENT:
                 raise ValidationError(
