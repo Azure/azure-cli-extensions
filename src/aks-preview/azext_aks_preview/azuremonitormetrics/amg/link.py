@@ -5,12 +5,12 @@
 import json
 import uuid
 from knack.util import CLIError
-from azure.cli.command_modules.acs.azuremonitormetrics.constants import (
+from azext_aks_preview.azuremonitormetrics.constants import (
     GRAFANA_API,
     GRAFANA_ROLE_ASSIGNMENT_API,
     GrafanaLink
 )
-from azure.cli.command_modules.acs.azuremonitormetrics.helper import sanitize_resource_id
+from azext_aks_preview.azuremonitormetrics.helper import sanitize_resource_id
 
 
 def link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_id):

@@ -3,9 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import json
-from azure.cli.command_modules.acs.azuremonitormetrics.amw.create import create_default_mac
-from azure.cli.command_modules.acs.azuremonitormetrics.constants import MAC_API
-from azure.cli.command_modules.acs.azuremonitormetrics.helper import sanitize_resource_id
+from azext_aks_preview.azuremonitormetrics.amw.create import create_default_mac
+from azext_aks_preview.azuremonitormetrics.constants import MAC_API
+from azext_aks_preview.azuremonitormetrics.helper import sanitize_resource_id
 from azure.cli.core.azclierror import ClientRequestError
 from azure.core.exceptions import HttpResponseError
 from azure.cli.command_modules.acs._client_factory import get_resources_client

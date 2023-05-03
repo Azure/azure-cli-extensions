@@ -3,8 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import json
-from azure.cli.command_modules.acs.azuremonitormetrics.constants import DC_API
-from azure.cli.command_modules.acs.azuremonitormetrics.dc.defaults import get_default_dcra_name
+from azext_aks_preview.azuremonitormetrics.constants import DC_API
+from azext_aks_preview.azuremonitormetrics.dc.defaults import get_default_dcra_name
 from knack.util import CLIError
 
 

@@ -4,11 +4,11 @@
 # --------------------------------------------------------------------------------------------
 import json
 
-from azure.cli.command_modules.acs.azuremonitormetrics.constants import MAC_API
+from azext_aks_preview.azuremonitormetrics.constants import MAC_API
 from azure.cli.command_modules.acs._client_factory import get_resource_groups_client, get_resources_client
 from azure.core.exceptions import HttpResponseError
 from knack.util import CLIError
-from azure.cli.command_modules.acs.azuremonitormetrics.amw.defaults import get_default_mac_name_and_region
+from azext_aks_preview.azuremonitormetrics.amw.defaults import get_default_mac_name_and_region
 
 
 def create_default_mac(cmd, cluster_subscription, cluster_region):

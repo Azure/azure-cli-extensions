@@ -21,7 +21,7 @@ from azure.cli.command_modules.acs._helpers import (
 from azure.cli.command_modules.acs._validators import (
     extract_comma_separated_string,
 )
-from azext_aks_preview.azuremonitorprofile import (
+from azext_aks_preview.azuremonitormetrics.azuremonitorprofile import (
     ensure_azure_monitor_profile_prerequisites
 )
 from azure.cli.command_modules.acs.managed_cluster_decorator import (
@@ -2530,6 +2530,27 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc.node_resource_group_profile = node_resource_group_profile
         return mc
 
+    def set_up_azure_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up azure monitor profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+        # read the original value passed by the command
+        ksm_metric_labels_allow_list = self.context.raw_param.get("ksm_metric_labels_allow_list")
+        ksm_metric_annotations_allow_list = self.context.raw_param.get("ksm_metric_annotations_allow_list")
+        if ksm_metric_labels_allow_list is None:
+            ksm_metric_labels_allow_list = ""
+        if ksm_metric_annotations_allow_list is None:
+            ksm_metric_annotations_allow_list = ""
+        if self.context.get_enable_azure_monitor_metrics():
+            if mc.azure_monitor_profile is None:
+                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
+            mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=False)
+            mc.azure_monitor_profile.metrics.kube_state_metrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(  # pylint:disable=line-too-long
+                metric_labels_allowlist=str(ksm_metric_labels_allow_list),
+                metric_annotations_allow_list=str(ksm_metric_annotations_allow_list))
+        return mc
+
     def set_up_auto_upgrade_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up auto upgrade profile for the ManagedCluster object.
         :return: the ManagedCluster object
@@ -2611,6 +2632,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_auto_upgrade_profile(mc)
         # set up azure service mesh profile
         mc = self.set_up_azure_service_mesh_profile(mc)
+        # set up azure monitor profile
+        mc = self.set_up_azure_monitor_profile(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)

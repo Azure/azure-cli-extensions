@@ -2,11 +2,11 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from azure.cli.command_modules.acs.azuremonitormetrics.constants import (
+from azext_aks_preview.azuremonitormetrics.constants import (
     DC_TYPE,
     MapToClosestMACRegion
 )
-from azure.cli.command_modules.acs.azuremonitormetrics.deaults import get_default_region
+from azext_aks_preview.azuremonitormetrics.deaults import get_default_region
 
 
 # DCR = 64, DCE = 44, DCRA = 64

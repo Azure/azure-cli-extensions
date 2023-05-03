@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from azure.cli.command_modules.acs.azuremonitormetrics.constants import RULES_API
+from azext_aks_preview.azuremonitormetrics.constants import RULES_API
 
 
 def delete_rule(cmd, cluster_subscription, cluster_resource_group_name, default_rule_group_name):

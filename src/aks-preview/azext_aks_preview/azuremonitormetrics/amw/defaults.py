@@ -3,9 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import json
-from azure.cli.command_modules.acs.azuremonitormetrics.deaults import get_default_region
-from azure.cli.command_modules.acs.azuremonitormetrics.responseparsers.amwlocationresponseparser import parseResourceProviderResponseForLocations
-from azure.cli.command_modules.acs.azuremonitormetrics.constants import RP_LOCATION_API
+from azext_aks_preview.azuremonitormetrics.deaults import get_default_region
+from azext_aks_preview.azuremonitormetrics.responseparsers.amwlocationresponseparser import parseResourceProviderResponseForLocations
+from azext_aks_preview.azuremonitormetrics.constants import RP_LOCATION_API
 from knack.util import CLIError
 
 

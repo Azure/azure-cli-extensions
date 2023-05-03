@@ -7,7 +7,7 @@ from knack.util import CLIError
 from azure.cli.core.azclierror import (
     UnknownError
 )
-from azure.cli.command_modules.acs.azuremonitormetrics.constants import (
+from azext_aks_preview.azuremonitormetrics.constants import (
     RP_API,
     AKS_CLUSTER_API
 )
