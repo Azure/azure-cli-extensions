@@ -8,6 +8,7 @@ import dateutil.parser  # pylint: disable=import-error
 from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azext_load.vendored_sdks.loadtesting_mgmt import LoadTestMgmtClient
+import uuid
 
 logger = get_logger(__name__)
 
@@ -48,18 +49,18 @@ def get_load_test_resource_endpoint(
     return data_plane_uri
 
 
-def get_timespan(_, start_time=None, end_time=None, offset=None):
-    if not start_time and not end_time:
-        # if neither value provided, end_time is now
-        end_time = datetime.utcnow().isoformat()
-    if not start_time:
-        # if no start_time, apply offset backwards from end_time
-        start_time = (dateutil.parser.parse(end_time) - offset).isoformat()
-    elif not end_time:
-        # if no end_time, apply offset fowards from start_time
-        end_time = (dateutil.parser.parse(start_time) + offset).isoformat()
-    timespan = f"{start_time}/{end_time}"
-    return timespan
+# def get_timespan(_, start_time=None, end_time=None, offset=None):
+#     if not start_time and not end_time:
+#         # if neither value provided, end_time is now
+#         end_time = datetime.utcnow().isoformat()
+#     if not start_time:
+#         # if no start_time, apply offset backwards from end_time
+#         start_time = (dateutil.parser.parse(end_time) - offset).isoformat()
+#     elif not end_time:
+#         # if no end_time, apply offset fowards from start_time
+#         end_time = (dateutil.parser.parse(start_time) + offset).isoformat()
+#     timespan = f"{start_time}/{end_time}"
+#     return timespan
 
 
 def get_login_credentials(cli_ctx, subscription_id=None):
@@ -70,3 +71,6 @@ def get_login_credentials(cli_ctx, subscription_id=None):
     )
     logger.debug("Fetched login credentials for subscription %s", subscription_id)
     return credential
+
+def generate_test_id(test_name=None):
+    return str(uuid.uuid4())
