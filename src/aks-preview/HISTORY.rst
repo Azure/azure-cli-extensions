@@ -13,6 +13,10 @@ Pending
 +++++++
 * Vendor new SDK and bump API version to 2023-03-02-preview.
 
+0.5.138
++++++++
+* GA update for Azure Monitor Metrics Addon (managed prometheus metrics) for AKS
+
 0.5.137
 +++++++
 * Fix role assignment failure caused by the breaking change of default API version bump of the auth SDK

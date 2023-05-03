@@ -618,34 +618,38 @@ def aks_create(
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
-    # send request to create a real managed cluster
-    # send request
-    poller = client.begin_create_or_update(
-        resource_group_name=resource_group_name,
-        resource_name=name,
-        parameters=mc,
-        headers=get_aks_custom_headers(),
-    )
-    aks_cluster = LongRunningOperation(cmd.cli_ctx)(poller)
-    # aks_cluster = aks_create_decorator.create_mc(mc)
 
-    # Post processing for Azure Monitor Metrics (Managed Prometheus) addon as
-    # DCRA creation depends on the cluster creation
-    if raw_parameters.get("enable_azuremonitormetrics"):
-        print("Cluster creation successful, enabling Azure Monitor Metrics addon...")
-        ensure_azure_monitor_profile_prerequisites(
-            cmd,
-            client,
-            get_subscription_id(cmd.cli_ctx),
-            resource_group_name,
-            name,
-            location,
-            raw_parameters,
-            False,
-            True)
-        print("Success")
+    try:
+        # send request to create a real managed cluster
+        # send request
+        poller = client.begin_create_or_update(
+            resource_group_name=resource_group_name,
+            resource_name=name,
+            parameters=mc,
+            headers=get_aks_custom_headers(),
+        )
+        aks_cluster = LongRunningOperation(cmd.cli_ctx)(poller)
+        # aks_cluster = aks_create_decorator.create_mc(mc)
 
-    return aks_cluster
+        # Post processing for Azure Monitor Metrics (Managed Prometheus) addon as
+        # DCRA creation depends on the cluster creation
+        if raw_parameters.get("enable_azuremonitormetrics"):
+            print("Cluster creation successful, enabling Azure Monitor Metrics addon...")
+            ensure_azure_monitor_profile_prerequisites(
+                cmd,
+                client,
+                get_subscription_id(cmd.cli_ctx),
+                resource_group_name,
+                name,
+                location,
+                raw_parameters,
+                False,
+                True)
+            print("Success")
+
+        return aks_cluster
+    except:
+        return mc
 
 
 # pylint: disable=too-many-locals
