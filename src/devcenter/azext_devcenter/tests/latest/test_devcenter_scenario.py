@@ -42,7 +42,7 @@ class DevcenterScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "subscriptionId": self.get_subscription_id(),
-                "location": "westus3",
+                "location": "centraluseuap",
             }
         )
 
@@ -884,7 +884,7 @@ class DevcenterScenarioTest(ScenarioTest):
     def test_pool_scenario(self):
         self.kwargs.update(
             {
-                "location": "eastus",
+                "location": "centraluseuap",
             }
         )
         create_attached_network_dev_box_definition(self)
@@ -1414,7 +1414,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "subscriptionId": self.get_subscription_id(),
-                "location": "westus3",
+                "location": "centraluseuap",
             }
         )
 
@@ -1425,7 +1425,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "devcenterName": self.create_random_name(prefix="cli", length=24),
-                "location": "westus3",
+                "location": "centraluseuap",
             }
         )
 
@@ -1464,7 +1464,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     def test_pool_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "location": "westus3",
+                "location": "centraluseuap",
                 "devcenterName": self.create_random_name(prefix="cli", length=24),
             }
         )
@@ -1524,7 +1524,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     def test_catalog_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "location": "westus3",
+                "location": "centraluseuap",
             }
         )
 
@@ -1559,7 +1559,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     def test_env_definition_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "location": "westus3",
+                "location": "centraluseuap",
             }
         )
 
@@ -1596,7 +1596,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     def test_env_type_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "location": "westus3",
+                "location": "centraluseuap",
             }
         )
         create_proj_env_type(self)
@@ -1619,7 +1619,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     def test_dev_box_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "location": "eastus",
+                "location": "centraluseuap",
                 "devBoxName": self.create_random_name(prefix="cli", length=24),
             }
         )
