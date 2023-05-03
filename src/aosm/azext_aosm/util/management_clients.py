@@ -17,6 +17,7 @@ logger = get_logger(__name__)
 
 @dataclass
 class ProviderInfo:
+    """Class to return Provider Info information"""
     namespace: str
     resource_type: str
 
