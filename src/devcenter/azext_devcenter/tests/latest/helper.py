@@ -215,8 +215,10 @@ def create_attached_network_dev_box_definition(self):
     create_dev_center(self)
     create_project(self)
     create_network_connection(self)
+    imageRefId = f"{self.kwargs.get('devCenterId', '')}/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os"
+
     self.kwargs.update({
-        'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
+        'imageRefId': imageRefId,
         'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
         'osStorageType': "ssd_1024gb",
         'skuName': "general_a_8c32gb_v1",
@@ -292,6 +294,17 @@ def add_dev_box_user_role_to_project(self):
                  '--scope "{projectId}"')
 
 def create_pool(self):
+    imageRefId = f"{self.kwargs.get('devCenterId', '')}/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os"
+
+    self.kwargs.update({
+        'imageRefId': imageRefId,
+        'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
+        'osStorageType': "ssd_1024gb",
+        'skuName': "general_a_8c32gb_v1",
+        'attachedNetworkName': self.create_random_name(prefix='c2', length=12),
+        'time': "18:30",
+        'timeZone': "America/Los_Angeles"
+    })
     self.cmd('az devcenter admin attached-network create '
              '--dev-center "{devcenterName}" '
              '--name "{attachedNetworkName}" '
@@ -335,17 +348,6 @@ def create_pool(self):
 def create_pool_dataplane_dependencies(self):
     
     create_network_connection_dp(self)
-
-    self.kwargs.update({
-        'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365",
-        'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
-        'osStorageType': "ssd_1024gb",
-        'skuName': "general_a_8c32gb_v1",
-        'attachedNetworkName': self.create_random_name(prefix='c2', length=12),
-        'time': "13:00",
-        'timeZone': "America/Los_Angeles"
-    })
-
     create_pool(self)
 
 def add_deployment_env_user_role_to_project(self):
@@ -474,16 +476,5 @@ def create_dev_box_dependencies(self):
     create_project(self)
     add_dev_box_user_role_to_project(self)
     create_network_connection_dp(self)
-
-    self.kwargs.update({
-        'imageRefId': "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
-        'devBoxDefinitionName': self.create_random_name(prefix='c1', length=12),
-        'osStorageType': "ssd_1024gb",
-        'skuName': "general_a_8c32gb_v1",
-        'attachedNetworkName': self.create_random_name(prefix='c2', length=12),
-        'time': "18:30",
-        'timeZone': "America/Los_Angeles"
-    })
-
     create_pool(self)
 

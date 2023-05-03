@@ -486,9 +486,11 @@ class DevcenterScenarioTest(ScenarioTest):
         create_dev_center(self)
         create_project(self)
 
+        imageRefId = f"{self.kwargs.get('devCenterId', '')}/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os"
+
         self.kwargs.update(
             {
-                "imageRefId": "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
+                "imageRefId": imageRefId,
                 "devBoxDefinitionName": self.create_random_name(prefix="c1", length=12),
                 "osStorageType": "ssd_1024gb",
                 "skuName": "general_a_8c32gb_v1",
@@ -687,8 +689,6 @@ class DevcenterScenarioTest(ScenarioTest):
             ],
         )
 
-        # TODO: add hibernate support and recommended configuration checks
-        # for image list and image show return properties
         self.cmd(
             "az devcenter admin image list "
             '--gallery-name "{galleryName}" '
