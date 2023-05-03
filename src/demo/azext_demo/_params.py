@@ -57,8 +57,8 @@ def load_arguments(self, _):
                                                               'VolatileLRU', 'VolatileLFU', 'VolatileTTL',
                                                               'VolatileRandom', 'NoEviction']), help='Redis eviction policy - default '
                    'is VolatileLRU')
-        c.argument('persistence', action=AddPersistence, nargs='+', help='Persistence settings', is_preview=True)
-        c.argument('modules', action=AddModules, nargs='+', help='Optional set of redis modules to enable in this '
+        c.argument('persistence', action=AddPersistence, nargs='+', help='Persistence settings')
+        c.argument('modules', action=AddModules, nargs='+',options_list=['--modules','--module'], help='Optional set of redis modules to enable in this '
                    'database - modules can only be added at creation time.')
         # Add new argument
         c.argument('no_database', action='store_true', help='Advanced. Do not automatically create a '
@@ -118,7 +118,7 @@ def load_arguments(self, _):
                                                               'VolatileRandom', 'NoEviction']), help='Redis eviction '
                    'policy - default is VolatileLRU')
         c.argument('persistence', action=AddPersistence, nargs='+', help='Persistence settings', is_preview=True)
-        c.argument('modules', action=AddModules, nargs='+', help='Optional set of redis modules to enable in this '
+        c.argument('modules', action=AddModules, nargs='+',options_list=['--modules','--module'], help='Optional set of redis modules to enable in this '
                    'database - modules can only be added at creation time.')
         c.argument('group_nickname', type=str, help='Name for the group of linked database resources', arg_group='Geo '
                    'Replication')
@@ -213,10 +213,10 @@ class AddPersistence(argparse.Action):
             v = properties[k]
 
             if kl == 'aof-enabled':
-                d['aof_enabled'] = v[0]
+                d['aof_enabled'] = bool(v[0])
 
             elif kl == 'rdb-enabled':
-                d['rdb_enabled'] = v[0]
+                d['rdb_enabled'] = bool(v[0])
 
             elif kl == 'aof-frequency':
                 d['aof_frequency'] = v[0]
@@ -261,7 +261,6 @@ class AddModules(argparse._AppendAction):
                 raise CLIError(
                     'Unsupported Key {} is provided for parameter modules. All possible keys are: name, args'.format(k)
                 )
-
         return d
 
 

@@ -13,5 +13,6 @@
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group("redisenterprise") as g:
-        g.custom_command('create', 'redisenterprise_create')
-    pass
+        g.custom_command('create', 'redisenterprise_create', supports_no_wait=True)
+        g.custom_command('list', 'redisenterprise_list')
+        g.custom_show_command('show', 'redisenterprise_show')

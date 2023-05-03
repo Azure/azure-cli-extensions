@@ -17,12 +17,17 @@ from .aaz.latest.redisenterprise.database import Create as _DatabaseCreate
 from .aaz.latest.redisenterprise.database import Delete as _DatabaseDelete
 from .aaz.latest.redisenterprise.database import Export as _DatabaseExport
 from .aaz.latest.redisenterprise.database import Import as _DatabaseImport
-from .aaz.latest.redisenterprise.database import ListKey as _DatabaseListKey
+from .aaz.latest.redisenterprise.database import List as _DatabaseList
 from .aaz.latest.redisenterprise.database import RegenerateKey as _DatabaseRegenerateKey
 from .aaz.latest.redisenterprise.database import ListKey as _DatabaseListKey
 from .aaz.latest.redisenterprise.database import Show as _DatabaseShow
 from .aaz.latest.redisenterprise.database import Update as _DatabaseUpdate
 from .aaz.latest.redisenterprise.database import Wait as _DatabaseWait
+from .aaz.latest.redisenterprise import List as _ClusterList
+from .aaz.latest.redisenterprise import Show as _ClusterShow
+from .aaz.latest.redisenterprise import Wait as _DatabaseWait
+from msrest.serialization import last_restapi_key_transformer
+
 
 logger = get_logger(__name__)
 
@@ -114,6 +119,59 @@ class DatabaseWait(_DatabaseWait):
         args_schema.database_name._registered = False
         return args_schema
 
+class DatabaseList(_DatabaseList):
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.database_name._registered = False
+        return args_schema
+
+
+def _get_cluster_with_databases(cluster,
+                                databases):
+    result = dict(cluster)
+    # Restore select null cluster attributes that were removed by cluster.as_dict()
+    if 'zones' not in cluster.keys() or cluster['zones'] is None:
+        result['zones'] = None
+
+    result['databases'] = []
+    for database in databases:
+        result['databases'].append(database)
+    return result
+
+
+def redisenterprise_list(cmd,
+                         resource_group_name=None):
+    if resource_group_name:
+        clusters = _ClusterList(cli_ctx=cmd.cli_ctx)(command_args={"resource_group": resource_group_name})
+    else:
+        clusters = _ClusterList(cli_ctx=cmd.cli_ctx)(command_args={})
+
+    result = []
+    for cluster in clusters:
+        cluster_resource_group = cluster['id'].split('/')[4]
+        databases = _DatabaseList(cli_ctx=cmd.cli_ctx)(command_args={
+                "cluster_name": cluster['name'],
+                "resource_group": cluster_resource_group})
+        result.append(_get_cluster_with_databases(cluster, databases))
+    return result
+
+
+def redisenterprise_show(cmd,
+                         resource_group_name,
+                         cluster_name):
+    cluster = _ClusterShow(cli_ctx=cmd.cli_ctx)(command_args={
+                "cluster_name": cluster_name,
+                "resource_group": resource_group_name})
+
+    databases = _DatabaseList(cli_ctx=cmd.cli_ctx)(command_args={
+                "cluster_name": cluster_name,
+                "resource_group": resource_group_name})
+
+    return _get_cluster_with_databases(cluster, databases)
+
+
 def redisenterprise_create(cmd,
                            resource_group_name,
                            cluster_name,
@@ -157,9 +215,7 @@ def redisenterprise_create(cmd,
                                                 modules,
                                                 group_nickname,
                                                 linked_databases])):
-        print("inside condition");
-        return LongRunningOperation(cmd.cli_ctx)(
-            CacheCreate(cli_ctx=cmd.cli_ctx)(command_args={
+        return CacheCreate(cli_ctx=cmd.cli_ctx)(command_args={
                 "cluster_name": cluster_name,
                 "resource_group": resource_group_name,
                 "location": location,
@@ -168,13 +224,11 @@ def redisenterprise_create(cmd,
                 "sku": sku ,
                 "capacity" : capacity,
                 "zones": zones,
-                "minimum_tls_version": minimum_tls_version
+                "minimum_tls_version": minimum_tls_version,
+                "no_wait": no_wait
             })
-        )
-    print("before create");
-    print(type(capacity))
-    LongRunningOperation(cmd.cli_ctx)(
-            CacheCreate(cli_ctx=cmd.cli_ctx)(command_args={
+
+    poller = CacheCreate(cli_ctx=cmd.cli_ctx)(command_args={
                 "cluster_name": cluster_name,
                 "resource_group": resource_group_name,
                 "location": location,
@@ -183,12 +237,13 @@ def redisenterprise_create(cmd,
                 "sku": sku ,
                 "capacity" : capacity,
                 "zones": zones,
-                "minimum_tls_version": minimum_tls_version
+                "minimum_tls_version": minimum_tls_version,
+                "no_wait": no_wait
             })
-        )
-    print("after create");
-    return LongRunningOperation(cmd.cli_ctx)(
-        DatabaseCreate(cli_ctx=cmd.cli_ctx)(command_args={
+    if poller:
+        LongRunningOperation(cmd.cli_ctx)(poller)
+    from .aaz.latest.redisenterprise.database import Create as DatabaseCreate
+    return DatabaseCreate(cli_ctx=cmd.cli_ctx)(command_args={
             "cluster_name": cluster_name,
             "resource_group": resource_group_name,
             "client_protocol": client_protocol,
@@ -197,10 +252,9 @@ def redisenterprise_create(cmd,
             "eviction_policy": eviction_policy,
             "persistence": persistence,
             "group_nickname": group_nickname,
-            "linked_databases": linked_databases,
-            "modules": modules,
+            "linkeddatabase": linked_databases,
+            "mods": modules,
             "database_name":'default',
-            "no_wait": no_wait,
+            "no_wait": no_wait
         })
-    )
 

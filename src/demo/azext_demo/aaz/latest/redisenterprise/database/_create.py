@@ -65,16 +65,17 @@ class Create(AAZCommand):
             arg_group="GeoReplication",
             help="Name for the group of linked database resources",
         )
-        _args_schema.linked_databases = AAZListArg(
-            options=["--linked-databases"],
+        _args_schema.linkeddatabase = AAZListArg(
+            options=["--linkeddatabase"],
+            singular_options=["--linked-database", "--linked-databases"],
             arg_group="GeoReplication",
             help="List of database resources to link with this database",
         )
 
-        linked_databases = cls._args_schema.linked_databases
-        linked_databases.Element = AAZObjectArg()
+        linkeddatabase = cls._args_schema.linkeddatabase
+        linkeddatabase.Element = AAZObjectArg()
 
-        _element = cls._args_schema.linked_databases.Element
+        _element = cls._args_schema.linkeddatabase.Element
         _element.id = AAZStrArg(
             options=["id"],
             help="Resource ID of a database resource to link with this database.",
@@ -101,8 +102,9 @@ class Create(AAZCommand):
             help="Redis eviction policy - default is VolatileLRU",
             enum={"AllKeysLFU": "AllKeysLFU", "AllKeysLRU": "AllKeysLRU", "AllKeysRandom": "AllKeysRandom", "NoEviction": "NoEviction", "VolatileLFU": "VolatileLFU", "VolatileLRU": "VolatileLRU", "VolatileRandom": "VolatileRandom", "VolatileTTL": "VolatileTTL"},
         )
-        _args_schema.modules = AAZListArg(
-            options=["--modules"],
+        _args_schema.mods = AAZListArg(
+            options=["--mods"],
+            singular_options=["--module", "--modules"],
             arg_group="Properties",
             help="Optional set of redis modules to enable in this database - modules can only be added at creation time.",
         )
@@ -117,10 +119,10 @@ class Create(AAZCommand):
             help="TCP port of the database endpoint. Specified at create time. Defaults to an available port.",
         )
 
-        modules = cls._args_schema.modules
-        modules.Element = AAZObjectArg()
+        mods = cls._args_schema.mods
+        mods.Element = AAZObjectArg()
 
-        _element = cls._args_schema.modules.Element
+        _element = cls._args_schema.mods.Element
         _element.args = AAZStrArg(
             options=["args"],
             help="Configuration options for the module, e.g. 'ERROR_RATE 0.01 INITIAL_SIZE 400'.",
@@ -270,14 +272,14 @@ class Create(AAZCommand):
                 properties.set_prop("clusteringPolicy", AAZStrType, ".clustering_policy")
                 properties.set_prop("evictionPolicy", AAZStrType, ".eviction_policy")
                 properties.set_prop("geoReplication", AAZObjectType)
-                properties.set_prop("modules", AAZListType, ".modules")
+                properties.set_prop("modules", AAZListType, ".mods")
                 properties.set_prop("persistence", AAZObjectType, ".persistence")
                 properties.set_prop("port", AAZIntType, ".port")
 
             geo_replication = _builder.get(".properties.geoReplication")
             if geo_replication is not None:
                 geo_replication.set_prop("groupNickname", AAZStrType, ".group_nickname")
-                geo_replication.set_prop("linkedDatabases", AAZListType, ".linked_databases")
+                geo_replication.set_prop("linkedDatabases", AAZListType, ".linkeddatabase")
 
             linked_databases = _builder.get(".properties.geoReplication.linkedDatabases")
             if linked_databases is not None:

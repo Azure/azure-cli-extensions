@@ -8,6 +8,7 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from .example_steps import step_create
 from .example_steps import step_show
 from .example_steps import step_database_show
@@ -121,21 +122,22 @@ def call_scenario1(test, rg):
 
 
 # Test class for scenario1
-#class Redisenterprisescenario1Test(ScenarioTest):
+class Redisenterprisescenario1Test(ScenarioTest):
+    
+    def __init__(self, *args, **kwargs):
+        super(Redisenterprisescenario1Test, self).__init__(*args, **kwargs)
 
-#    def __init__(self, *args, **kwargs):
-#        super(Redisenterprisescenario1Test, self).__init__(*args, **kwargs)
+        self.kwargs.update({
+            'cluster': self.create_random_name(prefix='clitest-cache1-', length=21)
+        })
 
-#        self.kwargs.update({
-#            'cluster': self.create_random_name(prefix='clitest-cache1-', length=21)
-#        })
-
-#    @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg1-', key='rg', parameter_name='rg',
-#                           location='eastus', random_name_length=34)
-#    def test_redisenterprise_scenario1(self, rg):
-#        call_scenario1(self, rg)
-#        calc_coverage(__file__)
-#        raise_if()
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg1-', key='rg', parameter_name='rg',
+                           location='eastus', random_name_length=34)
+    def test_redisenterprise_scenario1(self, rg):
+        call_scenario1(self, rg)
+        calc_coverage(__file__)
+        raise_if()
 
 
 # Env setup_scenario2
@@ -226,6 +228,7 @@ class Redisenterprisescenario2Test(ScenarioTest):
             'no_database': True
         })
 
+    @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg2-', key='rg', parameter_name='rg',
                            location='eastus', random_name_length=34)
     def test_redisenterprise_scenario2(self):
@@ -277,7 +280,7 @@ def call_scenario3(test):
 
 # Test class for scenario3
 class Redisenterprisescenario3Test(ScenarioTest):
-
+    
     def __init__(self, *args, **kwargs):
         super(Redisenterprisescenario3Test, self).__init__(*args, **kwargs)
 
@@ -292,6 +295,7 @@ class Redisenterprisescenario3Test(ScenarioTest):
                            location='eastus', random_name_length=34)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg32-', key='rg32', parameter_name='rg32',
                            location='westus', random_name_length=34)
+    @AllowLargeResponse()
     def test_redisenterprise_scenario3(self):
         call_scenario3(self)
         calc_coverage(__file__)
