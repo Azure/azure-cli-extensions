@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT
 # License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------
-"""Shared publisher resources"""
+"""Shared publisher resources."""
 from dataclasses import dataclass
 from knack.log import get_logger
 from azext_aosm.vendored_sdks.models import NetworkFunctionDefinitionGroup
@@ -19,7 +19,8 @@ class PublisherResourceGenerator:
     config: Configuration
 
     def generate_nfd_group(self) -> NetworkFunctionDefinitionGroup:
-        """Generate a NFD group with location and description from config.
+        """
+        Generate a NFD group with location and description from config.
 
         :return: _description_
         :rtype: NetworkFunctionDefinitionGroup

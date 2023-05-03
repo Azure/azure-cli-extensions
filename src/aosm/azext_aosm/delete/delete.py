@@ -1,4 +1,3 @@
-
 # --------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT
 # License. See License.txt in the project root for license information.
@@ -20,7 +19,7 @@ from azext_aosm.util.utils import input_ack
 logger = get_logger(__name__)
 
 
-class ResourceDeleter():
+class ResourceDeleter:
     def __init__(
         self,
         apiClientsAndCaches: ApiClientsAndCaches,
@@ -39,24 +38,32 @@ class ResourceDeleter():
         self.config = config
 
     def delete_vnf(self, all: bool = False):
-        """Delete the NFDV and manifests.
-        
+        """
+        Delete the NFDV and manifests.
+
         :param all: Delete the NFDG, artifact stores and publisher too.
                     defaults to False
                     Use with care.
-
         """
         assert isinstance(self.config, VNFConfiguration)
         if all:
-            print(f"Are you sure you want to delete all resources associated with NFD {self.config.nf_name} including the artifact stores and publisher {self.config.publisher_name}?")
-            logger.warning("This command will fail if other NFD versions exist in the NFD group.")
-            logger.warning("Only do this if you are SURE you are not sharing the publisher and artifact stores with other NFDs")
+            print(
+                f"Are you sure you want to delete all resources associated with NFD {self.config.nf_name} including the artifact stores and publisher {self.config.publisher_name}?"
+            )
+            logger.warning(
+                "This command will fail if other NFD versions exist in the NFD group."
+            )
+            logger.warning(
+                "Only do this if you are SURE you are not sharing the publisher and artifact stores with other NFDs"
+            )
             print("There is no undo.  Type the publisher name to confirm.")
             if not input_ack(self.config.publisher_name.lower(), "Confirm delete:"):
                 print("Not proceeding with delete")
                 return
         else:
-            print(f"Are you sure you want to delete the NFD Version {self.config.version} and associated manifests from group {self.config.nfdg_name} and publisher {self.config.publisher_name}?")
+            print(
+                f"Are you sure you want to delete the NFD Version {self.config.version} and associated manifests from group {self.config.nfdg_name} and publisher {self.config.publisher_name}?"
+            )
             print("There is no undo. Type 'delete' to confirm")
             if not input_ack("delete", "Confirm delete:"):
                 print("Not proceeding with delete")
@@ -65,7 +72,7 @@ class ResourceDeleter():
         self.delete_nfdv()
         self.delete_artifact_manifest("sa")
         self.delete_artifact_manifest("acr")
-        
+
         if all:
             logger.info("Delete called for all resources.")
             self.delete_nfdg()
@@ -73,8 +80,6 @@ class ResourceDeleter():
             self.delete_artifact_store("sa")
             self.delete_publisher()
 
-            
-        
     def delete_nfdv(self):
         message: str = f"Delete NFDV {self.config.version} from group {self.config.nfdg_name} and publisher {self.config.publisher_name}"
         logger.debug(message)
@@ -84,16 +89,19 @@ class ResourceDeleter():
                 resource_group_name=self.config.publisher_resource_group_name,
                 publisher_name=self.config.publisher_name,
                 network_function_definition_group_name=self.config.nfdg_name,
-                network_function_definition_version_name=self.config.version
+                network_function_definition_version_name=self.config.version,
             )
             poller.result()
             print("Deleted NFDV.")
         except Exception:
-            logger.error(f"Failed to delete NFDV {self.config.version} from group {self.config.nfdg_name}")
+            logger.error(
+                f"Failed to delete NFDV {self.config.version} from group {self.config.nfdg_name}"
+            )
             raise
-        
+
     def delete_artifact_manifest(self, store_type: str) -> None:
-        """_summary_
+        """
+        _summary_
 
         :param store_type: "sa" or "acr"
         :raises CLIInternalError: If called with any other store type
@@ -112,7 +120,9 @@ class ResourceDeleter():
             raise CLIInternalError(
                 "Delete artifact manifest called for invalid store type. Valid types are sa and acr."
             )
-        message: str = f"Delete Artifact manifest {manifest_name} from artifact store {store_name}"    
+        message: str = (
+            f"Delete Artifact manifest {manifest_name} from artifact store {store_name}"
+        )
         logger.debug(message)
         print(message)
         try:
@@ -120,32 +130,33 @@ class ResourceDeleter():
                 resource_group_name=self.config.publisher_resource_group_name,
                 publisher_name=self.config.publisher_name,
                 artifact_store_name=store_name,
-                artifact_manifest_name=manifest_name
+                artifact_manifest_name=manifest_name,
             )
             poller.result()
             print("Deleted Artifact Manifest")
         except Exception:
-            logger.error(f"Failed to delete Artifact manifest {manifest_name} from artifact store {store_name}")
+            logger.error(
+                f"Failed to delete Artifact manifest {manifest_name} from artifact store {store_name}"
+            )
             raise
-        
-    def delete_nfdg(self)-> None:
-        """Delete the NFDG
-        """
+
+    def delete_nfdg(self) -> None:
+        """Delete the NFDG."""
         message: str = f"Delete NFD Group {self.config.nfdg_name}"
         logger.debug(message)
         print(message)
         try:
             poller = self.api_clients.aosm_client.network_function_definition_groups.begin_delete(
-                            resource_group_name=self.config.publisher_resource_group_name,
+                resource_group_name=self.config.publisher_resource_group_name,
                 publisher_name=self.config.publisher_name,
-                network_function_definition_group_name=self.config.nfdg_name        
+                network_function_definition_group_name=self.config.nfdg_name,
             )
             poller.result()
             print("Delete NFD Group")
         except Exception:
             logger.error(f"Failed to delete NFDG.")
             raise
-        
+
     def delete_artifact_store(self, store_type: str) -> None:
         """Delete an artifact store
         :param store_type: "sa" or "acr"
@@ -170,30 +181,34 @@ class ResourceDeleter():
             poller = self.api_clients.aosm_client.artifact_stores.begin_delete(
                 resource_group_name=self.config.publisher_resource_group_name,
                 publisher_name=self.config.publisher_name,
-                artifact_store_name=store_name
+                artifact_store_name=store_name,
             )
             poller.result()
             print("Deleted Artifact Store")
         except Exception:
             logger.error(f"Failed to delete Artifact store {store_name}")
             raise
-        
+
     def delete_publisher(self) -> None:
-        """Delete the publisher. Warning - dangerous"""
+        """
+        Delete the publisher.
+
+        Warning - dangerous
+        """
         message: str = f"Delete Publisher {self.config.publisher_name}"
         logger.debug(message)
         print(message)
         try:
             poller = self.api_clients.aosm_client.publishers.begin_delete(
                 resource_group_name=self.config.publisher_resource_group_name,
-                publisher_name=self.config.publisher_name
+                publisher_name=self.config.publisher_name,
             )
             poller.result()
             print("Deleted Publisher")
         except Exception:
             logger.error(f"Failed to delete publisher")
-            raise        
-        
+            raise
+
     # def delete_resource(self, resource: GenericResourceExpanded) -> bool:
     #     """
     #     Delete a resource.
@@ -236,4 +251,4 @@ class ResourceDeleter():
     #         logger.info(f"Failed to delete {resource.name} {delEx}")
     #         return False
 
-    #     return True    
+    #     return True

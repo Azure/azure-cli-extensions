@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 """Utility functions."""
 
+
 def input_ack(ack: str, request_to_user: str) -> bool:
     """
     Overarching function to request, sanitise and return True if input is specified ack.

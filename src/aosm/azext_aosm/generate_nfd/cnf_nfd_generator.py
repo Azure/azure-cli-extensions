@@ -6,16 +6,16 @@
 from typing import Dict, Any
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 
+
 class CnfNfdGenerator(NFDGenerator):
-    """_summary_
+    """
+    _summary_
 
     :param NFDGenerator: _description_
     :type NFDGenerator: _type_
     """
-    def __init__(
-        self,
-        config: Dict[Any, Any]
-    ):
+
+    def __init__(self, config: Dict[Any, Any]):
         super(NFDGenerator, self).__init__(
             config=config,
         )

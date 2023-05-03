@@ -17,7 +17,10 @@ from pathlib import Path
 
 from azext_aosm.deploy.pre_deploy import PreDeployerViaSDK
 from azext_aosm._configuration import Configuration, VNFConfiguration
-from azext_aosm._constants import VNF_DEFINITION_OUTPUT_BICEP_PREFIX, VNF_DEFINITION_BICEP_SOURCE_TEMPLATE
+from azext_aosm._constants import (
+    VNF_DEFINITION_OUTPUT_BICEP_PREFIX,
+    VNF_DEFINITION_BICEP_SOURCE_TEMPLATE,
+)
 
 
 logger = get_logger(__name__)
@@ -44,12 +47,11 @@ class DeployerViaArm:
         logger.debug("Create ARM/Bicep Deployer")
         self.api_clients = apiClientsAndCaches
         self.config = config
-        self.pre_deployer = PreDeployerViaSDK(
-            apiClientsAndCaches, self.config
-        )
+        self.pre_deployer = PreDeployerViaSDK(apiClientsAndCaches, self.config)
 
     def deploy_vnfd_from_bicep(self) -> None:
-        """Deploy the bicep template defining the VNFD.
+        """
+        Deploy the bicep template defining the VNFD.
 
         Also ensure that all required predeploy resources are deployed.
 
@@ -57,31 +59,39 @@ class DeployerViaArm:
         :type bicep_template_path: str
         """
         assert isinstance(self.config, VNFConfiguration)
-        
+
         # TODO - duplicated from vnf_bicep_nfd_generator and won't work if file exists
         arm_template_path = self.config.arm_template["file_path"]
-        folder_name = f"{VNF_DEFINITION_OUTPUT_BICEP_PREFIX}{Path(str(arm_template_path)).stem}"
+        folder_name = (
+            f"{VNF_DEFINITION_OUTPUT_BICEP_PREFIX}{Path(str(arm_template_path)).stem}"
+        )
         bicep_template_name = VNF_DEFINITION_BICEP_SOURCE_TEMPLATE
         bicep_path = os.path.join(folder_name, bicep_template_name)
-        
+
         parameters = self.construct_vnfd_parameters()
         logger.debug(parameters)
 
         # Create or check required resources
         self.vnfd_predeploy()
         self.deploy_bicep_template(bicep_path, parameters)
-        print(f"Deployed NFD {self.config.nf_name} version {self.config.version} "
-              f"into {self.config.publisher_resource_group_name} under publisher "
-              f"{self.config.publisher_name}")
-        
-        storage_account_manifest = ArtifactManifestOperator(self.config, 
-                                                    self.api_clients, 
-                                                    self.config.blob_artifact_store_name,
-                                                    self.config.sa_manifest_name)
-        acr_manifest = ArtifactManifestOperator(self.config, 
-                                                self.api_clients, 
-                                                self.config.acr_artifact_store_name,
-                                                self.config.acr_manifest_name)
+        print(
+            f"Deployed NFD {self.config.nf_name} version {self.config.version} "
+            f"into {self.config.publisher_resource_group_name} under publisher "
+            f"{self.config.publisher_name}"
+        )
+
+        storage_account_manifest = ArtifactManifestOperator(
+            self.config,
+            self.api_clients,
+            self.config.blob_artifact_store_name,
+            self.config.sa_manifest_name,
+        )
+        acr_manifest = ArtifactManifestOperator(
+            self.config,
+            self.api_clients,
+            self.config.acr_artifact_store_name,
+            self.config.acr_manifest_name,
+        )
 
         vhd_artifact = storage_account_manifest.artifacts[0]
         arm_template_artifact = acr_manifest.artifacts[0]
@@ -91,7 +101,6 @@ class DeployerViaArm:
         print("Uploading ARM template artifact")
         arm_template_artifact.upload(self.config.arm_template)
         print("Done")
-        
 
     def vnfd_predeploy(self):
         """

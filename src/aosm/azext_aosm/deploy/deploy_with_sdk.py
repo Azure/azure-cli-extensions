@@ -22,9 +22,10 @@ logger = get_logger(__name__)
 
 class DeployerViaSDK:
     """A class to deploy Artifact Manifests, NFDs and NSDs using the python SDK."""
+
     # @@@TODO - not sure this class is required as we can't publish complex objects
     # using the SDK
-    
+
     def __init__(
         self,
         aosm_client: HybridNetworkManagementClient,
@@ -42,7 +43,7 @@ class DeployerViaSDK:
         self.aosm_client = aosm_client
         self.resource_client = resource_client
         self.pre_deployer = PreDeployerViaSDK(aosm_client, resource_client)
-            
+
     def publish_artifact_manifest(
         self,
         resource_group_name: str,
@@ -74,10 +75,7 @@ class DeployerViaSDK:
 
         artifact_types = [a.artifact_type for a in artifact_manifest.artifacts]
 
-        if (
-            ArtifactType.VHD_IMAGE_FILE
-            or ArtifactType.IMAGE_FILE in artifact_types
-        ):
+        if ArtifactType.VHD_IMAGE_FILE or ArtifactType.IMAGE_FILE in artifact_types:
             artifact_store_type = ArtifactStoreType.AZURE_STORAGE_ACCOUNT
         else:
             artifact_store_type = ArtifactStoreType.AZURE_CONTAINER_REGISTRY
@@ -98,7 +96,7 @@ class DeployerViaSDK:
             artifact_manifest_name=artifact_manifest.name,
             parameters=artifact_manifest,
         )
-        
+
     def publish_network_function_definition_version(
         self,
         resource_group_name: str,

@@ -28,7 +28,8 @@ logger = get_logger(__name__)
 
 
 class VnfBicepNfdGenerator(NFDGenerator):
-    """_summary_
+    """
+    _summary_
 
     :param NFDGenerator: _description_
     :type NFDGenerator: _type_
@@ -50,9 +51,9 @@ class VnfBicepNfdGenerator(NFDGenerator):
         """Generate a VNF NFD which comprises an group, an Artifact Manifest and a NFDV."""
         # assert isinstance(self.config, VNFConfiguration)
         if self.bicep_path:
-            print(f"Using the existing NFD bicep template {self.bicep_path}." )
+            print(f"Using the existing NFD bicep template {self.bicep_path}.")
             print(
-                f'To generate a new NFD, delete the folder {os.path.dirname(self.bicep_path)} and re-run this command.'
+                f"To generate a new NFD, delete the folder {os.path.dirname(self.bicep_path)} and re-run this command."
             )
         else:
             self.write()
@@ -134,13 +135,13 @@ class VnfBicepNfdGenerator(NFDGenerator):
         deployment_parameters_path = os.path.join(
             folder_path, "deploymentParameters.json"
         )
-        
+
         # Heading for the deployParameters schema
         deploy_parameters_full: Dict[str, Any] = {
             "$schema": "https://json-schema.org/draft-07/schema#",
             "title": "DeployParametersSchema",
             "type": "object",
-            "properties": nfd_parameters
+            "properties": nfd_parameters,
         }
 
         with open(deployment_parameters_path, "w") as _file:

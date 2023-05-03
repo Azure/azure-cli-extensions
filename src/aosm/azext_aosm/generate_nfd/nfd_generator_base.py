@@ -9,24 +9,25 @@ from azext_aosm._configuration import Configuration
 
 logger = get_logger(__name__)
 
+
 class NFDGenerator:
     """A class for generating an NFD from a config file."""
 
     def __init__(
         self,
-        #config: Configuration
+        # config: Configuration
     ) -> None:
-        """_summary_
+        """
+        _summary_
 
         :param definition_type: _description_
         :type definition_type: str
         :param config: _description_
         :type config: Configuration
         """
-        #self.config = config
+        # self.config = config
 
     def generate_nfd(self) -> None:
-        """No-op on base class
-        """
+        """No-op on base class."""
         logger.error("Generate NFD called on base class. No-op")
         return

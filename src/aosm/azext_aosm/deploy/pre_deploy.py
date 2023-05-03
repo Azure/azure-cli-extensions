@@ -8,9 +8,7 @@ from knack.log import get_logger
 
 from azure.core import exceptions as azure_exceptions
 from azure.cli.core.azclierror import AzCLIError
-from azure.mgmt.resource.resources.v2022_09_01.models import (
-    ResourceGroup
-)
+from azure.mgmt.resource.resources.v2022_09_01.models import ResourceGroup
 
 from azure.mgmt.resource import ResourceManagementClient
 from azext_aosm.util.management_clients import ApiClientsAndCaches
@@ -47,11 +45,11 @@ class PreDeployerViaSDK:
 
         self.api_clients = apiClientsAndCaches
         self.config = config
-        
-    def ensure_resource_group_exists(self, resource_group_name: str)-> None:
+
+    def ensure_resource_group_exists(self, resource_group_name: str) -> None:
         """
         Checks whether a particular resource group exists on the subscription.
-        Copied from virtutils
+        Copied from virtutils.
 
         :param resource_group_name: The name of the resource group
 
@@ -59,15 +57,21 @@ class PreDeployerViaSDK:
         Raises a PermissionsError exception if we don't have permissions to check resource group existence.
         """
         rg: ResourceGroup
-        if not self.api_clients.resource_client.resource_groups.check_existence(resource_group_name):
+        if not self.api_clients.resource_client.resource_groups.check_existence(
+            resource_group_name
+        ):
             logger.info(f"RG {resource_group_name} not found. Create it.")
             print(f"Creating resource group {resource_group_name}.")
             rg_params: ResourceGroup = ResourceGroup(location=self.config.location)
-            rg = self.api_clients.resource_client.resource_groups.create_or_update(resource_group_name, rg_params)
+            rg = self.api_clients.resource_client.resource_groups.create_or_update(
+                resource_group_name, rg_params
+            )
         else:
             print(f"Resource group {resource_group_name} exists.")
-            rg = self.api_clients.resource_client.resource_groups.get(resource_group_name)
-    
+            rg = self.api_clients.resource_client.resource_groups.get(
+                resource_group_name
+            )
+
     def ensure_config_resource_group_exists(self) -> None:
         """
         Ensures that the publisher exists in the resource group.
@@ -75,7 +79,6 @@ class PreDeployerViaSDK:
         Finds the parameters from self.config
         """
         self.ensure_resource_group_exists(self.config.publisher_resource_group_name)
-
 
     def ensure_publisher_exists(
         self, resource_group_name: str, publisher_name: str, location: str
@@ -90,15 +93,19 @@ class PreDeployerViaSDK:
         :param location: The location of the publisher.
         :type location: str
         """
-        logger.info(
-            "Creating publisher %s if it does not exist", publisher_name
-        )
+        logger.info("Creating publisher %s if it does not exist", publisher_name)
         try:
-            pubby = self.api_clients.aosm_client.publishers.get(resource_group_name, publisher_name)
-            print(f"Publisher {pubby.name} exists in resource group {resource_group_name}")
+            pubby = self.api_clients.aosm_client.publishers.get(
+                resource_group_name, publisher_name
+            )
+            print(
+                f"Publisher {pubby.name} exists in resource group {resource_group_name}"
+            )
         except azure_exceptions.ResourceNotFoundError:
             # Create the publisher
-            print(f"Creating publisher {publisher_name} in resource group {resource_group_name}")
+            print(
+                f"Creating publisher {publisher_name} in resource group {resource_group_name}"
+            )
             pub = self.api_clients.aosm_client.publishers.begin_create_or_update(
                 resource_group_name=resource_group_name,
                 publisher_name=publisher_name,
@@ -106,16 +113,17 @@ class PreDeployerViaSDK:
             )
             pub.result()
 
-            
     def ensure_config_publisher_exists(self) -> None:
         """
         Ensures that the publisher exists in the resource group.
 
         Finds the parameters from self.config
         """
-        self.ensure_publisher_exists(resource_group_name=self.config.publisher_resource_group_name,
-                                     publisher_name=self.config.publisher_name,
-                                     location=self.config.location)
+        self.ensure_publisher_exists(
+            resource_group_name=self.config.publisher_resource_group_name,
+            publisher_name=self.config.publisher_name,
+            location=self.config.location,
+        )
 
     def ensure_artifact_store_exists(
         self,
@@ -144,20 +152,28 @@ class PreDeployerViaSDK:
             artifact_store_name,
         )
         try:
-            self.api_clients.aosm_client.artifact_stores.get(resource_group_name=resource_group_name,
-                                                             publisher_name=publisher_name,
-                                                             artifact_store_name=artifact_store_name)
-            print(f"Artifact store {artifact_store_name} exists in resource group {resource_group_name}")
-        except azure_exceptions.ResourceNotFoundError:
-            print(f"Create Artifact Store {artifact_store_name} of type {artifact_store_type}")
-            poller = self.api_clients.aosm_client.artifact_stores.begin_create_or_update(
+            self.api_clients.aosm_client.artifact_stores.get(
                 resource_group_name=resource_group_name,
                 publisher_name=publisher_name,
                 artifact_store_name=artifact_store_name,
-                parameters=ArtifactStore(
-                    location=location,
-                    store_type=artifact_store_type,
-                ),
+            )
+            print(
+                f"Artifact store {artifact_store_name} exists in resource group {resource_group_name}"
+            )
+        except azure_exceptions.ResourceNotFoundError:
+            print(
+                f"Create Artifact Store {artifact_store_name} of type {artifact_store_type}"
+            )
+            poller = (
+                self.api_clients.aosm_client.artifact_stores.begin_create_or_update(
+                    resource_group_name=resource_group_name,
+                    publisher_name=publisher_name,
+                    artifact_store_name=artifact_store_name,
+                    parameters=ArtifactStore(
+                        location=location,
+                        store_type=artifact_store_type,
+                    ),
+                )
             )
             # Asking for result waits for provisioning state Succeeded before carrying
             # on
@@ -181,12 +197,13 @@ class PreDeployerViaSDK:
 
         Finds the parameters from self.config
         """
-        self.ensure_artifact_store_exists(self.config.publisher_resource_group_name,
-                                          self.config.publisher_name,
-                                          self.config.acr_artifact_store_name,
-                                          ArtifactStoreType.AZURE_CONTAINER_REGISTRY,
-                                          self.config.location)
-
+        self.ensure_artifact_store_exists(
+            self.config.publisher_resource_group_name,
+            self.config.publisher_name,
+            self.config.acr_artifact_store_name,
+            ArtifactStoreType.AZURE_CONTAINER_REGISTRY,
+            self.config.location,
+        )
 
     def ensure_sa_artifact_store_exists(self) -> None:
         """
@@ -199,11 +216,13 @@ class PreDeployerViaSDK:
                 "Check that storage account artifact store exists failed as requires VNFConfiguration file"
             )
 
-        self.ensure_artifact_store_exists(self.config.publisher_resource_group_name,
-                                          self.config.publisher_name,
-                                          self.config.blob_artifact_store_name,
-                                          ArtifactStoreType.AZURE_STORAGE_ACCOUNT,
-                                          self.config.location)
+        self.ensure_artifact_store_exists(
+            self.config.publisher_resource_group_name,
+            self.config.publisher_name,
+            self.config.blob_artifact_store_name,
+            ArtifactStoreType.AZURE_STORAGE_ACCOUNT,
+            self.config.location,
+        )
 
     def ensure_nfdg_exists(
         self,
@@ -235,7 +254,7 @@ class PreDeployerViaSDK:
             network_function_definition_group_name=nfdg_name,
             parameters=NetworkFunctionDefinitionGroup(location=location),
         )
-        
+
     def ensure_config_nfdg_exists(
         self,
     ):
@@ -244,10 +263,12 @@ class PreDeployerViaSDK:
 
         Finds the parameters from self.config
         """
-        self.ensure_nfdg_exists(self.config.publisher_resource_group_name,
-                                self.config.publisher_name,
-                                self.config.nfdg_name,
-                                self.config.location)
+        self.ensure_nfdg_exists(
+            self.config.publisher_resource_group_name,
+            self.config.publisher_name,
+            self.config.nfdg_name,
+            self.config.location,
+        )
 
     def ensure_nsdg_exists(
         self,
@@ -279,10 +300,10 @@ class PreDeployerViaSDK:
             network_service_design_group_name=nsdg_name,
             parameters=NetworkServiceDesignGroup(location=location),
         )
-        
+
     def resource_exists_by_name(self, rg_name: str, resource_name: str) -> bool:
         """
-        Determine if a resource with the given name exists. No checking is done as 
+        Determine if a resource with the given name exists. No checking is done as
         to the type.
 
         :param resource_name: The name of the resource to check.

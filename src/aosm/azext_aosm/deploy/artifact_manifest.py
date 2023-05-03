@@ -11,9 +11,7 @@ from azext_aosm.deploy.artifact import Artifact
 from azure.storage.blob import BlobClient
 from oras.client import OrasClient
 from azext_aosm._configuration import Configuration, VNFConfiguration
-from azext_aosm.vendored_sdks.models import (
-    ArtifactAccessCredential,
-    ArtifactManifest)
+from azext_aosm.vendored_sdks.models import ArtifactAccessCredential, ArtifactManifest
 
 from azext_aosm.util.management_clients import ApiClientsAndCaches
 
@@ -23,11 +21,13 @@ logger = get_logger(__name__)
 class ArtifactManifestOperator:
     """ArtifactManifest class."""
 
-    def __init__(self, 
-                 config: Configuration, 
-                 api_clients: ApiClientsAndCaches, 
-                 store_name: str, 
-                 manifest_name: str) -> None:
+    def __init__(
+        self,
+        config: Configuration,
+        api_clients: ApiClientsAndCaches,
+        store_name: str,
+        manifest_name: str,
+    ) -> None:
         """Init."""
         self.manifest_name = manifest_name
         self.api_clients = api_clients
@@ -39,14 +39,13 @@ class ArtifactManifestOperator:
     @cached_property
     def _manifest_credentials(self) -> Any:
         """Gets the details for uploading the artifacts in the manifest."""
-        
+
         return self.api_clients.aosm_client.artifact_manifests.list_credential(
             resource_group_name=self.config.publisher_resource_group_name,
             publisher_name=self.config.publisher_name,
             artifact_store_name=self.store_name,
-            artifact_manifest_name=self.manifest_name
+            artifact_manifest_name=self.manifest_name,
         ).as_dict()
-
 
     def _oras_client(self, acr_url: str) -> OrasClient:
         """
@@ -65,12 +64,14 @@ class ArtifactManifestOperator:
     def _get_artifact_list(self) -> List[Artifact]:
         """Get the list of Artifacts in the Artifact Manifest."""
         artifacts = []
-        
-        manifest: ArtifactManifest = self.api_clients.aosm_client.artifact_manifests.get(
-            resource_group_name=self.config.publisher_resource_group_name,
-            publisher_name=self.config.publisher_name,
-            artifact_store_name=self.store_name,
-            artifact_manifest_name=self.manifest_name
+
+        manifest: ArtifactManifest = (
+            self.api_clients.aosm_client.artifact_manifests.get(
+                resource_group_name=self.config.publisher_resource_group_name,
+                publisher_name=self.config.publisher_name,
+                artifact_store_name=self.store_name,
+                artifact_manifest_name=self.manifest_name,
+            )
         )
 
         # Instatiate an Artifact object for each artifact in the manifest.
@@ -102,7 +103,7 @@ class ArtifactManifestOperator:
         :param artifact_name: name of the artifact
         :param artifact_version: artifact version
         """
-        if self._manifest_credentials["credential_type"] == "AzureStorageAccountToken":            
+        if self._manifest_credentials["credential_type"] == "AzureStorageAccountToken":
             container_basename = artifact_name.replace("-", "")
             blob_url = self._get_blob_url(f"{container_basename}-{artifact_version}")
             return BlobClient.from_blob_url(blob_url)
@@ -113,7 +114,7 @@ class ArtifactManifestOperator:
         """
         Get the URL for the blob to be uploaded to the storage account artifact store.
 
-        :param container_name: name of the container 
+        :param container_name: name of the container
         """
         for container_credential in self._manifest_credentials["container_credentials"]:
             if container_credential["container_name"] == container_name:
