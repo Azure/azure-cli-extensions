@@ -33,7 +33,10 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = []
+DEPENDENCIES = [
+    'oras~=0.1.17',
+    'azure-storage-blob>=12.15.0'
+]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()

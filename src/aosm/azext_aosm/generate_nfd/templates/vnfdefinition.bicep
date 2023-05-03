@@ -138,3 +138,5 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
 
 output acr_manifest_id string = acrArtifactManifest.id
 output sa_manifest_id string = saArtifactManifest.id
+output acr_manifest_name string = acrArtifactManifest.name
+output sa_manifest_name string = saArtifactManifest.name

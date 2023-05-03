@@ -4,20 +4,17 @@
 # --------------------------------------------------------------------------------------
 """Contains class for deploying generated definitions using the Python SDK."""
 import json
-import logging
 import os
 import shutil
 import subprocess  # noqa
-from functools import cached_property
 from typing import Any, Dict
 
 from knack.log import get_logger
-from azure.mgmt.resource import ResourceManagementClient
+from azext_aosm.deploy.artifact_manifest import ArtifactManifest
 from azext_aosm.util.management_clients import ApiClientsAndCaches
 from azure.mgmt.resource.resources.v2021_04_01.models import DeploymentExtended
 from pathlib import Path
 
-from azext_aosm.vendored_sdks import HybridNetworkManagementClient
 from azext_aosm.deploy.pre_deploy import PreDeployerViaSDK
 from azext_aosm._configuration import Configuration, VNFConfiguration
 from azext_aosm._constants import VNF_DEFINITION_OUTPUT_BICEP_PREFIX, VNF_DEFINITION_BICEP_SOURCE_TEMPLATE
@@ -51,7 +48,7 @@ class DeployerViaArm:
             apiClientsAndCaches, self.config
         )
 
-    def deploy_vnfd_from_bicep(self) -> Any:
+    def deploy_vnfd_from_bicep(self) -> None:
         """Deploy the bicep template defining the VNFD.
 
         Also ensure that all required predeploy resources are deployed.
@@ -76,8 +73,22 @@ class DeployerViaArm:
         print(f"Deployed NFD {self.config.nf_name} version {self.config.version} "
               f"into {self.config.publisher_resource_group_name} under publisher "
               f"{self.config.publisher_name}")
+        
+        storage_account_manifest = ArtifactManifest(self.config, 
+                                                    self.api_clients, 
+                                                    self.config.vhd["blob_artifact_store_name"],
+                                                    output["sa_manifest_name"]["value"])
+        acr_manifest = ArtifactManifest(self.config, self.api_clients, output["acr_manifest_name"]["value"])
 
-        return output
+        vhd_artifact = storage_account_manifest.artifacts[0]
+        arm_template_artifact = acr_manifest.artifacts[0]
+
+        print("Uploading VHD artifact")
+        vhd_artifact.upload(self.config.vhd)
+        print("Uploading ARM template artifact")
+        arm_template_artifact.upload(self.config.arm_template)
+        print("Done")
+        
 
     def vnfd_predeploy(self):
         """
