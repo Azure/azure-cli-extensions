@@ -106,7 +106,25 @@ def _generate_nfd(definition_type, config):
         )
 
     nfd_generator.generate_nfd()
+    
+def delete_published_definition(
+    cmd,
+    client: HybridNetworkManagementClient,
+    definition_type,
+    config_file,
+    all=False,
+):
+    with open(config_file, "r", encoding="utf-8") as f:
+        config_as_dict = json.loads(f.read())
+    config = get_configuration(definition_type, config_as_dict)
+    validate_configuration(config)
 
+    api_clients = ApiClientsAndCaches(aosm_client=client,
+                                              resource_client=cf_resources(cmd.cli_ctx))
+    from azext_aosm.delete.delete import ResourceDeleter
+    delly = ResourceDeleter(api_clients, config)
+    if definition_type == VNF:
+        delly.delete_vnf(all)
 
 def show_publisher():
     pass

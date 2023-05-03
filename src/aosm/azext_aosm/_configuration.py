@@ -25,12 +25,22 @@ class Configuration():
     def nfdg_name(self) -> str:
         """Return the NFD Group name from the NFD name."""
         return f"{self.nf_name}-nfdg"
+    
+    @property
+    def acr_manifest_name(self) -> str:
+        """Return the ACR manifest name from the NFD name"""
+        return f"{self.nf_name}-acr-manifest-{self.version.replace('.', '-')}"
 
 @dataclass
 class VNFConfiguration(Configuration):
     blob_artifact_store_name: str = "Name of the storage account Artifact Store resource"
     arm_template: ArtifactConfig = ArtifactConfig()
     vhd: ArtifactConfig = ArtifactConfig()
+    
+    @property
+    def sa_manifest_name(self) -> str:
+        """Return the Storage account manifest name from the NFD name"""
+        return f"{self.nf_name}-sa-manifest-{self.version.replace('.', '-')}"    
 
 
 def get_configuration(definition_type, config_as_dict=None) -> Configuration:

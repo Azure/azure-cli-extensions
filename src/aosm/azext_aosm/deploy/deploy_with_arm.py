@@ -69,7 +69,7 @@ class DeployerViaArm:
 
         # Create or check required resources
         self.vnfd_predeploy()
-        output = self.deploy_bicep_template(bicep_path, parameters)
+        self.deploy_bicep_template(bicep_path, parameters)
         print(f"Deployed NFD {self.config.nf_name} version {self.config.version} "
               f"into {self.config.publisher_resource_group_name} under publisher "
               f"{self.config.publisher_name}")
@@ -77,20 +77,11 @@ class DeployerViaArm:
         storage_account_manifest = ArtifactManifestOperator(self.config, 
                                                     self.api_clients, 
                                                     self.config.blob_artifact_store_name,
-                                                    output["sa_manifest_name"]["value"])
+                                                    self.config.sa_manifest_name)
         acr_manifest = ArtifactManifestOperator(self.config, 
                                                 self.api_clients, 
                                                 self.config.acr_artifact_store_name,
-                                                output["acr_manifest_name"]["value"])
-               
-        # storage_account_manifest = ArtifactManifestOperator(self.config, 
-        #                                             self.api_clients, 
-        #                                             self.config.blob_artifact_store_name,
-        #                                             "sunnyvnf-sa-manifest-1-0-5")
-        # acr_manifest = ArtifactManifestOperator(self.config, 
-        #                                         self.api_clients, 
-        #                                         self.config.acr_artifact_store_name,
-        #                                         "sunnyvnf-acr-manifest-1-0-5")
+                                                self.config.acr_manifest_name)
 
         vhd_artifact = storage_account_manifest.artifacts[0]
         arm_template_artifact = acr_manifest.artifacts[0]
@@ -126,6 +117,8 @@ class DeployerViaArm:
             "publisherName": {"value": self.config.publisher_name},
             "acrArtifactStoreName": {"value": self.config.acr_artifact_store_name},
             "saArtifactStoreName": {"value": self.config.blob_artifact_store_name},
+            "acrManifesteName": {"value": self.config.acr_manifest_name},
+            "saManifesteName": {"value": self.config.sa_manifest_name},
             "nfName": {"value": self.config.nf_name},
             "nfDefinitionGroup": {"value": self.config.nfdg_name},
             "nfDefinitionVersion": {"value": self.config.version},
@@ -143,6 +136,7 @@ class DeployerViaArm:
 
         :param bicep_template_path: Path to the bicep template
         :param parameters: Parameters for the bicep template
+        :return Any output that the template produces
         """
         logger.info("Deploy %s", bicep_template_path)
         arm_template_json = self.convert_bicep_to_arm(bicep_template_path)

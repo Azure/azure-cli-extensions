@@ -26,3 +26,8 @@ helps['aosm definition generate-config'] = """
     type: command
     short-summary: Generate configuration file for building an AOSM publisher definition.
 """
+
+helps['aosm definition delete'] = """
+    type: command
+    short-summary: Delete AOSM publisher definition.
+"""

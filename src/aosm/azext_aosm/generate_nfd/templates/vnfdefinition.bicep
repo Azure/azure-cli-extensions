@@ -8,6 +8,10 @@ param publisherName string
 param acrArtifactStoreName string
 @description('Name of an existing Storage Account-backed Artifact Store, deployed under the publisher.')
 param saArtifactStoreName string
+@description('Name of the manifest to deploy for the ACR-backed Artifact Store')
+param acrManifestName string
+@description('Name of the manifest to deploy for the Storage Account-backed Artifact Store')
+param saManifestName string
 @description('Name of Network Function. Used predominantly as a prefix for other variable names')
 param nfName string
 @description('Name of an existing Network Function Definition Group')
@@ -49,7 +53,7 @@ resource nfdg 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
 
 resource saArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2022-09-01-preview' = {
   parent: saArtifactStore
-  name: '${nfName}-sa-manifest-${replace(nfDefinitionVersion, '.', '-')}'
+  name: saManifestName
   location: location
   properties: {
     artifacts: [
@@ -64,7 +68,7 @@ resource saArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/a
 
 resource acrArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2022-09-01-preview' = {
   parent: acrArtifactStore
-  name: '${nfName}-acr-manifest-${replace(nfDefinitionVersion, '.', '-')}'
+  name: acrManifestName
   location: location
   properties: {
     artifacts: [
@@ -135,8 +139,3 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
     }
   }
 }
-
-output acr_manifest_id string = acrArtifactManifest.id
-output sa_manifest_id string = saArtifactManifest.id
-output acr_manifest_name string = acrArtifactManifest.name
-output sa_manifest_name string = saArtifactManifest.name
