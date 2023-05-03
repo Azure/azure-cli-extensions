@@ -490,16 +490,13 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                     subscription_arm_id = helper.get_sub_id_from_arm_id(datasource_arm_id)
                     subscription_id = subscription_arm_id.split("/")[-1]
 
-                    print('datasource arm id', datasource_arm_id)
                     from azext_dataprotection.vendored_sdks.azure_mgmt_preview_aks import ContainerServiceClient
                     aks_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient, subscription_id=subscription_id)
                     aks_client = getattr(aks_client, 'managed_clusters')
                     aks_name = helper.get_resource_name_from_backup_instance(backup_instance, 'DataSource')
-                    print(aks_name, ' is the aks name')
 
                     aks_cluster = aks_client.get(resource_group_name, aks_name)
                     datasource_principal_id = aks_cluster.identity.principal_id
-                    print('datasource principal id', datasource_principal_id)
                 else:
                     raise CLIError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
 
@@ -511,7 +508,6 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                                                         role=role_object['roleDefinitionName'], scope=resource_id, 
                                                         include_inherited=True)
                 if not role_assignments:
-                    print('creating role assignments for datasource permissions')
                     assignment = create_role_assignment(cmd, assignee=datasource_principal_id, 
                                                         role=role_object['roleDefinitionName'], scope=assignment_scope)
                     role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
@@ -545,7 +541,6 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
             raise CLIError("Set permissions for restore is currently not supported for given DataSourceType")
 
         for role_object in manifest['backupVaultPermissions']:
-            print("role_object: ", role_object)
             resource_id = helper.get_resource_id_from_restore_request_object(restore_request_object, role_object['type'])
 
             if role_object['type'] == 'SnapshotRG':
@@ -560,10 +555,8 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
 
             assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
 
-            print("Assigning to backup vault, over ", resource_id)
             role_assignments = list_role_assignments(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
                                                     scope=resource_id, include_inherited=True)
-            print("roles-assignmetns, ", role_assignments)
             if not role_assignments:
                 assignment = create_role_assignment(cmd, assignee=principal_id, role=role_object['roleDefinitionName'],
                                                     scope=assignment_scope)
@@ -571,7 +564,6 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
 
         if manifest['dataSourcePermissions']:
             for role_object in manifest['dataSourcePermissions']:
-                print("role_object: ", role_object)
                 resource_id = helper.get_resource_id_from_restore_request_object(restore_request_object, role_object['type'])
 
                 if role_object['type'] == 'SnapshotRG':
@@ -583,9 +575,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                         resource_id = snapshot_resource_group_id
 
                 resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
-                print("in DSperms AKS, ressource_id after truncate using scope: ", resource_id)
                 assignment_scope = helper.truncate_id_using_scope(resource_id, permissions_scope)
-                print("in DSperms AKS, assignment_scope after truncate using scope: ", assignment_scope)
 
                 datasource_principal_id = None
 
@@ -594,30 +584,23 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                     subscription_arm_id = helper.get_sub_id_from_arm_id(datasource_arm_id)
                     subscription_id = subscription_arm_id.split("/")[-1]
 
-                    print('datasource arm id', datasource_arm_id)
                     from azext_dataprotection.vendored_sdks.azure_mgmt_preview_aks import ContainerServiceClient
                     aks_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient, subscription_id=subscription_id)
                     aks_client = getattr(aks_client, 'managed_clusters')
                     aks_name = helper.get_resource_name_from_restore_request_object(restore_request_object, 'DataSource')
-                    print(aks_name, ' is the aks name')
 
                     aks_cluster = aks_client.get(resource_group_name, aks_name)
                     datasource_principal_id = aks_cluster.identity.principal_id
-                    print('datasource principal id', datasource_principal_id)
                 else:
                     raise CLIError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
 
                 role_assignments = list_role_assignments(cmd, assignee=datasource_principal_id, 
                                                         role=role_object['roleDefinitionName'], scope=resource_id, 
                                                         include_inherited=True)
-                print("roles-assignmetns, ", role_assignments)
                 if not role_assignments:
-                    print('creating role assignments for datasource permissions')
                     assignment = create_role_assignment(cmd, assignee=datasource_principal_id, 
                                                         role=role_object['roleDefinitionName'], scope=assignment_scope)
                     role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
-
-    print("Role assignments ARR: ", role_assignments_arr)
 
     if not role_assignments_arr:
         logger.warning("The required permissions are already assigned!")
