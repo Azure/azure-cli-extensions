@@ -901,7 +901,7 @@ class DevcenterScenarioTest(ScenarioTest):
             ],
         )
 
-        # TODO: add health check and health check details in return type
+        # TODO: add health check and health check details in return type when API available
         self.cmd(
             "az devcenter admin pool create "
             '-d "{devBoxDefinitionName}" '
@@ -911,7 +911,7 @@ class DevcenterScenarioTest(ScenarioTest):
             '-c "{attachedNetworkName}" '
             '--project-name "{projectName}" '
             '--resource-group "{rg}" '
-            '--stop-on-disconnect grace-period-minutes="10" status="Disabled" ',
+            '--stop-on-disconnect grace-period-minutes="60" status="Disabled" ',
             checks=[
                 self.check("name", "{poolName}"),
                 self.check("resourceGroup", "{rg}"),
@@ -919,7 +919,7 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("localAdministrator", "Disabled"),
                 self.check("networkConnectionName", "{attachedNetworkName}"),
                 self.check("location", "{location}"),
-                self.check("stopOnDisconnect.gracePeriodMinutes", "10"),
+                self.check("stopOnDisconnect.gracePeriodMinutes", "60"),
                 self.check("stopOnDisconnect.status", "Disabled"),
             ],
         )
@@ -938,7 +938,7 @@ class DevcenterScenarioTest(ScenarioTest):
             '--name "{poolName}" '
             '--project-name "{projectName}" '
             '--resource-group "{rg}" '
-            '--stop-on-disconnect grace-period-minutes="60" status="Enabled" ',
+            '--stop-on-disconnect grace-period-minutes="80" status="Enabled" ',
             checks=[
                 self.check("name", "{poolName}"),
                 self.check("resourceGroup", "{rg}"),
@@ -946,7 +946,7 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("localAdministrator", "Enabled"),
                 self.check("networkConnectionName", "{attachedNetworkName}"),
                 self.check("location", "{location}"),
-                self.check("stopOnDisconnect.gracePeriodMinutes", "60"),
+                self.check("stopOnDisconnect.gracePeriodMinutes", "80"),
                 self.check("stopOnDisconnect.status", "Enabled"),
             ],
         )
@@ -963,20 +963,18 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("localAdministrator", "Enabled"),
                 self.check("networkConnectionName", "{attachedNetworkName}"),
                 self.check("location", "{location}"),
-                self.check("stopOnDisconnect.gracePeriodMinutes", "60"),
+                self.check("stopOnDisconnect.gracePeriodMinutes", "80"),
                 self.check("stopOnDisconnect.status", "Enabled"),
             ],
         )
 
-        self.cmd(
-            "az devcenter admin pool run-health-check "
-            '--name "{poolName}" '
-            '--project-name "{projectName}" '
-            '--resource-group "{rg}" '
-        )
-
-        # TODO: add check for show after run health check
-        # TODO: default will be changed to schedule-default after idle update. Need to handle both names?
+        #TODO: Not available yet, add test when it is
+        # self.cmd(
+        #     "az devcenter admin pool run-health-check "
+        #     '--name "{poolName}" '
+        #     '--project-name "{projectName}" '
+        #     '--resource-group "{rg}" '
+        # )
 
         self.cmd(
             "az devcenter admin schedule create "
@@ -1012,7 +1010,6 @@ class DevcenterScenarioTest(ScenarioTest):
             ],
         )
 
-        # TODO: update for idle, add schedule list command
         self.cmd(
             "az devcenter admin schedule show "
             '--pool-name "{poolName}" '

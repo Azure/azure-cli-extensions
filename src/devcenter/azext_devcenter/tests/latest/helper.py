@@ -475,6 +475,5 @@ def create_dev_box_dependencies(self):
     create_dev_center(self)
     create_project(self)
     add_dev_box_user_role_to_project(self)
-    create_network_connection_dp(self)
-    create_pool(self)
+    create_pool_dataplane_dependencies(self)
 
