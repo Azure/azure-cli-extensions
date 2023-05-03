@@ -131,7 +131,7 @@ class Redisenterprisescenario1Test(ScenarioTest):
             'cluster': self.create_random_name(prefix='clitest-cache1-', length=21)
         })
 
-    @AllowLargeResponse()
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg1-', key='rg', parameter_name='rg',
                            location='eastus', random_name_length=34)
     def test_redisenterprise_scenario1(self, rg):
@@ -228,7 +228,7 @@ class Redisenterprisescenario2Test(ScenarioTest):
             'no_database': True
         })
 
-    @AllowLargeResponse()
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg2-', key='rg', parameter_name='rg',
                            location='eastus', random_name_length=34)
     def test_redisenterprise_scenario2(self):
@@ -295,7 +295,7 @@ class Redisenterprisescenario3Test(ScenarioTest):
                            location='eastus', random_name_length=34)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg32-', key='rg32', parameter_name='rg32',
                            location='westus', random_name_length=34)
-    @AllowLargeResponse()
+    @AllowLargeResponse(size_kb=9999)
     def test_redisenterprise_scenario3(self):
         call_scenario3(self)
         calc_coverage(__file__)
