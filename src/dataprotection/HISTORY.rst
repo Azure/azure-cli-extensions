@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.8.0
++++++
+In progress
+
 0.7.0
 ++++++
 * `az dataprotection backup-vault create`: Add support for optional `--immutability-state`, `--soft-delete-state`, `--soft-delete-retention` parameters, corresponding to new Immutable Vault and Enhanced Soft Delete features
