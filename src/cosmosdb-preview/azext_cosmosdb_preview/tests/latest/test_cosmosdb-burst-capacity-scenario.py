@@ -32,14 +32,14 @@ class Cosmosdb_previewBurstCapacityScenarioTest(ScenarioTest):
         print('Created burst capacity enabled account')
 
         #disable burst capacity
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-burst-capacity false')
+        self.cmd('az cosmosdb update -n {acc} -g {rg} --enable-burst-capacity false')
         self.cmd('az cosmosdb show -n {acc} -g {rg}', checks=[
             self.check('enableBurstCapacity', False),
         ])
         print('Disabled burst capacity')
 
         #enable burst capacity
-        self.cmd('az cosmosdb create -n {acc} -g {rg} --enable-burst-capacity')
+        self.cmd('az cosmosdb update -n {acc} -g {rg} --enable-burst-capacity')
         self.cmd('az cosmosdb show -n {acc} -g {rg}', checks=[
             self.check('enableBurstCapacity', True),
         ])
