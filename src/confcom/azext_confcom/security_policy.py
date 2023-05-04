@@ -606,9 +606,6 @@ def load_policy_from_arm_template_str(
                     )
                     or [],
                     config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts(image_properties, volumes),
-                    config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED: case_insensitive_dict_get(
-                        image_properties, config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED
-                    ),
                     config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
                     + config.DEBUG_MODE_SETTINGS.get("execProcesses")
                     if debug_mode
