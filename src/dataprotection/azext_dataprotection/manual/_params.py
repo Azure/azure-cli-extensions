@@ -190,7 +190,7 @@ def load_arguments(self, _):
         c.argument('label_selectors', type=str, nargs='+', help="List of labels for internal filtering for restore.")
         c.argument("persistent_volume_restore_mode", arg_type=get_enum_type(get_persistent_volume_restore_mode_values()), help="Restore mode for persistent volumes. Allowed values are RestoreWithVolumeData, RestoreWithoutVolumeData. Default value is RestoreWithVolumeData.")
         c.argument('conflict_policy', arg_type=get_enum_type(get_conflict_policy_values()), help="Conflict policy for restore. Allowed values are Skip, Patch. Default value is Skip.")
-        c.argument('namespace_mappings', type=str, help="Namespaces mapping from source namespaces to target namespaces to resolve namespace naming conflicts in the target cluster.")
+        c.argument('namespace_mappings', type=validate_file_or_dict, help="Namespaces mapping from source namespaces to target namespaces to resolve namespace naming conflicts in the target cluster.")
         c.argument('include_cluster_scope_resources', arg_type=get_three_state_flag(), help="Boolean parameter to decide whether cluster scope resources are included for restore. By default this is taken as true.")
 
     with self.argument_context('dataprotection backup-instance restore trigger') as c:
