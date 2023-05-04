@@ -642,7 +642,7 @@ def devcenter_dev_box_list(
 
 
 def devcenter_dev_box_show(
-    cmd, dev_box_name, dev_center, project_name, endpoint=None, user_id="me"
+    cmd, dev_box_name, project_name, dev_center=None, endpoint=None, user_id="me"
 ):
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
