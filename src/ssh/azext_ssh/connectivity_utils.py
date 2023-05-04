@@ -130,7 +130,7 @@ def _create_service_configuration(cmd, resource_uri, port):
     from .aaz.latest.hybrid_connectivity.endpoint.service_configuration import Create as CreateServiceConfig
     if not port:
         port = '22'
-    if port != '22' and not prompt_y_n(f"Current service configuration doesn't allow SSH connection to port {port}. Would you like to add it?"):
+    if not prompt_y_n(f"Current service configuration doesn't allow SSH connection to port {port}. Would you like to add it?") and port != '22':
         raise azclierror.ClientRequestError(f"No ssh permission for port {port}. If you want to connect to this port follow intructions on this doc: aka.ms/ssharc.")
             
     create_service_conf_args = {
