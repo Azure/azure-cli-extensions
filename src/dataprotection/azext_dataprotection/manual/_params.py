@@ -11,7 +11,8 @@ from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
     resource_group_name_type,
-    get_location_type
+    get_location_type,
+    get_three_state_flag
 )
 from azure.cli.core.commands.validators import (
     validate_file_or_dict
@@ -62,8 +63,8 @@ def load_arguments(self, _):
         c.argument('excluded_namespaces', type=str, nargs='+', help="List of namespaces to be excluded for backup.")
         c.argument('included_namespaces', type=str, nargs='+', help="List of namespaces to be included for backup.")
         c.argument('label_selectors', type=str, nargs='+', help="List of labels for internal filtering for backup.")
-        c.argument('snapshot_volumes', type=bool, help="Boolean parameter to decide whether snapshot volumes are included for backup. By default this is taken as true.")
-        c.argument('include_cluster_scope_resources', type=bool, help="Boolean parameter to decide whether cluster scope resources are included for restore. By default this is taken as true.")
+        c.argument('snapshot_volumes', arg_type=get_three_state_flag(), help="Boolean parameter to decide whether snapshot volumes are included for backup. By default this is taken as true.")
+        c.argument('include_cluster_scope_resources', arg_type=get_three_state_flag(), help="Boolean parameter to decide whether cluster scope resources are included for restore. By default this is taken as true.")
 
     with self.argument_context('dataprotection backup-instance initialize') as c:
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
@@ -190,7 +191,7 @@ def load_arguments(self, _):
         c.argument("persistent_volume_restore_mode", arg_type=get_enum_type(get_persistent_volume_restore_mode_values()), help="Restore mode for persistent volumes. Allowed values are RestoreWithVolumeData, RestoreWithoutVolumeData. Default value is RestoreWithVolumeData.")
         c.argument('conflict_policy', arg_type=get_enum_type(get_conflict_policy_values()), help="Conflict policy for restore. Allowed values are Skip, Patch. Default value is Skip.")
         c.argument('namespace_mappings', type=str, help="Namespaces mapping from source namespaces to target namespaces to resolve namespace naming conflicts in the target cluster.")
-        c.argument('include_cluster_scope_resources', type=bool, help="Boolean parameter to decide whether cluster scope resources are included for restore. By default this is taken as true.")
+        c.argument('include_cluster_scope_resources', arg_type=get_three_state_flag(), help="Boolean parameter to decide whether cluster scope resources are included for restore. By default this is taken as true.")
 
     with self.argument_context('dataprotection backup-instance restore trigger') as c:
         c.argument('resource_group_name', resource_group_name_type)
