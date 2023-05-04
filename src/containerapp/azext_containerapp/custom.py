@@ -4132,9 +4132,33 @@ def show_auth_config(cmd, resource_group_name, name):
         pass
     return auth_settings
 
+
+def list_dummy_values(cmd, resource_group_name, env_name, show_all=False):
+    print(show_all)
+    dummy_json = {
+        "children":[
+            {
+                "targetContainerAppName": "test-rg-1",
+                "oldRunImage": "mcr.microsoft.com/dotnet/sdk:6.0.100-cbl-mariner1.0",
+                "newRunImage": "mcr.microsoft.com/dotnet/sdk6.0.400-cbl-mariner1.0",
+                "id": "014eef45-350d-4f94-9e31-7a088d932354",
+                "reason": "The image is based on Mariner and the minor version is within safe update range."
+            },
+            {
+                "targetContainerAppName": "test-rg-1",
+                "oldRunImage": "mcr.microsoft.com/dotnet/sdk:7.0.101-cbl-mariner2.0",
+                "newRunImage": None,
+                "id": None,
+                "reason": "You're already up to date!"
+
+            }
+
+        ]
+    } 
+    return json.dumps(dummy_json)  
+
 # Compose
-
-
+          
 def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       resource_group_name,
                                       managed_env,
