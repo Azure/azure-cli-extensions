@@ -200,5 +200,5 @@ def load_command_table(self, _):
         g.custom_command('set', 'set_workload_profile')
         g.custom_command('delete', 'delete_workload_profile')
 
-    with self.command_group('containerapp patch') as g:
-        g.custom_command('list','list_dummy_values',exception_handler=ex_handler_factory())
+    with self.command_group('containerapp patch', is_preview=True) as g:
+        g.custom_command('list', 'patch_list')

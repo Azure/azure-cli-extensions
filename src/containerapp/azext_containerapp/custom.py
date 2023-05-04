@@ -10,6 +10,7 @@ import time
 from urllib.parse import urlparse
 import requests
 import json
+import subprocess
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -58,6 +59,7 @@ from ._models import (
     ScaleRule as ScaleRuleModel,
     Volume as VolumeModel,
     VolumeMount as VolumeMountModel,)
+from ._models import DotnetTagProperty, ImagePatchableCheck, ImageProperties
 
 from ._utils import (_validate_subscription_registered, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
@@ -74,7 +76,8 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart,
                      set_ip_restrictions, certificate_location_matches, certificate_matches, generate_randomized_managed_cert_name,
                      check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                     get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported, _generate_secret_volume_name)
+                     get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported, _generate_secret_volume_name,
+                     getCurrentMarinerTags, patchableCheck)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -4322,3 +4325,71 @@ def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile
         return r
     except Exception as e:
         handle_raw_exception(e)
+
+def patch_list(cmd, resource_group_name=None, managed_env=None):
+    caList = list_containerapp(cmd, resource_group_name, managed_env)
+    imgs = []
+    if caList:
+        for ca in caList:
+            containers = ca["properties"]["template"]["containers"]
+            for container in containers:
+                result = dict(imageName=container["image"], targetContainerAppName=container["name"])
+                imgs.append(result)
+
+        # Get the BOM of the images
+    results = []
+    boms = []
+
+    ## For production
+    #
+    for img in imgs:
+        subprocess.run("pack inspect-image " + img["imageName"] + " --output json > /tmp/bom.json 2>&1", shell=True)
+        with open("/tmp/bom.json", "rb") as f:
+            bom = json.load(f)
+            bom.update('{ "targetContainerAppName": img["targetContainerAppName"] }')
+        boms.append(bom)
+
+    ## For testing
+    #
+    # with open("./bom.json", "rb") as f:
+    #     lines = f.read()
+    #     # if lines.find(b"status code 401 Unauthorized") == -1 or lines.find(b"unable to find image") == -1:
+    #     #     bom = dict(remote_info=401)
+    #     # else:
+    #     bom = json.loads(lines)
+    #     bom.update({ "targetContainerAppName": "test-containerapp-1" })
+    # boms.append(bom)
+
+    # Get the current tags of Dotnet Mariners
+    oryxRunImgTags = getCurrentMarinerTags()
+
+    # Start checking if the images are based on Mariner
+    for bom in boms:
+        if bom["remote_info"] == 401:
+            result = ImagePatchableCheck
+            result["targetContainerAppName"] = bom["targetContainerAppName"]
+            result["reason"] = "Failed to get BOM of the image. Please check if the image exists or you have the permission to access the image."
+            results.append(result)
+        else:
+            # devide run-images into different parts by "/"
+            runImagesProps = bom["remote_info"]["run_images"]
+            for runImagesProp in runImagesProps:
+                if (runImagesProp["name"].find("mcr.microsoft.com/oryx/builder") != -1):
+                    runImagesProp = runImagesProp["name"].split(":")
+                    runImagesTag = runImagesProp[1]
+                    # Based on Mariners
+                    if runImagesTag.find('mariner') != -1:
+                        result = patchableCheck(runImagesTag, oryxRunImgTags, bom=bom)
+                    else: 
+                        result = ImagePatchableCheck
+                        result["targetContainerAppName"] = bom["targetContainerAppName"]
+                        result["oldRunImage"] = bom["remote_info"]["run_images"]
+                        result["reason"] = "Image not based on Mariners"
+                else:
+                    # Not based on image from mcr.microsoft.com/dotnet
+                    result = ImagePatchableCheck
+                    result["targetContainerAppName"] = bom["targetContainerAppName"]
+                    result["oldRunImage"] = bom["remote_info"]["run_images"]
+                    result["reason"] = "Image not from mcr.microsoft.com/oryx/builder"
+                results.append(result)
+    return results
