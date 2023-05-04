@@ -162,7 +162,7 @@ helps[
       - name: Get using endpoint
         text: |-
                az devcenter dev dev-box show --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
