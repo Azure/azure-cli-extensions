@@ -42,6 +42,7 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
                                  namespace=namespace, type=arc_type, name=vm_name)
     
     cred = None
+    new_service_config = False
     try: 
         cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
     except ResourceNotFoundError:
@@ -54,24 +55,26 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
 
     if not cred:
         _create_service_configuration(cmd, resource_uri, port)
+        new_service_config = True
         try:
             cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
         except Exception as e:
             raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
         # seem to be hitting a race condition when the SSH connection
         # is being tried too soon after creating service configuration
-        time.sleep(10)
+        # time.sleep(10)
     else:
         if not _check_service_configuration(cmd, resource_uri, port):
             _create_service_configuration(cmd, resource_uri, port)
+            new_service_config = True
             try:
                 cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
             except Exception as e:
                 raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
             # seem to be hitting a race condition when the SSH connection
             # is being tried too soon after creating service configuration
-            time.sleep(10)
-    return cred
+            # time.sleep(10)
+    return (cred, new_service_config)
 
 def _check_service_configuration(cmd, resource_uri, port):
     from .aaz.latest.hybrid_connectivity.endpoint.service_configuration import Show as ShowServiceConfig
@@ -130,7 +133,9 @@ def _create_service_configuration(cmd, resource_uri, port):
     from .aaz.latest.hybrid_connectivity.endpoint.service_configuration import Create as CreateServiceConfig
     if not port:
         port = '22'
-    if port != '22' and not prompt_y_n(f"Current service configuration doesn't allow SSH connection to port {port}. Would you like to add it?"):
+    # test scenario where port is 22 - does it still prompt user or does it skip prompting?
+    # may need to reverse the checks in the if statement
+    if not prompt_y_n(f"Current service configuration doesn't allow SSH connection to port {port}. Would you like to add it?") and port != '22':
         raise azclierror.ClientRequestError(f"No ssh permission for port {port}. If you want to connect to this port follow intructions on this doc: aka.ms/ssharc.")
             
     create_service_conf_args = {
