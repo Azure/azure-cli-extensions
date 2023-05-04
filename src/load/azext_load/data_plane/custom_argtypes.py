@@ -5,7 +5,10 @@ from azext_load.data_plane.custom_validator import (
     validate_secrets,
     validate_certificate,
 )
-from azure.cli.core.commands.parameters import get_resource_name_completion_list, resource_group_name_type
+from azure.cli.core.commands.parameters import (
+    get_resource_name_completion_list,
+    resource_group_name_type,
+)
 
 
 quote_text = "Use {} to clear existing {{}}.".format(quotes)
@@ -28,18 +31,18 @@ test_id = CLIArgumentType(
 # Arguments for load test create
 env_type = CLIArgumentType(
     # validator=validators.validate_tags,
+    nargs="*",
     help="space-separated environment variables: key[=value] [key[=value] ...]. {}".format(
         quote_text.format("environment variables")
     ),
-    nargs="*",
 )
 
 secret_type = CLIArgumentType(
     validator=validate_secrets,
+    nargs="*",
     help="space-separated secrets: key[=value] [key[=value] ...]. {}".format(
         quote_text.format("secrets")
     ),
-    nargs="*",
 )
 
 certificate_type = CLIArgumentType(

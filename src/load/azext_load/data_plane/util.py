@@ -62,6 +62,7 @@ def get_load_test_resource_endpoint(
 #     timespan = f"{start_time}/{end_time}"
 #     return timespan
 
+from azure.cli.core.azclierror import (ValidationError)
 
 def get_login_credentials(cli_ctx, subscription_id=None):
     from azure.cli.core._profile import Profile
@@ -74,3 +75,39 @@ def get_login_credentials(cli_ctx, subscription_id=None):
 
 def generate_test_id(test_name=None):
     return str(uuid.uuid4())
+
+def parse_env(env):
+    if env is None:
+        return None
+    env_dict = {}
+    for item in env:
+        current = item.split("=",1)
+        if len(current) < 2:
+            raise ValidationError("Environment variables must be in the format \"<key>=<value> <key>=<value> ...\".")
+        env_dict[current[0]] = current[1]
+    return env_dict
+
+def parse_secrets(secrets):
+    if secrets is None:
+        return None
+    secrets_dict = {}
+    for secret in secrets:
+        current = secret.split("=", 1)
+        if len(current) < 2:
+            raise ValueError("Secrets must be in the format \"<key>=<value> <key>=<value> ...\".")
+        secrets_dict[current[0]] = {}
+        secrets_dict[current[0]]["type"] = "AKV_SECRET_URI"
+        secrets_dict[current[0]]["value"] = current[1]
+    return secrets_dict
+
+def parse_certificate(certificate):
+    if certificate is None:
+        return None
+    certificate_dict = {}
+    current = certificate.split("=", 1)
+    if len(current) < 2:
+        raise ValueError("Certificate must be in the format \"<key>=<value>;<key>=<value>...\".")
+    certificate_dict["name"] = current[0]
+    certificate_dict["type"] = "AKV_CERT_URI"
+    certificate_dict["value"] = current[1]
+    return certificate_dict

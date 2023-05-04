@@ -8,6 +8,7 @@ from azext_load.data_plane.util import (
 )
 
 from azure.cli.core.azclierror import ValidationError
+from azext_load.data_plane.util import parse_env, parse_secrets, parse_certificate
 
 log = get_logger(__name__)
 
@@ -116,6 +117,12 @@ def create_test(
             body["keyvaultReferenceIdentityType"] = IdentityType["SystemAssigned"]
         if subnet_id is not None:
             body["subnetId"] = subnet_id
+        if env is not None:
+            body["environmentVariables"] = parse_env(env)
+        if secrets is not None:
+            body["secrets"] = parse_secrets(secrets)
+        if certificate is not None:
+            body["certificate"] = parse_certificate(certificate)
         # quick test and split csv not supported currently
         body["loadTestConfiguration"]["quickStartTest"] = False
         body["loadTestConfiguration"]["splitAllCSVs"] = False
@@ -165,7 +172,7 @@ def update_test(
         endpoint=endpoint,
         credential=credential,
     )
-    
+    log.warning("ENV : %s", env)
     body = client.get_test(test_id)
     IdentityType = {
         "SystemAssigned": "SystemAssigned",
@@ -186,66 +193,65 @@ def update_test(
             )
         # exception handling for incorrect filepath or name
         try:
-            with open(load_test_config_file) as file:
+            with open(load_test_config_file, 'r') as file:
                 data = yaml.safe_load(file)
-                if "displayName" in data.keys():
-                    body["displayName"] = data["displayName"]
-                if "description" in data.keys():
-                    body["description"] = data["description"]
-                if "engineInstances" in data.keys():
-                    body["loadTestConfiguration"]["engineInstances"] = data["engineInstances"]
+                if 'displayName' in data:
+                    body['displayName'] = data['displayName']
+                if 'description' in data:
+                    body['description'] = data['description']
+                if 'engineInstances' in data:
+                    body['loadTestConfiguration']['engineInstances'] = data['engineInstances']
                 else:
-                    body["loadTestConfiguration"]["engineInstances"] = "1"
-                if "keyvaultReferenceIdentityId" in data.keys():
-                    body["keyvaultReferenceIdentityId"] = data["keyvaultReferenceIdentityId"]
-                    body["keyvaultReferenceIdentityType"] = IdentityType["UserAssigned"]
+                    body['loadTestConfiguration']['engineInstances'] = '1'
+                if 'keyvaultReferenceIdentityId' in data:
+                    body['keyvaultReferenceIdentityId'] = data['keyvaultReferenceIdentityId']
+                    body['keyvaultReferenceIdentityType'] = IdentityType['UserAssigned']
                 else:
-                    body["keyvaultReferenceIdentityType"] = IdentityType["SystemAssigned"]
-                if "subnetId" in data.keys():
-                    body["subnetId"] = data["subnetId"]
+                    body['keyvaultReferenceIdentityType'] = IdentityType['SystemAssigned']
+                if 'subnetId' in data:
+                    body['subnetId'] = data['subnetId']
                 # quick test and split csv not supported currently in CLI
-                body["loadTestConfiguration"]["quickStartTest"] = False
-                body["loadTestConfiguration"]["splitAllCSVs"] = False
+                body['loadTestConfiguration']['quickStartTest'] = False
+                body['loadTestConfiguration']['splitAllCSVs'] = False
                 # implementation of failure criteria is pending
         except (IOError, OSError) as ex:
-            if getattr(ex, "errno", 0) == errno.ENOENT:
+            if getattr(ex, 'errno', 0) == errno.ENOENT:
                 raise ValidationError(
-                    "{} does not exist".format(load_test_config_file)
+                    '{} does not exist'.format(load_test_config_file)
                 ) from ex
             raise
         except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
             raise ValidationError(
-                "Error parsing {} ({})".format(load_test_config_file, str(ex))
+                'Error parsing {} ({})'.format(load_test_config_file, str(ex))
             ) from ex
 
     else:
         if display_name is not None:
-            body["displayName"] = display_name
+            body['displayName'] = display_name
         if test_description is not None:
-            body["description"] = test_description
+            body['description'] = test_description
         if engine_instances is not None:
-            body["loadTestConfiguration"]["engineInstances"] = engine_instances
-        elif body.get("loadTestConfiguration") is None or body["loadTestConfiguration"].get("engineInstances") is None:
-            body["loadTestConfiguration"]["engineInstances"] = "1"
+            body['loadTestConfiguration']['engineInstances'] = engine_instances
+        elif not body.get('loadTestConfiguration') or not body['loadTestConfiguration'].get('engineInstances'):
+            body['loadTestConfiguration']['engineInstances'] = '1'
         if kevault_id is not None:
-            body["keyvaultReferenceIdentityId"] = kevault_id
-            body["keyvaultReferenceIdentityType"] = IdentityType["UserAssigned"]
-        elif body.get("keyvaultReferenceIdentityType") is None:
-            body["keyvaultReferenceIdentityType"] = IdentityType["SystemAssigned"]
+            body['keyvaultReferenceIdentityId'] = kevault_id
+            body['keyvaultReferenceIdentityType'] = IdentityType['UserAssigned']
+        elif not body.get('keyvaultReferenceIdentityType'):
+            body['keyvaultReferenceIdentityType'] = IdentityType['SystemAssigned']
         if subnet_id is not None:
-            body["subnetId"] = subnet_id
-    body["displayName"] = body.get("displayName") if body.get("displayName") is not None else generate_test_id("TestName")
+            body['subnetId'] = subnet_id
+    body['displayName'] = body.get('displayName') if not body.get('displayName') else generate_test_id('TestName')
     response_obj = client.create_or_update_test(
-        test_id=generate_test_id(body["displayName"]), body=body
+        test_id=generate_test_id(body['displayName']), body=body
     )
     if test_plan is not None:
         client.begin_upload_test_file(
-            response_obj["testId"],
-            file_name= response_obj["displayName"] + "TestPlan.jmx",
-            body=open(test_plan, "r"),
+            response_obj['testId'],
+            file_name=response_obj['displayName'] + 'TestPlan.jmx',
+            body=open(test_plan, 'r'),
         )
     return response_obj
-
 
 def list_tests(
     cmd,
