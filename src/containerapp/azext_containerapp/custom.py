@@ -59,7 +59,7 @@ from ._models import (
     ScaleRule as ScaleRuleModel,
     Volume as VolumeModel,
     VolumeMount as VolumeMountModel,)
-from ._models import DotnetTagProperty, ImagePatchableCheck, ImageProperties
+from ._models import OryxMarinerRunImgTagProperty, ImagePatchableCheck, ImageProperties
 
 from ._utils import (_validate_subscription_registered, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
@@ -4132,31 +4132,6 @@ def show_auth_config(cmd, resource_group_name, name):
         pass
     return auth_settings
 
-
-def list_dummy_values(cmd, resource_group_name, env_name, show_all=False):
-    print(show_all)
-    dummy_json = {
-        "children":[
-            {
-                "targetContainerAppName": "test-rg-1",
-                "oldRunImage": "mcr.microsoft.com/dotnet/sdk:6.0.100-cbl-mariner1.0",
-                "newRunImage": "mcr.microsoft.com/dotnet/sdk6.0.400-cbl-mariner1.0",
-                "id": "014eef45-350d-4f94-9e31-7a088d932354",
-                "reason": "The image is based on Mariner and the minor version is within safe update range."
-            },
-            {
-                "targetContainerAppName": "test-rg-1",
-                "oldRunImage": "mcr.microsoft.com/dotnet/sdk:7.0.101-cbl-mariner2.0",
-                "newRunImage": None,
-                "id": None,
-                "reason": "You're already up to date!"
-
-            }
-
-        ]
-    } 
-    return json.dumps(dummy_json)  
-
 # Compose
           
 def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
@@ -4326,8 +4301,8 @@ def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile
     except Exception as e:
         handle_raw_exception(e)
 
-def patch_list(cmd, resource_group_name=None, managed_env=None):
-    caList = list_containerapp(cmd, resource_group_name, managed_env)
+def patch_list(cmd, resource_group_name, managed_env, show_all=False):
+    caList = list_containerapp(cmd, resource_group_name, managed_env)    
     imgs = []
     if caList:
         for ca in caList:
@@ -4343,10 +4318,11 @@ def patch_list(cmd, resource_group_name=None, managed_env=None):
     ## For production
     #
     for img in imgs:
-        subprocess.run("pack inspect-image " + img["imageName"] + " --output json > /tmp/bom.json 2>&1", shell=True)
-        with open("/tmp/bom.json", "rb") as f:
-            bom = json.load(f)
-            bom.update('{ "targetContainerAppName": img["targetContainerAppName"] }')
+        subprocess.run("pack inspect-image " + img["imageName"] + " --output json > ./bom.json 2>&1", shell=True)
+        with open("./bom.json", "rb") as f:
+            lines = f.read()
+            bom = json.loads(lines)
+            bom.update({ "targetContainerAppName": img["targetContainerAppName"] })
         boms.append(bom)
 
     ## For testing
@@ -4373,23 +4349,31 @@ def patch_list(cmd, resource_group_name=None, managed_env=None):
         else:
             # devide run-images into different parts by "/"
             runImagesProps = bom["remote_info"]["run_images"]
-            for runImagesProp in runImagesProps:
-                if (runImagesProp["name"].find("mcr.microsoft.com/oryx/builder") != -1):
-                    runImagesProp = runImagesProp["name"].split(":")
-                    runImagesTag = runImagesProp[1]
-                    # Based on Mariners
-                    if runImagesTag.find('mariner') != -1:
-                        result = patchableCheck(runImagesTag, oryxRunImgTags, bom=bom)
-                    else: 
+            if runImagesProps is None:
+                result = ImagePatchableCheck
+                result["targetContainerAppName"] = bom["targetContainerAppName"]
+                result["reason"] = "Image not based on Mariners"
+                results.append(result)
+            else:
+                for runImagesProp in runImagesProps:
+                    if (runImagesProp["name"].find("mcr.microsoft.com/oryx/builder") != -1):
+                        runImagesProp = runImagesProp["name"].split(":")
+                        runImagesTag = runImagesProp[1]
+                        # Based on Mariners
+                        if runImagesTag.find('mariner') != -1:
+                            result = patchableCheck(runImagesTag, oryxRunImgTags, bom=bom)
+                        else: 
+                            result = ImagePatchableCheck
+                            result["targetContainerAppName"] = bom["targetContainerAppName"]
+                            result["oldRunImage"] = bom["remote_info"]["run_images"]
+                            result["reason"] = "Image not based on Mariners"
+                    else:
+                        # Not based on image from mcr.microsoft.com/dotnet
                         result = ImagePatchableCheck
                         result["targetContainerAppName"] = bom["targetContainerAppName"]
                         result["oldRunImage"] = bom["remote_info"]["run_images"]
-                        result["reason"] = "Image not based on Mariners"
-                else:
-                    # Not based on image from mcr.microsoft.com/dotnet
-                    result = ImagePatchableCheck
-                    result["targetContainerAppName"] = bom["targetContainerAppName"]
-                    result["oldRunImage"] = bom["remote_info"]["run_images"]
-                    result["reason"] = "Image not from mcr.microsoft.com/oryx/builder"
-                results.append(result)
+                        result["reason"] = "Image not from mcr.microsoft.com/oryx/builder"
+                    results.append(result)
+    if show_all == False :
+        results = [x for x in results if x["newRunImage"] != None]
     return results
