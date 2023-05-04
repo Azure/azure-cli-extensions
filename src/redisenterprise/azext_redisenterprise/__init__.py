@@ -6,20 +6,20 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_demo._help import helps  # pylint: disable=unused-import
+from azext_redisenterprise._help import helps  # pylint: disable=unused-import
 
 
-class DemoCommandsLoader(AzCommandsLoader):
+class RedisEnterpriseManagementClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         custom_command_type = CliCommandType(
-            operations_tmpl='azext_demo.custom#{}')
+            operations_tmpl='azext_redisenterprise.custom#{}')
         super().__init__(cli_ctx=cli_ctx,
                          custom_command_type=custom_command_type)
 
     def load_command_table(self, args):
-        from azext_demo.commands import load_command_table
+        from azext_redisenterprise.commands import load_command_table
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -35,8 +35,8 @@ class DemoCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_demo._params import load_arguments
+        from azext_redisenterprise._params import load_arguments
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = DemoCommandsLoader
+COMMAND_LOADER_CLS = RedisEnterpriseManagementClientCommandsLoader

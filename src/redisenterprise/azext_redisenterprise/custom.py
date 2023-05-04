@@ -27,7 +27,9 @@ from .aaz.latest.redisenterprise import List as _ClusterList
 from .aaz.latest.redisenterprise import Show as _ClusterShow
 from .aaz.latest.redisenterprise import Wait as _DatabaseWait
 from msrest.serialization import last_restapi_key_transformer
-
+from azure.cli.core.azclierror import (
+    MutuallyExclusiveArgumentError,
+)
 
 logger = get_logger(__name__)
 
@@ -191,6 +193,7 @@ def redisenterprise_create(cmd,
                            no_wait=False,
                            group_nickname=None,
                            linked_databases=None):
+    print("HAHAHAHAHAHAHAHAHAHHAAH")
     if (no_database and any(x is not None for x in [client_protocol,
                                                     port,
                                                     clustering_policy,
@@ -199,6 +202,23 @@ def redisenterprise_create(cmd,
                                                     modules,
                                                     group_nickname,
                                                     linked_databases])):
+        database_param_list_str = []
+        if client_protocol is not None:
+            database_param_list_str.append('--client-protocol')
+        if port is not None:
+            database_param_list_str.append('--port')
+        if clustering_policy is not None:
+            database_param_list_str.append('--clustering-policy')
+        if eviction_policy is not None:
+            database_param_list_str.append('--eviction-policy')
+        if persistence is not None:
+            database_param_list_str.append('--persistence')
+        if modules is not None:
+            database_param_list_str.append('--modules')
+        if group_nickname is not None:
+            database_param_list_str.append('--group-nickname')
+        if linked_databases is not None:
+            database_param_list_str.append('--linked-databases')
         error_msg = ('--no-database conflicts with the specified database parameter(s): '
                      '{}'.format(', '.join(database_param_list_str)))
         recommendation = ('Try to use --no-database without specifying database parameters, '
