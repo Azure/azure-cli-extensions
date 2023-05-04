@@ -4312,14 +4312,14 @@ def patch_list(cmd, resource_group_name=None, managed_env=None):
                 result = dict(imageName=container["image"], targetContainerAppName=container["name"])
                 imgs.append(result)
 
-    # Get the BOM of the images
+        # Get the BOM of the images
     results = []
     boms = []
 
     ## For production
     #
     for img in imgs:
-        subprocess.run("pack inspect-image " + img["imageName"] + " --output json > /tmp/bom.json", shell=True)
+        subprocess.run("pack inspect-image " + img["imageName"] + " --output json > /tmp/bom.json 2>&1", shell=True)
         with open("/tmp/bom.json", "rb") as f:
             bom = json.load(f)
             bom.update('{ "targetContainerAppName": img["targetContainerAppName"] }')
@@ -4329,8 +4329,10 @@ def patch_list(cmd, resource_group_name=None, managed_env=None):
     #
     # with open("./bom.json", "rb") as f:
     #     lines = f.read()
+    #     # if lines.find(b"status code 401 Unauthorized") == -1 or lines.find(b"unable to find image") == -1:
+    #     #     bom = dict(remote_info=401)
+    #     # else:
     #     bom = json.loads(lines)
-        
     #     bom.update({ "targetContainerAppName": "test-containerapp-1" })
     # boms.append(bom)
 
@@ -4339,25 +4341,31 @@ def patch_list(cmd, resource_group_name=None, managed_env=None):
 
     # Start checking if the images are based on Mariner
     for bom in boms:
-        # devide run-images into different parts by "/"
-        runImagesProps = bom["remote_info"]["run_images"]
-        for runImagesProp in runImagesProps:
-            if (runImagesProp["name"].find("mcr.microsoft.com/oryx/builder") != -1):
-                runImagesProp = runImagesProp["name"].split(":")
-                runImagesTag = runImagesProp[1]
-                # Based on Mariners
-                if runImagesTag.find('mariner') != -1:
-                    result = patchableCheck(runImagesTag, oryxRunImgTags, bom=bom)
-                else: 
+        if bom["remote_info"] == 401:
+            result = ImagePatchableCheck
+            result["targetContainerAppName"] = bom["targetContainerAppName"]
+            result["reason"] = "Failed to get BOM of the image. Please check if the image exists or you have the permission to access the image."
+            results.append(result)
+        else:
+            # devide run-images into different parts by "/"
+            runImagesProps = bom["remote_info"]["run_images"]
+            for runImagesProp in runImagesProps:
+                if (runImagesProp["name"].find("mcr.microsoft.com/oryx/builder") != -1):
+                    runImagesProp = runImagesProp["name"].split(":")
+                    runImagesTag = runImagesProp[1]
+                    # Based on Mariners
+                    if runImagesTag.find('mariner') != -1:
+                        result = patchableCheck(runImagesTag, oryxRunImgTags, bom=bom)
+                    else: 
+                        result = ImagePatchableCheck
+                        result["targetContainerAppName"] = bom["targetContainerAppName"]
+                        result["oldRunImage"] = bom["remote_info"]["run_images"]
+                        result["reason"] = "Image not based on Mariners"
+                else:
+                    # Not based on image from mcr.microsoft.com/dotnet
                     result = ImagePatchableCheck
                     result["targetContainerAppName"] = bom["targetContainerAppName"]
                     result["oldRunImage"] = bom["remote_info"]["run_images"]
-                    result["reason"] = "Image not based on Mariners"
-            else:
-                # Not based on image from mcr.microsoft.com/dotnet
-                result = ImagePatchableCheck
-                result["targetContainerAppName"] = bom["targetContainerAppName"]
-                result["oldRunImage"] = bom["remote_info"]["run_images"]
-                result["reason"] = "Image not from mcr.microsoft.com/oryx/builder"
-            results.append(result)
+                    result["reason"] = "Image not from mcr.microsoft.com/oryx/builder"
+                results.append(result)
     return results
