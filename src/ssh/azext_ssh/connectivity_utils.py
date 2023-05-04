@@ -279,7 +279,12 @@ def _handle_relay_connection_delay(cmd, delay_in_seconds):
     # relay has retry delay after relay connection is lost
     # must sleep for at least as long as the delay
     # otherwise the ssh connection will fail
-    cmd.cli_ctx.get_progress_controller().begin()
-    cmd.cli_ctx.get_progress_controller().add(message='Waiting for service configuration setup to complete')
-    time.sleep(delay_in_seconds)
-    cmd.cli_ctx.get_progress_controller().end()
+    progress_bar = cmd.cli_ctx.get_progress_controller(True)
+    for x in range(0, delay_in_seconds+1):
+        interval = float(1/delay_in_seconds)
+        progress_bar.add(message='Service configuration setup:',
+                            value=interval * x, total_val=1.0)
+        time.sleep(1)
+    progress_bar.add(message='Service configuration setup: complete', 
+                        value=1.0, total_val=1.0)
+    progress_bar.end()
