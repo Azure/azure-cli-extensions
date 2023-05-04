@@ -384,7 +384,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp hostname bind') as c:
         c.argument('hostname', help='The custom domain name.')
-        c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
+        c.argument('thumbprint', 'resource_group_name', configured_default='resource_group_name', id_part=None, help='Thumbprint of the certificate.')
         c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
         c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
         c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership.', is_preview=True)
@@ -414,3 +414,8 @@ def load_arguments(self, _):
         c.argument('workload_profile_type', help="The type of workload profile to add or update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
         c.argument('min_nodes', help="The minimum node count for the workload profile")
         c.argument('max_nodes', help="The maximum node count for the workload profile")
+
+    with self.argument_context('containerapp patch list') as c:
+        c.argument('resource_group_name', options_list=['--rg'], configured_default='resource_group_name', id_part=None)
+        c.argument('env_name', options_list=['--env','--e'], help='Name or resource id of the Container App environment.')
+        c.argument('show_all', options_list=['--show-all'],help='Show all patchable and non-patchable containerapps')
