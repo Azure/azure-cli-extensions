@@ -1,5 +1,10 @@
 Release History
 ===============
+1.11.3
+---
+* Fix `az spring create` command with `--container-registry-server`, `--container-registry-username` and `--container-registry-password`.
+* Fix the help message for parameter `--sku` of `az spring create` and `az spring update` commands.
+
 1.11.2
 ---
 * Refine `az spring app create` command from 3 steps to 2 steps.

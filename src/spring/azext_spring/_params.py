@@ -48,7 +48,7 @@ build_env_type = CLIArgumentType(
     validator=validate_build_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
 service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='The name of Azure Spring Apps instance, you can configure the default service using az configure --defaults spring=<name>.', configured_default='spring')
 app_name_type = CLIArgumentType(help='App name, you can configure the default app using az configure --defaults spring-cloud-app=<name>.', validator=validate_app_name, configured_default='spring-app')
-sku_type = CLIArgumentType(arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise', 'StandardGen2']), help='Name of SKU. Enterprise is still in Preview.')
+sku_type = CLIArgumentType(arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise', 'StandardGen2']), help='Name of SKU.')
 source_path_type = CLIArgumentType(nargs='?', const='.',
                                    help="Deploy the specified source folder. The folder will be packed into tar, uploaded, and built using kpack. Default to the current folder if no value provided.",
                                    arg_group='Source Code deploy')

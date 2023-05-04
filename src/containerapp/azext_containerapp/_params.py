@@ -119,6 +119,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp create') as c:
         c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="Name of the workload profile to run the app on.", is_preview=True)
+        c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets", is_preview=True)
 
     with self.argument_context('containerapp create', arg_group='Identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
@@ -133,6 +134,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp update', arg_group='Container') as c:
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile', is_preview=True)
+        c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets", is_preview=True)
 
     with self.argument_context('containerapp scale') as c:
         c.argument('min_replicas', type=int, help="The minimum number of replicas.")
@@ -365,7 +367,6 @@ def load_arguments(self, _):
         c.argument('config_file_path', help='The path of the config file containing auth settings if they come from a file.')
         c.argument('unauthenticated_client_action', options_list=['--unauthenticated-client-action', '--action'], arg_type=get_enum_type(UNAUTHENTICATED_CLIENT_ACTION), help='The action to take when an unauthenticated client attempts to access the app.')
         c.argument('redirect_provider', help='The default authentication provider to use when multiple providers are configured.')
-        c.argument('enable_token_store', arg_type=get_three_state_flag(), help='true to durably store platform-specific security tokens that are obtained during login flows; otherwise, false.')
         c.argument('require_https', arg_type=get_three_state_flag(), help='false if the authentication/authorization responses not having the HTTPS scheme are permissible; otherwise, true.')
         c.argument('proxy_convention', arg_type=get_enum_type(FORWARD_PROXY_CONVENTION), help='The convention used to determine the url of the request made.')
         c.argument('proxy_custom_host_header', options_list=['--proxy-custom-host-header', '--custom-host-header'], help='The name of the header containing the host of the request.')

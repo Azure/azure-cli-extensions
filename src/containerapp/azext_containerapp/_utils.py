@@ -350,7 +350,7 @@ def parse_secret_flags(secret_list):
     for secret in secret_list:
         key_val = secret.split('=', 1)
         if len(key_val) != 2:
-            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\.")
+            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\".")
         if key_val[0] in secret_entries:
             raise ValidationError("Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
         secret_entries.append(key_val[0])
@@ -363,9 +363,9 @@ def parse_secret_flags(secret_list):
         kv_identity = value.split(',', 2)
         if len(kv_identity) == 1:
             if kv_identity[0].startswith('keyvaultref:'):
-                raise ValidationError("Identityref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\.")
+                raise ValidationError("Identityref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\".")
             if kv_identity[0].startswith('identityref:'):
-                raise ValidationError("Keyvaultref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\.")
+                raise ValidationError("Keyvaultref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\".")
 
         if len(kv_identity) == 2:
             kv = kv_identity[0]
@@ -554,6 +554,24 @@ def _new_tiny_guid():
     import random
     import string
     return ''.join(random.choices(string.ascii_letters + string.digits, k=4))
+
+
+#  Generate a random volume name using same method as log analytics workspace
+def _generate_secret_volume_name():
+    import re
+    prefix = "secret-volume"
+    # volume name must be lowercase
+    suffix = _new_tiny_guid().lower()
+    maxLength = 40
+
+    name = "{}-{}".format(
+        prefix,
+        suffix
+    )
+
+    if len(name) > maxLength:
+        name = name[:maxLength]
+    return name
 
 
 # Follow same naming convention as Portal
@@ -852,7 +870,7 @@ def clean_null_values(d):
         return {
             k: v
             for k, v in ((k, clean_null_values(v)) for k, v in d.items())
-            if v
+            if v or isinstance(v, list)
         }
     if isinstance(d, list):
         return [v for v in map(clean_null_values, d) if v]
@@ -1524,15 +1542,25 @@ def set_managed_identity(cmd, resource_group_name, containerapp_def, system_assi
 
 
 def create_acrpull_role_assignment(cmd, registry_server, registry_identity=None, service_principal=None, skip_error=False):
+    from azure.cli.command_modules.acr._utils import ResourceNotFound
+
     if registry_identity:
         registry_identity_parsed = parse_resource_id(registry_identity)
-        registry_identity_name, registry_identity_rg = registry_identity_parsed.get("name"), registry_identity_parsed.get("resource_group")
-        sp_id = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI).user_assigned_identities.get(resource_name=registry_identity_name, resource_group_name=registry_identity_rg).principal_id
+        registry_identity_name, registry_identity_rg, registry_identity_sub = registry_identity_parsed.get("name"), registry_identity_parsed.get("resource_group"), registry_identity_parsed.get("subscription")
+        sp_id = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI, subscription_id=registry_identity_sub).user_assigned_identities.get(resource_name=registry_identity_name, resource_group_name=registry_identity_rg).principal_id
     else:
         sp_id = service_principal
 
     client = get_mgmt_service_client(cmd.cli_ctx, ContainerRegistryManagementClient).registries
-    acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
+    try:
+        acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
+    except ResourceNotFound as e:
+        message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
+                   f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope <container-registry-resource-id> --role acrpull'. \n"
+                   "You may have to restart the containerapp with 'az containerapp revision restart'.")
+        logger.warning(message)
+        return
+
     retries = 10
     while retries > 0:
         try:
