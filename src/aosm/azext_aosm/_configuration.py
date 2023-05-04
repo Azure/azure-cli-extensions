@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Any
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError
 from ._constants import VNF, CNF, NSD
 
@@ -48,8 +48,21 @@ class VNFConfiguration(Configuration):
     blob_artifact_store_name: str = (
         "Name of the storage account Artifact Store resource"
     )
-    arm_template: ArtifactConfig = ArtifactConfig()
-    vhd: ArtifactConfig = ArtifactConfig()
+    arm_template: Any = ArtifactConfig()
+    vhd: Any = ArtifactConfig()
+    
+    def __post_init__(self):
+        """
+        Cope with deserializing subclasses from dicts to ArtifactConfig.
+        
+        Used when creating VNFConfiguration object from a loaded json config file.
+        """
+        if isinstance(self.arm_template, dict):
+            self.arm_template = ArtifactConfig(**self.arm_template)
+            
+        if isinstance(self.vhd, dict):
+            self.vhd = ArtifactConfig(**self.vhd)
+
 
     @property
     def sa_manifest_name(self) -> str:
@@ -58,9 +71,10 @@ class VNFConfiguration(Configuration):
 
 
 def get_configuration(definition_type, config_as_dict=None) -> Configuration:
+    
     if config_as_dict is None:
         config_as_dict = {}
-    # TODO - fix up the fact that ArtifactConfig remains as a Dict.
+
     if definition_type == VNF:
         config = VNFConfiguration(**config_as_dict)
     elif definition_type == CNF:
@@ -86,14 +100,14 @@ def validate_configuration(config: Configuration) -> None:
     # had good error messages I'd say let the service do the validation. But it would
     # certainly be quicker to catch here.
     if isinstance(config, VNFConfiguration):
-        if "." in config.vhd["version"] or "-" not in config.vhd["version"]:
+        if "." in config.vhd.version or "-" not in config.vhd.version:
             # Not sure about raising this particular one.
             raise ValidationError(
                 "Config validation error. VHD artifact version should be in format A-B-C"
             )
         if (
-            "." not in config.arm_template["version"]
-            or "-" in config.arm_template["version"]
+            "." not in config.arm_template.version
+            or "-" in config.arm_template.version
         ):
             raise ValidationError(
                 "Config validation error. ARM template artifact version should be in format A.B.C"

@@ -42,7 +42,7 @@ class VnfBicepNfdGenerator(NFDGenerator):
         self.config = config
         self.bicep_template_name = VNF_DEFINITION_BICEP_SOURCE_TEMPLATE
 
-        self.arm_template_path = self.config.arm_template["file_path"]
+        self.arm_template_path = self.config.arm_template.file_path
         self.folder_name = f"{VNF_DEFINITION_OUTPUT_BICEP_PREFIX}{Path(str(self.arm_template_path)).stem}"
 
         self._bicep_path = os.path.join(self.folder_name, self.bicep_template_name)
