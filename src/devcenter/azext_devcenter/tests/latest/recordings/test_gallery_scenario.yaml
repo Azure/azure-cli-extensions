@@ -64,7 +64,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003?api-version=2023-01-31
   response:
     body:
-      string: '{"location":"westus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003","name":"testid_000003","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","principalId":"fb3a7793-2bcc-4122-b440-b04d0730290d","clientId":"c4960e47-714c-4213-8f9f-ff51bfbdb90d"}}'
+      string: '{"location":"westus","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003","name":"testid_000003","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"tenantId":"00000000-0000-0000-0000-000000000000","principalId":"fb3a7793-2bcc-4122-b440-b04d0730290d","clientId":"c4960e47-714c-4213-8f9f-ff51bfbdb90d"}}'
     headers:
       cache-control:
       - no-cache
@@ -445,7 +445,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002?api-version=2023-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"centraluseuap","tags":{"CostCode":"12345"},"systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-05-03T05:26:17.8676561Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-03T05:26:17.8676561Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003":{"principalId":"fb3a7793-2bcc-4122-b440-b04d0730290d","clientId":"c4960e47-714c-4213-8f9f-ff51bfbdb90d"}}},"properties":{"provisioningState":"Succeeded","devCenterUri":"https://72f988bf-86f1-41af-91ab-2d7cd011db47-cli000002.centraluseuap.devcenter.azure.com/"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"centraluseuap","tags":{"CostCode":"12345"},"systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-05-03T05:26:17.8676561Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-03T05:26:17.8676561Z"},"identity":{"type":"UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003":{"principalId":"fb3a7793-2bcc-4122-b440-b04d0730290d","clientId":"c4960e47-714c-4213-8f9f-ff51bfbdb90d"}}},"properties":{"provisioningState":"Succeeded","devCenterUri":"https://00000000-0000-0000-0000-000000000000-cli000002.centraluseuap.devcenter.azure.com/"}}'
     headers:
       cache-control:
       - no-cache
@@ -3173,7 +3173,7 @@ interactions:
         : \"centraluseuap\",\r\n  \"tags\": {\r\n    \"platformsettings.host_environment.service.platform_optedin_for_rootcerts\"\
         : \"true\"\r\n  },\r\n  \"identity\": {\r\n    \"type\": \"SystemAssigned\"\
         ,\r\n    \"principalId\": \"9aa1ed99-8636-444e-81aa-293394e44c60\",\r\n  \
-        \  \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n  },\r\n  \"\
+        \  \"tenantId\": \"00000000-0000-0000-0000-000000000000\"\r\n  },\r\n  \"\
         properties\": {\r\n    \"vmId\": \"555775ea-9039-4c1d-bdf7-0fe056a62502\"\
         ,\r\n    \"hardwareProfile\": {\r\n      \"vmSize\": \"Standard_DS1_v2\"\r\
         \n    },\r\n    \"storageProfile\": {\r\n      \"imageReference\": {\r\n \
@@ -8196,7 +8196,7 @@ interactions:
         : \"centraluseuap\",\r\n  \"tags\": {\r\n    \"platformsettings.host_environment.service.platform_optedin_for_rootcerts\"\
         : \"true\"\r\n  },\r\n  \"identity\": {\r\n    \"type\": \"SystemAssigned\"\
         ,\r\n    \"principalId\": \"9aa1ed99-8636-444e-81aa-293394e44c60\",\r\n  \
-        \  \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n  },\r\n  \"\
+        \  \"tenantId\": \"00000000-0000-0000-0000-000000000000\"\r\n  },\r\n  \"\
         properties\": {\r\n    \"vmId\": \"555775ea-9039-4c1d-bdf7-0fe056a62502\"\
         ,\r\n    \"hardwareProfile\": {\r\n      \"vmSize\": \"Standard_DS1_v2\"\r\
         \n    },\r\n    \"storageProfile\": {\r\n      \"imageReference\": {\r\n \
@@ -8478,7 +8478,7 @@ interactions:
         : \"centraluseuap\",\r\n  \"tags\": {\r\n    \"platformsettings.host_environment.service.platform_optedin_for_rootcerts\"\
         : \"true\"\r\n  },\r\n  \"identity\": {\r\n    \"type\": \"SystemAssigned\"\
         ,\r\n    \"principalId\": \"9aa1ed99-8636-444e-81aa-293394e44c60\",\r\n  \
-        \  \"tenantId\": \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\r\n  },\r\n  \"\
+        \  \"tenantId\": \"00000000-0000-0000-0000-000000000000\"\r\n  },\r\n  \"\
         properties\": {\r\n    \"vmId\": \"555775ea-9039-4c1d-bdf7-0fe056a62502\"\
         ,\r\n    \"hardwareProfile\": {\r\n      \"vmSize\": \"Standard_DS1_v2\"\r\
         \n    },\r\n    \"storageProfile\": {\r\n      \"imageReference\": {\r\n \
