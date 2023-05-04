@@ -19,6 +19,7 @@ from azure.cli.core import telemetry
 from azure.cli.core import azclierror
 from azure.mgmt.core.tools import resource_id, parse_resource_id
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.commands import LongRunningOperation
 from knack import log
 from knack.prompting import prompt_y_n
 
@@ -58,9 +59,7 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
             cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
         except Exception as e:
             raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
-        # seem to be hitting a race condition when the SSH connection
-        # is being tried too soon after creating service configuration
-        time.sleep(10)
+        _handle_relay_connection_delay(cmd, consts.RELAY_CONNECTION_DELAY_IN_SECONDS)
     else:
         if not _check_service_configuration(cmd, resource_uri, port):
             _create_service_configuration(cmd, resource_uri, port)
@@ -68,9 +67,7 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
                 cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
             except Exception as e:
                 raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
-            # seem to be hitting a race condition when the SSH connection
-            # is being tried too soon after creating service configuration
-            time.sleep(10)
+            _handle_relay_connection_delay(cmd, consts.RELAY_CONNECTION_DELAY_IN_SECONDS)
     return cred
 
 def _check_service_configuration(cmd, resource_uri, port):
@@ -89,7 +86,7 @@ def _check_service_configuration(cmd, resource_uri, port):
         # is not setup correctly, the connection will fail.
         # The more likely scenario is that the request failed with a "Authorization Error",
         # in case the user isn't an owner/contributor.
-        return True
+        return None
     if port:
         return serviceConfig['port'] == int(port)
     else:
@@ -277,3 +274,12 @@ def format_relay_info_string(relay_info):
     enc = base64.b64encode(result_bytes)
     base64_result_string = enc.decode("ascii")
     return base64_result_string
+
+def _handle_relay_connection_delay(cmd, delay_in_seconds):
+    # relay has retry delay after relay connection is lost
+    # must sleep for at least as long as the delay
+    # otherwise the ssh connection will fail
+    cmd.cli_ctx.get_progress_controller().begin()
+    cmd.cli_ctx.get_progress_controller().add(message='Waiting for service configuration setup to complete')
+    time.sleep(delay_in_seconds)
+    cmd.cli_ctx.get_progress_controller().end()
