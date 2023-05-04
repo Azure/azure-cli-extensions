@@ -54,6 +54,33 @@ class Update(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Encryption"
+
+        _args_schema = cls._args_schema
+        _args_schema.key_encryption_key_url = AAZStrArg(
+            options=["--key-encryption-key-url"],
+            arg_group="Encryption",
+            help="Key encryption key Url, versioned only. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78",
+            nullable=True,
+        )
+
+        # define Arg Group "KeyEncryptionKeyIdentity"
+
+        _args_schema = cls._args_schema
+        _args_schema.identity_type = AAZStrArg(
+            options=["--identity-type"],
+            arg_group="KeyEncryptionKeyIdentity",
+            help="Only userAssignedIdentity is supported in this API version; other types may be supported in the future",
+            nullable=True,
+            enum={"systemAssignedIdentity": "systemAssignedIdentity", "userAssignedIdentity": "userAssignedIdentity"},
+        )
+        _args_schema.user_assigned_identity_resource_id = AAZStrArg(
+            options=["--user-assigned-identity-resource-id"],
+            arg_group="KeyEncryptionKeyIdentity",
+            help="User assigned identity to use for accessing key encryption key Url. Ex: /subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId.",
+            nullable=True,
+        )
+
         # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
@@ -62,11 +89,6 @@ class Update(AAZCommand):
             arg_group="Parameters",
             help="The identity of the resource.",
             nullable=True,
-        )
-        _args_schema.sku = AAZObjectArg(
-            options=["--sku"],
-            arg_group="Parameters",
-            help="The SKU to create, which affects price, performance, and features.",
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -99,18 +121,6 @@ class Update(AAZCommand):
             blank={},
         )
 
-        sku = cls._args_schema.sku
-        sku.capacity = AAZIntArg(
-            options=["capacity"],
-            help="The size of the RedisEnterprise cluster. Defaults to 2 or 3 depending on SKU. Valid values are (2, 4, 6, ...) for Enterprise SKUs and (3, 9, 15, ...) for Flash SKUs.",
-            nullable=True,
-        )
-        sku.name = AAZStrArg(
-            options=["name"],
-            help="The type of RedisEnterprise cluster to deploy. Possible values: (Enterprise_E10, EnterpriseFlash_F300 etc.)",
-            enum={"EnterpriseFlash_F1500": "EnterpriseFlash_F1500", "EnterpriseFlash_F300": "EnterpriseFlash_F300", "EnterpriseFlash_F700": "EnterpriseFlash_F700", "Enterprise_E10": "Enterprise_E10", "Enterprise_E100": "Enterprise_E100", "Enterprise_E20": "Enterprise_E20", "Enterprise_E50": "Enterprise_E50"},
-        )
-
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg(
             nullable=True,
@@ -124,12 +134,6 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.encryption = AAZObjectArg(
-            options=["--encryption"],
-            arg_group="Properties",
-            help="Encryption-at-rest configuration for the cluster.",
-            nullable=True,
-        )
         _args_schema.minimum_tls_version = AAZStrArg(
             options=["--minimum-tls-version"],
             arg_group="Properties",
@@ -138,36 +142,20 @@ class Update(AAZCommand):
             enum={"1.0": "1.0", "1.1": "1.1", "1.2": "1.2"},
         )
 
-        encryption = cls._args_schema.encryption
-        encryption.customer_managed_key_encryption = AAZObjectArg(
-            options=["customer-managed-key-encryption"],
-            help="All Customer-managed key encryption properties for the resource. Set this to an empty object to use Microsoft-managed key encryption.",
-            nullable=True,
-        )
+        # define Arg Group "Sku"
 
-        customer_managed_key_encryption = cls._args_schema.encryption.customer_managed_key_encryption
-        customer_managed_key_encryption.key_encryption_key_identity = AAZObjectArg(
-            options=["key-encryption-key-identity"],
-            help="All identity configuration for Customer-managed key settings defining which identity should be used to auth to Key Vault.",
+        _args_schema = cls._args_schema
+        _args_schema.capacity = AAZIntArg(
+            options=["--capacity"],
+            arg_group="Sku",
+            help="The size of the RedisEnterprise cluster. Defaults to 2 or 3 depending on SKU. Valid values are (2, 4, 6, ...) for Enterprise SKUs and (3, 9, 15, ...) for Flash SKUs.",
             nullable=True,
         )
-        customer_managed_key_encryption.key_encryption_key_url = AAZStrArg(
-            options=["key-encryption-key-url"],
-            help="Key encryption key Url, versioned only. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78",
-            nullable=True,
-        )
-
-        key_encryption_key_identity = cls._args_schema.encryption.customer_managed_key_encryption.key_encryption_key_identity
-        key_encryption_key_identity.identity_type = AAZStrArg(
-            options=["identity-type"],
-            help="Only userAssignedIdentity is supported in this API version; other types may be supported in the future",
-            nullable=True,
-            enum={"systemAssignedIdentity": "systemAssignedIdentity", "userAssignedIdentity": "userAssignedIdentity"},
-        )
-        key_encryption_key_identity.user_assigned_identity_resource_id = AAZStrArg(
-            options=["user-assigned-identity-resource-id"],
-            help="User assigned identity to use for accessing key encryption key Url. Ex: /subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId.",
-            nullable=True,
+        _args_schema.sku = AAZStrArg(
+            options=["--sku"],
+            arg_group="Sku",
+            help="The type of RedisEnterprise cluster to deploy. Possible values: (Enterprise_E10, EnterpriseFlash_F300 etc.)",
+            enum={"EnterpriseFlash_F1500": "EnterpriseFlash_F1500", "EnterpriseFlash_F300": "EnterpriseFlash_F300", "EnterpriseFlash_F700": "EnterpriseFlash_F700", "Enterprise_E10": "Enterprise_E10", "Enterprise_E100": "Enterprise_E100", "Enterprise_E20": "Enterprise_E20", "Enterprise_E50": "Enterprise_E50"},
         )
         return cls._args_schema
 
@@ -408,7 +396,7 @@ class Update(AAZCommand):
             )
             _builder.set_prop("identity", AAZObjectType, ".identity")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("sku", AAZObjectType, ".sku", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
             _builder.set_prop("zones", AAZListType, ".zones")
 
@@ -423,16 +411,16 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("encryption", AAZObjectType, ".encryption")
+                properties.set_prop("encryption", AAZObjectType)
                 properties.set_prop("minimumTlsVersion", AAZStrType, ".minimum_tls_version")
 
             encryption = _builder.get(".properties.encryption")
             if encryption is not None:
-                encryption.set_prop("customerManagedKeyEncryption", AAZObjectType, ".customer_managed_key_encryption")
+                encryption.set_prop("customerManagedKeyEncryption", AAZObjectType)
 
             customer_managed_key_encryption = _builder.get(".properties.encryption.customerManagedKeyEncryption")
             if customer_managed_key_encryption is not None:
-                customer_managed_key_encryption.set_prop("keyEncryptionKeyIdentity", AAZObjectType, ".key_encryption_key_identity")
+                customer_managed_key_encryption.set_prop("keyEncryptionKeyIdentity", AAZObjectType)
                 customer_managed_key_encryption.set_prop("keyEncryptionKeyUrl", AAZStrType, ".key_encryption_key_url")
 
             key_encryption_key_identity = _builder.get(".properties.encryption.customerManagedKeyEncryption.keyEncryptionKeyIdentity")
@@ -443,7 +431,7 @@ class Update(AAZCommand):
             sku = _builder.get(".sku")
             if sku is not None:
                 sku.set_prop("capacity", AAZIntType, ".capacity")
-                sku.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+                sku.set_prop("name", AAZStrType, ".sku", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:

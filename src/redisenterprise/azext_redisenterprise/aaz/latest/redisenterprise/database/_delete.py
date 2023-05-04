@@ -54,6 +54,7 @@ class Delete(AAZCommand):
             help="The name of the database.",
             required=True,
             id_part="child_name_1",
+            default="default",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,

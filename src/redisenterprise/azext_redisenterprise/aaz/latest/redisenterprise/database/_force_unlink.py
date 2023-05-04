@@ -53,6 +53,7 @@ class ForceUnlink(AAZCommand):
             help="The name of the database.",
             required=True,
             id_part="child_name_1",
+            default="default",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -61,15 +62,15 @@ class ForceUnlink(AAZCommand):
         # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
-        _args_schema.ids = AAZListArg(
-            options=["--ids"],
+        _args_schema.unlink_ids = AAZListArg(
+            options=["--unlink-ids"],
             arg_group="Parameters",
             help="The resource IDs of the database resources to be unlinked.",
             required=True,
         )
 
-        ids = cls._args_schema.ids
-        ids.Element = AAZStrArg()
+        unlink_ids = cls._args_schema.unlink_ids
+        unlink_ids.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -175,7 +176,7 @@ class ForceUnlink(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("ids", AAZListType, ".ids", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("ids", AAZListType, ".unlink_ids", typ_kwargs={"flags": {"required": True}})
 
             ids = _builder.get(".ids")
             if ids is not None:
