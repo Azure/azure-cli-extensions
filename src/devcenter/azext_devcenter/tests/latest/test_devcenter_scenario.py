@@ -42,7 +42,7 @@ class DevcenterScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "subscriptionId": self.get_subscription_id(),
-                "location": "westus3",
+                "location": "centraluseuap",
             }
         )
 
@@ -486,9 +486,11 @@ class DevcenterScenarioTest(ScenarioTest):
         create_dev_center(self)
         create_project(self)
 
+        imageRefId = f"{self.kwargs.get('devCenterId', '')}/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os"
+
         self.kwargs.update(
             {
-                "imageRefId": "/subscriptions/{subscriptionId}/resourceGroups/{rg}/providers/Microsoft.DevCenter/devcenters/{devcenterName}/galleries/default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
+                "imageRefId": imageRefId,
                 "devBoxDefinitionName": self.create_random_name(prefix="c1", length=12),
                 "osStorageType": "ssd_1024gb",
                 "skuName": "general_a_8c32gb_v1",
@@ -687,8 +689,6 @@ class DevcenterScenarioTest(ScenarioTest):
             ],
         )
 
-        # TODO: add hibernate support and recommended configuration checks
-        # for image list and image show return properties
         self.cmd(
             "az devcenter admin image list "
             '--gallery-name "{galleryName}" '
@@ -884,7 +884,7 @@ class DevcenterScenarioTest(ScenarioTest):
     def test_pool_scenario(self):
         self.kwargs.update(
             {
-                "location": "eastus",
+                "location": "centraluseuap",
             }
         )
         create_attached_network_dev_box_definition(self)
@@ -901,7 +901,7 @@ class DevcenterScenarioTest(ScenarioTest):
             ],
         )
 
-        # TODO: add health check and health check details in return type
+        # TODO: add health check and health check details in return type when API available
         self.cmd(
             "az devcenter admin pool create "
             '-d "{devBoxDefinitionName}" '
@@ -911,7 +911,7 @@ class DevcenterScenarioTest(ScenarioTest):
             '-c "{attachedNetworkName}" '
             '--project-name "{projectName}" '
             '--resource-group "{rg}" '
-            '--stop-on-disconnect grace-period-minutes="10" status="Disabled" ',
+            '--stop-on-disconnect grace-period-minutes="60" status="Disabled" ',
             checks=[
                 self.check("name", "{poolName}"),
                 self.check("resourceGroup", "{rg}"),
@@ -919,7 +919,7 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("localAdministrator", "Disabled"),
                 self.check("networkConnectionName", "{attachedNetworkName}"),
                 self.check("location", "{location}"),
-                self.check("stopOnDisconnect.gracePeriodMinutes", "10"),
+                self.check("stopOnDisconnect.gracePeriodMinutes", "60"),
                 self.check("stopOnDisconnect.status", "Disabled"),
             ],
         )
@@ -938,7 +938,7 @@ class DevcenterScenarioTest(ScenarioTest):
             '--name "{poolName}" '
             '--project-name "{projectName}" '
             '--resource-group "{rg}" '
-            '--stop-on-disconnect grace-period-minutes="60" status="Enabled" ',
+            '--stop-on-disconnect grace-period-minutes="80" status="Enabled" ',
             checks=[
                 self.check("name", "{poolName}"),
                 self.check("resourceGroup", "{rg}"),
@@ -946,7 +946,7 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("localAdministrator", "Enabled"),
                 self.check("networkConnectionName", "{attachedNetworkName}"),
                 self.check("location", "{location}"),
-                self.check("stopOnDisconnect.gracePeriodMinutes", "60"),
+                self.check("stopOnDisconnect.gracePeriodMinutes", "80"),
                 self.check("stopOnDisconnect.status", "Enabled"),
             ],
         )
@@ -963,20 +963,18 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("localAdministrator", "Enabled"),
                 self.check("networkConnectionName", "{attachedNetworkName}"),
                 self.check("location", "{location}"),
-                self.check("stopOnDisconnect.gracePeriodMinutes", "60"),
+                self.check("stopOnDisconnect.gracePeriodMinutes", "80"),
                 self.check("stopOnDisconnect.status", "Enabled"),
             ],
         )
 
-        self.cmd(
-            "az devcenter admin pool run-health-check "
-            '--name "{poolName}" '
-            '--project-name "{projectName}" '
-            '--resource-group "{rg}" '
-        )
-
-        # TODO: add check for show after run health check
-        # TODO: default will be changed to schedule-default after idle update. Need to handle both names?
+        #TODO: Not available yet, add test when it is
+        # self.cmd(
+        #     "az devcenter admin pool run-health-check "
+        #     '--name "{poolName}" '
+        #     '--project-name "{projectName}" '
+        #     '--resource-group "{rg}" '
+        # )
 
         self.cmd(
             "az devcenter admin schedule create "
@@ -1012,7 +1010,6 @@ class DevcenterScenarioTest(ScenarioTest):
             ],
         )
 
-        # TODO: update for idle, add schedule list command
         self.cmd(
             "az devcenter admin schedule show "
             '--pool-name "{poolName}" '
@@ -1414,7 +1411,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "subscriptionId": self.get_subscription_id(),
-                "location": "westus3",
+                "location": "centraluseuap",
             }
         )
 
@@ -1425,7 +1422,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "devcenterName": self.create_random_name(prefix="cli", length=24),
-                "location": "westus3",
+                "location": "centraluseuap",
             }
         )
 
@@ -1464,7 +1461,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     def test_pool_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "location": "westus3",
+                "location": "centraluseuap",
                 "devcenterName": self.create_random_name(prefix="cli", length=24),
             }
         )
@@ -1524,7 +1521,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     def test_catalog_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "location": "westus3",
+                "location": "centraluseuap",
             }
         )
 
@@ -1559,7 +1556,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     def test_env_definition_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "location": "westus3",
+                "location": "centraluseuap",
             }
         )
 
@@ -1596,7 +1593,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     def test_env_type_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "location": "westus3",
+                "location": "centraluseuap",
             }
         )
         create_proj_env_type(self)
@@ -1619,7 +1616,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     def test_dev_box_dataplane_scenario(self):
         self.kwargs.update(
             {
-                "location": "eastus",
+                "location": "centraluseuap",
                 "devBoxName": self.create_random_name(prefix="cli", length=24),
             }
         )
