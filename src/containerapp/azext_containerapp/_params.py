@@ -384,7 +384,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp hostname bind') as c:
         c.argument('hostname', help='The custom domain name.')
-        c.argument('thumbprint', 'resource_group_name', configured_default='resource_group_name', id_part=None, help='Thumbprint of the certificate.')
+        c.argument('thumbprint', options_list=['--thumbprint', '-t'], help='Thumbprint of the certificate.')
         c.argument('certificate', options_list=['--certificate', '-c'], help='Name or resource id of the certificate.')
         c.argument('environment', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
         c.argument('validation_method', options_list=['--validation-method', '-v'], help='Validation method of custom domain ownership.', is_preview=True)
