@@ -1414,19 +1414,21 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'ssh_key_value': self.generate_ssh_keys()
         })
 
-        create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} '
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} ' \
+                     '--enable-addons azure-policy '
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded')
         ])
     
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
                      '--guardrails-level Warning --guardrails-version "v1.0.0" ' \
-                     '--enable-addons azure-policy '
+                     '--guardrails-excluded-ns test-ns1'
         
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('guardrailsProfile.level', 'Warning'),
-            self.check('guardrailsProfile.version','v1.0.0')
+            self.check('guardrailsProfile.version','v1.0.0'),
+            self.check('guardrailsProfile.excludedNamespaces[0]','test-ns1')
         ])
 
     @AllowLargeResponse()
