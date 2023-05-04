@@ -10,6 +10,7 @@ Upcoming
 * 'az containerapp auth update': remove unsupported argument --enable-token-store
 * 'az containerapp update'/'az containerapp env update': fix --no-wait
 * 'az containerapp update': fix the --yaml update behavior to respect the empty array in patch-request
+* 'az containerapp create/update': add support for secret volumes yaml and --secret-volume-mount
 
 0.3.28
 ++++++
