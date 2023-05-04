@@ -7,6 +7,9 @@
 import time
 import json
 import platform
+import hashlib
+import requests
+import packaging.version as SemVer
 
 from urllib.parse import urlparse
 from datetime import datetime
@@ -31,6 +34,7 @@ from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERV
                          LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
                          LOGS_STRING, PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS)
 from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel, ManagedCertificateEnvelop as ManagedCertificateEnvelopModel)
+from ._models import ImagePatchableCheck, OryxMarinerRunImgTagProperty
 
 logger = get_logger(__name__)
 
@@ -1714,3 +1718,72 @@ def format_location(location=None):
     if location:
         return location.lower().replace(" ", "").replace("(", "").replace(")", "")
     return location
+
+def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
+    tagProp = parseOryxMarinerTag(repoTagSplit)
+    repoTagSplit = repoTagSplit.split("-")
+    if repoTagSplit[1] == "dotnet":
+        matchingVersionInfo = oryxBuilderRunImgTags[repoTagSplit[2]][str(tagProp["version"].major) + "." + str(tagProp["version"].minor)][tagProp["support"]][tagProp["marinerVersion"]]
+        
+    # Check if the image minor version is four less than the latest minor version
+    if tagProp["version"] < matchingVersionInfo[0]["version"]:
+        result = ImagePatchableCheck
+        result["targetContainerAppName"] = bom["targetContainerAppName"]
+        result["oldRunImage"] = tagProp["fullTag"]
+        if (tagProp["version"].minor == matchingVersionInfo[0]["version"].minor) and (tagProp["version"].micro < matchingVersionInfo[0]["version"].micro):
+            # Patchable
+            result["newRunImage"] = "mcr.microsoft.com/oryx/builder:" + matchingVersionInfo[0]["fullTag"]
+            result["id"] = hashlib.md5(str(result["oldRunImage"] + result["targetContainerAppName"]).encode()).hexdigest()
+            result["reason"] = "New security patch released for your current run image."
+        else:
+            # Not patchable
+            result["newRunImage"] = "mcr.microsoft.com/oryx/builder:" + matchingVersionInfo[0]["fullTag"]
+            result["reason"] = "The image is not pachable Please check for major or minor version upgrade."
+    else:
+        result = ImagePatchableCheck
+        result["targetContainerAppName"] = bom["targetContainerAppName"]
+        result["oldRunImage"] = tagProp["fullTag"]
+        result["reason"] = "You're already up to date!"
+    return result
+
+def getCurrentMarinerTags() -> list(OryxMarinerRunImgTagProperty):
+    r = requests.get("https://mcr.microsoft.com/v2/oryx/builder/tags/list")
+    tags = r.json()
+    tagList = {}
+    # only keep entries that container keyword "mariner"
+    tags = [tag for tag in tags["tags"] if "mariner" in tag]
+
+    for tag in tags:
+        tagObj = parseOryxMarinerTag(tag)
+        if tagObj:
+            majorMinorVer = str(tagObj["version"].major) + "." + str(tagObj["version"].minor)
+            support = tagObj["support"]
+            framework = tagObj["framework"]
+            marinerVer = tagObj["marinerVersion"]
+            if framework in tagList.keys():
+                if majorMinorVer in tagList.keys():
+                    # preview
+                    if support in tagList[majorMinorVer].keys():
+                        if marinerVer in tagList[majorMinorVer][support].keys():
+                            (tagList[framework][majorMinorVer])[support][marinerVer].append(tagObj)
+                            (tagList[framework][majorMinorVer])[support][marinerVer].sort(reverse=True, key=lambda x: x["version"])
+                        else:
+                            (tagList[framework][majorMinorVer])[support][marinerVer] = [tagObj]
+                    else:
+                        tagList[framework][majorMinorVer][support] = {marinerVer: [tagObj]}
+                else:
+                    tagList[framework][majorMinorVer] = {support: {marinerVer: [tagObj]}}
+            else:
+                tagList[framework] = {majorMinorVer: {support: {marinerVer: [tagObj]}}}
+    return tagList
+
+def parseOryxMarinerTag(tag: str) -> OryxMarinerRunImgTagProperty:
+    
+    tagSplit = tag.split("-")
+    if tagSplit[0] == "run" and tagSplit[1] == "dotnet":
+        versionRE = r"(\d+\.\d+(\.\d+)?).*?(cbl-mariner(\d+\.\d+))"
+        REmatch = re.findall(versionRE, tag)[0]
+        tagObj = dict(fullTag=tag, version=SemVer.parse(REmatch[0]), framework=tagSplit[2], marinerVersion=REmatch[2], architectures=None, support="lts")
+    else:
+        tagObj = None
+    return tagObj
