@@ -7,8 +7,10 @@
 import time
 import json
 import platform
-import hashlib
+import docker
+import os
 import requests
+import hashlib
 import packaging.version as SemVer
 import re
 
@@ -1720,6 +1722,60 @@ def format_location(location=None):
         return location.lower().replace(" ", "").replace("(", "").replace(")", "")
     return location
 
+
+def is_docker_running():
+    # check to see if docker is running
+    client = None
+    out = True
+    try:
+        client = docker.from_env()
+        # need any command that will show the docker daemon is not running
+        client.containers.list()
+    except docker.errors.DockerException:
+        out = False
+    finally:
+        if client:
+            client.close()
+    return out
+
+
+def get_pack_exec_path():
+    try:
+        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "azext_containerapp")
+        bin_folder = dir_path + "/bin"
+        if not os.path.exists(bin_folder):
+            os.makedirs(bin_folder)
+
+        exec_name = ""
+        host_os = platform.system()
+        if host_os == "Windows":
+            exec_name = "pack-v0.29.0-windows.exe"
+        elif host_os == "Linux":
+            exec_name = "pack-v0.29.0-linux"
+        elif host_os == "Darwin":
+            exec_name = "pack-v0.29.0-macos"
+        else:
+            raise Exception(f"Unsupported host OS: {host_os}")
+
+        exec_path = os.path.join(bin_folder, exec_name)
+        if os.path.exists(exec_path):
+            return exec_path
+
+        # Attempt to install the pack CLI
+        url = f"https://cormteststorage.blob.core.windows.net/pack/{exec_name}"
+        r = requests.get(url)
+        with open(exec_path, "wb") as f:
+            f.write(r.content)
+            print(f"Successfully installed pack CLI to {exec_path}\n")
+            return exec_path
+
+    except Exception as e:
+        # Swallow any exceptions thrown when attempting to install pack CLI
+        print(f"Failed to install pack CLI: {e}\n")
+
+    return ""
+
+
 def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
     tagProp = parseOryxMarinerTag(repoTagSplit)
     repoTagSplit = repoTagSplit.split("-")
@@ -1746,6 +1802,7 @@ def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
         result["oldRunImage"] = tagProp["fullTag"]
         result["reason"] = "You're already up to date!"
     return result
+
 
 def getCurrentMarinerTags() -> list(OryxMarinerRunImgTagProperty):
     r = requests.get("https://mcr.microsoft.com/v2/oryx/builder/tags/list")
@@ -1776,6 +1833,7 @@ def getCurrentMarinerTags() -> list(OryxMarinerRunImgTagProperty):
             else:
                 tagList[framework] = {majorMinorVer: {support: {marinerVer: [tagObj]}}}
     return tagList
+
 
 def parseOryxMarinerTag(tag: str) -> OryxMarinerRunImgTagProperty:
     tagSplit = tag.split("-")
