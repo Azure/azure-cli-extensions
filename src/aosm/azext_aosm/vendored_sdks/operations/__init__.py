@@ -6,8 +6,8 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from configuration_group_schemas_operations import ConfigurationGroupSchemasOperations
-from configuration_group_values_operations import ConfigurationGroupValuesOperations
+from._configuration_group_schemas_operations import ConfigurationGroupSchemasOperations
+from._configuration_group_values_operations import ConfigurationGroupValuesOperations
 from ._network_functions_operations import NetworkFunctionsOperations
 from ._components_operations import ComponentsOperations
 from ._network_function_definition_groups_operations import NetworkFunctionDefinitionGroupsOperations
