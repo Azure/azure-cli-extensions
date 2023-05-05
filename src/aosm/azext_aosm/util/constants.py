@@ -4,8 +4,6 @@
 # --------------------------------------------------------------------------------------------
 """Constants used across aosm cli extension."""
 
-AOSM_API_VERSION = "2022-09-01-preview"
-
 # The types of definition that can be generated
 VNF = "vnf"
 CNF = "cnf"
