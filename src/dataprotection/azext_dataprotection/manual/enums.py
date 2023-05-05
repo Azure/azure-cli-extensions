@@ -85,8 +85,10 @@ def get_datasource_types():
     from azext_dataprotection.manual import helpers
     return helpers.get_supported_datasource_types()
 
+
 def get_persistent_volume_restore_mode_values():
     return ['RestoreWithVolumeData', 'RestoreWithoutVolumeData']
+
 
 def get_conflict_policy_values():
     return ['Skip', 'Patch']

@@ -111,7 +111,7 @@ def load_arguments(self, _):
         c.argument('permissions_scope', arg_type=get_enum_type(get_permission_scope_values()), help="Scope for assigning permissions to the backup vault")
         c.argument('keyvault_id', type=str, help='ARM id of the key vault. Required when --datasource-type is AzureDatabaseForPostgreSQL')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
-        c.argument('snapshot_resource_group_id', options_list=['--snapshot-resource-group-id', '--snapshot-rg-id'], type=str, 
+        c.argument('snapshot_resource_group_id', options_list=['--snapshot-resource-group-id', '--snapshot-rg-id'], type=str,
                    help='ARM id of the snapshot resource group. Required when assigning permissions over snapshot resource group and the --operation is Restore')
         c.argument('backup_instance', type=validate_file_or_dict, help='Request body for operation "Backup" Expected value: '
                    'json-string/@json-file. Required when --operation is Backup')

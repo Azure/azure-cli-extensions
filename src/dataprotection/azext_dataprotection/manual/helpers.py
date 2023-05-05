@@ -59,7 +59,7 @@ def get_datasourceset_info(datasource_type, resource_id, resource_location):
     manifest = load_manifest(datasource_type)
     if len(resource_id.split("/")) < 3:
         raise CLIError(resource_id + " is not a valid resource id")
-    
+
     resource_name = resource_id.split("/")[-3]
     resource_type = "/".join(manifest["resourceType"].split("/")[:-1])
     resource_uri = ""
@@ -278,7 +278,7 @@ def help_text_permission_line_generator(sourceMSI, role_object, datasource_type)
 def get_help_word_from_permission_type(permission_type, datasource_type):
     if permission_type == 'SnapshotRG':
         return 'snapshot resource group'
-    
+
     if permission_type == 'DataSource':
         helptext_dsname = ''
 
@@ -290,7 +290,7 @@ def get_help_word_from_permission_type(permission_type, datasource_type):
             helptext_dsname = 'disk'
         if datasource_type == 'AzureDatabaseForPostgreSQL':
             helptext_dsname = "Postgres server"
-        
+
         return helptext_dsname
 
     return permission_type
@@ -346,6 +346,7 @@ def get_permission_object_from_keyvault(keyvault):
 
     return permission_object
 
+
 def convert_dict_keys_snake_to_camel(dictionary):
     '''
     Recursively converts all dictionary and nested dictionary keys from snake case to camel case
@@ -362,6 +363,7 @@ def convert_dict_keys_snake_to_camel(dictionary):
     for key, value in dictionary.items():
         new_dictionary[convert_string_snake_to_camel(key)] = convert_dict_keys_snake_to_camel(value)
     return new_dictionary
+
 
 def convert_string_snake_to_camel(string):
     new_string = re.sub(r'_([a-z])', lambda m: m.group(1).upper(), string)
