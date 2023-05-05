@@ -43,7 +43,6 @@ helps[
 """
 
 
-
 helps[
     "aosm definition delete"
 ] = """

@@ -43,7 +43,10 @@ class Artifact:
 
         # If not included in config, the file path value will be the description of
         # the field.
-        if artifact_config.file_path and not artifact_config.file_path == DESCRIPTION_MAP["file_path"]:
+        if (
+            artifact_config.file_path
+            and not artifact_config.file_path == DESCRIPTION_MAP["file_path"]
+        ):
             target = f"{self.artifact_client.remote.hostname.replace('https://', '')}/{self.artifact_name}:{self.artifact_version}"
             logger.debug(f"Uploading {artifact_config.file_path} to {target}")
             self.artifact_client.push(
@@ -64,7 +67,10 @@ class Artifact:
         assert type(self.artifact_client) == BlobClient
 
         # If the file path is given, upload the artifact, else, copy it from an existing blob.
-        if artifact_config.file_path and not artifact_config.file_path == DESCRIPTION_MAP["file_path"]:
+        if (
+            artifact_config.file_path
+            and not artifact_config.file_path == DESCRIPTION_MAP["file_path"]
+        ):
             logger.info("Upload to blob store")
             with open(artifact_config.file_path, "rb") as artifact:
                 self.artifact_client.upload_blob(artifact, overwrite=True)

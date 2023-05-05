@@ -20,8 +20,7 @@ from azext_aosm.publisher_resources.publisher_resources import (
 )
 from azext_aosm._constants import (
     VNF_DEFINITION_BICEP_SOURCE_TEMPLATE,
-    VNF_DEFINITION_OUTPUT_BICEP_PREFIX,
-    VNF_MANIFEST_BICEP_SOURCE_TEMPLATE
+    VNF_MANIFEST_BICEP_SOURCE_TEMPLATE,
 )
 
 
@@ -48,7 +47,9 @@ class VnfBicepNfdGenerator(NFDGenerator):
         self.folder_name = self.config.build_output_folder_name
 
         self._bicep_path = os.path.join(self.folder_name, self.bicep_template_name)
-        self._manifest_path = os.path.join(self.folder_name, self.manifest_template_name)
+        self._manifest_path = os.path.join(
+            self.folder_name, self.manifest_template_name
+        )
 
     def generate_nfd(self) -> None:
         """Generate a VNF NFD which comprises an group, an Artifact Manifest and a NFDV."""
@@ -85,14 +86,14 @@ class VnfBicepNfdGenerator(NFDGenerator):
             return self._bicep_path
 
         return None
-    
+
     @property
     def manifest_path(self) -> Optional[str]:
         """Returns the path to the bicep file for the NFD if it has been created."""
         if os.path.exists(self._manifest_path):
             return self._manifest_path
 
-        return None    
+        return None
 
     def _create_nfd_folder(self) -> None:
         """

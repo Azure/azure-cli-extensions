@@ -5,7 +5,8 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core import AzCommandsLoader
-#from azure.cli.core.commands import CliCommandType
+
+# from azure.cli.core.commands import CliCommandType
 from azext_aosm._client_factory import cf_aosm
 
 

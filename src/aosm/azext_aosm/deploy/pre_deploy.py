@@ -269,37 +269,32 @@ class PreDeployerViaSDK:
             self.config.nfdg_name,
             self.config.location,
         )
-        
-    def does_artifact_manifest_exist(self,
-                                     rg_name: str,
-                                     publisher_name: str,
-                                     store_name: str,
-                                     manifest_name: str
-                                     ) -> bool:
+
+    def does_artifact_manifest_exist(
+        self, rg_name: str, publisher_name: str, store_name: str, manifest_name: str
+    ) -> bool:
         try:
             self.api_clients.aosm_client.artifact_manifests.get(
                 resource_group_name=rg_name,
                 publisher_name=publisher_name,
                 artifact_store_name=store_name,
-                artifact_manifest_name=manifest_name
+                artifact_manifest_name=manifest_name,
             )
             logger.debug(f"Artifact manifest {manifest_name} exists")
             return True
         except azure_exceptions.ResourceNotFoundError:
             logger.debug(f"Artifact manifest {manifest_name} does not exist")
             return False
-        
+
     def do_config_artifact_manifests_exist(
         self,
     ):
-        """
-        Returns True if all required manifests exist, False otherwise
-        """
+        """Returns True if all required manifests exist, False otherwise."""
         acr_manny_exists: bool = self.does_artifact_manifest_exist(
             rg_name=self.config.publisher_resource_group_name,
             publisher_name=self.config.publisher_name,
             store_name=self.config.acr_artifact_store_name,
-            manifest_name=self.config.acr_manifest_name
+            manifest_name=self.config.acr_manifest_name,
         )
 
         if isinstance(self.config, VNFConfiguration):
@@ -307,12 +302,14 @@ class PreDeployerViaSDK:
                 rg_name=self.config.publisher_resource_group_name,
                 publisher_name=self.config.publisher_name,
                 store_name=self.config.blob_artifact_store_name,
-                manifest_name=self.config.sa_manifest_name
+                manifest_name=self.config.sa_manifest_name,
             )
             if acr_manny_exists and sa_manny_exists:
                 return True
             elif acr_manny_exists or sa_manny_exists:
-                raise AzCLIError("Only one artifact manifest exists. Cannot proceed. Please delete the NFDV using `az aosm definition delete` and start the publish again from scratch.")
+                raise AzCLIError(
+                    "Only one artifact manifest exists. Cannot proceed. Please delete the NFDV using `az aosm definition delete` and start the publish again from scratch."
+                )
             else:
                 return False
 

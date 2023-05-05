@@ -19,7 +19,7 @@ from azext_aosm.deploy.pre_deploy import PreDeployerViaSDK
 from azext_aosm._configuration import Configuration, VNFConfiguration
 from azext_aosm._constants import (
     VNF_DEFINITION_BICEP_SOURCE_TEMPLATE,
-    VNF_MANIFEST_BICEP_SOURCE_TEMPLATE
+    VNF_MANIFEST_BICEP_SOURCE_TEMPLATE,
 )
 
 
@@ -49,10 +49,11 @@ class DeployerViaArm:
         self.config = config
         self.pre_deployer = PreDeployerViaSDK(apiClientsAndCaches, self.config)
 
-    def deploy_vnfd_from_bicep(self,
-                               bicep_path: Optional[str] = None,
-                               parameters_json_file: Optional[str] = None
-                               ) -> None:
+    def deploy_vnfd_from_bicep(
+        self,
+        bicep_path: Optional[str] = None,
+        parameters_json_file: Optional[str] = None,
+    ) -> None:
         """
         Deploy the bicep template defining the VNFD.
 
@@ -66,19 +67,21 @@ class DeployerViaArm:
         if not bicep_path:
             # User has not passed in a bicep template, so we are deploying the default
             # one produced from building the NFDV using this CLI
-            bicep_path = os.path.join(self.config.build_output_folder_name, 
-                                      VNF_DEFINITION_BICEP_SOURCE_TEMPLATE)
-        
+            bicep_path = os.path.join(
+                self.config.build_output_folder_name,
+                VNF_DEFINITION_BICEP_SOURCE_TEMPLATE,
+            )
+
         if parameters_json_file:
             message: str = f"Use parameters from file {parameters_json_file}"
             logger.info(message)
             print(message)
             with open(parameters_json_file, "r", encoding="utf-8") as f:
                 parameters = json.loads(f.read())
-            
+
         else:
             # User has not passed in parameters file, so we use the parameters required
-            # from config for the default bicep template produced from building the 
+            # from config for the default bicep template produced from building the
             # NFDV using this CLI
             logger.debug("Create parameters for default NFDV template.")
             parameters = self.construct_vnfd_parameters()
@@ -90,22 +93,25 @@ class DeployerViaArm:
         if deploy_manifest_template:
             print(f"Deploy bicep template for Artifact manifests")
             logger.debug("Deploy manifest bicep")
-            manifest_bicep_path = os.path.join(self.config.build_output_folder_name, 
-                                      VNF_MANIFEST_BICEP_SOURCE_TEMPLATE)
+            manifest_bicep_path = os.path.join(
+                self.config.build_output_folder_name, VNF_MANIFEST_BICEP_SOURCE_TEMPLATE
+            )
             manifest_params = self.construct_manifest_parameters()
             self.deploy_bicep_template(manifest_bicep_path, manifest_params)
         else:
-            print(f"Artifact manifests exist for NFD {self.config.nf_name} "
-                  f"version {self.config.version}")
-        message = (f"Deploy bicep template for NFD {self.config.nf_name} version {self.config.version} "
+            print(
+                f"Artifact manifests exist for NFD {self.config.nf_name} "
+                f"version {self.config.version}"
+            )
+        message = (
+            f"Deploy bicep template for NFD {self.config.nf_name} version {self.config.version} "
             f"into {self.config.publisher_resource_group_name} under publisher "
-            f"{self.config.publisher_name}")
+            f"{self.config.publisher_name}"
+        )
         print(message)
         logger.info(message)
         self.deploy_bicep_template(bicep_path, parameters)
-        print(
-            f"Deployed NFD {self.config.nf_name} version {self.config.version}."
-        )
+        print(f"Deployed NFD {self.config.nf_name} version {self.config.version}.")
 
         storage_account_manifest = ArtifactManifestOperator(
             self.config,
@@ -133,8 +139,7 @@ class DeployerViaArm:
         """
         All the predeploy steps for a VNF. Create publisher, artifact stores and NFDG.
 
-        VNF specific
-        return True if artifact manifest already exists, False otherwise
+        VNF specific return True if artifact manifest already exists, False otherwise
         """
         logger.debug("Ensure all required resources exist")
         self.pre_deployer.ensure_config_resource_group_exists()
@@ -161,7 +166,7 @@ class DeployerViaArm:
             "vhdVersion": {"value": self.config.vhd.version},
             "armTemplateVersion": {"value": self.config.arm_template.version},
         }
-        
+
     def construct_manifest_parameters(self) -> Dict[str, Any]:
         """
         Create the parmeters dictionary for vnfdefinitions.bicep. VNF specific.
@@ -179,7 +184,7 @@ class DeployerViaArm:
             "vhdVersion": {"value": self.config.vhd.version},
             "armTemplateName": {"value": self.config.arm_template.artifact_name},
             "armTemplateVersion": {"value": self.config.arm_template.version},
-        }        
+        }
 
     def deploy_bicep_template(
         self, bicep_template_path: str, parameters: Dict[Any, Any]

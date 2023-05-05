@@ -16,11 +16,7 @@ from azext_aosm._constants import VNF, CNF, NSD
 from azext_aosm.util.management_clients import ApiClientsAndCaches
 from .vendored_sdks import HybridNetworkManagementClient
 from ._client_factory import cf_resources
-from ._configuration import (
-    get_configuration,
-    validate_configuration,
-    Configuration
-)
+from ._configuration import get_configuration, validate_configuration, Configuration
 
 
 logger = get_logger(__name__)
@@ -33,7 +29,8 @@ def build_definition(
     config_file: str,
     publish=False,
 ):
-    """Build and optionally publish a definition
+    """
+    Build and optionally publish a definition.
 
     :param cmd: _description_
     :type cmd: _type_
@@ -51,7 +48,7 @@ def build_definition(
     )
 
     config = _get_config_from_file(config_file, definition_type)
-    
+
     # Generate the NFD/NSD and the artifact manifest.
     _generate_nfd(definition_type=definition_type, config=config)
     # Write the ARM/bicep template if that's what we are doing
@@ -65,21 +62,19 @@ def build_definition(
             print("TODO - cannot publish CNF or NSD yet.")
 
 
-def generate_definition_config(definition_type: str, output_file: str="input.json"):
+def generate_definition_config(definition_type: str, output_file: str = "input.json"):
     config = get_configuration(definition_type)
     config_as_dict = json.dumps(asdict(config), indent=4)
 
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(config_as_dict)
-        print(
-            f"Empty definition configuration has been written to {output_file}"
-        )
-        logger.info(
-            f"Empty definition configuration has been written to {output_file}"
-        )
-        
+        print(f"Empty definition configuration has been written to {output_file}")
+        logger.info(f"Empty definition configuration has been written to {output_file}")
+
+
 def _get_config_from_file(config_file: str, definition_type: str) -> Configuration:
-    """Read input config file JSON and turn it into a Configuration object.
+    """
+    Read input config file JSON and turn it into a Configuration object.
 
     :param config_file: path to the file
     :param definition_type: VNF, CNF or NSD
@@ -113,30 +108,31 @@ def _generate_nfd(definition_type, config):
         )
 
     nfd_generator.generate_nfd()
-    
+
+
 def publish_definition(
     cmd,
     client: HybridNetworkManagementClient,
     definition_type,
     config_file,
     bicep_file: Optional[str] = None,
-    parameters_json_file: Optional[str] = None
+    parameters_json_file: Optional[str] = None,
 ):
-    """_summary_
+    """
+    _summary_
 
-    :param cmd: 
-    :param client: 
+    :param cmd:
+    :param client:
     :type client: HybridNetworkManagementClient
     :param definition_type: VNF or CNF
     :param config_file: Path to the config file for the NFDV
     :param bicep_file: Optional path to a bicep template to deploy, in case the user
                        wants to edit the built NFDV template. If omitted, the default
                        built NFDV template will be used
-    :param parameters_json_file: Optional path to a parameters file for the bicep file, 
-                      in case the user wants to edit the built NFDV template. If 
+    :param parameters_json_file: Optional path to a parameters file for the bicep file,
+                      in case the user wants to edit the built NFDV template. If
                       omitted, parameters from config will be turned into parameters
                       for the bicep file
-
     """
     print("Publishing definition.")
     api_clients = ApiClientsAndCaches(
@@ -145,8 +141,9 @@ def publish_definition(
     config = _get_config_from_file(config_file, definition_type)
     if definition_type == VNF:
         deployer = DeployerViaArm(api_clients, config=config)
-        deployer.deploy_vnfd_from_bicep(bicep_path=bicep_file,
-                                        parameters_json_file=parameters_json_file)
+        deployer.deploy_vnfd_from_bicep(
+            bicep_path=bicep_file, parameters_json_file=parameters_json_file
+        )
 
 
 def delete_published_definition(

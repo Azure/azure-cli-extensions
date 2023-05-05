@@ -6,7 +6,8 @@
 
 from argcomplete.completers import FilesCompleter
 from azure.cli.core import AzCommandsLoader
-#from knack.arguments import CLIArgumentType
+
+# from knack.arguments import CLIArgumentType
 from ._constants import VNF, CNF, NSD
 
 
@@ -56,7 +57,6 @@ def load_arguments(self: AzCommandsLoader, _):
             completer=FilesCompleter(allowednames="*.json"),
             help="Optional path to a parameters file for the bicep definition file. Use to override publish of the built definition and config with alternative parameters.",
         )
-        
 
     with self.argument_context("aosm generate-config") as c:
         c.argument(
