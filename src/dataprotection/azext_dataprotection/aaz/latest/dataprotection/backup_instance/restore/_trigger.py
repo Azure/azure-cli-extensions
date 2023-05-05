@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance restore trigger",
-    is_preview=True,
+    is_experimental=True,
 )
 class Trigger(AAZCommand):
     """Triggers restore for a BackupInstance

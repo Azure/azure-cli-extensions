@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance create",
-    is_preview=True,
+    is_experimental=True,
 )
 class Create(AAZCommand):
     """Configure backup for a resource in a backup vault

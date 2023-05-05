@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance validate-for-backup",
-    is_preview=True,
+    is_experimental=True,
 )
 class ValidateForBackup(AAZCommand):
     """Validate whether adhoc backup will be successful or not

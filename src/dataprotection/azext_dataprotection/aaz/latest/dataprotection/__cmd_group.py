@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "dataprotection",
-    is_preview=True,
+    is_experimental=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage backup instance with dataprotection

@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "dataprotection backup-instance restore",
-    is_preview=True,
+    is_experimental=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Restore backed up instances from recovery points in a backup vault

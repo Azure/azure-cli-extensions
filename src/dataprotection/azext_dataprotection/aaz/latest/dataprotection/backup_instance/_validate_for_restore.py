@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance validate-for-restore",
-    is_preview=True,
+    is_experimental=True,
 )
 class ValidateForRestore(AAZCommand):
     """Validates if Restore can be triggered for a DataSource

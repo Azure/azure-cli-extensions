@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance show",
-    is_preview=True,
+    is_experimental=True,
 )
 class Show(AAZCommand):
     """Get a backup instance with name in a backup vault

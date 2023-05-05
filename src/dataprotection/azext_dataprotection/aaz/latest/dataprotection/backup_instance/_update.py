@@ -13,7 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance update",
-    is_preview=True,
+    is_experimental=True,
 )
 class Update(AAZCommand):
     """Update a backup instance in a backup vault
