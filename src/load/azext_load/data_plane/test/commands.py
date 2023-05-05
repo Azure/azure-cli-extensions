@@ -12,6 +12,7 @@ def load_test_commands(self, _):
     ) as g:
         g.custom_command("create", "create_test")
         g.custom_command("update", "update_test")
+        g.custom_command("delete", "delete_test")
         g.custom_command("list", "list_tests")
         g.custom_show_command("show", "get_test")
         g.custom_command("download-files", "download_test_files")
