@@ -59,7 +59,7 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
             cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
         except Exception as e:
             raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
-        _handle_relay_connection_delay(cmd, consts.RELAY_CONNECTION_DELAY_IN_SECONDS)
+        _handle_relay_connection_delay(cmd)
     else:
         if not _check_service_configuration(cmd, resource_uri, port):
             _create_service_configuration(cmd, resource_uri, port)
@@ -67,7 +67,7 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
                 cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
             except Exception as e:
                 raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
-            _handle_relay_connection_delay(cmd, consts.RELAY_CONNECTION_DELAY_IN_SECONDS)
+            _handle_relay_connection_delay(cmd)
     return cred
 
 def _check_service_configuration(cmd, resource_uri, port):
@@ -275,13 +275,13 @@ def format_relay_info_string(relay_info):
     base64_result_string = enc.decode("ascii")
     return base64_result_string
 
-def _handle_relay_connection_delay(cmd, delay_in_seconds):
+def _handle_relay_connection_delay(cmd):
     # relay has retry delay after relay connection is lost
     # must sleep for at least as long as the delay
     # otherwise the ssh connection will fail
     progress_bar = cmd.cli_ctx.get_progress_controller(True)
-    for x in range(0, delay_in_seconds+1):
-        interval = float(1/delay_in_seconds)
+    for x in range(0, consts.RELAY_CONNECTION_DELAY_IN_SECONDS + 1):
+        interval = float(1/consts.RELAY_CONNECTION_DELAY_IN_SECONDS)
         progress_bar.add(message='Service configuration setup:',
                             value=interval * x, total_val=1.0)
         time.sleep(1)
