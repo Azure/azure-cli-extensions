@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import Optional, Any
+from dataclasses import dataclass, field
+from typing import Optional, Any, List
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError
 from ._constants import VNF, CNF, NSD
 
@@ -63,11 +63,25 @@ class VNFConfiguration(Configuration):
         if isinstance(self.vhd, dict):
             self.vhd = ArtifactConfig(**self.vhd)
 
+@dataclass
+class HelmPackageConfig:
+    name: str = "Name of the Helm package"
+    path_to_chart: str = "Path to the Helm chart"
+    depends_on: List[str] = field(default_factory=lambda: ["Names of the Helm packages this package depends on"])
 
-    @property
-    def sa_manifest_name(self) -> str:
-        """Return the Storage account manifest name from the NFD name."""
-        return f"{self.nf_name}-sa-manifest-{self.version.replace('.', '-')}"
+@dataclass
+class CNFConfiguration(Configuration):
+    helm_packages: List[Any] = field(default_factory=lambda: [HelmPackageConfig()])
+
+    def __post_init__(self):
+        """
+        Cope with deserializing subclasses from dicts to HelmPackageConfig.
+        
+        Used when creating CNFConfiguration object from a loaded json config file.
+        """
+        for package in self.helm_packages:
+            if isinstance(package, dict):
+                package = HelmPackageConfig(**dict(package))
 
 
 def get_configuration(definition_type, config_as_dict=None) -> Configuration:
@@ -78,7 +92,7 @@ def get_configuration(definition_type, config_as_dict=None) -> Configuration:
     if definition_type == VNF:
         config = VNFConfiguration(**config_as_dict)
     elif definition_type == CNF:
-        config = Configuration(**config_as_dict)
+        config = CNFConfiguration(**config_as_dict)
     elif definition_type == NSD:
         config = Configuration(**config_as_dict)
     else:

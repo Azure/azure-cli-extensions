@@ -132,7 +132,7 @@ class DeployerViaArm:
             "nfDefinitionGroup": {"value": self.config.nfdg_name},
             "nfDefinitionVersion": {"value": self.config.version},
             "vhdName": {"value": self.config.vhd.artifact_name},
-            "vhdVersion": {"value": self.config.vhd.version.},
+            "vhdVersion": {"value": self.config.vhd.version},
             "armTemplateName": {"value": self.config.arm_template.artifact_name},
             "armTemplateVersion": {"value": self.config.arm_template.version},
         }
