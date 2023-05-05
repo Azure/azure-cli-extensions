@@ -7,7 +7,7 @@
 from azure.cli.core import AzCommandsLoader
 
 # from azure.cli.core.commands import CliCommandType
-from azext_aosm._client_factory import cf_aosm
+from azext_aosm.client_factory import cf_aosm
 
 
 def load_command_table(self: AzCommandsLoader, _):

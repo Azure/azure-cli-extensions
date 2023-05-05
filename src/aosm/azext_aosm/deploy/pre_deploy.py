@@ -10,9 +10,7 @@ from azure.core import exceptions as azure_exceptions
 from azure.cli.core.azclierror import AzCLIError
 from azure.mgmt.resource.resources.v2022_09_01.models import ResourceGroup
 
-from azure.mgmt.resource import ResourceManagementClient
-from azext_aosm.util.management_clients import ApiClientsAndCaches
-from azext_aosm.vendored_sdks import HybridNetworkManagementClient
+from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.vendored_sdks.models import (
     ArtifactStore,
     ArtifactStoreType,
@@ -20,8 +18,8 @@ from azext_aosm.vendored_sdks.models import (
     NetworkServiceDesignGroup,
     Publisher,
 )
-from azext_aosm._configuration import Configuration, VNFConfiguration
-from azext_aosm._constants import PROV_STATE_SUCCEEDED
+from azext_aosm.configuration import Configuration, VNFConfiguration
+from azext_aosm.util.constants import PROV_STATE_SUCCEEDED
 
 logger = get_logger(__name__)
 
@@ -31,7 +29,7 @@ class PreDeployerViaSDK:
 
     def __init__(
         self,
-        apiClientsAndCaches: ApiClientsAndCaches,
+        api_clients: ApiClients,
         config: Configuration,
     ) -> None:
         """
@@ -43,7 +41,7 @@ class PreDeployerViaSDK:
         :type resource_client: ResourceManagementClient
         """
 
-        self.api_clients = apiClientsAndCaches
+        self.api_clients = api_clients
         self.config = config
 
     def ensure_resource_group_exists(self, resource_group_name: str) -> None:

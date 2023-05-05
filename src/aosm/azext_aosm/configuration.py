@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Dict, Optional, Any
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError
 from pathlib import Path
-from azext_aosm._constants import VNF_DEFINITION_OUTPUT_BICEP_PREFIX, VNF, CNF, NSD
+from azext_aosm.util.constants import VNF_DEFINITION_OUTPUT_BICEP_PREFIX, VNF, CNF, NSD
 
 DESCRIPTION_MAP: Dict[str, str] = {
     "publisher_name": "Name of the Publisher resource you want you definition published to",

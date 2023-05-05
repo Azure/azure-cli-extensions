@@ -8,7 +8,7 @@ from argcomplete.completers import FilesCompleter
 from azure.cli.core import AzCommandsLoader
 
 # from knack.arguments import CLIArgumentType
-from ._constants import VNF, CNF, NSD
+from .util.constants import VNF, CNF, NSD
 
 
 def load_arguments(self: AzCommandsLoader, _):

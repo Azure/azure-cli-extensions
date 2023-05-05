@@ -12,11 +12,11 @@ from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 from azext_aosm.generate_nfd.vnf_bicep_nfd_generator import VnfBicepNfdGenerator
 from azext_aosm.deploy.deploy_with_arm import DeployerViaArm
-from azext_aosm._constants import VNF, CNF, NSD
-from azext_aosm.util.management_clients import ApiClientsAndCaches
+from azext_aosm.util.constants import VNF, CNF, NSD
+from azext_aosm.util.management_clients import ApiClients
 from .vendored_sdks import HybridNetworkManagementClient
-from ._client_factory import cf_resources
-from ._configuration import get_configuration, validate_configuration, Configuration
+from .client_factory import cf_resources
+from configuration import get_configuration, validate_configuration, Configuration
 
 
 logger = get_logger(__name__)
@@ -43,7 +43,7 @@ def build_definition(
     :param publish: _description_, defaults to False
     :type publish: bool, optional
     """
-    api_clients = ApiClientsAndCaches(
+    api_clients = ApiClients(
         aosm_client=client, resource_client=cf_resources(cmd.cli_ctx)
     )
 
@@ -135,7 +135,7 @@ def publish_definition(
                       for the bicep file
     """
     print("Publishing definition.")
-    api_clients = ApiClientsAndCaches(
+    api_clients = ApiClients(
         aosm_client=client, resource_client=cf_resources(cmd.cli_ctx)
     )
     config = _get_config_from_file(config_file, definition_type)
@@ -164,7 +164,7 @@ def delete_published_definition(
     """
     config = _get_config_from_file(config_file, definition_type)
 
-    api_clients = ApiClientsAndCaches(
+    api_clients = ApiClients(
         aosm_client=client, resource_client=cf_resources(cmd.cli_ctx)
     )
     from azext_aosm.delete.delete import ResourceDeleter

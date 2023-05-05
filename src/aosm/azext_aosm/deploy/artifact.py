@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Union
 
 from azure.storage.blob import BlobClient
-from azext_aosm._configuration import ArtifactConfig, DESCRIPTION_MAP
+from azext_aosm.configuration import ArtifactConfig, DESCRIPTION_MAP
 from oras.client import OrasClient
 
 logger = get_logger(__name__)

@@ -10,10 +10,10 @@ import requests
 from azext_aosm.deploy.artifact import Artifact
 from azure.storage.blob import BlobClient
 from oras.client import OrasClient
-from azext_aosm._configuration import Configuration, VNFConfiguration
+from azext_aosm.configuration import Configuration, VNFConfiguration
 from azext_aosm.vendored_sdks.models import ArtifactAccessCredential, ArtifactManifest
 
-from azext_aosm.util.management_clients import ApiClientsAndCaches
+from azext_aosm.util.management_clients import ApiClients
 
 logger = get_logger(__name__)
 
@@ -24,7 +24,7 @@ class ArtifactManifestOperator:
     def __init__(
         self,
         config: Configuration,
-        api_clients: ApiClientsAndCaches,
+        api_clients: ApiClients,
         store_name: str,
         manifest_name: str,
     ) -> None:

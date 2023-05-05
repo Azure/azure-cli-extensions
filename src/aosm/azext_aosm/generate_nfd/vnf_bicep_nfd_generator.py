@@ -14,11 +14,8 @@ from typing import Any, Dict, Optional
 
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 
-from azext_aosm._configuration import VNFConfiguration
-from azext_aosm.publisher_resources.publisher_resources import (
-    PublisherResourceGenerator,
-)
-from azext_aosm._constants import (
+from azext_aosm.configuration import VNFConfiguration
+from azext_aosm.util.constants import (
     VNF_DEFINITION_BICEP_SOURCE_TEMPLATE,
     VNF_MANIFEST_BICEP_SOURCE_TEMPLATE,
 )
@@ -29,15 +26,17 @@ logger = get_logger(__name__)
 
 class VnfBicepNfdGenerator(NFDGenerator):
     """
-    _summary_
-
-    :param NFDGenerator: _description_
-    :type NFDGenerator: _type_
+    VNF NFD Generator. 
+    
+    This takes a source ARM template and a config file, and outputs:
+    - A bicep file for the NFDV
+    - Parameters files that are used by the NFDV bicep file, these are the 
+      deployParameters and the mapping profiles of those deploy parameters
+    - A bicep file for the Artifact manifests
     """
 
     def __init__(self, config: VNFConfiguration):
         super(NFDGenerator, self).__init__(
-            # config=config,
         )
         self.config = config
         self.bicep_template_name = VNF_DEFINITION_BICEP_SOURCE_TEMPLATE
@@ -53,7 +52,6 @@ class VnfBicepNfdGenerator(NFDGenerator):
 
     def generate_nfd(self) -> None:
         """Generate a VNF NFD which comprises an group, an Artifact Manifest and a NFDV."""
-        # assert isinstance(self.config, VNFConfiguration)
         if self.bicep_path:
             print(f"Using the existing NFD bicep template {self.bicep_path}.")
             print(
@@ -65,13 +63,8 @@ class VnfBicepNfdGenerator(NFDGenerator):
     def write(self) -> None:
         """
         Create a bicep template for an NFD from the ARM template for the VNF.
-
-        :param arm_template_path: The path to the ARM template for deploying the VNF.
-        :param nf_name: The name of the NF.
-
-        :return: Path to the bicep file.
         """
-        logger.info("Generate NFD bicep template for %s", self.arm_template_path)
+        logger.info(f"Generate NFD bicep template for {self.arm_template_path}")
         print(f"Generate NFD bicep template for {self.arm_template_path}")
 
         self._create_nfd_folder()
@@ -159,7 +152,7 @@ class VnfBicepNfdGenerator(NFDGenerator):
         with open(deployment_parameters_path, "w") as _file:
             _file.write(json.dumps(deploy_parameters_full, indent=4))
 
-        logger.debug("%s created", deployment_parameters_path)
+        logger.debug(f"{deployment_parameters_path} created")
 
     def write_template_parameters(self, folder_path: str) -> None:
         """
@@ -177,7 +170,7 @@ class VnfBicepNfdGenerator(NFDGenerator):
         with open(template_parameters_path, "w") as _file:
             _file.write(json.dumps(template_parameters, indent=4))
 
-        logger.debug("%s created", template_parameters_path)
+        logger.debug(f"{template_parameters_path} created")
 
     def write_vhd_parameters(self, folder_path: str) -> None:
         """
@@ -204,15 +197,11 @@ class VnfBicepNfdGenerator(NFDGenerator):
         with open(vhd_parameters_path, "w", encoding="utf-8") as _file:
             _file.write(json.dumps(vhd_parameters, indent=4))
 
-        logger.debug("%s created", vhd_parameters_path)
+        logger.debug(f"{vhd_parameters_path} created")
 
     def copy_bicep(self) -> None:
         """
-        Copy the bicep template into place.
-
-        :param folder_name: The name of the folder to copy the bicep template to.
-
-        :returns: Path to the bicep file
+        Copy the bicep templates into the build output folder.
         """
         code_dir = os.path.dirname(__file__)
 

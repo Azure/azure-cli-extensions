@@ -11,8 +11,8 @@ from azure.mgmt.resource.resources.v2021_04_01.models import (
     Provider,
 )
 
-from azext_aosm.util.management_clients import ApiClientsAndCaches
-from azext_aosm._configuration import Configuration, VNFConfiguration
+from azext_aosm.util.management_clients import ApiClients
+from azext_aosm.configuration import Configuration, VNFConfiguration
 from azext_aosm.util.utils import input_ack
 
 
@@ -22,7 +22,7 @@ logger = get_logger(__name__)
 class ResourceDeleter:
     def __init__(
         self,
-        apiClientsAndCaches: ApiClientsAndCaches,
+        ApiClients: ApiClients,
         config: Configuration,
     ) -> None:
         """
@@ -34,7 +34,7 @@ class ResourceDeleter:
         :type resource_client: ResourceManagementClient
         """
         logger.debug("Create ARM/Bicep Deployer")
-        self.api_clients = apiClientsAndCaches
+        self.api_clients = ApiClients
         self.config = config
 
     def delete_vnf(self, all: bool = False):
