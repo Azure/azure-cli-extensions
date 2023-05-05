@@ -255,16 +255,17 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
     # However, boilerplate code has been added here as Powershell raises an error here. We might want to flag to the user
     # that their provided friendly name will not be used.
     if not manifest["friendlyNameRequired"] and not friendly_name is None:
-        pass
+        logger.warning("--friendly-name is not a required parameter for the given DatasourceType, and the user input will be overridden")
 
-    if not manifest["isProxyResource"]:
-        friendly_name = datasource_info["resource_name"]
-    elif manifest["friendlyNameRequired"]:
+    # If friendly name is required, we use the user input/validate accordingly if it wasn't provided. If it isn't, we override user input if any
+    if manifest["friendlyNameRequired"]:
         if friendly_name is None:
             raise CLIError("friendly-name parameter is required for the given DatasourceType")
         friendly_name = datasourceset_info["resource_name"] + "/" + friendly_name
-    else:
+    elif manifest["isProxyResource"]:
         friendly_name = datasourceset_info["resource_name"] + "/" + datasource_info["resource_name"]
+    else:
+        friendly_name = datasource_info["resource_name"]
 
     guid = uuid.uuid1()
     backup_instance_name = ""
@@ -283,8 +284,7 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
         policy_info["policy_parameters"]["backup_datasource_parameters_list"].append(backup_configuration)
     else:
         if not backup_configuration is None:
-            # Raise a warning for user?
-            pass
+            logger.warning("--backup-configuration is not required for the given DatasourceType, and will not be used")
 
     return {
         "backup_instance_name": backup_instance_name,

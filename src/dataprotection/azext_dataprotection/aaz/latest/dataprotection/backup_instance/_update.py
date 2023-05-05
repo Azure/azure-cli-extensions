@@ -105,6 +105,7 @@ class Update(AAZCommand):
         _args_schema.object_type = AAZStrArg(
             options=["--object-type"],
             arg_group="Properties",
+            help="Type of Backup or Restore Instance for request body.",
         )
         _args_schema.policy_info = AAZObjectArg(
             options=["--policy-info"],
