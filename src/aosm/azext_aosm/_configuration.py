@@ -1,36 +1,54 @@
 from dataclasses import dataclass
-from typing import Optional, Any
+from typing import Dict, Optional, Any
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError
-from ._constants import VNF, CNF, NSD
+from pathlib import Path
+from azext_aosm._constants import (
+    VNF_DEFINITION_OUTPUT_BICEP_PREFIX,
+    VNF,
+    CNF,
+    NSD
+)
+
+DESCRIPTION_MAP: Dict[str,str] = {
+    "publisher_name": "Name of the Publisher resource you want you definition published to",
+    "publisher_resource_group_name": "Resource group the Publisher resource is in or you want it to be in",
+    "nf_name": "Name of NF definition",
+    "version": "Version of the NF definition",
+    "acr_artifact_store_name":"Name of the ACR Artifact Store resource",
+    "location": "Azure location of the resources",
+    "blob_artifact_store_name": "Name of the storage account Artifact Store resource",
+    "artifact_name": "Name of the artifact",
+    "file_path": "Optional. File path of the artifact you wish to upload from your local disk. Delete if not required.",
+    "blob_sas_url": "Optional. SAS URL of the blob artifact you wish to copy to your Artifact Store. Delete if not required.",
+    "artifact_version": (
+        "Version of the artifact. For VHDs this must be in format A-B-C. "
+        "For ARM templates this must be in format A.B.C"
+    )
+}
 
 
 @dataclass
 class ArtifactConfig:
-    artifact_name: str = "Name of the artifact"
+    artifact_name: str = DESCRIPTION_MAP["artifact_name"]
+    # artifact.py checks for the presence of the default descriptions, change there if
+    # you change the descriptions.
     file_path: Optional[
         str
-    ] = "File path of the artifact you wish to upload from your local disk"
+    ] = DESCRIPTION_MAP["file_path"]
     blob_sas_url: Optional[
         str
-    ] = "SAS URL of the blob artifact you wish to copy to your Artifact Store"
-    version: str = (
-        "Version of the artifact. For VHDs this must be in format A-B-C. "
-        "For ARM templates this must be in format A.B.C"
-    )
+    ] = DESCRIPTION_MAP["blob_sas_url"]
+    version: str = DESCRIPTION_MAP["artifact_version"]
 
 
 @dataclass
 class Configuration:
-    publisher_name: str = (
-        "Name of the Publisher resource you want you definition published to"
-    )
-    publisher_resource_group_name: str = (
-        "Resource group the Publisher resource is in or you want it to be in"
-    )
-    nf_name: str = "Name of NF definition"
-    version: str = "Version of the NF definition"
-    acr_artifact_store_name: str = "Name of the ACR Artifact Store resource"
-    location: str = "Azure location of the resources"
+    publisher_name: str = DESCRIPTION_MAP["publisher_name"]
+    publisher_resource_group_name: str = DESCRIPTION_MAP["publisher_resource_group_name"]
+    nf_name: str = DESCRIPTION_MAP["nf_name"]
+    version: str = DESCRIPTION_MAP["version"]
+    acr_artifact_store_name: str = DESCRIPTION_MAP["acr_artifact_store_name"]
+    location: str = DESCRIPTION_MAP["location"]
 
     @property
     def nfdg_name(self) -> str:
@@ -45,9 +63,7 @@ class Configuration:
 
 @dataclass
 class VNFConfiguration(Configuration):
-    blob_artifact_store_name: str = (
-        "Name of the storage account Artifact Store resource"
-    )
+    blob_artifact_store_name: str = DESCRIPTION_MAP["blob_artifact_store_name"]
     arm_template: Any = ArtifactConfig()
     vhd: Any = ArtifactConfig()
     
@@ -68,9 +84,17 @@ class VNFConfiguration(Configuration):
     def sa_manifest_name(self) -> str:
         """Return the Storage account manifest name from the NFD name."""
         return f"{self.nf_name}-sa-manifest-{self.version.replace('.', '-')}"
+    
+    @property
+    def build_output_folder_name(self) -> str:
+        """Return the local folder for generating the bicep template to."""
+        arm_template_path = self.arm_template.file_path
+        return (
+            f"{VNF_DEFINITION_OUTPUT_BICEP_PREFIX}{Path(str(arm_template_path)).stem}"
+        )
 
 
-def get_configuration(definition_type, config_as_dict=None) -> Configuration:
+def get_configuration(definition_type: str, config_as_dict: Optional[Dict[Any,Any]]=None) -> Configuration:
     
     if config_as_dict is None:
         config_as_dict = {}
@@ -111,4 +135,12 @@ def validate_configuration(config: Configuration) -> None:
         ):
             raise ValidationError(
                 "Config validation error. ARM template artifact version should be in format A.B.C"
+            )
+
+        if not ((config.vhd.file_path or config.vhd.blob_sas_url) or (
+            config.vhd.file_path == DESCRIPTION_MAP["file_path"] and
+            config.vhd.blob_sas_url == DESCRIPTION_MAP["blob_sas_url"])
+        ):
+            raise ValidationError(
+                "Config validation error. VHD config must have either a local filepath or a blob SAS URL"
             )

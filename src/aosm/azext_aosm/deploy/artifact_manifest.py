@@ -49,7 +49,7 @@ class ArtifactManifestOperator:
 
     def _oras_client(self, acr_url: str) -> OrasClient:
         """
-        Returns an OrasClient object for uploading to the artifact str        Returns an OrasClient object for uploading to the artifact store ACR.oe ACR.
+        Returns an OrasClient object for uploading to the artifact store ACR.
 
         :param arc_url: URL of the ACR backing the artifact manifest
         """

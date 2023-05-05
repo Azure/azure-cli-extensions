@@ -21,6 +21,7 @@ def load_command_table(self: AzCommandsLoader, _):
         g.custom_command("build", "build_definition")
         g.custom_command("delete", "delete_published_definition")
         g.custom_command("show", "show_publisher")
+        g.custom_command("publish", "publish_definition")
 
     with self.command_group("aosm", is_preview=True):
         pass

@@ -8,22 +8,14 @@ param publisherName string
 param acrArtifactStoreName string
 @description('Name of an existing Storage Account-backed Artifact Store, deployed under the publisher.')
 param saArtifactStoreName string
-@description('Name of the manifest to deploy for the ACR-backed Artifact Store')
-param acrManifestName string
-@description('Name of the manifest to deploy for the Storage Account-backed Artifact Store')
-param saManifestName string
 @description('Name of Network Function. Used predominantly as a prefix for other variable names')
 param nfName string
 @description('Name of an existing Network Function Definition Group')
 param nfDefinitionGroup string
 @description('The version of the NFDV you want to deploy, in format A-B-C')
 param nfDefinitionVersion string
-@description('The name under which to store the VHD')
-param vhdName string
 @description('The version that you want to name the NFM VHD artifact, in format A-B-C. e.g. 6-13-0')
 param vhdVersion string
-@description('The name under which to store the ARM template')
-param armTemplateName string
 @description('The version that you want to name the NFM template artifact, in format A.B.C. e.g. 6.13.0. If testing for development, you can use any numbers you like.')
 param armTemplateVersion string
 
@@ -49,36 +41,6 @@ resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2022
 resource nfdg 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups@2022-09-01-preview' existing = {
   parent: publisher
   name: nfDefinitionGroup
-}
-
-resource saArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2022-09-01-preview' = {
-  parent: saArtifactStore
-  name: saManifestName
-  location: location
-  properties: {
-    artifacts: [
-      {
-        artifactName: '${vhdName}'
-        artifactType: 'VhdImageFile'
-        artifactVersion: vhdVersion
-      }
-    ]
-  }
-}
-
-resource acrArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/artifactManifests@2022-09-01-preview' = {
-  parent: acrArtifactStore
-  name: acrManifestName
-  location: location
-  properties: {
-    artifacts: [
-      {
-        artifactName: '${armTemplateName}'
-        artifactType: 'ArmTemplate'
-        artifactVersion: armTemplateVersion
-      }
-    ]
-  }
 }
 
 resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions@2022-09-01-preview' = {
