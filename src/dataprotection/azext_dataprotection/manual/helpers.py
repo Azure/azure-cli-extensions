@@ -255,16 +255,16 @@ def get_help_text_on_grant_permissions_templatized(datasource_type):
             )
 
     if 'secretStorePermissions' in manifest:
-        help_text += ("1. Backup vault's identity access on the Postgres server and the key vault\n"
-                      "2. 'Allow all Azure Services' under network connectivity in the Postgres server\n"
-                      "3. 'Allow Trusted Azure Services' under network connectivity in the Key vault")
+        help_text += ("  Backup vault's identity access on the Postgres server and the key vault\n"
+                      "  'Allow all Azure Services' under network connectivity in the Postgres server\n"
+                      "  'Allow Trusted Azure Services' under network connectivity in the Key vault")
 
     help_text += "Are you sure you want to continue?"
     return help_text
 
 
 def help_text_permission_line_generator(sourceMSI, role_object, datasource_type):
-    help_text = "\t"
+    help_text = "  "
     help_text += sourceMSI + "'s identity access as "
     help_text += role_object['roleDefinitionName']
     help_text += " over the " + get_help_word_from_permission_type(

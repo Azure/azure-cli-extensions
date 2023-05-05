@@ -354,7 +354,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
     manifest = helper.load_manifest(datasource_type)
 
     from knack.prompting import prompt_y_n
-    msg = helper.get_help_text_on_grant_permissions(datasource_type)
+    msg = helper.get_help_text_on_grant_permissions_templatized(datasource_type)
     if not yes and not prompt_y_n(msg):
         return None
 
