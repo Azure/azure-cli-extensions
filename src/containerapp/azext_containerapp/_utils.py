@@ -1731,7 +1731,8 @@ def is_docker_running():
         client = docker.from_env()
         # need any command that will show the docker daemon is not running
         client.containers.list()
-    except docker.errors.DockerException:
+    except docker.errors.DockerException as e:
+        logger.warning(f"Exception thrown when getting Docker client: {e}")
         out = False
     finally:
         if client:
