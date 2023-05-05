@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Vendor new SDK and bump API version to 2023-03-02-preview.
+* fix: don't use current kube_proxy_config on UPDATE
 
 0.5.137
 +++++++
