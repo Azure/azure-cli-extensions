@@ -28,6 +28,9 @@ azdev setup --cli /home/developer/code/azure-cli --repo .
 # Add the extension to your local CLI
 azdev extension add aosm
 ```
+### Generating the AOSM Python SDK
+TODO
+
 ### VSCode environment setup.
 
 Make sure your VSCode is running in the same python virtual environment

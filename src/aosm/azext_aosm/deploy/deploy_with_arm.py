@@ -53,14 +53,20 @@ class DeployerViaArm:
         self,
         bicep_path: Optional[str] = None,
         parameters_json_file: Optional[str] = None,
+        manifest_bicep_path: Optional[str] = None,
+        manifest_parameters_json_file: Optional[str] = None,
     ) -> None:
         """
         Deploy the bicep template defining the VNFD.
 
         Also ensure that all required predeploy resources are deployed.
 
-        :param bicep_template_path: The path to the bicep template of the
+        :param bicep_template_path: The path to the bicep template of the nfdv
         :type bicep_template_path: str
+        :parameters_json_file: path to an override file of set parameters for the nfdv
+        :param manifest_bicep_path: The path to the bicep template of the manifest
+        :manifest_parameters_json_file: path to an override file of set parameters for
+                                        the manifest
         """
         assert isinstance(self.config, VNFConfiguration)
 
@@ -93,10 +99,17 @@ class DeployerViaArm:
         if deploy_manifest_template:
             print(f"Deploy bicep template for Artifact manifests")
             logger.debug("Deploy manifest bicep")
-            manifest_bicep_path = os.path.join(
-                self.config.build_output_folder_name, VNF_MANIFEST_BICEP_SOURCE_TEMPLATE
-            )
-            manifest_params = self.construct_manifest_parameters()
+            if not manifest_bicep_path:
+                manifest_bicep_path = os.path.join(
+                    self.config.build_output_folder_name,
+                    VNF_MANIFEST_BICEP_SOURCE_TEMPLATE,
+                )
+            if not manifest_parameters_json_file:
+                manifest_params = self.construct_manifest_parameters()
+            else:
+                logger.info("Use provided manifest parameters")
+                with open(manifest_parameters_json_file, "r", encoding="utf-8") as f:
+                    manifest_params = json.loads(f.read())
             self.deploy_bicep_template(manifest_bicep_path, manifest_params)
         else:
             print(

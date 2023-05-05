@@ -44,8 +44,8 @@ def load_arguments(self: AzCommandsLoader, _):
             help="Also delete artifact stores, NFD Group and Publisher. Use with care.",
         )
         c.argument(
-            "bicep_file",
-            options_list=["--bicep-file", "-b"],
+            "definition_file",
+            options_list=["--definition-file", "-b"],
             type=file_type,
             completer=FilesCompleter(allowednames="*.json"),
             help="Optional path to a bicep file to publish. Use to override publish of the built definition with an alternative file.",
@@ -56,6 +56,20 @@ def load_arguments(self: AzCommandsLoader, _):
             type=file_type,
             completer=FilesCompleter(allowednames="*.json"),
             help="Optional path to a parameters file for the bicep definition file. Use to override publish of the built definition and config with alternative parameters.",
+        )
+        c.argument(
+            "manifest_file",
+            options_list=["--manifest-file", "-m"],
+            type=file_type,
+            completer=FilesCompleter(allowednames="*.json"),
+            help="Optional path to a bicep file to publish manifests. Use to override publish of the built definition with an alternative file.",
+        )
+        c.argument(
+            "manifest_parameters_json_file",
+            options_list=["--manifest-parameters-file", "-mp"],
+            type=file_type,
+            completer=FilesCompleter(allowednames="*.json"),
+            help="Optional path to a parameters file for the manifest definition file. Use to override publish of the built definition and config with alternative parameters.",
         )
 
     with self.argument_context("aosm generate-config") as c:
