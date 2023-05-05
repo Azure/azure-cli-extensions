@@ -16,7 +16,9 @@ class NFDGenerator:
         self,
     ) -> None:
         """
-        Superclass for NFD generators. The sub-classes do the actual work
+        Superclass for NFD generators.
+
+        The sub-classes do the actual work
         """
         pass
 
