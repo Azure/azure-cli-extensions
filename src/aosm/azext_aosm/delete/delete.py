@@ -152,7 +152,7 @@ class ResourceDeleter:
                 network_function_definition_group_name=self.config.nfdg_name,
             )
             poller.result()
-            print("Delete NFD Group")
+            print("Deleted NFD Group")
         except Exception:
             logger.error(f"Failed to delete NFDG.")
             raise
