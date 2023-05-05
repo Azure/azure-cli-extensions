@@ -480,7 +480,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                                                     scope=assignment_scope)
                 role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
 
-        if manifest['dataSourcePermissions']:
+        if 'dataSourcePermissions' in manifest:
             for role_object in manifest['dataSourcePermissions']:
                 datasource_principal_id = None
 
@@ -560,7 +560,7 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                                                     scope=assignment_scope)
                 role_assignments_arr.append(helper.get_permission_object_from_role_object(assignment))
 
-        if manifest['dataSourcePermissions']:
+        if 'dataSourcePermissions' in manifest:
             for role_object in manifest['dataSourcePermissions']:
                 resource_id = helper.get_resource_id_from_restore_request_object(restore_request_object, role_object['type'])
 
