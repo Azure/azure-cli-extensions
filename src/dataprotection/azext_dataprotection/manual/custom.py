@@ -548,7 +548,6 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                     logger.warning("snapshot-resource-group-id parameter is required to assign permissions over snapshot resource group, skipping")
                     continue
                 else:
-                    # TODO need to also validate the snapshot rg id input is valid
                     resource_id = snapshot_resource_group_id
 
             resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
@@ -571,7 +570,6 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                         logger.warning("snapshot-resource-group-id parameter is required to assign permissions over snapshot resource group, skipping")
                         continue
                     else:
-                        # TODO need to also validate the snapshot rg id input is valid
                         resource_id = snapshot_resource_group_id
 
                 resource_id = helper.truncate_id_using_scope(resource_id, "Resource")
@@ -1028,11 +1026,17 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
                        (for original location restore), not both.")
     
     if target_resource_id is not None:
-        # TODO Verify that the alternate location restore is allowed for datasource type
+        # Verify that the alternate location restore is allowed for datasource type
+        if not 'AlternateLocation' in manifest['allowedRestoreTargetTypes']:
+            raise CLIError('Alternate Location Restore is not allowed for the given DataStoreType \
+                           Please try again with --backup-instance-id parameter.')
         datasource_id = target_resource_id
 
     if backup_instance_id is not None:
-        # TODO Verify that the original location restore is allowed for datasource type
+        # Verify that the original location restore is allowed for datasource type
+        if not 'OriginalLocation' in manifest['allowedRestoreTargetTypes']:
+            raise CLIError('Original Location Restore is not allowed for the given DataStoreType \
+                           Please try again with --target-resource-id parameter.')
         vault_resource_group = helper.get_vault_rg_from_bi_id(backup_instance_id)
         vault_name = helper.get_vault_name_from_bi_id((backup_instance_id))
         backup_instance_name = helper.get_bi_name_from_bi_id(backup_instance_id)
@@ -1272,11 +1276,17 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
                        (for original location restore), not both.")
     
     if target_resource_id is not None:
-        # TODO Verify that the alternate location restore is allowed for datasource type
+        # Verify that the alternate location restore is allowed for datasource type
+        if not 'AlternateLocation' in manifest['allowedRestoreTargetTypes']:
+            raise CLIError('Alternate Location Restore is not allowed for the given DataStoreType \
+                           Please try again with --backup-instance-id parameter.')
         datasource_id = target_resource_id
 
     if backup_instance_id is not None:
-        # TODO Verify that the original location restore is allowed for datasource type
+        # Verify that the original location restore is allowed for datasource type
+        if not 'OriginalLocation' in manifest['allowedRestoreTargetTypes']:
+            raise CLIError('Original Location Restore is not allowed for the given DataStoreType \
+                           Please try again with --target-resource-id parameter.')
         vault_resource_group = helper.get_vault_rg_from_bi_id(backup_instance_id)
         vault_name = helper.get_vault_name_from_bi_id((backup_instance_id))
         backup_instance_name = helper.get_bi_name_from_bi_id(backup_instance_id)
