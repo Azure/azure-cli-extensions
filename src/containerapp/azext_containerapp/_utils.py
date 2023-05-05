@@ -1722,6 +1722,12 @@ def format_location(location=None):
 
 def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
     tagProp = parseOryxMarinerTag(repoTagSplit)
+    if tagProp is None:
+        result = ImagePatchableCheck
+        result["targetContainerAppName"] = bom["targetContainerAppName"]
+        result["oldRunImage"] = repoTagSplit
+        result["reason"] = "Image not based on dotnet Mariner."
+        return result
     repoTagSplit = repoTagSplit.split("-")
     if repoTagSplit[1] == "dotnet":
         matchingVersionInfo = oryxBuilderRunImgTags[repoTagSplit[2]][str(tagProp["version"].major) + "." + str(tagProp["version"].minor)][tagProp["support"]][tagProp["marinerVersion"]]
