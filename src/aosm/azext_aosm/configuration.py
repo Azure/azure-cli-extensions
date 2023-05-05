@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, Optional, Any
-from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError
 from pathlib import Path
+from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError
 from azext_aosm.util.constants import VNF_DEFINITION_OUTPUT_BICEP_PREFIX, VNF, CNF, NSD
 
 DESCRIPTION_MAP: Dict[str, str] = {
@@ -13,8 +13,14 @@ DESCRIPTION_MAP: Dict[str, str] = {
     "location": "Azure location of the resources",
     "blob_artifact_store_name": "Name of the storage account Artifact Store resource",
     "artifact_name": "Name of the artifact",
-    "file_path": "Optional. File path of the artifact you wish to upload from your local disk. Delete if not required.",
-    "blob_sas_url": "Optional. SAS URL of the blob artifact you wish to copy to your Artifact Store. Delete if not required.",
+    "file_path": (
+        "Optional. File path of the artifact you wish to upload from your "
+        "local disk. Delete if not required."
+    ),
+    "blob_sas_url": (
+        "Optional. SAS URL of the blob artifact you wish to copy to your "
+        "Artifact Store. Delete if not required."
+    ),
     "artifact_version": (
         "Version of the artifact. For VHDs this must be in format A-B-C. "
         "For ARM templates this must be in format A.B.C"

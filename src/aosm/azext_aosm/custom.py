@@ -5,18 +5,18 @@
 
 import json
 from dataclasses import asdict
-from knack.log import get_logger
 from typing import Optional
+from knack.log import get_logger
 
 from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 from azext_aosm.generate_nfd.vnf_bicep_nfd_generator import VnfBicepNfdGenerator
 from azext_aosm.deploy.deploy_with_arm import DeployerViaArm
-from azext_aosm.util.constants import VNF, CNF, NSD
+from azext_aosm.util.constants import VNF, CNF #, NSD
 from azext_aosm.util.management_clients import ApiClients
-from .vendored_sdks import HybridNetworkManagementClient
-from .client_factory import cf_resources
-from configuration import get_configuration, validate_configuration, Configuration
+from azext_aosm.vendored_sdks import HybridNetworkManagementClient
+from azext_aosm._client_factory import cf_resources
+from azext_aosm.configuration import get_configuration, validate_configuration, Configuration
 
 
 logger = get_logger(__name__)
