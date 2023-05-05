@@ -69,7 +69,7 @@ def build_definition(
             print("TODO - cannot publish CNF or NSD yet.")
 
 
-def generate_definition_config(_, definition_type, output_file="input.json"):
+def generate_definition_config(definition_type, output_file="input.json"):
     config = get_configuration(definition_type)
     config_as_dict = json.dumps(asdict(config), indent=4)
 

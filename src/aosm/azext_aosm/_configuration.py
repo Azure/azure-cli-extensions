@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import Optional, Any, List
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError
 from ._constants import VNF, CNF, NSD
 
@@ -48,23 +48,51 @@ class VNFConfiguration(Configuration):
     blob_artifact_store_name: str = (
         "Name of the storage account Artifact Store resource"
     )
-    arm_template: ArtifactConfig = ArtifactConfig()
-    vhd: ArtifactConfig = ArtifactConfig()
+    arm_template: Any = ArtifactConfig()
+    vhd: Any = ArtifactConfig()
+    
+    def __post_init__(self):
+        """
+        Cope with deserializing subclasses from dicts to ArtifactConfig.
+        
+        Used when creating VNFConfiguration object from a loaded json config file.
+        """
+        if isinstance(self.arm_template, dict):
+            self.arm_template = ArtifactConfig(**self.arm_template)
+            
+        if isinstance(self.vhd, dict):
+            self.vhd = ArtifactConfig(**self.vhd)
 
-    @property
-    def sa_manifest_name(self) -> str:
-        """Return the Storage account manifest name from the NFD name."""
-        return f"{self.nf_name}-sa-manifest-{self.version.replace('.', '-')}"
+@dataclass
+class HelmPackageConfig:
+    name: str = "Name of the Helm package"
+    path_to_chart: str = "Path to the Helm chart"
+    depends_on: List[str] = field(default_factory=lambda: ["Names of the Helm packages this package depends on"])
+
+@dataclass
+class CNFConfiguration(Configuration):
+    helm_packages: List[Any] = field(default_factory=lambda: [HelmPackageConfig()])
+
+    def __post_init__(self):
+        """
+        Cope with deserializing subclasses from dicts to HelmPackageConfig.
+        
+        Used when creating CNFConfiguration object from a loaded json config file.
+        """
+        for package in self.helm_packages:
+            if isinstance(package, dict):
+                package = HelmPackageConfig(**dict(package))
 
 
 def get_configuration(definition_type, config_as_dict=None) -> Configuration:
+    
     if config_as_dict is None:
         config_as_dict = {}
-    # TODO - fix up the fact that ArtifactConfig remains as a Dict.
+
     if definition_type == VNF:
         config = VNFConfiguration(**config_as_dict)
     elif definition_type == CNF:
-        config = Configuration(**config_as_dict)
+        config = CNFConfiguration(**config_as_dict)
     elif definition_type == NSD:
         config = Configuration(**config_as_dict)
     else:
@@ -86,14 +114,14 @@ def validate_configuration(config: Configuration) -> None:
     # had good error messages I'd say let the service do the validation. But it would
     # certainly be quicker to catch here.
     if isinstance(config, VNFConfiguration):
-        if "." in config.vhd["version"] or "-" not in config.vhd["version"]:
+        if "." in config.vhd.version or "-" not in config.vhd.version:
             # Not sure about raising this particular one.
             raise ValidationError(
                 "Config validation error. VHD artifact version should be in format A-B-C"
             )
         if (
-            "." not in config.arm_template["version"]
-            or "-" in config.arm_template["version"]
+            "." not in config.arm_template.version
+            or "-" in config.arm_template.version
         ):
             raise ValidationError(
                 "Config validation error. ARM template artifact version should be in format A.B.C"

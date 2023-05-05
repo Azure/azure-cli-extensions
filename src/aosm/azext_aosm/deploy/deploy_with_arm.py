@@ -61,7 +61,7 @@ class DeployerViaArm:
         assert isinstance(self.config, VNFConfiguration)
 
         # TODO - duplicated from vnf_bicep_nfd_generator and won't work if file exists
-        arm_template_path = self.config.arm_template["file_path"]
+        arm_template_path = self.config.arm_template.file_path
         folder_name = (
             f"{VNF_DEFINITION_OUTPUT_BICEP_PREFIX}{Path(str(arm_template_path)).stem}"
         )
@@ -131,10 +131,10 @@ class DeployerViaArm:
             "nfName": {"value": self.config.nf_name},
             "nfDefinitionGroup": {"value": self.config.nfdg_name},
             "nfDefinitionVersion": {"value": self.config.version},
-            "vhdName": {"value": self.config.vhd["artifact_name"]},
-            "vhdVersion": {"value": self.config.vhd["version"]},
-            "armTemplateName": {"value": self.config.arm_template["artifact_name"]},
-            "armTemplateVersion": {"value": self.config.arm_template["version"]},
+            "vhdName": {"value": self.config.vhd.artifact_name},
+            "vhdVersion": {"value": self.config.vhd.version},
+            "armTemplateName": {"value": self.config.arm_template.artifact_name},
+            "armTemplateVersion": {"value": self.config.arm_template.version},
         }
 
     def deploy_bicep_template(
