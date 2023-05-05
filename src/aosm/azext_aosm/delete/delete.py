@@ -12,7 +12,7 @@ from azure.mgmt.resource.resources.v2021_04_01.models import (
 )
 
 from azext_aosm.util.management_clients import ApiClients
-from azext_aosm.configuration import Configuration, VNFConfiguration
+from azext_aosm._configuration import Configuration, VNFConfiguration
 from azext_aosm.util.utils import input_ack
 
 

@@ -18,7 +18,7 @@ from azext_aosm.vendored_sdks.models import (
     NetworkServiceDesignGroup,
     Publisher,
 )
-from azext_aosm.configuration import Configuration, VNFConfiguration
+from azext_aosm._configuration import Configuration, VNFConfiguration
 from azext_aosm.util.constants import PROV_STATE_SUCCEEDED
 
 logger = get_logger(__name__)

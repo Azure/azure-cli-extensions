@@ -16,7 +16,7 @@ from azext_aosm.util.constants import VNF, CNF #, NSD
 from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
 from azext_aosm._client_factory import cf_resources
-from azext_aosm.configuration import get_configuration, validate_configuration, Configuration
+from azext_aosm._configuration import get_configuration, validate_configuration, Configuration
 
 
 logger = get_logger(__name__)

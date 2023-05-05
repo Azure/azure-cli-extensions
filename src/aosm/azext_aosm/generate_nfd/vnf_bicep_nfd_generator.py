@@ -14,7 +14,7 @@ from typing import Any, Dict, Optional
 
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 
-from azext_aosm.configuration import VNFConfiguration
+from azext_aosm._configuration import VNFConfiguration
 from azext_aosm.util.constants import (
     VNF_DEFINITION_BICEP_SOURCE_TEMPLATE,
     VNF_MANIFEST_BICEP_SOURCE_TEMPLATE,

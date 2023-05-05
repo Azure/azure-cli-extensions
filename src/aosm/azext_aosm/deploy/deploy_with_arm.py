@@ -16,7 +16,7 @@ from azure.mgmt.resource.resources.v2021_04_01.models import DeploymentExtended
 from pathlib import Path
 
 from azext_aosm.deploy.pre_deploy import PreDeployerViaSDK
-from azext_aosm.configuration import Configuration, VNFConfiguration
+from azext_aosm._configuration import Configuration, VNFConfiguration
 from azext_aosm.util.constants import (
     VNF_DEFINITION_BICEP_SOURCE_TEMPLATE,
     VNF_MANIFEST_BICEP_SOURCE_TEMPLATE,
