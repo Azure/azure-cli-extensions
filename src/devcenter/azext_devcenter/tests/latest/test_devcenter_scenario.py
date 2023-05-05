@@ -20,6 +20,7 @@ from .helper import (
     create_virtual_network_with_subnet,
     create_sig_role_assignments,
     create_project,
+    create_project_with_dev_box_limit,
     create_sig,
     create_network_connection,
     create_attached_network_dev_box_definition,
@@ -31,6 +32,7 @@ from .helper import (
     create_environment_dependencies,
     create_pool_dataplane_dependencies,
     create_dev_box_dependencies,
+    get_endpoint
 )
 
 
@@ -1450,7 +1452,8 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             ],
         )
 
-        create_project(self)
+        create_project_with_dev_box_limit(self)
+        get_endpoint(self)
         add_dev_box_user_role_to_project(self)
 
         self.cmd(
@@ -1458,6 +1461,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             checks=[
                 self.check("length(@)", 1),
                 self.check("[0].name", "{projectName}"),
+                self.check("[0].maxDevBoxesPerUser", "{devBoxLimit}")
             ],
         )
 
@@ -1467,8 +1471,31 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--dev-center "{devcenterName}" ',
             checks=[
                 self.check("name", "{projectName}"),
+                self.check("maxDevBoxesPerUser", "{devBoxLimit}")
             ],
         )
+
+        #test using endpoint
+
+        self.cmd(
+            "az devcenter dev project list " '--endpoint "{endpoint}" ',
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].name", "{projectName}"),
+                self.check("[0].maxDevBoxesPerUser", "{devBoxLimit}")
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev project show "
+            '--name "{projectName}" '
+            '--endpoint "{endpoint}" ',
+            checks=[
+                self.check("name", "{projectName}"),
+                self.check("maxDevBoxesPerUser", "{devBoxLimit}")
+            ],
+        )
+
 
     @ResourceGroupPreparer(
         name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
@@ -1483,6 +1510,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
 
         create_dev_center(self)
         create_project(self)
+        get_endpoint(self)
         add_dev_box_user_role_to_project(self)
         create_pool_dataplane_dependencies(self)
 
@@ -1511,8 +1539,10 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                 self.check("hibernateSupport", "Enabled"),
                 self.check(
                     "imageReference.name",
-                    "microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365",
+                    "MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
                 ),
+                self.check("stopOnDisconnect.gracePeriodMinutes", "60"),
+                self.check("stopOnDisconnect.status", "Enabled"),
             ],
         )
 
@@ -1520,6 +1550,54 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             "az devcenter dev schedule show "
             '--pool "{poolName}" '
             '--dev-center "{devcenterName}" '
+            '--project "{projectName}" ',
+            checks=[
+                self.check("name", "default"),
+                self.check("frequency", "Daily"),
+                self.check("time", "{time}"),
+                self.check("timeZone", "{timeZone}"),
+                self.check("type", "StopDevBox"),
+            ],
+        )
+
+        #test using endpoint
+
+        self.cmd(
+            "az devcenter dev pool list "
+            '--endpoint "{endpoint}" '
+            '--project "{projectName}" ',
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].name", "{poolName}"),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev pool show "
+            '--name "{poolName}" '
+            '--endpoint "{endpoint}" '
+            '--project "{projectName}" ',
+            checks=[
+                self.check("name", "{poolName}"),
+                self.check("storageProfile.osDisk.diskSizeGb", "1024"),
+                self.check("hardwareProfile.skuName", "{skuName}"),
+                self.check("localAdministrator", "Enabled"),
+                self.check("osType", "Windows"),
+                self.check("location", "{location}"),
+                self.check("hibernateSupport", "Enabled"),
+                self.check(
+                    "imageReference.name",
+                    "MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
+                ),
+                self.check("stopOnDisconnect.gracePeriodMinutes", "60"),
+                self.check("stopOnDisconnect.status", "Enabled"),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev schedule show "
+            '--pool "{poolName}" '
+            '--endpoint "{endpoint}" '
             '--project "{projectName}" ',
             checks=[
                 self.check("name", "default"),

@@ -89,7 +89,7 @@ def create_sig(self):
         'sigId': sig['id']
     })
 
-    create_virtual_network_with_subnet(self);
+    create_virtual_network_with_subnet(self)
 
     # Create compute virtual machine
     self.cmd('az vm create -n "{computeVmName}" '
@@ -150,6 +150,27 @@ def create_project(self):
              '--dev-center-id "{devCenterId}" '
              '--resource-group "{rg}"')
 
+def create_project_with_dev_box_limit(self):
+    self.kwargs.update({
+        'projectName': self.create_random_name(prefix='cli', length=24),
+        'devBoxLimit': 3
+    })
+
+    self.cmd('az devcenter admin project create '
+             '--location "{location}" '
+             '--name "{projectName}" '
+             '--dev-center-id "{devCenterId}" '
+             '--resource-group "{rg}" '
+             '--max-dev-boxes-per-user "{devBoxLimit}" ')
+
+def get_endpoint(self):
+    project = self.cmd('az devcenter admin project show '
+                          '--name "{projectName}" '
+                          '--resource-group "{rg}"').get_output_in_json()
+
+    self.kwargs.update({
+        'endpoint': project['devCenterUri'],
+    })
 
 def create_network_connection(self):
     subnet = create_virtual_network_with_subnet(self)
@@ -174,7 +195,7 @@ def create_network_connection(self):
     })
 
 def create_network_connection_dp(self):
-    subnet = create_virtual_network_with_subnet_dp(self)
+    subnet = create_virtual_network_with_subnet(self)
 
     self.kwargs.update({
         'subnetId': subnet['id'],
@@ -194,17 +215,6 @@ def create_network_connection_dp(self):
     self.kwargs.update({
         'networkConnectionId': network_connection['id'],
     })
-
-def create_virtual_network_with_subnet_dp(self):
-    self.kwargs.update({
-        'vNetName': self.create_random_name(prefix='cli', length=24),
-        'subnetName': self.create_random_name(prefix='cli', length=24)
-    })
-
-    self.cmd(
-        'az network vnet create -n "{vNetName}" --location "{location}" -g "{rg}"')
-
-    return self.cmd('az network vnet subnet create -n "{subnetName}" --vnet-name "{vNetName}" -g "{rg}" --address-prefixes "10.0.0.0/21"').get_output_in_json()
 
 
 def create_attached_network_dev_box_definition(self):
@@ -335,6 +345,7 @@ def create_pool(self):
                  '-c "{attachedNetworkName}" '
                  '--project-name "{projectName}" '
                  '--resource-group "{rg}" '
+                 '--stop-on-disconnect grace-period-minutes="60" status="Enabled" '
                  )
 
     self.cmd('az devcenter admin schedule create '
