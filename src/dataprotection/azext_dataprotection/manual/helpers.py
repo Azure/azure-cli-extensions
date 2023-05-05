@@ -65,6 +65,7 @@ def get_datasourceset_info(datasource_type, resource_id, resource_location):
     resource_uri = ""
     resource_id_return = "/".join(resource_id.split("/")[:-2])
 
+    # For AKS, Datasource set info should match datasource info
     if datasource_type == "AzureKubernetesService":
         resource_name = resource_id.split("/")[-1]
         resource_type = manifest["resourceType"]
@@ -230,11 +231,69 @@ def get_help_text_on_grant_permissions(datasource_type):
         help_text += "Backup vault's identity access on the disk and snapshot resource group"
 
     if datasource_type == "AzureKubernetesService":
-        help_text += ("1. Backup vault's identity access on the AKS Cluster and snapshot resource group\n"
-                      "2. AKS cluster's identity access on the snapshot resource group")
+        help_text += ("1. Backup vault's identity access as Reader on the AKS Cluster and snapshot resource group\n"
+                      "2. AKS cluster's identity access as Contributor on the snapshot resource group")
 
     help_text += "\nAre you sure you want to continue?"
     return help_text
+
+
+def get_help_text_on_grant_permissions_templatized(datasource_type):
+    help_text = "This command will attempt to automatically grant the following access:\n"
+    manifest = load_manifest(datasource_type)
+
+    if 'backupVaultPermissions' in manifest:
+        for role_object in manifest['backupVaultPermissions']:
+            help_text += help_text_permission_line_generator('Backup Vault', role_object, datasource_type)
+
+    if 'dataSourcePermissions' in manifest:
+        for role_object in manifest['dataSourcePermissions']:
+            help_text += help_text_permission_line_generator(
+                get_help_word_from_permission_type('DataSource', datasource_type),
+                role_object,
+                datasource_type
+            )
+
+    if 'secretStorePermissions' in manifest:
+        help_text += ("1. Backup vault's identity access on the Postgres server and the key vault\n"
+                      "2. 'Allow all Azure Services' under network connectivity in the Postgres server\n"
+                      "3. 'Allow Trusted Azure Services' under network connectivity in the Key vault")
+
+    help_text += "Are you sure you want to continue?"
+    return help_text
+
+
+def help_text_permission_line_generator(sourceMSI, role_object, datasource_type):
+    help_text = "\t"
+    help_text += sourceMSI + "'s identity access as "
+    help_text += role_object['roleDefinitionName']
+    help_text += " over the " + get_help_word_from_permission_type(
+        role_object['type'],
+        datasource_type
+    )
+    help_text += "\n"
+    return help_text
+
+
+def get_help_word_from_permission_type(permission_type, datasource_type):
+    if permission_type == 'SnapshotRG':
+        return 'snapshot resource group'
+    
+    if permission_type == 'DataSource':
+        helptext_dsname = ''
+
+        if datasource_type == 'AzureKubernetesService':
+            helptext_dsname = "AKS Cluster"
+        if datasource_type == 'AzureBlob':
+            helptext_dsname = 'storage account'
+        if datasource_type == 'AzureDisk':
+            helptext_dsname = 'disk'
+        if datasource_type == 'AzureDatabaseForPostgreSQL':
+            helptext_dsname = "Postgres server"
+        
+        return helptext_dsname
+
+    return permission_type
 
 
 def get_permission_object_from_role_object(role_object):
