@@ -6,9 +6,9 @@ This is an extension for AKS features. After installing and enabling aks-preview
 How to use
 ==========
 
-Install this extension using the following CLI command `az extension add --name aks-preview`. You may need to execute some invalid aks command (e.g., `az aks fake`) to refresh the command index to enable aks-preview.
+Install this extension using the following CLI command ``az extension add --name aks-preview``. You may need to execute some invalid aks command (e.g., ``az aks fake``) to refresh the command index to enable aks-preview.
 
-Remove this extension using the following CLI command `az extension remove --name aks-preview`.
+Remove this extension using the following CLI command ``az extension remove --name aks-preview``.
 
 Dependency between aks-preview and azure-cli/acs (azure-cli-core)
 =================================================================
