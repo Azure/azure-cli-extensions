@@ -167,6 +167,28 @@ helps['monitor data-collection rule create'] = """
     parameters:
       - name: --rule-file
         short-summary: "The json file for rule parameters."
+        long-summary: |
+            Usage:   --rule-file sample.json
+            rule json file should be rule parameters organized as json format, like below:
+            {
+                "properties": {
+                    "destinations": {
+                        "azureMonitorMetrics": {
+                            "name": "azureMonitorMetrics-default"
+                        }
+                    },
+                    "dataFlows": [
+                        {
+                            "streams": [
+                                "Microsoft-InsightsMetrics"
+                            ],
+                            "destinations": [
+                                "azureMonitorMetrics-default"
+                            ]
+                        }
+                    ]
+                }
+            }
     examples:
       - name: Create data collection rule
         text: |-
