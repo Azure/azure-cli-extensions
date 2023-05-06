@@ -79,7 +79,7 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart,
                      set_ip_restrictions, certificate_location_matches, certificate_matches, generate_randomized_managed_cert_name,
                      check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                     get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported)
+                     get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported, AppType)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -383,7 +383,7 @@ def create_containerapp(cmd,
                         registry_identity=None,
                         workload_profile_name=None):
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
-    validate_container_app_name(name)
+    validate_container_app_name(name, AppType.ContainerApp.name)
     validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
     validate_revision_suffix(revision_suffix)
 
@@ -1337,9 +1337,15 @@ def create_containerappsjob(cmd,
                             registry_identity=None,
                             workload_profile_name=None):
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
-    validate_container_app_name(name)
+    validate_container_app_name(name, AppType.ContainerAppJob.name)
     validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
-
+    
+    if replica_timeout is None:
+        raise RequiredArgumentMissingError('Usage error: --replica_timeout is required')
+    
+    if replica_retry_limit is None:
+        raise RequiredArgumentMissingError('Usage error: --replica_retry_limit is required')
+    
     if registry_identity and not is_registry_msi_system(registry_identity):
         logger.info("Creating an acrpull role assignment for the registry identity")
         create_acrpull_role_assignment(cmd, registry_server, registry_identity, skip_error=True)
@@ -1381,14 +1387,14 @@ def create_containerappsjob(cmd,
     manualTriggerConfig_def = None
     if trigger_type is not None and trigger_type.lower() == "manual":
         manualTriggerConfig_def = ManualTriggerModel
-        manualTriggerConfig_def["replicaCompletionCount"] = replica_completion_count
-        manualTriggerConfig_def["parallelism"] = parallelism
+        manualTriggerConfig_def["replicaCompletionCount"] = 0 if replica_completion_count is None else replica_completion_count
+        manualTriggerConfig_def["parallelism"] = 0 if parallelism is None else parallelism
 
     scheduleTriggerConfig_def = None
     if trigger_type is not None and trigger_type.lower() == "schedule":
         scheduleTriggerConfig_def = ScheduleTriggerModel
-        scheduleTriggerConfig_def["replicaCompletionCount"] = replica_completion_count
-        scheduleTriggerConfig_def["parallelism"] = parallelism
+        scheduleTriggerConfig_def["replicaCompletionCount"] = 0 if replica_completion_count is None else replica_completion_count
+        scheduleTriggerConfig_def["parallelism"] = 0 if parallelism is None else parallelism
         scheduleTriggerConfig_def["cronExpression"] = cron_expression
 
     eventTriggerConfig_def = None
@@ -2229,7 +2235,7 @@ def stop_containerappsjob(cmd, resource_group_name, name, job_execution_name=Non
         handle_raw_exception(e)
 
 
-def executionhistory_containerappsjob(cmd, resource_group_name, name):
+def listexecution_containerappsjob(cmd, resource_group_name, name):
     try:
         executionHistory = ContainerAppsJobClient.execution_history(cmd=cmd, resource_group_name=resource_group_name, name=name)
         return executionHistory['value']
@@ -3810,7 +3816,7 @@ def containerapp_up(cmd,
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     _validate_up_args(cmd, source, image, repo, registry_server)
-    validate_container_app_name(name)
+    validate_container_app_name(name, AppType.ContainerApp.name)
     check_env_name_on_rg(cmd, managed_env, resource_group_name, location)
 
     image = _reformat_image(source, repo, image)

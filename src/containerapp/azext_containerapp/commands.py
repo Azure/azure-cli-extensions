@@ -78,7 +78,9 @@ def load_command_table(self, _):
         g.custom_command('update', 'update_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('start', 'start_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('stop', 'stop_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
-        g.custom_command('executionhistory', 'executionhistory_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp job execution') as g:
+        g.custom_show_command('list', 'listexecution_containerappsjob')
 
     with self.command_group('containerapp env dapr-component') as g:
         g.custom_command('list', 'list_dapr_components')

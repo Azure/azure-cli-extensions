@@ -7,6 +7,7 @@
 import time
 import json
 import platform
+from enum import Enum
 
 from urllib.parse import urlparse
 from datetime import datetime
@@ -32,6 +33,11 @@ from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERV
                          LOGS_STRING, PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS)
 from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel, ManagedCertificateEnvelop as ManagedCertificateEnvelopModel)
 
+
+class AppType(Enum):
+    ContainerApp = 1
+    ContainerAppJob = 2
+
 logger = get_logger(__name__)
 
 
@@ -40,11 +46,15 @@ def register_provider_if_needed(cmd, rp_name):
         _register_resource_provider(cmd, rp_name)
 
 
-def validate_container_app_name(name):
-    if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
-        raise ValidationError(f"Container App names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
-                              f"Please shorten {name}")
-
+def validate_container_app_name(name, appType):
+    if (appType == AppType.ContainerAppJob.name):
+        if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
+            raise ValidationError(f"Container App Job names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
+                                f"Please shorten {name}")
+    if (appType == AppType.ContainerApp.name):
+        if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
+            raise ValidationError(f"Container App Job names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
+                                f"Please shorten {name}")
 
 def retry_until_success(operation, err_txt, retry_limit, *args, **kwargs):
     while True:

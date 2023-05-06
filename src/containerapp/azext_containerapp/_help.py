@@ -596,7 +596,7 @@ helps['containerapp job update'] = """
     examples:
     - name: Update a job's replica timeout.
       text: |
-          az containerapp job update -n MyContainerappsjob -g MyResourceGroup \\
+          az containerapp job update -n MyContainerAppJob -g MyResourceGroup \\
               --replica-timeout 10
 """
 
@@ -605,7 +605,7 @@ helps['containerapp job delete'] = """
     short-summary: Delete a Container Apps Job.
     examples:
     - name: Delete a job.
-      text: az containerapp job delete -n MyContainerappjob -g MyResourceGroup
+      text: az containerapp job delete -n MyContainerAppJob -g MyResourceGroup
 """
 
 helps['containerapp job show'] = """
@@ -614,7 +614,7 @@ helps['containerapp job show'] = """
     examples:
     - name: Show the details of a job.
       text: |
-          az containerapp job show -n MyContainerappjob -g MyResourceGroup
+          az containerapp job show -n MyContainerAppJob -g MyResourceGroup
 """
 
 helps['containerapp job list'] = """
@@ -634,9 +634,9 @@ helps['containerapp job start'] = """
     short-summary: Start a Container Apps Job execution.
     examples:
     - name: Start a job execution.
-      text: az containerapp job start -n MyContainerappjob -g MyResourceGroup
+      text: az containerapp job start -n MyContainerAppJob -g MyResourceGroup
     - name: Start a job with different image and configurations.
-      text: az containerapp job start -n MyContainerappjob -g MyResourceGroup --image MyImageName --cpu 0.5 --memory 1.0Gi
+      text: az containerapp job start -n MyContainerAppJob -g MyResourceGroup --image MyImageName --cpu 0.5 --memory 1.0Gi
 """
 
 helps['containerapp job stop'] = """
@@ -644,17 +644,23 @@ helps['containerapp job stop'] = """
     short-summary: Stops a Container Apps Job execution.
     examples:
     - name: Stop a job execution.
-      text: az containerapp job stop -n MyContainerappjob -g MyResourceGroup
+      text: az containerapp job stop -n MyContainerAppJob -g MyResourceGroup
     - name: Stop a job execution giving a specific job execution name.
-      text: az containerapp job stop -n MyContainerappjob -g MyResourceGroup --job-execution-name MyContainerappjob-66v9xh0
+      text: az containerapp job stop -n MyContainerAppJob -g MyResourceGroup --job-execution-name MyContainerAppJob-66v9xh0
 """
 
-helps['containerapp job executionhistory'] = """
+# Container App Job execution commands
+helps['containerapp job execution'] = """
+    type: group
+    short-summary: Commands to view executions of a Container App Job.
+"""
+
+helps['containerapp job execution list'] = """
     type: command
-    short-summary: Shows a Container Apps Job execution history.
+    short-summary: Get list of all executions of a Container App Job.
     examples:
-    - name: Show a job's execution history.
-      text: az containerapp job executionhistory -n MyContainerappjob -g MyResourceGroup
+    - name: List of all executions of a Container App Job.
+      text: az containerapp job execution list -n MyContainerAppJob -g MyResourceGroup
 """
 
 # Certificates Commands
