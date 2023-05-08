@@ -1,4 +1,4 @@
-from azext_load.data_plane.utils import validators
+from azext_load.data_plane.utils import validators, completers
 from azure.cli.core.commands.parameters import (
     get_resource_name_completion_list,
     quotes,
@@ -21,6 +21,7 @@ load_test_resource = CLIArgumentType(
 
 test_id = CLIArgumentType(
     validator=validators.validate_test_id,
+    completer=completers.get_test_id_completion_list(),
     options_list=["--test-id", "-t"],
     type=str,
     help="Test ID of the load test",
