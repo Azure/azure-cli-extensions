@@ -10,6 +10,7 @@ from azext_load.vendored_sdks.loadtesting_mgmt import LoadTestMgmtClient
 from azure.cli.core.azclierror import ValidationError
 from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from azext_load.data_plane.utils import validators
 
 logger = get_logger(__name__)
 
@@ -91,6 +92,39 @@ def get_admin_data_plane_client(cmd, load_test_resource, resource_group_name=Non
         credential=credential,
     )
 
+def parse_cert(certificate):
+    comps = {}
+    if len(certificate) != 1:
+        raise ValueError("Only one certificate is supported")
+    certificate = certificate[0]
+    comps = [certificate.get("name"), certificate.get("value") ]
+    if not validators._validate_akv_url(comps[1], "certificates"):
+        raise ValueError(f"Invalid AKV Certificate URL: {comps[1]}")
+    certificate = {
+        "name": comps[0],
+        "type": "AKV_CERT_URI",
+        "value": comps[1],
+    }
+    return certificate
+
+def parse_secrets(secrets):
+    secrets_list = {}
+    for secret in secrets:
+        if not validators._validate_akv_url(secret.get("value"), "secrets"):
+            url = secret.get("value")
+            raise ValueError(f"Invalid AKV Certificate URL: {url}")
+        secrets_list.update(
+            {secret.get("name"): {"type": "AKV_SECRET_URI", "value": secret.get("value")}}
+        )
+    return secrets_list
+
+def parse_env(env):
+    env_list = {}
+    for item in env:
+        env_list.update(
+            {item.get("name"): item.get("value")}
+        )
+    return env_list
 
 def create_or_update_body(
     test_id,
@@ -98,7 +132,7 @@ def create_or_update_body(
     load_test_config_file=None,
     display_name=None,
     test_description=None,
-    config_file=None,
+    configuration_file=None,
     engine_instances=None,
     env=None,
     secrets=None,
@@ -111,7 +145,7 @@ def create_or_update_body(
     if load_test_config_file is not None:
         if (
             test_description
-            or config_file
+            or configuration_file
             or env
             or secrets
             or certificate
@@ -151,6 +185,12 @@ def create_or_update_body(
                 new_body["loadTestConfiguration"]["engineInstances"] = data.get(
                     "engineInstances", 1
                 )
+                if data.get("certificate"):
+                    new_body["certificate"] = parse_cert(data.get("certificate"))
+                if data.get("secrets"):
+                    new_body["secrets"] = parse_secrets(data.get("secrets"))
+                if data.get("env"):
+                    new_body["environmentVariables"] = parse_env(data.get("env"))
                 # quick test and split csv not supported currently in CLI
                 new_body["loadTestConfiguration"]["quickStartTest"] = False
                 if data.get("quickStartTest"):
@@ -203,7 +243,7 @@ def create_or_update_body(
         if env is not None:
             new_body["environmentVariables"] = body.get("environmentVariables", {})
             new_body["environmentVariables"].update(env)
-
+            
         if secrets is not None:
             new_body["secrets"] = body.get("secrets", {})
             new_body["secrets"].update(secrets)

@@ -20,7 +20,7 @@ def create_test(
     load_test_config_file=None,
     test_description=None,
     test_plan=None,
-    config_file=None,
+    configuration_file=None,
     engine_instances=None,
     env=None,
     secrets=None,
@@ -37,7 +37,7 @@ def create_test(
         load_test_config_file=load_test_config_file,
         display_name=display_name,
         test_description=test_description,
-        config_file=config_file,
+        configuration_file=configuration_file,
         engine_instances=engine_instances,
         env=env,
         secrets=secrets,
@@ -47,7 +47,6 @@ def create_test(
     )
     list_of_tests = client.list_tests()
     for test in list_of_tests:
-        logger.debug(test)
         if test_id == test.get("testId"):
             logger.debug("Test with given test ID : %s already exists.", test_id)
             raise ValidationError(
@@ -92,7 +91,7 @@ def update_test(
     load_test_config_file=None,
     test_description=None,
     test_plan=None,
-    config_file=None,
+    configuration_file=None,
     engine_instances=None,
     env=None,
     secrets=None,
@@ -110,7 +109,7 @@ def update_test(
         load_test_config_file=load_test_config_file,
         display_name=display_name,
         test_description=test_description,
-        config_file=config_file,
+        configuration_file=configuration_file,
         engine_instances=engine_instances,
         env=env,
         secrets=secrets,
