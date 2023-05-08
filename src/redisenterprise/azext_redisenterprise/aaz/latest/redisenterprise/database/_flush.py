@@ -67,6 +67,7 @@ class Flush(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.ids = AAZListArg(
             options=["--ids"],
+            singular_options=["--linked-database", "--linked-databases"],
             arg_group="Parameters",
             help="The resource identifiers of all the other database resources in the georeplication group to be flushed",
         )
