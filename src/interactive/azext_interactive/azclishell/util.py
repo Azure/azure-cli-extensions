@@ -86,6 +86,7 @@ def get_yes_or_no_option(option_msg):
         option = input("This option can only be Yes or No, please input again: ")
     return option in yes_options
 
+
 # same with scenario guide
 def input_int(default_value=0):
     """Read an int from `stdin`. Retry if input is not a number"""
@@ -97,6 +98,7 @@ def input_int(default_value=0):
         if ret == '' or ret is None:
             return default_value
     return int(ret)
+
 
 # same with scenario guide
 def select_option(option_msg, min_option, max_option, default_option):

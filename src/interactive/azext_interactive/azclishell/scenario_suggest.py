@@ -26,7 +26,6 @@ class ScenarioAutoSuggest(AutoSuggest):
                                          '-s': ['-s', '--subscription'], '--subscription': ['-s', '--subscription'],
                                          '-l': ['-l', '--location'], '--location': ['-l', '--location']}
 
-
     def update(self, sample: str):
         """Change command sample that would be suggested to the user"""
         # The sample should not start with 'az '
@@ -43,7 +42,6 @@ class ScenarioAutoSuggest(AutoSuggest):
             elif cur_param:
                 self.param_sample_value_map[cur_param] += ' ' + part
                 self.param_sample_value_map[cur_param] = self.param_sample_value_map[cur_param].strip()
-
 
     def update_customized_cached_param_map(self, command_text: str):
         """Update the value of a parameter in the customized parameter value map"""
@@ -66,7 +64,8 @@ class ScenarioAutoSuggest(AutoSuggest):
                     special_global_param_list = None
             elif cached_sample_value:
                 self.customized_cached_param_map[cached_sample_value] += ' ' + part
-                self.customized_cached_param_map[cached_sample_value] = self.customized_cached_param_map[cached_sample_value].strip()
+                self.customized_cached_param_map[cached_sample_value] = self.customized_cached_param_map[
+                    cached_sample_value].strip()
             # Because '--g' and '--resource-group' are the same parameter, we need to both support in the customized map
             elif special_global_param_list:
                 for param in special_global_param_list:
@@ -116,7 +115,8 @@ class ScenarioAutoSuggest(AutoSuggest):
                 if (not last_part.startswith('-')) or self.param_sample_value_map[last_part] == '':
                     for param in unused_param:
                         # the param is a special global parameter, such as '--location' and not given a customized value
-                        if param in self.special_global_param_map.keys() and self.param_sample_value_map[param].startswith('<'):
+                        if param in self.special_global_param_map.keys() and self.param_sample_value_map[
+                            param].startswith('<'):
                             cached_param = param
                         else:
                             # cached_param is either the sample values in scenarios, such as <RESOURCEGROUPNAME> or some special global params, such as '--location'

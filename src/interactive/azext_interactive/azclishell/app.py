@@ -623,10 +623,6 @@ class AzInteractiveShell(object):
         if not keywords:
             print_styled_text([(Style.WARNING, 'Please input search keywords')])
             return
-        # Max time wait for the search thread to finish
-        prompt_timeout_limit = 10
-        already_prompted = False
-        start_time = time.time()
         self.recommender.cur_thread = SearchThread(self.recommender.cli_ctx, keywords,
                                                    self.recommender.recommendation_path,
                                                    self.recommender.executing_command,

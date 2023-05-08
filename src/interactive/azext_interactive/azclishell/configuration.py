@@ -45,8 +45,7 @@ def help_text(values):
     """ reformats the help text """
     result = ""
     for key in values:
-        result += key + ' '.join('' for x in range(GESTURE_LENGTH - len(key))) + \
-                  ': ' + values[key] + '\n'
+        result += key + ' '.join('' for x in range(GESTURE_LENGTH - len(key))) + ': ' + values[key] + '\n'
     return result
 
 
