@@ -32,6 +32,7 @@ from azure.cli.core.azclierror import (
 
 logger = get_logger(__name__)
 
+
 class DatabaseFlush(_DatabaseFlush):
 
     @classmethod
@@ -39,6 +40,7 @@ class DatabaseFlush(_DatabaseFlush):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
         return args_schema
+
 
 class DatabaseForceUnlink(_DatabaseForceUnlink):
 
@@ -48,6 +50,7 @@ class DatabaseForceUnlink(_DatabaseForceUnlink):
         args_schema.database_name._registered = False
         return args_schema
 
+
 class DatabaseCreate(_DatabaseCreate):
 
     @classmethod
@@ -55,6 +58,7 @@ class DatabaseCreate(_DatabaseCreate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
         return args_schema
+
 
 class DatabaseDelete(_DatabaseDelete):
 
@@ -64,6 +68,7 @@ class DatabaseDelete(_DatabaseDelete):
         args_schema.database_name._registered = False
         return args_schema
 
+
 class DatabaseExport(_DatabaseExport):
 
     @classmethod
@@ -71,6 +76,7 @@ class DatabaseExport(_DatabaseExport):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
         return args_schema
+
 
 class DatabaseImport(_DatabaseImport):
 
@@ -80,6 +86,7 @@ class DatabaseImport(_DatabaseImport):
         args_schema.database_name._registered = False
         return args_schema
 
+
 class DatabaseRegenerateKey(_DatabaseRegenerateKey):
 
     @classmethod
@@ -87,6 +94,7 @@ class DatabaseRegenerateKey(_DatabaseRegenerateKey):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
         return args_schema
+
 
 class DatabaseListKey(_DatabaseListKey):
 
@@ -96,6 +104,7 @@ class DatabaseListKey(_DatabaseListKey):
         args_schema.database_name._registered = False
         return args_schema
 
+
 class DatabaseShow(_DatabaseShow):
 
     @classmethod
@@ -103,6 +112,7 @@ class DatabaseShow(_DatabaseShow):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
         return args_schema
+
 
 class DatabaseUpdate(_DatabaseUpdate):
 
@@ -112,6 +122,7 @@ class DatabaseUpdate(_DatabaseUpdate):
         args_schema.database_name._registered = False
         return args_schema
 
+
 class DatabaseWait(_DatabaseWait):
 
     @classmethod
@@ -119,6 +130,7 @@ class DatabaseWait(_DatabaseWait):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
         return args_schema
+
 
 class DatabaseList(_DatabaseList):
 
@@ -227,7 +239,7 @@ def redisenterprise_create(cmd,
         recommendation = ('Try to use --no-database without specifying database parameters, '
                           'or else try removing --no-database')
         raise MutuallyExclusiveArgumentError(error_msg, recommendation)
-    
+
     from .aaz.latest.redisenterprise import Create as CacheCreate
     from azure.cli.core.commands import LongRunningOperation
     if (no_database and all(x is None for x in [client_protocol,
@@ -290,4 +302,3 @@ def redisenterprise_create(cmd,
             "database_name":'default',
             "no_wait": no_wait
         })
-

@@ -13,6 +13,6 @@
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group("redisenterprise") as g:
-        g.custom_command('create', 'redisenterprise_create', supports_no_wait=True)
-        g.custom_command('list', 'redisenterprise_list')
-        g.custom_show_command('show', 'redisenterprise_show')
+        g.custom_command('create', 'redisenterprise_create', supports_no_wait=True, help='Create an existing (overwrite/recreate, with potential downtime) cache cluster')
+        g.custom_command('list', 'redisenterprise_list', help='List all RedisEnterprise clusters in the specified subscription')
+        g.custom_show_command('show', 'redisenterprise_show', help='Get information about a RedisEnterprise cluster')

@@ -17,6 +17,9 @@ from azure.cli.core.commands.parameters import (
     resource_group_name_type,
     get_location_type
 )
+import argparse
+from collections import defaultdict
+from knack.util import CLIError
 
 def load_arguments(self, _):
 
@@ -49,16 +52,28 @@ def load_arguments(self, _):
                    'will be deployed.')
         c.argument('minimum_tls_version', arg_type=get_enum_type(['1.0', '1.1', '1.2']), help='The minimum TLS version '
                    'for the cluster to support, e.g. \'1.2\'')
-        c.argument('key_encryption_key_url', options_list=['--key-encryption-key-url'], type=str, help='Key encryption key Url, versioned only. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78'
+        c.argument('key_encryption_key_url', options_list=['--key-encryption-key-url'], 
+                   type=str, help='Key encryption key Url, versioned only.' 
+                   'Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78'
                    ,arg_group='Encryption')
-        c.argument('identity_type', options_list=['--identity-type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned, UserAssigned']), help='Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).'
+        c.argument('identity_type', options_list=['--identity-type'], 
+                   arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned, UserAssigned']),
+                   help='Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).'
                    ,arg_group='Identity')
-        c.argument('key_encryption_identity_type', options_list=['--key-encryption-identity-type'], arg_type=get_enum_type(['systemAssignedIdentity', 'userAssignedIdentity']), help='Only userAssignedIdentity is supported in this API version; other types may be supported in the future.'
+        c.argument('key_encryption_identity_type', options_list=['--key-encryption-identity-type'], 
+                   arg_type=get_enum_type(['systemAssignedIdentity', 'userAssignedIdentity']), 
+                   help='Only userAssignedIdentity is supported in this API version; other types may be supported in the future.'
                    ,arg_group='KeyEncryptionKeyIdentity')
-        c.argument('user_assigned_identity_resource_id', options_list=['--user-assigned-identity-resource-id'], type=str , help='User assigned identity to use for accessing key encryption key Url. Ex: /subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId.'
+        c.argument('user_assigned_identity_resource_id', options_list=['--user-assigned-identity-resource-id'], 
+                   type=str , help='User assigned identity to use for accessing key encryption key Url. '
+                   'Ex: /subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId.'
                    ,arg_group='KeyEncryptionKeyIdentity')
-        c.argument('user_assigned_identities', options_list=['--user-assigned-identities'], type=validate_file_or_dict, help='The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests'
-                   ,arg_group='Identity')
+        c.argument('user_assigned_identities', options_list=['--user-assigned-identities'], 
+                   type=validate_file_or_dict, help='The set of user assigned identities associated with the resource. '
+                   'The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '
+                   '\'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. '
+                   'The dictionary values can be empty objects ({}) in requests'
+                   , arg_group='Identity')
 
         # Add database create arguments
         c.argument('client_protocol', arg_type=get_enum_type(['Encrypted', 'Plaintext']), help='Specifies whether redis clients '
@@ -72,7 +87,7 @@ def load_arguments(self, _):
                                                               'VolatileRandom', 'NoEviction']), help='Redis eviction policy - default '
                    'is VolatileLRU')
         c.argument('persistence', action=AddPersistence, nargs='+', help='Persistence settings')
-        c.argument('modules', action=AddModules, nargs='+',options_list=['--modules','--module'], help='Optional set of redis modules to enable in this '
+        c.argument('modules', action=AddModules, nargs='+', options_list=['--modules', '--module'], help='Optional set of redis modules to enable in this '
                    'database - modules can only be added at creation time.')
         # Add new argument
         c.argument('no_database', action='store_true', help='Advanced. Do not automatically create a '
@@ -95,16 +110,27 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('minimum_tls_version', arg_type=get_enum_type(['1.0', '1.1', '1.2']), help='The minimum TLS version '
                    'for the cluster to support, e.g. \'1.2\'')
-        c.argument('key_encryption_key_url', options_list=['--key-encryption-key-url'], type=str, help='Key encryption key Url, versioned only. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78'
-                   ,arg_group='Encryption')
-        c.argument('identity_type', options_list=['--identity-type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned, UserAssigned']), help='Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).'
-                   ,arg_group='Identity')
-        c.argument('key_encryption_identity_type', options_list=['--key-encryption-identity-type'], arg_type=get_enum_type(['systemAssignedIdentity', 'userAssignedIdentity']), help='Only userAssignedIdentity is supported in this API version; other types may be supported in the future.'
-                   ,arg_group='KeyEncryptionKeyIdentity')
-        c.argument('user_assigned_identity_resource_id', options_list=['--user-assigned-identity-resource-id'], type=str , help='User assigned identity to use for accessing key encryption key Url. Ex: /subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId.'
-                   ,arg_group='KeyEncryptionKeyIdentity')
-        c.argument('user_assigned_identities', options_list=['--user-assigned-identities'], type=validate_file_or_dict, help='The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests'
-                   ,arg_group='Identity')
+        c.argument('key_encryption_key_url', options_list=['--key-encryption-key-url'], type=str,
+                   help='Key encryption key Url, versioned only. '
+                   'Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78' 
+                   , arg_group='Encryption')
+        c.argument('identity_type', options_list=['--identity-type'],
+                   arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned, UserAssigned']),
+                   help='Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).' 
+                   , arg_group='Identity')
+        c.argument('key_encryption_identity_type', options_list=['--key-encryption-identity-type'],
+                   arg_type=get_enum_type(['systemAssignedIdentity', 'userAssignedIdentity']),
+                   help='Only userAssignedIdentity is supported in this API version; other types may be supported in the future.' 
+                   , arg_group='KeyEncryptionKeyIdentity')
+        c.argument('user_assigned_identity_resource_id', options_list=['--user-assigned-identity-resource-id'], type=str 
+                  , help='User assigned identity to use for accessing key encryption key Url. '
+                       'Ex: /subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId.' 
+                   , arg_group='KeyEncryptionKeyIdentity')
+        c.argument('user_assigned_identities', options_list=['--user-assigned-identities']
+                   , type=validate_file_or_dict, help='The set of user assigned identities associated with the resource. '
+                   'The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '
+                   '\'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. '
+                   'The dictionary values can be empty objects ({}) in requests', arg_group='Identity')
 
     with self.argument_context('redisenterprise delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -142,7 +168,7 @@ def load_arguments(self, _):
                                                               'VolatileRandom', 'NoEviction']), help='Redis eviction '
                    'policy - default is VolatileLRU')
         c.argument('persistence', action=AddPersistence, nargs='+', help='Persistence settings', is_preview=True)
-        c.argument('modules', action=AddModules, nargs='+',options_list=['--modules','--module'], help='Optional set of redis modules to enable in this '
+        c.argument('modules', action=AddModules, nargs='+', options_list=['--modules', '--module'], help='Optional set of redis modules to enable in this '
                    'database - modules can only be added at creation time.')
         c.argument('group_nickname', type=str, help='Name for the group of linked database resources', arg_group='Geo '
                    'Replication')
@@ -168,9 +194,8 @@ def load_arguments(self, _):
         # Update help
         c.argument('client_protocol', arg_type=get_enum_type(['Encrypted', 'Plaintext']), help='Specifies whether redis clients '
                    'can connect using TLS-encrypted or plaintext redis protocols.')
-        c.argument('eviction_policy',arg_type=get_enum_type(['AllKeysLFU', 'AllKeysLRU', 'AllKeysRandom',
-                                                              'VolatileLRU', 'VolatileLFU', 'VolatileTTL',
-                                                              'VolatileRandom', 'NoEviction']), help='Redis eviction policy.')
+        c.argument('eviction_policy',arg_type=get_enum_type(['AllKeysLFU', 'AllKeysLRU', 'AllKeysRandom', 
+                    'VolatileLRU', 'VolatileLFU', 'VolatileTTL', 'VolatileRandom', 'NoEviction']), help='Redis eviction policy.')
 
     with self.argument_context('redisenterprise database delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
@@ -211,11 +236,6 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
                    'RedisEnterprise cluster.', id_part='name')
-
-
-import argparse
-from collections import defaultdict
-from knack.util import CLIError
 
 
 class AddPersistence(argparse.Action):
