@@ -4308,10 +4308,10 @@ def patch_list(cmd, resource_group_name, managed_env, show_all=False):
         for ca in caList:
             containers = ca["properties"]["template"]["containers"]
             for container in containers:
-                result = dict(imageName=container["image"], targetContainerAppName=container["name"])
+                result = dict(imageName=container["image"], targetContainerName=container["name"], targetContainerAppName=ca["name"], revisionMode=ca["properties"]["configuration"]["activeRevisionsMode"])
                 imgs.append(result)
 
-        # Get the BOM of the images
+    # Get the BOM of the images
     results = []
     boms = []
 
@@ -4323,10 +4323,10 @@ def patch_list(cmd, resource_group_name, managed_env, show_all=False):
             bom = None
             lines = f.read()
             if lines.find(b"status code 401 Unauthorized") != -1 or lines.find(b"unable to find image") != -1:
-                bom = dict(remote_info=401)
+                bom = dict(remote_info=401, image_name=img["imageName"])
             else:
                 bom = json.loads(lines)
-            bom.update({ "targetContainerAppName": img["targetContainerAppName"] })
+            bom.update({ "targetContainerName": img["targetContainerName"], "targetContainerAppName": img["targetContainerAppName"], "revisionMode": img["revisionMode"] })
         boms.append(bom)
 
     ## For testing
@@ -4336,8 +4336,8 @@ def patch_list(cmd, resource_group_name, managed_env, show_all=False):
     #     # if lines.find(b"status code 401 Unauthorized") == -1 or lines.find(b"unable to find image") == -1:
     #     #     bom = dict(remote_info=401)
     #     # else:
-    #     bom = json.loads(lines)
-    #     bom.update({ "targetContainerAppName": "test-containerapp-1" })
+    #           bom = json.loads(lines)
+    #     bom.update({ "targetContainerName": "test-containerapp-1" })
     # boms.append(bom)
 
     # Get the current tags of Dotnet Mariners
@@ -4345,17 +4345,17 @@ def patch_list(cmd, resource_group_name, managed_env, show_all=False):
     failedReason = "Failed to get BOM of the image. Please check if the image exists or you have the permission to access the image."
     notBasedMarinerReason = "Image not based on Mariner"
     mcrCheckReason = "Image not from mcr.microsoft.com/oryx/builder"
-    results = []
+    results = {"NotPatchable": []}
     # Start checking if the images are based on Mariner
     for bom in boms:
         if bom["remote_info"] == 401:
-            results.append(dict(targetContainerAppName=bom["targetContainerAppName"], oldRunImage=None, newRunImage=None, id=None, reason=failedReason))
+            results["NotPatchable"].append(dict(targetContainerName=bom["targetContainerName"], targetContainerAppName=bom["targetContainerAppName"], revisionMode=bom["revisionMode"], targetImageName=bom["image_name"], oldRunImage=None, newRunImage=None, id=None, reason=failedReason))
         else:
             # devide run-images into different parts by "/"
             runImagesProps = bom["remote_info"]["run_images"]
             if runImagesProps is None:
                 
-                results.append(dict(targetContainerAppName=bom["targetContainerAppName"], oldRunImage=None, newRunImage=None, id=None, reason=notBasedMarinerReason))
+                results["NotPatchable"].append(dict(targetContainerName=bom["targetContainerName"], targetContainerAppName=bom["targetContainerAppName"], revisionMode=bom["revisionMode"], targetImageName=bom["image_name"], oldRunImage=None, newRunImage=None, id=None, reason=notBasedMarinerReason))
             else:
                 for runImagesProp in runImagesProps:
                     # result = None
@@ -4364,12 +4364,16 @@ def patch_list(cmd, resource_group_name, managed_env, show_all=False):
                         runImagesTag = runImagesProp[1]
                         # Based on Mariners
                         if runImagesTag.find('mariner') != -1:
-                            results.append(patchableCheck(runImagesTag, oryxRunImgTags, bom=bom))
+                            checkResult = patchableCheck(runImagesTag, oryxRunImgTags, bom=bom)
+                            if checkResult["id"] == None:
+                                results["NotPatchable"].append(checkResult)
+                            else:
+                                results[checkResult["id"]] = checkResult
                         else: 
-                            results.append(dict(targetContainerAppName=bom["targetContainerAppName"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=failedReason))
+                            results["NotPatchable"].append(dict(targetContainerName=bom["targetContainerName"], targetContainerAppName=bom["targetContainerAppName"], revisionMode=bom["revisionMode"], targetImageName=bom["image_name"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=failedReason))
                     else:
                         # Not based on image from mcr.microsoft.com/dotnet
-                        results.append(dict(targetContainerAppName=bom["targetContainerAppName"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=mcrCheckReason))    
+                        results["NotPatchable"].append(dict(targetContainerName=bom["targetContainerName"], targetContainerAppName=bom["targetContainerAppName"], revisionMode=bom["revisionMode"], targetImageName=bom["image_name"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=mcrCheckReason))    
     if show_all == False :
-        results = [x for x in results if x["newRunImage"] != None]
+        results = {k: v for k, v in results.items() if k != "NotPatchable"}
     return results

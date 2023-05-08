@@ -1782,9 +1782,20 @@ def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
     if tagProp is None:
         result = ImagePatchableCheck
         result["targetContainerAppName"] = bom["targetContainerAppName"]
+        result["revisionMode"] = bom["revisionMode"]
+        result["targetContainerName"] = bom["targetContainerName"]
+        result["targetImageName"] = bom["image_name"]
         result["oldRunImage"] = repoTagSplit
         result["reason"] = "Image not based on dotnet Mariner."
         return result
+    # elif len(str(tagProp["version"]).split(".")) == 2:
+    #     result = ImagePatchableCheck
+    #     result["targetContainerAppName"] = bom["targetContainerAppName"]
+    #     result["revisionMode"] = bom["revisionMode"]
+    #     result["targetContainerName"] = bom["targetContainerName"]
+    #     result["oldRunImage"] = repoTagSplit
+    #     result["reason"] = "Image is a patchless version."
+    #     return result
     repoTagSplit = repoTagSplit.split("-")
     if repoTagSplit[1] == "dotnet":
         matchingVersionInfo = oryxBuilderRunImgTags[repoTagSplit[2]][str(tagProp["version"].major) + "." + str(tagProp["version"].minor)][tagProp["support"]][tagProp["marinerVersion"]]
@@ -1793,11 +1804,14 @@ def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
     if tagProp["version"] < matchingVersionInfo[0]["version"]:
         result = ImagePatchableCheck
         result["targetContainerAppName"] = bom["targetContainerAppName"]
+        result["revisionMode"] = bom["revisionMode"]
+        result["targetImageName"] = bom["image_name"]
+        result["targetContainerName"] = bom["targetContainerName"]
         result["oldRunImage"] = tagProp["fullTag"]
         if (tagProp["version"].minor == matchingVersionInfo[0]["version"].minor) and (tagProp["version"].micro < matchingVersionInfo[0]["version"].micro):
             # Patchable
             result["newRunImage"] = "mcr.microsoft.com/oryx/builder:" + matchingVersionInfo[0]["fullTag"]
-            result["id"] = hashlib.md5(str(result["oldRunImage"] + result["targetContainerAppName"] + result["newRunImage"]).encode()).hexdigest()
+            result["id"] = hashlib.md5(str(result["oldRunImage"] + result["targetContainerName"] + result["targetContainerAppName"] + result["newRunImage"]).encode()).hexdigest()
             result["reason"] = "New security patch released for your current run image."
         else:
             # Not patchable
@@ -1806,6 +1820,9 @@ def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
     else:
         result = ImagePatchableCheck
         result["targetContainerAppName"] = bom["targetContainerAppName"]
+        result["revisionMode"] = bom["revisionMode"]
+        result["targetContainerName"] = bom["targetContainerName"]
+        result["targetImageName"] = bom["image_name"]
         result["oldRunImage"] = tagProp["fullTag"]
         result["reason"] = "You're already up to date!"
     return result
