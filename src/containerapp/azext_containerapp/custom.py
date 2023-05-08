@@ -4318,19 +4318,22 @@ def patch_list(cmd, resource_group_name, managed_env, show_all=False):
     ## For production
     #
     for img in imgs:
-        subprocess.run("pack inspect-image " + img["imageName"] + " --output json > ./bom.json 2>&1", shell=True)
-        with open("./bom.json", "rb") as f:
-            bom = None
-            lines = f.read()
-            if lines.find(b"status code 401 Unauthorized") != -1 or lines.find(b"unable to find image") != -1:
-                bom = dict(remote_info=401, image_name=img["imageName"])
-            else:
-                bom = json.loads(lines)
-            bom.update({ "targetContainerName": img["targetContainerName"], "targetContainerAppName": img["targetContainerAppName"], "revisionMode": img["revisionMode"] })
+        if (img["imageName"].find("run-dotnet") != -1) and (img["imageName"].find("cbl-mariner") != -1):
+            bom = { "remote_info": { "run_images": [{ "name": "mcr.microsoft.com/oryx/builder:" + img["imageName"].split(":")[-1] }] }, "image_name": img["imageName"], "targetContainerName": img["targetContainerName"], "targetContainerAppName": img["targetContainerAppName"], "revisionMode": img["revisionMode"] }
+        else:
+            subprocess.run("pack inspect-image " + img["imageName"] + " --output json > ./bom.json 2>&1", shell=True)
+            with open("./bom.json", "rb") as f:
+                bom = None
+                lines = f.read()
+                if lines.find(b"status code 401 Unauthorized") != -1 or lines.find(b"unable to find image") != -1:
+                    bom = dict(remote_info=401, image_name=img["imageName"])
+                else:
+                    bom = json.loads(lines)
+                bom.update({ "targetContainerName": img["targetContainerName"], "targetContainerAppName": img["targetContainerAppName"], "revisionMode": img["revisionMode"] })
         boms.append(bom)
 
-    ## For testing
-    #
+    # # For testing
+    
     # with open("./bom.json", "rb") as f:
     #     lines = f.read()
     #     # if lines.find(b"status code 401 Unauthorized") == -1 or lines.find(b"unable to find image") == -1:
