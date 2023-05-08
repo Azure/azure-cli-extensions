@@ -46,8 +46,12 @@ def create_test(
     body = {}
     body = create_or_update_body(body= body, load_test_config_file=load_test_config_file, display_name=display_name, test_description=test_description, config_file=config_file, engine_instances=engine_instances, env=env, secrets=secrets, certificate=certificate, key_vault_reference_identity=key_vault_reference_identity, subnet_id=subnet_id )
     test_id = generate_test_id(body["displayName"])
+    logger.info("Creating test with testid: %s and body : %s", test_id, body)
     response_obj = client.create_or_update_test(test_id=test_id, body=body)
+    logger.debug("Response object for creating test with testid: %s is %s", test_id, response_obj)
+    logger.info("Created test with testid: %s and response obj is %s", test_id, response_obj)
     if test_plan is not None:
+        logger.info("Uploading test plan for the test")
         client.begin_upload_test_file(
             test_id,
             file_name=test_id + "TestPlan.jmx",
@@ -90,20 +94,20 @@ def update_test(
         credential=credential,
     )
     body = client.get_test(test_id)
+    logger.debug("Retrieved test with testid: %s and body : %s", test_id, body)
     body = create_or_update_body(body= body, load_test_config_file=load_test_config_file, display_name=display_name, test_description=test_description, config_file=config_file, engine_instances=engine_instances, env=env, secrets=secrets, certificate=certificate, key_vault_reference_identity=key_vault_reference_identity, subnet_id=subnet_id )
+    logger.info("Updating test with testid: %s and body : %s", test_id, body)
     response_obj = client.create_or_update_test(test_id=test_id, body=body)
-    logger.warning("body: %s", body)
-    response_obj = client.create_or_update_test(
-        test_id=generate_test_id(body["displayName"]), body=body
-    )
+    logger.debug("Response object for updating test with testid: %s is %s", test_id, response_obj)
+    logger.info("Updated test with testid: %s and response obj is %s", test_id, response_obj)
     if test_plan is not None:
+        logger.info("Uploading test plan for the test")
         client.begin_upload_test_file(
             response_obj["testId"],
             file_name=response_obj["displayName"] + "TestPlan.jmx",
             body=open(test_plan, "r"),
         )
     return response_obj
-
 
 def list_tests(
     cmd,
@@ -125,7 +129,7 @@ def list_tests(
         endpoint=endpoint,
         credential=credential,
     )
-
+    logger.info("Listing tests...")
     return client.list_tests()
 
 
@@ -150,7 +154,6 @@ def get_test(
         endpoint=endpoint,
         credential=credential,
     )
-    client.create_or_update_app_components
     return client.get_test(test_id)
 
 
@@ -216,3 +219,76 @@ def delete_test(
         credential=credential,
     )
     return client.delete_test(test_id)
+
+def add_test_app_components(cmd,
+    load_test_resource,
+    test_id,
+    app_component_id,
+    app_component_name,
+    app_component_type,
+    app_component_kind=None,
+    resource_group_name=None,):
+    from azext_load.data_plane.client_factory import admin_data_plane_client
+    credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
+    endpoint = get_load_test_resource_endpoint(
+        credential,
+        load_test_resource,
+        resource_group=resource_group_name,
+        subscription_id=subscription_id,
+    )
+    client = admin_data_plane_client(
+        cmd.cli_ctx,
+        subscription=subscription_id,
+        endpoint=endpoint,
+        credential=credential,
+    )
+    body = {}
+    body["testId"] = test_id
+    body["components"] = {}
+    body["components"][app_component_id] = {}
+    body["components"][app_component_id]["displayName"] = app_component_name
+    body["components"][app_component_id]["resourceType"] = app_component_type
+    if app_component_kind:
+        body["components"][app_component_id]["kind"] = app_component_kind
+    return client.create_or_update_app_components(test_id=test_id, body=body)
+
+def list_test_app_components(cmd,
+    load_test_resource,
+    test_id,
+    resource_group_name=None,):
+    from azext_load.data_plane.client_factory import admin_data_plane_client
+    credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
+    endpoint = get_load_test_resource_endpoint(
+        credential,
+        load_test_resource,
+        resource_group=resource_group_name,
+        subscription_id=subscription_id,
+    )
+    client = admin_data_plane_client(
+        cmd.cli_ctx,
+        subscription=subscription_id,
+        endpoint=endpoint,
+        credential=credential,
+    )
+    return client.get_app_components(test_id=test_id)
+
+def remove_test_app_components(cmd,
+    load_test_resource,
+    test_id,
+    app_component_id,
+    resource_group_name=None,):
+    from azext_load.data_plane.client_factory import admin_data_plane_client
+    credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
+    endpoint = get_load_test_resource_endpoint(
+        credential,
+        load_test_resource,
+        resource_group=resource_group_name,
+        subscription_id=subscription_id,
+    )
+    client = admin_data_plane_client(
+        cmd.cli_ctx,
+        subscription=subscription_id,
+        endpoint=endpoint,
+        credential=credential,
+    )
+    #return client.delete_app_components(test_id=test_id, component_id=app_component_id)
