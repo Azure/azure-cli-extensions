@@ -17,8 +17,8 @@ class LoadCommandsLoader(AzCommandsLoader):
 
     def load_command_table(self, args):
         from azext_load.commands import load_command_table
-        from azext_load.data_plane.test.commands import load_test_commands
-        from azext_load.data_plane.test_run.commands import load_test_run_commands
+        from azext_load.data_plane.load_test.commands import load_test_commands
+        from azext_load.data_plane.load_test_run.commands import load_test_run_commands
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -38,7 +38,7 @@ class LoadCommandsLoader(AzCommandsLoader):
     def load_arguments(self, command):
         from azext_load._params import load_arguments
         from azext_load.data_plane.params import load_arguments as load_data_arguments 
-        from azext_load.data_plane.test.params import load_arguments as load_data_test_arguments
+        from azext_load.data_plane.load_test.params import load_arguments as load_data_test_arguments
 
         load_arguments(self, command)
         load_data_arguments(self, command)

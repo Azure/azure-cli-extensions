@@ -1,19 +1,14 @@
 from knack.arguments import CLIArgumentType
-from azure.cli.core.commands import validators
-from azure.cli.core.commands.parameters import quotes
-from azext_load.data_plane.custom_validator import (
-    validate_secrets,
-    validate_certificate,
-)
 from azure.cli.core.commands.parameters import (
+    quotes,
     get_resource_name_completion_list,
     resource_group_name_type,
 )
-
+from azext_load.data_plane.utils import validators
 
 quote_text = "Use {} to clear existing {{}}.".format(quotes)
 
-# Common arguments
+### Common arguments
 resource_group = resource_group_name_type
 
 load_test_resource = CLIArgumentType(
@@ -22,34 +17,49 @@ load_test_resource = CLIArgumentType(
     completer=get_resource_name_completion_list("Microsoft.LoadTestService/LoadTests"),
     help="Name or ARM resource ID of the load test resource.",
 )
+###
 
-# Common arguments for load test
 test_id = CLIArgumentType(
-    options_list=["--test-id", "-t"], type=str, help="Test ID of the load test"
+    validator=validators.validate_test_id,
+    options_list=["--test-id", "-t"],
+    type=str,
+    help="Test ID of the load test",
 )
 
-# Arguments for load test create
-env_type = CLIArgumentType(
-    # validator=validators.validate_tags,
+env = CLIArgumentType(
+    validator=validators.validate_env_vars,
     nargs="*",
     help="space-separated environment variables: key[=value] [key[=value] ...]. {}".format(
         quote_text.format("environment variables")
     ),
 )
 
-secret_type = CLIArgumentType(
-    validator=validate_secrets,
+secret = CLIArgumentType(
+    validator=validators.validate_secrets,
     nargs="*",
     help="space-separated secrets: key[=value] [key[=value] ...]. {}".format(
         quote_text.format("secrets")
     ),
 )
 
-certificate_type = CLIArgumentType(
-    validator=validate_certificate,
+certificate = CLIArgumentType(
+    validator=validators.validate_certificate,
+    nargs="?",
     help="a single certificate in 'key[=value]' format. {}".format(
         quote_text.format("certificate")
     ),
-    nargs="?",
-    const="",
+)
+
+app_component_id = CLIArgumentType(
+    validator=validators.validate_app_component_id,
+    options_list=["--app-component-id"],
+    type=str,
+    help="Fully qualified ID of the app component resource.",
+)
+
+metric_id = CLIArgumentType(
+    validator=validators.validate_metric_id,
+    options_list=["--metric-id"],
+    type=str,
+    help="Fully qualified ID of the server metric.",
 )

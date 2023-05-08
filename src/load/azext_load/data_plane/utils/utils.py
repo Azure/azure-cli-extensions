@@ -3,13 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from datetime import datetime
-import dateutil.parser  # pylint: disable=import-error
 from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
-from azext_load.vendored_sdks.loadtesting_mgmt import LoadTestMgmtClient
-import uuid
 from azure.cli.core.azclierror import ValidationError
+from azext_load.vendored_sdks.loadtesting_mgmt import LoadTestMgmtClient
 
 logger = get_logger(__name__)
 
@@ -63,6 +60,7 @@ def get_load_test_resource_endpoint(
 #     timespan = f"{start_time}/{end_time}"
 #     return timespan
 
+
 def get_login_credentials(cli_ctx, subscription_id=None):
     from azure.cli.core._profile import Profile
 
@@ -72,9 +70,8 @@ def get_login_credentials(cli_ctx, subscription_id=None):
     logger.debug("Fetched login credentials for subscription %s", subscription_id)
     return credential
 
-def generate_test_id(test_name=None):
-    return str(uuid.uuid4())
 
+"""
 def parse_env(env):
     if env is None:
         return None
@@ -87,7 +84,7 @@ def parse_env(env):
     return env_dict
 
 def parse_secrets(secrets):
-    logger.warning("secrets: %s", secrets)
+    #logger.warning("secrets: %s", secrets)
     if secrets is None:
         return None
     secrets_dict = {}
@@ -115,9 +112,31 @@ def parse_certificate(certificate):
     certificate_dict["type"] = "AKV_CERT_URI"
     certificate_dict["value"] = current[1]
     return certificate_dict
+"""
 
 
-def create_or_update_body(body, load_test_config_file=None, display_name=None,
+def get_admin_data_plane_client(cmd, load_test_resource, resource_group_name=None):
+    from azext_load.data_plane.client_factory import admin_data_plane_client
+
+    credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
+    endpoint = get_load_test_resource_endpoint(
+        credential,
+        load_test_resource,
+        resource_group=resource_group_name,
+        subscription_id=subscription_id,
+    )
+    return admin_data_plane_client(
+        cmd.cli_ctx,
+        subscription=subscription_id,
+        endpoint=endpoint,
+        credential=credential,
+    )
+
+
+def create_or_update_body(
+    body,
+    load_test_config_file=None,
+    display_name=None,
     test_description=None,
     config_file=None,
     engine_instances=None,
@@ -125,7 +144,8 @@ def create_or_update_body(body, load_test_config_file=None, display_name=None,
     secrets=None,
     certificate=None,
     key_vault_reference_identity=None,
-    subnet_id=None,):
+    subnet_id=None,
+):
     IdentityType = {"SystemAssigned": "SystemAssigned", "UserAssigned": "UserAssigned"}
     new_body = {}
     if load_test_config_file is not None:
@@ -162,7 +182,9 @@ def create_or_update_body(body, load_test_config_file=None, display_name=None,
                     new_body["keyvaultReferenceIdentityId"] = data[
                         "keyvaultReferenceIdentityId"
                     ]
-                    new_body["keyvaultReferenceIdentityType"] = IdentityType["UserAssigned"]
+                    new_body["keyvaultReferenceIdentityType"] = IdentityType[
+                        "UserAssigned"
+                    ]
                 else:
                     new_body["keyvaultReferenceIdentityType"] = IdentityType[
                         "SystemAssigned"
@@ -210,7 +232,9 @@ def create_or_update_body(body, load_test_config_file=None, display_name=None,
         if engine_instances:
             new_body["loadTestConfiguration"]["engineInstances"] = engine_instances
         elif not body.get("loadTestConfiguration").get("engineInstances"):
-            new_body["loadTestConfiguration"]["engineInstances"] = body.get("loadTestConfiguration").get("engineInstances")
+            new_body["loadTestConfiguration"]["engineInstances"] = body.get(
+                "loadTestConfiguration"
+            ).get("engineInstances")
         else:
             new_body["loadTestConfiguration"]["engineInstances"] = "1"
         if key_vault_reference_identity is not None:
@@ -219,8 +243,12 @@ def create_or_update_body(body, load_test_config_file=None, display_name=None,
         elif body.get("keyvaultReferenceIdentityId") is None:
             new_body["keyvaultReferenceIdentityType"] = IdentityType["SystemAssigned"]
         else:
-            new_body["keyvaultReferenceIdentityId"] = body.get("keyvaultReferenceIdentityId")
-            new_body["keyvaultReferenceIdentityType"] = body.get("keyvaultReferenceIdentityId")
+            new_body["keyvaultReferenceIdentityId"] = body.get(
+                "keyvaultReferenceIdentityId"
+            )
+            new_body["keyvaultReferenceIdentityType"] = body.get(
+                "keyvaultReferenceIdentityId"
+            )
         if subnet_id is not None:
             new_body["subnetId"] = subnet_id
         elif body.get("subnetId"):
@@ -230,15 +258,15 @@ def create_or_update_body(body, load_test_config_file=None, display_name=None,
                 new_body["environmentVariables"] = {}
             else:
                 new_body["environmentVariables"] = body.get("environmentVariables")
-            new_body["environmentVariables"].update(parse_env(env))
+            new_body["environmentVariables"].update(env)
         if secrets is not None:
             if body.get("secrets") is None:
                 new_body["secrets"] = {}
             else:
                 new_body["secrets"] = body.get("secrets")
-            new_body["secrets"].update(parse_secrets(secrets))
+            new_body["secrets"].update(secrets)
         if certificate is not None:
-            new_body["certificate"] = parse_certificate(certificate)
+            new_body["certificate"] = certificate
         elif body.get("certificate"):
             new_body["certificate"] = body.get("certificate")
         # quick test and split csv not supported currently

@@ -1,5 +1,4 @@
-from . import custom_argtypes as argtypes
-
+from .utils import argtypes
 
 def load_arguments(self, _):
     with self.argument_context('load test') as c:

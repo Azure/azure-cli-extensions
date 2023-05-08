@@ -1,4 +1,4 @@
-from azext_load.data_plane.util import get_login_credentials
+from azext_load.data_plane.utils.utils import get_login_credentials
 
 
 def admin_data_plane_client(cli_ctx, subscription=None, endpoint=None, credential=None):
