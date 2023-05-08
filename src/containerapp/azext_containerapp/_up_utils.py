@@ -8,6 +8,7 @@
 from tempfile import NamedTemporaryFile
 from urllib.parse import urlparse
 import requests
+import subprocess
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -48,7 +49,9 @@ from ._utils import (
     register_provider_if_needed,
     validate_environment_location,
     list_environment_locations,
-    format_location
+    format_location,
+    is_docker_running,
+    get_pack_exec_path
 )
 
 from ._constants import (MAXIMUM_SECRET_LENGTH,
@@ -354,7 +357,60 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             self.cmd.cli_ctx, registry_name
         )
 
-    def build_container_from_source(self, image_name, source):
+    def build_container_from_source_with_buildpack(self, image_name, source):
+        # Ensure that Docker is running
+        if not is_docker_running():
+            raise CLIError("Docker is not running. Please start Docker and try again.")
+
+        # Ensure that the pack CLI is installed
+        pack_exec_path = get_pack_exec_path()
+        if pack_exec_path == "":
+            raise CLIError("The pack CLI could not be installed.")
+
+        logger.info("Docker is running and pack CLI is installed; attempting to use buildpacks to build container image...")
+
+        registry_name = self.registry_server.lower()
+        image_name = f"{registry_name}/{image_name}"
+        builder_image_name="mcr.microsoft.com/oryx/builder:builder-dotnet-7.0"
+
+        # Ensure that the builder is trusted
+        command = [pack_exec_path, 'config', 'default-builder', builder_image_name]
+        logger.debug(f"Calling '{' '.join(command)}'")
+        try:
+            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = process.communicate()
+            if process.returncode != 0:
+                raise CLIError(f"Error thrown when running 'pack config': {stderr.decode('utf-8')}")
+            logger.debug(f"Successfully set the default builder to {builder_image_name}.")
+        except Exception as ex:
+            raise CLIError(f"Unable to run 'pack build' command to produce runnable application image: {ex}")
+
+        # Run 'pack build' to produce a runnable application image for the Container App
+        command = [pack_exec_path, 'build', image_name, '--builder', builder_image_name, '--path', source]
+        logger.debug(f"Calling '{' '.join(command)}'")
+        try:
+            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = process.communicate()
+            if process.returncode != 0:
+                raise CLIError(f"Error thrown when running 'pack build': {stderr.decode('utf-8')}")
+            logger.debug(f"Successfully built image {image_name} using buildpacks.")
+        except Exception as ex:
+            raise CLIError(f"Unable to run 'pack build' command to produce runnable application image: {ex}")
+
+        # Run 'docker push' to push the image to the ACR
+        command = ['docker', 'push', image_name]
+        logger.debug(f"Calling '{' '.join(command)}'")
+        logger.warning(f"Built image {image_name} locally using buildpacks, attempting to push to registry...")
+        try:
+            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = process.communicate()
+            if process.returncode != 0:
+                raise CLIError(f"Error thrown when running 'docker push': {stderr.decode('utf-8')}")
+            logger.debug(f"Successfully pushed image {image_name} to ACR.")
+        except Exception as ex:
+            raise CLIError(f"Unable to run 'docker push' command to push image to ACR: {ex}")
+
+    def build_container_from_source_with_acr_task(self, image_name, source):
         from azure.cli.command_modules.acr.task import acr_task_create, acr_task_run
         from azure.cli.command_modules.acr._client_factory import cf_acr_tasks, cf_acr_runs
         from azure.cli.core.profiles import ResourceType
@@ -414,7 +470,18 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         if build_from_source:
             # TODO should we prompt for confirmation here?
             logger.warning("No dockerfile detected. Attempting to build a container directly from the provided source...")
-            self.build_container_from_source(image_name, source)
+
+            try:
+                # First try to build source using buildpacks
+                logger.warning("Attempting to build image using buildpacks...")
+                self.build_container_from_source_with_buildpack(image_name, source)
+                return
+            except CLIError as e:
+                logger.warning(f"Unable to use buildpacks to build source: {e}\n Falling back to ACR Task...")
+
+            # If we're unable to use the buildpack, build source using an ACR Task
+            logger.warning("Attempting to build image using ACR Task...")
+            self.build_container_from_source_with_acr_task(image_name, source)
         else:
             queue_acr_build(
                 self.cmd,
