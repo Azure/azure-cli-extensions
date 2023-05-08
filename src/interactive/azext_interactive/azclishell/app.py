@@ -891,6 +891,12 @@ class AzInteractiveShell(object):
         # initialize some variables
         # whether the customer has been prompted to choose continue loading
         # unable to use continue_loading to check this because the customer may choose to continue loading
+        if not self.cli_ctx.config.getboolean("interactive", "enable_preloading", fallback=True):
+            self.command_table_thread = LoadCommandTableThread(self.restart_completer, self)
+            self.command_table_thread.start()
+            return
+        print_styled_text([(Style.ACTION, "A command preload mechanism was added to prevent lagging and command run errors.\n"
+                                          "You can skip preloading in a single pass by CTRL+C or turn it off by setting 'az config set interactive.enable_preloading=False'\n")])
         already_prompted = False
         continue_loading = True
         # load command table
