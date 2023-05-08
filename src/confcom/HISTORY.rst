@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.2.14
+* changing the name of api_svn and framework_svn to api_version and framework_version
+* changing fragment versions to an integer instead of semver
+* bugfix for allowing 32bit python on a 64bit OS
+
 0.2.13
 * fixing bug where you could not pull by sha value if a tag was not specified
 * fixing error message when attempting to use sha value with tar files
