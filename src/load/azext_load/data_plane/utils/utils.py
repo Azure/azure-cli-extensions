@@ -3,10 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import errno
+
+import yaml
+from azext_load.vendored_sdks.loadtesting_mgmt import LoadTestMgmtClient
+from azure.cli.core.azclierror import ValidationError
 from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
-from azure.cli.core.azclierror import ValidationError
-from azext_load.vendored_sdks.loadtesting_mgmt import LoadTestMgmtClient
 
 logger = get_logger(__name__)
 
@@ -71,50 +74,6 @@ def get_login_credentials(cli_ctx, subscription_id=None):
     return credential
 
 
-"""
-def parse_env(env):
-    if env is None:
-        return None
-    env_dict = {}
-    for item in env:
-        current = item.split("=",1)
-        if len(current) < 2:
-            raise ValidationError("Environment variables must be in the format \"<key>=<value> <key>=<value> ...\".")
-        env_dict[current[0]] = current[1]
-    return env_dict
-
-def parse_secrets(secrets):
-    #logger.warning("secrets: %s", secrets)
-    if secrets is None:
-        return None
-    secrets_dict = {}
-    for secret in secrets:
-        current = secret.split("=", 1)
-        if len(current) < 2:
-            raise ValueError("Secrets must be in the format \"<key>=<value> <key>=<value> ...\".")
-        secrets_dict[current[0]] = {}
-        secrets_dict[current[0]]["type"] = "AKV_SECRET_URI"
-        logger.warning("secrets: %s", current[1])
-        if current[1] == "":
-            secrets_dict[current[0]] = None
-        else:
-            secrets_dict[current[0]]["value"] = current[1]
-    return secrets_dict
-
-def parse_certificate(certificate):
-    if certificate is None:
-        return None
-    certificate_dict = {}
-    current = certificate.split("=", 1)
-    if len(current) < 2:
-        raise ValueError("Certificate must be in the format \"<key>=<value>;<key>=<value>...\".")
-    certificate_dict["name"] = current[0]
-    certificate_dict["type"] = "AKV_CERT_URI"
-    certificate_dict["value"] = current[1]
-    return certificate_dict
-"""
-
-
 def get_admin_data_plane_client(cmd, load_test_resource, resource_group_name=None):
     from azext_load.data_plane.client_factory import admin_data_plane_client
 
@@ -134,6 +93,7 @@ def get_admin_data_plane_client(cmd, load_test_resource, resource_group_name=Non
 
 
 def create_or_update_body(
+    test_id,
     body,
     load_test_config_file=None,
     display_name=None,
@@ -170,14 +130,10 @@ def create_or_update_body(
                     new_body["displayName"] = data["displayName"]
                 if "description" in data:
                     new_body["description"] = data["description"]
-                if body.get("loadTestConfiguration") is None:
-                    new_body["loadTestConfiguration"] = {}
-                if "engineInstances" in data:
-                    new_body["loadTestConfiguration"]["engineInstances"] = data[
-                        "engineInstances"
-                    ]
-                else:
-                    new_body["loadTestConfiguration"]["engineInstances"] = "1"
+
+                new_body["keyvaultReferenceIdentityType"] = IdentityType[
+                    "SystemAssigned"
+                ]
                 if "keyvaultReferenceIdentityId" in data:
                     new_body["keyvaultReferenceIdentityId"] = data[
                         "keyvaultReferenceIdentityId"
@@ -185,91 +141,87 @@ def create_or_update_body(
                     new_body["keyvaultReferenceIdentityType"] = IdentityType[
                         "UserAssigned"
                     ]
-                else:
-                    new_body["keyvaultReferenceIdentityType"] = IdentityType[
-                        "SystemAssigned"
-                    ]
+
                 if "subnetId" in data:
                     new_body["subnetId"] = data["subnetId"]
+
+                new_body["loadTestConfiguration"] = body.get(
+                    "loadTestConfiguration", {}
+                )
+                new_body["loadTestConfiguration"]["engineInstances"] = data.get(
+                    "engineInstances", 1
+                )
                 # quick test and split csv not supported currently in CLI
-                if "quickStartTest" in data and data["quickStartTest"] == True:
+                new_body["loadTestConfiguration"]["quickStartTest"] = False
+                if data.get("quickStartTest"):
                     logger.warning(
                         "Quick start test is not supported currently in CLI. Please use portal to run quick start test"
                     )
-                if "splitAllCSVs" in data and data["splitAllCSVs"] == True:
+                new_body["loadTestConfiguration"]["splitAllCSVs"] = False
+                if data.get("splitAllCSVs"):
                     logger.warning(
                         "CSV splitting is not supported currently in CLI. Please use portal to split CSVs"
                     )
-                new_body["loadTestConfiguration"]["quickStartTest"] = False
-                new_body["loadTestConfiguration"]["splitAllCSVs"] = False
-                # implementation of failure criteria is pending
+                # implementation of failure criteria, secrets, cert and env var is pending
         except (IOError, OSError) as ex:
             if getattr(ex, "errno", 0) == errno.ENOENT:
-                raise ValidationError(
-                    "{} does not exist".format(load_test_config_file)
-                ) from ex
+                raise ValidationError(f"{load_test_config_file} does not exist") from ex
             raise
         except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
             raise ValidationError(
-                "Error parsing {} ({})".format(load_test_config_file, str(ex))
+                f"Error parsing {load_test_config_file} ({str(ex)})"
             ) from ex
 
     else:
         if display_name is not None:
             new_body["displayName"] = display_name
-        elif body.get("displayName") is None:
-            new_body["displayName"] = generate_test_id("TestName")
         else:
-            new_body["displayName"] = body.get("displayName")
+            new_body["displayName"] = body.get("displayName", test_id)
+
         if test_description is not None:
             new_body["description"] = test_description
         else:
             new_body["description"] = body.get("description")
-        if body.get("loadTestConfiguration") is None:
-            new_body["loadTestConfiguration"] = {}
-        else:
-            new_body["loadTestConfiguration"] = body.get("loadTestConfiguration")
-        if engine_instances:
-            new_body["loadTestConfiguration"]["engineInstances"] = engine_instances
-        elif not body.get("loadTestConfiguration").get("engineInstances"):
-            new_body["loadTestConfiguration"]["engineInstances"] = body.get(
-                "loadTestConfiguration"
-            ).get("engineInstances")
-        else:
-            new_body["loadTestConfiguration"]["engineInstances"] = "1"
+
+        new_body["keyvaultReferenceIdentityType"] = IdentityType["SystemAssigned"]
         if key_vault_reference_identity is not None:
             new_body["keyvaultReferenceIdentityId"] = key_vault_reference_identity
             new_body["keyvaultReferenceIdentityType"] = IdentityType["UserAssigned"]
-        elif body.get("keyvaultReferenceIdentityId") is None:
-            new_body["keyvaultReferenceIdentityType"] = IdentityType["SystemAssigned"]
-        else:
+        elif body.get("keyvaultReferenceIdentityId") is not None:
             new_body["keyvaultReferenceIdentityId"] = body.get(
                 "keyvaultReferenceIdentityId"
             )
             new_body["keyvaultReferenceIdentityType"] = body.get(
-                "keyvaultReferenceIdentityId"
+                "keyvaultReferenceIdentityType", IdentityType["UserAssigned"]
             )
+
         if subnet_id is not None:
             new_body["subnetId"] = subnet_id
         elif body.get("subnetId"):
             new_body["subnetId"] = body.get("subnetId")
+
         if env is not None:
-            if body.get("environmentVariables") is None:
-                new_body["environmentVariables"] = {}
-            else:
-                new_body["environmentVariables"] = body.get("environmentVariables")
+            new_body["environmentVariables"] = body.get("environmentVariables", {})
             new_body["environmentVariables"].update(env)
+
         if secrets is not None:
-            if body.get("secrets") is None:
-                new_body["secrets"] = {}
-            else:
-                new_body["secrets"] = body.get("secrets")
+            new_body["secrets"] = body.get("secrets", {})
             new_body["secrets"].update(secrets)
+
         if certificate is not None:
             new_body["certificate"] = certificate
         elif body.get("certificate"):
             new_body["certificate"] = body.get("certificate")
+
+        new_body["loadTestConfiguration"] = body.get("loadTestConfiguration", {})
+        if engine_instances:
+            new_body["loadTestConfiguration"]["engineInstances"] = engine_instances
+        else:
+            new_body["loadTestConfiguration"]["engineInstances"] = body.get(
+                "loadTestConfiguration", {}
+            ).get("engineInstances", 1)
         # quick test and split csv not supported currently
         new_body["loadTestConfiguration"]["quickStartTest"] = False
         new_body["loadTestConfiguration"]["splitAllCSVs"] = False
+
     return new_body

@@ -1,4 +1,5 @@
 import re
+
 from msrestazure.tools import is_valid_resource_id
 
 
@@ -73,24 +74,38 @@ def validate_certificate(namespace):
     comps = certificate.split("=", 1)
     if not _validate_akv_url(comps[1], "certificates"):
         raise ValueError(f"Invalid AKV Certificate URL: {comps[1]}")
-    namespace.certificate = {"name": comps[0], "type": "AKV_CERT_URI", "value": comps[1]}
+    namespace.certificate = {
+        "name": comps[0],
+        "type": "AKV_CERT_URI",
+        "value": comps[1],
+    }
 
 
 def validate_app_component_id(namespace):
     if not isinstance(namespace.app_component_id, str):
-        raise ValueError(f"Invalid app-component-id type: {type(namespace.app_component_id)}")
+        raise ValueError(
+            f"Invalid app-component-id type: {type(namespace.app_component_id)}"
+        )
     if not is_valid_resource_id(namespace.app_component_id):
-        raise ValueError(f"app-component-id is not a valid Azure Resource ID: {namespace.app_component_id}")
+        raise ValueError(
+            f"app-component-id is not a valid Azure Resource ID: {namespace.app_component_id}"
+        )
     # /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{providerName}/components/{resourceName}"
     providerName = namespace.app_component_id.split("/")[5].casefold()
     if providerName != namespace.app_component_type.casefold():
-        raise ValueError(f"Type of app-component-id and app-component-type mismatch: {providerName} vs {namespace.app_component_type}")
+        raise ValueError(
+            f"Type of app-component-id and app-component-type mismatch: {providerName} vs {namespace.app_component_type}"
+        )
 
 
 def validate_metric_id(namespace):
     if not isinstance(namespace.metric_id, str):
         raise ValueError(f"Invalid metric-id type: {type(namespace.metric_id)}")
     if not is_valid_resource_id(namespace.metric_id):
-        raise ValueError(f"metric-id is not a valid Azure Resource ID: {namespace.metric_id}")
+        raise ValueError(
+            f"metric-id is not a valid Azure Resource ID: {namespace.metric_id}"
+        )
     if "metrics" not in namespace.metric_id.casefold():
-        raise ValueError(f"Provided Azure Resource ID is not a valid server metrics resource: {namespace.metric_id}")
+        raise ValueError(
+            f"Provided Azure Resource ID is not a valid server metrics resource: {namespace.metric_id}"
+        )

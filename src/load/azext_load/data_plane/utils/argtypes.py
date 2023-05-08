@@ -1,14 +1,14 @@
-from knack.arguments import CLIArgumentType
+from azext_load.data_plane.utils import validators
 from azure.cli.core.commands.parameters import (
-    quotes,
     get_resource_name_completion_list,
+    quotes,
     resource_group_name_type,
 )
-from azext_load.data_plane.utils import validators
+from knack.arguments import CLIArgumentType
 
 quote_text = "Use {} to clear existing {{}}.".format(quotes)
 
-### Common arguments
+# Common arguments
 resource_group = resource_group_name_type
 
 load_test_resource = CLIArgumentType(
@@ -17,7 +17,7 @@ load_test_resource = CLIArgumentType(
     completer=get_resource_name_completion_list("Microsoft.LoadTestService/LoadTests"),
     help="Name or ARM resource ID of the load test resource.",
 )
-###
+#
 
 test_id = CLIArgumentType(
     validator=validators.validate_test_id,
