@@ -14,6 +14,8 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from msrestazure.tools import resource_id
 from ._client_factory import network_client_factory
 from .aaz.latest.network.firewall import Create as _AzureFirewallCreate, Update as _AzureFirewallUpdate
+from .aaz.latest.network.firewall.policy import Create as _AzureFirewallPoliciesCreate, \
+    Update as _AzureFirewallPoliciesUpdate
 
 logger = get_logger(__name__)
 
@@ -658,6 +660,35 @@ def delete_azure_firewall_threat_intel_allowlist(cmd, resource_group_name, azure
 
 # region AzureFirewallPolicies
 # pylint: disable=too-many-locals
+class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.identity = AAZResourceIdArg(
+            options=['--identity'],
+            help="Name or ID of the ManagedIdentity Resource.",
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/"
+                         "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
+            )
+        )
+        args_schema.identity_type._registered = False
+        args_schema.user_assigned_identities._registered = False
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.identity):
+            args.identity_type = "UserAssigned"
+            args.user_assigned_identities = {args.identity: {}}
+
+        if any([args.dns_servers, args.enable_dns_proxy]):
+            if not has_value(args.enable_dns_proxy):
+                args.enable_dns_proxy = False
+
+
 def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_name, base_policy=None,
                                    threat_intel_mode=None, location=None, tags=None, ip_addresses=None,
                                    fqdns=None,
@@ -731,6 +762,34 @@ def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_nam
         firewall_policy.identity = identity_instance
 
     return client.begin_create_or_update(resource_group_name, firewall_policy_name, firewall_policy)
+
+
+class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.identity = AAZResourceIdArg(
+            options=['--identity'],
+            help="Name or ID of the ManagedIdentity Resource.",
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/"
+                         "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
+            )
+        )
+        args_schema.identity_type._registered = False
+        args_schema.user_assigned_identities._registered = False
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.identity):
+            args.identity_type = "UserAssigned"
+            args.user_assigned_identities = {args.identity: {}}
+        elif args.sku == 'Premium':
+            args.identity_type = None
+            args.user_assigned_identities = None
 
 
 # pylint: disable=too-many-locals

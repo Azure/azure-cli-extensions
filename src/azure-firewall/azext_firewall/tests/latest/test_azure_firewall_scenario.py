@@ -1038,3 +1038,32 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd("network firewall update -n {firewall_name} -g {rg} --route-server-id ''",
                  self.check("additionalProperties.\"Network.RouteServerInfo.RouteServerID\"", ""))
         self.cmd("network firewall delete -n {firewall_name} -g {rg}")
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix="cli_test_azure_firewall_policy_with_snat_", location="westus")
+    def test_azure_firewall_policy_with_snat(self, resource_group):
+        self.kwargs.update({
+            'af': 'af1',
+            'af2': 'af2',
+            'policy': 'myclipolicy',
+            'policy2': 'myclipolicy2',
+            'coll': 'rc1',
+            'rg': resource_group,
+            'ipconfig': 'myipconfig1',
+            'location': "westus",
+        })
+
+        self.cmd('network firewall policy create -g {rg} -n {policy} -l {location} --private-ranges IANAPrivateRanges --learn-ranges Enabled', checks=[
+            self.check('type', 'Microsoft.Network/FirewallPolicies'),
+            self.check('length(snat.privateRanges)', 4),
+            self.check('snat.autoLearnPrivateRanges', 'Enabled')
+        ])
+
+        self.cmd(
+            'network firewall policy update -g {rg} -n {policy} --private-ranges "0.0.0.0/0" --learn-ranges Disabled',
+            checks=[
+                self.check('type', 'Microsoft.Network/FirewallPolicies'),
+                self.check('length(snat.privateRanges)', 1),
+            ])
+
+        self.cmd("network firewall policy delete -n {policy} -g {rg}")

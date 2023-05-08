@@ -117,17 +117,22 @@ def load_command_table(self, _):
     with self.command_group('network firewall', network_firewall_fqdn_tags_sdk) as g:
         g.command('list-fqdn-tags', 'list_all')
     # endregion
-
+        # from .custom import AzureFirewallPoliciesCreate, AzureFirewallPoliciesUpdate
+        # self.command_table['network firewall policy create'] = AzureFirewallPoliciesCreate(loader=self)
+        # self.command_table['network firewall policy update'] = AzureFirewallPoliciesUpdate(loader=self)
     # region AzureFirewallPolicies
     with self.command_group('network firewall policy', network_firewall_policies_sdk, resource_type=CUSTOM_FIREWALL, min_api='2019-07-01') as g:
-        g.custom_command('create', 'create_azure_firewall_policies', exception_handler=exception_handler)
-        g.command('delete', 'begin_delete')
-        g.custom_command('list', 'list_azure_firewall_policies')
-        g.show_command('show')
-        g.generic_update_command('update', custom_func_name='update_azure_firewall_policies',
-                                 setter_name='set_azure_firewall_policies',
-                                 setter_type=network_firewall_policies_custom,
-                                 exception_handler=exception_handler)
+        from .custom import AzureFirewallPoliciesCreate, AzureFirewallPoliciesUpdate
+        self.command_table['network firewall policy create'] = AzureFirewallPoliciesCreate(loader=self)
+        self.command_table['network firewall policy update'] = AzureFirewallPoliciesUpdate(loader=self)
+        # g.custom_command('create', 'create_azure_firewall_policies', exception_handler=exception_handler)
+        # g.command('delete', 'begin_delete')
+        # g.custom_command('list', 'list_azure_firewall_policies')
+        # g.show_command('show')
+        # g.generic_update_command('update', custom_func_name='update_azure_firewall_policies',
+        #                          setter_name='set_azure_firewall_policies',
+        #                          setter_type=network_firewall_policies_custom,
+        #                          exception_handler=exception_handler)
 
     with self.command_group('network firewall policy intrusion-detection', resource_type=CUSTOM_FIREWALL, min_api='2021-08-01', is_preview=True) as g:
         g.custom_command('add', 'add_firewall_policy_intrusion_detection_config', exception_handler=exception_handler)
