@@ -921,7 +921,7 @@ def devcenter_environment_create(
     body["environment_definition_name"] = environment_definition_name
     return sdk_no_wait(
         no_wait,
-        cf_dataplane.environments.begin_create_or_update,
+        cf_dataplane.environments.begin_create_or_replace,
         user_id=user_id,
         environment_name=environment_name,
         body=body,
@@ -952,7 +952,7 @@ def devcenter_environment_update(
     body["environment_definition_name"] = environment.environment_definition_name
     return sdk_no_wait(
         no_wait,
-        cf_dataplane.environments.begin_create_or_update,
+        cf_dataplane.environments.begin_create_or_replace,
         user_id=user_id,
         environment_name=environment_name,
         body=body,
