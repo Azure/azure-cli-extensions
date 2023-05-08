@@ -669,7 +669,7 @@ class AzInteractiveShell(object):
                 print_styled_text([(Style.WARNING, results)])
                 self.recommender.cur_thread.result = []
                 return
-            if len(results) == 0 or results[0]["score"] < 10:
+            if len(results) == 0 or results[0]["score"] < 11.5:
                 print_styled_text([(Style.WARNING, "We currently can't find the scenario you need. \n"
                                                    "You can try to change the search keywords or "
                                                    "submit an issue to ask for the scenario you need.")])
