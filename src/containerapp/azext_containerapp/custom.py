@@ -4380,3 +4380,53 @@ def patch_list(cmd, resource_group_name, managed_env, show_all=False):
     if show_all == False :
         results = {k: v for k, v in results.items() if k != "NotPatchable"}
     return results
+
+def patch_run(cmd, resource_group_name, managed_env, show_all=False):
+    patchable_check_results = patch_list(cmd, resource_group_name, managed_env, show_all=show_all)
+    patchable_check_results_json = json.dumps(patchable_check_results, indent=4)
+    print(patchable_check_results_json)
+    user_input=input("Do you want to apply all the patch or specify by id? (y/n/id)\n")
+    return patch_apply(cmd, patchable_check_results, user_input)
+
+def patch_apply(cmd, patchCheckList, method):
+    results = []
+    m = method.strip().lower()
+    if m == "y":
+        for key in patchCheckList.keys():
+            if key != "NotPatchable":
+                if patchCheckList[key]["newRunImage"]:
+                    results.append(patch_cli_call(cmd, patchCheckList[key]["targetContainerAppName"], patchCheckList[key]["targetContainerName"], patchCheckList[key]["targetImageName"], patchCheckList[key]["newRunImage"], patchCheckList[key]["revisionMode"]))
+    elif m == "n":
+        print("No patch applied.")
+    else:
+        if method in patchCheckList.keys():
+            results.append(patch_cli_call(cmd, patchCheckList[method]["targetContainerAppName"], patchCheckList[method]["targetContainerName"], patchCheckList[method]["targetImageName"], patchCheckList[method]["newRunImage"], patchCheckList[method]["revisionMode"]))
+        else:
+            print("Invalid patch method or id.")
+
+def patch_cli_call(cmd, resource_group, container_app_name, container_name, target_image_name, new_run_image, revision_mode):
+    try:
+        print("Applying patch and publishing...")
+        subprocess.run(f"pack rebase {target_image_name} --run-image {new_run_image}", shell=True)
+        new_target_image_name = target_image_name.split(":")[0] + ":" + new_run_image.split(":")[1]
+        subprocess.run(f"docker tag {target_image_name} {new_target_image_name}", shell=True)
+        subprocess.run(f"docker push {new_target_image_name}", shell=True)
+        print("Patch applied and published successfully.\nNew image: " + new_target_image_name)
+    except Exception:
+        print("Error: Failed to apply patch and publish. Check if registry is logged in and has write access.")
+        raise
+    try:
+        print("Patching container app: " + container_app_name + " container: " + container_name + " with image: " + new_target_image_name)
+        update_info_json = update_containerapp(cmd, 
+                                          name=container_app_name, 
+                                          resource_group_name=resource_group, 
+                                          container_name=container_name, 
+                                          new_image_name=new_target_image_name)
+        print("Container app revision created successfully.")
+        update_info = json.loads(update_info_json)
+        new_revision_info = activate_revision(cmd, resource_group, revision_name=update_info["latestRevisionName"], name=container_app_name)
+        return new_revision_info
+    except Exception:
+        print("Error: Failed to create new revision with the container app.")
+        raise
+

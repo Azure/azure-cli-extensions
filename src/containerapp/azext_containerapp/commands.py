@@ -202,3 +202,4 @@ def load_command_table(self, _):
 
     with self.command_group('containerapp patch', is_preview=True) as g:
         g.custom_command('list', 'patch_list')
+        g.custom_command('run', 'patch_run')
