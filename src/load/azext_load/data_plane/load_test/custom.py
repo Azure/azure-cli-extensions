@@ -27,6 +27,7 @@ def create_test(
     certificate=None,
     key_vault_reference_identity=None,
     subnet_id=None,
+    no_wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = {}
@@ -52,23 +53,33 @@ def create_test(
             raise ValidationError(
                 f"Test with given test ID : {test_id} already exists."
             )
-    logger.info("Creating test with testid: %s and body : %s", test_id, body)
+    logger.info("Creating test with test ID: %s and body : %s", test_id, body)
     response_obj = client.create_or_update_test(test_id=test_id, body=body)
     logger.debug(
-        "Response object for creating test with testid: %s is %s", test_id, response_obj
+        "Response object for creating test with test ID: %s is %s",
+        test_id,
+        response_obj,
     )
     logger.info(
-        "Created test with testid: %s and response obj is %s", test_id, response_obj
+        "Created test with test ID: %s and response obj is %s", test_id, response_obj
     )
-
-    # polling until upload is complete is pending and include no wait scenario as well
     if test_plan is not None:
         logger.info("Uploading test plan for the test")
-        client.begin_upload_test_file(
-            test_id,
-            file_name=test_id + "TestPlan.jmx",
-            body=open(test_plan, "r"),
-        )
+        with open(test_plan, "r") as file:
+            upload_poller = client.begin_upload_test_file(
+                test_id,
+                file_name=test_id + "TestPlan.jmx",
+                body=file,
+            )
+            if not no_wait:
+                response = upload_poller.result()
+                if response.get("validationStatus") == "VALIDATION_SUCCESS":
+                    logger.info("Uploaded test plan for the test")
+                elif response.get("validationStatus") == "VALIDATION_FAILED":
+                    logger.warning("Test plan validation failed for the test")
+                else:
+                    logger.warning("Invalid status for Test plan validation")
+                logger.debug("Upload result: %s", response)
     return response_obj
 
 
@@ -88,6 +99,7 @@ def update_test(
     certificate=None,
     key_vault_reference_identity=None,
     subnet_id=None,
+    no_wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = client.get_test(test_id)
@@ -106,21 +118,33 @@ def update_test(
         key_vault_reference_identity=key_vault_reference_identity,
         subnet_id=subnet_id,
     )
-    logger.info("Updating test with testid: %s and body : %s", test_id, body)
+    logger.info("Updating test with test ID: %s and body : %s", test_id, body)
     response_obj = client.create_or_update_test(test_id=test_id, body=body)
     logger.debug(
-        "Response object for updating test with testid: %s is %s", test_id, response_obj
+        "Response object for updating test with test ID: %s is %s",
+        test_id,
+        response_obj,
     )
     logger.info(
-        "Updated test with testid: %s and response obj is %s", test_id, response_obj
+        "Updated test with test ID: %s and response obj is %s", test_id, response_obj
     )
     if test_plan is not None:
         logger.info("Uploading test plan for the test")
-        client.begin_upload_test_file(
-            response_obj["testId"],
-            file_name=response_obj["displayName"] + "TestPlan.jmx",
-            body=open(test_plan, "r"),
-        )
+        with open(test_plan, "r") as file:
+            upload_poller = client.begin_upload_test_file(
+                test_id,
+                file_name=test_id + "TestPlan.jmx",
+                body=file,
+            )
+            if not no_wait:
+                response = upload_poller.result()
+                if response.get("validationStatus") == "VALIDATION_SUCCESS":
+                    logger.info("Uploaded test plan for the test")
+                elif response.get("validationStatus") == "VALIDATION_FAILED":
+                    logger.warning("Test plan validation failed for the test")
+                else:
+                    logger.warning("Invalid status for Test plan validation")
+                logger.debug("Upload result: %s", response)
     return response_obj
 
 
