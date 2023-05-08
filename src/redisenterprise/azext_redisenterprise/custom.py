@@ -26,7 +26,6 @@ from .aaz.latest.redisenterprise.database import Wait as _DatabaseWait
 from .aaz.latest.redisenterprise import List as _ClusterList
 from .aaz.latest.redisenterprise import Show as _ClusterShow
 from .aaz.latest.redisenterprise import Wait as _DatabaseWait
-from msrest.serialization import last_restapi_key_transformer
 from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
 )
@@ -182,6 +181,11 @@ def redisenterprise_create(cmd,
                            tags=None,
                            capacity=None,
                            zones=None,
+                           key_encryption_key_url=None,
+                           identity_type=None,
+                           user_assigned_identities=None,
+                           key_encryption_identity_type=None,
+                           user_assigned_identity_resource_id=None,
                            minimum_tls_version=None,
                            client_protocol=None,
                            port=None,
@@ -193,7 +197,6 @@ def redisenterprise_create(cmd,
                            no_wait=False,
                            group_nickname=None,
                            linked_databases=None):
-    print("HAHAHAHAHAHAHAHAHAHHAAH")
     if (no_database and any(x is not None for x in [client_protocol,
                                                     port,
                                                     clustering_policy,
@@ -245,6 +248,11 @@ def redisenterprise_create(cmd,
                 "capacity" : capacity,
                 "zones": zones,
                 "minimum_tls_version": minimum_tls_version,
+                "key_encryption_key_url":key_encryption_key_url,
+                "identity_type":identity_type,
+                "user_assigned_identities":user_assigned_identities,
+                "key_encryption_identity_type":key_encryption_identity_type,
+                "user_assigned_identity_resource_id":user_assigned_identity_resource_id,
                 "no_wait": no_wait
             })
 
@@ -258,6 +266,11 @@ def redisenterprise_create(cmd,
                 "capacity" : capacity,
                 "zones": zones,
                 "minimum_tls_version": minimum_tls_version,
+                "key_encryption_key_url":key_encryption_key_url,
+                "identity_type":identity_type,
+                "user_assigned_identities":user_assigned_identities,
+                "key_encryption_identity_type":key_encryption_identity_type,
+                "user_assigned_identity_resource_id":user_assigned_identity_resource_id,
                 "no_wait": no_wait
             })
     if poller:

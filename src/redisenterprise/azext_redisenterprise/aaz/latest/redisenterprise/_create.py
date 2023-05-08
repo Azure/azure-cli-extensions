@@ -60,11 +60,31 @@ class Create(AAZCommand):
             help="Key encryption key Url, versioned only. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78",
         )
 
-        # define Arg Group "KeyEncryptionKeyIdentity"
+        # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
         _args_schema.identity_type = AAZStrArg(
             options=["--identity-type"],
+            arg_group="Identity",
+            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned, UserAssigned": "SystemAssigned, UserAssigned", "UserAssigned": "UserAssigned"},
+        )
+        _args_schema.user_assigned_identities = AAZDictArg(
+            options=["--user-assigned-identities"],
+            arg_group="Identity",
+            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
+        )
+
+        user_assigned_identities = cls._args_schema.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            blank={},
+        )
+
+        # define Arg Group "KeyEncryptionKeyIdentity"
+
+        _args_schema = cls._args_schema
+        _args_schema.key_encryption_identity_type = AAZStrArg(
+            options=["--key-encryption-identity-type"],
             arg_group="KeyEncryptionKeyIdentity",
             help="Only userAssignedIdentity is supported in this API version; other types may be supported in the future",
             enum={"systemAssignedIdentity": "systemAssignedIdentity", "userAssignedIdentity": "userAssignedIdentity"},
@@ -78,11 +98,6 @@ class Create(AAZCommand):
         # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
-        _args_schema.identity = AAZObjectArg(
-            options=["--identity"],
-            arg_group="Parameters",
-            help="The identity of the resource.",
-        )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Parameters",
             help="The geo-location where the resource lives",
@@ -100,23 +115,6 @@ class Create(AAZCommand):
             options=["--zones"],
             arg_group="Parameters",
             help="The Availability Zones where this cluster will be deployed.",
-        )
-
-        identity = cls._args_schema.identity
-        identity.type = AAZStrArg(
-            options=["type"],
-            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
-            required=True,
-            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned, UserAssigned": "SystemAssigned, UserAssigned", "UserAssigned": "UserAssigned"},
-        )
-        identity.user_assigned_identities = AAZDictArg(
-            options=["user-assigned-identities"],
-            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
-        )
-
-        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectArg(
-            blank={},
         )
 
         tags = cls._args_schema.tags
@@ -258,7 +256,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("identity", AAZObjectType)
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
@@ -267,7 +265,7 @@ class Create(AAZCommand):
 
             identity = _builder.get(".identity")
             if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+                identity.set_prop("type", AAZStrType, ".identity_type", typ_kwargs={"flags": {"required": True}})
                 identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
 
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
@@ -290,7 +288,7 @@ class Create(AAZCommand):
 
             key_encryption_key_identity = _builder.get(".properties.encryption.customerManagedKeyEncryption.keyEncryptionKeyIdentity")
             if key_encryption_key_identity is not None:
-                key_encryption_key_identity.set_prop("identityType", AAZStrType, ".identity_type")
+                key_encryption_key_identity.set_prop("identityType", AAZStrType, ".key_encryption_identity_type")
                 key_encryption_key_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".user_assigned_identity_resource_id")
 
             sku = _builder.get(".sku")

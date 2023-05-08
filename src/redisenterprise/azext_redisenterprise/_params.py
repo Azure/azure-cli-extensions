@@ -7,7 +7,10 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
-from azure.cli.core.commands.validators import get_default_location_from_resource_group
+from azure.cli.core.commands.validators import (
+    get_default_location_from_resource_group,
+    validate_file_or_dict
+)
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_enum_type,
@@ -46,6 +49,17 @@ def load_arguments(self, _):
                    'will be deployed.')
         c.argument('minimum_tls_version', arg_type=get_enum_type(['1.0', '1.1', '1.2']), help='The minimum TLS version '
                    'for the cluster to support, e.g. \'1.2\'')
+        c.argument('key_encryption_key_url', options_list=['--key-encryption-key-url'], type=str, help='Key encryption key Url, versioned only. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78'
+                   ,arg_group='Encryption')
+        c.argument('identity_type', options_list=['--identity-type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned, UserAssigned']), help='Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).'
+                   ,arg_group='Identity')
+        c.argument('key_encryption_identity_type', options_list=['--key-encryption-identity-type'], arg_type=get_enum_type(['systemAssignedIdentity', 'userAssignedIdentity']), help='Only userAssignedIdentity is supported in this API version; other types may be supported in the future.'
+                   ,arg_group='KeyEncryptionKeyIdentity')
+        c.argument('user_assigned_identity_resource_id', options_list=['--user-assigned-identity-resource-id'], type=str , help='User assigned identity to use for accessing key encryption key Url. Ex: /subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId.'
+                   ,arg_group='KeyEncryptionKeyIdentity')
+        c.argument('user_assigned_identities', options_list=['--user-assigned-identities'], type=validate_file_or_dict, help='The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests'
+                   ,arg_group='Identity')
+
         # Add database create arguments
         c.argument('client_protocol', arg_type=get_enum_type(['Encrypted', 'Plaintext']), help='Specifies whether redis clients '
                    'can connect using TLS-encrypted or plaintext redis protocols. Default is TLS-encrypted.')
@@ -81,6 +95,16 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('minimum_tls_version', arg_type=get_enum_type(['1.0', '1.1', '1.2']), help='The minimum TLS version '
                    'for the cluster to support, e.g. \'1.2\'')
+        c.argument('key_encryption_key_url', options_list=['--key-encryption-key-url'], type=str, help='Key encryption key Url, versioned only. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78'
+                   ,arg_group='Encryption')
+        c.argument('identity_type', options_list=['--identity-type'], arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned, UserAssigned']), help='Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).'
+                   ,arg_group='Identity')
+        c.argument('key_encryption_identity_type', options_list=['--key-encryption-identity-type'], arg_type=get_enum_type(['systemAssignedIdentity', 'userAssignedIdentity']), help='Only userAssignedIdentity is supported in this API version; other types may be supported in the future.'
+                   ,arg_group='KeyEncryptionKeyIdentity')
+        c.argument('user_assigned_identity_resource_id', options_list=['--user-assigned-identity-resource-id'], type=str , help='User assigned identity to use for accessing key encryption key Url. Ex: /subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId.'
+                   ,arg_group='KeyEncryptionKeyIdentity')
+        c.argument('user_assigned_identities', options_list=['--user-assigned-identities'], type=validate_file_or_dict, help='The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests'
+                   ,arg_group='Identity')
 
     with self.argument_context('redisenterprise delete') as c:
         c.argument('resource_group_name', resource_group_name_type)
