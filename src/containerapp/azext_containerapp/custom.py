@@ -4383,8 +4383,14 @@ def patch_list(cmd, resource_group_name, managed_env, show_all=False):
 
 def patch_run(cmd, resource_group_name, managed_env, show_all=False):
     patchable_check_results = patch_list(cmd, resource_group_name, managed_env, show_all=show_all)
+    if list(patchable_check_results.keys()).count == 0:
+        print("No patchable image found.")
+        return
     patchable_check_results_json = json.dumps(patchable_check_results, indent=4)
     print(patchable_check_results_json)
+    if list(patchable_check_results.keys()) == ["NotPatchable"]:
+        print("No patchable image found.")
+        return
     user_input=input("Do you want to apply all the patch or specify by id? (y/n/id)\n")
     return patch_apply(cmd, patchable_check_results, user_input)
 

@@ -1283,3 +1283,15 @@ helps['containerapp patch list'] = """
       text: |
           az containerapp list -g MyResourceGroup --environment MyContainerappEnv --show-all
 """
+
+helps['containerapp patch run'] = """
+    type: command
+    short-summary: List and choose container apps to be patched.
+    exmaples:
+    - name: Patch a container app.
+      text: |
+          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv
+    - name: Patch a container app and show scan results of all container apps.
+      text: |
+          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv --show-all
+"""
