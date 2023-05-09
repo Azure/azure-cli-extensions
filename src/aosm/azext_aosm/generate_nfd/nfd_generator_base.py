@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------
 """Contains a base class for generating NFDs."""
 from knack.log import get_logger
-from azext_aosm._configuration import Configuration
 
 
 logger = get_logger(__name__)
@@ -15,17 +14,13 @@ class NFDGenerator:
 
     def __init__(
         self,
-        # config: Configuration
     ) -> None:
         """
-        _summary_
+        Superclass for NFD generators.
 
-        :param definition_type: _description_
-        :type definition_type: str
-        :param config: _description_
-        :type config: Configuration
+        The sub-classes do the actual work
         """
-        # self.config = config
+        pass
 
     def generate_nfd(self) -> None:
         """No-op on base class."""
