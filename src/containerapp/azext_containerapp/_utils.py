@@ -1860,10 +1860,10 @@ def get_current_mariner_tags() -> list(OryxMarinerRunImgTagProperty):
     return tag_list
 
 
-def get_latest_buildpack_run_tag():
+def get_latest_buildpack_run_tag(framework, version, support = "lts", mariner_version = "cbl-mariner2.0"):
     tags = get_current_mariner_tags()
     try:
-        return tags["aspnet"]["7.0"]["lts"]["cbl-mariner2.0"][0]["fullTag"]
+        return tags[framework][version][support][mariner_version][0]["fullTag"]
     except KeyError:
         return None
 

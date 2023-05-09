@@ -388,7 +388,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         # Run 'pack build' to produce a runnable application image for the Container App
         command = [pack_exec_path, 'build', image_name, '--builder', builder_image_name, '--path', source]
-        buildpack_run_tag = get_latest_buildpack_run_tag()
+        buildpack_run_tag = get_latest_buildpack_run_tag("aspnet", "7.0")
         if buildpack_run_tag is not None:
             command.extend(['--run-image', f"mcr.microsoft.com/oryx/builder:{buildpack_run_tag}"])
 
@@ -397,12 +397,14 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = process.communicate()
 
+            pack_build_output = stdout.decode('utf-8')
+
             # If the app source is not supported by the builder, fall back to ACR Tasks
-            if "No buildpack groups passed detection" in stdout.decode('utf-8'):
+            if "No buildpack groups passed detection" in pack_build_output:
                 raise ValidationError("No buildpacks support the provided application source.")
 
             # Log stdout once it's determined that the app source is supported by the builder
-            logger.info(stdout.decode('utf-8'))
+            logger.info(pack_build_output)
 
             if process.returncode != 0:
                 raise CLIError(f"Error thrown when running 'pack build': {stderr.decode('utf-8')}")
