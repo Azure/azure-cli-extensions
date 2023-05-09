@@ -673,6 +673,10 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
                          "Microsoft.ManagedIdentity/userAssignedIdentities/{}",
             )
         )
+        args_schema.base_policy._fmt = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
+                     "/firewallPolicies/{}",
+        )
         args_schema.identity_type._registered = False
         args_schema.user_assigned_identities._registered = False
 
@@ -684,84 +688,9 @@ class AzureFirewallPoliciesCreate(_AzureFirewallPoliciesCreate):
             args.identity_type = "UserAssigned"
             args.user_assigned_identities = {args.identity: {}}
 
-        if any([args.dns_servers, args.enable_dns_proxy]):
+        if has_value(args.dns_servers):
             if not has_value(args.enable_dns_proxy):
                 args.enable_dns_proxy = False
-
-
-def create_azure_firewall_policies(cmd, resource_group_name, firewall_policy_name, base_policy=None,
-                                   threat_intel_mode=None, location=None, tags=None, ip_addresses=None,
-                                   fqdns=None,
-                                   dns_servers=None, enable_dns_proxy=None,
-                                   sku=None, intrusion_detection_mode=None, sql=None,
-                                   key_vault_secret_id=None, certificate_name=None, user_assigned_identity=None):
-    client = network_client_factory(cmd.cli_ctx).firewall_policies
-    (FirewallPolicy,
-     SubResource,
-     FirewallPolicyThreatIntelWhitelist,
-     DnsSettings,
-     FirewallPolicySku,
-     ManagedServiceIdentityUserAssignedIdentitiesValue,
-     ManagedServiceIdentity) = cmd.get_models('FirewallPolicy',
-                                              'SubResource',
-                                              'FirewallPolicyThreatIntelWhitelist',
-                                              'DnsSettings',
-                                              'FirewallPolicySku',
-                                              # pylint: disable=line-too-long
-                                              'Components1Jq1T4ISchemasManagedserviceidentityPropertiesUserassignedidentitiesAdditionalproperties',
-                                              'ManagedServiceIdentity')
-    firewall_policy = FirewallPolicy(base_policy=SubResource(id=base_policy) if base_policy is not None else None,
-                                     threat_intel_mode=threat_intel_mode,
-                                     location=location,
-                                     tags=tags)
-
-    threat_intel_allowlist = FirewallPolicyThreatIntelWhitelist(ip_addresses=ip_addresses,
-                                                                fqdns=fqdns) if ip_addresses and fqdns else None
-    firewall_policy.threat_intel_whitelist = threat_intel_allowlist
-
-    if cmd.supported_api_version(min_api='2020-05-01'):
-        if any([dns_servers, enable_dns_proxy]):
-            dns_settings = DnsSettings(servers=dns_servers,
-                                       enable_proxy=enable_dns_proxy or False)
-            firewall_policy.dns_settings = dns_settings
-    if cmd.supported_api_version(min_api='2021-08-01'):
-        if sku is not None:
-            firewall_policy.sku = FirewallPolicySku(tier=sku)
-
-        if intrusion_detection_mode is not None:
-            (FirewallPolicyIntrusionDetection,
-             FirewallPolicyIntrusionDetectionConfiguration) = \
-                cmd.get_models('FirewallPolicyIntrusionDetection',
-                               'FirewallPolicyIntrusionDetectionConfiguration')
-            firewall_policy.intrusion_detection = FirewallPolicyIntrusionDetection(
-                mode=intrusion_detection_mode,
-                configuration=FirewallPolicyIntrusionDetectionConfiguration()
-            )
-
-        if certificate_name is not None and key_vault_secret_id is not None:
-            FirewallPolicyTransportSecurity, FirewallPolicyCertificateAuthority = \
-                cmd.get_models('FirewallPolicyTransportSecurity', 'FirewallPolicyCertificateAuthority')
-            certificate_auth = FirewallPolicyCertificateAuthority(key_vault_secret_id=key_vault_secret_id,
-                                                                  name=certificate_name)
-            firewall_policy.transport_security = FirewallPolicyTransportSecurity(certificate_authority=certificate_auth)
-
-    if cmd.supported_api_version(min_api='2021-03-01'):
-        if sql is not None:
-            FirewallPolicySQL = cmd.get_models('FirewallPolicySQL')
-            firewall_policy.sql = FirewallPolicySQL(allow_sql_redirect=sql)
-
-    # identity
-    if user_assigned_identity is not None:
-        user_assigned_indentity_instance = ManagedServiceIdentityUserAssignedIdentitiesValue()
-        user_assigned_identities_instance = {}
-        user_assigned_identities_instance[user_assigned_identity] = user_assigned_indentity_instance
-        identity_instance = ManagedServiceIdentity(
-            type="UserAssigned",
-            user_assigned_identities=user_assigned_identities_instance
-        )
-        firewall_policy.identity = identity_instance
-
-    return client.begin_create_or_update(resource_group_name, firewall_policy_name, firewall_policy)
 
 
 class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
@@ -788,103 +717,11 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
             args.identity_type = "UserAssigned"
             args.user_assigned_identities = {args.identity: {}}
         elif args.sku == 'Premium':
-            args.identity_type = None
+            args.identity_type = "None"
             args.user_assigned_identities = None
 
 
 # pylint: disable=too-many-locals
-def update_azure_firewall_policies(cmd,
-                                   instance, tags=None, threat_intel_mode=None, ip_addresses=None,
-                                   fqdns=None,
-                                   dns_servers=None, enable_dns_proxy=None,
-                                   sku=None, intrusion_detection_mode=None, sql=None,
-                                   key_vault_secret_id=None, certificate_name=None, user_assigned_identity=None):
-
-    (FirewallPolicyThreatIntelWhitelist, FirewallPolicySku) = cmd.get_models('FirewallPolicyThreatIntelWhitelist',
-                                                                             'FirewallPolicySku')
-    if tags is not None:
-        instance.tags = tags
-    if threat_intel_mode is not None:
-        instance.threat_intel_mode = threat_intel_mode
-
-    if cmd.supported_api_version(min_api='2020-05-01'):
-        if instance.dns_settings is None and any([dns_servers, enable_dns_proxy]):
-            DnsSettings = cmd.get_models('DnsSettings')
-            instance.dns_settings = DnsSettings()
-        if dns_servers is not None:
-            instance.dns_settings.servers = dns_servers
-        if enable_dns_proxy is not None:
-            instance.dns_settings.enable_proxy = enable_dns_proxy
-
-    if instance.threat_intel_whitelist is None and any([ip_addresses, fqdns]):
-        instance.threat_intel_whitelist = FirewallPolicyThreatIntelWhitelist(ip_addresses=ip_addresses,
-                                                                             fqnds=fqdns)
-    if ip_addresses is not None:
-        instance.threat_intel_whitelist.ip_addresses = ip_addresses
-    if fqdns is not None:
-        instance.threat_intel_whitelist.fqdns = fqdns
-    if cmd.supported_api_version(min_api='2021-08-01'):
-        if sku is not None:
-            instance.sku = FirewallPolicySku(tier=sku)
-
-        if intrusion_detection_mode is not None:
-            if instance.intrusion_detection is not None:
-                instance.intrusion_detection.mode = intrusion_detection_mode
-            else:
-                (FirewallPolicyIntrusionDetection, FirewallPolicyIntrusionDetectionConfiguration) = \
-                    cmd.get_models('FirewallPolicyIntrusionDetection', 'FirewallPolicyIntrusionDetectionConfiguration')
-                instance.intrusion_detection = FirewallPolicyIntrusionDetection(
-                    mode=intrusion_detection_mode,
-                    configuration=FirewallPolicyIntrusionDetectionConfiguration()
-                )
-        if certificate_name is not None and key_vault_secret_id is not None:
-            FirewallPolicyTransportSecurity, FirewallPolicyCertificateAuthority = \
-                cmd.get_models('FirewallPolicyTransportSecurity', 'FirewallPolicyCertificateAuthority')
-            certificate_auth = FirewallPolicyCertificateAuthority(key_vault_secret_id=key_vault_secret_id,
-                                                                  name=certificate_name)
-            instance.transport_security = FirewallPolicyTransportSecurity(certificate_authority=certificate_auth)
-
-    if cmd.supported_api_version(min_api='2021-03-01'):
-        if sql is not None:
-            FirewallPolicySQL = cmd.get_models('FirewallPolicySQL')
-            instance.sql = FirewallPolicySQL(allow_sql_redirect=sql)
-
-    # identity
-    (ManagedServiceIdentityUserAssignedIdentitiesValue,
-     ManagedServiceIdentity) = cmd.get_models('Components1Jq1T4ISchemasManagedserviceidentity\
-         PropertiesUserassignedidentitiesAdditionalproperties',
-                                              'ManagedServiceIdentity')
-    if user_assigned_identity is not None:
-        user_assigned_indentity_instance = ManagedServiceIdentityUserAssignedIdentitiesValue()
-        user_assigned_identities_instance = {}
-        user_assigned_identities_instance[user_assigned_identity] = user_assigned_indentity_instance
-        identity_instance = ManagedServiceIdentity(
-            type="UserAssigned",
-            user_assigned_identities=user_assigned_identities_instance
-        )
-        instance.identity = identity_instance
-
-    return instance
-
-
-def set_azure_firewall_policies(cmd, resource_group_name, firewall_policy_name, parameters):
-    if parameters.identity is None and parameters.sku.tier == 'Premium':
-        ManagedServiceIdentity = cmd.get_models('ManagedServiceIdentity')
-
-        identity = ManagedServiceIdentity(type="None", user_assigned_identities=None)
-        parameters.identity = identity
-
-    client = network_client_factory(cmd.cli_ctx).firewall_policies
-    return client.begin_create_or_update(resource_group_name, firewall_policy_name, parameters)
-
-
-def list_azure_firewall_policies(cmd, resource_group_name=None):
-    client = network_client_factory(cmd.cli_ctx).firewall_policies
-    if resource_group_name is not None:
-        return client.list(resource_group_name)
-    return client.list_all()
-
-
 def add_firewall_policy_intrusion_detection_config(cmd,
                                                    resource_group_name,
                                                    firewall_policy_name,
@@ -909,18 +746,21 @@ def add_firewall_policy_intrusion_detection_config(cmd,
         raise RequiredArgumentMissingError('Intrusion detection mode is not set. Setting it by update command first')
 
     if signature_id is not None and signature_mode is not None:
-        for overrided_signature in firewall_policy.intrusion_detection.configuration.signature_overrides:
-            if overrided_signature.id == signature_id:
-                raise InvalidArgumentValueError(
-                    f'Signature ID {signature_id} exists. Delete it first or try update instead')
-
         FirewallPolicyIntrusionDetectionSignatureSpecification = \
             cmd.get_models('FirewallPolicyIntrusionDetectionSignatureSpecification')
         signature_override = FirewallPolicyIntrusionDetectionSignatureSpecification(
             id=signature_id,
             mode=signature_mode
         )
-        firewall_policy.intrusion_detection.configuration.signature_overrides.append(signature_override)
+        if firewall_policy.intrusion_detection.configuration is not None:
+            for overrided_signature in firewall_policy.intrusion_detection.configuration.signature_overrides:
+                if overrided_signature.id == signature_id:
+                    raise InvalidArgumentValueError(
+                        f'Signature ID {signature_id} exists. Delete it first or try update instead')
+            firewall_policy.intrusion_detection.configuration.signature_overrides.append(signature_override)
+        else:
+            Configuration = cmd.get_models('FirewallPolicyIntrusionDetectionConfiguration')
+            firewall_policy.intrusion_detection.configuration = Configuration(signature_overrides=[signature_override])
 
     if bypass_rule_name is not None:
         FirewallPolicyIntrusionDetectionBypassTrafficSpecifications = \
