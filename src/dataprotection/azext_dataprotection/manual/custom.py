@@ -115,9 +115,6 @@ def dataprotection_backup_instance_create(cmd, vault_name, resource_group_name, 
                     "backupInstance": self.serialize_content(_content_value)
                 }
 
-            def on_200(self, session):
-                pass
-
         class BackupInstancesCreateOrUpdate(_Create.BackupInstancesCreateOrUpdate):
 
             @property
@@ -141,9 +138,9 @@ def dataprotection_backup_instance_create(cmd, vault_name, resource_group_name, 
 def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource_group_name, backup_instance,
                                                        no_wait=False):
 
-    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Create as _Create, ValidateForBackup as _ValidateForBackup, Update as _Update
+    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Create as _Create, ValidateForBackup as _ValidateForBackup
 
-    class Validate(_Update):
+    class Validate(_ValidateForBackup):
 
         def _execute_operations(self):
             self.pre_operations()
@@ -151,34 +148,41 @@ def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource
             self.post_operations()
 
         def pre_operations(self):
+            # For some reason, successful operation result does not work without this.
+            # That has something to do with self.ctx.var.instance's initialization here and its subsequent
+            # parsing in _output, but why specifically this line is the only thing that works I'm not sure.
             self.ctx.set_var(
                 "instance",
                 backup_instance,
                 schema_builder=_Create.BackupInstancesCreateOrUpdate._build_schema_on_200_201
             )
+        
+        @classmethod
+        def _build_arguments_schema(cls, *args, **kwargs):
+            args_schema = super()._build_arguments_schema(*args, **kwargs)
 
+            args_schema.backup_instance.data_source_set_info.resource_id._required = False
+            args_schema.backup_instance.datasource_auth_credentials.\
+                secret_store_based_auth_credentials.secret_store_resource.secret_store_type._required = False
+
+            return args_schema
+        
         class BackupInstancesValidateForBackup(_ValidateForBackup.BackupInstancesValidateForBackup):
 
             @property
             def content(self):
-                _content_value, _builder = self.new_content_builder(
-                    self.ctx.args,
-                    value=self.ctx.vars.instance.properties,
-                )
+                body = helper.convert_dict_keys_snake_to_camel(backup_instance["properties"])
 
                 return {
-                    "backupInstance": self.serialize_content(_content_value)
+                    "backupInstance": body
                 }
 
-            def on_200(self, session):
-                pass
-
-    backup_instance_name = backup_instance["backup_instance_name"]
+    # backup_instance_name = backup_instance["backup_instance_name"]
 
     return Validate(cli_ctx=cmd.cli_ctx)(command_args={
         "vault_name": vault_name,
         "resource_group": resource_group_name,
-        "backup_instance_name": backup_instance_name,
+        "backup_instance": backup_instance["properties"],
         "no_wait": no_wait,
     })
 
