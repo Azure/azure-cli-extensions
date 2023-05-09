@@ -5,6 +5,8 @@ from azext_load.data_plane.utils.utils import (
     create_or_update_body,
     download_file,
     get_admin_data_plane_client,
+    upload_test_plan,
+    upload_configuration_files,
 )
 from azure.cli.core.azclierror import ValidationError
 from knack.log import get_logger
@@ -21,7 +23,7 @@ def create_test(
     load_test_config_file=None,
     test_description=None,
     test_plan=None,
-    configuration_file=None,
+    configuration_files=None,
     engine_instances=None,
     env=None,
     secrets=None,
@@ -38,7 +40,6 @@ def create_test(
         load_test_config_file=load_test_config_file,
         display_name=display_name,
         test_description=test_description,
-        configuration_file=configuration_file,
         engine_instances=engine_instances,
         env=env,
         secrets=secrets,
@@ -63,23 +64,13 @@ def create_test(
     logger.info(
         "Created test with test ID: %s and response obj is %s", test_id, response_obj
     )
+
     if test_plan is not None:
-        logger.info("Uploading test plan for the test")
-        with open(test_plan, "r") as file:
-            upload_poller = client.begin_upload_test_file(
-                test_id,
-                file_name=test_id + "TestPlan.jmx",
-                body=file,
-            )
-            if not no_wait:
-                response = upload_poller.result()
-                if response.get("validationStatus") == "VALIDATION_SUCCESS":
-                    logger.info("Uploaded test plan for the test")
-                elif response.get("validationStatus") == "VALIDATION_FAILED":
-                    logger.warning("Test plan validation failed for the test")
-                else:
-                    logger.warning("Invalid status for Test plan validation")
-                logger.debug("Upload result: %s", response)
+        upload_test_plan(client, test_id, test_plan, no_wait)
+
+    if configuration_files is not None:
+        upload_configuration_files(client, test_id, configuration_files)
+                    
     return response_obj
 
 
@@ -92,7 +83,7 @@ def update_test(
     load_test_config_file=None,
     test_description=None,
     test_plan=None,
-    configuration_file=None,
+    configuration_files=None,
     engine_instances=None,
     env=None,
     secrets=None,
@@ -110,7 +101,6 @@ def update_test(
         load_test_config_file=load_test_config_file,
         display_name=display_name,
         test_description=test_description,
-        configuration_file=configuration_file,
         engine_instances=engine_instances,
         env=env,
         secrets=secrets,
@@ -129,22 +119,10 @@ def update_test(
         "Updated test with test ID: %s and response obj is %s", test_id, response_obj
     )
     if test_plan is not None:
-        logger.info("Uploading test plan for the test")
-        with open(test_plan, "r") as file:
-            upload_poller = client.begin_upload_test_file(
-                test_id,
-                file_name=test_id + "TestPlan.jmx",
-                body=file,
-            )
-            if not no_wait:
-                response = upload_poller.result()
-                if response.get("validationStatus") == "VALIDATION_SUCCESS":
-                    logger.info("Uploaded test plan for the test")
-                elif response.get("validationStatus") == "VALIDATION_FAILED":
-                    logger.warning("Test plan validation failed for the test")
-                else:
-                    logger.warning("Invalid status for Test plan validation")
-                logger.debug("Upload result: %s", response)
+        upload_test_plan(client, test_id, test_plan, no_wait)
+
+    if configuration_files is not None:
+        upload_configuration_files(client, test_id, configuration_files)
     return response_obj
 
 

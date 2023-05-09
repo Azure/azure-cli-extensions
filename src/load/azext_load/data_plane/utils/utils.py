@@ -15,6 +15,39 @@ from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
 logger = get_logger(__name__)
 
+def upload_test_plan(client, test_id, test_plan, no_wait):
+    logger.info("Uploading test plan for the test")
+    with open(test_plan, "r") as file:
+        upload_poller = client.begin_upload_test_file(
+            test_id,
+            file_name=file.name.split("\\")[-1],
+            body=file,
+        )
+        if not no_wait:
+            response = upload_poller.result()
+            if response.get("validationStatus") == "VALIDATION_SUCCESS":
+                logger.info("Uploaded test plan for the test")
+            elif response.get("validationStatus") == "VALIDATION_FAILED":
+                logger.warning("Test plan validation failed for the test")
+            else:
+                logger.warning("Invalid status for Test plan validation")
+            logger.debug("Upload result for test plan: %s", response)
+
+def upload_configuration_files(client, test_id, configuration_files):
+    logger.info("Uploading configuration files for the test")
+    for configuration_file in configuration_files:
+        with open(configuration_file, "r") as file:
+            upload_poller = client.begin_upload_test_file(
+                test_id,
+                file_name=file.name.split("\\")[-1],
+                body=file,
+            )
+            response = upload_poller.result()
+            if response.get("validationStatus") == "VALIDATION_NOT_REQUIRED":
+                logger.info("Uploaded configuration file %s", file.name)
+            else:
+                logger.warning("Invalid status for configuration file %s", file.name)
+            logger.debug("Upload result for configuration file %s is: %s", file.name, response)
 
 def get_load_test_resource_endpoint(
     cred, load_test_resource, resource_group=None, subscription_id=None
@@ -100,16 +133,13 @@ def download_file(url, file_path):
     while count > 0:
         try:
             response = requests.get(url, stream=True, allow_redirects=True)
-            assert response.status_code == 200, "Response code {}".format(
-                response.status_code
-            )
             break
         except Exception as ex:
             the_ex = ex
             count -= 1
     if count == 0:
         msg = "Request for {} failed: {}".format(url, str(the_ex))
-        print(msg)
+        logger.debug(msg)
         raise Exception(msg)
 
     with open(file_path, "wb") as f:
@@ -150,7 +180,6 @@ def parse_secrets(secrets):
         )
     return secrets_list
 
-
 def parse_env(env):
     env_list = {}
     for item in env:
@@ -164,7 +193,6 @@ def create_or_update_body(
     load_test_config_file=None,
     display_name=None,
     test_description=None,
-    configuration_file=None,
     engine_instances=None,
     env=None,
     secrets=None,
@@ -177,7 +205,6 @@ def create_or_update_body(
     if load_test_config_file is not None:
         if (
             test_description
-            or configuration_file
             or env
             or secrets
             or certificate
