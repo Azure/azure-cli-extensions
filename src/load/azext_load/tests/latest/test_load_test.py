@@ -11,8 +11,8 @@ class LoadScenario(ScenarioTest):
     resource_group = "hbisht-rg"
     test_id = "sampletest1"
     #
-    load_test_config_file = "C:\\\\Users\\\\hbisht\\\\Desktop\\\\config.yaml"
-    test_plan = "C:\\\\Users\\\\hbisht\\\\Desktop\\\\LoadTest2.jmx"
+    load_test_config_file = r"C:\\Users\\hbisht\\Desktop\\config.yaml"
+    test_plan = r"C:\\Users\\hbisht\\Desktop\\LoadTest2.jmx"
 
     # test case for 'az load test list' command
     def testcase_load_test_list(self):
@@ -194,6 +194,7 @@ class LoadScenario(ScenarioTest):
 
         assert self.kwargs["test_id"] not in [test.get("testId") for test in list_of_tests]
         #
+        # #creating test with config file and arguments
     
     def testcase_load_test_update(self):
         self.kwargs.update(
@@ -233,7 +234,7 @@ class LoadScenario(ScenarioTest):
         ).get_output_in_json()
 
         assert self.kwargs["test_id"] in [test.get("testId") for test in list_of_tests]
-        assert response.get("engineCount", None) == 11
+        assert response.get("loadTestConfiguration", {}).get("engineInstances", None) == 11
 
         # Delete the load test
         self.cmd(
