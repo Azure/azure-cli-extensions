@@ -7,8 +7,9 @@ import os
 from typing import Dict, List, Any, Tuple
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 from knack.log import get_logger
+from azext_aosm._configuration import CNFConfiguration
 from azext_aosm.vendored_sdks.models import AzureArcKubernetesHelmApplication
-
+from azext_aosm._constants import CNF_DEFINITION_BICEP_SOURCE_TEMPLATE
 logger = get_logger(__name__)
 
 
@@ -20,10 +21,12 @@ class CnfNfdGenerator(NFDGenerator):
     :type NFDGenerator: _type_
     """
 
-    def __init__(self, config: Dict[Any, Any]):
+    def __init__(self, config: CNFConfiguration):
         super(NFDGenerator, self).__init__(
             config=config,
         )
+        self.config = config
+        self.bicep_template_name = CNF_DEFINITION_BICEP_SOURCE_TEMPLATE
 
     def generate_nfd(self):
         pass
