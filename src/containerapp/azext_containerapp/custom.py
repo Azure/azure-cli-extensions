@@ -1653,7 +1653,7 @@ def update_containerappsjob(cmd,
                             container_name=None,
                             replica_timeout=None,
                             replica_retry_limit=None,
-                            replica_count=None,
+                            replica_completion_count=None,
                             parallelism=None,
                             cron_expression=None,
                             set_env_vars=None,
@@ -1683,7 +1683,7 @@ def update_containerappsjob(cmd,
                                          container_name=container_name,
                                          replica_timeout=replica_timeout,
                                          replica_retry_limit=replica_retry_limit,
-                                         replica_count=replica_count,
+                                         replica_completion_count=replica_completion_count,
                                          parallelism=parallelism,
                                          cron_expression=cron_expression,
                                          set_env_vars=set_env_vars,
@@ -1713,7 +1713,7 @@ def update_containerappsjob_logic(cmd,
                                   container_name=None,
                                   replica_timeout=None,
                                   replica_retry_limit=None,
-                                  replica_count=None,
+                                  replica_completion_count=None,
                                   parallelism=None,
                                   cron_expression=None,
                                   set_env_vars=None,
@@ -1767,7 +1767,7 @@ def update_containerappsjob_logic(cmd,
 
     update_map = {}
     update_map['replicaConfigurations'] = replica_timeout or replica_retry_limit
-    update_map['triggerConfigurations'] = replica_count or parallelism or cron_expression or scale_rule_name
+    update_map['triggerConfigurations'] = replica_completion_count or parallelism or cron_expression or scale_rule_name
     update_map['container'] = image or container_name or set_env_vars is not None or remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None
     update_map['registry'] = registry_server or registry_user or registry_pass
 
@@ -1806,18 +1806,18 @@ def update_containerappsjob_logic(cmd,
         if containerappsjob_def["properties"]["configuration"]["triggerType"] == "Manual":
             manualTriggerConfig_def = None
             manualTriggerConfig_def = containerappsjob_def["properties"]["configuration"]["manualTriggerConfig"]
-            if replica_count is not None or parallelism is not None:
-                if replica_count:
-                    manualTriggerConfig_def["replicaCompletionCount"] = replica_count
+            if replica_completion_count is not None or parallelism is not None:
+                if replica_completion_count:
+                    manualTriggerConfig_def["replicaCompletionCount"] = replica_completion_count
                 if parallelism:
                     manualTriggerConfig_def["parallelism"] = parallelism
             new_containerappsjob["properties"]["configuration"]["manualTriggerConfig"] = manualTriggerConfig_def
         if containerappsjob_def["properties"]["configuration"]["triggerType"] == "Schedule":
             scheduleTriggerConfig_def = None
             scheduleTriggerConfig_def = containerappsjob_def["properties"]["configuration"]["scheduleTriggerConfig"]
-            if replica_count is not None or parallelism is not None or cron_expression is not None:
-                if replica_count:
-                    scheduleTriggerConfig_def["replicaCompletionCount"] = replica_count
+            if replica_completion_count is not None or parallelism is not None or cron_expression is not None:
+                if replica_completion_count:
+                    scheduleTriggerConfig_def["replicaCompletionCount"] = replica_completion_count
                 if parallelism:
                     scheduleTriggerConfig_def["parallelism"] = parallelism
                 if cron_expression:
@@ -1826,9 +1826,9 @@ def update_containerappsjob_logic(cmd,
         if containerappsjob_def["properties"]["configuration"]["triggerType"] == "Event":
             eventTriggerConfig_def = None
             eventTriggerConfig_def = containerappsjob_def["properties"]["configuration"]["eventTriggerConfig"]
-            if replica_count is not None or parallelism is not None:
-                if replica_count:
-                    eventTriggerConfig_def["replicaCompletionCount"] = replica_count
+            if replica_completion_count is not None or parallelism is not None:
+                if replica_completion_count:
+                    eventTriggerConfig_def["replicaCompletionCount"] = replica_completion_count
                 if parallelism:
                     eventTriggerConfig_def["parallelism"] = parallelism
 
@@ -2288,12 +2288,12 @@ def start_containerappsjob(cmd,
         handle_raw_exception(e)
 
 
-def stop_containerappsjob(cmd, resource_group_name, name, job_execution_name=None, job_execution_name_list=None):
+def stop_containerappsjob(cmd, resource_group_name, name, job_execution_name=None, execution_name_list=None):
     try:
-        if job_execution_name_list is not None:
-            job_execution_name_list = job_execution_name_list.split(",")
-            job_execution_name_list = json.dumps({'jobExecutionName': job_execution_name_list})
-        return ContainerAppsJobClient.stop_job(cmd=cmd, resource_group_name=resource_group_name, name=name, job_execution_name=job_execution_name, job_execution_names=job_execution_name_list)
+        if execution_name_list is not None:
+            execution_name_list = execution_name_list.split(",")
+            execution_name_list = json.dumps({'jobExecutionName': execution_name_list})
+        return ContainerAppsJobClient.stop_job(cmd=cmd, resource_group_name=resource_group_name, name=name, job_execution_name=job_execution_name, job_execution_names=execution_name_list)
     except CLIError as e:
         handle_raw_exception(e)
 

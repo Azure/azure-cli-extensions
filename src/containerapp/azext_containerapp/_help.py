@@ -566,16 +566,17 @@ helps['containerapp job create'] = """
               --trigger-type Manual \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
-              --replica-count 1 \\
+              --replica-completion-count 1 \\
               --parallelism 1 \\
               --image imageName
+              --workload-profile-name my-wlp
     - name: Create a container apps job with Trigger Type as Schedule.
       text: |
           az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
               --trigger-type Schedule \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
-              --replica-count 1 \\
+              --replica-completion-count 1 \\
               --parallelism 1
               --cron-expression */1 * * * * \\
               --image imageName
@@ -585,7 +586,7 @@ helps['containerapp job create'] = """
               --trigger-type Event \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
-              --replica-count 1 \\
+              --replica-completion-count 1 \\
               --parallelism 1 \\
               --min-replicas 0 \\
               --max-replicas 1 \\
@@ -653,6 +654,8 @@ helps['containerapp job stop'] = """
       text: az containerapp job stop -n MyContainerAppJob -g MyResourceGroup
     - name: Stop a job execution giving a specific job execution name.
       text: az containerapp job stop -n MyContainerAppJob -g MyResourceGroup --job-execution-name MyContainerAppJob-66v9xh0
+    - name: Stop multiple job executions giving a list of execution names.
+      text: az containerapp job stop -n MyContainerAppJob -g MyResourceGroup --execution-name-list MyContainerAppJob-66v9xh0,MyContainerAppJob-66v9xh1
 """
 
 # Container App Job execution commands

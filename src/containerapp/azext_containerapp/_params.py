@@ -425,11 +425,14 @@ def load_arguments(self, _):
         c.argument('replica_retry_limit', options_list=['--replica-retry-limit'], help='maximum number of replica retries before the job execution fails.')
         c.argument('replica_timeout', options_list=['--replica-timeout'], help='Maximum number of seconds a replica can execute.')
         c.argument('parallelism', options_list=['--parallelism'], help='maximum number of tasks that can run in parallel.')
+        c.argument('parallelism', options_list=['--parallelism'], help='maximum number of tasks that can run in parallel.')
 
     with self.argument_context('containerapp job create') as c:
         c.argument('system_assigned', options_list=['--system-assigned'], help='System assigned identity.')
         c.argument('trigger_type', options_list=['--trigger-type'], help='Trigger type. Schedule | Event | Manual')
         c.argument('user_assigned', options_list=['--user-assigned'], help='User assigned identity.')
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
 
     with self.argument_context('containerapp job stop') as c:
         c.argument('job_execution_name', options_list=['--job-execution-name'], help='name of the specific job execution which needs to be stopped.')
+        c.argument('execution_name_list', options_list=['--execution-name-list'], help='comma separated list of job execution names.')
