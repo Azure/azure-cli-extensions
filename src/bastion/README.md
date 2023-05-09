@@ -1,6 +1,12 @@
 # Azure CLI Bastion Extension #
 This is an extension to Azure CLI to manage Bastion resources.
 
+Documentation References: 
+
+https://learn.microsoft.com/en-us/azure/bastion/connect-ip-address#connect-to-vm---native-client
+
+https://learn.microsoft.com/en-us/azure/bastion/connect-native-client-windows#connect-IP
+
 ## How to use ##
 Manage Azure Bastion host machines.
 
@@ -36,5 +42,15 @@ az network bastion rdp --name MyBastionHost --resource-group MyResourceGroup --t
 
 ### SSH to VM/VMSS using Azure Bastion host machine
 ```commandline
-az network bastion ssh --name MyBastionHost --resource-group MyResourceGroup --enable-tunneling --target-resource-id ResourceId --auth-type password
+az network bastion ssh --name MyBastionHost --resource-group MyResourceGroup --target-resource-id ResourceId --auth-type password
+```
+
+### RDP to Target IP address using Azure Bastion
+```commandline
+az network bastion rdp --name MyBastionHost --resource-group MyResourceGroup --target-ip-address 10.1.1.1
+```
+
+### SSH to Target IP address using Azure Bastion
+```commandline
+az network bastion ssh --name MyBastionHost --resource-group MyResourceGroup --target-ip-address 10.1.1.1 --auth-type password
 ```

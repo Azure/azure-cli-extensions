@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.3.1
+++++++
+* `az monitor data-collection rule create`: Add json file example for parameter --rule-file.
+
 0.3.0
 ++++++
 * `az monitor data-collection rule create`: Add parameter --rule-file.

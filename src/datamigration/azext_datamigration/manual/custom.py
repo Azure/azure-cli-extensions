@@ -233,3 +233,69 @@ def datamigration_register_ir(auth_key,
 
     # register or re-register Dms on ir
     helper.register_ir(auth_key, installed_ir_path)
+
+
+# -----------------------------------------------------------------------------------------------------------------
+#  Migrate logins from the source Sql Servers to the target Azure Sql Servers.
+# -----------------------------------------------------------------------------------------------------------------
+def datamigration_login_migration(src_sql_connection_str=None,
+                                  tgt_sql_connection_str=None,
+                                  csv_file_path=None,
+                                  list_of_login=None,
+                                  output_folder=None,
+                                  aad_domain_name=None,
+                                  config_file_path=None):
+
+    try:
+
+        # Setup the console app
+        defaultOutputFolder, exePath = helper.loginMigration_console_app_setup()
+
+        if src_sql_connection_str is not None and config_file_path is not None:
+            raise MutuallyExclusiveArgumentError("Both src_sql_connection_str and config_file_path are mutually exclusive arguments. Please provide only one of these arguments.")
+
+        # When Connection string.
+        if src_sql_connection_str is not None and tgt_sql_connection_str is not None:
+            # Formating for multiple source connection string
+            src_sql_connection_str = " ".join(f"\"{i}\"" for i in src_sql_connection_str)
+
+            # parameter set for Perfornace data collection
+            parameterList = {
+                "--targetSqlConnectionString": tgt_sql_connection_str,
+                "--csvFilePath": csv_file_path,
+                "--listOfLogin": list_of_login,
+                "--outputFolder": output_folder,
+                "--aadDomainName": aad_domain_name
+            }
+
+            # joining paramaters together in a string
+            cmd = f'{exePath} LoginsMigration --sourceSqlConnectionString {src_sql_connection_str}'
+
+            # formating the parameter list into a string
+            for param in parameterList:
+                if parameterList[param] is not None and not param.__contains__("list"):
+                    cmd += f' {param} "{parameterList[param]}"'
+
+                # in case the parameter input is list format it accordingly
+                elif param.__contains__("list") and parameterList[param] is not None:
+                    parameterList[param] = " ".join(f"\"{i}\"" for i in parameterList[param])
+                    cmd += f' {param} {parameterList[param]}'
+            subprocess.call(cmd, shell=False)
+
+        # When Config file.
+        elif config_file_path is not None:
+            helper.test_path_exist(config_file_path)
+            cmd = f'{exePath} --configFile "{config_file_path}"'
+            subprocess.call(cmd, shell=False)
+
+        else:
+            raise RequiredArgumentMissingError('No valid parameter set used. Please provide config_file_path or required prameters: src_sql_connection_str, tgt_sql_connection_str, csv_file_path or list_of_login.')
+
+        # Printing log file path
+        logFilePath = os.path.join(defaultOutputFolder, "LoginsMigrationLogs")
+        from knack.log import get_logger
+        logger = get_logger(__name__)
+        logger.warning(f"If outputFolder parameter is not provided, the default event and error logs folder path: {logFilePath}")
+
+    except Exception as e:
+        raise e

@@ -20,4 +20,4 @@ For new extensions:
 
 There is a pipeline to automatically build, upload and publish extension wheels.  
 Once your pull request is merged into main branch, a new pull request will be created to update `src/index.json` automatically.  
-The precondition is to put your code inside this repository and upgrade the version in the pull request but do not modify `src/index.json`. 
+You only need to update the version information in file setup.py and historical information in file HISTORY.rst in your PR but do not modify `src/index.json`. 

@@ -19,9 +19,9 @@ from azure.mgmt.core.tools import parse_resource_id
 from azure.mgmt.core.tools import resource_id
 from knack.log import get_logger
 from ._clierror import NotSupportedPricingTierError
-from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name)
+from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name, _java_runtime_in_number)
 from ._util_enterprise import is_enterprise_tier
-from .vendored_sdks.appplatform.v2022_11_01_preview import models
+from .vendored_sdks.appplatform.v2023_03_01_preview import models
 from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PLAN_ID, MARKETPLACE_PUBLISHER_ID)
 
 logger = get_logger(__name__)
@@ -236,14 +236,14 @@ def validate_remote_debugging_port(namespace):
 
 
 def validate_ingress_send_timeout(namespace):
-    if namespace.ingress_send_timeout is not None and (namespace.ingress_read_timeout < 1 or
-                                                       namespace.ingress_read_timeout > 1800):
+    if namespace.ingress_send_timeout is not None and (namespace.ingress_send_timeout < 1 or
+                                                       namespace.ingress_send_timeout > 1800):
         raise InvalidArgumentValueError("Invalid value: Ingress send timeout must be in the range [1,1800].")
 
 
 def validate_ingress_session_max_age(namespace):
     if namespace.session_max_age is not None \
-            and (namespace.ingress_read_timeout < 0 or namespace.ingress_read_timeout > 7 * 24 * 3600):
+            and (namespace.session_max_age < 0 or namespace.session_max_age > 7 * 24 * 3600):
         raise InvalidArgumentValueError("Invalid value: Ingress session max-age must between 0 seconds and 7 days.")
 
 
@@ -259,6 +259,14 @@ def validate_tracing_parameters_asc_create(namespace):
             "Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
             "can not be set with '--disable-app-insights'.")
     _validate_app_insights_parameters(namespace)
+
+
+def validate_dataplane_public_endpoint(namespace):
+    if namespace.enable_log_stream_public_endpoint is not None and namespace.enable_dataplane_public_endpoint is not None:
+        if namespace.enable_log_stream_public_endpoint != namespace.enable_dataplane_public_endpoint:
+            raise InvalidArgumentValueError("The value of enable_log_stream_public_endpoint and "
+                                            "enable_dataplane_public_endpoint should be the same, "
+                                            "you cannot set one to false and another to true.")
 
 
 def validate_tracing_parameters_asc_update(namespace):
@@ -358,51 +366,61 @@ def validate_vnet(cmd, namespace):
         instance_location_slice = instance_location.split(" ")
         instance_location = "".join([piece.lower()
                                      for piece in instance_location_slice])
-    if vnet_obj.location.lower() != instance_location.lower():
+    if vnet_obj["location"].lower() != instance_location.lower():
         raise InvalidArgumentValueError('--vnet and Azure Spring Apps instance should be in the same location.')
-    for subnet in vnet_obj.subnets:
+    for subnet in vnet_obj["subnets"]:
         _validate_subnet(namespace, subnet)
     _validate_route_table(namespace, vnet_obj)
 
     if namespace.reserved_cidr_range:
         _validate_cidr_range(namespace)
     else:
-        namespace.reserved_cidr_range = _set_default_cidr_range(vnet_obj.address_space.address_prefixes) if \
-            vnet_obj and vnet_obj.address_space and vnet_obj.address_space.address_prefixes \
+        namespace.reserved_cidr_range = _set_default_cidr_range(vnet_obj["addressSpace"]["addressPrefixes"]) if \
+            vnet_obj and vnet_obj.get("addressSpace", None) and vnet_obj["addressSpace"].get("addressPrefixes", None) \
             else '10.234.0.0/16,10.244.0.0/16,172.17.0.1/16'
 
 
 def _validate_subnet(namespace, subnet):
     name = ''
     limit = 32
-    if subnet.id.lower() == namespace.app_subnet.lower():
+    if subnet["id"].lower() == namespace.app_subnet.lower():
         name = 'app-subnet'
         limit = 28
-    elif subnet.id.lower() == namespace.service_runtime_subnet.lower():
+    elif subnet["id"].lower() == namespace.service_runtime_subnet.lower():
         name = 'service-runtime-subnet'
         limit = 28
     else:
         return
-    if subnet.ip_configurations:
+    if subnet.get("ipConfigurations", None):
         raise InvalidArgumentValueError('--{} should not have connected device.'.format(name))
-    address = ip_network(subnet.address_prefix, strict=False)
+    address = ip_network(subnet["addressPrefix"], strict=False)
     if address.prefixlen > limit:
         raise InvalidArgumentValueError('--{0} should contain at least /{1} address, got /{2}'.format(name, limit, address.prefixlen))
 
 
 def _get_vnet(cmd, vnet_id):
     vnet = parse_resource_id(vnet_id)
-    network_client = _get_network_client(cmd.cli_ctx, subscription_id=vnet['subscription'])
-    return network_client.virtual_networks.get(vnet['resource_group'], vnet['resource_name'])
+    from .aaz.latest.network.vnet import Show as _VirtualNetworkShow
 
+    class VirtualNetworkShow(_VirtualNetworkShow):
+        @classmethod
+        def _build_arguments_schema(cls, *args, **kwargs):
+            from azure.cli.core.aaz import AAZStrArg
+            args_schema = super()._build_arguments_schema(*args, **kwargs)
+            args_schema.subscription_id = AAZStrArg()
+            return args_schema
 
-def _get_network_client(cli_ctx, subscription_id=None):
-    from azure.cli.core.profiles import ResourceType, get_api_version
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    return get_mgmt_service_client(cli_ctx,
-                                   ResourceType.MGMT_NETWORK,
-                                   subscription_id=subscription_id,
-                                   api_version=get_api_version(cli_ctx, ResourceType.MGMT_NETWORK))
+        def pre_operations(self):
+            from azure.cli.core.aaz import has_value
+            args = self.ctx.args
+            if has_value(args.subscription_id):
+                self.ctx._subscription_id = args.subscription_id.to_serialized_data()
+    get_args = {
+        'name': vnet['resource_name'],
+        'subscription_id': vnet['subscription'],
+        'resource_group': vnet['resource_group']
+    }
+    return VirtualNetworkShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
 
 
 def _get_authorization_client(cli_ctx, subscription_id=None):
@@ -567,11 +585,11 @@ def _validate_resource_group_name(name, message_name):
 def _validate_route_table(namespace, vnet_obj):
     app_route_table_id = ""
     runtime_route_table_id = ""
-    for subnet in vnet_obj.subnets:
-        if subnet.id.lower() == namespace.app_subnet.lower() and subnet.route_table:
-            app_route_table_id = subnet.route_table.id
-        if subnet.id.lower() == namespace.service_runtime_subnet.lower() and subnet.route_table:
-            runtime_route_table_id = subnet.route_table.id
+    for subnet in vnet_obj["subnets"]:
+        if subnet["id"].lower() == namespace.app_subnet.lower() and subnet.get("routeTable", None):
+            app_route_table_id = subnet["routeTable"]["id"]
+        if subnet["id"].lower() == namespace.service_runtime_subnet.lower() and subnet.get("routeTable", None):
+            runtime_route_table_id = subnet["routeTable"]["id"]
 
     if app_route_table_id and runtime_route_table_id:
         if app_route_table_id == runtime_route_table_id:
@@ -583,10 +601,13 @@ def _validate_route_table(namespace, vnet_obj):
 
 
 def validate_jar(namespace):
+    server_runtime_version = _get_server_runtime(namespace)
+    cmd_runtime_version = namespace.runtime_version
+    runtime_version = cmd_runtime_version if cmd_runtime_version is not None else server_runtime_version
     if namespace.disable_validation:
         telemetry.set_user_fault("jar validation is disabled")
         return
-    file_type = _get_file_type(namespace.runtime_version, namespace.artifact_path)
+    file_type = _get_file_type(runtime_version, namespace.artifact_path)
     if file_type != "Jar":
         return
     values = _parse_jar_file(namespace.artifact_path)
@@ -594,49 +615,65 @@ def validate_jar(namespace):
         # ignore jar_file check
         return
 
-    file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, ms_sdk_version = values
-
     tips = ", if you choose to ignore these errors, turn validation off with --disable-validation"
-    if not has_jar and not has_class:
+    if not values["has_jar"] and not values["has_class"]:
         telemetry.set_user_fault("invalid_jar_no_class_jar")
-        raise InvalidArgumentValueError("Do not find any class or jar file, please check if your artifact is a valid fat jar" + tips)
-    if not has_manifest:
+        raise InvalidArgumentValueError(
+            "Do not find any class or jar file, please check if your artifact is a valid fat jar" + tips)
+    if not values["has_manifest"]:
         telemetry.set_user_fault("invalid_jar_no_manifest")
-        raise InvalidArgumentValueError("Do not find MANIFEST.MF, please check if your artifact is a valid fat jar" + tips)
-    if file_size / 1024 / 1024 < 10:
+        raise InvalidArgumentValueError(
+            "Do not find MANIFEST.MF, please check if your artifact is a valid fat jar" + tips)
+    if values["file_size"] / 1024 / 1024 < 10:
         telemetry.set_user_fault("invalid_jar_thin_jar")
         raise InvalidArgumentValueError("Thin jar detected, please check if your artifact is a valid fat jar" + tips)
-
+    version_number = int(runtime_version[len("Java_"):])
+    if values["jdk_version"] not in _java_runtime_in_number():
+        raise InvalidArgumentValueError("Your java application is compiled with {}, currently the supported "
+                                        "java version is Java_8, Java_11, Java_17, you can configure the java runtime "
+                                        "with --runtime-version".format("Java_" + str(values["jdk_version"])) + tips)
+    if values["jdk_version"] > version_number:
+        telemetry.set_user_fault("invalid_java_runtime")
+        raise InvalidArgumentValueError("Invalid java runtime, the runtime you configured is {}, the jar you use is "
+                                        "compiled with {}, you can configure the java runtime with --runtime-version".
+                                        format(runtime_version, "Java_" + str(values["jdk_version"])) + tips)
     # validate spring boot version
-    if spring_boot_version and spring_boot_version.startswith('1'):
+    if values["spring_boot_version"] and values["spring_boot_version"].startswith('1'):
         telemetry.set_user_fault("old_spring_boot_version")
         raise InvalidArgumentValueError(
             "The spring boot {} you are using is not supported. To get the latest supported "
-            "versions please refer to: https://aka.ms/ascspringversion".format(spring_boot_version) + tips)
+            "versions please refer to: https://aka.ms/ascspringversion".format(values["spring_boot_version"]) + tips)
 
     # old spring cloud version, need to import ms sdk <= 2.2.1
-    if spring_cloud_version:
-        if spring_cloud_version < "2.2.5":
-            if not ms_sdk_version or ms_sdk_version > "2.2.1":
+    if values["spring_cloud_version"]:
+        if values["spring_cloud_version"] < "2.2.5":
+            if not values["ms_sdk_version"] or values["ms_sdk_version"] > "2.2.1":
                 telemetry.set_user_fault("old_spring_cloud_version")
                 raise InvalidArgumentValueError(
                     "The spring cloud {} you are using is not supported. To get the latest supported "
-                    "versions please refer to: https://aka.ms/ascspringversion".format(spring_cloud_version) + tips)
+                    "versions please refer to: https://aka.ms/ascspringversion".format(values["spring_cloud_version"]) + tips)
         else:
-            if ms_sdk_version and ms_sdk_version <= "2.2.1":
+            if values["ms_sdk_version"] and values["ms_sdk_version"] <= "2.2.1":
                 telemetry.set_user_fault("old_ms_sdk_version")
                 raise InvalidArgumentValueError(
                     "The spring-cloud-starter-azure-spring-cloud-client version {} is no longer "
                     "supported, please remove it or upgrade to a higher version, to get the latest "
                     "supported versions please refer to: "
                     "https://mvnrepository.com/artifact/com.microsoft.azure/spring-cloud-starter-azure"
-                    "-spring-cloud-client".format(ms_sdk_version) + tips)
+                    "-spring-cloud-client".format(values["ms_sdk_version"]) + tips)
 
-    if not has_actuator:
+    if not values["has_actuator"]:
         telemetry.set_user_fault("no_spring_actuator")
         logger.warning(
             "Seems you do not import spring actuator, thus metrics are not enabled, please refer to "
             "https://aka.ms/ascdependencies for more details")
+
+
+def _get_server_runtime(namespace):
+    try:
+        return namespace.deployment.properties.source.runtime_version
+    except:
+        return None
 
 
 def _parse_jar_file(artifact_path):
@@ -648,6 +685,7 @@ def _parse_jar_file(artifact_path):
     has_jar = False
     has_class = False
     ms_sdk_version = ""
+    jdk_version = ""
 
     spring_boot_pattern = "/spring-boot-[0-9].*jar"
     spring_boot_actuator_pattern = "/spring-boot-actuator-[0-9].*jar"
@@ -658,32 +696,40 @@ def _parse_jar_file(artifact_path):
     try:
         with zipfile.ZipFile(artifact_path, 'r') as zf:
             files = zf.infolist()
-        for file in files:
-            file_size += file.file_size
-            file_name = file.filename
+            for file in files:
+                file_size += file.file_size
+                file_name = file.filename
 
-            if file_name.lower().endswith('.jar'):
-                has_jar = True
-            if file_name.lower().endswith('.class'):
-                has_class = True
-            if file_name.upper().endswith('MANIFEST.MF'):
-                has_manifest = True
-
-            if search(spring_boot_pattern, file_name):
-                prefix = 'spring-boot-'
-                spring_boot_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
-            if search(spring_boot_actuator_pattern, file_name):
-                has_actuator = True
-            if search(ms_sdk_pattern, file_name):
-                prefix = 'spring-cloud-starter-azure-spring-cloud-client-'
-                ms_sdk_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
-            if search(spring_cloud_config_pattern, file_name):
-                prefix = 'spring-cloud-config-client-'
-                spring_cloud_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
-            if search(spring_cloud_eureka_pattern, file_name):
-                prefix = 'spring-cloud-netflix-eureka-client-'
-                spring_cloud_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
-        return file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, ms_sdk_version
+                if file_name.lower().endswith('.jar'):
+                    has_jar = True
+                if file_name.lower().endswith('.class'):
+                    has_class = True
+                    binary_content = zf.open(file_name)
+                    binary_content.read(4)
+                    binary_content.read(2)
+                    major_version = int.from_bytes(binary_content.read(2), byteorder='big')
+                    # refers to https://www.baeldung.com/java-find-class-version#class-version-in-java
+                    jdk_version = major_version - 44
+                if file_name.upper().endswith('MANIFEST.MF'):
+                    has_manifest = True
+                if search(spring_boot_pattern, file_name):
+                    prefix = 'spring-boot-'
+                    spring_boot_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
+                if search(spring_boot_actuator_pattern, file_name):
+                    has_actuator = True
+                if search(ms_sdk_pattern, file_name):
+                    prefix = 'spring-cloud-starter-azure-spring-cloud-client-'
+                    ms_sdk_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
+                if search(spring_cloud_config_pattern, file_name):
+                    prefix = 'spring-cloud-config-client-'
+                    spring_cloud_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
+                if search(spring_cloud_eureka_pattern, file_name):
+                    prefix = 'spring-cloud-netflix-eureka-client-'
+                    spring_cloud_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
+        return dict(file_size=file_size, spring_boot_version=spring_boot_version,
+                    spring_cloud_version=spring_cloud_version, has_actuator=has_actuator,
+                    has_manifest=has_manifest, has_jar=has_jar, has_class=has_class,
+                    ms_sdk_version=ms_sdk_version, jdk_version=jdk_version)
     except Exception as err:  # pylint: disable=broad-except
         telemetry.set_exception("parse user jar file failed, " + str(err))
         return None
@@ -697,3 +743,13 @@ def validate_config_server_ssh_or_warn(namespace):
     if private_key or host_key or host_key_algorithm or strict_host_key_checking:
         logger.warning("SSH authentication only supports SHA-1 signature under Config Server restriction. "
                        "Please refer to https://aka.ms/asa-configserver-ssh to understand how to use SSH under this restriction.")
+
+
+def validate_managed_environment(namespace):
+    managed_environment_id = namespace.managed_environment
+    if managed_environment_id:
+        if not is_valid_resource_id(managed_environment_id):
+            raise InvalidArgumentValueError('--managed-environment {0} is not a valid Container App Environment resource ID'.format(managed_environment_id))
+        managed_environment = parse_resource_id(managed_environment_id)
+        if managed_environment['namespace'].lower() != 'microsoft.app' or managed_environment['type'].lower() != 'managedenvironments':
+            raise InvalidArgumentValueError('--managed-environment {0} is not a valid Container App Environment resource ID'.format(managed_environment_id))

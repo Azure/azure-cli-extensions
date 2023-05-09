@@ -2,7 +2,22 @@
 
 Release History
 ===============
-
-0.1.0
+===============
+##### 0.2.0
 ++++++
-* Initial release.
+New commands added:
+* perimeter link: create, delete, list, show, update
+* perimeter link-reference: delete, list, show
+
+Existing commands updated:
+* perimeter profile access-rule: create, delete, list, show, update (introduced new keys [--phone-numbers, --email-addresses] in request and response. Now access rule supports email/sms based outbound connections.
+
+===============
+##### 0.1.0
+++++++
+New commands added:
+* perimeter: create, delete, list, show
+* perimeter profile: create, delete, list, show 
+* perimeter association: create, delete, list, show, update
+* perimeter profile access-rule: create, delete, list, show, update
+* perimeter onboarded-resources: list

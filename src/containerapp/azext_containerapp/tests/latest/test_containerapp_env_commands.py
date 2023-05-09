@@ -122,6 +122,13 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.appLogsConfiguration.destination', None),
         ])
 
+        self.cmd('containerapp env update -g {} -n {} --logs-destination none --no-wait'.format(resource_group, env_name))
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', None),
+        ])
+
 
 
     @AllowLargeResponse(8192)
@@ -261,9 +268,62 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('[0].id', cert_id),
             JMESPathCheck('[0].properties.thumbprint', cert_thumbprint),
         ])
+        
+        # create a container app
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+        app = self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name)).get_output_in_json()
+        
+        # create an App service domain and update its DNS records
+        contacts = os.path.join(TEST_DIR, 'domain-contact.json')
+        zone_name = "{}.com".format(ca_name)
+        subdomain_1 = "devtest"
+        txt_name_1 = "asuid.{}".format(subdomain_1)
+        hostname_1 = "{}.{}".format(subdomain_1, zone_name)
+        verification_id = app["properties"]["customDomainVerificationId"]
+        fqdn = app["properties"]["configuration"]["ingress"]["fqdn"]
+        self.cmd("appservice domain create -g {} --hostname {} --contact-info=@'{}' --accept-terms".format(resource_group, zone_name, contacts)).get_output_in_json()
+        self.cmd('network dns record-set txt add-record -g {} -z {} -n {} -v {}'.format(resource_group, zone_name, txt_name_1, verification_id)).get_output_in_json()
+        self.cmd('network dns record-set cname create -g {} -z {} -n {}'.format(resource_group, zone_name, subdomain_1)).get_output_in_json()
+        self.cmd('network dns record-set cname set-record -g {} -z {} -n {} -c {}'.format(resource_group, zone_name, subdomain_1, fqdn)).get_output_in_json()
+        
+        # add hostname without binding
+        self.cmd('containerapp hostname add -g {} -n {} --hostname {}'.format(resource_group, ca_name, hostname_1), checks={
+            JMESPathCheck('length(@)', 1),
+            JMESPathCheck('[0].name', hostname_1),
+            JMESPathCheck('[0].bindingType', "Disabled"),
+        })
+        self.cmd('containerapp hostname add -g {} -n {} --hostname {}'.format(resource_group, ca_name, hostname_1), expect_failure=True)
+        
+        # create a managed certificate
+        self.cmd('containerapp env certificate create -n {} -g {} --hostname {} -v cname -c {}'.format(env_name, resource_group, hostname_1, cert_name), checks=[
+            JMESPathCheck('type', "Microsoft.App/managedEnvironments/managedCertificates"),
+            JMESPathCheck('name', cert_name),
+            JMESPathCheck('properties.subjectName', hostname_1),
+        ]).get_output_in_json()
 
+        self.cmd('containerapp env certificate create -n {} -g {} --hostname {} -v cname'.format(env_name, resource_group, hostname_1), expect_failure=True)
+        self.cmd('containerapp env certificate list -g {} -n {} -m'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 1),
+        ])
+        self.cmd('containerapp env certificate list -g {} -n {} -c {}'.format(resource_group, env_name, cert_name), checks=[
+            JMESPathCheck('length(@)', 2),
+        ])
+
+        self.cmd('containerapp env certificate delete -n {} -g {} --certificate {} --yes'.format(env_name, resource_group, cert_name), expect_failure=True)
         self.cmd('containerapp env certificate delete -n {} -g {} --thumbprint {} --yes'.format(env_name, resource_group, cert_thumbprint))
+        self.cmd('containerapp env certificate delete -n {} -g {} --certificate {} --yes'.format(env_name, resource_group, cert_name))
+        self.cmd('containerapp env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+        
+        self.cmd('containerapp hostname bind -g {} -n {} --hostname {} --environment {} -v cname'.format(resource_group, ca_name, hostname_1, env_name))
+        certs = self.cmd('containerapp env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 1),
+        ]).get_output_in_json()
+        self.cmd('containerapp env certificate delete -n {} -g {} --certificate {} --yes'.format(env_name, resource_group, certs[0]["name"]), expect_failure=True)
 
+        self.cmd('containerapp hostname delete -g {} -n {} --hostname {} --yes'.format(resource_group, ca_name, hostname_1))
+        self.cmd('containerapp env certificate delete -n {} -g {} --certificate {} --yes'.format(env_name, resource_group, certs[0]["name"]))
         self.cmd('containerapp env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
@@ -358,6 +418,13 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {} --dns-suffix {}'.format(resource_group, env_name, hostname_2))
+
+        self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_2),
         ])
 
 

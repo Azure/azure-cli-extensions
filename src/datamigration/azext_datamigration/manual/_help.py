@@ -57,6 +57,18 @@ helps['datamigration get-sku-recommendation'] = """
                az datamigration get-sku-recommendation --config-file-path "C:\\Users\\user\\document\\config.json"
 """
 
+helps['datamigration login-migration'] = """
+    type: command
+    short-summary: Migrate logins from the source Sql Servers to the target Azure Sql Servers.
+    examples:
+      - name: Run Migrate logins from the source Sql Servers to the target Azure Sql Servers using Parameters.
+        text: |-
+               az datamigration login-migration --src-sql-connection-str  "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --tgt-sql-connection-str  "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --csv-file-path "C:\\CSVFile" --list-of-login "loginname1" "loginname2" --output-folder "C:\\OutputFolder" --aad-domain-name "AADDomainName"
+      - name: Run Migrate logins from the source Sql Servers to the target Azure Sql Servers using config file.
+        text: |-
+               az datamigration login-migration --config-file-path "C:\\Users\\user\\document\\config.json"
+"""
+
 helps['datamigration register-integration-runtime'] = """
     type: command
     short-summary: Register Database Migration Service on Integration Runtime

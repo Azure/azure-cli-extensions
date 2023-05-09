@@ -17,15 +17,15 @@ interactions:
       ParameterSetName:
       - -g -a -n
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/8.0.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003?api-version=2022-08-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003?api-version=2022-11-15
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/3ef9a198-af88-44a0-a291-5a44623774ce?api-version=2022-08-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/eae71472-e0fe-459f-9399-6544188f4276?api-version=2022-11-15
       cache-control:
       - no-store, no-cache
       content-length:
@@ -33,9 +33,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:56:56 GMT
+      - Mon, 17 Apr 2023 20:33:51 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/operationResults/3ef9a198-af88-44a0-a291-5a44623774ce?api-version=2022-08-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/operationResults/eae71472-e0fe-459f-9399-6544188f4276?api-version=2022-11-15
       pragma:
       - no-cache
       server:
@@ -65,21 +65,21 @@ interactions:
       ParameterSetName:
       - -g -a -n
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/8.0.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/3ef9a198-af88-44a0-a291-5a44623774ce?api-version=2022-08-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/eae71472-e0fe-459f-9399-6544188f4276?api-version=2022-11-15
   response:
     body:
-      string: '{"status":"Succeeded"}'
+      string: '{"status":"Enqueued"}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '22'
+      - '21'
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:57:26 GMT
+      - Mon, 17 Apr 2023 20:33:52 GMT
       pragma:
       - no-cache
       server:
@@ -111,9 +111,55 @@ interactions:
       ParameterSetName:
       - -g -a -n
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/8.0.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003?api-version=2022-08-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/eae71472-e0fe-459f-9399-6544188f4276?api-version=2022-11-15
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Mon, 17 Apr 2023 20:34:22 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb database create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -n
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003?api-version=2022-11-15
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases","name":"cli000003","properties":{"resource":{"id":"cli000003"}}}'
@@ -125,7 +171,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:57:26 GMT
+      - Mon, 17 Apr 2023 20:34:22 GMT
       pragma:
       - no-cache
       server:
@@ -162,15 +208,15 @@ interactions:
       ParameterSetName:
       - -g -a -d -n --shard --throughput
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/8.0.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002?api-version=2022-08-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002?api-version=2022-11-15
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/7a5120ba-a596-4f6c-96fc-d60237d4fb71?api-version=2022-08-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/0acb6819-3c3f-4cfc-b1ea-ed446677cb8e?api-version=2022-11-15
       cache-control:
       - no-store, no-cache
       content-length:
@@ -178,9 +224,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:57:28 GMT
+      - Mon, 17 Apr 2023 20:34:23 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/operationResults/7a5120ba-a596-4f6c-96fc-d60237d4fb71?api-version=2022-08-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/operationResults/0acb6819-3c3f-4cfc-b1ea-ed446677cb8e?api-version=2022-11-15
       pragma:
       - no-cache
       server:
@@ -210,21 +256,21 @@ interactions:
       ParameterSetName:
       - -g -a -d -n --shard --throughput
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/8.0.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/7a5120ba-a596-4f6c-96fc-d60237d4fb71?api-version=2022-08-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/0acb6819-3c3f-4cfc-b1ea-ed446677cb8e?api-version=2022-11-15
   response:
     body:
-      string: '{"status":"Succeeded"}'
+      string: '{"status":"Enqueued"}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '22'
+      - '21'
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:57:58 GMT
+      - Mon, 17 Apr 2023 20:34:24 GMT
       pragma:
       - no-cache
       server:
@@ -256,9 +302,55 @@ interactions:
       ParameterSetName:
       - -g -a -d -n --shard --throughput
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/8.0.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002?api-version=2022-08-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/0acb6819-3c3f-4cfc-b1ea-ed446677cb8e?api-version=2022-11-15
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Mon, 17 Apr 2023 20:34:55 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb collection create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -d -n --shard --throughput
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002?api-version=2022-11-15
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections","name":"cli000002","properties":{"resource":{"id":"cli000002","shardKey":{"theShardKey":"Hash"},"indexes":[{"key":{"keys":["_id"]}}]}}}'
@@ -270,7 +362,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:57:59 GMT
+      - Mon, 17 Apr 2023 20:34:55 GMT
       pragma:
       - no-cache
       server:
@@ -306,15 +398,15 @@ interactions:
       ParameterSetName:
       - -g -a -d -n --throughput
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/8.0.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default?api-version=2022-08-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default?api-version=2022-11-15
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/b83c38f5-a2d7-496c-a8a8-92d3d5808a44?api-version=2022-08-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/d0af1ba2-2b4d-47d2-a4d6-f092f8a7a021?api-version=2022-11-15
       cache-control:
       - no-store, no-cache
       content-length:
@@ -322,9 +414,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:58:00 GMT
+      - Mon, 17 Apr 2023 20:34:56 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/operationResults/b83c38f5-a2d7-496c-a8a8-92d3d5808a44?api-version=2022-08-15
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/operationResults/d0af1ba2-2b4d-47d2-a4d6-f092f8a7a021?api-version=2022-11-15
       pragma:
       - no-cache
       server:
@@ -336,7 +428,7 @@ interactions:
       x-ms-gatewayversion:
       - version=2.14.0
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 202
       message: Accepted
@@ -354,21 +446,21 @@ interactions:
       ParameterSetName:
       - -g -a -d -n --throughput
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/8.0.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/b83c38f5-a2d7-496c-a8a8-92d3d5808a44?api-version=2022-08-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/d0af1ba2-2b4d-47d2-a4d6-f092f8a7a021?api-version=2022-11-15
   response:
     body:
-      string: '{"status":"Succeeded"}'
+      string: '{"status":"Enqueued"}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '22'
+      - '21'
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:58:30 GMT
+      - Mon, 17 Apr 2023 20:34:56 GMT
       pragma:
       - no-cache
       server:
@@ -400,12 +492,58 @@ interactions:
       ParameterSetName:
       - -g -a -d -n --throughput
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/8.0.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default?api-version=2022-08-15
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/d0af1ba2-2b4d-47d2-a4d6-f092f8a7a021?api-version=2022-11-15
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections/throughputSettings","name":"foFh","properties":{"resource":{"throughput":3000,"minimumThroughput":"400"}}}'
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Mon, 17 Apr 2023 20:35:26 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb collection throughput update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -d -n --throughput
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/9.0.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default?api-version=2022-11-15
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections/throughputSettings","name":"KVkg","properties":{"resource":{"throughput":3000,"minimumThroughput":"400"}}}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -414,7 +552,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:58:30 GMT
+      - Mon, 17 Apr 2023 20:35:27 GMT
       pragma:
       - no-cache
       server:
@@ -446,9 +584,9 @@ interactions:
       ParameterSetName:
       - --resource-group --account-name --database-name --name --all-partitions
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002?api-version=2023-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections","name":"cli000002","properties":{"resource":{"id":"cli000002","shardKey":{"theShardKey":"Hash"},"indexes":[{"key":{"keys":["_id"]}}]}}}'
@@ -460,7 +598,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:58:32 GMT
+      - Mon, 17 Apr 2023 20:35:29 GMT
       pragma:
       - no-cache
       server:
@@ -496,15 +634,15 @@ interactions:
       ParameterSetName:
       - --resource-group --account-name --database-name --name --all-partitions
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/retrieveThroughputDistribution?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/retrieveThroughputDistribution?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/0875d053-ac79-454f-915c-c1abf241bcc1?api-version=2022-08-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/355833f5-b747-4639-92cd-0dd769271838?api-version=2023-03-01-preview
       cache-control:
       - no-store, no-cache
       content-length:
@@ -512,9 +650,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:58:32 GMT
+      - Mon, 17 Apr 2023 20:35:29 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/retrieveThroughputDistribution/operationResults/0875d053-ac79-454f-915c-c1abf241bcc1?api-version=2022-08-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/retrieveThroughputDistribution/operationResults/355833f5-b747-4639-92cd-0dd769271838?api-version=2023-03-01-preview
       pragma:
       - no-cache
       server:
@@ -544,21 +682,21 @@ interactions:
       ParameterSetName:
       - --resource-group --account-name --database-name --name --all-partitions
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/0875d053-ac79-454f-915c-c1abf241bcc1?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/355833f5-b747-4639-92cd-0dd769271838?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"status":"Succeeded"}'
+      string: '{"status":"Enqueued"}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '22'
+      - '21'
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:59:02 GMT
+      - Mon, 17 Apr 2023 20:35:30 GMT
       pragma:
       - no-cache
       server:
@@ -590,12 +728,58 @@ interactions:
       ParameterSetName:
       - --resource-group --account-name --database-name --name --all-partitions
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/retrieveThroughputDistribution/operationResults/0875d053-ac79-454f-915c-c1abf241bcc1?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/355833f5-b747-4639-92cd-0dd769271838?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/retrieveThroughputDistribution","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections/throughputSettings/retrieveThroughputDistribution","name":"foFh","properties":{"resource":{"physicalPartitionThroughputInfo":[{"throughput":1000.0,"id":"0"},{"throughput":1000.0,"id":"1"},{"throughput":1000.0,"id":"2"}]}}}'
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Mon, 17 Apr 2023 20:36:00 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb collection retrieve-partition-throughput
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --account-name --database-name --name --all-partitions
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/retrieveThroughputDistribution/operationResults/355833f5-b747-4639-92cd-0dd769271838?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/retrieveThroughputDistribution","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections/throughputSettings/retrieveThroughputDistribution","name":"KVkg","properties":{"resource":{"physicalPartitionThroughputInfo":[{"throughput":1000.0,"id":"0"},{"throughput":1000.0,"id":"1"},{"throughput":1000.0,"id":"2"}]}}}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -604,7 +788,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:59:02 GMT
+      - Mon, 17 Apr 2023 20:36:00 GMT
       pragma:
       - no-cache
       server:
@@ -636,9 +820,9 @@ interactions:
       ParameterSetName:
       - --resource-group --account-name --database-name --name --physical-partition-ids
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002?api-version=2023-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections","name":"cli000002","properties":{"resource":{"id":"cli000002","shardKey":{"theShardKey":"Hash"},"indexes":[{"key":{"keys":["_id"]}}]}}}'
@@ -650,7 +834,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:59:04 GMT
+      - Mon, 17 Apr 2023 20:36:02 GMT
       pragma:
       - no-cache
       server:
@@ -687,15 +871,15 @@ interactions:
       ParameterSetName:
       - --resource-group --account-name --database-name --name --physical-partition-ids
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/retrieveThroughputDistribution?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/retrieveThroughputDistribution?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/44db55a9-652e-4ba2-910e-d3c0818d891e?api-version=2022-08-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/aa38bee1-0069-4cd1-b79f-1460c70b7b79?api-version=2023-03-01-preview
       cache-control:
       - no-store, no-cache
       content-length:
@@ -703,9 +887,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:59:05 GMT
+      - Mon, 17 Apr 2023 20:36:03 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/retrieveThroughputDistribution/operationResults/44db55a9-652e-4ba2-910e-d3c0818d891e?api-version=2022-08-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/retrieveThroughputDistribution/operationResults/aa38bee1-0069-4cd1-b79f-1460c70b7b79?api-version=2023-03-01-preview
       pragma:
       - no-cache
       server:
@@ -735,21 +919,21 @@ interactions:
       ParameterSetName:
       - --resource-group --account-name --database-name --name --physical-partition-ids
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/44db55a9-652e-4ba2-910e-d3c0818d891e?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/aa38bee1-0069-4cd1-b79f-1460c70b7b79?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"status":"Succeeded"}'
+      string: '{"status":"Enqueued"}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '22'
+      - '21'
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:59:34 GMT
+      - Mon, 17 Apr 2023 20:36:03 GMT
       pragma:
       - no-cache
       server:
@@ -781,12 +965,58 @@ interactions:
       ParameterSetName:
       - --resource-group --account-name --database-name --name --physical-partition-ids
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/retrieveThroughputDistribution/operationResults/44db55a9-652e-4ba2-910e-d3c0818d891e?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/aa38bee1-0069-4cd1-b79f-1460c70b7b79?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/retrieveThroughputDistribution","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections/throughputSettings/retrieveThroughputDistribution","name":"foFh","properties":{"resource":{"physicalPartitionThroughputInfo":[{"throughput":1000.0,"id":"0"},{"throughput":1000.0,"id":"1"}]}}}'
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Mon, 17 Apr 2023 20:36:33 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb collection retrieve-partition-throughput
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --account-name --database-name --name --physical-partition-ids
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/retrieveThroughputDistribution/operationResults/aa38bee1-0069-4cd1-b79f-1460c70b7b79?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/retrieveThroughputDistribution","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections/throughputSettings/retrieveThroughputDistribution","name":"KVkg","properties":{"resource":{"physicalPartitionThroughputInfo":[{"throughput":1000.0,"id":"0"},{"throughput":1000.0,"id":"1"}]}}}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -795,7 +1025,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:59:35 GMT
+      - Mon, 17 Apr 2023 20:36:33 GMT
       pragma:
       - no-cache
       server:
@@ -828,9 +1058,9 @@ interactions:
       - --resource-group --account-name --database-name --name --target-partition-info
         --source-partition-info
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002?api-version=2023-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections","name":"cli000002","properties":{"resource":{"id":"cli000002","shardKey":{"theShardKey":"Hash"},"indexes":[{"key":{"keys":["_id"]}}]}}}'
@@ -842,7 +1072,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:59:37 GMT
+      - Mon, 17 Apr 2023 20:36:35 GMT
       pragma:
       - no-cache
       server:
@@ -881,15 +1111,15 @@ interactions:
       - --resource-group --account-name --database-name --name --target-partition-info
         --source-partition-info
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/redistributeThroughput?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/redistributeThroughput?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/c5880f20-1b07-4a15-9371-58418c698541?api-version=2022-08-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/3347daf4-cc55-431c-8763-ece3c465a928?api-version=2023-03-01-preview
       cache-control:
       - no-store, no-cache
       content-length:
@@ -897,9 +1127,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 07:59:37 GMT
+      - Mon, 17 Apr 2023 20:36:35 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/redistributeThroughput/operationResults/c5880f20-1b07-4a15-9371-58418c698541?api-version=2022-08-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/redistributeThroughput/operationResults/3347daf4-cc55-431c-8763-ece3c465a928?api-version=2023-03-01-preview
       pragma:
       - no-cache
       server:
@@ -930,21 +1160,21 @@ interactions:
       - --resource-group --account-name --database-name --name --target-partition-info
         --source-partition-info
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/c5880f20-1b07-4a15-9371-58418c698541?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/3347daf4-cc55-431c-8763-ece3c465a928?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"status":"Succeeded"}'
+      string: '{"status":"Enqueued"}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '22'
+      - '21'
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 08:00:08 GMT
+      - Mon, 17 Apr 2023 20:36:35 GMT
       pragma:
       - no-cache
       server:
@@ -977,12 +1207,59 @@ interactions:
       - --resource-group --account-name --database-name --name --target-partition-info
         --source-partition-info
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/redistributeThroughput/operationResults/c5880f20-1b07-4a15-9371-58418c698541?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/3347daf4-cc55-431c-8763-ece3c465a928?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/redistributeThroughput","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections/throughputSettings/redistributeThroughput","name":"foFh","properties":{"resource":{"physicalPartitionThroughputInfo":[{"throughput":1200.0,"id":"0"},{"throughput":1200.0,"id":"1"},{"throughput":599.99999999999966,"id":"2"}]}}}'
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Mon, 17 Apr 2023 20:37:05 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb collection redistribute-partition-throughput
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --account-name --database-name --name --target-partition-info
+        --source-partition-info
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/redistributeThroughput/operationResults/3347daf4-cc55-431c-8763-ece3c465a928?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/redistributeThroughput","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections/throughputSettings/redistributeThroughput","name":"KVkg","properties":{"resource":{"physicalPartitionThroughputInfo":[{"throughput":1200.0,"id":"0"},{"throughput":1200.0,"id":"1"},{"throughput":599.99999999999966,"id":"2"}]}}}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -991,7 +1268,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 08:00:08 GMT
+      - Mon, 17 Apr 2023 20:37:06 GMT
       pragma:
       - no-cache
       server:
@@ -1023,9 +1300,9 @@ interactions:
       ParameterSetName:
       - --resource-group --account-name --database-name --name --evenly-distribute
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002?api-version=2023-03-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections","name":"cli000002","properties":{"resource":{"id":"cli000002","shardKey":{"theShardKey":"Hash"},"indexes":[{"key":{"keys":["_id"]}}]}}}'
@@ -1037,7 +1314,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 08:00:09 GMT
+      - Mon, 17 Apr 2023 20:37:07 GMT
       pragma:
       - no-cache
       server:
@@ -1074,15 +1351,15 @@ interactions:
       ParameterSetName:
       - --resource-group --account-name --database-name --name --evenly-distribute
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/redistributeThroughput?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/redistributeThroughput?api-version=2023-03-01-preview
   response:
     body:
       string: '{"status":"Enqueued"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/66d83d7e-b20f-49d8-87a0-54a469dd704f?api-version=2022-08-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/ead94655-6e6b-4a8d-9b19-4b13325acf33?api-version=2023-03-01-preview
       cache-control:
       - no-store, no-cache
       content-length:
@@ -1090,9 +1367,9 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 08:00:09 GMT
+      - Mon, 17 Apr 2023 20:37:07 GMT
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/redistributeThroughput/operationResults/66d83d7e-b20f-49d8-87a0-54a469dd704f?api-version=2022-08-15-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/redistributeThroughput/operationResults/ead94655-6e6b-4a8d-9b19-4b13325acf33?api-version=2023-03-01-preview
       pragma:
       - no-cache
       server:
@@ -1122,21 +1399,21 @@ interactions:
       ParameterSetName:
       - --resource-group --account-name --database-name --name --evenly-distribute
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/66d83d7e-b20f-49d8-87a0-54a469dd704f?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/ead94655-6e6b-4a8d-9b19-4b13325acf33?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"status":"Succeeded"}'
+      string: '{"status":"Enqueued"}'
     headers:
       cache-control:
       - no-store, no-cache
       content-length:
-      - '22'
+      - '21'
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 08:00:39 GMT
+      - Mon, 17 Apr 2023 20:37:08 GMT
       pragma:
       - no-cache
       server:
@@ -1168,12 +1445,58 @@ interactions:
       ParameterSetName:
       - --resource-group --account-name --database-name --name --evenly-distribute
       User-Agent:
-      - AZURECLI/2.40.0 (PIP) azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.1 (Windows-10-10.0.19044-SP0)
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/redistributeThroughput/operationResults/66d83d7e-b20f-49d8-87a0-54a469dd704f?api-version=2022-08-15-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/australiaeast/operationsStatus/ead94655-6e6b-4a8d-9b19-4b13325acf33?api-version=2023-03-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/redistributeThroughput","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections/throughputSettings/redistributeThroughput","name":"foFh","properties":{"resource":{"physicalPartitionThroughputInfo":[{"throughput":1000.0,"id":"0"},{"throughput":1000.0,"id":"1"},{"throughput":1000.0,"id":"2"}]}}}'
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json
+      date:
+      - Mon, 17 Apr 2023 20:37:38 GMT
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-gatewayversion:
+      - version=2.14.0
+    status:
+      code: 200
+      message: Ok
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongodb collection redistribute-partition-throughput
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --account-name --database-name --name --evenly-distribute
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/redistributeThroughput/operationResults/ead94655-6e6b-4a8d-9b19-4b13325acf33?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cosmosTest/providers/Microsoft.DocumentDB/databaseAccounts/adrutest3/mongodbDatabases/cli000003/collections/cli000002/throughputSettings/default/redistributeThroughput","type":"Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections/throughputSettings/redistributeThroughput","name":"KVkg","properties":{"resource":{"physicalPartitionThroughputInfo":[{"throughput":1000.0,"id":"0"},{"throughput":1000.0,"id":"1"},{"throughput":1000.0,"id":"2"}]}}}'
     headers:
       cache-control:
       - no-store, no-cache
@@ -1182,7 +1505,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Thu, 29 Sep 2022 08:00:40 GMT
+      - Mon, 17 Apr 2023 20:37:38 GMT
       pragma:
       - no-cache
       server:

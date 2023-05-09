@@ -22,7 +22,7 @@ def validate_cpu(cpu):
 
     # some digit(s) followed by an optional m
     if not re.match(r"^\d+m?$", cpu):
-        raise InvalidArgumentValueError("CPU quantity should be millis (500m) or integer (1, 2, ...)")
+        raise InvalidArgumentValueError("CPU quantity should be millis (250m, 500m, 750m, 1250m) or integer (1, 2, ...)")
 
     return cpu
 
