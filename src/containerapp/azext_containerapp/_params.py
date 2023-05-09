@@ -425,12 +425,15 @@ def load_arguments(self, _):
         c.argument('replica_timeout', options_list=['--replica-timeout'], help='Maximum number of seconds a replica can execute.')
         c.argument('parallelism', options_list=['--parallelism'], help='maximum number of tasks that can run in parallel.')
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
+        c.argument('min_executions', type=int, help="Minimum number of job executions that are created for a trigger, default 0.")
+        c.argument('max_executions', type=int, help="Maximum number of job executions that are created for a trigger, default 100.")
+        c.argument('polling_interval', type=int, help="Interval to check each event source in seconds. Defaults to 30s.")
 
     with self.argument_context('containerapp job create') as c:
         c.argument('system_assigned', options_list=['--system-assigned'], help='System assigned identity.')
         c.argument('trigger_type', options_list=['--trigger-type'], help='Trigger type. Schedule | Event | Manual')
         c.argument('user_assigned', options_list=['--user-assigned'], help='User assigned identity.')
-        
+
     with self.argument_context('containerapp job create', arg_group='Scale') as c:
         c.argument('min_executions', type=int, help="Minimum number of job executions that are created for a trigger, default 0.")
         c.argument('max_executions', type=int, help="Maximum number of job executions that are created for a trigger, default 100.")
