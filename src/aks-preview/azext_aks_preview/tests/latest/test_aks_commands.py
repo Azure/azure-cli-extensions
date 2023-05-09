@@ -6388,9 +6388,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--enable-managed-identity', '--enable-azuremonitormetrics --enable-windows-recording-rules',
             '--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size}',
         ])
+        time.sleep(120)  # wait for azuremonitormetrics to actually get enabled by the addonput operation
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.metrics.enabled', False),
+            self.check('azureMonitorProfile.metrics.enabled', True),
         ])
 
         # delete
