@@ -34,10 +34,11 @@ def setup(test):
     })
 
 def setup_vault_and_policy(test):
+    print("making a new backup vault")
     test.cmd('az dataprotection backup-vault create '
-             '--resource-group {rgname} '
+             '--resource-group "{rgname}" '
              '--location eastus2euap '
-             '--vault-name {vaultname} '
+             '--vault-name "{vaultname}" '
              '--soft-delete-state Off '
              '--immutability-state Disabled '
              '--storage-settings type=LocallyRedundant datastore-type=VaultStore '
@@ -47,19 +48,20 @@ def setup_vault_and_policy(test):
                  test.check("id", "{vault_id}")
              ])
 
+    print("making a new AKS Policy")
     aks_poIicy_json = test.cmd('az dataprotection backup-policy get-default-policy-template --datasource-type AzureKubernetesService', checks=[
         test.check("name", "AKSPolicy1")
-    ])
+    ]).get_output_in_json()
     aks_poIicy_json["name"] = test.kwargs["policyname"]
     test.kwargs.update({
         "policyjson": aks_poIicy_json,
     })
 
     test.cmd('az dataprotection backup-policy create '
-             '-g {rgname} '
-             '--vault-name {vaultname} '
-             '-n {policyname} '
-             '--policy {policyjson}',
+             '-g "{rgname}" '
+             '--vault-name "{vaultname}" '
+             '-n "{policyname}" '
+             '--policy "{policyjson}"',
              checks=[
                  test.check("id", "{policy_id}")
              ])
@@ -67,7 +69,8 @@ def setup_vault_and_policy(test):
 def configure_backup(test):
     backup_instance_guid = "faec6818-0720-11ec-bd1b-c8f750f92764"
 
-    backup_config_json = test.cmd('az dataprotection backup-instance initialize-backupconfig', checks=[
+    print("initializing new backupconfig.json")
+    backup_config_json = test.cmd('az dataprotection backup-instance initialize-backupconfig --datasource-type AzureKubernetesService', checks=[
         test.check('include_cluster_scope_resources', True),
         test.check('snapshot_volumes', True)
     ]).get_output_in_json()
@@ -75,14 +78,15 @@ def configure_backup(test):
         "backup_config_json": backup_config_json
     })
 
+    print("initializing new BI.json")
     backup_instance_json = test.cmd('az dataprotection backup-instance initialize '
-                                    '--datasource-id {akscluster1_id} '
+                                    '--datasource-id "{akscluster1_id}" '
                                     '--datasource-location eastus2euap '
                                     '--datasource-type AzureKubernetesService '
-                                    '--policy-id {policy_id} '
-                                    '--backup-configuration {backup_config_json} '
-                                    '--friendly-name {friendlyname1} '
-                                    '--snapshot-resource-group-name {rgname}', checks=[]).get_output_in_json()
+                                    '--policy-id "{policy_id}" '
+                                    '--backup-configuration "{backup_config_json}" '
+                                    '--friendly-name "{friendlyname1}" '
+                                    '--snapshot-resource-group-name "{rgname}"', checks=[]).get_output_in_json()
     backup_instance_json["backup_instance_name"] = test.kwargs['akscluster1'] + "-" + test.kwargs['akscluster1'] + "-" + backup_instance_guid
     test.kwargs.update({
         "backup_instance_json": backup_instance_json,
@@ -91,17 +95,19 @@ def configure_backup(test):
 
     # TODO add failing validation check some time. Not required at the moment.
 
+    print("Assigning permissions as necessary")
     # uncomment when running live, run only in record mode - grant permission
     test.cmd('az dataprotection backup-instance update-msi-permissions '
              '--datasource-type AzureKubernetesService '
              '--operation Backup '
              '--permissions-scope ResourceGroup '
-             '--vault-name {vaultname} '
-             '--resource-group {rgname} '
-             '--backup-instance {backup_instance_json} -y')
+             '--vault-name "{vaultname}" '
+             '--resource-group "{rgname}" '
+             '--backup-instance "{backup_instance_json}" -y')
 
     time.sleep(60)
 
+    print("Making a new backup instance")
     test.cmd('az dataprotection backup-instance create -g "{rgname}" --vault-name "{vaultname}" --backup-instance "{backup_instance_json}"')
 
     backup_instance_res = test.cmd('az dataprotection backup-instance list -g "{rgname}" --vault-name "{vaultname}" --query "[0].properties.protectionStatus"').get_output_in_json()
@@ -151,10 +157,12 @@ def trigger_restore_original_location(test):
     #         raise Exception("Undefined job status received")
 
 def delete_backup(test):
+    print("deletein gBI")
     test.cmd('az dataprotection backup-instance delete -g "{rgname}" --vault-name "{vaultname}" -n "{backup_instance_name}" --yes')
 
 def cleanup(test):
-    pass
+    print("delelting vault")
+    test.cmd('az dataprotection backup-vault delete -g "{rgname}" --vault-name "{vaultname}" --yes')
 
 @AllowLargeResponse()
 def call_scenario(test):
@@ -165,8 +173,9 @@ def call_scenario(test):
         trigger_backup(test)
         trigger_restore_original_location(test)
         delete_backup(test)
+        cleanup(test)
     except Exception as e:
-        cleanup()
+        cleanup(test)
         raise e
 
 # Test class for Scenario
