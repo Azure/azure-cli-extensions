@@ -77,7 +77,7 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      set_ip_restrictions, certificate_location_matches, certificate_matches, generate_randomized_managed_cert_name,
                      check_managed_cert_name_availability, prepare_managed_certificate_envelop,
                      get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported, _generate_secret_volume_name,
-                     getCurrentMarinerTags, patchableCheck)
+                     get_current_mariner_tags, patchable_check)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -4132,8 +4132,8 @@ def show_auth_config(cmd, resource_group_name, name):
         pass
     return auth_settings
 
+
 # Compose
-          
 def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       resource_group_name,
                                       managed_env,
@@ -4301,22 +4301,21 @@ def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile
     except Exception as e:
         handle_raw_exception(e)
 
+
 def patch_list(cmd, resource_group_name, managed_env, show_all=False):
-    caList = list_containerapp(cmd, resource_group_name, managed_env)    
+    ca_list = list_containerapp(cmd, resource_group_name, managed_env)
     imgs = []
-    if caList:
-        for ca in caList:
+    if ca_list:
+        for ca in ca_list:
             containers = ca["properties"]["template"]["containers"]
             for container in containers:
                 result = dict(imageName=container["image"], targetContainerAppName=container["name"])
                 imgs.append(result)
 
-        # Get the BOM of the images
+    # Get the BOM of the images
     results = []
     boms = []
 
-    ## For production
-    #
     for img in imgs:
         subprocess.run("pack inspect-image " + img["imageName"] + " --output json > ./bom.json 2>&1", shell=True)
         with open("./bom.json", "rb") as f:
@@ -4326,50 +4325,39 @@ def patch_list(cmd, resource_group_name, managed_env, show_all=False):
                 bom = dict(remote_info=401)
             else:
                 bom = json.loads(lines)
-            bom.update({ "targetContainerAppName": img["targetContainerAppName"] })
+            bom.update({"targetContainerAppName": img["targetContainerAppName"]})
         boms.append(bom)
 
-    ## For testing
-    #
-    # with open("./bom.json", "rb") as f:
-    #     lines = f.read()
-    #     # if lines.find(b"status code 401 Unauthorized") == -1 or lines.find(b"unable to find image") == -1:
-    #     #     bom = dict(remote_info=401)
-    #     # else:
-    #     bom = json.loads(lines)
-    #     bom.update({ "targetContainerAppName": "test-containerapp-1" })
-    # boms.append(bom)
-
     # Get the current tags of Dotnet Mariners
-    oryxRunImgTags = getCurrentMarinerTags()
-    failedReason = "Failed to get BOM of the image. Please check if the image exists or you have the permission to access the image."
-    notBasedMarinerReason = "Image not based on Mariner"
-    mcrCheckReason = "Image not from mcr.microsoft.com/oryx/builder"
+    oryx_run_image_tags = get_current_mariner_tags()
+    failed_reason = "Failed to get BOM of the image. Please check if the image exists or you have the permission to access the image."
+    not_based_on_mariner_reason = "Image not based on Mariner"
+    mcr_check_reason = "Image not from mcr.microsoft.com/oryx/builder"
     results = []
+
     # Start checking if the images are based on Mariner
     for bom in boms:
         if bom["remote_info"] == 401:
-            results.append(dict(targetContainerAppName=bom["targetContainerAppName"], oldRunImage=None, newRunImage=None, id=None, reason=failedReason))
+            results.append(dict(targetContainerAppName=bom["targetContainerAppName"], oldRunImage=None, newRunImage=None, id=None, reason=failed_reason))
         else:
             # devide run-images into different parts by "/"
-            runImagesProps = bom["remote_info"]["run_images"]
-            if runImagesProps is None:
-                
-                results.append(dict(targetContainerAppName=bom["targetContainerAppName"], oldRunImage=None, newRunImage=None, id=None, reason=notBasedMarinerReason))
+            run_images_props = bom["remote_info"]["run_images"]
+            if run_images_props is None:
+                results.append(dict(targetContainerAppName=bom["targetContainerAppName"], oldRunImage=None, newRunImage=None, id=None, reason=not_based_on_mariner_reason))
             else:
-                for runImagesProp in runImagesProps:
+                for run_images_prop in run_images_props:
                     # result = None
-                    if (runImagesProp["name"].find("mcr.microsoft.com/oryx/builder") != -1):
-                        runImagesProp = runImagesProp["name"].split(":")
-                        runImagesTag = runImagesProp[1]
+                    if (run_images_prop["name"].find("mcr.microsoft.com/oryx/builder") != -1):
+                        run_images_prop = run_images_prop["name"].split(":")
+                        run_images_tag = run_images_prop[1]
                         # Based on Mariners
-                        if runImagesTag.find('mariner') != -1:
-                            results.append(patchableCheck(runImagesTag, oryxRunImgTags, bom=bom))
-                        else: 
-                            results.append(dict(targetContainerAppName=bom["targetContainerAppName"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=failedReason))
+                        if run_images_tag.find('mariner') != -1:
+                            results.append(patchable_check(run_images_tag, oryx_run_image_tags, bom=bom))
+                        else:
+                            results.append(dict(targetContainerAppName=bom["targetContainerAppName"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=failed_reason))
                     else:
                         # Not based on image from mcr.microsoft.com/dotnet
-                        results.append(dict(targetContainerAppName=bom["targetContainerAppName"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=mcrCheckReason))    
-    if show_all == False :
-        results = [x for x in results if x["newRunImage"] != None]
+                        results.append(dict(targetContainerAppName=bom["targetContainerAppName"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=mcr_check_reason))
+    if not show_all:
+        results = [x for x in results if x["newRunImage"] is not None]
     return results
