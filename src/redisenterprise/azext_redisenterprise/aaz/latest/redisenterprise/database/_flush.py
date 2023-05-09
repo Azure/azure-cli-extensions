@@ -16,9 +16,6 @@ from azure.cli.core.aaz import *
 )
 class Flush(AAZCommand):
     """Flushes all the keys in this database and also from its linked databases.
-
-    :example: flush the cache data
-        az redisenterprise database flush --cluster-name "cache1" --ids "/subscriptions/subid2/resourceGroups/rg2/providers/Microsoft.Cache/redisEnterprise/cache2/databases/default" --resource-group "rg1"
     """
 
     _aaz_info = {
@@ -65,14 +62,14 @@ class Flush(AAZCommand):
         # define Arg Group "Parameters"
 
         _args_schema = cls._args_schema
-        _args_schema.ids = AAZListArg(
-            options=["--ids"],
+        _args_schema.linked_ids = AAZListArg(
+            options=["--linked-ids"],
             arg_group="Parameters",
             help="The resource identifiers of all the other database resources in the georeplication group to be flushed",
         )
 
-        ids = cls._args_schema.ids
-        ids.Element = AAZStrArg()
+        linked_ids = cls._args_schema.linked_ids
+        linked_ids.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -178,7 +175,7 @@ class Flush(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("ids", AAZListType, ".ids")
+            _builder.set_prop("ids", AAZListType, ".linked_ids")
 
             ids = _builder.get(".ids")
             if ids is not None:

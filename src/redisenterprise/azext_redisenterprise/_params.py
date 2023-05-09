@@ -214,6 +214,12 @@ def load_arguments(self, _):
                    'RedisEnterprise cluster.', id_part='name')
         c.argument('unlink_ids', nargs='+', help='The resource IDs of the database resources to be unlinked.')
 
+    with self.argument_context('redisenterprise database flush') as c:
+        c.argument('resource_group_name', resource_group_name_type)
+        c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
+                   'RedisEnterprise cluster.', id_part='name')
+        c.argument('linked_ids', options_list=['--linked-ids'], nargs='+', help='The resource IDs of the database resources to be flushed.')
+
     with self.argument_context('redisenterprise database import') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
