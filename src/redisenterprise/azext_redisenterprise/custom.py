@@ -19,7 +19,7 @@ from .aaz.latest.redisenterprise.database import Export as _DatabaseExport
 from .aaz.latest.redisenterprise.database import Import as _DatabaseImport
 from .aaz.latest.redisenterprise.database import List as _DatabaseList
 from .aaz.latest.redisenterprise.database import RegenerateKey as _DatabaseRegenerateKey
-from .aaz.latest.redisenterprise.database import ListKey as _DatabaseListKey
+from .aaz.latest.redisenterprise.database import ListKeys as _DatabaseListKey
 from .aaz.latest.redisenterprise.database import Show as _DatabaseShow
 from .aaz.latest.redisenterprise.database import Update as _DatabaseUpdate
 from .aaz.latest.redisenterprise.database import Wait as _DatabaseWait
