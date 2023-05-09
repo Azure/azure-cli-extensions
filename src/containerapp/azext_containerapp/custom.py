@@ -1402,13 +1402,13 @@ def create_containerappsjob(cmd,
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name, AppType.ContainerAppJob.name)
     validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
-    
+
     if replica_timeout is None:
         raise RequiredArgumentMissingError('Usage error: --replica_timeout is required')
-    
+
     if replica_retry_limit is None:
         raise RequiredArgumentMissingError('Usage error: --replica_retry_limit is required')
-    
+
     if registry_identity and not is_registry_msi_system(registry_identity):
         logger.info("Creating an acrpull role assignment for the registry identity")
         create_acrpull_role_assignment(cmd, registry_server, registry_identity, skip_error=True)

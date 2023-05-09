@@ -38,6 +38,7 @@ class AppType(Enum):
     ContainerApp = 1
     ContainerAppJob = 2
 
+
 logger = get_logger(__name__)
 
 
@@ -50,11 +51,12 @@ def validate_container_app_name(name, appType):
     if (appType == AppType.ContainerAppJob.name):
         if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
             raise ValidationError(f"Container App Job names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
-                                f"Please shorten {name}")
+                                  f"Please shorten {name}")
     if (appType == AppType.ContainerApp.name):
         if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
             raise ValidationError(f"Container App Job names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
-                                f"Please shorten {name}")
+                                  f"Please shorten {name}")
+
 
 def retry_until_success(operation, err_txt, retry_limit, *args, **kwargs):
     while True:
