@@ -1780,21 +1780,28 @@ def get_pack_exec_path():
 def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
     tagProp = parseOryxMarinerTag(repoTagSplit)
     if tagProp is None:
-        result = ImagePatchableCheck
-        result["targetContainerAppName"] = bom["targetContainerAppName"]
-        result["revisionMode"] = bom["revisionMode"]
-        result["targetContainerName"] = bom["targetContainerName"]
-        result["targetImageName"] = bom["image_name"]
-        result["oldRunImage"] = repoTagSplit
-        result["reason"] = "Image not based on dotnet Mariner."
+        result = {
+            "targetContainerAppName": bom["targetContainerAppName"],
+            "targetContainerName": bom["targetContainerName"],
+            "revisionMode": bom["revisionMode"],
+            "targetImageName": bom["image_name"],
+            "oldRunImage": repoTagSplit,
+            "newRunImage": None,
+            "id": None,
+            "reason": "Image not based on dotnet Mariner."
+        }
         return result
     # elif len(str(tagProp["version"]).split(".")) == 2:
-    #     result = ImagePatchableCheck
-    #     result["targetContainerAppName"] = bom["targetContainerAppName"]
-    #     result["revisionMode"] = bom["revisionMode"]
-    #     result["targetContainerName"] = bom["targetContainerName"]
-    #     result["oldRunImage"] = repoTagSplit
-    #     result["reason"] = "Image is a patchless version."
+    #     result = {
+    #         "targetContainerAppName": bom["targetContainerAppName"],
+    #         "targetContainerName": bom["targetContainerName"],
+    #         "revisionMode": bom["revisionMode"],
+    #         "targetImageName": bom["image_name"],
+    #         "oldRunImage": repoTagSplit,
+    #         "newRunImage": None,
+    #         "id": None,
+    #         "reason": "Image is a patchless version."
+    #     }
     #     return result
     repoTagSplit = repoTagSplit.split("-")
     if repoTagSplit[1] == "dotnet":
@@ -1802,12 +1809,14 @@ def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
         
     # Check if the image minor version is four less than the latest minor version
     if tagProp["version"] < matchingVersionInfo[0]["version"]:
-        result = ImagePatchableCheck
-        result["targetContainerAppName"] = bom["targetContainerAppName"]
-        result["revisionMode"] = bom["revisionMode"]
-        result["targetImageName"] = bom["image_name"]
-        result["targetContainerName"] = bom["targetContainerName"]
-        result["oldRunImage"] = tagProp["fullTag"]
+        result = {
+            "targetContainerAppName": bom["targetContainerAppName"],
+            "targetContainerName": bom["targetContainerName"],
+            "revisionMode": bom["revisionMode"],
+            "targetImageName": bom["image_name"],
+            "oldRunImage": tagProp["fullTag"],
+        }
+        print((tagProp["version"].micro < matchingVersionInfo[0]["version"].micro))
         if (tagProp["version"].minor == matchingVersionInfo[0]["version"].minor) and (tagProp["version"].micro < matchingVersionInfo[0]["version"].micro):
             # Patchable
             result["newRunImage"] = "mcr.microsoft.com/oryx/builder:" + matchingVersionInfo[0]["fullTag"]
@@ -1816,15 +1825,19 @@ def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
         else:
             # Not patchable
             result["newRunImage"] = "mcr.microsoft.com/oryx/builder:" + matchingVersionInfo[0]["fullTag"]
+            result["id"] = None
             result["reason"] = "The image is not pachable Please check for major or minor version upgrade."
     else:
-        result = ImagePatchableCheck
-        result["targetContainerAppName"] = bom["targetContainerAppName"]
-        result["revisionMode"] = bom["revisionMode"]
-        result["targetContainerName"] = bom["targetContainerName"]
-        result["targetImageName"] = bom["image_name"]
-        result["oldRunImage"] = tagProp["fullTag"]
-        result["reason"] = "You're already up to date!"
+        result = {
+            "targetContainerAppName": bom["targetContainerAppName"],
+            "targetContainerName": bom["targetContainerName"],
+            "revisionMode": bom["revisionMode"],
+            "targetImageName": bom["image_name"],
+            "oldRunImage": tagProp["fullTag"],
+            "newRunImage": None,
+            "id": None,
+            "reason": "You're already up to date!"
+        }
     return result
 
 

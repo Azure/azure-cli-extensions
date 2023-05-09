@@ -4373,40 +4373,53 @@ def patch_list(cmd, resource_group_name, managed_env, show_all=False):
                             else:
                                 results[checkResult["id"]] = checkResult
                         else: 
-                            results["NotPatchable"].append(dict(targetContainerName=bom["targetContainerName"], targetContainerAppName=bom["targetContainerAppName"], revisionMode=bom["revisionMode"], targetImageName=bom["image_name"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=failedReason))
+                            results["NotPatchable"].append(dict(targetContainerName=bom["targetContainerName"], targetContainerAppName=bom["targetContainerAppName"], revisionMode=bom["revisionMode"], targetImageName=bom["image_name"], oldRunImage=bom["remote_info"]["run_images"]["name"], newRunImage=None, id=None, reason=failedReason))
                     else:
                         # Not based on image from mcr.microsoft.com/dotnet
-                        results["NotPatchable"].append(dict(targetContainerName=bom["targetContainerName"], targetContainerAppName=bom["targetContainerAppName"], revisionMode=bom["revisionMode"], targetImageName=bom["image_name"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=mcrCheckReason))    
+                        results["NotPatchable"].append(dict(targetContainerName=bom["targetContainerName"], targetContainerAppName=bom["targetContainerAppName"], revisionMode=bom["revisionMode"], targetImageName=bom["image_name"], oldRunImage=bom["remote_info"]["run_images"]["name"], newRunImage=None, id=None, reason=mcrCheckReason))    
     if show_all == False :
         results = {k: v for k, v in results.items() if k != "NotPatchable"}
     return results
 
 def patch_run(cmd, resource_group_name, managed_env, show_all=False):
     patchable_check_results = patch_list(cmd, resource_group_name, managed_env, show_all=show_all)
-    if list(patchable_check_results.keys()).count == 0:
+    patchable_result_key_list = list(patchable_check_results.keys())
+    if len(patchable_result_key_list) == 0 or patchable_result_key_list == ["NotPatchable"]:
         print("No patchable image found.")
+        if not show_all:
+            print("Use --show-all to show all the images' patchable check.")
         return
-    patchable_check_results_json = json.dumps(patchable_check_results, indent=4)
-    print(patchable_check_results_json)
-    if list(patchable_check_results.keys()) == ["NotPatchable"]:
-        print("No patchable image found.")
-        return
+    else:
+        patchable_check_results_json = json.dumps(patchable_check_results, indent=4)
+        print(patchable_check_results_json)
     user_input=input("Do you want to apply all the patch or specify by id? (y/n/id)\n")
-    return patch_apply(cmd, patchable_check_results, user_input)
+    return patch_apply(cmd, patchable_check_results, user_input, resource_group_name)
 
-def patch_apply(cmd, patchCheckList, method):
+def patch_apply(cmd, patchCheckList, method, resource_group_name):
     results = []
     m = method.strip().lower()
     if m == "y":
         for key in patchCheckList.keys():
             if key != "NotPatchable":
                 if patchCheckList[key]["newRunImage"]:
-                    results.append(patch_cli_call(cmd, patchCheckList[key]["targetContainerAppName"], patchCheckList[key]["targetContainerName"], patchCheckList[key]["targetImageName"], patchCheckList[key]["newRunImage"], patchCheckList[key]["revisionMode"]))
+                    results.append(patch_cli_call(cmd, 
+                                                  resource_group_name,
+                                                  patchCheckList[key]["targetContainerAppName"], 
+                                                  patchCheckList[key]["targetContainerName"], 
+                                                  patchCheckList[key]["targetImageName"], 
+                                                  patchCheckList[key]["newRunImage"], 
+                                                  patchCheckList[key]["revisionMode"]))
     elif m == "n":
         print("No patch applied.")
     else:
         if method in patchCheckList.keys():
-            results.append(patch_cli_call(cmd, patchCheckList[method]["targetContainerAppName"], patchCheckList[method]["targetContainerName"], patchCheckList[method]["targetImageName"], patchCheckList[method]["newRunImage"], patchCheckList[method]["revisionMode"]))
+            results.append(patch_cli_call(cmd, 
+                                          resource_group_name,
+                                          patchCheckList[method]["targetContainerAppName"], 
+                                          patchCheckList[method]["targetContainerName"], 
+                                          patchCheckList[method]["targetImageName"], 
+                                          patchCheckList[method]["newRunImage"], 
+                                          patchCheckList[method]["revisionMode"]))
         else:
             print("Invalid patch method or id.")
 
@@ -4427,11 +4440,12 @@ def patch_cli_call(cmd, resource_group, container_app_name, container_name, targ
                                           name=container_app_name, 
                                           resource_group_name=resource_group, 
                                           container_name=container_name, 
-                                          new_image_name=new_target_image_name)
+                                          image=new_target_image_name)
         print("Container app revision created successfully.")
-        update_info = json.loads(update_info_json)
-        new_revision_info = activate_revision(cmd, resource_group, revision_name=update_info["latestRevisionName"], name=container_app_name)
-        return new_revision_info
+        ## TODO: activate revision, fix the error when running the following two lines
+        # update_info = json.load(update_info_json)
+        # new_revision_info = activate_revision(cmd, resource_group, revision_name=update_info_json["latestRevisionName"], name=container_app_name)
+        return update_info_json
     except Exception:
         print("Error: Failed to create new revision with the container app.")
         raise
