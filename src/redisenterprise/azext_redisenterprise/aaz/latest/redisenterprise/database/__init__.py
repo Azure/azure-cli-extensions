@@ -16,7 +16,7 @@ from ._flush import *
 from ._force_unlink import *
 from ._import import *
 from ._list import *
-from ._list_key import *
+from ._list_keys import *
 from ._regenerate_key import *
 from ._show import *
 from ._update import *

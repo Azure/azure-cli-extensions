@@ -12,9 +12,9 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "redisenterprise database list-key",
+    "redisenterprise database list-keys",
 )
-class ListKey(AAZCommand):
+class ListKeys(AAZCommand):
     """Retrieves the access keys for the RedisEnterprise database.
     """
 
@@ -173,8 +173,8 @@ class ListKey(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListKeyHelper:
-    """Helper class for ListKey"""
+class _ListKeysHelper:
+    """Helper class for ListKeys"""
 
 
-__all__ = ["ListKey"]
+__all__ = ["ListKeys"]
