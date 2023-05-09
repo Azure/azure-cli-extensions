@@ -9,3 +9,32 @@
 # pylint: disable=too-many-lines
 
 from knack.help_files import helps  # pylint: disable=unused-import
+
+helps['redisenterprise'] = """
+    type: group
+    Manage the redisenterprise cache
+"""
+
+helps['redisenterprise create'] = """
+    type: command
+    short-summary: Create an existing (overwrite/recreate, with potential downtime) cache cluster
+    examples:
+      - name: create cache
+        text: |-
+               az redisenterprise create --cluster-name "cache1" --location "East US" --minimum-tls-version "1.2" 
+               --sku "Enterprise_E20" --capacity 4 --tags tag1="value1" --zones "1" "2" "3" --client-protocol "Encrypted" 
+               --clustering-policy "EnterpriseCluster" --eviction-policy "NoEviction" 
+               --modules name="RedisBloom" args="ERROR_RATE 0.00 INITIAL_SIZE 400" 
+               --modules name="RedisTimeSeries" args="RETENTION_POLICY 20" --modules name="RediSearch" 
+               --persistence aof-enabled=true aof-frequency="1s" --port 10000 --resource-group "rg1"
+"""
+
+helps['redisenterprise list'] = """
+    type: command
+    short-summary: List all RedisEnterprise clusters in the specified subscription
+"""
+
+helps['redisenterprise show'] = """
+    type: command
+    short-summary: Get information about a RedisEnterprise cluster
+"""

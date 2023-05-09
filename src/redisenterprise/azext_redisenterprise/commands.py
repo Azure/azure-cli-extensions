@@ -16,3 +16,18 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
         g.custom_command('create', 'redisenterprise_create', supports_no_wait=True)
         g.custom_command('list', 'redisenterprise_list')
         g.custom_show_command('show', 'redisenterprise_show')
+    with self.command_group("redisenterprise database"):
+        from .custom import DatabaseFlush, DatabaseCreate, DatabaseDelete, DatabaseExport, DatabaseForceUnlink
+        from .custom import DatabaseImport, DatabaseListKey, DatabaseRegenerateKey
+        from .custom import DatabaseShow, DatabaseUpdate, DatabaseWait
+        self.command_table["redisenterprise database flush"] = DatabaseFlush(loader=self)
+        self.command_table["redisenterprise database create"] = DatabaseCreate(loader=self)
+        self.command_table["redisenterprise database delete"] = DatabaseDelete(loader=self)
+        self.command_table["redisenterprise database export"] = DatabaseExport(loader=self)
+        self.command_table["redisenterprise database force-unlink"] = DatabaseForceUnlink(loader=self)
+        self.command_table["redisenterprise database import"] = DatabaseImport(loader=self)
+        self.command_table["redisenterprise database list-keys"] = DatabaseListKey(loader=self)
+        self.command_table["redisenterprise database regenerate-key"] = DatabaseRegenerateKey(loader=self)
+        self.command_table["redisenterprise database show"] = DatabaseShow(loader=self)
+        self.command_table["redisenterprise database update"] = DatabaseUpdate(loader=self)
+        self.command_table["redisenterprise database wait"] = DatabaseWait(loader=self)
