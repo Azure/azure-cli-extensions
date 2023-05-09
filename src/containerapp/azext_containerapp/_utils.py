@@ -1816,7 +1816,6 @@ def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
             "targetImageName": bom["image_name"],
             "oldRunImage": tagProp["fullTag"],
         }
-        print((tagProp["version"].micro < matchingVersionInfo[0]["version"].micro))
         if (tagProp["version"].minor == matchingVersionInfo[0]["version"].minor) and (tagProp["version"].micro < matchingVersionInfo[0]["version"].micro):
             # Patchable
             result["newRunImage"] = "mcr.microsoft.com/oryx/builder:" + matchingVersionInfo[0]["fullTag"]

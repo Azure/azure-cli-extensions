@@ -4422,6 +4422,7 @@ def patch_apply(cmd, patchCheckList, method, resource_group_name):
                                           patchCheckList[method]["revisionMode"]))
         else:
             print("Invalid patch method or id.")
+    return results
 
 def patch_cli_call(cmd, resource_group, container_app_name, container_name, target_image_name, new_run_image, revision_mode):
     try:
