@@ -8,13 +8,17 @@ import time
 import json
 import platform
 import docker
+import io
 import os
 import requests
 import hashlib
 import packaging.version as SemVer
 import re
+import tarfile
+import zipfile
 
 from urllib.parse import urlparse
+from urllib.request import urlopen
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingError, CLIInternalError,
@@ -1731,8 +1735,7 @@ def is_docker_running():
         client = docker.from_env()
         # need any command that will show the docker daemon is not running
         client.containers.list()
-    except docker.errors.DockerException as e:
-        logger.warning(f"Exception thrown when getting Docker client: {e}")
+    except docker.errors.DockerException:
         out = False
     finally:
         if client:
@@ -1742,19 +1745,22 @@ def is_docker_running():
 
 def get_pack_exec_path():
     try:
-        dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "azext_containerapp")
-        bin_folder = dir_path + "/bin"
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        bin_folder = os.path.join(dir_path, "bin")
         if not os.path.exists(bin_folder):
             os.makedirs(bin_folder)
 
-        exec_name = ""
+        pack_cli_version = "v0.29.0"
+        exec_name = "pack"
+        compressed_download_file_name = f"pack-{pack_cli_version}"
         host_os = platform.system()
         if host_os == "Windows":
-            exec_name = "pack-v0.29.0-windows.exe"
+            compressed_download_file_name = f"{compressed_download_file_name}-windows.zip"
+            exec_name = "pack.exe"
         elif host_os == "Linux":
-            exec_name = "pack-v0.29.0-linux"
+            compressed_download_file_name = f"{compressed_download_file_name}-linux.tgz"
         elif host_os == "Darwin":
-            exec_name = "pack-v0.29.0-macos"
+            compressed_download_file_name = f"{compressed_download_file_name}-macos.tgz"
         else:
             raise Exception(f"Unsupported host OS: {host_os}")
 
@@ -1763,94 +1769,114 @@ def get_pack_exec_path():
             return exec_path
 
         # Attempt to install the pack CLI
-        url = f"https://cormteststorage.blob.core.windows.net/pack/{exec_name}"
-        r = requests.get(url)
-        with open(exec_path, "wb") as f:
-            f.write(r.content)
-            print(f"Successfully installed pack CLI to {exec_path}\n")
-            return exec_path
+        url = f"https://github.com/buildpacks/pack/releases/download/{pack_cli_version}/{compressed_download_file_name}"
+        req = urlopen(url)
+        compressed_file = io.BytesIO(req.read())
+        if host_os == "Windows":
+            zip_file = zipfile.ZipFile(compressed_file)
+            for file in zip_file.namelist():
+                if file.endswith(exec_name):
+                    with open(exec_path, "wb") as f:
+                        f.write(zip_file.read(file))
+        else:
+            with tarfile.open(fileobj=compressed_file, mode="r:gz") as tar:
+                for tar_info in tar:
+                    if tar_info.isfile() and tar_info.name.endswith(exec_name):
+                        with open(exec_path, "wb") as f:
+                            f.write(tar.extractfile(tar_info).read())
 
+        return exec_path
     except Exception as e:
         # Swallow any exceptions thrown when attempting to install pack CLI
-        print(f"Failed to install pack CLI: {e}\n")
+        logger.warning(f"Failed to install pack CLI: {e}\n")
 
-    return ""
+    return None
 
 
-def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
-    tagProp = parseOryxMarinerTag(repoTagSplit)
-    if tagProp is None:
+def patchable_check(repo_tag_split: str, oryx_builder_run_image_tags, bom):
+    tag_prop = _parse_oryx_mariner_tag(repo_tag_split)
+    if tag_prop is None:
         result = ImagePatchableCheck
         result["targetContainerAppName"] = bom["targetContainerAppName"]
-        result["oldRunImage"] = repoTagSplit
+        result["oldRunImage"] = repo_tag_split
         result["reason"] = "Image not based on dotnet Mariner."
         return result
-    repoTagSplit = repoTagSplit.split("-")
-    if repoTagSplit[1] == "dotnet":
-        matchingVersionInfo = oryxBuilderRunImgTags[repoTagSplit[2]][str(tagProp["version"].major) + "." + str(tagProp["version"].minor)][tagProp["support"]][tagProp["marinerVersion"]]
-        
+    repo_tag_split = repo_tag_split.split("-")
+    if repo_tag_split[1] == "dotnet":
+        matching_version_info = oryx_builder_run_image_tags[repo_tag_split[2]][str(tag_prop["version"].major) + "." + str(tag_prop["version"].minor)][tag_prop["support"]][tag_prop["marinerVersion"]]
+
     # Check if the image minor version is four less than the latest minor version
-    if tagProp["version"] < matchingVersionInfo[0]["version"]:
+    if tag_prop["version"] < matching_version_info[0]["version"]:
         result = ImagePatchableCheck
         result["targetContainerAppName"] = bom["targetContainerAppName"]
-        result["oldRunImage"] = tagProp["fullTag"]
-        if (tagProp["version"].minor == matchingVersionInfo[0]["version"].minor) and (tagProp["version"].micro < matchingVersionInfo[0]["version"].micro):
+        result["oldRunImage"] = tag_prop["fullTag"]
+        if (tag_prop["version"].minor == matching_version_info[0]["version"].minor) and (tag_prop["version"].micro < matching_version_info[0]["version"].micro):
             # Patchable
-            result["newRunImage"] = "mcr.microsoft.com/oryx/builder:" + matchingVersionInfo[0]["fullTag"]
+            result["newRunImage"] = "mcr.microsoft.com/oryx/builder:" + matching_version_info[0]["fullTag"]
             result["id"] = hashlib.md5(str(result["oldRunImage"] + result["targetContainerAppName"] + result["newRunImage"]).encode()).hexdigest()
             result["reason"] = "New security patch released for your current run image."
         else:
             # Not patchable
-            result["newRunImage"] = "mcr.microsoft.com/oryx/builder:" + matchingVersionInfo[0]["fullTag"]
-            result["reason"] = "The image is not pachable Please check for major or minor version upgrade."
+            result["newRunImage"] = "mcr.microsoft.com/oryx/builder:" + matching_version_info[0]["fullTag"]
+            result["reason"] = "The image is not patchable Please check for major or minor version upgrade."
     else:
         result = ImagePatchableCheck
         result["targetContainerAppName"] = bom["targetContainerAppName"]
-        result["oldRunImage"] = tagProp["fullTag"]
+        result["oldRunImage"] = tag_prop["fullTag"]
         result["reason"] = "You're already up to date!"
     return result
 
 
-def getCurrentMarinerTags() -> list(OryxMarinerRunImgTagProperty):
+def get_current_mariner_tags() -> list(OryxMarinerRunImgTagProperty):
     r = requests.get("https://mcr.microsoft.com/v2/oryx/builder/tags/list")
-    tags = r.json()
+
     # tags = dict(tags=["run-dotnet-aspnet-7.0.1-cbl-mariner2.0", "run-dotnet-aspnet-7.0.1-cbl-mariner1.0", "run-dotnet-aspnet-7.1.0-cbl-mariner2.0"])
-    tagList = {}
+    tags = r.json()
+    tag_list = {}
+
     # only keep entries that container keyword "mariner"
     tags = [tag for tag in tags["tags"] if "mariner" in tag]
     for tag in tags:
-        tagObj = parseOryxMarinerTag(tag)
-        if tagObj:
-            majorMinorVer = str(tagObj["version"].major) + "." + str(tagObj["version"].minor)
-            support = tagObj["support"]
-            framework = tagObj["framework"]
-            marinerVer = tagObj["marinerVersion"]
-            if framework in tagList.keys():
-                if majorMinorVer in tagList[framework].keys():
-                    if support in tagList[framework][majorMinorVer].keys():
-                        if marinerVer in tagList[framework][majorMinorVer][support].keys():
-                            tagList[framework][majorMinorVer][support][marinerVer].append(tagObj)
-                            tagList[framework][majorMinorVer][support][marinerVer].sort(reverse=True, key=lambda x: x["version"])
+        tag_obj = _parse_oryx_mariner_tag(tag)
+        if tag_obj is not None:
+            major_minor_version = str(tag_obj["version"].major) + "." + str(tag_obj["version"].minor)
+            support = tag_obj["support"]
+            framework = tag_obj["framework"]
+            mariner_version = tag_obj["marinerVersion"]
+            if framework in tag_list.keys():
+                if major_minor_version in tag_list[framework].keys():
+                    if support in tag_list[framework][major_minor_version].keys():
+                        if mariner_version in tag_list[framework][major_minor_version][support].keys():
+                            tag_list[framework][major_minor_version][support][mariner_version].append(tag_obj)
+                            tag_list[framework][major_minor_version][support][mariner_version].sort(reverse=True, key=lambda x: x["version"])
                         else:
-                            tagList[framework][majorMinorVer][support][marinerVer] = [tagObj]
+                            tag_list[framework][major_minor_version][support][mariner_version] = [tag_obj]
                     else:
-                        tagList[framework][majorMinorVer][support] = {marinerVer: [tagObj]}
+                        tag_list[framework][major_minor_version][support] = {mariner_version: [tag_obj]}
                 else:
-                    tagList[framework][majorMinorVer] = {support: {marinerVer: [tagObj]}}
+                    tag_list[framework][major_minor_version] = {support: {mariner_version: [tag_obj]}}
             else:
-                tagList[framework] = {majorMinorVer: {support: {marinerVer: [tagObj]}}}
-    return tagList
+                tag_list[framework] = {major_minor_version: {support: {mariner_version: [tag_obj]}}}
+    return tag_list
 
 
-def parseOryxMarinerTag(tag: str) -> OryxMarinerRunImgTagProperty:
-    tagSplit = tag.split("-")
-    if tagSplit[0] == "run" and tagSplit[1] == "dotnet":
-        versionRE = r"(\d+\.\d+(\.\d+)?).*?(cbl-mariner(\d+\.\d+))"
-        REmatches = re.findall(versionRE, tag)
-        if REmatches.count == 0:
-            tagObj = None
+def get_latest_buildpack_run_tag():
+    tags = get_current_mariner_tags()
+    try:
+        return tags["aspnet"]["7.0"]["lts"]["cbl-mariner2.0"][0]["fullTag"]
+    except KeyError:
+        return None
+
+
+def _parse_oryx_mariner_tag(tag: str) -> OryxMarinerRunImgTagProperty:
+    tag_split = tag.split("-")
+    if tag_split[0] == "run" and tag_split[1] == "dotnet":
+        version_regex = r"(\d+\.\d+(\.\d+)?).*?(cbl-mariner(\d+\.\d+))"
+        matches = re.findall(version_regex, tag)
+        if matches.count == 0:
+            tag_obj = None
         else:
-            tagObj = dict(fullTag=tag, version=SemVer.parse(REmatches[0][0]), framework=tagSplit[2], marinerVersion=REmatches[0][2], architectures=None, support="lts")
+            tag_obj = dict(fullTag=tag, version=SemVer.parse(matches[0][0]), framework=tag_split[2], marinerVersion=matches[0][2], architectures=None, support="lts")
     else:
-        tagObj = None
-    return tagObj
+        tag_obj = None
+    return tag_obj

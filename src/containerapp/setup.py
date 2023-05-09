@@ -8,10 +8,14 @@
 
 from codecs import open
 from setuptools import setup, find_packages
+from urllib.request import urlopen
 
+import io
 import os
 import platform
 import requests
+import tarfile
+import zipfile
 
 try:
     from azure_bdist_wheel import cmdclass
@@ -53,25 +57,38 @@ try:
     if not os.path.exists(bin_folder):
         os.makedirs(bin_folder)
 
-    exec_name = ""
+    pack_cli_version = "v0.29.0"
+    exec_name = "pack"
+    compressed_download_file_name = f"pack-{pack_cli_version}"
     host_os = platform.system()
     if host_os == "Windows":
-        exec_name = "pack-v0.29.0-windows.exe"
+        compressed_download_file_name = f"{compressed_download_file_name}-windows.zip"
+        exec_name = "pack.exe"
     elif host_os == "Linux":
-        exec_name = "pack-v0.29.0-linux"
+        compressed_download_file_name = f"{compressed_download_file_name}-linux.tgz"
     elif host_os == "Darwin":
-        exec_name = "pack-v0.29.0-macos"
+        compressed_download_file_name = f"{compressed_download_file_name}-macos.tgz"
     else:
         raise Exception(f"Unsupported host OS: {host_os}")
 
     exec_path = os.path.join(bin_folder, exec_name)
     if not os.path.exists(exec_path):
-        url = f"https://cormteststorage.blob.core.windows.net/pack/{exec_name}"
-        r = requests.get(url)
-        with open(exec_path, "wb") as f:
-            f.write(r.content)
-            print(f"Successfully installed pack CLI to {exec_path}\n")
-
+        # Attempt to install the pack CLI
+        url = f"https://github.com/buildpacks/pack/releases/download/{pack_cli_version}/{compressed_download_file_name}"
+        req = urlopen(url)
+        compressed_file = io.BytesIO(req.read())
+        if host_os == "Windows":
+            zip_file = zipfile.ZipFile(compressed_file)
+            for file in zip_file.namelist():
+                if file.endswith(exec_name):
+                    with open(exec_path, "wb") as f:
+                        f.write(zip_file.read(file))
+        else:
+            with tarfile.open(fileobj=compressed_file, mode="r:gz") as tar:
+                for tar_info in tar:
+                    if tar_info.isfile() and tar_info.name.endswith(exec_name):
+                        with open(exec_path, "wb") as f:
+                            f.write(tar.extractfile(tar_info).read())
 except Exception as e:
     # Swallow any exceptions thrown when attempting to install pack CLI
     print(f"Failed to install pack CLI: {e}\n")
