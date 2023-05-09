@@ -133,6 +133,13 @@ Scale = {
     "rules": []  # list of ScaleRule
 }
 
+JobScale = {
+    "minExecutions": None,
+    "maxExecutions": None,
+    "pollingInterval": None,
+    "rules": []  # list of ScaleRule
+}
+
 TrafficWeight = {
     "revisionName": None,
     "weight": None,
@@ -222,7 +229,7 @@ ScheduleTriggerConfig = {
 EventTriggerConfig = {
     "replicaCompletionCount": None,
     "parallelism": None,
-    "scale": None,  # [Scale]
+    "scale": None,  # [JobScale]
 }
 
 UserAssignedIdentity = {

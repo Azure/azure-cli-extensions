@@ -588,8 +588,9 @@ helps['containerapp job create'] = """
               --replica-retry-limit 2 \\
               --replica-completion-count 1 \\
               --parallelism 1 \\
-              --min-replicas 0 \\
-              --max-replicas 1 \\
+              --polling-interval 30 \\
+              --min-executions 0 \\
+              --max-executions 1 \\
               --scale-rule-name queueJob \\
               --scale-rule-type azure-queue \\
               --scale-rule-metadata "accountName=mystorageaccountname" \\

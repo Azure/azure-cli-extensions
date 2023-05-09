@@ -52,6 +52,7 @@ from ._models import (
     Dapr as DaprModel,
     ContainerResources as ContainerResourcesModel,
     Scale as ScaleModel,
+    JobScale as JobScaleModel,
     Container as ContainerModel,
     GitHubActionConfiguration,
     RegistryInfo as RegistryInfoModel,
@@ -1390,8 +1391,9 @@ def create_containerappsjob(cmd,
                             scale_rule_name=None,
                             scale_rule_type=None,
                             scale_rule_auth=None,
-                            min_replicas=None,
-                            max_replicas=None,
+                            polling_interval=None,
+                            min_executions=None,
+                            max_executions=None,
                             tags=None,
                             no_wait=False,
                             system_assigned=False,
@@ -1463,10 +1465,11 @@ def create_containerappsjob(cmd,
     eventTriggerConfig_def = None
     if trigger_type is not None and trigger_type.lower() == "event":
         scale_def = None
-        if min_replicas is not None or max_replicas is not None:
-            scale_def = ScaleModel
-            scale_def["minReplicas"] = min_replicas
-            scale_def["maxReplicas"] = max_replicas
+        if min_executions is not None or max_executions is not None or polling_interval is not None:
+            scale_def = JobScaleModel
+            scale_def["pollingInterval"] = polling_interval
+            scale_def["minExecutions"] = min_executions
+            scale_def["maxExecutions"] = max_executions
 
         if scale_rule_name:
             scale_rule_type = scale_rule_type.lower()
@@ -1481,7 +1484,7 @@ def create_containerappsjob(cmd,
             scale_rule_def["custom"]["auth"] = auth_def
 
             if not scale_def:
-                scale_def = ScaleModel
+                scale_def = JobScaleModel
             scale_def["rules"] = [scale_rule_def]
 
         eventTriggerConfig_def = EventTriggerModel
@@ -1668,8 +1671,9 @@ def update_containerappsjob(cmd,
                             scale_rule_name=None,
                             scale_rule_type=None,
                             scale_rule_auth=None,
-                            min_replicas=None,
-                            max_replicas=None,
+                            polling_interval=None,
+                            min_executions=None,
+                            max_executions=None,
                             tags=None,
                             workload_profile_name=None,
                             no_wait=False):
@@ -1696,12 +1700,13 @@ def update_containerappsjob(cmd,
                                          args=args,
                                          tags=tags,
                                          workload_profile_name=workload_profile_name,
-                                         scale_rule_metadata=None,
-                                         scale_rule_name=None,
-                                         scale_rule_type=None,
-                                         scale_rule_auth=None,
-                                         min_replicas=None,
-                                         max_replicas=None,
+                                         scale_rule_metadata=scale_rule_metadata,
+                                         scale_rule_name=scale_rule_name,
+                                         scale_rule_type=scale_rule_type,
+                                         scale_rule_auth=scale_rule_auth,
+                                         polling_interval=polling_interval,
+                                         min_executions=min_executions,
+                                         max_replicas=max_executions,
                                          no_wait=no_wait)
 
 
@@ -1730,8 +1735,9 @@ def update_containerappsjob_logic(cmd,
                                   scale_rule_name=None,
                                   scale_rule_type=None,
                                   scale_rule_auth=None,
-                                  min_replicas=None,
-                                  max_replicas=None,
+                                  polling_interval=None,
+                                  min_executions=None,
+                                  max_executions=None,
                                   no_wait=False,
                                   registry_server=None,
                                   registry_user=None,
@@ -1835,16 +1841,19 @@ def update_containerappsjob_logic(cmd,
                 # Scale
                 if "scale" not in eventTriggerConfig_def["properties"]["template"]:
                     eventTriggerConfig_def["scale"] = {}
-                if min_replicas is not None:
-                    eventTriggerConfig_def["scale"]["minReplicas"] = min_replicas
-                if max_replicas is not None:
-                    eventTriggerConfig_def["scale"]["maxReplicas"] = max_replicas
+                if min_executions is not None:
+                    eventTriggerConfig_def["scale"]["minExecutions"] = min_executions
+                if max_executions is not None:
+                    eventTriggerConfig_def["scale"]["maxExecutions"] = max_executions
+                if polling_interval is not None:
+                    eventTriggerConfig_def["scale"]["pollingInterval"] = polling_interval
 
                 scale_def = None
-                if min_replicas is not None or max_replicas is not None:
-                    scale_def = ScaleModel
-                    scale_def["minReplicas"] = min_replicas
-                    scale_def["maxReplicas"] = max_replicas
+                if min_executions is not None or max_executions is not None or polling_interval is not None:
+                    scale_def = JobScaleModel
+                    scale_def["pollingInterval"] = polling_interval
+                    scale_def["minExecutions"] = min_executions
+                    scale_def["maxReplicas"] = max_executions
                 # so we don't overwrite rules
                 if safe_get(eventTriggerConfig_def, "scale", "rules"):
                     eventTriggerConfig_def["scale"].pop(["rules"])
@@ -1863,7 +1872,7 @@ def update_containerappsjob_logic(cmd,
                     scale_rule_def["custom"]["metadata"] = metadata_def
                     scale_rule_def["custom"]["auth"] = auth_def
                     if not scale_def:
-                        scale_def = ScaleModel
+                        scale_def = JobScaleModel
                     scale_def["rules"] = [scale_rule_def]
                     eventTriggerConfig_def["scale"]["rules"] = scale_def["rules"]
 
