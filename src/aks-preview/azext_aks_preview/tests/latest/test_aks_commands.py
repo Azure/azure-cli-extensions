@@ -6382,11 +6382,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'node_vm_size': node_vm_size
         })
 
-        create_cmd = ' '.join([
-            'aks', 'create', '--resource-group={resource_group}', '--name={name}', '--location={location}',
-            '--enable-managed-identity', '--enable-azuremonitormetrics --enable-windows-recording-rules',
-            '--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size}',
-        ])
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} ' \
+                     '--enable-managed-identity --enable-azuremonitormetrics --enable-windows-recording-rules --output=json'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
         ])
@@ -6403,7 +6400,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.is_empty(),
         ])
 
-        self.cmd('aks show -g {resource_group} -n {name}', checks=[
+        self.cmd('aks show -g {resource_group} -n {name} --output=json', checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('azureMonitorProfile.metrics.enabled', True),
         ])
