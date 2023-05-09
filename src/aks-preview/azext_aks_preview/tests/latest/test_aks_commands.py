@@ -6436,7 +6436,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update: enable-azuremonitormetrics
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
-                     '--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-PrometheusAddonPreview ' \
                      '--enable-azuremonitormetrics --enable-managed-identity --enable-windows-recording-rules'
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
