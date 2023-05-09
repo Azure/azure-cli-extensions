@@ -6390,7 +6390,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         ])
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('azureMonitorProfile.metrics.enabled', True),
+            self.check('azureMonitorProfile.metrics.enabled', False),
         ])
 
         # delete
