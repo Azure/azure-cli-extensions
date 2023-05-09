@@ -590,10 +590,12 @@ helps['containerapp job create'] = """
               --parallelism 1 \\
               --min-replicas 0 \\
               --max-replicas 1 \\
-              --scale-rule-name messageQueueJob \\
-              --scale-rule-type type_of_scale_rule \\
-              --scale_rule_metadata metadata \\
-              --scale_rule_auth scale_rule_auth \\
+              --scale-rule-name queueJob \\
+              --scale-rule-type azure-queue \\
+              --scale-rule-metadata "accountName=mystorageaccountname" \\
+                                    "cloud=AzurePublicCloud" \\
+                                    "queueLength": "5" "queueName": "foo" \\
+              --scale-rule-auth "connection=my-connection-string-secret-name"
               --image imageName
 """
 
