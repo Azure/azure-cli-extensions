@@ -566,7 +566,7 @@ helps['containerapp job create'] = """
               --trigger-type Manual \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
-              --replica-completion-count 1 \\
+              --rcc 1 \\
               --parallelism 1 \\
               --image imageName
               --workload-profile-name my-wlp
@@ -576,7 +576,7 @@ helps['containerapp job create'] = """
               --trigger-type Schedule \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
-              --replica-completion-count 1 \\
+              --rcc 1 \\
               --parallelism 1
               --cron-expression */1 * * * * \\
               --image imageName
@@ -586,7 +586,7 @@ helps['containerapp job create'] = """
               --trigger-type Event \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
-              --replica-completion-count 1 \\
+              --rcc 1 \\
               --parallelism 1 \\
               --polling-interval 30 \\
               --min-executions 0 \\

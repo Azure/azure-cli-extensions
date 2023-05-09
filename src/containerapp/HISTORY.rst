@@ -6,17 +6,6 @@ Upcoming
 ++++++
 * Upgrade api-version to 2023-04-01-preview
 
-0.3.30
-++++++
-* 'az containerapp job create': added for creating a Container App Job resource
-* 'az containerapp job show': added to get a Container App Job resource
-* 'az containerapp job update': update an existing Container App Job resource
-* 'az containerapp job delete': delete a Container App Job resource
-* 'az containerapp job list': get a list of Container App Job resources
-* 'az containerapp job start': start a Container App Job execution
-* 'az containerapp job stop': stop a running Container App Job execution
-* 'az containerapp job execution list': get a list of executions for a Container App Job
-
 0.3.29
 ++++++
 * 'az containerapp create': support for assigning acrpull permissions to managed identity in cross-subscription; warn when ACR resourceNotFound, do not block the process

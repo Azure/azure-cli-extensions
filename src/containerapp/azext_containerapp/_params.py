@@ -420,7 +420,7 @@ def load_arguments(self, _):
         c.argument('name', name_type, metavar='NAME', id_part='name', help=f"The name of the Container Apps Job. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_CONTAINER_APP_NAME_LENGTH} characters.")
         c.argument('cron_expression', options_list=['--cron-expression'], help='Cron expression for schedule trigger job.')
         c.argument('image', options_list=['--image'], help="Container image, e.g. publisher/image-name:tag.")
-        c.argument('replica_completion_count', options_list=['--replica-completion-count'], help='Number of replicas that need to complete successfully for execution to succeed.')
+        c.argument('replica_completion_count', options_list=['--replica-completion-count', '--rcc'], help='Number of replicas that need to complete successfully for execution to succeed.')
         c.argument('replica_retry_limit', options_list=['--replica-retry-limit'], help='maximum number of replica retries before the job execution fails.')
         c.argument('replica_timeout', options_list=['--replica-timeout'], help='Maximum number of seconds a replica can execute.')
         c.argument('parallelism', options_list=['--parallelism'], help='maximum number of tasks that can run in parallel.')
@@ -442,3 +442,6 @@ def load_arguments(self, _):
     with self.argument_context('containerapp job stop') as c:
         c.argument('job_execution_name', options_list=['--job-execution-name'], help='name of the specific job execution which needs to be stopped.')
         c.argument('execution_name_list', options_list=['--execution-name-list'], help='comma separated list of job execution names.')
+
+    with self.argument_context('containerapp job execution list') as c:
+        c.argument('name', id_part=None)
