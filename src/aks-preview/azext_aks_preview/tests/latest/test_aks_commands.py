@@ -6389,7 +6389,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             '--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size}',
         ])
         self.cmd(create_cmd, checks=[
-            self.is_empty(),
+            self.check('provisioningState', 'Succeeded'),
         ])
 
         # azuremonitor metrics will be set to false after initial creation command as its in the
