@@ -6,11 +6,11 @@
 import errno
 
 import yaml
+from azext_load.data_plane.utils import validators
 from azext_load.vendored_sdks.loadtesting_mgmt import LoadTestMgmtClient
 from azure.cli.core.azclierror import ValidationError
 from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
-from azext_load.data_plane.utils import validators
 
 logger = get_logger(__name__)
 
@@ -92,12 +92,13 @@ def get_admin_data_plane_client(cmd, load_test_resource, resource_group_name=Non
         credential=credential,
     )
 
+
 def parse_cert(certificate):
     comps = {}
     if len(certificate) != 1:
         raise ValueError("Only one certificate is supported")
     certificate = certificate[0]
-    comps = [certificate.get("name"), certificate.get("value") ]
+    comps = [certificate.get("name"), certificate.get("value")]
     if not validators._validate_akv_url(comps[1], "certificates"):
         raise ValueError(f"Invalid AKV Certificate URL: {comps[1]}")
     certificate = {
@@ -107,6 +108,7 @@ def parse_cert(certificate):
     }
     return certificate
 
+
 def parse_secrets(secrets):
     secrets_list = {}
     for secret in secrets:
@@ -114,17 +116,22 @@ def parse_secrets(secrets):
             url = secret.get("value")
             raise ValueError(f"Invalid AKV Certificate URL: {url}")
         secrets_list.update(
-            {secret.get("name"): {"type": "AKV_SECRET_URI", "value": secret.get("value")}}
+            {
+                secret.get("name"): {
+                    "type": "AKV_SECRET_URI",
+                    "value": secret.get("value"),
+                }
+            }
         )
     return secrets_list
+
 
 def parse_env(env):
     env_list = {}
     for item in env:
-        env_list.update(
-            {item.get("name"): item.get("value")}
-        )
+        env_list.update({item.get("name"): item.get("value")})
     return env_list
+
 
 def create_or_update_body(
     test_id,
@@ -243,7 +250,7 @@ def create_or_update_body(
         if env is not None:
             new_body["environmentVariables"] = body.get("environmentVariables", {})
             new_body["environmentVariables"].update(env)
-            
+
         if secrets is not None:
             new_body["secrets"] = body.get("secrets", {})
             new_body["secrets"].update(secrets)

@@ -102,7 +102,7 @@ def update_test(
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = client.get_test(test_id)
-    logger.debug("Retrieved test with testid: %s and body : %s", test_id, body)
+    logger.debug("Retrieved test with test ID: %s and body : %s", test_id, body)
     body = create_or_update_body(
         test_id,
         body,
@@ -164,7 +164,7 @@ def get_test(
     resource_group_name=None,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
-    logger.debug("Retrieving test with testid: %s", test_id)
+    logger.debug("Retrieving test with test ID: %s", test_id)
     return client.get_test(test_id)
 
 
@@ -185,7 +185,7 @@ def download_test_files(
             with requests.get(file_detail["url"]) as current_file:
                 with open(path + "\\" + file_detail["fileName"], "w+") as f:
                     f.write(current_file.text)
-    logger.debug("Downloaded files for test with testid: %s at %s", test_id, path)
+    logger.debug("Downloaded files for test with test ID: %s at %s", test_id, path)
     return f"Files belonging to test {test_id} are downloaded in {path} location."
 
 
@@ -196,7 +196,7 @@ def delete_test(
     resource_group_name=None,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
-    logger.debug("Deleting test with testid: %s", test_id)
+    logger.debug("Deleting test with test ID: %s", test_id)
     return client.delete_test(test_id)
 
 

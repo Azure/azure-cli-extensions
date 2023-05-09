@@ -11,7 +11,7 @@ def load_test_commands(self, _):
     ) as g:
         g.custom_command("create", "create_test", supports_no_wait=True)
         g.custom_command("update", "update_test", supports_no_wait=True)
-        g.custom_command("delete", "delete_test")
+        g.custom_command("delete", "delete_test", confirmation=True)
         g.custom_command("list", "list_tests")
         g.custom_show_command("show", "get_test")
         g.custom_command("download-files", "download_test_files")
@@ -23,7 +23,7 @@ def load_test_commands(self, _):
     ) as g:
         g.custom_command("add", "add_test_app_components")
         g.custom_command("list", "list_test_app_components")
-        g.custom_command("remove", "remove_test_app_components")
+        g.custom_command("remove", "remove_test_app_components", confirmation=True)
 
     with self.command_group(
         "load test server-metrics",
@@ -32,4 +32,4 @@ def load_test_commands(self, _):
     ) as g:
         g.custom_command("list", "list_test_server_metrics")
         g.custom_command("add", "add_test_server_metrics")
-        g.custom_command("remove", "remove_test_server_metrics")
+        g.custom_command("remove", "remove_test_server_metrics", confirmation=True)
