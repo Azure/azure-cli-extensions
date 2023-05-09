@@ -15,8 +15,8 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2022-11-01-preview"
-CURRENT_API_VERSION = "2022-11-01-preview"
+PREVIEW_API_VERSION = "2023-04-01-preview"
+CURRENT_API_VERSION = "2023-04-01-preview"
 JOBS_API_VERSION = "2023-04-01-preview"
 POLLING_TIMEOUT = 600  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests

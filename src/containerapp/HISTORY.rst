@@ -2,6 +2,10 @@
 
 Release History
 ===============
+Upcoming
+++++++
+* Upgrade api-version to 2023-04-01-preview
+
 0.3.29
 ++++++
 * 'az containerapp create': support for assigning acrpull permissions to managed identity in cross-subscription; warn when ACR resourceNotFound, do not block the process
