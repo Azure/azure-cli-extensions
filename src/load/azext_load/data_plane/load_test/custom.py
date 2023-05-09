@@ -3,6 +3,7 @@ import os
 import requests
 from azext_load.data_plane.utils.utils import (
     create_or_update_body,
+    download_file,
     get_admin_data_plane_client,
 )
 from azure.cli.core.azclierror import ValidationError
@@ -178,15 +179,19 @@ def download_test_files(
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     list_of_file_details = client.list_test_files(test_id)
     if list_of_file_details:
+        path = os.path.normpath(os.path.expanduser(path))
         if not os.path.exists(path):
-            logger.debug("Directory doesnt exist, creating directory %s", path)
-            os.mkdir(path)
+            logger.debug("Directory does not exist, creating directory %s", path)
+            os.makedirs(path)
         for file_detail in list_of_file_details:
-            with requests.get(file_detail["url"]) as current_file:
-                with open(path + "\\" + file_detail["fileName"], "w+") as f:
-                    f.write(current_file.text)
-    logger.debug("Downloaded files for test with test ID: %s at %s", test_id, path)
-    return f"Files belonging to test {test_id} are downloaded in {path} location."
+            file_path = os.path.join(path, file_detail["fileName"])
+            download_file(file_detail["url"], file_path)
+            logger.info("Downloaded '%s' file for test with test ID: %s at %s", file_detail["url"], test_id, file_path)
+        logger.info("Downloaded files for test with test ID: %s at %s", test_id, path)
+        return f"Files belonging to test {test_id} are downloaded in {path} location."
+    else:
+        logger.info("No files found for test with test ID: %s", test_id)
+        return f"No files found for test {test_id}."
 
 
 def delete_test(

@@ -5,6 +5,7 @@
 
 import errno
 
+import requests
 import yaml
 from azext_load.data_plane.utils import validators
 from azext_load.vendored_sdks.loadtesting_mgmt import LoadTestMgmtClient
@@ -91,6 +92,30 @@ def get_admin_data_plane_client(cmd, load_test_resource, resource_group_name=Non
         endpoint=endpoint,
         credential=credential,
     )
+
+
+def download_file(url, file_path):
+    count = 3
+    the_ex = None
+    while count > 0:
+        try:
+            response = requests.get(url, stream=True, allow_redirects=True)
+            assert response.status_code == 200, "Response code {}".format(
+                response.status_code
+            )
+            break
+        except Exception as ex:
+            the_ex = ex
+            count -= 1
+    if count == 0:
+        msg = "Request for {} failed: {}".format(url, str(the_ex))
+        print(msg)
+        raise Exception(msg)
+
+    with open(file_path, "wb") as f:
+        for chunk in response.iter_content(chunk_size=1024):
+            if chunk:  # ignore keep-alive new chunks
+                f.write(chunk)
 
 
 def parse_cert(certificate):
