@@ -63,7 +63,7 @@ def link_grafana_instance(cmd, raw_parameters, azure_monitor_workspace_resource_
     if "azureMonitorWorkspaceIntegrations" not in json.dumps(targetGrafanaArmPayload):
         targetGrafanaArmPayload["properties"]["grafanaIntegrations"]["azureMonitorWorkspaceIntegrations"] = []
     amwIntegrations = targetGrafanaArmPayload["properties"]["grafanaIntegrations"]["azureMonitorWorkspaceIntegrations"]
-    if amwIntegrations != [] and azure_monitor_workspace_resource_id in json.dumps(amwIntegrations).lower():
+    if amwIntegrations and azure_monitor_workspace_resource_id in json.dumps(amwIntegrations).lower():
         return GrafanaLink.ALREADYPRESENT
     try:
         grafanaURI = "{0}{1}?api-version={2}".format(
