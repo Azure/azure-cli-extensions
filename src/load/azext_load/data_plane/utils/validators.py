@@ -5,9 +5,16 @@ from msrestazure.tools import is_valid_resource_id
 
 def validate_test_id(namespace):
     if not isinstance(namespace.test_id, str):
-        raise ValueError("Invalid test-id value")
+        raise TypeError(f"Invalid test-id type: {type(namespace.test_id)}")
     if not re.match("^[a-z0-9_-]*$", namespace.test_id):
         raise ValueError("Invalid test-id value")
+
+
+def validate_test_run_id(namespace):
+    if not isinstance(namespace.test_run_id, str):
+        raise TypeError(f"Invalid test-run-id type: {type(namespace.test_run_id)}")
+    if not re.match("^[a-z0-9_-]*$", namespace.test_run_id):
+        raise ValueError("Invalid test-run-id value")
 
 
 def _validate_akv_url(string, type="secrets|certificates|keys|storage"):

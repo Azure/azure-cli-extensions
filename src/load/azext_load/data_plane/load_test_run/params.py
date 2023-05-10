@@ -2,33 +2,27 @@ from azext_load.data_plane.utils import argtypes
 
 
 def load_arguments(self, _):
-    # Load Test
-    with self.argument_context("load test create") as c:
-        c.argument("display_name", argtypes.display_name)
-        c.argument("test_plan", argtypes.test_plan)
-        c.argument("test_description", argtypes.test_description)
+    # Load Test Run
+    with self.argument_context("load test-run create") as c:
+        c.argument("existing_test_run_id", argtypes.existing_test_run_id)
+        c.argument("test_id", argtypes.test_id)
+        c.argument("description", argtypes.test_run_description)
         c.argument("env", argtypes.env)
         c.argument("secrets", argtypes.secret)
         c.argument("certificate", argtypes.certificate)
-        c.argument("subnet_id", argtypes.subnet_id)
-        c.argument("load_test_config_file", argtypes.load_test_config_file)
-        c.argument(
-            "key_vault_reference_identity", argtypes.key_vault_reference_identity
-        )
-        c.argument("engine_instances", argtypes.engine_instances)
 
     with self.argument_context("load test update") as c:
-        c.argument("display_name", argtypes.display_name)
-        c.argument("test_plan", argtypes.test_plan)
-        c.argument("test_description", argtypes.test_description)
         c.argument("env", argtypes.env)
         c.argument("secrets", argtypes.secret)
         c.argument("certificate", argtypes.certificate)
+        c.argument("test_description", argtypes.test_description)
+        c.argument("test_plan", argtypes.test_plan)
         c.argument("subnet_id", argtypes.subnet_id)
         c.argument("load_test_config_file", argtypes.load_test_config_file)
         c.argument(
             "key_vault_reference_identity", argtypes.key_vault_reference_identity
         )
+        c.argument("display_name", argtypes.display_name)
         c.argument("engine_instances", argtypes.engine_instances)
 
     with self.argument_context("load test download-files") as c:

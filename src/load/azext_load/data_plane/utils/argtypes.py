@@ -27,6 +27,14 @@ test_id = CLIArgumentType(
     help="Test ID of the load test",
 )
 
+test_run_id = CLIArgumentType(
+    validator=validators.validate_test_run_id,
+    completer=completers.get_test_run_id_completion_list(),
+    options_list=["--test-run-id", "-r"],
+    type=str,
+    help="Test run ID of the load test run",
+)
+
 display_name = CLIArgumentType(
     options_list=["--display-name"],
     type=str,
@@ -61,6 +69,12 @@ test_description = CLIArgumentType(
     options_list=["--test-description"],
     type=str,
     help="Description of the load test.",
+)
+
+test_run_description = CLIArgumentType(
+    options_list=["--description"],
+    type=str,
+    help="Description of the load test run.",
 )
 
 test_plan = CLIArgumentType(
