@@ -2644,6 +2644,62 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self._restore_defaults_in_mc(mc)
         return mc
 
+    def check_is_postprocessing_required(self, mc: ManagedCluster) -> bool:
+        """Helper function to check if postprocessing is required after sending a PUT request to create the cluster.
+
+        :return: bool
+        """
+        # some addons require post cluster creation role assigment
+        monitoring_addon_enabled = self.context.get_intermediate("monitoring_addon_enabled", default_value=False)
+        ingress_appgw_addon_enabled = self.context.get_intermediate("ingress_appgw_addon_enabled", default_value=False)
+        virtual_node_addon_enabled = self.context.get_intermediate("virtual_node_addon_enabled", default_value=False)
+        azuremonitormetrics_addon_enabled = self.context.get_intermediate(
+            "azuremonitormetrics_addon_enabled",
+            default_value=False
+        )
+        enable_managed_identity = self.context.get_enable_managed_identity()
+        attach_acr = self.context.get_attach_acr()
+        need_grant_vnet_permission_to_cluster_identity = self.context.get_intermediate(
+            "need_post_creation_vnet_permission_granting", default_value=False
+        )
+
+        if (
+            monitoring_addon_enabled or
+            ingress_appgw_addon_enabled or
+            virtual_node_addon_enabled or
+            azuremonitormetrics_addon_enabled or
+            (enable_managed_identity and attach_acr) or
+            need_grant_vnet_permission_to_cluster_identity
+        ):
+            return True
+        return False
+
+    # pylint: disable=unused-argument
+    def immediate_processing_after_request(self, mc: ManagedCluster) -> None:
+        """Immediate processing performed when the cluster has not finished creating after a PUT request to the cluster
+        has been sent.
+
+        :return: None
+        """
+        # vnet
+        need_grant_vnet_permission_to_cluster_identity = self.context.get_intermediate(
+            "need_post_creation_vnet_permission_granting", default_value=False
+        )
+        if need_grant_vnet_permission_to_cluster_identity:
+            # Grant vnet permission to system assigned identity RIGHT AFTER the cluster is put, this operation can
+            # reduce latency for the role assignment take effect
+            instant_cluster = self.client.get(self.context.get_resource_group_name(), self.context.get_name())
+            if not self.context.external_functions.add_role_assignment(
+                self.cmd,
+                "Network Contributor",
+                instant_cluster.identity.principal_id,
+                scope=self.context.get_vnet_subnet_id(),
+                is_service_principal=False,
+            ):
+                logger.warning(
+                    "Could not create a role assignment for subnet. Are you an Owner on this subscription?"
+                )
+
     def postprocessing_after_mc_created(self, cluster: ManagedCluster) -> None:
         """Postprocessing performed after the cluster is created.
 

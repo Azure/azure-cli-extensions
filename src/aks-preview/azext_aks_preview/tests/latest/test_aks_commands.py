@@ -6394,7 +6394,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # have now been created.
         wait_cmd = ' '.join([
             'aks', 'wait', '--resource-group={resource_group}', '--name={name}', '--updated',
-            '--interval 60', '--timeout 600',
+            '--interval 60', '--timeout 300',
         ])
         self.cmd(wait_cmd, checks=[
             self.is_empty(),
