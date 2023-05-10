@@ -11,7 +11,6 @@ from knack.util import CLIError
 
 def get_supported_rp_locations(cmd, rp_name):
     from azure.cli.core.util import send_raw_request
-    supported_locations = []
     headers = ['User-Agent=azuremonitormetrics.get_supported_rp_locations']
     armendpoint = cmd.cli_ctx.cloud.endpoints.resource_manager
     association_url = f"{armendpoint}/providers/{rp_name}?api-version={RP_LOCATION_API}"
