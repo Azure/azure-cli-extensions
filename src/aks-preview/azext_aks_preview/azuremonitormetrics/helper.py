@@ -66,7 +66,7 @@ def rp_registrations(cmd, subscription_id):
             isAlertsManagementRpRegistered = True
         if value["namespace"].lower() == "microsoft.dashboard" and value["registrationState"].lower() == "registered":
             isAlertsManagementRpRegistered = True
-    if isInsightsRpRegistered is False:
+    if not isInsightsRpRegistered:
         headers = ['User-Agent=azuremonitormetrics.register_insights_rp']
         post_request(cmd, subscription_id, "microsoft.insights", headers)
     if isAlertsManagementRpRegistered is False:
