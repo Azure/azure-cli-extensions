@@ -106,6 +106,21 @@ aks create:
     custom_ca_trust_certificates:
       rule_exclusions:
         - option_length_too_long
+    azure_monitor_workspace_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    enable_azuremonitormetrics:
+      rule_exclusions:
+      - option_length_too_long
+    ksm_metric_annotations_allow_list:
+      rule_exclusions:
+      - option_length_too_long
+    ksm_metric_labels_allow_list:
+      rule_exclusions:
+      - option_length_too_long
+    enable_windows_recording_rules:
+      rule_exclusions:
+      - option_length_too_long
 aks update:
   parameters:
     aad_admin_group_object_ids:

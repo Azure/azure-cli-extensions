@@ -729,63 +729,6 @@ def validate_grafanaresourceid(namespace):
         raise ArgumentUsageError("--grafana-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.dashboard/grafana/<resourceName>`")
 
 
-def validate_ksm_parameter(ksmparam):
-    labelValueMap = {}
-    ksmStrLength = len(ksmparam)
-    EOF = -1
-    next = ""
-    name = ""
-    firstWordPos = 0
-    for i, v in enumerate(ksmparam):
-        if i + 1 == ksmStrLength:
-            next = EOF
-        else:
-            next = ord(ksmparam[i + 1])
-        if i - 1 >= 0:
-            previous = ord(ksmparam[i - 1])
-        else:
-            previous = v
-        if v == "=":
-            if previous == ord(",") or next != ord("["):
-                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-            name = ksmparam[firstWordPos:i]
-            labelValueMap[name] = []
-            firstWordPos = i + 1
-        elif v == "[":
-            if previous != ord("="):
-                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-            firstWordPos = i + 1
-        elif v == "]":
-            # if after metric group, has char not comma or end.
-            if next != EOF and next != ord(","):
-                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-            if previous != ord("["):
-                labelValueMap[name].append(ksmparam[firstWordPos:i])
-            firstWordPos = i + 1
-        elif v == ",":
-            # if starts or ends with comma
-            if previous == v or next == EOF or next == ord("]"):
-                raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-            if previous != ord("]"):
-                labelValueMap[name].append(ksmparam[firstWordPos:i])
-            firstWordPos = i + 1
-    for label in labelValueMap:
-        if (bool(re.match(r'^[a-zA-Z_][A-Za-z0-9_]+$', label))) is False:
-            raise InvalidArgumentValueError("Please format --metric properly. For eg. : --ksm-metric-labels-allow-list \"=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)\" and --ksm-metric-annotations-allow-list \"namespaces=[kubernetes.io/team,...],pods=[kubernetes.io/team],...\"")
-
-
-def validate_ksm_labels(namespace):
-    if namespace.ksm_metric_labels_allow_list is None:
-        return
-    validate_ksm_parameter(namespace.ksm_metric_labels_allow_list)
-
-
-def validate_ksm_annotations(namespace):
-    if namespace.ksm_metric_annotations_allow_list is None:
-        return
-    validate_ksm_parameter(namespace.ksm_metric_annotations_allow_list)
-
-
 def validate_allowed_host_ports(namespace):
     if hasattr(namespace, "nodepool_allowed_host_ports"):
         host_ports = namespace.nodepool_allowed_host_ports

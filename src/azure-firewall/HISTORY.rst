@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.14.7
+++++++
+* `az network firewall policy create/update`: Add parameters `--private-ranges` and `--learn-ranges`
+
 0.14.6
 ++++++
 * `az network firewall create/update`: Add parameter `--route-server-id`
