@@ -77,8 +77,8 @@ setup(
     package_data={
         "azext_containerapp": [
             "azext_metadata.json",
-            "bin/pack.exe", # Windows
-            "bin/pack"      # Linux/Darwin
+            "bin/pack.exe",  # Windows
+            "bin/pack"       # Linux/Darwin
         ]
     },
 )

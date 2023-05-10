@@ -9,6 +9,7 @@ from tempfile import NamedTemporaryFile
 from urllib.parse import urlparse
 import requests
 import subprocess
+import sys
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -394,20 +395,20 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         logger.debug(f"Calling '{' '.join(command)}'")
         try:
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            stdout, stderr = process.communicate()
+            process = subprocess.Popen(command, stdout=subprocess.PIPE)
 
-            pack_build_output = stdout.decode('utf-8')
+            # Stream output of 'pack build' to warning stream
+            while process.stdout.readable():
+                line = process.stdout.readline()
+                if not line:
+                    break
 
-            # If the app source is not supported by the builder, fall back to ACR Tasks
-            if "No buildpack groups passed detection" in pack_build_output:
-                raise ValidationError("No buildpacks support the provided application source.")
+                logger.warning(str(line.strip(), 'utf-8'))
 
-            # Log stdout once it's determined that the app source is supported by the builder
-            logger.info(pack_build_output)
-
+            # Update the result of process.returncode
+            process.communicate()
             if process.returncode != 0:
-                raise CLIError(f"Error thrown when running 'pack build': {stderr.decode('utf-8')}")
+                raise CLIError(f"Error thrown when running 'pack build'")
 
             logger.debug(f"Successfully built image {image_name} using buildpacks.")
         except Exception as ex:
@@ -493,7 +494,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 self.build_container_from_source_with_buildpack(image_name, source)
                 return
             except ValidationError as e:
-                logger.warning(f"Unable to use buildpacks to build image from source: {e}\n Falling back to ACR Task...")
+                logger.warning(f"Unable to use buildpacks to build image from source: {e}\nFalling back to ACR Task...")
             except CLIError as e:
                 logger.error(f"Failed to use buildpacks to build image from source: {e}")
                 raise e
