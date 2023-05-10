@@ -19,7 +19,7 @@ from ._exception_handler import exception_handler
 def load_command_table(self, _):
 
     # Manual backup-instance commmands currently migrated to AAZ-dev-tools
-    with self.command_group('dataprotection backup-instance') as g:
+    with self.command_group('dataprotection backup-instance', exception_handler=exception_handler) as g:
         g.custom_command('initialize-backupconfig', "dataprotection_backup_instance_initialize_backupconfig")
         g.custom_command('initialize-restoreconfig', "dataprotection_backup_instance_initialize_restoreconfig")
         g.custom_command('initialize', "dataprotection_backup_instance_initialize")
@@ -30,7 +30,7 @@ def load_command_table(self, _):
         g.custom_command('update-msi-permissions', 'dataprotection_backup_instance_update_msi_permissions')
 
     # All backup-instance restore commands have been "migrated" to AAZ (Dataprotection SDK calls being made have been replaced, others remain)
-    with self.command_group('dataprotection backup-instance restore') as g:
+    with self.command_group('dataprotection backup-instance restore', exception_handler=exception_handler) as g:
         g.custom_command('trigger', 'dataprotection_backup_instance_restore_trigger')
         g.custom_command('initialize-for-data-recovery', 'restore_initialize_for_data_recovery')
         g.custom_command('initialize-for-data-recovery-as-files', 'restore_initialize_for_data_recovery_as_files')

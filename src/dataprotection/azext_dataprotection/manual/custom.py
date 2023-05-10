@@ -142,21 +142,6 @@ def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource
 
     class Validate(_ValidateForBackup):
 
-        def _execute_operations(self):
-            self.pre_operations()
-            yield self.BackupInstancesValidateForBackup(ctx=self.ctx)()
-            self.post_operations()
-
-        def pre_operations(self):
-            # For some reason, successful operation result does not work without this.
-            # That has something to do with self.ctx.var.instance's initialization here and its subsequent
-            # parsing in _output, but why specifically this line is the only thing that works I'm not sure.
-            self.ctx.set_var(
-                "instance",
-                backup_instance,
-                schema_builder=_Create.BackupInstancesCreateOrUpdate._build_schema_on_200_201
-            )
-        
         @classmethod
         def _build_arguments_schema(cls, *args, **kwargs):
             args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -166,8 +151,37 @@ def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource
                 secret_store_based_auth_credentials.secret_store_resource.secret_store_type._required = False
 
             return args_schema
-        
+
         class BackupInstancesValidateForBackup(_ValidateForBackup.BackupInstancesValidateForBackup):
+
+            # TODO: Reach out to swagger team about potentially fixing this in the swagger-side.
+            #       We have to replace "final-state-via" to "location" instead of "azure-async-operation"
+            # In case of debug issues, compare against the equivalent call in
+            #  src\dataprotection\azext_dataprotection\aaz\latest\dataprotection\backup_instance\_validate_for_backup.py
+            #  to see if there are any new divergences.
+            def __call__(self, *args, **kwargs):
+                request = self.make_request()
+                session = self.client.send_request(request=request, stream=False, **kwargs)
+                if session.http_response.status_code in [202]:
+                    return self.client.build_lro_polling(
+                        self.ctx.args.no_wait,
+                        session,
+                        self.on_200,
+                        self.on_error,
+                        lro_options={"final-state-via": "location"},
+                        path_format_arguments=self.url_parameters,
+                    )
+                if session.http_response.status_code in [200]:
+                    return self.client.build_lro_polling(
+                        self.ctx.args.no_wait,
+                        session,
+                        self.on_200,
+                        self.on_error,
+                        lro_options={"final-state-via": "location"},
+                        path_format_arguments=self.url_parameters,
+                    )
+
+                return self.on_error(session.http_response)
 
             @property
             def content(self):
@@ -176,8 +190,6 @@ def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource
                 return {
                     "backupInstance": body
                 }
-
-    # backup_instance_name = backup_instance["backup_instance_name"]
 
     return Validate(cli_ctx=cmd.cli_ctx)(command_args={
         "vault_name": vault_name,
