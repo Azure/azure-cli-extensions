@@ -16,7 +16,16 @@ from knack.util import CLIError
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
-def link_azure_monitor_profile_artifacts(cmd, client, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region, raw_parameters, create_flow):
+# pylint: disable=line-too-long
+def link_azure_monitor_profile_artifacts(
+        cmd,
+        cluster_subscription,
+        cluster_resource_group_name,
+        cluster_name,
+        cluster_region,
+        raw_parameters,
+        create_flow
+):
     # MAC creation if required
     azure_monitor_workspace_resource_id, azure_monitor_workspace_location = get_azure_monitor_workspace_resource(cmd, cluster_subscription, cluster_region, raw_parameters)
     # DCE creation
@@ -34,18 +43,19 @@ def link_azure_monitor_profile_artifacts(cmd, client, cluster_subscription, clus
         addon_put(cmd, cluster_subscription, cluster_resource_group_name, cluster_name)
 
 
-def unlink_azure_monitor_profile_artifacts(cmd, cluster_subscription, cluster_resource_group_name, cluster_name, cluster_region):
+# pylint: disable=line-too-long
+def unlink_azure_monitor_profile_artifacts(cmd, cluster_subscription, cluster_resource_group_name, cluster_name):
     # Remove DC* if prometheus is enabled
     dc_objects_list = get_dc_objects_list(cmd, cluster_subscription, cluster_resource_group_name, cluster_name)
     delete_dc_objects_if_prometheus_enabled(cmd, dc_objects_list, cluster_subscription, cluster_resource_group_name, cluster_name)
-    # Delete rules (Conflict({"error":{"code":"InvalidResourceLocation","message":"The resource 'NodeRecordingRulesRuleGroup-<clustername>' already exists in location 'eastus2' in resource group '<clustername>'. A resource with the same name cannot be created in location 'eastus'. Please select a new resource name."}})
+    # Delete rules (Conflict({"error":{"code":"InvalidResourceLocation","message":"The resource 'NodeRecordingRulesRuleGroup-<clustername>' already exists in location 'eastus2' in resource group '<clustername>'.
+    # A resource with the same name cannot be created in location 'eastus'. Please select a new resource name."}})
     delete_rules(cmd, cluster_subscription, cluster_resource_group_name, cluster_name)
 
 
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements,line-too-long
 def ensure_azure_monitor_profile_prerequisites(
     cmd,
-    client,
     cluster_subscription,
     cluster_resource_group_name,
     cluster_name,
@@ -64,13 +74,12 @@ def ensure_azure_monitor_profile_prerequisites(
             if grafana_resource_id != "":
                 raise InvalidArgumentValueError("Azure US Government cloud does not support Azure Managed Grarfana yet. Please follow this documenation for enabling it via the public cloud : aka.ms/ama-grafana-link-ff")
 
-    if (remove_azuremonitormetrics):
+    if remove_azuremonitormetrics:
         unlink_azure_monitor_profile_artifacts(
             cmd,
             cluster_subscription,
             cluster_resource_group_name,
-            cluster_name,
-            cluster_region
+            cluster_name
         )
     else:
         # Check if already onboarded
@@ -80,7 +89,6 @@ def ensure_azure_monitor_profile_prerequisites(
         rp_registrations(cmd, cluster_subscription)
         link_azure_monitor_profile_artifacts(
             cmd,
-            client,
             cluster_subscription,
             cluster_resource_group_name,
             cluster_name,
@@ -88,4 +96,3 @@ def ensure_azure_monitor_profile_prerequisites(
             raw_parameters,
             create_flow
         )
-    return

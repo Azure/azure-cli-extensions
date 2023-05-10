@@ -156,6 +156,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if self.__external_functions is None:
             external_functions = vars(super().external_functions)
             external_functions["get_cluster_snapshot_by_snapshot_id"] = get_cluster_snapshot_by_snapshot_id
+            external_functions[
+                "ensure_azure_monitor_profile_prerequisites"
+            ] = ensure_azure_monitor_profile_prerequisites
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
 
@@ -2550,6 +2553,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             mc.azure_monitor_profile.metrics.kube_state_metrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(  # pylint:disable=line-too-long
                 metric_labels_allowlist=str(ksm_metric_labels_allow_list),
                 metric_annotations_allow_list=str(ksm_metric_annotations_allow_list))
+            self.context.set_intermediate("azuremonitormetrics_addon_enabled", True, overwrite_exists=True)
         return mc
 
     def set_up_auto_upgrade_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2639,6 +2643,102 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
         return mc
+
+    def postprocessing_after_mc_created(self, cluster: ManagedCluster) -> None:
+        """Postprocessing performed after the cluster is created.
+
+        :return: None
+        """
+        # monitoring addon
+        monitoring_addon_enabled = self.context.get_intermediate("monitoring_addon_enabled", default_value=False)
+        if monitoring_addon_enabled:
+            enable_msi_auth_for_monitoring = self.context.get_enable_msi_auth_for_monitoring()
+            if not enable_msi_auth_for_monitoring:
+                # add cluster spn/msi Monitoring Metrics Publisher role assignment to publish metrics to MDM
+                # mdm metrics is supported only in azure public cloud, so add the role assignment only in this cloud
+                cloud_name = self.cmd.cli_ctx.cloud.name
+                if cloud_name.lower() == "azurecloud":
+                    from msrestazure.tools import resource_id
+
+                    cluster_resource_id = resource_id(
+                        subscription=self.context.get_subscription_id(),
+                        resource_group=self.context.get_resource_group_name(),
+                        namespace="Microsoft.ContainerService",
+                        type="managedClusters",
+                        name=self.context.get_name(),
+                    )
+                    self.context.external_functions.add_monitoring_role_assignment(
+                        cluster, cluster_resource_id, self.cmd
+                    )
+            elif self.context.raw_param.get("enable_addons") is not None:
+                # Create the DCR Association here
+                addon_consts = self.context.get_addon_consts()
+                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+                self.context.external_functions.ensure_container_insights_for_monitoring(
+                    self.cmd,
+                    cluster.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                    self.context.get_subscription_id(),
+                    self.context.get_resource_group_name(),
+                    self.context.get_name(),
+                    self.context.get_location(),
+                    remove_monitoring=False,
+                    aad_route=self.context.get_enable_msi_auth_for_monitoring(),
+                    create_dcr=False,
+                    create_dcra=True,
+                    enable_syslog=self.context.get_enable_syslog(),
+                )
+
+        # ingress appgw addon
+        ingress_appgw_addon_enabled = self.context.get_intermediate("ingress_appgw_addon_enabled", default_value=False)
+        if ingress_appgw_addon_enabled:
+            self.context.external_functions.add_ingress_appgw_addon_role_assignment(cluster, self.cmd)
+
+        # virtual node addon
+        virtual_node_addon_enabled = self.context.get_intermediate("virtual_node_addon_enabled", default_value=False)
+        if virtual_node_addon_enabled:
+            self.context.external_functions.add_virtual_node_role_assignment(
+                self.cmd, cluster, self.context.get_vnet_subnet_id()
+            )
+
+        # attach acr
+        enable_managed_identity = self.context.get_enable_managed_identity()
+        attach_acr = self.context.get_attach_acr()
+        if enable_managed_identity and attach_acr:
+            # Attach ACR to cluster enabled managed identity
+            if cluster.identity_profile is None or cluster.identity_profile["kubeletidentity"] is None:
+                logger.warning(
+                    "Your cluster is successfully created, but we failed to attach "
+                    "acr to it, you can manually grant permission to the identity "
+                    "named <ClUSTER_NAME>-agentpool in MC_ resource group to give "
+                    "it permission to pull from ACR."
+                )
+            else:
+                kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
+                self.context.external_functions.ensure_aks_acr(
+                    self.cmd,
+                    assignee=kubelet_identity_object_id,
+                    acr_name_or_id=attach_acr,
+                    subscription_id=self.context.get_subscription_id(),
+                    is_service_principal=False,
+                )
+
+        # azure monitor metrics addon (v2)
+        azuremonitormetrics_addon_enabled = self.context.get_intermediate(
+            "azuremonitormetrics_addon_enabled",
+            default_value=False
+        )
+        if azuremonitormetrics_addon_enabled:
+            # Create the DC* objects, AMW, recording rules and grafana link here
+            self.context.external_functions.ensure_azure_monitor_profile_prerequisites(
+                self.cmd,
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                self.context.get_location(),
+                self.__raw_parameters,
+                self.context.get_disable_azure_monitor_metrics(),
+                True
+            )
 
 
 class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
@@ -3057,7 +3157,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if (self.context.raw_param.get("enable_azuremonitormetrics") or self.context.raw_param.get("disable_azuremonitormetrics")):
             ensure_azure_monitor_profile_prerequisites(
                 self.cmd,
-                self.client,
                 self.context.get_subscription_id(),
                 self.context.get_resource_group_name(),
                 self.context.get_name(),
