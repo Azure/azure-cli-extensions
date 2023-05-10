@@ -39,7 +39,11 @@ class DatabaseFlush(_DatabaseFlush):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
+        args_schema.database_name._required = False
         return args_schema
+    
+    def pre_operations(self):
+       self.ctx.args.database_name = "default"
 
 
 class DatabaseForceUnlink(_DatabaseForceUnlink):
@@ -48,7 +52,11 @@ class DatabaseForceUnlink(_DatabaseForceUnlink):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
+        args_schema.database_name._required = False
         return args_schema
+    
+    def pre_operations(self):
+       self.ctx.args.database_name = "default"
 
 
 class DatabaseCreate(_DatabaseCreate):
@@ -57,7 +65,11 @@ class DatabaseCreate(_DatabaseCreate):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
+        args_schema.database_name._required = False
         return args_schema
+    
+    def pre_operations(self):
+       self.ctx.args.database_name = "default"
 
 
 class DatabaseDelete(_DatabaseDelete):
@@ -66,7 +78,11 @@ class DatabaseDelete(_DatabaseDelete):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
+        args_schema.database_name._required = False
         return args_schema
+    
+    def pre_operations(self):
+       self.ctx.args.database_name = "default"
 
 
 class DatabaseExport(_DatabaseExport):
@@ -75,7 +91,11 @@ class DatabaseExport(_DatabaseExport):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
+        args_schema.database_name._required = False
         return args_schema
+    
+    def pre_operations(self):
+       self.ctx.args.database_name = "default"
 
 
 class DatabaseImport(_DatabaseImport):
@@ -84,7 +104,11 @@ class DatabaseImport(_DatabaseImport):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
+        args_schema.database_name._required = False
         return args_schema
+    
+    def pre_operations(self):
+       self.ctx.args.database_name = "default"
 
 
 class DatabaseRegenerateKey(_DatabaseRegenerateKey):
@@ -93,7 +117,11 @@ class DatabaseRegenerateKey(_DatabaseRegenerateKey):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
+        args_schema.database_name._required = False
         return args_schema
+    
+    def pre_operations(self):
+       self.ctx.args.database_name = "default"
 
 
 class DatabaseListKey(_DatabaseListKey):
@@ -102,7 +130,11 @@ class DatabaseListKey(_DatabaseListKey):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
+        args_schema.database_name._required = False
         return args_schema
+    
+    def pre_operations(self):
+       self.ctx.args.database_name = "default"
 
 
 class DatabaseShow(_DatabaseShow):
@@ -111,7 +143,11 @@ class DatabaseShow(_DatabaseShow):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
+        args_schema.database_name._required = False
         return args_schema
+    
+    def pre_operations(self):
+       self.ctx.args.database_name = "default"
 
 
 class DatabaseUpdate(_DatabaseUpdate):
@@ -120,7 +156,11 @@ class DatabaseUpdate(_DatabaseUpdate):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
+        args_schema.database_name._required = False
         return args_schema
+    
+    def pre_operations(self):
+       self.ctx.args.database_name = "default"
 
 
 class DatabaseWait(_DatabaseWait):
@@ -129,7 +169,11 @@ class DatabaseWait(_DatabaseWait):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
+        args_schema.database_name._required = False
         return args_schema
+    
+    def pre_operations(self):
+       self.ctx.args.database_name = "default"
 
 
 class DatabaseList(_DatabaseList):
@@ -138,7 +182,11 @@ class DatabaseList(_DatabaseList):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.database_name._registered = False
+        args_schema.database_name._required = False
         return args_schema
+    
+    def pre_operations(self):
+       self.ctx.args.database_name = "default"
 
 
 def _get_cluster_with_databases(cluster,
