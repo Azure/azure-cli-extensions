@@ -40,8 +40,7 @@ def get_dc_objects_list(cmd, cluster_subscription, cluster_resource_group_name, 
                 dc_object_array.append({'name': item['name'], 'dataCollectionRuleId': item['properties']['dataCollectionRuleId'], 'dceId': dce_id})
         return dc_object_array
     except CLIError as e:
-        error = e
-        raise CLIError(error)
+        raise CLIError(e)
 
 
 def delete_dc_objects_if_prometheus_enabled(cmd, dc_objects_list, cluster_subscription, cluster_resource_group_name, cluster_name):
