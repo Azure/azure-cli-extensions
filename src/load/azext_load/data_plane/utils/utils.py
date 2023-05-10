@@ -15,6 +15,7 @@ from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
 logger = get_logger(__name__)
 
+
 def upload_test_plan(client, test_id, test_plan, no_wait):
     logger.info("Uploading test plan for the test")
     with open(test_plan, "r") as file:
@@ -33,6 +34,7 @@ def upload_test_plan(client, test_id, test_plan, no_wait):
                 logger.warning("Invalid status for Test plan validation")
             logger.debug("Upload result for test plan: %s", response)
 
+
 def upload_configuration_files(client, test_id, configuration_files):
     logger.info("Uploading configuration files for the test")
     for configuration_file in configuration_files:
@@ -47,7 +49,10 @@ def upload_configuration_files(client, test_id, configuration_files):
                 logger.info("Uploaded configuration file %s", file.name)
             else:
                 logger.warning("Invalid status for configuration file %s", file.name)
-            logger.debug("Upload result for configuration file %s is: %s", file.name, response)
+            logger.debug(
+                "Upload result for configuration file %s is: %s", file.name, response
+            )
+
 
 def get_load_test_resource_endpoint(
     cred, load_test_resource, resource_group=None, subscription_id=None
@@ -129,6 +134,24 @@ def get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name=N
     )
 
 
+def get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name=None):
+    from azext_load.data_plane.client_factory import testrun_data_plane_client
+
+    credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
+    endpoint = get_load_test_resource_endpoint(
+        credential,
+        load_test_resource,
+        resource_group=resource_group_name,
+        subscription_id=subscription_id,
+    )
+    return testrun_data_plane_client(
+        cmd.cli_ctx,
+        subscription=subscription_id,
+        endpoint=endpoint,
+        credential=credential,
+    )
+
+
 def download_file(url, file_path):
     count = 3
     the_ex = None
@@ -181,6 +204,7 @@ def parse_secrets(secrets):
             }
         )
     return secrets_list
+
 
 def parse_env(env):
     env_list = {}
