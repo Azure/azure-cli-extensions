@@ -111,6 +111,13 @@ class CNFConfiguration(Configuration):
             if isinstance(package, dict):
                 package = HelmPackageConfig(**dict(package))
 
+    @property
+    def build_output_folder_name(self) -> str:
+        """Return the local folder for generating the bicep template to."""
+        return (
+            f"{VNF_DEFINITION_OUTPUT_BICEP_PREFIX}{self.nf_name}"
+        )
+
 
 def get_configuration(
     definition_type: str, config_as_dict: Optional[Dict[Any, Any]] = None
