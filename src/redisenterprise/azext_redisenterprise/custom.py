@@ -41,9 +41,9 @@ class DatabaseFlush(_DatabaseFlush):
         args_schema.database_name._registered = False
         args_schema.database_name._required = False
         return args_schema
-    
+
     def pre_operations(self):
-       self.ctx.args.database_name = "default"
+        self.ctx.args.database_name = "default"
 
 
 class DatabaseForceUnlink(_DatabaseForceUnlink):
@@ -54,9 +54,9 @@ class DatabaseForceUnlink(_DatabaseForceUnlink):
         args_schema.database_name._registered = False
         args_schema.database_name._required = False
         return args_schema
-    
+
     def pre_operations(self):
-       self.ctx.args.database_name = "default"
+        self.ctx.args.database_name = "default"
 
 
 class DatabaseCreate(_DatabaseCreate):
@@ -67,9 +67,9 @@ class DatabaseCreate(_DatabaseCreate):
         args_schema.database_name._registered = False
         args_schema.database_name._required = False
         return args_schema
-    
+
     def pre_operations(self):
-       self.ctx.args.database_name = "default"
+        self.ctx.args.database_name = "default"
 
 
 class DatabaseDelete(_DatabaseDelete):
@@ -80,9 +80,9 @@ class DatabaseDelete(_DatabaseDelete):
         args_schema.database_name._registered = False
         args_schema.database_name._required = False
         return args_schema
-    
+
     def pre_operations(self):
-       self.ctx.args.database_name = "default"
+        self.ctx.args.database_name = "default"
 
 
 class DatabaseExport(_DatabaseExport):
@@ -93,9 +93,9 @@ class DatabaseExport(_DatabaseExport):
         args_schema.database_name._registered = False
         args_schema.database_name._required = False
         return args_schema
-    
+
     def pre_operations(self):
-       self.ctx.args.database_name = "default"
+        self.ctx.args.database_name = "default"
 
 
 class DatabaseImport(_DatabaseImport):
@@ -106,9 +106,9 @@ class DatabaseImport(_DatabaseImport):
         args_schema.database_name._registered = False
         args_schema.database_name._required = False
         return args_schema
-    
+
     def pre_operations(self):
-       self.ctx.args.database_name = "default"
+        self.ctx.args.database_name = "default"
 
 
 class DatabaseRegenerateKey(_DatabaseRegenerateKey):
@@ -119,9 +119,9 @@ class DatabaseRegenerateKey(_DatabaseRegenerateKey):
         args_schema.database_name._registered = False
         args_schema.database_name._required = False
         return args_schema
-    
+
     def pre_operations(self):
-       self.ctx.args.database_name = "default"
+        self.ctx.args.database_name = "default"
 
 
 class DatabaseListKey(_DatabaseListKey):
@@ -132,9 +132,9 @@ class DatabaseListKey(_DatabaseListKey):
         args_schema.database_name._registered = False
         args_schema.database_name._required = False
         return args_schema
-    
+
     def pre_operations(self):
-       self.ctx.args.database_name = "default"
+        self.ctx.args.database_name = "default"
 
 
 class DatabaseShow(_DatabaseShow):
@@ -145,9 +145,9 @@ class DatabaseShow(_DatabaseShow):
         args_schema.database_name._registered = False
         args_schema.database_name._required = False
         return args_schema
-    
+
     def pre_operations(self):
-       self.ctx.args.database_name = "default"
+        self.ctx.args.database_name = "default"
 
 
 class DatabaseUpdate(_DatabaseUpdate):
@@ -158,9 +158,9 @@ class DatabaseUpdate(_DatabaseUpdate):
         args_schema.database_name._registered = False
         args_schema.database_name._required = False
         return args_schema
-    
+
     def pre_operations(self):
-       self.ctx.args.database_name = "default"
+        self.ctx.args.database_name = "default"
 
 
 class DatabaseWait(_DatabaseWait):
@@ -171,9 +171,9 @@ class DatabaseWait(_DatabaseWait):
         args_schema.database_name._registered = False
         args_schema.database_name._required = False
         return args_schema
-    
+
     def pre_operations(self):
-       self.ctx.args.database_name = "default"
+        self.ctx.args.database_name = "default"
 
 
 class DatabaseList(_DatabaseList):
@@ -184,9 +184,9 @@ class DatabaseList(_DatabaseList):
         args_schema.database_name._registered = False
         args_schema.database_name._required = False
         return args_schema
-    
+
     def pre_operations(self):
-       self.ctx.args.database_name = "default"
+        self.ctx.args.database_name = "default"
 
 
 def _get_cluster_with_databases(cluster,
@@ -213,8 +213,8 @@ def redisenterprise_list(cmd,
     for cluster in clusters:
         cluster_resource_group = cluster['id'].split('/')[4]
         databases = _DatabaseList(cli_ctx=cmd.cli_ctx)(command_args={
-                "cluster_name": cluster['name'],
-                "resource_group": cluster_resource_group})
+            "cluster_name": cluster['name'],
+            "resource_group": cluster_resource_group})
         result.append(_get_cluster_with_databases(cluster, databases))
     return result
 
@@ -223,12 +223,12 @@ def redisenterprise_show(cmd,
                          resource_group_name,
                          cluster_name):
     cluster = _ClusterShow(cli_ctx=cmd.cli_ctx)(command_args={
-                "cluster_name": cluster_name,
-                "resource_group": resource_group_name})
+        "cluster_name": cluster_name,
+        "resource_group": resource_group_name})
 
     databases = _DatabaseList(cli_ctx=cmd.cli_ctx)(command_args={
-                "cluster_name": cluster_name,
-                "resource_group": resource_group_name})
+        "cluster_name": cluster_name,
+        "resource_group": resource_group_name})
 
     return _get_cluster_with_databases(cluster, databases)
 
@@ -299,54 +299,54 @@ def redisenterprise_create(cmd,
                                                 group_nickname,
                                                 linked_databases])):
         return CacheCreate(cli_ctx=cmd.cli_ctx)(command_args={
-                "cluster_name": cluster_name,
-                "resource_group": resource_group_name,
-                "location": location,
-                "tags": tags,
-                "location": location,
-                "sku": sku ,
-                "capacity" : capacity,
-                "zones": zones,
-                "minimum_tls_version": minimum_tls_version,
-                "key_encryption_key_url":key_encryption_key_url,
-                "identity_type":identity_type,
-                "user_assigned_identities":user_assigned_identities,
-                "key_encryption_identity_type":key_encryption_identity_type,
-                "user_assigned_identity_resource_id":user_assigned_identity_resource_id,
-                "no_wait": no_wait
-            })
+            "cluster_name": cluster_name,
+            "resource_group": resource_group_name,
+            "location": location,
+            "tags": tags,
+            "location": location,
+            "sku": sku,
+            "capacity": capacity,
+            "zones": zones,
+            "minimum_tls_version": minimum_tls_version,
+            "key_encryption_key_url": key_encryption_key_url,
+            "identity_type": identity_type,
+            "user_assigned_identities": user_assigned_identities,
+            "key_encryption_identity_type": key_encryption_identity_type,
+            "user_assigned_identity_resource_id": user_assigned_identity_resource_id,
+            "no_wait": no_wait
+        })
 
     poller = CacheCreate(cli_ctx=cmd.cli_ctx)(command_args={
-                "cluster_name": cluster_name,
-                "resource_group": resource_group_name,
-                "location": location,
-                "tags": tags,
-                "location": location,
-                "sku": sku ,
-                "capacity" : capacity,
-                "zones": zones,
-                "minimum_tls_version": minimum_tls_version,
-                "key_encryption_key_url":key_encryption_key_url,
-                "identity_type":identity_type,
-                "user_assigned_identities":user_assigned_identities,
-                "key_encryption_identity_type":key_encryption_identity_type,
-                "user_assigned_identity_resource_id":user_assigned_identity_resource_id,
-                "no_wait": no_wait
-            })
+        "cluster_name": cluster_name,
+        "resource_group": resource_group_name,
+        "location": location,
+        "tags": tags,
+        "location": location,
+        "sku": sku,
+        "capacity": capacity,
+        "zones": zones,
+        "minimum_tls_version": minimum_tls_version,
+        "key_encryption_key_url": key_encryption_key_url,
+        "identity_type": identity_type,
+        "user_assigned_identities": user_assigned_identities,
+        "key_encryption_identity_type": key_encryption_identity_type,
+        "user_assigned_identity_resource_id": user_assigned_identity_resource_id,
+        "no_wait": no_wait
+    })
     if poller:
         LongRunningOperation(cmd.cli_ctx)(poller)
     from .aaz.latest.redisenterprise.database import Create as DatabaseCreate
     return DatabaseCreate(cli_ctx=cmd.cli_ctx)(command_args={
-            "cluster_name": cluster_name,
-            "resource_group": resource_group_name,
-            "client_protocol": client_protocol,
-            "port": port,
-            "clustering_policy": clustering_policy,
-            "eviction_policy": eviction_policy,
-            "persistence": persistence,
-            "group_nickname": group_nickname,
-            "linkeddatabase": linked_databases,
-            "mods": modules,
-            "database_name":'default',
-            "no_wait": no_wait
-        })
+        "cluster_name": cluster_name,
+        "resource_group": resource_group_name,
+        "client_protocol": client_protocol,
+        "port": port,
+        "clustering_policy": clustering_policy,
+        "eviction_policy": eviction_policy,
+        "persistence": persistence,
+        "group_nickname": group_nickname,
+        "linkeddatabase": linked_databases,
+        "mods": modules,
+        "database_name": 'default',
+        "no_wait": no_wait
+    })

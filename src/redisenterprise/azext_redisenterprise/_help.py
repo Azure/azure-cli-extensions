@@ -21,12 +21,7 @@ helps['redisenterprise create'] = """
     examples:
       - name: create cache
         text: |-
-               az redisenterprise create --cluster-name "cache1" --location "East US" --minimum-tls-version "1.2" 
-               --sku "Enterprise_E20" --capacity 4 --tags tag1="value1" --zones "1" "2" "3" --client-protocol "Encrypted" 
-               --clustering-policy "EnterpriseCluster" --eviction-policy "NoEviction" 
-               --modules name="RedisBloom" args="ERROR_RATE 0.00 INITIAL_SIZE 400" 
-               --modules name="RedisTimeSeries" args="RETENTION_POLICY 20" --modules name="RediSearch" 
-               --persistence aof-enabled=true aof-frequency="1s" --port 10000 --resource-group "rg1"
+               az redisenterprise create --cluster-name "cache1" --location "East US" --minimum-tls-version "1.2" --sku "Enterprise_E20" --capacity 4 --tags tag1="value1" --zones "1" "2" "3" --client-protocol "Encrypted" --clustering-policy "EnterpriseCluster" --eviction-policy "NoEviction" --modules name="RedisBloom" args="ERROR_RATE 0.02 INITIAL_SIZE 400" --persistence aof-enabled=true aof-frequency="1s" --port 10000 --resource-group "rg1"
 """
 
 helps['redisenterprise list'] = """
