@@ -327,6 +327,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                      "in the resource group {} ".format(resource_group_name) +
                                      "and corresponds to a different Kubernetes cluster.", recommendation="To onboard this Kubernetes cluster " +
                                      "to Azure, specify different resource name or resource group name.")
+        else:
+            # cleanup of stuck CRD if release namespace is not present/deleted
+            crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
 
     # Resource group Creation
     if resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False:
