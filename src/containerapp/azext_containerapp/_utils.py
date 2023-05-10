@@ -1722,7 +1722,6 @@ def format_location(location=None):
         return location.lower().replace(" ", "").replace("(", "").replace(")", "")
     return location
 
-
 def is_docker_running():
     # check to see if docker is running
     client = None
@@ -1775,7 +1774,6 @@ def get_pack_exec_path():
         print(f"Failed to install pack CLI: {e}\n")
 
     return ""
-
 
 def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
     tagProp = parseOryxMarinerTag(repoTagSplit)
@@ -1839,7 +1837,6 @@ def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
         }
     return result
 
-
 def getCurrentMarinerTags() -> list(OryxMarinerRunImgTagProperty):
     r = requests.get("https://mcr.microsoft.com/v2/oryx/builder/tags/list")
     tags = r.json()
@@ -1869,7 +1866,6 @@ def getCurrentMarinerTags() -> list(OryxMarinerRunImgTagProperty):
             else:
                 tagList[framework] = {majorMinorVer: {support: {marinerVer: [tagObj]}}}
     return tagList
-
 
 def parseOryxMarinerTag(tag: str) -> OryxMarinerRunImgTagProperty:
     tagSplit = tag.split("-")

@@ -1272,26 +1272,14 @@ helps['containerapp compose create'] = """
               --compose-file-path "path/to/docker-compose.yml"
 """
 
-helps['containerapp patch list'] = """
+helps['containerapp patch'] = """
     type: command
-    short-summary: List patchable and unpatchable container apps.
-    examples:
-    - name: List patchable container apps.
-      text: |
-          az containerapp list -g MyResourceGroup --environment MyContainerappEnv
-    - name: List patchable and non-patchable container apps.
-      text: |
-          az containerapp list -g MyResourceGroup --environment MyContainerappEnv --show-all
-"""
-
-helps['containerapp patch run'] = """
-    type: command
-    short-summary: List and choose container apps to be patched.
+    short-summary: List and select container apps to be patched.
     exmaples:
-    - name: Patch a container app.
+    - name: Show containerapps that can be patched and apply patch.
       text: |
           az containerapp patch -g MyResourceGroup --environment MyContainerappEnv
-    - name: Patch a container app and show scan results of all container apps.
+    - name: Show patchable and unpatchable containerapps and apply patch.
       text: |
           az containerapp patch -g MyResourceGroup --environment MyContainerappEnv --show-all
 """
