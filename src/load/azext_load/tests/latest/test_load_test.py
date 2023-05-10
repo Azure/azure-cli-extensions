@@ -148,6 +148,7 @@ class LoadScenario(ScenarioTest):
 
         assert self.kwargs["test_id"] not in [test.get("testId") for test in list_of_tests]
 
+    #creating test with config file
     def testcase_load_test_create(self):
         self.kwargs.update(
             {
@@ -156,8 +157,13 @@ class LoadScenario(ScenarioTest):
                 "test_id": "create-test-case-1507-2608",
                 "load_test_config_file": LoadScenario.load_test_config_file,
                 "test_plan": LoadScenario.test_plan,
+                "engine_instances": "49",
             }
         )
+
+        checks = [
+            JMESPathCheck("testId", self.kwargs["test_id"]),
+        ]
 
         #creating test with config file and no arguments
         response = self.cmd("az load test create "
@@ -165,10 +171,13 @@ class LoadScenario(ScenarioTest):
                 "--load-test-resource {load_test_resource} "
                 "--resource-group {resource_group} "
                 "--load-test-config-file {load_test_config_file} "
-                "--test-plan {test_plan}"
+                "--test-plan {test_plan} "
+                "--engine-instances {engine_instances} ",
+                checks=checks,
         ).get_output_in_json()
 
-        assert response.get("testId", None) == self.kwargs["test_id"]
+        #additional arguments should be ignored by the command
+        assert response.get("loadTestConfiguration", {}).get("engineInstances", None) != int(self.kwargs["engine_instances"])
 
         list_of_tests = self.cmd(
             "az load test list "
@@ -194,8 +203,68 @@ class LoadScenario(ScenarioTest):
 
         assert self.kwargs["test_id"] not in [test.get("testId") for test in list_of_tests]
         #
-        # #creating test with config file and arguments
     
+    def test_load_test_create_with_args(self):
+        self.kwargs.update(
+            {
+                "load_test_resource": LoadScenario.load_test_resource,
+                "resource_group": LoadScenario.resource_group,
+                "test_id": "create-with-args-test-case-1507-2608",
+                "display_name": "My Load Test",
+                "test_description": "This is a load test created with arguments",
+                "test_plan": LoadScenario.test_plan,
+                "engine_instances": "1",
+                "env": "a=2 b=3",
+            }
+        )
+
+        checks = [
+            JMESPathCheck("testId", self.kwargs["test_id"]),
+            JMESPathCheck("loadTestConfiguration.engineInstances", 1),
+            JMESPathCheck("environmentVariables.a", 2),
+            JMESPathCheck("environmentVariables.b", 3), 
+        ]
+
+        # Create a new load test with arguments
+        response = self.cmd(
+            "az load test create "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--display-name '{display_name}' "
+            "--test-description '{test_description}' "
+            "--test-plan {test_plan} "
+            "--engine-instances {engine_instances} "
+            "--env {env}",
+            checks=checks,
+        ).get_output_in_json()
+
+        list_of_tests = self.cmd(
+            "az load test list "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group}"
+        ).get_output_in_json()
+
+        assert self.kwargs["test_id"] in [test.get("testId") for test in list_of_tests]
+
+        # Delete the load test
+        self.cmd(
+            "az load test delete "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--yes"
+        )
+
+        # Verify that the load test was deleted
+        list_of_tests = self.cmd(
+            "az load test list "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group}"
+        ).get_output_in_json()
+
+        assert self.kwargs["test_id"] not in [test.get("testId") for test in list_of_tests]
+
     def testcase_load_test_update(self):
         self.kwargs.update(
         {
@@ -207,6 +276,10 @@ class LoadScenario(ScenarioTest):
         }
         )
 
+        checks = [
+            JMESPathCheck("testId", self.kwargs["test_id"]),
+        ]
+
         # Create a new load test
         self.cmd(
             "az load test create "
@@ -214,7 +287,8 @@ class LoadScenario(ScenarioTest):
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             "--load-test-config-file {load_test_config_file} "
-            "--test-plan {test_plan}"
+            "--test-plan {test_plan}",
+            checks=checks,
         )
 
         # Update the load test
@@ -223,7 +297,8 @@ class LoadScenario(ScenarioTest):
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
-            "--engine-instances 11 "
+            "--engine-instances 11 ",
+            checks=checks,
         ).get_output_in_json()
 
         # Verify that the load test was updated
