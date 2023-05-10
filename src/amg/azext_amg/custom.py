@@ -279,7 +279,8 @@ def restore_grafana(cmd, grafana_name, archive_file, components=None, remap_data
             destination_datasources=data_sources)
 
 
-def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to_exclude=None, dry_run=None):
+def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to_exclude=None,
+                   dashboards_to_include=None, dashboards_to_exclude=None, dry_run=None):
     # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     if not is_valid_resource_id(source):
         raise ArgumentUsageError(f"'{source}' isn't a valid resource id, please refer to example commands in help")
@@ -331,7 +332,8 @@ def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to
         source_dashboard = show_dashboard(cmd, source_workspace, uid, resource_group_name=source_resource_group,
                                           subscription=source_subscription)
         folder_title = source_dashboard["meta"]["folderTitle"]
-        dashboard_path = folder_title + "/" + source_dashboard["dashboard"]["title"]
+        dashboard_title = source_dashboard["dashboard"]["title"]
+        dashboard_path = folder_title + "/" + dashboard_title
 
         should_skip = False
         if source_dashboard["meta"].get("provisioned"):
@@ -341,7 +343,10 @@ def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to
                 should_skip = not next((f for f in folders_to_include if folder_title.lower() == f.lower()), None)
             if not should_skip and folders_to_exclude:
                 should_skip = next((f for f in folders_to_exclude if folder_title.lower() == f.lower()), None)
-
+            if dashboards_to_include:
+                should_skip = not next((p for p in dashboards_to_include if p.lower() == dashboard_title.lower()), None)
+            if dashboards_to_exclude:
+                should_skip = next((p for p in dashboards_to_exclude if p.lower() == dashboard_title.lower()), None)
         if should_skip:
             summary["dashboards_skipped"].append(dashboard_path)
             continue

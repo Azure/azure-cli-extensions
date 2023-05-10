@@ -21,6 +21,7 @@ Test Name | Image Used | Purpose
 ---|---|---
 test_arm_template_policy | python:3.6.14-slim-buster | Generate an ARM Template policy and policy.json policy and see if their outputs match
 test_default_infrastructure_svn | python:3.6.14-slim-buster | See the default value of the minimum SVN for the infrastructure fragment
+test_default_pause_container | python:3.6.14-slim-buster | See if the default pause containers match the config
 test_arm_template_missing_image_name | N/A | Error condition if an image isn't specified
 test_arm_template_missing_resources | N/A | Error condition where no resources are specified to deploy
 test_arm_template_missing_aci | N/A | Error condition where ACI is not specified in resources
@@ -36,10 +37,25 @@ test_update_infrastructure_svn | python:3.6.14-slim-buster | Change the minimum 
 test_multiple_policies | python:3.6.14-slim-buster & rust:1.52.1 | See if two unique policies are generated from a single ARM Template container multiple container groups. Also have an extra resource that is untouched. Also has a secureValue for an environment variable.
 test_arm_template_with_init_container | python:3.6.14-slim-buster & rust:1.52.1 | See if having an initContainer is picked up and added to the list of valid containers
 test_arm_template_without_stdio_access | rust:1.52.1 | See if disabling container stdio access gets passed down to individual containers
+test_arm_template_allow_elevated_false | rust:1.52.1 | Disabling allow_elevated via securityContext
 test_arm_template_policy_regex | python:3.6.14-slim-buster | Make sure the regex generated from the ARM Template workflow matches that of the policy.json workflow
 test_wildcard_env_var | python:3.6.14-slim-buster | Check that an "allow all" regex is created when a value for env var is not provided via a parameter value
 test_wildcard_env_var_invalid | N/A | Make sure the process errors out if a value is not given for an env var or an undefined parameter is used for the name of an env var
 test_arm_template_with_env_var | rust:1.52.1 | Make sure that a value that looks similar to but is not an ARM parameter is treated as a string
+test_arm_template_security_context_defaults | N/A | Make sure default values for securityContext are correct
+test_arm_template_security_context_allow_privilege_escalation | N/A | See if changing the allowPrivilegeEscalation flag is working
+test_arm_template_security_context_user | N/A | Set the user field manually to make sure it is reflected in the policy
+test_arm_template_security_context_seccomp_profile | N/A | Make sure we have the correct seccomp profile hash
+test_arm_template_capabilities_unprivileged | N/A | See if unprivileged capabilities are in the correct sets and have the right values. Using add and drop fields
+test_arm_template_capabilities_privileged | N/A | See if privilileged capabilities are correct
+test_arm_template_security_context_no_run_as_group | N/A | See if user is set correctly if run_as_group is not set in ARM template
+test_arm_template_security_context_no_run_as_user | N/A | See if user is set correctly if run_as_user is not set in ARM template
+test_arm_template_security_context_uid_gid | N/A | See if user is set correctly by getting the user field from the Docker image in the format uid:gid
+test_arm_template_security_context_user_gid | N/A | See if user is set correctly by getting the user field from the Docker image in the format user:gid
+test_arm_template_security_context_user_group | N/A | See if user is set correctly by getting the user field from the Docker image in the format user:group
+test_arm_template_security_context_uid_group | N/A | See if user is set correctly by getting the user field from the Docker image in the format uid:group
+test_arm_template_security_context_uid | N/A | See if user is set correctly by getting the user field from the Docker image in the format uid
+test_arm_template_security_context_user_dockerfile | N/A | See if user is set correctly by getting the user field from the Docker image in the format user
 
 ## policy.json [test file](test_confcom_scenario.py)
 
@@ -51,7 +67,7 @@ Test Name | Image Used | Purpose
 test_user_container_customized_mounts | rust:1.52.1 | See if mounts are translated correctly to the appropriate source and destination locations
 test_user_container_mount_injected_dns | python:3.6.14-slim-buster | See if the resolvconf mount works properly
 test_injected_sidecar_container_msi | mcr.microsoft.com/aci/msi-atlas-adapter:master_20201203.1 | Make sure User mounts and env vars aren't added to sidecar containers, using JSON output format
-test_logging_enabled | python:3.6.14-slim-buster | Enable logging via debug_mode
+test_debug_flags | python:3.6.14-slim-buster | Enable flags set via debug_mode
 test_sidecar | mcr.microsoft.com/aci/msi-atlas-adapter:master_20201210.1 | See if sidecar validation would pass policy created by given policy.json
 test_sidecar_stdio_access_default | Check that sidecar containers have std I/O access by default
 test_incorrect_sidecar | mcr.microsoft.com/aci/msi-atlas-adapter:master_20201210.1 | See what output format for failing sidecar validation would be
@@ -60,6 +76,7 @@ test_allow_elevated | python:3.6.14-slim-buster | Using allow_elevated in contai
 test_image_layers_python | python:3.6.14-slim-buster | Make sure image layers are as expected
 test_image_layers_rust | rust:1.52.1 | Make sure image layers are as expected with different image
 test_docker_pull | rust:1.52.1 | Test pulling an image from docker client
+test_infrastructure_svn | rust:1.52.1 | make sure the correct infrastructure_svn is present in the policy
 test_stdio_access_default | python:3.6.14-slim-buster | Checking the default value for std I/O access
 test_stdio_access_updated | python:3.6.14-slim-buster | Checking the value for std I/O when it's set
 test_environment_variables_parsing | mcr.microsoft.com/azuredocs/aci-dataprocessing-cc:v1 | Make sure env vars are output in the right format

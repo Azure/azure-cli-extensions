@@ -337,6 +337,7 @@ class AmgScenarioTest(ScenarioTest):
             self.kwargs.update({
                 'dashboardDefinition': test_dashboard,
                 'dashboardTitle': dashboard_title,
+                'dashboardTitle2': dashboard_title + '2',
                 'dashboardSlug': slug,
             })
 
@@ -352,6 +353,14 @@ class AmgScenarioTest(ScenarioTest):
             self.kwargs.update({
                 'dashboardUid2': response_create["uid"],
             })
+
+            # 2nd dashboard under own folder 
+            response_create = self.cmd('grafana dashboard create -g {rg} -n {name} --folder "{folderTitle}"  --definition "{dashboardDefinition}" --title "{dashboardTitle2}"').get_output_in_json()
+
+            self.kwargs.update({
+                'dashboardUid3': response_create["uid"],
+            })
+
 
             with tempfile.TemporaryDirectory() as temp_dir:
                 self.kwargs.update({
@@ -390,6 +399,13 @@ class AmgScenarioTest(ScenarioTest):
             self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid2}"', checks=[
                 self.check("[dashboard.title]", "['{dashboardTitle}']"),
                 self.check("[meta.folderTitle]", "['General']")])
+
+            self.cmd('grafana dashboard delete -g {rg} -n {name2} --dashboard "{dashboardUid}"')
+            self.cmd('grafana dashboard delete -g {rg} -n {name2} --dashboard "{dashboardUid3}"')
+            self.cmd('grafana dashboard sync --source {id} --destination {id2} --folders-to-include "{folderTitle}" --dashboards-to-include "{dashboardTitle}"')
+            self.cmd('grafana dashboard list -g {rg} -n {name2}', checks=[
+                self.check("length([?uid == '{dashboardUid3}'])", 0),
+                self.check("length([?uid == '{dashboardUid}'])", 1)])
 
 
     def _get_signed_in_user(self):

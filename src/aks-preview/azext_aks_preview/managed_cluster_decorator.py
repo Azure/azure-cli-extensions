@@ -627,8 +627,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 )
 
         # try to read the property value corresponding to the parameter from the `mc` object
-        if self.mc and self.mc.network_profile and self.mc.network_profile.kube_proxy_config is not None:
-            kube_proxy_config = self.mc.network_profile.kube_proxy_config
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if self.mc and self.mc.network_profile and self.mc.network_profile.kube_proxy_config is not None:
+                kube_proxy_config = self.mc.network_profile.kube_proxy_config
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -2874,7 +2875,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 "Unexpectedly get an empty network profile in the process of updating kube-proxy config."
             )
 
-        mc.network_profile.kube_proxy_config = self.context.get_kube_proxy_config()
+        kube_proxy_config = self.context.get_kube_proxy_config()
+
+        if kube_proxy_config:
+            mc.network_profile.kube_proxy_config = kube_proxy_config
 
         return mc
 
