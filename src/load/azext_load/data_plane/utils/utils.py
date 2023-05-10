@@ -84,21 +84,6 @@ def get_load_test_resource_endpoint(
     logger.info("Azure Load Testing data plane URI: %s", data_plane_uri)
     return data_plane_uri
 
-
-# def get_timespan(_, start_time=None, end_time=None, offset=None):
-#     if not start_time and not end_time:
-#         # if neither value provided, end_time is now
-#         end_time = datetime.utcnow().isoformat()
-#     if not start_time:
-#         # if no start_time, apply offset backwards from end_time
-#         start_time = (dateutil.parser.parse(end_time) - offset).isoformat()
-#     elif not end_time:
-#         # if no end_time, apply offset fowards from start_time
-#         end_time = (dateutil.parser.parse(start_time) + offset).isoformat()
-#     timespan = f"{start_time}/{end_time}"
-#     return timespan
-
-
 def get_login_credentials(cli_ctx, subscription_id=None):
     from azure.cli.core._profile import Profile
 
@@ -120,6 +105,23 @@ def get_admin_data_plane_client(cmd, load_test_resource, resource_group_name=Non
         subscription_id=subscription_id,
     )
     return admin_data_plane_client(
+        cmd.cli_ctx,
+        subscription=subscription_id,
+        endpoint=endpoint,
+        credential=credential,
+    )
+
+def get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name=None):
+    from azext_load.data_plane.client_factory import testrun_data_plane_client
+
+    credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
+    endpoint = get_load_test_resource_endpoint(
+        credential,
+        load_test_resource,
+        resource_group=resource_group_name,
+        subscription_id=subscription_id,
+    )
+    return testrun_data_plane_client(
         cmd.cli_ctx,
         subscription=subscription_id,
         endpoint=endpoint,
@@ -324,3 +326,17 @@ def create_or_update_body(
         new_body["loadTestConfiguration"]["splitAllCSVs"] = False
 
     return new_body
+
+# def get_timespan(_, start_time=None, end_time=None, offset=None):
+#     if not start_time and not end_time:
+#         # if neither value provided, end_time is now
+#         end_time = datetime.utcnow().isoformat()
+#     if not start_time:
+#         # if no start_time, apply offset backwards from end_time
+#         start_time = (dateutil.parser.parse(end_time) - offset).isoformat()
+#     elif not end_time:
+#         # if no end_time, apply offset fowards from start_time
+#         end_time = (dateutil.parser.parse(start_time) + offset).isoformat()
+#     timespan = f"{start_time}/{end_time}"
+#     return timespan
+
