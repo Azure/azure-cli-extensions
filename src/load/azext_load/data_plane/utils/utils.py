@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import errno
+import errno, uuid
 
 import requests
 import yaml
@@ -116,23 +116,6 @@ def get_admin_data_plane_client(cmd, load_test_resource, resource_group_name=Non
         credential=credential,
     )
 
-def get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name=None):
-    from azext_load.data_plane.client_factory import testrun_data_plane_client
-
-    credential, subscription_id, _ = get_login_credentials(cmd.cli_ctx)
-    endpoint = get_load_test_resource_endpoint(
-        credential,
-        load_test_resource,
-        resource_group=resource_group_name,
-        subscription_id=subscription_id,
-    )
-    return testrun_data_plane_client(
-        cmd.cli_ctx,
-        subscription=subscription_id,
-        endpoint=endpoint,
-        credential=credential,
-    )
-
 
 def get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name=None):
     from azext_load.data_plane.client_factory import testrun_data_plane_client
@@ -153,6 +136,7 @@ def get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name=N
 
 
 def download_file(url, file_path):
+    response = None
     count = 3
     the_ex = None
     while count > 0:
@@ -167,10 +151,11 @@ def download_file(url, file_path):
         logger.debug(msg)
         raise Exception(msg)
 
-    with open(file_path, "wb") as f:
-        for chunk in response.iter_content(chunk_size=1024):
-            if chunk:  # ignore keep-alive new chunks
-                f.write(chunk)
+    if response:
+        with open(file_path, "wb") as f:
+            for chunk in response.iter_content(chunk_size=1024):
+                if chunk:  # ignore keep-alive new chunks
+                    f.write(chunk)
 
 
 def parse_cert(certificate):
@@ -351,6 +336,36 @@ def create_or_update_body(
 
     return new_body
 
+
+def create_or_update_test_run_body(
+    test_id,
+    display_name=None,
+    description=None,
+    env=None,
+    secrets=None,
+    certificate=None,
+):
+    new_body = {
+        "testId": test_id
+    }
+    if display_name is not None:
+        new_body["displayName"] = display_name
+    if description is not None:
+        new_body["description"] = description
+    if env is not None:
+        new_body["environmentVariables"] = env
+    if secrets is not None:
+        new_body["secrets"] = secrets
+    if certificate is not None:
+        new_body["certificate"] = certificate
+    
+    return new_body
+
+
+def get_test_run_id():
+    return str(uuid.uuid4())
+
+
 # def get_timespan(_, start_time=None, end_time=None, offset=None):
 #     if not start_time and not end_time:
 #         # if neither value provided, end_time is now
@@ -363,4 +378,3 @@ def create_or_update_body(
 #         end_time = (dateutil.parser.parse(start_time) + offset).isoformat()
 #     timespan = f"{start_time}/{end_time}"
 #     return timespan
-

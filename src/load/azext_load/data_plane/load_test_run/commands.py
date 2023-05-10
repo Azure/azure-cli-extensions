@@ -1,20 +1,18 @@
 from azure.cli.core.commands import CliCommandType
-from azext_load.data_plane.client_factory import cf_testrun
-
-testrun_sdk = CliCommandType(
-    operations_tmpl="azext_load.vendored_sdks.loadtesting._generated.operations#TestRunOperations.{}",
-    client_factory=cf_testrun,
-)
 
 testrun_custom_sdk = CliCommandType(
-    operations_tmpl="azext_load.data_plane.test-run.custom#{}", client_factory=cf_testrun
+    operations_tmpl="azext_load.data_plane.load_test_run.custom#{}",
 )
-
 
 def load_test_run_commands(self, _):
     with self.command_group(
-        "load test-run", command_type=testrun_sdk, custom_command_type=testrun_custom_sdk
+        "load test-run", custom_command_type=testrun_custom_sdk
     ) as g:
-        g.command("create", "_test_run_initial")
-        g.command("update", "_test_run_initial")
-        g.command("delete", "delete_test_run")
+        g.custom_command("create", "create_test_run", supports_no_wait=True)
+        g.custom_command("update", "update_test_run")
+        g.custom_command("delete", "delete_test_run", confirmation=True)
+        g.custom_command("list", "list_test_runs")
+        g.custom_command("show", "get_test_run")
+        g.custom_command("download-files", "download_test_run_files")
+        g.custom_command("stop", "stop_test_run")
+        g.custom_command("list-metrics", "get_client_metrics")

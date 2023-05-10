@@ -29,7 +29,7 @@ helps[
 ] = """
 type: command
 short-summary: Update an existing load test.
-long-summary: Update a existing load test.
+long-summary: Update an existing load test.
 """
 
 helps[
@@ -37,7 +37,7 @@ helps[
 ] = """
 type: command
 short-summary: Delete an existing load test.
-long-summary: Delete a existing load test.
+long-summary: Delete an existing load test.
 """
 
 helps[

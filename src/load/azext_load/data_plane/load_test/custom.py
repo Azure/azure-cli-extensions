@@ -165,11 +165,11 @@ def download_test_files(
             file_path = os.path.join(path, file_detail["fileName"])
             download_file(file_detail["url"], file_path)
             logger.info("Downloaded '%s' file for test with test ID: %s at %s", file_detail["url"], test_id, file_path)
-        logger.info("Downloaded files for test with test ID: %s at %s", test_id, path)
-        return f"Files belonging to test {test_id} are downloaded in {path} location."
+        logger.warning("Downloaded files for test with test ID: %s at %s", test_id, path)
+        # return f"Files belonging to test {test_id} are downloaded in {path} location."
     else:
-        logger.info("No files found for test with test ID: %s", test_id)
-        return f"No files found for test {test_id}."
+        logger.warning("No files found for test with test ID: %s", test_id)
+        # return f"No files found for test {test_id}."
 
 
 def delete_test(

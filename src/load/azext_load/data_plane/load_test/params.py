@@ -4,7 +4,7 @@ from azext_load.data_plane.utils import argtypes
 def load_arguments(self, _):
     # Load Test
     with self.argument_context("load test create") as c:
-        c.argument("display_name", argtypes.display_name)
+        c.argument("display_name", argtypes.test_display_name)
         c.argument("test_plan", argtypes.test_plan)
         c.argument("test_description", argtypes.test_description)
         c.argument("env", argtypes.env)
@@ -18,7 +18,7 @@ def load_arguments(self, _):
         c.argument("engine_instances", argtypes.engine_instances)
 
     with self.argument_context("load test update") as c:
-        c.argument("display_name", argtypes.display_name)
+        c.argument("display_name", argtypes.test_display_name)
         c.argument("test_plan", argtypes.test_plan)
         c.argument("test_description", argtypes.test_description)
         c.argument("env", argtypes.env)

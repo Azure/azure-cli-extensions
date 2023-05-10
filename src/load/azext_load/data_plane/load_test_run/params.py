@@ -6,44 +6,38 @@ def load_arguments(self, _):
     with self.argument_context("load test-run create") as c:
         c.argument("existing_test_run_id", argtypes.existing_test_run_id)
         c.argument("test_id", argtypes.test_id)
+        c.argument("display_name", argtypes.test_run_display_name)
         c.argument("description", argtypes.test_run_description)
         c.argument("env", argtypes.env)
         c.argument("secrets", argtypes.secret)
         c.argument("certificate", argtypes.certificate)
 
-    with self.argument_context("load test update") as c:
-        c.argument("env", argtypes.env)
-        c.argument("secrets", argtypes.secret)
-        c.argument("certificate", argtypes.certificate)
-        c.argument("test_description", argtypes.test_description)
-        c.argument("test_plan", argtypes.test_plan)
-        c.argument("subnet_id", argtypes.subnet_id)
-        c.argument("load_test_config_file", argtypes.load_test_config_file)
-        c.argument(
-            "key_vault_reference_identity", argtypes.key_vault_reference_identity
-        )
-        c.argument("display_name", argtypes.display_name)
-        c.argument("engine_instances", argtypes.engine_instances)
+    with self.argument_context("load test-run update") as c:
+        c.argument("test_id", argtypes.test_id)
+        c.argument("description", argtypes.test_run_description)
 
-    with self.argument_context("load test download-files") as c:
+    with self.argument_context("load test-run download-files") as c:
         c.argument("path", argtypes.path)
+        c.argument("test_run_input", argtypes.test_run_input)
+        c.argument("test_run_log", argtypes.test_run_log)
+        c.argument("test_run_results", argtypes.test_run_results)
     #
 
     # Load Test App Components
-    with self.argument_context("load test app-components") as c:
+    with self.argument_context("load test-run app-components") as c:
         c.argument("app_component_id", argtypes.app_component_id)
 
-    with self.argument_context("load test app-components create") as c:
+    with self.argument_context("load test-run app-components create") as c:
         c.argument("app_component_type", argtypes.app_component_type)
         c.argument("app_component_name", argtypes.app_component_name)
         c.argument("app_component_type", argtypes.app_component_type)
     #
 
     # Load Test Server Metrics
-    with self.argument_context("load test server-metrics") as c:
+    with self.argument_context("load test-run server-metrics") as c:
         c.argument("metric_id", argtypes.metric_id)
 
-    with self.argument_context("load test server-metrics add") as c:
+    with self.argument_context("load test-run server-metrics add") as c:
         c.argument("metric_name", argtypes.metric_name)
         c.argument("metric_namespace", argtypes.metric_namespace)
         c.argument("aggregation", argtypes.aggregation)

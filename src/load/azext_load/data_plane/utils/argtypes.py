@@ -14,6 +14,7 @@ resource_group = resource_group_name_type
 load_test_resource = CLIArgumentType(
     options_list=["--load-test-resource", "--name", "-n"],
     type=str,
+    required=True,
     completer=get_resource_name_completion_list("Microsoft.LoadTestService/LoadTests"),
     help="Name or ARM resource ID of the load test resource.",
 )
@@ -35,10 +36,24 @@ test_run_id = CLIArgumentType(
     help="Test run ID of the load test run",
 )
 
-display_name = CLIArgumentType(
+existing_test_run_id = CLIArgumentType(
+    validator=validators.validate_test_run_id,
+    completer=completers.get_test_run_id_completion_list(),
+    options_list=["--existing-test-run-id"],
+    type=str,
+    help="Test run ID of an existing load test run",
+)
+
+test_display_name = CLIArgumentType(
     options_list=["--display-name"],
     type=str,
     help="Display name of the load test.",
+)
+
+test_run_display_name = CLIArgumentType(
+    options_list=["--display-name"],
+    type=str,
+    help="Display name of the load test run.",
 )
 
 engine_instances = CLIArgumentType(
@@ -108,9 +123,34 @@ certificate = CLIArgumentType(
 )
 
 path = CLIArgumentType(
+    validator=validators.validate_path,
     options_list=["--path"],
     type=str,
-    help="Path to the directory containing downloaded files.",
+    help="Path to the directory to download files.",
+)
+
+test_run_input = CLIArgumentType(
+    options_list=["--input", "-i"],
+    type=bool,
+    action='store_true',
+    default=False,
+    help="Download the input files zip.",
+)
+
+test_run_log = CLIArgumentType(
+    options_list=["--log", "-l"],
+    type=bool,
+    action='store_true',
+    default=False,
+    help="Download the log files zip.",
+)
+
+test_run_results = CLIArgumentType(
+    options_list=["--result", "-r"],
+    type=bool,
+    action='store_true',
+    default=False,
+    help="Download the results files zip.",
 )
 
 app_component_id = CLIArgumentType(

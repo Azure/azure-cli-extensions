@@ -29,7 +29,7 @@ helps[
 ] = """
 type: command
 short-summary: Update an existing load test run.
-long-summary: Update a existing load test run.
+long-summary: Update an existing load test run.
 """
 
 helps[
@@ -37,7 +37,15 @@ helps[
 ] = """
 type: command
 short-summary: Delete an existing load test run.
-long-summary: Delete a existing load test run.
+long-summary: Delete an existing load test run.
+"""
+
+helps[
+    "load test-run get-client-metrics"
+] = """
+type: command
+short-summary: Get all client metrics for a load test run.
+long-summary: Get all client metrics for a load test run.
 """
 
 helps[

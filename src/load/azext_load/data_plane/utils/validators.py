@@ -1,4 +1,5 @@
 import re
+import os
 
 from msrestazure.tools import is_valid_resource_id
 
@@ -116,3 +117,13 @@ def validate_metric_id(namespace):
         raise ValueError(
             f"Provided Azure Resource ID is not a valid server metrics resource: {namespace.metric_id}"
         )
+
+def validate_path(namespace):
+    if not isinstance(namespace.test_run_id, str):
+        raise TypeError(f"Invalid path type: {type(namespace.path)}")
+    if not os.path.exists(namespace.path):
+        raise ValueError(f"Provided path '{namespace.path}' does not exist")
+    if not os.path.isdir(namespace.path):
+        raise ValueError(f"Provided path '{namespace.path}' is not a directory")
+    if not os.access(namespace.path, os.W_OK | os.X_OK):
+        raise ValueError(f"Provided path '{namespace.path}' is not writable")
