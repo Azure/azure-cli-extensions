@@ -26,7 +26,7 @@ def get_amw_region(cmd, azure_monitor_workspace_resource_id):
 
 def get_azure_monitor_workspace_resource(cmd, cluster_subscription, cluster_region, raw_parameters):
     azure_monitor_workspace_resource_id = raw_parameters.get("azure_monitor_workspace_resource_id")
-    if azure_monitor_workspace_resource_id is None or azure_monitor_workspace_resource_id == "":
+    if not azure_monitor_workspace_resource_id:
         azure_monitor_workspace_resource_id, azure_monitor_workspace_location = create_default_mac(cmd, cluster_subscription, cluster_region)
     else:
         azure_monitor_workspace_resource_id = sanitize_resource_id(azure_monitor_workspace_resource_id)
