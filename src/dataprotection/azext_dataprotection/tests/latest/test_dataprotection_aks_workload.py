@@ -30,11 +30,10 @@ def setup(test):
         "policy_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DataProtection/backupVaults/clitest-aks-bv/backupPolicies/AKSPolicyCLI1",
         "vault_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DataProtection/backupVaults/clitest-aks-bv",
         "rg_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg",
-        "backup_instance_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DataProtection/backupVaults/oss-clitest-rg/backupInstances/clitest-cluster1-donotdelete-clitest-cluster1-donotdelete-faec6818-0720-11ec-bd1b-c8f750f92764",
+        "backup_instance_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DataProtection/backupVaults/clitest-aks-bv/backupInstances/clitest-cluster1-donotdelete-clitest-cluster1-donotdelete-faec6818-0720-11ec-bd1b-c8f750f92764",
     })
 
 def setup_vault_and_policy(test):
-    print("making a new backup vault")
     test.cmd('az dataprotection backup-vault create '
              '--resource-group "{rgname}" '
              '--location eastus2euap '
@@ -48,7 +47,6 @@ def setup_vault_and_policy(test):
                  test.check("id", "{vault_id}")
              ])
 
-    print("making a new AKS Policy")
     aks_poIicy_json = test.cmd('az dataprotection backup-policy get-default-policy-template --datasource-type AzureKubernetesService', checks=[
         test.check("name", "AKSPolicy1")
     ]).get_output_in_json()
@@ -69,7 +67,6 @@ def setup_vault_and_policy(test):
 def configure_backup(test):
     backup_instance_guid = "faec6818-0720-11ec-bd1b-c8f750f92764"
 
-    print("initializing new backupconfig.json")
     backup_config_json = test.cmd('az dataprotection backup-instance initialize-backupconfig --datasource-type AzureKubernetesService', checks=[
         test.check('include_cluster_scope_resources', True),
         test.check('snapshot_volumes', True)
@@ -78,7 +75,6 @@ def configure_backup(test):
         "backup_config_json": backup_config_json
     })
 
-    print("initializing new BI.json")
     backup_instance_json = test.cmd('az dataprotection backup-instance initialize '
                                     '--datasource-id "{akscluster1_id}" '
                                     '--datasource-location eastus2euap '
@@ -94,8 +90,9 @@ def configure_backup(test):
     })
 
     # TODO add failing validation check some time. Not required at the moment.
+    bvout = test.cmd('az dataprotection backup-vault show -g "{rgname}" --vault-name {vaultname}').get_output_in_json()
+    print(bvout)
 
-    print("Assigning permissions as necessary")
     # uncomment when running live, run only in record mode - grant permission
     test.cmd('az dataprotection backup-instance update-msi-permissions '
              '--datasource-type AzureKubernetesService '
@@ -104,10 +101,11 @@ def configure_backup(test):
              '--vault-name "{vaultname}" '
              '--resource-group "{rgname}" '
              '--backup-instance "{backup_instance_json}" -y')
-
     time.sleep(60)
 
-    print("Making a new backup instance")
+    # Also uncomment when running live, only run in record mode - provide trusted access
+    helper_trusted_access(test)
+
     test.cmd('az dataprotection backup-instance create -g "{rgname}" --vault-name "{vaultname}" --backup-instance "{backup_instance_json}"')
 
     backup_instance_res = test.cmd('az dataprotection backup-instance list -g "{rgname}" --vault-name "{vaultname}" --query "[0].properties.protectionStatus"').get_output_in_json()
@@ -119,50 +117,92 @@ def configure_backup(test):
 
     time.sleep(30)
 
+def helper_trusted_access(test):
+    try:
+        test.cmd('az aks trustedaccess rolebinding create '
+                '--resource-group {rgname} '
+                '--cluster-name {akscluster1} '
+                '-n aksRoleBindingName '
+                '-s {vault_id} '
+                '--roles Microsoft.DataProtection/backupVaults/backup-operator') 
+        time.sleep(10)
+    except:
+        pass
+
 def trigger_backup(test):
-    pass
-    # response_json = test.cmd('az dataprotection backup-instance adhoc-backup -n "{backup_instance_name}" -g "{rgname}" --vault-name "{vaultname}" --rule-name BackupWeekly --retention-tag-override Weekly').get_output_in_json()
-    # job_status = None
-    # test.kwargs.update({"backup_job_id": response_json["jobId"]})
-    # while job_status != "Completed":
-    #     time.sleep(10)
-    #     job_response = test.cmd('az dataprotection job show --ids "{backup_job_id}"').get_output_in_json()
-    #     job_status = job_response["properties"]["status"]
-    #     if job_status not in ["Completed", "InProgress"]:
-    #         raise Exception("Undefined job status received")
+    response_json = test.cmd('az dataprotection backup-instance adhoc-backup '
+                             '--ids "{backup_instance_id}" --rule-name "{policyrulename}"').get_output_in_json()
+    job_status = None
+    test.kwargs.update({"backup_job_id": response_json["jobId"]})
+    while job_status != "Completed":
+        time.sleep(10)
+        job_response = test.cmd('az dataprotection job show --ids "{backup_job_id}"').get_output_in_json()
+        job_status = job_response["properties"]["status"]
+        if job_status not in ["Completed", "InProgress"]:
+            raise Exception("Undefined job status received")
 
 def trigger_restore_original_location(test):
-    pass
-    # rp_json = test.cmd('az dataprotection recovery-point list --backup-instance-name "{backup_instance_name}" -g "{rgname}" --vault-name "{vaultname}"').get_output_in_json()
-    # test.kwargs.update({"rp_id": rp_json[0]["name"]})
+    rp_json = test.cmd('az dataprotection recovery-point list '
+                       '--backup-instance-name "{backup_instance_name}" -g "{rgname}" --vault-name "{vaultname}"').get_output_in_json()
+    test.kwargs.update({"rp_id": rp_json[0]["name"]})
 
-    # timestring = datetime.now().strftime("%d%m%Y_%H%M%S")
-    # test.kwargs.update({"targetossdbid": test.kwargs["ossdbid"] + "_restore_" + timestring})
+    restore_config_json = test.cmd('az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureKubernetesService', checks=[
+        test.check("persistent_volume_restore_mode", "RestoreWithVolumeData"),
+        test.check("conflict_policy", "Skip"),
+        test.check("include_cluster_scope_resources", True)
+    ]).get_output_in_json()
+    test.kwargs.update({"restore_config_json": restore_config_json})
 
-    # restore_json = test.cmd('az dataprotection backup-instance restore  initialize-for-data-recovery'
-    #                         ' --datasource-type AzureDatabaseForPostgreSQL --restore-location centraluseuap --source-datastore VaultStore '
-    #                         '--recovery-point-id "{rp_id}" --target-resource-id "{targetossdbid}" --secret-store-type AzureKeyVault --secret-store-uri "{secretstoreuri}"').get_output_in_json()
-    # test.kwargs.update({"restore_request": restore_json})
-    # test.cmd('az dataprotection backup-instance validate-for-restore -g "{rgname}" --vault-name "{vaultname}" -n "{backup_instance_name}" --restore-request-object "{restore_request}"')
+    restore_json = test.cmd('az dataprotection backup-instance restore initialize-for-item-recovery'
+                            ' --datasource-type AzureKubernetesService '
+                            '--restore-location eastus2euap '
+                            '--source-datastore OperationalStore '
+                            '--recovery-point-id "{rp_id}" '
+                            '--backup-instance-id "{backup_instance_id}" '
+                            '--restore-configuration "{restore_config_json}"').get_output_in_json()
+    test.kwargs.update({"restore_request": restore_json})
 
-    # response_json = test.cmd('az dataprotection backup-instance restore trigger -g "{rgname}" --vault-name "{vaultname}"'
-    #                          ' -n "{backup_instance_name}" --restore-request-object "{restore_request}"').get_output_in_json()
-    # job_status = None
-    # test.kwargs.update({"backup_job_id": response_json["jobId"]})
-    # while job_status != "Completed":
-    #     time.sleep(10)
-    #     job_response = test.cmd('az dataprotection job show --ids "{backup_job_id}"').get_output_in_json()
-    #     job_status = job_response["properties"]["status"]
-    #     if job_status not in ["Completed", "InProgress"]:
-    #         raise Exception("Undefined job status received")
+    # uncomment when running live, run only in record mode - grant permission
+    test.cmd('az dataprotection backup-instance update-msi-permissions '
+             '--datasource-type AzureKubernetesService '
+             '--operation Restore '
+             '--permissions-scope Resource '
+             '--vault-name "{vaultname}" '
+             '--resource-group "{rgname}" '
+             '--restore-request-object "{restore_request}" '
+             '--snapshot-resource-group-id "{rg_id}" -y')
+    time.sleep(60)
+
+    # Also uncomment when running live, only run in record mode - provide trusted access
+    helper_trusted_access(test)
+
+    test.cmd('az dataprotection backup-instance validate-for-restore -g "{rgname}" --vault-name "{vaultname}" -n "{backup_instance_name}" --restore-request-object "{restore_request}"')
+
+    response_json = test.cmd('az dataprotection backup-instance restore trigger '
+                             '-g "{rgname}" '
+                             '--vault-name "{vaultname}" '
+                             ' -n "{backup_instance_name}" '
+                             '--restore-request-object "{restore_request}"').get_output_in_json()
+    job_status = None
+    test.kwargs.update({"backup_job_id": response_json["jobId"]})
+    while job_status != "Completed":
+        time.sleep(10)
+        job_response = test.cmd('az dataprotection job show --ids "{backup_job_id}"').get_output_in_json()
+        job_status = job_response["properties"]["status"]
+        if job_status not in ["Completed", "InProgress"]:
+            raise Exception("Undefined job status received")
 
 def delete_backup(test):
-    print("deletein gBI")
     test.cmd('az dataprotection backup-instance delete -g "{rgname}" --vault-name "{vaultname}" -n "{backup_instance_name}" --yes')
 
 def cleanup(test):
-    print("delelting vault")
+    delete_backup(test)
     test.cmd('az dataprotection backup-vault delete -g "{rgname}" --vault-name "{vaultname}" --yes')
+
+    try:
+        test.cmd('az aks trustedaccess rolebinding delete -g "{rgname}" --cluster-name "{akscluster1}" -n aksRoleBindingName --yes')    
+    except:
+        pass
 
 @AllowLargeResponse()
 def call_scenario(test):
@@ -172,11 +212,10 @@ def call_scenario(test):
         configure_backup(test)
         trigger_backup(test)
         trigger_restore_original_location(test)
-        delete_backup(test)
-        cleanup(test)
     except Exception as e:
-        cleanup(test)
         raise e
+    finally:
+        cleanup(test)
 
 # Test class for Scenario
 class DataprotectionScenarioTest(ScenarioTest):
