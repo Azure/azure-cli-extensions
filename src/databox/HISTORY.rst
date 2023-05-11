@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.3
+++++++
+* `az databox job create`: Add new parameter `--transfer-type`
+
 0.1.2
 ++++++
 * Migrate to track2 SDK
