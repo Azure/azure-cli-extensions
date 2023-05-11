@@ -7,7 +7,7 @@ from azext_load.data_plane.utils.utils import (
 
 from azure.cli.core.azclierror import ValidationError
 from knack.log import get_logger
-
+import os, requests
 logger = get_logger(__name__)
 
 
@@ -92,15 +92,58 @@ def download_test_run_files(
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     test_run_data = client.get_test_run(test_run_id=test_run_id)
+    if test_run_data.get("testArtifacts") is None:
+        logger.warning("No test artifacts found for test run %s", test_run_id)
     if test_run_input:
-        if test_run_data.get("inputArtifacts", {}).get("configFileInfo") is not None:
-            pass
+        logger.info("Downloading input artifacts for test run %s", test_run_id)
+        if test_run_data.get("testArtifacts", {}).get("inputArtifacts") is not None:
+            #logger.info(test_run_data.get("testArtifacts", {}).get("inputArtifacts"))
+            input_artifacts = test_run_data.get("testArtifacts", {}).get("inputArtifacts")
+            for artifact_type, artifact_data in input_artifacts.items():
+                #logger.info(("artifact_type = %s,  artifact_data = %s", artifact_type, artifact_data))
+                if artifact_type != "additionalFileInfo" and artifact_data.get("url") is not None:
+                    url = artifact_data.get("url")
+                    file_name = artifact_data.get("fileName")
+                    file_path = os.path.join(path, file_name)
+                    response = requests.get(url)
+                    with open(file_path, "wb") as f:
+                        f.write(response.content)
+            logger.warning("Input artifacts downloaded to %s", path)
+        else:
+            logger.warning("No input artifacts found for test run %s", test_run_id)
+
     if test_run_log:
-        if test_run_data.get("inputArtifacts", {}).get("configFileInfo") is not None:
-            pass
+        logger.info("Downloading log file for test run %s", test_run_id)
+        if test_run_data.get("testArtifacts", {}).get("outputArtifacts") is not None:
+            if test_run_data.get("testArtifacts", {}).get("outputArtifacts", {}).get("logsFileInfo") is not None:
+                url = test_run_data.get("testArtifacts", {}).get("outputArtifacts", {}).get("logsFileInfo").get("url")
+                file_name = test_run_data.get("testArtifacts", {}).get("outputArtifacts", {}).get("logsFileInfo", {}).get("fileName")
+                file_path = os.path.join(path, file_name)
+                response = requests.get(url)
+                with open(file_path, "wb") as f:
+                    f.write(response.content)
+                logger.warning("Log file downloaded to %s", file_path)
+            else:
+                logger.info("No log file found for test run %s", test_run_id)
+        else:
+            logger.info("No results file and output artifacts found for test run %s", test_run_id)
+            
     if test_run_results:
-        if test_run_data.get("inputArtifacts", {}).get("configFileInfo") is not None:
-            pass
+        logger.info("Downloading results file for test run %s", test_run_id)
+        if test_run_data.get("testArtifacts", {}).get("outputArtifacts") is not None:
+            if test_run_data.get("testArtifacts", {}).get("outputArtifacts", {}).get("resultFileInfo") is not None:
+                url = test_run_data.get("testArtifacts", {}).get("outputArtifacts", {}).get("resultFileInfo").get("url")
+                file_name = test_run_data.get("testArtifacts", {}).get("outputArtifacts", {}).get("resultFileInfo", {}).get("fileName")
+                file_path = os.path.join(path, file_name)
+                response = requests.get(url)
+                with open(file_path, "wb") as f:
+                    f.write(response.content)
+                logger.warning("Results file downloaded to %s", file_path)
+            else:
+                logger.info("No results file found for test run %s", test_run_id)
+        else:
+            logger.info("No results file and output artifacts found for test run %s", test_run_id)
+
 
 def get_client_metrics(
     cmd,

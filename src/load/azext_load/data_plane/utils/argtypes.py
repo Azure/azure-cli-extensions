@@ -130,24 +130,21 @@ path = CLIArgumentType(
 )
 
 test_run_input = CLIArgumentType(
-    options_list=["--input", "-i"],
-    type=bool,
+    options_list=["--input"],
     action='store_true',
     default=False,
     help="Download the input files zip.",
 )
 
 test_run_log = CLIArgumentType(
-    options_list=["--log", "-l"],
-    type=bool,
+    options_list=["--log"],
     action='store_true',
     default=False,
     help="Download the log files zip.",
 )
 
 test_run_results = CLIArgumentType(
-    options_list=["--result", "-r"],
-    type=bool,
+    options_list=["--result"],
     action='store_true',
     default=False,
     help="Download the results files zip.",
