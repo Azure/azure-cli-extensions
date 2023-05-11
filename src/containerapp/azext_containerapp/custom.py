@@ -4407,7 +4407,7 @@ def patch_run_interactive(cmd, resource_group_name=None, managed_env=None, show_
     if without_unpatchable_results == []: return
     user_input=input("Do you want to apply all the patch or specify by id? (y/n/id)\n")
     if user_input == "y":
-        telemetry_core.add_extension_event('patch-run')
+        telemetry_core.add_extension_event('containerapp',{'Context.Default.AzureCLI.PatchRun':"Ran patch run command"})
     return patch_apply(cmd, patchable_check_results, user_input, resource_group_name, pack_exec_path)
 
 def patch_run(cmd, resource_group_name=None, managed_env=None, show_all=False):
@@ -4429,6 +4429,8 @@ def patch_run(cmd, resource_group_name=None, managed_env=None, show_all=False):
 def patch_apply(cmd, patchCheckList, method, resource_group_name, pack_exec_path):
     results = []
     m = method.strip().lower()
+    # Tracks number of times patch was applied.
+    patchApplyCount = 0
     if m == "y":
         for patch_check in patchCheckList:
             if patch_check["id"]:
@@ -4438,7 +4440,8 @@ def patch_apply(cmd, patchCheckList, method, resource_group_name, pack_exec_path
                                                   patch_check["targetContainerAppName"], 
                                                   patch_check["targetContainerName"], 
                                                   patch_check["targetImageName"], 
-                                                  patch_check["newRunImage"], 
+                                                  patch_check["newRunImage"],
+                                                  patchApplyCount,
                                                   pack_exec_path))
     elif m == "n":
         print("No patch applied."); return
@@ -4453,12 +4456,13 @@ def patch_apply(cmd, patchCheckList, method, resource_group_name, pack_exec_path
                                               patch_check["targetContainerName"],
                                               patch_check["targetImageName"],
                                               patch_check["newRunImage"],
+                                              patchApplyCount,
                                               pack_exec_path))
                 return
         print("Invalid patch method or id."); return
     return results
 
-def patch_cli_call(cmd, resource_group, container_app_name, container_name, target_image_name, new_run_image, pack_exec_path):
+def patch_cli_call(cmd, resource_group, container_app_name, container_name, target_image_name, new_run_image, patch_apply_count=0, pack_exec_path):
     try:
         print("Applying patch for container app: " + container_app_name + " container: " + container_name)
         subprocess.run(f"{pack_exec_path} rebase -q {target_image_name} --run-image {new_run_image}", shell=True)
@@ -4467,6 +4471,7 @@ def patch_cli_call(cmd, resource_group, container_app_name, container_name, targ
         print(f"Publishing {new_target_image_name} to registry...")
         subprocess.run(f"docker push -q {new_target_image_name}", shell=True)
         print("Patch applied and published successfully.\nNew image: " + new_target_image_name)
+        patch_apply_count+=1
     except Exception:
         print("Error: Failed to apply patch and publish. Check if registry is logged in and has write access.")
         raise
