@@ -1095,6 +1095,7 @@ class ContainerappScaleTests(ScenarioTest):
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision3")
         ])
         clean_up_test_file(containerapp_file_name)
