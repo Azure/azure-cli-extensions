@@ -15,7 +15,8 @@ from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        MutuallyExclusiveArgumentError)
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
-from .vendored_sdks.appplatform.v2023_03_01_preview.models._app_platform_management_client_enums import ApmType
+from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import ApmType
+from .vendored_sdks.appplatform.v2023_05_01_preview.models._models_py3 import (ApmReference, CertificateReference)
 
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
 from ._resource_quantity import \
@@ -459,3 +460,76 @@ def validate_customized_accelerator(namespace):
     validate_acc_git_refs(namespace)
     if namespace.accelerator_tags is not None:
         namespace.accelerator_tags = namespace.accelerator_tags.split(",") if namespace.accelerator_tags else []
+
+
+def validate_apm_properties(namespace):
+    """ Extracts multiple space-separated properties in key[=value] format """
+    if isinstance(namespace.properties, list):
+        properties_dict = {}
+        for item in namespace.properties:
+            properties_dict.update(validate_tag(item))
+        namespace.properties = properties_dict
+
+
+def validate_apm_secrets(namespace):
+    """ Extracts multiple space-separated secrets in key[=value] format """
+    if isinstance(namespace.secrets, list):
+        secrets_dict = {}
+        for item in namespace.secrets:
+            secrets_dict.update(validate_tag(item))
+        namespace.secrets = secrets_dict
+
+
+def validate_apm_not_exist(cmd, namespace):
+    client = get_client(cmd)
+    try:
+        apm_resource = client.apms.get(namespace.resource_group, namespace.service, namespace.name)
+        if apm_resource is not None:
+            raise ClientRequestError('APM {} already exists '
+                                     'in resource group {}, service {}. You can edit it by update command.'
+                                     .format(namespace.name, namespace.resource_group, namespace.service))
+    except ResourceNotFoundError:
+        # Excepted case
+        pass
+
+
+def validate_apm_exist(cmd, namespace):
+    client = get_client(cmd)
+    # If not exists exception will be raised
+    client.apms.get(namespace.resource_group, namespace.service, namespace.name)
+
+
+def validate_apm_reference(cmd, namespace):
+    apmIds = namespace.apm
+
+    result = []
+    if not apmIds:
+        return result
+
+    client = get_client(cmd)
+    for id in apmIds:
+        apm_resource = client.apms.get(namespace.resource_group, namespace.service, id.strip().lower())
+        apm_reference = ApmReference(resource_id=apm_resource.id)
+        result.append(apm_reference)
+
+    namespace.apm=result
+
+
+
+
+def validate_cert_reference(cmd, namespace):
+    certIds = namespace.cert
+
+    result = []
+    if not certIds:
+        return result
+
+    client = get_client(cmd)
+    for id in certIds:
+        cert_resource = client.certificates.get(namespace.resource_group, namespace.service, id.strip().lower())
+        cert_reference = CertificateReference(resource_id=cert_resource.id)
+        result.append(cert_reference)
+
+    namespace.cert = result
+
+

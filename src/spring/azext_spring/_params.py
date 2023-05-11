@@ -27,7 +27,8 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
                                      validate_build_env, validate_target_module, validate_runtime_version,
-                                     validate_acs_ssh_or_warn)
+                                     validate_acs_ssh_or_warn, validate_apm_properties, validate_apm_secrets,
+                                     validate_apm_exist, validate_apm_not_exist, validate_apm_reference, validate_cert_reference)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -37,7 +38,7 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
-from .vendored_sdks.appplatform.v2023_03_01_preview.models._app_platform_management_client_enums import (SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
+from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import (SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
 
 name_type = CLIArgumentType(options_list=[
@@ -57,7 +58,7 @@ cpu_type = CLIArgumentType(type=str, help='CPU resource quantity. Should be 250m
 memory_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi, 1536Mi, 2560Mi, 3584Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_memory)
 build_cpu_type = CLIArgumentType(type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.', validator=validate_build_cpu)
 build_memory_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_build_memory)
-
+apm_type = CLIArgumentType(nargs='*', help='Space-separated list of APM names.', validator=validate_apm_reference)
 
 # pylint: disable=too-many-statements
 def load_arguments(self, _):
@@ -457,6 +458,7 @@ def load_arguments(self, _):
             c.argument('jvm_options', type=str, validator=validate_jvm_options,
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
             c.argument('env', env_type)
+            c.argument('apm', apm_type)
             c.argument('disable_probe', arg_type=get_three_state_flag(), help='If true, disable the liveness and readiness probe.')
             c.argument('main_entry', options_list=[
                 '--main-entry', '-m'], help="The path to the .NET executable relative to zip root.")
@@ -720,6 +722,8 @@ def load_arguments(self, _):
             c.argument('build_env', build_env_type)
             c.argument('source_path', arg_type=source_path_type, validator=validate_source_path)
             c.argument('artifact_path', help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_artifact_path)
+            c.argument('apm', apm_type)
+            c.argument('cert', nargs='+', help='Space-separated certificate resource IDs.', validator=validate_cert_reference)
             c.argument('disable_validation', arg_type=get_three_state_flag(), help='If true, disable jar validation.')
 
     with self.argument_context('spring build-service build create') as c:
@@ -905,6 +909,47 @@ def load_arguments(self, _):
                   'spring build-service builder buildpack-binding delete']:
         with self.argument_context(scope) as c:
             c.argument('builder_name', help='The name for builder.', default="default")
+            c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    for scope in ['spring apm create']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='Name for APM.', validator=validate_apm_not_exist)
+
+    for scope in ['spring apm create',
+                  'spring apm update']:
+        with self.argument_context(scope) as c:
+            c.argument('type',
+                       help='Required type for APM. Run "az spring apm list-support-types"'
+                            'to get all the supported APM types.')
+            c.argument('properties',
+                       help='Non-sensitive properties for APM. Format "key[=value]".',
+                       nargs='*',
+                       validator=validate_apm_properties)
+            c.argument('secrets',
+                       help='Sensitive properties for APM. '
+                            'Once put, it will be encrypted and never return to user. '
+                            'Format "key[=value]".',
+                       nargs='*',
+                       validator=validate_apm_secrets)
+
+    for scope in ['spring apm update',
+                  'spring apm show',
+                  'spring apm enable-globally',
+                  'spring apm disable-globally',
+                  'spring apm delete']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='Name for APM.', validator=validate_apm_exist)
+
+    for scope in ['spring apm create',
+                  'spring apm update',
+                  'spring apm list',
+                  'spring apm list-support-types',
+                  'spring apm enable-globally',
+                  'spring apm disable-globally',
+                  'spring apm list-enabled-globally',
+                  'spring apm show',
+                  'spring apm delete']:
+        with self.argument_context(scope) as c:
             c.argument('service', service_name_type, validator=only_support_enterprise)
 
     for scope in ['spring application-accelerator predefined-accelerator list',

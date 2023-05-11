@@ -64,6 +64,11 @@ def load_command_table(self, _):
         client_factory=cf_spring
     )
 
+    apm_cmd_group = CliCommandType(
+        operations_tmpl="azext_spring.apm#{}",
+        client_factory=cf_spring
+    )
+
     application_configuration_service_cmd_group = CliCommandType(
         operations_tmpl='azext_spring.application_configuration_service#{}',
         client_factory=cf_spring
@@ -374,6 +379,19 @@ def load_command_table(self, _):
         g.custom_command('update', 'customized_accelerator_upsert', supports_no_wait=True, validator=validate_customized_accelerator)
         g.custom_command('sync-cert', 'customized_accelerator_sync_cert', supports_no_wait=True, table_transformer=transform_customized_accelerator_output)
         g.custom_command('delete', 'customized_accelerator_delete', supports_no_wait=True)
+
+    with self.command_group('spring apm',
+                            custom_command_type=apm_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('create', 'create_or_update_apm')
+        g.custom_command('update', 'create_or_update_apm')
+        g.custom_show_command('show', 'apm_show')
+        g.custom_command('list', 'apm_list')
+        g.custom_command('delete', 'apm_delete', confirmation=True)
+        g.custom_command('list-support-types', 'list_support_apm_types')
+        g.custom_command('list-enabled-globally', 'list_apms_enabled_globally')
+        g.custom_command('enable-globally', 'enable_apm_globally')
+        g.custom_command('disable-globally', 'disable_apm_globally')
 
     with self.command_group('spring build-service builder',
                             custom_command_type=build_service_cmd_group,

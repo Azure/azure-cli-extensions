@@ -7,7 +7,7 @@
 
 import json
 from azure.cli.core.util import sdk_no_wait
-from .vendored_sdks.appplatform.v2023_03_01_preview import models
+from .vendored_sdks.appplatform.v2023_05_01_preview import models
 from ._buildservices_factory import BuildService
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -106,7 +106,8 @@ def container_registry_show(cmd, client, resource_group, service, name=None):
 
 
 def create_or_update_build(cmd, client, resource_group, service, name=None, builder=None, build_env=None,
-                           build_cpu=None, build_memory=None, source_path=None, artifact_path=None, disable_validation=None):
+                           build_cpu=None, build_memory=None, source_path=None, artifact_path=None,
+                           apm=None, cert=None, disable_validation=None):
     build_service = BuildService(cmd, client, resource_group, service)
     kwargs = {
         'build_name': name,
@@ -116,6 +117,8 @@ def create_or_update_build(cmd, client, resource_group, service, name=None, buil
         'builder': builder,
         'source_path': source_path,
         'artifact_path': artifact_path,
+        'apm': apm,
+        'cert': cert,
         'disable_validation': disable_validation
     }
     build_service.build_and_get_result(4, **kwargs)
