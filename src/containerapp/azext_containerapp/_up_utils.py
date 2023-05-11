@@ -9,7 +9,6 @@ from tempfile import NamedTemporaryFile
 from urllib.parse import urlparse
 import requests
 import subprocess
-import sys
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -408,7 +407,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             # Update the result of process.returncode
             process.communicate()
             if process.returncode != 0:
-                raise CLIError(f"Error thrown when running 'pack build'")
+                raise CLIError(f"Non-zero exit code returned from 'pack build'; please check the above output for more details.")
 
             logger.debug(f"Successfully built image {image_name} using buildpacks.")
         except Exception as ex:
@@ -496,7 +495,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             except ValidationError as e:
                 logger.warning(f"Unable to use buildpacks to build image from source: {e}\nFalling back to ACR Task...")
             except CLIError as e:
-                logger.error(f"Failed to use buildpacks to build image from source: {e}")
+                logger.error(f"Failed to use buildpacks to build image from source.\n")
                 raise e
 
             # If we're unable to use the buildpack, build source using an ACR Task
