@@ -4310,7 +4310,7 @@ def patch_list(cmd, resource_group_name, managed_env=None, show_all=False):
         logger.warning("Please install or start Docker and try again.")
         return
     pack_exec_path = get_pack_exec_path()
-    print("\rStarting process 1/3...", end="")
+    print("\rStarting process 1/5...", end="", flush=True)
     
     if managed_env:
         caList = list_containerapp(cmd, resource_group_name, managed_env)
@@ -4323,7 +4323,7 @@ def patch_list(cmd, resource_group_name, managed_env=None, show_all=False):
         for envName in envNames:
             caList+= list_containerapp(cmd,resource_group_name, envName)
     imgs = []
-    print("\rStarting process 2/3...", end="", flush=True)
+    print("\rStarting process 2/5...", end="", flush=True)
     if caList:
         for ca in caList:
             managedEnvName = ca["properties"]["managedEnvironmentId"].split('/')[-1]
@@ -4331,17 +4331,18 @@ def patch_list(cmd, resource_group_name, managed_env=None, show_all=False):
             for container in containers:
                 result = dict(imageName=container["image"], targetContainerName=container["name"], targetContainerAppName=ca["name"], targetContainerAppEnvironmentName = managedEnvName)
                 imgs.append(result)
-    print("\rStarting process 3/3...", end="", flush=True)
+    print("\rStarting process 3/5...", end="", flush=True)
     # Get the BOM of the images
     results = []
     boms = []
     ## Multi-worker
-    print("\rInspecting images...   ", end="", flush=True)
+    print("\rStarting process 4/5...", end="", flush=True)
     with ThreadPoolExecutor(max_workers=10) as executor:
         futures = [executor.submit(patch_get_image_inspection, pack_exec_path, img, boms) for img in imgs]
 
     # Get the current tags of Dotnet Mariners
     oryxRunImgTags = getCurrentMarinerTags()
+    print("\rStarting process 5/5...", end="", flush=True)
     failedReason = "Failed to get BOM of the image. Please check if the image exists or you have the permission to access the image."
     notBasedMarinerReason = "Image not based on Mariner"
     mcrCheckReason = "Image not from mcr.microsoft.com/oryx/builder"
@@ -4441,8 +4442,8 @@ def patch_apply(cmd, patchCheckList, method, resource_group_name, pack_exec_path
                                                   patch_check["targetContainerName"], 
                                                   patch_check["targetImageName"], 
                                                   patch_check["newRunImage"],
-                                                  patchApplyCount,
-                                                  pack_exec_path))
+                                                  pack_exec_path,
+                                                  patchApplyCount))
     elif m == "n":
         print("No patch applied."); return
     else:
@@ -4456,13 +4457,13 @@ def patch_apply(cmd, patchCheckList, method, resource_group_name, pack_exec_path
                                               patch_check["targetContainerName"],
                                               patch_check["targetImageName"],
                                               patch_check["newRunImage"],
-                                              patchApplyCount,
-                                              pack_exec_path))
+                                              pack_exec_path,
+                                              patchApplyCount))
                 return
         print("Invalid patch method or id."); return
     return results
 
-def patch_cli_call(cmd, resource_group, container_app_name, container_name, target_image_name, new_run_image, patch_apply_count=0, pack_exec_path):
+def patch_cli_call(cmd, resource_group, container_app_name, container_name, target_image_name, new_run_image, pack_exec_path, patch_apply_count=0):
     try:
         print("Applying patch for container app: " + container_app_name + " container: " + container_name)
         subprocess.run(f"{pack_exec_path} rebase -q {target_image_name} --run-image {new_run_image}", shell=True)
