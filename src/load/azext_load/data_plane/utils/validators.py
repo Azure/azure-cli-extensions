@@ -99,12 +99,13 @@ def validate_app_component_id(namespace):
             f"app-component-id is not a valid Azure Resource ID: {namespace.app_component_id}"
         )
     # /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{providerName}/components/{resourceName}"
-    providerName = namespace.app_component_id.split("/")[5].casefold()
-    if providerName != namespace.app_component_type.casefold():
-        raise ValueError(
-            f"Type of app-component-id and app-component-type mismatch: {providerName} vs {namespace.app_component_type}"
-        )
 
+def validate_app_component_type(namespace):
+    provider_name = "/".join(namespace.app_component_id.split("/")[6:8]).casefold()
+    if provider_name != namespace.app_component_type.casefold():
+        raise ValueError(
+            f"Type of app-component-id and app-component-type mismatch: {provider_name} vs {namespace.app_component_type}"
+        )
 
 def validate_metric_id(namespace):
     if not isinstance(namespace.metric_id, str):

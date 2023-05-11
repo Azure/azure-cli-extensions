@@ -164,6 +164,7 @@ app_component_name = CLIArgumentType(
 )
 
 app_component_type = CLIArgumentType(
+    validator=validators.validate_app_component_type,
     options_list=["--app-component-type"],
     type=str,
     help="Type of resource of the app component.",
