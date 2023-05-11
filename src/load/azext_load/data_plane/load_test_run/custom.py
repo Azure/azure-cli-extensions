@@ -1,10 +1,9 @@
 from azext_load.data_plane.utils.utils import (
-    get_testrun_data_plane_client,
+    create_or_update_test_run_body,
     get_admin_data_plane_client,
     get_test_run_id,
-    create_or_update_test_run_body,
+    get_testrun_data_plane_client,
 )
-
 from azure.cli.core.azclierror import ValidationError
 from knack.log import get_logger
 import os, requests
@@ -80,6 +79,7 @@ def stop_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     return client.stop_test_run(test_run_id=test_run_id)
 
+
 def download_test_run_files(
     cmd,
     load_test_resource,
@@ -145,31 +145,32 @@ def download_test_run_files(
             logger.info("No results file and output artifacts found for test run %s", test_run_id)
 
 
-def get_client_metrics(
-    cmd,
-    load_test_resource,
-    test_run_id,
-    resource_group_name=None
-):
+
+def get_client_metrics(cmd, load_test_resource, test_run_id, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
-    
+
     test_run_response = client.get_test_run(test_run_id)
 
     metric_namespaces = client.get_metric_namespaces(test_run_id)
 
-    metric_definitions = client.get_metric_definitions(test_run_id, metric_namespace=metric_namespaces["value"][0]["name"])
-
-    # fetch metrics for a test run using metric definition and namespace
-    metrics = client.list_metrics(
-        TEST_RUN_ID,
-        metric_name=metric_definitions["value"][0]["name"],
-        metric_namespace=metric_namespaces["value"][0]["name"],
-        time_interval=test_run_response["startDateTime"]+"/"+test_run_response["endDateTime"]
+    metric_definitions = client.get_metric_definitions(
+        test_run_id, metric_namespace=metric_namespaces["value"][0]["name"]
     )
 
-    for page in metrics.by_page():
-        for data in page:
-            print(data)
+    metrics = client.list_metrics(
+        test_run_id,
+        metric_name=metric_definitions["value"][0]["name"],
+        metric_namespace=metric_namespaces["value"][0]["name"],
+        time_interval="{start}/{end}".format(
+            start=test_run_response["startDateTime"],
+            end=test_run_response["endDateTime"],
+        ),
+    )
 
+    response = []
+    for metric in metrics:
+        response.append(metric)
 
-   # return client.list_metrics(test_run_id=test_run_id)
+    return response
+
+# TODO: Add log statements everywhere
