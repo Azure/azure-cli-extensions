@@ -434,6 +434,24 @@ helps[
 """
 
 helps[
+    "devcenter dev environment deploy"
+] = """
+    type: command
+    short-summary: "Updates an environment."
+    examples:
+      - name: Update using dev center
+        text: |-
+               az devcenter dev environment deploy --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--name "mydevenv" --user-id "00000000-0000-0000-0000-000000000000" --parameters "{\\"functionAppRuntime\\":\\"node\
+\\",\\"storageAccountType\\":\\"Standard_LRS\\"}"
+      - name: Update using endpoint
+        text: |-
+               az devcenter dev environment deploy --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" \
+--name "mydevenv" --user-id "00000000-0000-0000-0000-000000000000" --parameters "{\\"functionAppRuntime\\":\\"node\
+\\",\\"storageAccountType\\":\\"Standard_LRS\\"}"
+"""
+
+helps[
     "devcenter dev environment delete"
 ] = """
     type: command

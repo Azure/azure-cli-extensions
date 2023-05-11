@@ -134,7 +134,7 @@ def create_sig_role_assignments(self):
 
 def create_kv_policy(self):
     if (self.is_live):
-        self.cmd('az keyvault set-policy -n "dummy" '
+        self.cmd('az keyvault set-policy -n "amlim-cli" '
                 '--secret-permissions get list '
                 '--object-id "{identityPrincipalId}"')
 
@@ -304,6 +304,7 @@ def add_dev_box_user_role_to_project(self):
                  '--scope "{projectId}"')
 
 def create_pool(self):
+    create_network_connection_dp(self)
     imageRefId = f"{self.kwargs.get('devCenterId', '')}/galleries/Default/images/MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os"
 
     self.kwargs.update({
@@ -345,7 +346,6 @@ def create_pool(self):
                  '-c "{attachedNetworkName}" '
                  '--project-name "{projectName}" '
                  '--resource-group "{rg}" '
-                 '--stop-on-disconnect grace-period-minutes="60" status="Enabled" '
                  )
 
     self.cmd('az devcenter admin schedule create '
@@ -354,12 +354,8 @@ def create_pool(self):
                  '--resource-group "{rg}" '
                  '--time "{time}" '
                  '--time-zone "{timeZone}" '
-                 )    
+                 )
 
-def create_pool_dataplane_dependencies(self):
-    
-    create_network_connection_dp(self)
-    create_pool(self)
 
 def add_deployment_env_user_role_to_project(self):
     project = self.cmd('az devcenter admin project show '
@@ -384,9 +380,9 @@ def catalog_create_and_sync_cmds(self):
     self.kwargs.update({
         'catalogName': self.create_random_name(prefix='c2', length=12),
         'branch': 'main',
-        'path': "/Catalog_v2",
-        'secretIdentifier': "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
-        'uri': "https://domain.com/dummy/dummy.git"
+        'path': "/Environments",
+        'secretIdentifier': "https://amlim-cli.vault.azure.net/secrets/amlimTest/65e8ce20538743a8bd49eb0222f18d88",
+        'uri': "https://github.com/am-lim/deployment-environments.git"
     })
 
     self.cmd('az devcenter admin catalog create '
@@ -407,6 +403,7 @@ def create_catalog(self):
     create_dev_center_with_identity(self)
     create_kv_policy(self)
     create_project(self)
+    get_endpoint(self)
     add_deployment_env_user_role_to_project(self)
     catalog_create_and_sync_cmds(self)
 
@@ -423,6 +420,7 @@ def create_proj_env_type(self):
 
     create_dev_center_with_identities(self)
     create_project(self)
+    get_endpoint(self)
     add_deployment_env_user_role_to_project(self)
     create_env_type(self)
 
@@ -486,5 +484,5 @@ def create_dev_box_dependencies(self):
     create_dev_center(self)
     create_project(self)
     add_dev_box_user_role_to_project(self)
-    create_pool_dataplane_dependencies(self)
+    create_pool(self)
 

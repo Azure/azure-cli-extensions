@@ -357,6 +357,7 @@ def load_arguments(self, _):
             "hibernate",
             arg_type=get_three_state_flag(),
             help="Optional parameter to hibernate the dev box.",
+            is_preview =True
         )
 
     with self.argument_context(
@@ -634,6 +635,38 @@ def load_arguments(self, _):
             "value: json-string/json-file/@json-file.",
         )
 
+    with self.argument_context("devcenter dev environment deploy") as c:
+        c.argument(
+            "dev_center",
+            arg_type=dev_center_type,
+        )
+        c.argument(
+            "project_name",
+            arg_type=project_type,
+        )
+        c.argument(
+            "endpoint",
+            arg_type=endpoint,
+        )
+        c.argument(
+            "user_id",
+            type=str,
+            help="The AAD object id of the user. If value is 'me', the identity is taken "
+            "from the authentication context.",
+        )
+        c.argument(
+            "environment_name",
+            options_list=["--name", "-n", "--environment-name"],
+            type=str,
+            help="The name " "of the environment.",
+        )
+        c.argument(
+            "parameters",
+            type=validate_file_or_dict,
+            help="Parameters object for the environment. Expected "
+            "value: json-string/json-file/@json-file.",
+        )
+
     with self.argument_context("devcenter dev environment delete") as c:
         c.argument(
             "dev_center",
@@ -687,7 +720,7 @@ def load_arguments(self, _):
             "endpoint",
             arg_type=endpoint,
         )
-        c.argument("catalog_name", type=str, help="The name of the catalog")
+        c.argument("catalog_name", options_list=["--name", "-n", "--catalog-name"], type=str, help="The name of the catalog")
 
     with self.argument_context("devcenter dev environment-type list") as c:
         c.argument(
@@ -735,5 +768,5 @@ def load_arguments(self, _):
         )
         c.argument("catalog_name", type=str, help="The name of the catalog")
         c.argument(
-            "definition_name", type=str, help="The name of the environment definition"
+            "definition_name", options_list=["--name", "-n", "--definition-name"], type=str, help="The name of the environment definition"
         )

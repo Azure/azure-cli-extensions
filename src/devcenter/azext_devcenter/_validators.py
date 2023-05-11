@@ -2,25 +2,25 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import locale
 import re
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     InvalidArgumentValueError,
+    MutuallyExclusiveArgumentError
 )
 from azure.cli.core.aaz import has_value
-from knack.log import get_logger
 
-logger = get_logger(__name__)
+
+locale.setlocale(locale.LC_ALL, '')
 
 
 # Control plane
 def validate_attached_network_or_dev_box_def(dev_center_name, project_name):
     if has_value(dev_center_name) and has_value(project_name):
-        warning_message = """Both the dev-center and project parameters were provided. \
-Only the dev-center parameter will be used and the command will only reference the child \
-resource(s) under the dev center. To reference the child resource(s) under the project, \
-remove the dev-center parameter and set the project parameter. """
-        logger.warning(warning_message)
+        error_message = """Only dev-center (--dev-center --dev-center-name -d). \
+or project (--project --project-name) should be set."""
+        raise MutuallyExclusiveArgumentError(error_message)
     if not has_value(dev_center_name) and not has_value(project_name):
         error_message = """Either project (--project --project-name) \
 or dev center (--dev-center --dev-center-name -d) should be set."""
@@ -52,9 +52,9 @@ def validate_time(namespace):
 
 def validate_endpoint(endpoint, dev_center):
     if endpoint is not None and dev_center is not None:
-        logger.warning(
-            "Both the endpoint and dev-center parameters were provided. Only the endpoint parameter will be used."
-        )
+        error_message = """Only dev-center (--dev-center --dev-center-name -d) \
+or endpoint (--endpoint) parameter should be set."""
+        raise MutuallyExclusiveArgumentError(error_message)
     if endpoint is not None:
         check_valid_uri = re.match(
             r"(https)://.+.*\.(devcenter.azure-test.net|devcenter.azure.com)[/]?$", endpoint
@@ -63,5 +63,12 @@ def validate_endpoint(endpoint, dev_center):
             raise InvalidArgumentValueError(f"""The endpoint '{endpoint}' is invalid.""")
     if endpoint is None and dev_center is None:
         error_message = """Either an endpoint (--endpoint) \
-or dev-center (--dev-center) should be set."""
+or dev-center (--dev-center --dev-center-name -d) should be set."""
         raise RequiredArgumentMissingError(error_message)
+
+def validate_env_name_already_exists(env_iterator, name, user_id, project):
+    for env in env_iterator:
+        if (env.name.casefold() == name.casefold()):
+            error_message = f"""An environment with the name '{name}' \
+already exists for the user-id '{user_id}' in this project '{project}'."""
+            raise InvalidArgumentValueError(error_message)

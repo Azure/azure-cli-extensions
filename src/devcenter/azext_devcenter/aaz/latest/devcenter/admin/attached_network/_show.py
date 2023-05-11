@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin attached-network show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get an attached network connection configured for a dev center or project.

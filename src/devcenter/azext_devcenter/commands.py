@@ -253,7 +253,7 @@ def load_command_table(self, _):
         client_factory=cf_schedule_dp,
     )
 
-    with self.command_group("devcenter", is_preview=True):
+    with self.command_group("devcenter"):
         pass
 
     with self.command_group("devcenter dev"):
@@ -297,6 +297,9 @@ def load_command_table(self, _):
         )
         g.custom_command(
             "update", "devcenter_environment_update", supports_no_wait=True
+        )
+        g.custom_command(
+            "deploy", "devcenter_environment_update", supports_no_wait=True
         )
         g.custom_command(
             "delete",

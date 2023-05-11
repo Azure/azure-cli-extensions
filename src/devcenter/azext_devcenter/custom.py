@@ -91,6 +91,7 @@ from .aaz.latest.devcenter.admin.schedule import (
 )
 from ._validators import (
     validate_attached_network_or_dev_box_def,
+    validate_env_name_already_exists,
     validate_repo_git,
 )
 
@@ -913,6 +914,8 @@ def devcenter_environment_create(
     cf_dataplane = cf_devcenter_dataplane(
         cmd.cli_ctx, endpoint, dev_center, project_name
     )
+    environments_iterator = cf_dataplane.environments.list_by_project_by_user(user_id=user_id)
+    validate_env_name_already_exists(environments_iterator, environment_name, user_id, project_name)
     body = {}
     if parameters is not None:
         body["parameters"] = parameters

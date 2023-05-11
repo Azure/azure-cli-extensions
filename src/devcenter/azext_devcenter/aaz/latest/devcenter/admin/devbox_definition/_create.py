@@ -85,6 +85,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.hibernate_support = AAZStrArg(
             options=["--hibernate-support"],
+            is_preview=True,
             arg_group="Properties",
             help="Indicates whether dev boxes created with this definition are capable of hibernation. Not all images are capable of supporting hibernation. To find out more see https://aka.ms/devbox/hibernate",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
