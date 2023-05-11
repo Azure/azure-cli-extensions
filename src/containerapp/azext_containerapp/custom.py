@@ -4397,7 +4397,8 @@ def patch_list(cmd, resource_group_name, managed_env=None, show_all=False):
                     else:
                         # Not based on image from mcr.microsoft.com/dotnet
                         results.append(dict(targetContainerAppName=bom["targetContainerAppName"],targetContainerAppEnvironmentName=bom["targetContainerAppEnvironmentName"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=mcrCheckReason))
-    if not show_all == False :
+    if show_all == False :
+        print("Use --show-all to show all the patchable and unpatchable images.")
         results = {k: v for k, v in results.items() if k != "NotPatchable"}
     if not results :
         print("No Container App available to patch at this time.");return
