@@ -8,10 +8,11 @@ import threading
 import sys
 import time
 from urllib.parse import urlparse
-import requests
 import json
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
+import requests
+
 from azure.cli.core import telemetry as telemetry_core
 
 from azure.cli.core.azclierror import (
@@ -62,7 +63,6 @@ from ._models import (
     ScaleRule as ScaleRuleModel,
     Volume as VolumeModel,
     VolumeMount as VolumeMountModel,)
-from ._models import OryxMarinerRunImgTagProperty, ImagePatchableCheck, ImageProperties
 
 from ._utils import (_validate_subscription_registered, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
@@ -4136,7 +4136,7 @@ def show_auth_config(cmd, resource_group_name, name):
     return auth_settings
 
 # Compose
-     
+
 def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       resource_group_name,
                                       managed_env,
@@ -4306,12 +4306,11 @@ def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile
 
 
 def patch_list(cmd, resource_group_name, managed_env=None, show_all=False):
-    if is_docker_running() == False:
+    if is_docker_running() is False:
         logger.warning("Please install or start Docker and try again.")
         return
     pack_exec_path = get_pack_exec_path()
     print("\rStarting process 1/5...", end="", flush=True)
-    
     if managed_env:
         caList = list_containerapp(cmd, resource_group_name, managed_env)
     else:
@@ -4321,7 +4320,7 @@ def patch_list(cmd, resource_group_name, managed_env=None, show_all=False):
             envNames.append(env["name"])
         caList = []
         for envName in envNames:
-            caList+= list_containerapp(cmd,resource_group_name, envName)
+            caList += list_containerapp(cmd, resource_group_name, envName)
     imgs = []
     print("\rStarting process 2/5...", end="", flush=True)
     if caList:
@@ -4329,16 +4328,16 @@ def patch_list(cmd, resource_group_name, managed_env=None, show_all=False):
             managedEnvName = ca["properties"]["managedEnvironmentId"].split('/')[-1]
             containers = ca["properties"]["template"]["containers"]
             for container in containers:
-                result = dict(imageName=container["image"], targetContainerName=container["name"], targetContainerAppName=ca["name"], targetContainerAppEnvironmentName = managedEnvName)
+                result = dict(imageName=container["image"], targetContainerName=container["name"], targetContainerAppName=ca["name"], targetContainerAppEnvironmentName=managedEnvName)
                 imgs.append(result)
     print("\rStarting process 3/5...", end="", flush=True)
     # Get the BOM of the images
     results = []
     boms = []
-    ## Multi-worker
+    # Multi-worker
     print("\rStarting process 4/5...", end="", flush=True)
     with ThreadPoolExecutor(max_workers=10) as executor:
-        futures = [executor.submit(patch_get_image_inspection, pack_exec_path, img, boms) for img in imgs]
+        [executor.submit(patch_get_image_inspection, pack_exec_path, img, boms) for img in imgs]
 
     # Get the current tags of Dotnet Mariners
     oryxRunImgTags = getCurrentMarinerTags()
@@ -4351,12 +4350,12 @@ def patch_list(cmd, resource_group_name, managed_env=None, show_all=False):
     print("\rChecking for patches...", end="", flush=True)
     for bom in boms:
         if bom["remote_info"] == 401:
-            results.append(dict(targetContainerName=bom["targetContainerName"], targetContainerAppName=bom["targetContainerAppName"],targetContainerAppEnvironmentName=bom["targetContainerAppEnvironmentName"], targetImageName=bom["image_name"], oldRunImage=None, newRunImage=None, id=None, reason=failedReason))
+            results.append(dict(targetContainerName=bom["targetContainerName"], targetContainerAppName=bom["targetContainerAppName"], targetContainerAppEnvironmentName=bom["targetContainerAppEnvironmentName"], targetImageName=bom["image_name"], oldRunImage=None, newRunImage=None, id=None, reason=failedReason))
         else:
             # devide run-images into different parts by "/"
             runImagesProps = bom["remote_info"]["run_images"]
             if runImagesProps is None:
-                results.append(dict(targetContainerName=bom["targetContainerName"], targetContainerAppName=bom["targetContainerAppName"],targetContainerAppEnvironmentName=bom["targetContainerAppEnvironmentName"], targetImageName=bom["image_name"], oldRunImage=None, newRunImage=None, id=None, reason=notBasedMarinerReason))
+                results.append(dict(targetContainerName=bom["targetContainerName"], targetContainerAppName=bom["targetContainerAppName"], targetContainerAppEnvironmentName=bom["targetContainerAppEnvironmentName"], targetImageName=bom["image_name"], oldRunImage=None, newRunImage=None, id=None, reason=notBasedMarinerReason))
             else:
                 for runImagesProp in runImagesProps:
                     # result = None
@@ -4367,22 +4366,24 @@ def patch_list(cmd, resource_group_name, managed_env=None, show_all=False):
                         if runImagesTag.find('mariner') != -1:
                             checkResult = patchableCheck(runImagesTag, oryxRunImgTags, bom=bom)
                             results.append(checkResult)
-                        else: 
-                            results.append(dict(targetContainerName=bom["targetContainerName"], targetContainerAppName=bom["targetContainerAppName"],targetContainerAppEnvironmentName=bom["targetContainerAppEnvironmentName"], targetImageName=bom["image_name"], oldRunImage=bom["remote_info"]["run_images"]["name"], newRunImage=None, id=None, reason=failedReason))
+                        else:
+                            results.append(dict(targetContainerName=bom["targetContainerName"], targetContainerAppName=bom["targetContainerAppName"], targetContainerAppEnvironmentName=bom["targetContainerAppEnvironmentName"], targetImageName=bom["image_name"], oldRunImage=bom["remote_info"]["run_images"]["name"], newRunImage=None, id=None, reason=failedReason))
                     else:
                         # Not based on image from mcr.microsoft.com/dotnet
-                        results.append(dict(targetContainerAppName=bom["targetContainerAppName"],targetContainerAppEnvironmentName=bom["targetContainerAppEnvironmentName"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=mcrCheckReason))
+                        results.append(dict(targetContainerAppName=bom["targetContainerAppName"], targetContainerAppEnvironmentName=bom["targetContainerAppEnvironmentName"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=mcrCheckReason))
     print("\r                       \r", end="", flush=True)
-    if show_all == False :
+    if show_all is False:
         print("Use --show-all to show all the patchable and unpatchable images.")
-        results = [result for result in results if result["id"] != None]
-    if not results :
-        print("No Container App available to patch at this time.");return
+        results = [result for result in results if result["id"] is not None]
+    if not results:
+        print("No Container App available to patch at this time.")
+        return
     return results
+
 
 def patch_get_image_inspection(pack_exec_path, img, info_list):
     if (img["imageName"].find("run-dotnet") != -1) and (img["imageName"].find("cbl-mariner") != -1):
-        bom = { "remote_info": { "run_images": [{ "name": "mcr.microsoft.com/oryx/builder:" + img["imageName"].split(":")[-1] }] }, "image_name": img["imageName"], "targetContainerName": img["targetContainerName"], "targetContainerAppName": img["targetContainerAppName"], "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"] }
+        bom = {"remote_info": {"run_images": [{"name": "mcr.microsoft.com/oryx/builder:" + img["imageName"].split(":")[-1]}]}, "image_name": img["imageName"], "targetContainerName": img["targetContainerName"], "targetContainerAppName": img["targetContainerAppName"], "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"]}
     else:
         img_info = subprocess.Popen(pack_exec_path + " inspect-image " + img["imageName"] + " --output json", shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
         img_info_out, img_info_err = img_info.communicate()
@@ -4393,39 +4394,48 @@ def patch_get_image_inspection(pack_exec_path, img, info_list):
         bom.update({ "targetContainerName": img["targetContainerName"], "targetContainerAppName": img["targetContainerAppName"], "targetContainerAppEnvironmentName":img["targetContainerAppEnvironmentName"] })
     info_list.append(bom)
 
+
 def patch_run_interactive(cmd, resource_group_name=None, managed_env=None, show_all=False):
-    if is_docker_running() == False:
+    if is_docker_running() is False:
         logger.warning("Please install or start Docker and try again.")
         return
     patchable_check_results = patch_list(cmd, resource_group_name, managed_env, show_all=show_all)
     pack_exec_path = get_pack_exec_path()
-    if patchable_check_results == None: return
+    if patchable_check_results is None:
+        return
     patchable_check_results_json = json.dumps(patchable_check_results, indent=4)
     without_unpatchable_results = []
-    without_unpatchable_results = [result for result in patchable_check_results if result["id"] != None]
-    if without_unpatchable_results == [] and (patchable_check_results == None or show_all == False): return
+    without_unpatchable_results = [result for result in patchable_check_results if result["id"] is not None]
+    if without_unpatchable_results == [] and (patchable_check_results is None or show_all is False):
+        return
     print(patchable_check_results_json)
-    if without_unpatchable_results == []: return
-    user_input=input("Do you want to apply all the patch or specify by id? (y/n/id)\n")
+    if without_unpatchable_results == []:
+        return
+    user_input = input("Do you want to apply all the patch or specify by id? (y/n/id)\n")
     if user_input == "y":
         telemetry_core.add_extension_event('containerapp',{'Context.Default.AzureCLI.PatchRun':"Ran patch run command"})
     return patch_apply(cmd, patchable_check_results, user_input, resource_group_name, pack_exec_path)
 
+
 def patch_run(cmd, resource_group_name=None, managed_env=None, show_all=False):
-    if is_docker_running() == False:
+    if is_docker_running() is False:
         logger.warning("Please install or start Docker and try again.")
         return
     patchable_check_results = patch_list(cmd, resource_group_name, managed_env, show_all=show_all)
     pack_exec_path = get_pack_exec_path()
-    if patchable_check_results == None: return
+    if patchable_check_results is None:
+        return
     patchable_check_results_json = json.dumps(patchable_check_results, indent=4)
     without_unpatchable_results = []
-    without_unpatchable_results = [result for result in patchable_check_results if result["id"] != None]
-    if without_unpatchable_results == [] and (patchable_check_results == None or show_all == False): return
+    without_unpatchable_results = [result for result in patchable_check_results if result["id"] is not None]
+    if without_unpatchable_results == [] and (patchable_check_results is None or show_all is False):
+        return
     print(patchable_check_results_json)
-    if without_unpatchable_results == []: return
+    if without_unpatchable_results == []:
+        return
     telemetry_core.add_extension_event('patch-run')
     return patch_apply(cmd, patchable_check_results, "y", resource_group_name, pack_exec_path)
+
 
 def patch_apply(cmd, patchCheckList, method, resource_group_name, pack_exec_path):
     results = []
@@ -4438,17 +4448,17 @@ def patch_apply(cmd, patchCheckList, method, resource_group_name, pack_exec_path
                 if patch_check["newRunImage"]:
                     results.append(patch_cli_call(cmd,
                                                   resource_group_name,
-                                                  patch_check["targetContainerAppName"], 
-                                                  patch_check["targetContainerName"], 
-                                                  patch_check["targetImageName"], 
+                                                  patch_check["targetContainerAppName"],
+                                                  patch_check["targetContainerName"],
+                                                  patch_check["targetImageName"],
                                                   patch_check["newRunImage"],
                                                   pack_exec_path,
                                                   patchApplyCount))
     elif m == "n":
-        print("No patch applied."); return
+        print("No patch applied.")
+        return
     else:
         # Check if method is an existing id in the list
-        loop_count = 0
         for patch_check in patchCheckList:
             if patch_check["id"] == method:
                 results.append(patch_cli_call(cmd,
@@ -4460,8 +4470,10 @@ def patch_apply(cmd, patchCheckList, method, resource_group_name, pack_exec_path
                                               pack_exec_path,
                                               patchApplyCount))
                 return
-        print("Invalid patch method or id."); return
+        print("Invalid patch method or id.")
+        return
     return results
+
 
 def patch_cli_call(cmd, resource_group, container_app_name, container_name, target_image_name, new_run_image, pack_exec_path, patch_apply_count=0):
     try:

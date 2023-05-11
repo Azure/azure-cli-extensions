@@ -7,12 +7,13 @@
 import time
 import json
 import platform
-import docker
 import os
-import requests
 import hashlib
-import packaging.version as SemVer
 import re
+import docker
+import requests
+
+import packaging.version as SemVer
 
 from urllib.parse import urlparse
 from datetime import datetime
@@ -1775,6 +1776,7 @@ def get_pack_exec_path():
 
     return ""
 
+
 def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
     tagProp = parseOryxMarinerTag(repoTagSplit)
     if tagProp is None:
@@ -1804,7 +1806,6 @@ def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
     repoTagSplit = repoTagSplit.split("-")
     if repoTagSplit[1] == "dotnet":
         matchingVersionInfo = oryxBuilderRunImgTags[repoTagSplit[2]][str(tagProp["version"].major) + "." + str(tagProp["version"].minor)][tagProp["support"]][tagProp["marinerVersion"]]
-        
     # Check if the image minor version is four less than the latest minor version
     if tagProp["version"] < matchingVersionInfo[0]["version"]:
         result = {
@@ -1837,6 +1838,7 @@ def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
         }
     return result
 
+
 def getCurrentMarinerTags() -> list(OryxMarinerRunImgTagProperty):
     r = requests.get("https://mcr.microsoft.com/v2/oryx/builder/tags/list")
     tags = r.json()
@@ -1866,6 +1868,7 @@ def getCurrentMarinerTags() -> list(OryxMarinerRunImgTagProperty):
             else:
                 tagList[framework] = {majorMinorVer: {support: {marinerVer: [tagObj]}}}
     return tagList
+
 
 def parseOryxMarinerTag(tag: str) -> OryxMarinerRunImgTagProperty:
     tagSplit = tag.split("-")
