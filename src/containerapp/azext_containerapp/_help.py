@@ -1272,14 +1272,32 @@ helps['containerapp compose create'] = """
               --compose-file-path "path/to/docker-compose.yml"
 """
 
+#Patch commands
 helps['containerapp patch'] = """
+    type: group
+    short-summary: Patch Azure Container Apps.
+"""
+
+helps['containerapp patch list'] = """
     type: command
-    short-summary: List and select container apps to be patched.
+    short-summary: List Container Apps to be patched.Patching is only available for the apps built using the source to cloud feature.
     exmaples:
-    - name: Show containerapps that can be patched and apply patch.
+    - name: List Container Apps that can be patched.
       text: |
           az containerapp patch -g MyResourceGroup --environment MyContainerappEnv
-    - name: Show patchable and unpatchable containerapps and apply patch.
+    - name: List patchable and unpatchable Container Apps.
+      text: |
+          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv --show-all
+"""
+
+helps['containerapp patch run'] = """
+    type: command
+    short-summary: List and select Container Apps to be patched.Patching is only available for the apps built using the source to cloud feature.
+    exmaples:
+    - name: List Container Apps that can be patched and apply patch.
+      text: |
+          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv
+    - name: List patchable and unpatchable Container Apps and apply patch.
       text: |
           az containerapp patch -g MyResourceGroup --environment MyContainerappEnv --show-all
 """

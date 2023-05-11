@@ -11,6 +11,7 @@ from urllib.parse import urlparse
 import requests
 import json
 import subprocess
+from azure.cli.core import telemetry as telemetry_core
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -29,6 +30,7 @@ from knack.prompting import prompt_y_n, prompt as prompt_str
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
+
 
 from ._client_factory import handle_raw_exception, handle_non_404_exception
 from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient, WorkloadProfileClient
@@ -4133,7 +4135,7 @@ def show_auth_config(cmd, resource_group_name, name):
     return auth_settings
 
 # Compose
-          
+     
 def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       resource_group_name,
                                       managed_env,
@@ -4303,7 +4305,7 @@ def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile
 
 
 def patch_list(cmd, resource_group_name, managed_env=None, show_all=False):
-    if(managed_env):
+    if managed_env:
         caList = list_containerapp(cmd, resource_group_name, managed_env)
     else:
         envList = list_managed_environments(cmd, resource_group_name)
@@ -4320,7 +4322,7 @@ def patch_list(cmd, resource_group_name, managed_env=None, show_all=False):
             containers = ca["properties"]["template"]["containers"]
             for container in containers:
                 result = dict(imageName=container["image"], targetContainerName=container["name"], targetContainerAppName=ca["name"], targetContainerAppEnvironmentName = managedEnvName, revisionMode=ca["properties"]["configuration"]["activeRevisionsMode"])
-                imgs.append(result)                   
+                imgs.append(result)        
     # Get the BOM of the images
     results = []
     boms = []
@@ -4371,7 +4373,7 @@ def patch_list(cmd, resource_group_name, managed_env=None, show_all=False):
             else:
                 for runImagesProp in runImagesProps:
                     # result = None
-                    if (runImagesProp["name"].find("mcr.microsoft.com/oryx/builder") != -1):
+                    if runImagesProp["name"].find("mcr.microsoft.com/oryx/builder") != -1:
                         runImagesProp = runImagesProp["name"].split(":")
                         runImagesTag = runImagesProp[1]
                         # Based on Mariners
@@ -4381,17 +4383,19 @@ def patch_list(cmd, resource_group_name, managed_env=None, show_all=False):
                                 results["NotPatchable"].append(checkResult)
                             else:
                                 results[checkResult["id"]] = checkResult
-                        else: 
-                            results["NotPatchable"].append(dict(targetContainerName=bom["targetContainerName"], targetContainerAppName=bom["targetContainerAppName"],targetContainerAppEnvironmentName=bom["targetContainerAppEnvironmentName"], revisionMode=bom["revisionMode"], targetImageName=bom["image_name"], oldRunImage=bom["remote_info"]["run_images"]["name"], newRunImage=None, id=None, reason=failedReason))
-                            results.append(dict(targetContainerAppName=bom["targetContainerAppName"],targetContainerAppEnvironmentName=bom["targetContainerAppEnvironmentName"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=failedReason))
+                        else:
+                            results["NotPatchable"].append(dict(targetContainerName=bom["targetContainerName"], targetContainerAppName=bom["targetContainerAppName"],targetContainerAppEnvironmentName = bom["targetContainerAppEnvironmentName"], revisionMode=bom["revisionMode"], targetImageName=bom["image_name"], oldRunImage=bom["remote_info"]["run_images"]["name"], newRunImage=None, id=None, reason=failedReason))
+                            results.append(dict(targetContainerAppName=bom["targetContainerAppName"],targetContainerAppEnvironmentName = bom["targetContainerAppEnvironmentName"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=failedReason))
                     else:
                         # Not based on image from mcr.microsoft.com/dotnet
-                        results.append(dict(targetContainerAppName=bom["targetContainerAppName"],targetContainerAppEnvironmentName=bom["targetContainerAppEnvironmentName"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=mcrCheckReason))    
-    if show_all == False :
+                        results.append(dict(targetContainerAppName=bom["targetContainerAppName"],targetContainerAppEnvironmentName=bom["targetContainerAppEnvironmentName"], oldRunImage=bom["remote_info"]["run_images"], newRunImage=None, id=None, reason=mcrCheckReason))
+    if not show_all == False :
         results = {k: v for k, v in results.items() if k != "NotPatchable"}
+    if not results :
+        print("No Container App available to patch at this time.");return
     return results
 
-def patch_run(cmd, resource_group_name, managed_env=None, show_all=False):
+def patch_run(cmd, resource_group_name=None, managed_env=None, show_all=False):
     patchable_check_results = patch_list(cmd, resource_group_name, managed_env, show_all=show_all)
     patchable_result_key_list = list(patchable_check_results.keys())
     if len(patchable_result_key_list) == 0 or patchable_result_key_list == ["NotPatchable"]:
@@ -4403,6 +4407,8 @@ def patch_run(cmd, resource_group_name, managed_env=None, show_all=False):
         patchable_check_results_json = json.dumps(patchable_check_results, indent=4)
         print(patchable_check_results_json)
     user_input=input("Do you want to apply all the patch or specify by id? (y/n/id)\n")
+    if user_input == "y":
+        telemetry_core.add_extension_event('patch-run')
     return patch_apply(cmd, patchable_check_results, user_input, resource_group_name)
 
 def patch_apply(cmd, patchCheckList, method, resource_group_name):
@@ -4412,23 +4418,23 @@ def patch_apply(cmd, patchCheckList, method, resource_group_name):
         for key in patchCheckList.keys():
             if key != "NotPatchable":
                 if patchCheckList[key]["newRunImage"]:
-                    results.append(patch_cli_call(cmd, 
+                    results.append(patch_cli_call(cmd,
                                                   resource_group_name,
-                                                  patchCheckList[key]["targetContainerAppName"], 
-                                                  patchCheckList[key]["targetContainerName"], 
-                                                  patchCheckList[key]["targetImageName"], 
-                                                  patchCheckList[key]["newRunImage"], 
+                                                  patchCheckList[key]["targetContainerAppName"],
+                                                  patchCheckList[key]["targetContainerName"],
+                                                  patchCheckList[key]["targetImageName"],
+                                                  patchCheckList[key]["newRunImage"],
                                                   patchCheckList[key]["revisionMode"]))
     elif m == "n":
         print("No patch applied."); return
     else:
         if method in patchCheckList.keys():
-            results.append(patch_cli_call(cmd, 
+            results.append(patch_cli_call(cmd,
                                           resource_group_name,
-                                          patchCheckList[method]["targetContainerAppName"], 
-                                          patchCheckList[method]["targetContainerName"], 
-                                          patchCheckList[method]["targetImageName"], 
-                                          patchCheckList[method]["newRunImage"], 
+                                          patchCheckList[method]["targetContainerAppName"],
+                                          patchCheckList[method]["targetContainerName"],
+                                          patchCheckList[method]["targetImageName"],
+                                          patchCheckList[method]["newRunImage"],
                                           patchCheckList[method]["revisionMode"]))
         else:
             print("Invalid patch method or id."); return
@@ -4447,10 +4453,10 @@ def patch_cli_call(cmd, resource_group, container_app_name, container_name, targ
         raise
     try:
         print("Patching container app: " + container_app_name + " container: " + container_name + " with image: " + new_target_image_name)
-        update_info_json = update_containerapp(cmd, 
-                                          name=container_app_name, 
-                                          resource_group_name=resource_group, 
-                                          container_name=container_name, 
+        update_info_json = update_containerapp(cmd,
+                                          name=container_app_name,
+                                          resource_group_name=resource_group,
+                                          container_name=container_name,
                                           image=new_target_image_name)
         print("Container app revision created successfully.")
         ## TODO: activate revision, fix the error when running the following two lines

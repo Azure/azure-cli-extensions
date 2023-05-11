@@ -1781,6 +1781,7 @@ def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
         result = {
             "targetContainerAppName": bom["targetContainerAppName"],
             "targetContainerName": bom["targetContainerName"],
+            "targetContainerAppEnvironmentName": bom["targetContainerAppEnvironmentName"],
             "revisionMode": bom["revisionMode"],
             "targetImageName": bom["image_name"],
             "oldRunImage": repoTagSplit,
