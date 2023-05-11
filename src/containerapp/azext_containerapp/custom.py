@@ -4416,23 +4416,15 @@ def patch_run(cmd, resource_group_name=None, managed_env=None, show_all=False):
         return
     patchable_check_results = patch_list(cmd, resource_group_name, managed_env, show_all=show_all)
     pack_exec_path = get_pack_exec_path()
+    if patchable_check_results == None: return
     patchable_check_results_json = json.dumps(patchable_check_results, indent=4)
     without_unpatchable_results = []
-    if patchable_check_results != []:
-        without_unpatchable_results = [result for result in patchable_check_results if patchable_check_results["id"] != None]
-    if len(patchable_check_results == []) or len(without_unpatchable_results) == 0:
-        if not show_all:
-            print("Use --show-all to show all the patchable and unpatchable images.")
-        else:
-            print(patchable_check_results_json)
-        print("No patchable image found.")
-        return
-    else:
-        print(patchable_check_results_json)
-    user_input=input("Do you want to apply all the patch or specify by id? (y/n/id)\n")
-    if user_input == "y":
-        telemetry_core.add_extension_event('patch-run')
-        return patch_apply(cmd, patchable_check_results, user_input, resource_group_name, pack_exec_path)
+    without_unpatchable_results = [result for result in patchable_check_results if result["id"] != None]
+    if without_unpatchable_results == [] and (patchable_check_results == None or show_all == False): return
+    print(patchable_check_results_json)
+    if without_unpatchable_results == []: return
+    telemetry_core.add_extension_event('patch-run')
+    return patch_apply(cmd, patchable_check_results, "y", resource_group_name, pack_exec_path)
 
 def patch_apply(cmd, patchCheckList, method, resource_group_name, pack_exec_path):
     results = []
