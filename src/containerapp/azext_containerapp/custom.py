@@ -4461,17 +4461,18 @@ def patch_apply(cmd, patchCheckList, method, resource_group_name, pack_exec_path
 def patch_cli_call(cmd, resource_group, container_app_name, container_name, target_image_name, new_run_image, pack_exec_path):
     try:
         print("Applying patch for container app: " + container_app_name + " container: " + container_name)
-        subprocess.run(f"{pack_exec_path} rebase {target_image_name} --run-image {new_run_image}", shell=True)
+        subprocess.run(f"{pack_exec_path} rebase -q {target_image_name} --run-image {new_run_image}", shell=True)
         new_target_image_name = target_image_name.split(":")[0] + ":" + new_run_image.split(":")[1]
         subprocess.run(f"docker tag {target_image_name} {new_target_image_name}", shell=True)
         print(f"Publishing {new_target_image_name} to registry...")
-        subprocess.run(f"docker push {new_target_image_name}", shell=True)
+        subprocess.run(f"docker push -q {new_target_image_name}", shell=True)
         print("Patch applied and published successfully.\nNew image: " + new_target_image_name)
     except Exception:
         print("Error: Failed to apply patch and publish. Check if registry is logged in and has write access.")
         raise
     try:
-        print("Patching container app: " + container_app_name + " container: " + container_name + " with image: " + new_target_image_name)
+        print("Patching container app: " + container_app_name + " container: " + container_name)
+        print("Applying new image: " + new_target_image_name)
         update_info_json = update_containerapp(cmd,
                                           name=container_app_name,
                                           resource_group_name=resource_group,
