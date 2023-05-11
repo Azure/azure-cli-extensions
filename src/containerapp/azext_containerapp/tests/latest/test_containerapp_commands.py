@@ -1082,6 +1082,21 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
             JMESPathCheck("properties.template.scale.rules", None)
         ])
+
+        # test update without environmentId
+        containerapp_yaml_text = f"""
+                            properties:
+                              template:
+                                revisionSuffix: myrevision3
+                            """
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+
+        self.cmd(f'containerapp update -n {app} -g {resource_group} --yaml {containerapp_file_name}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.template.revisionSuffix", "myrevision3")
+        ])
         clean_up_test_file(containerapp_file_name)
 
     @AllowLargeResponse(8192)

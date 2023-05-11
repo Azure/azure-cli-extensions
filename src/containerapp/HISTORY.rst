@@ -4,6 +4,7 @@ Release History
 ===============
 Upcoming
 ++++++
+* 'az containerapp update': remove the environmentId in the PATCH payload if the environment not been changed
 * Upgrade api-version to 2023-04-01-preview
 
 0.3.29
