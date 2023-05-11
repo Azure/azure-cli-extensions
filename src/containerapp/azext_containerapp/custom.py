@@ -4433,7 +4433,6 @@ def patch_run(cmd, resource_group_name=None, managed_env=None, show_all=False):
     print(patchable_check_results_json)
     if without_unpatchable_results == []:
         return
-    telemetry_core.add_extension_event('patch-run')
     return patch_apply(cmd, patchable_check_results, "y", resource_group_name, pack_exec_path)
 
 
@@ -4441,7 +4440,7 @@ def patch_apply(cmd, patchCheckList, method, resource_group_name, pack_exec_path
     results = []
     m = method.strip().lower()
     # Tracks number of times patch was applied.
-    patchApplyCount = 0
+    patch_apply_count = 0
     if m == "y":
         for patch_check in patchCheckList:
             if patch_check["id"]:
@@ -4453,7 +4452,7 @@ def patch_apply(cmd, patchCheckList, method, resource_group_name, pack_exec_path
                                                   patch_check["targetImageName"],
                                                   patch_check["newRunImage"],
                                                   pack_exec_path,
-                                                  patchApplyCount))
+                                                  patch_apply_count))
     elif m == "n":
         print("No patch applied.")
         return
@@ -4468,10 +4467,11 @@ def patch_apply(cmd, patchCheckList, method, resource_group_name, pack_exec_path
                                               patch_check["targetImageName"],
                                               patch_check["newRunImage"],
                                               pack_exec_path,
-                                              patchApplyCount))
+                                              patch_apply_count))
                 return
         print("Invalid patch method or id.")
         return
+    telemetry_core.add_extension_event('containerapp', {'Context.Default.AzureCLI.PatchApplyCount':{patch_apply_count}})
     return results
 
 
