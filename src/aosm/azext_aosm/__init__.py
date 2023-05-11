@@ -13,9 +13,7 @@ class AosmCommandsLoader(AzCommandsLoader):
         from azure.cli.core.commands import CliCommandType
 
         aosm_custom = CliCommandType(operations_tmpl="azext_aosm.custom#{}")
-        super(AosmCommandsLoader, self).__init__(
-            cli_ctx=cli_ctx, custom_command_type=aosm_custom
-        )
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=aosm_custom)
 
     def load_command_table(self, args):
         from azext_aosm.commands import load_command_table

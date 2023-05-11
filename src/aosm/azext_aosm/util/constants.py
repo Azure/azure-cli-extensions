@@ -4,8 +4,6 @@
 # --------------------------------------------------------------------------------------------
 """Constants used across aosm cli extension."""
 
-AOSM_API_VERSION = "2022-09-01-preview"
-
 # The types of definition that can be generated
 VNF = "vnf"
 CNF = "cnf"
@@ -13,7 +11,9 @@ NSD = "nsd"
 
 # Names of files used in the repo
 VNF_DEFINITION_BICEP_SOURCE_TEMPLATE = "vnfdefinition.bicep"
+VNF_MANIFEST_BICEP_SOURCE_TEMPLATE = "vnfartifactmanifests.bicep"
 VNF_DEFINITION_OUTPUT_BICEP_PREFIX = "nfd-bicep-"
+CNF_DEFINITION_BICEP_SOURCE_TEMPLATE = "cnfdefinition.bicep"
 
 # Provisioning States
 PROV_STATE_SUCCEEDED = "Succeeded"

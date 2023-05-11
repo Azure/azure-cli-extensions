@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Union
 
 from azure.storage.blob import BlobClient
-from azext_aosm._configuration import ArtifactConfig
+from azext_aosm._configuration import ArtifactConfig, DESCRIPTION_MAP
 from oras.client import OrasClient
 
 logger = get_logger(__name__)
@@ -41,11 +41,16 @@ class Artifact:
         """
         assert type(self.artifact_client) == OrasClient
 
-        if "file_path" in artifact_config.keys():
+        # If not included in config, the file path value will be the description of
+        # the field.
+        if (
+            artifact_config.file_path
+            and not artifact_config.file_path == DESCRIPTION_MAP["file_path"]
+        ):
             target = f"{self.artifact_client.remote.hostname.replace('https://', '')}/{self.artifact_name}:{self.artifact_version}"
-            logger.debug(f"Uploading {artifact_config['file_path']} to {target}")
+            logger.debug(f"Uploading {artifact_config.file_path} to {target}")
             self.artifact_client.push(
-                file=artifact_config["file_path"],
+                file=artifact_config.file_path,
                 target=target,
             )
         else:
@@ -62,14 +67,19 @@ class Artifact:
         assert type(self.artifact_client) == BlobClient
 
         # If the file path is given, upload the artifact, else, copy it from an existing blob.
-        if "file_path" in artifact_config.keys():
-            with open(artifact_config["file_path"], "rb") as artifact:
+        if (
+            artifact_config.file_path
+            and not artifact_config.file_path == DESCRIPTION_MAP["file_path"]
+        ):
+            logger.info("Upload to blob store")
+            with open(artifact_config.file_path, "rb") as artifact:
                 self.artifact_client.upload_blob(artifact, overwrite=True)
             logger.info(
-                f"Successfully uploaded {artifact_config['file_path']} to {self.artifact_client.account_name}"
+                f"Successfully uploaded {artifact_config.file_path} to {self.artifact_client.account_name}"
             )
         else:
-            source_blob = BlobClient.from_blob_url(artifact_config["blob_sas_url"])
+            logger.info("Copy from SAS URL to blob store")
+            source_blob = BlobClient.from_blob_url(artifact_config.blob_sas_url)
 
             if source_blob.exists():
                 logger.debug(source_blob.url)

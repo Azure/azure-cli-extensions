@@ -10,9 +10,7 @@ from azure.core import exceptions as azure_exceptions
 from azure.cli.core.azclierror import AzCLIError
 from azure.mgmt.resource.resources.v2022_09_01.models import ResourceGroup
 
-from azure.mgmt.resource import ResourceManagementClient
-from azext_aosm.util.management_clients import ApiClientsAndCaches
-from azext_aosm.vendored_sdks import HybridNetworkManagementClient
+from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.vendored_sdks.models import (
     ArtifactStore,
     ArtifactStoreType,
@@ -21,7 +19,7 @@ from azext_aosm.vendored_sdks.models import (
     Publisher,
 )
 from azext_aosm._configuration import Configuration, VNFConfiguration
-from azext_aosm._constants import PROV_STATE_SUCCEEDED
+from azext_aosm.util.constants import PROV_STATE_SUCCEEDED
 
 logger = get_logger(__name__)
 
@@ -31,7 +29,7 @@ class PreDeployerViaSDK:
 
     def __init__(
         self,
-        apiClientsAndCaches: ApiClientsAndCaches,
+        api_clients: ApiClients,
         config: Configuration,
     ) -> None:
         """
@@ -43,7 +41,7 @@ class PreDeployerViaSDK:
         :type resource_client: ResourceManagementClient
         """
 
-        self.api_clients = apiClientsAndCaches
+        self.api_clients = api_clients
         self.config = config
 
     def ensure_resource_group_exists(self, resource_group_name: str) -> None:
@@ -269,6 +267,51 @@ class PreDeployerViaSDK:
             self.config.nfdg_name,
             self.config.location,
         )
+
+    def does_artifact_manifest_exist(
+        self, rg_name: str, publisher_name: str, store_name: str, manifest_name: str
+    ) -> bool:
+        try:
+            self.api_clients.aosm_client.artifact_manifests.get(
+                resource_group_name=rg_name,
+                publisher_name=publisher_name,
+                artifact_store_name=store_name,
+                artifact_manifest_name=manifest_name,
+            )
+            logger.debug(f"Artifact manifest {manifest_name} exists")
+            return True
+        except azure_exceptions.ResourceNotFoundError:
+            logger.debug(f"Artifact manifest {manifest_name} does not exist")
+            return False
+
+    def do_config_artifact_manifests_exist(
+        self,
+    ):
+        """Returns True if all required manifests exist, False otherwise."""
+        acr_manny_exists: bool = self.does_artifact_manifest_exist(
+            rg_name=self.config.publisher_resource_group_name,
+            publisher_name=self.config.publisher_name,
+            store_name=self.config.acr_artifact_store_name,
+            manifest_name=self.config.acr_manifest_name,
+        )
+
+        if isinstance(self.config, VNFConfiguration):
+            sa_manny_exists: bool = self.does_artifact_manifest_exist(
+                rg_name=self.config.publisher_resource_group_name,
+                publisher_name=self.config.publisher_name,
+                store_name=self.config.blob_artifact_store_name,
+                manifest_name=self.config.sa_manifest_name,
+            )
+            if acr_manny_exists and sa_manny_exists:
+                return True
+            elif acr_manny_exists or sa_manny_exists:
+                raise AzCLIError(
+                    "Only one artifact manifest exists. Cannot proceed. Please delete the NFDV using `az aosm definition delete` and start the publish again from scratch."
+                )
+            else:
+                return False
+
+        return acr_manny_exists
 
     def ensure_nsdg_exists(
         self,
