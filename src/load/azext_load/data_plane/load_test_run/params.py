@@ -23,17 +23,17 @@ def load_arguments(self, _):
         c.argument("test_run_results", argtypes.test_run_results)
     #
 
-    # Load Test App Components
+    # Load Test Run App Components
     with self.argument_context("load test-run app-components") as c:
         c.argument("app_component_id", argtypes.app_component_id)
 
-    with self.argument_context("load test-run app-components create") as c:
+    with self.argument_context("load test-run app-components add") as c:
         c.argument("app_component_type", argtypes.app_component_type)
         c.argument("app_component_name", argtypes.app_component_name)
         c.argument("app_component_type", argtypes.app_component_type)
     #
 
-    # Load Test Server Metrics
+    # Load Test Run Server Metrics
     with self.argument_context("load test-run server-metrics") as c:
         c.argument("metric_id", argtypes.metric_id)
 

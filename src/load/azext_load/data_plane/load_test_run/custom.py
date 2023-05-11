@@ -32,7 +32,7 @@ def create_test_run(
         secrets=secrets,
         certificate=certificate,
     )
-
+    logger.info("Creating test run with following request %s", test_run_body)
     poller = client.begin_test_run(
         test_run_id=get_test_run_id(),
         body=test_run_body,
@@ -41,13 +41,13 @@ def create_test_run(
     response = poller.polling_method()._initial_response
     if not no_wait:
         response = poller.result()
+    logger.info("Test run created with following response %s", response)
     return response
-
 
 def get_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+    logger.info("Getting test run %s", test_run_id)
     return client.get_test_run(test_run_id=test_run_id)
-
 
 def update_test_run(
     cmd,
@@ -62,23 +62,23 @@ def update_test_run(
     test_run_body = create_or_update_test_run_body(
         test_run_body.get("testId"), description=description
     )
+    logger.info("Updating test run %s", test_run_id)
     return client._test_run_initial(test_run_id=test_run_id, body=test_run_body)
-
 
 def delete_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+    logger.info("Deleting test run %s", test_run_id)
     return client.delete_test_run(test_run_id=test_run_id)
-
 
 def list_test_runs(cmd, test_id, load_test_resource, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+    logger.info("Listing test runs for test %s", test_id)
     return client.list_test_runs(test_id=test_id)
-
 
 def stop_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+    logger.info("Stopping test run %s", test_run_id)
     return client.stop_test_run(test_run_id=test_run_id)
-
 
 def download_test_run_files(
     cmd,
@@ -101,7 +101,7 @@ def download_test_run_files(
             input_artifacts = test_run_data.get("testArtifacts", {}).get("inputArtifacts")
             for artifact_type, artifact_data in input_artifacts.items():
                 #logger.info(("artifact_type = %s,  artifact_data = %s", artifact_type, artifact_data))
-                if artifact_type != "additionalFileInfo" and artifact_data.get("url") is not None:
+                if len(artifact_data) > 0 and artifact_data.get("url") is not None:
                     url = artifact_data.get("url")
                     file_name = artifact_data.get("fileName")
                     file_path = os.path.join(path, file_name)
@@ -144,7 +144,7 @@ def download_test_run_files(
         else:
             logger.info("No results file and output artifacts found for test run %s", test_run_id)
 
-def add_test_app_components(
+def add_test_run_app_components(
     cmd,
     load_test_resource,
     test_run_id,
@@ -171,7 +171,7 @@ def add_test_app_components(
     return client.create_or_update_app_components(test_run_id=test_run_id, body=body)
 
 
-def list_test_app_components(
+def list_test_run_app_components(
     cmd,
     load_test_resource,
     test_run_id,
@@ -181,8 +181,7 @@ def list_test_app_components(
     logger.debug("Listing app components for the given test run...")
     return client.get_app_components(test_run_id=test_run_id)
 
-
-def remove_test_app_components(
+def remove_test_run_app_components(
     cmd,
     load_test_resource,
     test_run_id,
