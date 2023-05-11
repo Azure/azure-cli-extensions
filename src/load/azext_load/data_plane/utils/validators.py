@@ -114,7 +114,7 @@ def validate_metric_id(namespace):
         raise ValueError(
             f"metric-id is not a valid Azure Resource ID: {namespace.metric_id}"
         )
-    if "metrics" not in namespace.metric_id.casefold():
+    if "metric" not in namespace.metric_id.casefold():
         raise ValueError(
             f"Provided Azure Resource ID is not a valid server metrics resource: {namespace.metric_id}"
         )

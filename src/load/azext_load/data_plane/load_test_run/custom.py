@@ -144,6 +144,7 @@ def download_test_run_files(
         else:
             logger.info("No results file and output artifacts found for test run %s", test_run_id)
 
+#app components
 def add_test_run_app_components(
     cmd,
     load_test_resource,
@@ -170,7 +171,6 @@ def add_test_run_app_components(
     logger.debug("Adding app component to the test run... %s", body)
     return client.create_or_update_app_components(test_run_id=test_run_id, body=body)
 
-
 def list_test_run_app_components(
     cmd,
     load_test_resource,
@@ -192,6 +192,61 @@ def remove_test_run_app_components(
     body = {"testRunId": test_run_id, "components": {app_component_id: None}}
     logger.debug("Removing app component from the test run... %s", body)
     return client.create_or_update_app_components(test_run_id=test_run_id, body=body)
+
+#server metrics
+
+def add_test_run_server_metrics(
+    cmd,
+    load_test_resource,
+    test_run_id,
+    metric_id,
+    metric_name,
+    metric_namespace,
+    aggregation,
+    app_component_id,
+    app_component_type,
+    resource_group_name=None,
+):
+    client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+    body = {
+        "testRunId": test_run_id,
+        "metrics": {
+            metric_id: {
+                "name": metric_name,
+                "metricNamespace": metric_namespace,
+                "aggregation": aggregation,
+                "resourceId": app_component_id,
+                "resourceType": app_component_type,
+            }
+        },
+    }
+    logger.debug("Adding server metrics to the test run... %s", body)
+    return client.create_or_update_server_metrics_config(test_run_id=test_run_id, body=body)
+
+
+def list_test_run_server_metrics(
+    cmd,
+    load_test_resource,
+    test_run_id,
+    resource_group_name=None,
+):
+    client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+    logger.debug("Listing server metrics...")
+    return client.get_server_metrics_config(test_run_id=test_run_id)
+
+
+def remove_test_run_server_metrics(
+    cmd,
+    load_test_resource,
+    test_run_id,
+    metric_id,
+    resource_group_name=None,
+):
+    client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+    body = {"testRunId": test_run_id, "metrics": {metric_id: None}}
+    logger.debug("Removing server metrics from the test run... %s", body)
+    return client.create_or_update_server_metrics_config(test_run_id=test_run_id, body=body)
+
 
 def get_client_metrics(cmd, load_test_resource, test_run_id, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)

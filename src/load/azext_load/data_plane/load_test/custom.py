@@ -252,7 +252,7 @@ def add_test_server_metrics(
         "metrics": {
             metric_id: {
                 "name": metric_name,
-                "namespace": metric_namespace,
+                "metricNamespace": metric_namespace,
                 "aggregation": aggregation,
                 "resourceId": app_component_id,
                 "resourceType": app_component_type,
@@ -260,7 +260,7 @@ def add_test_server_metrics(
         },
     }
     logger.debug("Adding server metrics to the test... %s", body)
-    client.create_or_update_server_metrics_config(test_id=test_id, body=body)
+    return client.create_or_update_server_metrics_config(test_id=test_id, body=body)
 
 
 def list_test_server_metrics(
