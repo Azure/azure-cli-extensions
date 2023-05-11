@@ -10,5 +10,6 @@
 
 from .__cmd_group import *
 from ._assess_patches import *
+from ._install_patches import *
 from ._list import *
 from ._upgrade_extension import *
