@@ -394,6 +394,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         logger.debug(f"Calling '{' '.join(command)}'")
         try:
+            is_non_supported_platform = False
             process = subprocess.Popen(command, stdout=subprocess.PIPE)
 
             # Stream output of 'pack build' to warning stream
@@ -402,14 +403,22 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 if not line:
                     break
 
-                logger.warning(str(line.strip(), 'utf-8'))
+                stdout_line = str(line.strip(), 'utf-8')
+                logger.warning(stdout_line)
+                if not is_non_supported_platform and "No buildpack groups passed detection" in stdout_line:
+                    is_non_supported_platform = True
 
             # Update the result of process.returncode
             process.communicate()
+            if is_non_supported_platform:
+                raise ValidationError("Current buildpacks do not support the platform targeted in the provided source code.")
+
             if process.returncode != 0:
                 raise CLIError(f"Non-zero exit code returned from 'pack build'; please check the above output for more details.")
 
             logger.debug(f"Successfully built image {image_name} using buildpacks.")
+        except ValidationError as ex:
+            raise ex
         except Exception as ex:
             raise CLIError(f"Unable to run 'pack build' command to produce runnable application image: {ex}")
 
@@ -495,7 +504,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             except ValidationError as e:
                 logger.warning(f"Unable to use buildpacks to build image from source: {e}\nFalling back to ACR Task...")
             except CLIError as e:
-                logger.error(f"Failed to use buildpacks to build image from source.\n")
+                logger.error(f"Failed to use buildpacks to build image from source.")
                 raise e
 
             # If we're unable to use the buildpack, build source using an ACR Task
