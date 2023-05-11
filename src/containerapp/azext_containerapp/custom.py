@@ -225,7 +225,7 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
             containerapp_def["properties"]["template"] = {}
         containerapp_def["properties"]["template"]["revisionSuffix"] = None
 
-    # Remove the environmentId in the PATCH payload if the environment not been changed
+    # Remove the environmentId in the PATCH payload if it has not been changed
     if containerapp_def["properties"].get('environmentId') and containerapp_def["properties"].get('environmentId') == existed_environment_id:
         del containerapp_def["properties"]['environmentId']
 
