@@ -115,8 +115,7 @@ class ScenarioAutoSuggest(AutoSuggest):
                 if (not last_part.startswith('-')) or self.param_sample_value_map[last_part] == '':
                     for param in unused_param:
                         # the param is a special global parameter, such as '--location' and not given a customized value
-                        if param in self.special_global_param_map.keys() and self.param_sample_value_map[
-                            param].startswith('<'):
+                        if param in self.special_global_param_map.keys() and self.param_sample_value_map[param].startswith('<'):
                             cached_param = param
                         else:
                             # cached_param is either the sample values in scenarios, such as <RESOURCEGROUPNAME> or some special global params, such as '--location'
