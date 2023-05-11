@@ -1781,8 +1781,6 @@ def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
         result = {
             "targetContainerAppName": bom["targetContainerAppName"],
             "targetContainerName": bom["targetContainerName"],
-            "targetContainerAppEnvironmentName": bom["targetContainerAppEnvironmentName"],
-            "revisionMode": bom["revisionMode"],
             "targetImageName": bom["image_name"],
             "oldRunImage": repoTagSplit,
             "newRunImage": None,
@@ -1790,18 +1788,17 @@ def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
             "reason": "Image not based on dotnet Mariner."
         }
         return result
-    # elif len(str(tagProp["version"]).split(".")) == 2:
-    #     result = {
-    #         "targetContainerAppName": bom["targetContainerAppName"],
-    #         "targetContainerName": bom["targetContainerName"],
-    #         "revisionMode": bom["revisionMode"],
-    #         "targetImageName": bom["image_name"],
-    #         "oldRunImage": repoTagSplit,
-    #         "newRunImage": None,
-    #         "id": None,
-    #         "reason": "Image is a patchless version."
-    #     }
-    #     return result
+    elif len(str(tagProp["version"]).split(".")) == 2:
+        result = {
+            "targetContainerAppName": bom["targetContainerAppName"],
+            "targetContainerName": bom["targetContainerName"],
+            "targetImageName": bom["image_name"],
+            "oldRunImage": repoTagSplit,
+            "newRunImage": None,
+            "id": None,
+            "reason": "Image is a patchless version."
+        }
+        return result
     repoTagSplit = repoTagSplit.split("-")
     if repoTagSplit[1] == "dotnet":
         matchingVersionInfo = oryxBuilderRunImgTags[repoTagSplit[2]][str(tagProp["version"].major) + "." + str(tagProp["version"].minor)][tagProp["support"]][tagProp["marinerVersion"]]
@@ -1811,7 +1808,6 @@ def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
         result = {
             "targetContainerAppName": bom["targetContainerAppName"],
             "targetContainerName": bom["targetContainerName"],
-            "revisionMode": bom["revisionMode"],
             "targetImageName": bom["image_name"],
             "oldRunImage": tagProp["fullTag"],
         }
@@ -1829,7 +1825,6 @@ def patchableCheck(repoTagSplit: str, oryxBuilderRunImgTags, bom):
         result = {
             "targetContainerAppName": bom["targetContainerAppName"],
             "targetContainerName": bom["targetContainerName"],
-            "revisionMode": bom["revisionMode"],
             "targetImageName": bom["image_name"],
             "oldRunImage": tagProp["fullTag"],
             "newRunImage": None,
