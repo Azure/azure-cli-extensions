@@ -903,8 +903,8 @@ class DevcenterScenarioTest(ScenarioTest):
             ],
         )
 
-        # TODO: add health check and health check details in return type when API available
-        # TODO: add stopOnDisconnect idle back when available
+        # TODO: Add health check and health check details in return type when API available
+        # TODO: Add stopOnDisconnect idle back when available
         self.cmd(
             "az devcenter admin pool create "
             '-d "{devBoxDefinitionName}" '
@@ -963,7 +963,7 @@ class DevcenterScenarioTest(ScenarioTest):
             ],
         )
 
-        # TODO: Not available yet, add test when it is
+        # TODO: Uncomment once feature is complete
         # self.cmd(
         #     "az devcenter admin pool run-health-check "
         #     '--name "{poolName}" '
@@ -1516,7 +1516,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             ],
         )
 
-        # TODO add back idle checks once feature is available
+        # TODO Add back idle parameters and checks once feature is complete
 
         self.cmd(
             "az devcenter dev pool show "
@@ -1924,7 +1924,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--dev-center "{devcenterName}" '
         )
 
-        # TODO: restart not working
+        # TODO: Restart not working, re-run test once fixed
         # self.cmd(
         #     "az devcenter dev dev-box restart "
         #     '--name "{devBoxName}" '
@@ -1966,7 +1966,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--dev-center "{devcenterName}" '
         ).get_output_in_json()
 
-        # TODO: recheck for idle once available
+        # TODO: Recheck for idle once feature is complete
         self.kwargs.update(
             {
                 "actionName": stopAction[0]["name"],
