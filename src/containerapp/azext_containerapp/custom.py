@@ -4432,6 +4432,7 @@ def patch_run(cmd, resource_group_name=None, managed_env=None, show_all=False):
 def patch_apply(cmd, patch_check_list, method, pack_exec_path):
     results = []
     m = method.strip().lower()
+    # Track number of times patches were applied successfully.
     patch_run_count = 0
     if m == "y":
         for patch_check in patch_check_list:
@@ -4444,6 +4445,7 @@ def patch_apply(cmd, patch_check_list, method, pack_exec_path):
                                                   patch_check["targetImageName"],
                                                   patch_check["newRunImage"],
                                                   pack_exec_path))
+                    # Increment patch_run_count with every successful patch.
                     patch_run_count+=1                    
     elif m == "n":
         print("No patch applied.")
