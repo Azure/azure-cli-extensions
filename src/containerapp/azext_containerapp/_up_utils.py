@@ -391,7 +391,9 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         command = [pack_exec_path, 'build', image_name, '--builder', builder_image_name, '--path', source]
         buildpack_run_tag = get_latest_buildpack_run_tag("aspnet", "7.0")
         if buildpack_run_tag is not None:
-            command.extend(['--run-image', f"mcr.microsoft.com/oryx/builder:{buildpack_run_tag}"])
+            buildpack_run_image = f"mcr.microsoft.com/oryx/builder:{buildpack_run_tag}"
+            logger.debug(f"Determined the run image to use as {buildpack_run_image}.")
+            command.extend(['--run-image', buildpack_run_image])
 
         logger.debug(f"Calling '{' '.join(command)}'")
         try:
@@ -485,11 +487,12 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         image_name = self.image if self.image is not None else self.name
         from datetime import datetime
 
-        now = datetime.now()
-        # Add version tag for acr image
-        image_name += ":{}".format(
-            str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
-        )
+        # Moving this to skip the buildpacks scenario for now due to issues with buildpacks
+        # now = datetime.now()
+        # # Add version tag for acr image
+        # image_name += ":{}".format(
+        #     str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
+        # )
 
         self.image = self.registry_server + "/" + image_name
 
@@ -499,8 +502,14 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
             try:
                 # First try to build source using buildpacks
+                # Temporary fix: using run time tag as customer image tag
+                # Waiting for buildpacks side to fix this issue: https://github.com/buildpacks/pack/issues/1753
                 logger.warning("Attempting to build image using buildpacks...")
+                run_image_tag = get_latest_buildpack_run_tag("aspnet", "7.0")
+                if run_image_tag is not None:
+                    image_name = f"{image_name}:{run_image_tag}"
                 self.build_container_from_source_with_buildpack(image_name, source)
+                self.image = self.registry_server + "/" + image_name
                 return
             except ValidationError as e:
                 logger.warning(f"Unable to use buildpacks to build image from source: {e}\nFalling back to ACR Task...")
@@ -509,9 +518,23 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 raise e
 
             # If we're unable to use the buildpack, build source using an ACR Task
+            # Moving tagging img to here
+            # Skipping the buildpacks scenario for now due to issues with buildpacks
+            now = datetime.now()
+            # Add version tag for acr image
+            image_name += ":{}".format(
+                str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
+            )
             logger.warning("Attempting to build image using ACR Task...")
             self.build_container_from_source_with_acr_task(image_name, source)
         else:
+            # Moving tagging img to here
+            # Skipping the buildpacks scenario for now due to issues with buildpacks
+            now = datetime.now()
+            # Add version tag for acr image
+            image_name += ":{}".format(
+                str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
+            )
             queue_acr_build(
                 self.cmd,
                 self.acr.resource_group.name,
