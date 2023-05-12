@@ -49,10 +49,10 @@ class WebappBasicE2EKubeTest(ScenarioTest):
         self.cmd('appservice plan create -g {} -n {}'.format(resource_group, plan))
         r = self.cmd('webapp create -g {} -n {} --plan {} --deployment-local-git'.format(
             resource_group, webapp_name, plan)).get_output_in_json()
-        self.assertTrue(r['ftpPublishingUrl'].startswith('ftp://'))
+        self.assertTrue(r['ftpPublishingUrl'].startswith('ftps://'))
         self.cmd('webapp config appsettings list -g {} -n {}'.format(resource_group, webapp_name), checks=[
             JMESPathCheck('[0].name', 'WEBSITE_NODE_DEFAULT_VERSION'),
-            JMESPathCheck('[0].value', '12.13.0'),
+            JMESPathCheck('[0].value', '~14'),
         ])
 
         self.cmd('webapp update -g {} -n {} --https-only true'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", True)])
@@ -66,14 +66,14 @@ class WebappBasicE2EKubeTest(ScenarioTest):
         self.cmd('appservice plan create -g {} -n {}'.format(resource_group, plan))
         r = self.cmd('webapp create -g {} -n {} --plan {} --deployment-local-git -r "node|14LTS"'.format(
             resource_group, webapp_name, plan)).get_output_in_json()
-        self.assertTrue(r['ftpPublishingUrl'].startswith('ftp://'))
+        self.assertTrue(r['ftpPublishingUrl'].startswith('ftps://'))
         self.cmd('webapp config appsettings list -g {} -n {}'.format(resource_group, webapp_name), checks=[
             JMESPathCheck('[0].name', 'WEBSITE_NODE_DEFAULT_VERSION'),
             JMESPathCheck('[0].value', '~14'),
         ])
-        r = self.cmd('webapp create -g {} -n {} --plan {} --deployment-local-git -r "DOTNETCORE|3.1"'.format(
+        r = self.cmd('webapp create -g {} -n {} --plan {} --deployment-local-git -r "dotnet:7"'.format(
             resource_group, webapp_name_2, plan)).get_output_in_json()
-        self.assertTrue(r['ftpPublishingUrl'].startswith('ftp://'))
+        self.assertTrue(r['ftpPublishingUrl'].startswith('ftps://'))
 
         self.cmd('webapp update -g {} -n {} --https-only true'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", True)])
         self.cmd('webapp update -g {} -n {} --https-only false'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", False)])
