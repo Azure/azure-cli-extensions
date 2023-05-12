@@ -4441,7 +4441,7 @@ def patch_apply(cmd, patch_check_list, method, pack_exec_path):
                                    patch_check["newRunImage"],
                                    pack_exec_path)
                     # Increment patch_run_count with every successful patch.
-                    patch_run_count+=1                    
+                    patch_run_count+=1
     elif m == "n":
         print("No patch applied.")
         return
