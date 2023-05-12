@@ -74,7 +74,7 @@ def load_arguments(self, _):
 
     # Env vars
     with self.argument_context('containerapp', arg_group='Environment variables') as c:
-        c.argument('set_env_vars', nargs='*', help="Add or update environment variable(s) in container. Existing environmentenvironment variables are not modified. Space-separated values in 'key=value' format. If stored as a secret, value must start with 'secretref:' followed by the secret name.")
+        c.argument('set_env_vars', nargs='*', help="Add or update environment variable(s) in container. Existing environment variables are not modified. Space-separated values in 'key=value' format. If stored as a secret, value must start with 'secretref:' followed by the secret name.")
         c.argument('remove_env_vars', nargs='*', help="Remove environment variable(s) from container. Space-separated environment variable names.")
         c.argument('replace_env_vars', nargs='*', help="Replace environment variable(s) in container. Other existing environment variables are removed. Space-separated values in 'key=value' format. If stored as a secret, value must start with 'secretref:' followed by the secret name.")
         c.argument('remove_all_env_vars', help="Remove all environment variable(s) from container..")
@@ -418,12 +418,12 @@ def load_arguments(self, _):
     # Container App job
     with self.argument_context('containerapp job') as c:
         c.argument('name', name_type, metavar='NAME', id_part='name', help=f"The name of the Container Apps Job. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_CONTAINER_APP_NAME_LENGTH} characters.")
-        c.argument('cron_expression', options_list=['--cron-expression'], help='Cron expression for schedule trigger job.')
+        c.argument('cron_expression', options_list=['--cron-expression'], help='Cron expression. Only supported for trigger type "Schedule"')
         c.argument('image', options_list=['--image'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('replica_completion_count', options_list=['--replica-completion-count', '--rcc'], help='Number of replicas that need to complete successfully for execution to succeed.')
-        c.argument('replica_retry_limit', options_list=['--replica-retry-limit'], help='maximum number of replica retries before the job execution fails.')
+        c.argument('replica_retry_limit', options_list=['--replica-retry-limit'], help='Maximum number of retries before the replica fails.')
         c.argument('replica_timeout', options_list=['--replica-timeout'], help='Maximum number of seconds a replica can execute.')
-        c.argument('parallelism', options_list=['--parallelism'], help='maximum number of tasks that can run in parallel.')
+        c.argument('parallelism', options_list=['--parallelism'], help='Maximum number of replicas to run per execution.')
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
         c.argument('min_executions', type=int, help="Minimum number of job executions that are created for a trigger, default 0.")
         c.argument('max_executions', type=int, help="Maximum number of job executions that are created for a trigger, default 100.")
@@ -434,14 +434,16 @@ def load_arguments(self, _):
         c.argument('trigger_type', options_list=['--trigger-type'], help='Trigger type. Schedule | Event | Manual')
         c.argument('user_assigned', options_list=['--user-assigned'], help='User assigned identity.')
 
-    with self.argument_context('containerapp job create', arg_group='Scale') as c:
-        c.argument('min_executions', type=int, help="Minimum number of job executions that are created for a trigger, default 0.")
-        c.argument('max_executions', type=int, help="Maximum number of job executions that are created for a trigger, default 100.")
+    with self.argument_context('containerapp job', arg_group='Scale') as c:
+        c.argument('min_executions', type=int, help="Minimum number of job executions to run per polling interval.")
+        c.argument('max_executions', type=int, help="Maximum number of job executions to run per polling interval.")
         c.argument('polling_interval', type=int, help="Interval to check each event source in seconds. Defaults to 30s.")
+        c.argument('scale_rule_type', options_list=['--scale-rule-type', '--srt'], help="The type of the scale rule.")
 
     with self.argument_context('containerapp job stop') as c:
         c.argument('job_execution_name', options_list=['--job-execution-name'], help='name of the specific job execution which needs to be stopped.')
         c.argument('execution_name_list', options_list=['--execution-name-list'], help='comma separated list of job execution names.')
 
-    with self.argument_context('containerapp job execution list') as c:
+    with self.argument_context('containerapp job execution') as c:
         c.argument('name', id_part=None)
+        c.argument('job_execution_name', options_list=['--job-execution-name'], help='name of the specific job execution.')

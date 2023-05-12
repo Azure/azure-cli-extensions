@@ -896,6 +896,7 @@ class WorkloadProfileClient():
 class ContainerAppsJobClient():
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, containerapp_job_envelope, no_wait=False):
+        print("Envelope: {}".format(containerapp_job_envelope))
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = JOBS_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -1108,7 +1109,7 @@ class ContainerAppsJobClient():
         return r.json()
 
     @classmethod
-    def execution_history(cls, cmd, resource_group_name, name):
+    def getExecutions(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = JOBS_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -1123,6 +1124,22 @@ class ContainerAppsJobClient():
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
         return r.json()
 
+    @classmethod
+    def getSingleExecution(cls, cmd, resource_group_name, name, job_execution_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = JOBS_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}/executions/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            job_execution_name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        return r.json()
 
 class GitHubActionClient():
     @classmethod

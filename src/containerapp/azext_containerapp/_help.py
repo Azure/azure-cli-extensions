@@ -566,7 +566,7 @@ helps['containerapp job create'] = """
               --trigger-type Manual \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
-              --rcc 1 \\
+              --replica-completion-count 1 \
               --parallelism 1 \\
               --image imageName
               --workload-profile-name my-wlp
@@ -576,9 +576,9 @@ helps['containerapp job create'] = """
               --trigger-type Schedule \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
-              --rcc 1 \\
+              --replica-completion-count 1 \
               --parallelism 1
-              --cron-expression */1 * * * * \\
+              --cron-expression \"*/1 * * * *\" \\
               --image imageName
     - name: Create a container apps job with Trigger Type as Event.
       text: |
@@ -586,7 +586,7 @@ helps['containerapp job create'] = """
               --trigger-type Event \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
-              --rcc 1 \\
+              --replica-completion-count 1 \
               --parallelism 1 \\
               --polling-interval 30 \\
               --min-executions 0 \\
@@ -673,6 +673,14 @@ helps['containerapp job execution list'] = """
     examples:
     - name: List of all executions of a Container App Job.
       text: az containerapp job execution list -n MyContainerAppJob -g MyResourceGroup
+"""
+
+helps['containerapp job execution show'] = """
+    type: command
+    short-summary: Get execution of a Container App Job.
+    examples:
+    - name: Get execution of a Container App Job.
+      text: az containerapp job execution show -n MyContainerAppJob -g MyResourceGroup --job-execution-name MyContainerAppJob-66v9xh0
 """
 
 # Certificates Commands
