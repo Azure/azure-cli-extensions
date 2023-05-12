@@ -381,8 +381,8 @@ def catalog_create_and_sync_cmds(self):
         'catalogName': self.create_random_name(prefix='c2', length=12),
         'branch': 'main',
         'path': "/Environments",
-        'secretIdentifier': "https://amlim-cli.vault.azure.net/secrets/amlimTest/65e8ce20538743a8bd49eb0222f18d88",
-        'uri': "https://github.com/am-lim/deployment-environments.git"
+        'secretIdentifier': "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
+        'uri': "https://domain.com/dummy/dummy.git"
     })
 
     self.cmd('az devcenter admin catalog create '
