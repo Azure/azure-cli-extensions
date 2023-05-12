@@ -9,6 +9,8 @@ import shutil
 import subprocess
 import tarfile
 from typing import Dict, List, Any, Tuple, Optional
+
+import yaml
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 from knack.log import get_logger
 from azext_aosm._configuration import CNFConfiguration, HelmPackageConfig
@@ -53,10 +55,14 @@ class CnfNfdGenerator(NFDGenerator):
         else:
             for helm_package in self.config.helm_packages:
                 # Unpack the chart into the tmp folder
-                self._extract_chart(helm_package)
+                print("HELMPACKAGE", helm_package)
+                # JORDAN: changes to pass in path to chart instead of whole package
+                self._extract_chart(helm_package['path_to_chart'])
                 # Validate chart
                 # Get schema for each chart (extract mappings and take the schema bits we need from values.schema.json)
-                self.deployment_parameter_schema["properties"].update(self.get_chart_mapping_schema(helm_package.name))
+                self.get_chart_mapping_schema(helm_package)
+                # self.deployment_parameter_schema["properties"].update(self.get_chart_mapping_schema(helm_package.name))
+                print("DS", self.deployment_parameter_schema)
                 # Add that schema to the big schema.
                 # generate the NF application for the chart
                 self.generate_nf_application(helm_package)
@@ -87,6 +93,7 @@ class CnfNfdGenerator(NFDGenerator):
         :param helm_package: The helm package to extract.
         :type helm_package: HelmPackageConfig
         """
+        print("fname", fname)
         if fname.endswith("tar.gz") or fname.endswith("tgz"):
             tar = tarfile.open(fname, "r:gz")
             tar.extractall(path=self.tmp_folder_name)
@@ -95,6 +102,9 @@ class CnfNfdGenerator(NFDGenerator):
             tar = tarfile.open(fname, "r:")
             tar.extractall(path=self.tmp_folder_name)
             tar.close()
+        # JORDAN: avoiding tar extract errors 
+        else:
+            shutil.copytree(fname, self.tmp_folder_name, dirs_exist_ok=True)
 
     def _create_nfd_folder(self) -> None:
         """
@@ -143,7 +153,7 @@ class CnfNfdGenerator(NFDGenerator):
     def generate_nf_application(
         self, helm_package: HelmPackageConfig
     ) -> Dict[str, Any]:
-        (name, version) = self.get_chart_name_and_version(helm_package.path_to_chart)
+        (name, version) = self.get_chart_name_and_version(helm_package["path_to_chart"])
         return {
             "artifactType": "HelmPackage",
             "name": helm_package.name,
@@ -177,22 +187,42 @@ class CnfNfdGenerator(NFDGenerator):
     def get_artifact_list(self, helm_package: HelmPackageConfig) -> List[Any]:
         pass
 
+    ## JORDAN DO THIS FIRST
     def get_chart_mapping_schema(self, helm_package: HelmPackageConfig) -> Dict[Any, Any]:
         # We need to take the mappings from the values.nondef.yaml file and generate the schema
         # from the values.schema.json file.
         # Basically take the bits of the schema that are relevant to the parameters requested.
+        non_def_values = helm_package['path_to_chart'] + "/values.nondef.yaml"
+        
+        with open(non_def_values) as f:
+            data = yaml.load(f, Loader=yaml.FullLoader)
+            print(data)
+        chart = helm_package['path_to_chart'] + '/Chart.yaml'
+        values = helm_package['path_to_chart'] + '/values.json'
+        schema = helm_package['path_to_chart'] + '/values.schema.json'
+        # go through schema, find the properties 
         pass
 
+    ## Jordan DONE
+    ## think we need to be careful what we are naming things here, we've passed it the path to chart not the helm package
     def get_chart_name_and_version(
         self, helm_package: Dict[Any, Any]
     ) -> Tuple[str, str]:
         # We need to get the chart name and version from the Chart.yaml file.
-        return ("chart_name", "chart_version")
+        chart = helm_package + '/Chart.yaml'
+        
+        with open(chart) as f:
+            data = yaml.load(f, Loader=yaml.FullLoader)
+            chart_name = data["name"]
+            chart_version = data["version"]
+        
+        return (chart_name, chart_version)
 
     def some_fun_to_check_ragistry_and_image_secret_path(self):
         # Need to work out what we are doing here???
         pass
 
+    ## JORDAN DO THIS 3rd
     def generate_parmeter_mappings(self) -> str:
         # Basically copy the values.nondef.yaml file to the right place.
         pass
