@@ -36,7 +36,7 @@ from .helper import (
 )
 
 
-@record_only()
+#@record_only()
 @try_manual
 class DevcenterScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
@@ -880,168 +880,168 @@ class DevcenterScenarioTest(ScenarioTest):
 #             ],
 #         )
 
-#     @ResourceGroupPreparer(
-#         name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
-#     )
-#     def test_pool_scenario(self):
-#         self.kwargs.update(
-#             {
-#                 "location": "centraluseuap",
-#             }
-#         )
-#         create_attached_network_dev_box_definition(self)
-#         self.kwargs.update(
-#             {"poolName": self.create_random_name(prefix="c3", length=12)}
-#         )
+    @ResourceGroupPreparer(
+        name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
+    )
+    def test_pool_scenario(self):
+        self.kwargs.update(
+            {
+                "location": "centraluseuap",
+            }
+        )
+        create_attached_network_dev_box_definition(self)
+        self.kwargs.update(
+            {"poolName": self.create_random_name(prefix="c3", length=12)}
+        )
 
-#         self.cmd(
-#             "az devcenter admin pool list "
-#             '--resource-group "{rg}" '
-#             '--project-name "{projectName}" ',
-#             checks=[
-#                 self.check("length(@)", 0),
-#             ],
-#         )
+        self.cmd(
+            "az devcenter admin pool list "
+            '--resource-group "{rg}" '
+            '--project-name "{projectName}" ',
+            checks=[
+                self.check("length(@)", 0),
+            ],
+        )
 
-#         # TODO: add health check and health check details in return type when API available
-#         # TODO: add stopOnDisconnect idle back when available
-#         self.cmd(
-#             "az devcenter admin pool create "
-#             '-d "{devBoxDefinitionName}" '
-#             '--location "{location}" '
-#             '--local-administrator "Disabled" '
-#             '--name "{poolName}" '
-#             '-c "{attachedNetworkName}" '
-#             '--project-name "{projectName}" '
-#             '--resource-group "{rg}" ',
-#             checks=[
-#                 self.check("name", "{poolName}"),
-#                 self.check("resourceGroup", "{rg}"),
-#                 self.check("devBoxDefinitionName", "{devBoxDefinitionName}"),
-#                 self.check("localAdministrator", "Disabled"),
-#                 self.check("networkConnectionName", "{attachedNetworkName}"),
-#                 self.check("location", "{location}"),
-#             ],
-#         )
+        # TODO: add health check and health check details in return type when API available
+        # TODO: add stopOnDisconnect idle back when available
+        self.cmd(
+            "az devcenter admin pool create "
+            '-d "{devBoxDefinitionName}" '
+            '--location "{location}" '
+            '--local-administrator "Disabled" '
+            '--name "{poolName}" '
+            '-c "{attachedNetworkName}" '
+            '--project-name "{projectName}" '
+            '--resource-group "{rg}" ',
+            checks=[
+                self.check("name", "{poolName}"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("devBoxDefinitionName", "{devBoxDefinitionName}"),
+                self.check("localAdministrator", "Disabled"),
+                self.check("networkConnectionName", "{attachedNetworkName}"),
+                self.check("location", "{location}"),
+            ],
+        )
 
-#         self.cmd(
-#             "az devcenter admin pool list "
-#             '--resource-group "{rg}" '
-#             '--project-name "{projectName}" ',
-#             checks=[self.check("length(@)", 1), self.check("[0].name", "{poolName}")],
-#         )
+        self.cmd(
+            "az devcenter admin pool list "
+            '--resource-group "{rg}" '
+            '--project-name "{projectName}" ',
+            checks=[self.check("length(@)", 1), self.check("[0].name", "{poolName}")],
+        )
 
-#         self.cmd(
-#             "az devcenter admin pool update "
-#             '--local-administrator "Enabled" '
-#             '-d "{devBoxDefinitionName2}" '
-#             '--name "{poolName}" '
-#             '--project-name "{projectName}" '
-#             '--resource-group "{rg}" ',
-#             checks=[
-#                 self.check("name", "{poolName}"),
-#                 self.check("resourceGroup", "{rg}"),
-#                 self.check("devBoxDefinitionName", "{devBoxDefinitionName2}"),
-#                 self.check("localAdministrator", "Enabled"),
-#                 self.check("networkConnectionName", "{attachedNetworkName}"),
-#                 self.check("location", "{location}"),
-#             ],
-#         )
+        self.cmd(
+            "az devcenter admin pool update "
+            '--local-administrator "Enabled" '
+            '-d "{devBoxDefinitionName2}" '
+            '--name "{poolName}" '
+            '--project-name "{projectName}" '
+            '--resource-group "{rg}" ',
+            checks=[
+                self.check("name", "{poolName}"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("devBoxDefinitionName", "{devBoxDefinitionName2}"),
+                self.check("localAdministrator", "Enabled"),
+                self.check("networkConnectionName", "{attachedNetworkName}"),
+                self.check("location", "{location}"),
+            ],
+        )
 
-#         self.cmd(
-#             "az devcenter admin pool show "
-#             '--name "{poolName}" '
-#             '--project-name "{projectName}" '
-#             '--resource-group "{rg}" ',
-#             checks=[
-#                 self.check("name", "{poolName}"),
-#                 self.check("resourceGroup", "{rg}"),
-#                 self.check("devBoxDefinitionName", "{devBoxDefinitionName2}"),
-#                 self.check("localAdministrator", "Enabled"),
-#                 self.check("networkConnectionName", "{attachedNetworkName}"),
-#                 self.check("location", "{location}"),
-#             ],
-#         )
+        self.cmd(
+            "az devcenter admin pool show "
+            '--name "{poolName}" '
+            '--project-name "{projectName}" '
+            '--resource-group "{rg}" ',
+            checks=[
+                self.check("name", "{poolName}"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("devBoxDefinitionName", "{devBoxDefinitionName2}"),
+                self.check("localAdministrator", "Enabled"),
+                self.check("networkConnectionName", "{attachedNetworkName}"),
+                self.check("location", "{location}"),
+            ],
+        )
 
-#         # TODO: Not available yet, add test when it is
-#         # self.cmd(
-#         #     "az devcenter admin pool run-health-check "
-#         #     '--name "{poolName}" '
-#         #     '--project-name "{projectName}" '
-#         #     '--resource-group "{rg}" '
-#         # )
+        # TODO: Not available yet, add test when it is
+        # self.cmd(
+        #     "az devcenter admin pool run-health-check "
+        #     '--name "{poolName}" '
+        #     '--project-name "{projectName}" '
+        #     '--resource-group "{rg}" '
+        # )
 
-#         self.cmd(
-#             "az devcenter admin schedule create "
-#             '--pool-name "{poolName}" '
-#             '--project-name "{projectName}" '
-#             '--resource-group "{rg}" '
-#             '--time "13:00" '
-#             '--time-zone "America/Los_Angeles" ',
-#             checks=[
-#                 self.check("name", "default"),
-#                 self.check("resourceGroup", "{rg}"),
-#                 self.check("properties.timeZone", "America/Los_Angeles"),
-#                 self.check("properties.time", "13:00"),
-#                 self.check("properties.frequency", "Daily"),
-#                 self.check("properties.type", "StopDevBox"),
-#             ],
-#         )
+        self.cmd(
+            "az devcenter admin schedule create "
+            '--pool-name "{poolName}" '
+            '--project-name "{projectName}" '
+            '--resource-group "{rg}" '
+            '--time "13:00" '
+            '--time-zone "America/Los_Angeles" ',
+            checks=[
+                self.check("name", "default"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("properties.timeZone", "America/Los_Angeles"),
+                self.check("properties.time", "13:00"),
+                self.check("properties.frequency", "Daily"),
+                self.check("properties.type", "StopDevBox"),
+            ],
+        )
 
-#         self.cmd(
-#             "az devcenter admin schedule update "
-#             '--pool-name "{poolName}" '
-#             '--project-name "{projectName}" '
-#             '--resource-group "{rg}" '
-#             '--time "17:30" '
-#             '--time-zone "America/New_York" ',
-#             checks=[
-#                 self.check("name", "default"),
-#                 self.check("resourceGroup", "{rg}"),
-#                 self.check("properties.timeZone", "America/New_York"),
-#                 self.check("properties.time", "17:30"),
-#                 self.check("properties.frequency", "Daily"),
-#                 self.check("properties.type", "StopDevBox"),
-#             ],
-#         )
+        self.cmd(
+            "az devcenter admin schedule update "
+            '--pool-name "{poolName}" '
+            '--project-name "{projectName}" '
+            '--resource-group "{rg}" '
+            '--time "17:30" '
+            '--time-zone "America/New_York" ',
+            checks=[
+                self.check("name", "default"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("properties.timeZone", "America/New_York"),
+                self.check("properties.time", "17:30"),
+                self.check("properties.frequency", "Daily"),
+                self.check("properties.type", "StopDevBox"),
+            ],
+        )
 
-#         self.cmd(
-#             "az devcenter admin schedule show "
-#             '--pool-name "{poolName}" '
-#             '--project-name "{projectName}" '
-#             '--resource-group "{rg}" ',
-#             checks=[
-#                 self.check("name", "default"),
-#                 self.check("resourceGroup", "{rg}"),
-#                 self.check("properties.timeZone", "America/New_York"),
-#                 self.check("properties.time", "17:30"),
-#                 self.check("properties.frequency", "Daily"),
-#                 self.check("properties.type", "StopDevBox"),
-#             ],
-#         )
+        self.cmd(
+            "az devcenter admin schedule show "
+            '--pool-name "{poolName}" '
+            '--project-name "{projectName}" '
+            '--resource-group "{rg}" ',
+            checks=[
+                self.check("name", "default"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("properties.timeZone", "America/New_York"),
+                self.check("properties.time", "17:30"),
+                self.check("properties.frequency", "Daily"),
+                self.check("properties.type", "StopDevBox"),
+            ],
+        )
 
-#         self.cmd(
-#             "az devcenter admin schedule delete --yes "
-#             '--project-name "{projectName}" '
-#             '--pool-name "{poolName}" '
-#             '--resource-group "{rg}"'
-#         )
+        self.cmd(
+            "az devcenter admin schedule delete --yes "
+            '--project-name "{projectName}" '
+            '--pool-name "{poolName}" '
+            '--resource-group "{rg}"'
+        )
 
-#         self.cmd(
-#             "az devcenter admin pool delete --yes "
-#             '--project-name "{projectName}" '
-#             '--name "{poolName}" '
-#             '--resource-group "{rg}"'
-#         )
+        self.cmd(
+            "az devcenter admin pool delete --yes "
+            '--project-name "{projectName}" '
+            '--name "{poolName}" '
+            '--resource-group "{rg}"'
+        )
 
-#         self.cmd(
-#             "az devcenter admin pool list "
-#             '--resource-group "{rg}" '
-#             '--project-name "{projectName}" ',
-#             checks=[
-#                 self.check("length(@)", 0),
-#             ],
-#         )
+        self.cmd(
+            "az devcenter admin pool list "
+            '--resource-group "{rg}" '
+            '--project-name "{projectName}" ',
+            checks=[
+                self.check("length(@)", 0),
+            ],
+        )
 
 #     @ResourceGroupPreparer(
 #         name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
@@ -1081,114 +1081,114 @@ class DevcenterScenarioTest(ScenarioTest):
 #             ],
 #         )
 
-    @ResourceGroupPreparer(
-        name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
-    )
-    def test_catalog_scenario(self):
-        self.kwargs.update(
-            {
-                "catalogName": self.create_random_name(prefix="c2", length=12),
-                "branch": "main",
-                "path": "/Environments",
-                "secretIdentifier": "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
-                "secretIdentifier2": "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
-                "uri": "https://domain.com/dummy/dummy.git",
-            }
-        )
+    # @ResourceGroupPreparer(
+    #     name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
+    # )
+    # def test_catalog_scenario(self):
+    #     self.kwargs.update(
+    #         {
+    #             "catalogName": self.create_random_name(prefix="c2", length=12),
+    #             "branch": "main",
+    #             "path": "/Environments",
+    #             "secretIdentifier": "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
+    #             "secretIdentifier2": "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
+    #             "uri": "https://domain.com/dummy/dummy.git",
+    #         }
+    #     )
 
-        create_dev_center_with_identity(self)
-        create_kv_policy(self)
+    #     create_dev_center_with_identity(self)
+    #     create_kv_policy(self)
 
-        self.cmd(
-            "az devcenter admin catalog list "
-            '--resource-group "{rg}" '
-            '--dev-center "{devcenterName}" ',
-            checks=[
-                self.check("length(@)", 0),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin catalog list "
+    #         '--resource-group "{rg}" '
+    #         '--dev-center "{devcenterName}" ',
+    #         checks=[
+    #             self.check("length(@)", 0),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin catalog create "
-            '--dev-center "{devcenterName}" '
-            '--name "{catalogName}" '
-            '--git-hub path="{path}" branch="{branch}" '
-            'secret-identifier="{secretIdentifier}" uri="{uri}" '
-            '--resource-group "{rg}" ',
-            checks=[
-                self.check("name", "{catalogName}"),
-                self.check("resourceGroup", "{rg}"),
-                self.check("gitHub.branch", "{branch}"),
-                self.check("gitHub.path", "{path}"),
-                self.check("gitHub.secretIdentifier", "{secretIdentifier}"),
-                self.check("gitHub.uri", "{uri}"),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin catalog create "
+    #         '--dev-center "{devcenterName}" '
+    #         '--name "{catalogName}" '
+    #         '--git-hub path="{path}" branch="{branch}" '
+    #         'secret-identifier="{secretIdentifier}" uri="{uri}" '
+    #         '--resource-group "{rg}" ',
+    #         checks=[
+    #             self.check("name", "{catalogName}"),
+    #             self.check("resourceGroup", "{rg}"),
+    #             self.check("gitHub.branch", "{branch}"),
+    #             self.check("gitHub.path", "{path}"),
+    #             self.check("gitHub.secretIdentifier", "{secretIdentifier}"),
+    #             self.check("gitHub.uri", "{uri}"),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin catalog list "
-            '--resource-group "{rg}" '
-            '--dev-center "{devcenterName}" ',
-            checks=[
-                self.check("length(@)", 1),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin catalog list "
+    #         '--resource-group "{rg}" '
+    #         '--dev-center "{devcenterName}" ',
+    #         checks=[
+    #             self.check("length(@)", 1),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin catalog sync "
-            '--dev-center "{devcenterName}" '
-            '--name "{catalogName}" '
-            '--resource-group "{rg}" '
-        )
+    #     self.cmd(
+    #         "az devcenter admin catalog sync "
+    #         '--dev-center "{devcenterName}" '
+    #         '--name "{catalogName}" '
+    #         '--resource-group "{rg}" '
+    #     )
 
-        self.cmd(
-            "az devcenter admin catalog show "
-            '--dev-center "{devcenterName}" '
-            '--name "{catalogName}" '
-            '--resource-group "{rg}" ',
-            checks=[
-                self.check("name", "{catalogName}"),
-                self.check("resourceGroup", "{rg}"),
-                self.check("gitHub.branch", "{branch}"),
-                self.check("gitHub.path", "{path}"),
-                self.check("gitHub.secretIdentifier", "{secretIdentifier}"),
-                self.check("gitHub.uri", "{uri}"),
-                self.check("syncState", "Succeeded"),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin catalog show "
+    #         '--dev-center "{devcenterName}" '
+    #         '--name "{catalogName}" '
+    #         '--resource-group "{rg}" ',
+    #         checks=[
+    #             self.check("name", "{catalogName}"),
+    #             self.check("resourceGroup", "{rg}"),
+    #             self.check("gitHub.branch", "{branch}"),
+    #             self.check("gitHub.path", "{path}"),
+    #             self.check("gitHub.secretIdentifier", "{secretIdentifier}"),
+    #             self.check("gitHub.uri", "{uri}"),
+    #             self.check("syncState", "Succeeded"),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin catalog update "
-            '--dev-center "{devcenterName}" '
-            '--name "{catalogName}" '
-            '--git-hub path="/tools" branch="main" '
-            'secret-identifier="{secretIdentifier2}" '
-            '--resource-group "{rg}"',
-            checks=[
-                self.check("name", "{catalogName}"),
-                self.check("resourceGroup", "{rg}"),
-                self.check("gitHub.branch", "main"),
-                self.check("gitHub.path", "/tools"),
-                self.check("gitHub.secretIdentifier", "{secretIdentifier2}"),
-                self.check("gitHub.uri", "{uri}"),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin catalog update "
+    #         '--dev-center "{devcenterName}" '
+    #         '--name "{catalogName}" '
+    #         '--git-hub path="/tools" branch="main" '
+    #         'secret-identifier="{secretIdentifier2}" '
+    #         '--resource-group "{rg}"',
+    #         checks=[
+    #             self.check("name", "{catalogName}"),
+    #             self.check("resourceGroup", "{rg}"),
+    #             self.check("gitHub.branch", "main"),
+    #             self.check("gitHub.path", "/tools"),
+    #             self.check("gitHub.secretIdentifier", "{secretIdentifier2}"),
+    #             self.check("gitHub.uri", "{uri}"),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter admin catalog delete --yes "
-            '--dev-center "{devcenterName}" '
-            '--name "{catalogName}" '
-            '--resource-group "{rg}"'
-        )
+    #     self.cmd(
+    #         "az devcenter admin catalog delete --yes "
+    #         '--dev-center "{devcenterName}" '
+    #         '--name "{catalogName}" '
+    #         '--resource-group "{rg}"'
+    #     )
 
-        self.cmd(
-            "az devcenter admin catalog list "
-            '--resource-group "{rg}" '
-            '--dev-center "{devcenterName}" ',
-            checks=[
-                self.check("length(@)", 0),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter admin catalog list "
+    #         '--resource-group "{rg}" '
+    #         '--dev-center "{devcenterName}" ',
+    #         checks=[
+    #             self.check("length(@)", 0),
+    #         ],
+    #     )
 
     # @ResourceGroupPreparer(
     #     name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
@@ -1413,7 +1413,7 @@ class DevcenterScenarioTest(ScenarioTest):
 #         )
 
 
-@record_only()
+#@record_only()
 @try_manual
 class DevcenterDataPlaneScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
@@ -1490,318 +1490,316 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     #     )
 
 
+    @ResourceGroupPreparer(
+        name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
+    )
+    def test_pool_dataplane_scenario(self):
+        self.kwargs.update(
+            {
+                "location": "centraluseuap",
+                "devcenterName": self.create_random_name(prefix="cli", length=24),
+            }
+        )
+
+        create_dev_center(self)
+        create_project(self)
+        get_endpoint(self)
+        add_dev_box_user_role_to_project(self)
+        create_pool(self)
+
+        self.cmd(
+            "az devcenter dev pool list "
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" ',
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].name", "{poolName}"),
+            ],
+        )
+
+        #TODO add back idle checks once feature is available
+
+        self.cmd(
+            "az devcenter dev pool show "
+            '--name "{poolName}" '
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" ',
+            checks=[
+                self.check("name", "{poolName}"),
+                self.check("storageProfile.osDisk.diskSizeGb", "1024"),
+                self.check("hardwareProfile.skuName", "{skuName}"),
+                self.check("localAdministrator", "Enabled"),
+                self.check("osType", "Windows"),
+                self.check("location", "{location}"),
+                self.check("hibernateSupport", "Enabled"),
+                self.check(
+                    "imageReference.name",
+                    "MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
+                ),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev schedule show "
+            '--pool "{poolName}" '
+            '--dev-center "{devcenterName}" '
+            '--project "{projectName}" ',
+            checks=[
+                self.check("name", "default"),
+                self.check("frequency", "Daily"),
+                self.check("time", "{time}"),
+                self.check("timeZone", "{timeZone}"),
+                self.check("type", "StopDevBox"),
+            ],
+        )
+
+        #test using endpoint
+
+        self.cmd(
+            "az devcenter dev pool list "
+            '--endpoint "{endpoint}" '
+            '--project "{projectName}" ',
+            checks=[
+                self.check("length(@)", 1),
+                self.check("[0].name", "{poolName}"),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev pool show "
+            '--name "{poolName}" '
+            '--endpoint "{endpoint}" '
+            '--project "{projectName}" ',
+            checks=[
+                self.check("name", "{poolName}"),
+                self.check("storageProfile.osDisk.diskSizeGb", "1024"),
+                self.check("hardwareProfile.skuName", "{skuName}"),
+                self.check("localAdministrator", "Enabled"),
+                self.check("osType", "Windows"),
+                self.check("location", "{location}"),
+                self.check("hibernateSupport", "Enabled"),
+                self.check(
+                    "imageReference.name",
+                    "MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
+                ),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter dev schedule show "
+            '--pool "{poolName}" '
+            '--endpoint "{endpoint}" '
+            '--project "{projectName}" ',
+            checks=[
+                self.check("name", "default"),
+                self.check("frequency", "Daily"),
+                self.check("time", "{time}"),
+                self.check("timeZone", "{timeZone}"),
+                self.check("type", "StopDevBox"),
+            ],
+        )
+
     # @ResourceGroupPreparer(
     #     name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
     # )
-    # def test_pool_dataplane_scenario(self):
+    # def test_catalog_dataplane_scenario(self):
     #     self.kwargs.update(
     #         {
     #             "location": "centraluseuap",
-    #             "devcenterName": self.create_random_name(prefix="cli", length=24),
     #         }
     #     )
 
-    #     create_dev_center(self)
-    #     create_project(self)
-    #     get_endpoint(self)
-    #     add_dev_box_user_role_to_project(self)
-    #     create_pool(self)
+    #     create_catalog(self)
 
     #     self.cmd(
-    #         "az devcenter dev pool list "
+    #         "az devcenter dev catalog list "
     #         '--dev-center "{devcenterName}" '
     #         '--project "{projectName}" ',
     #         checks=[
     #             self.check("length(@)", 1),
-    #             self.check("[0].name", "{poolName}"),
+    #             self.check("[0].name", "{catalogName}"),
     #         ],
     #     )
 
     #     self.cmd(
-    #         "az devcenter dev pool show "
-    #         '--name "{poolName}" '
+    #         "az devcenter dev catalog show "
     #         '--dev-center "{devcenterName}" '
-    #         '--project "{projectName}" ',
+    #         '--project "{projectName}" '
+    #         '--name "{catalogName}" ',
     #         checks=[
-    #             self.check("name", "{poolName}"),
-    #             self.check("storageProfile.osDisk.diskSizeGb", "1024"),
-    #             self.check("hardwareProfile.skuName", "{skuName}"),
-    #             self.check("localAdministrator", "Enabled"),
-    #             self.check("osType", "Windows"),
-    #             self.check("location", "{location}"),
-    #             self.check("hibernateSupport", "Enabled"),
-    #             self.check(
-    #                 "imageReference.name",
-    #                 "MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
-    #             ),
-    #             self.check("stopOnDisconnect.gracePeriodMinutes", "60"),
-    #             self.check("stopOnDisconnect.status", "Enabled"),
+    #             self.check("name", "{catalogName}"),
     #         ],
     #     )
 
-    #     self.cmd(
-    #         "az devcenter dev schedule show "
-    #         '--pool "{poolName}" '
-    #         '--dev-center "{devcenterName}" '
-    #         '--project "{projectName}" ',
-    #         checks=[
-    #             self.check("name", "default"),
-    #             self.check("frequency", "Daily"),
-    #             self.check("time", "{time}"),
-    #             self.check("timeZone", "{timeZone}"),
-    #             self.check("type", "StopDevBox"),
-    #         ],
-    #     )
-
-    #     #test using endpoint
+    #     #endpoint
 
     #     self.cmd(
-    #         "az devcenter dev pool list "
+    #         "az devcenter dev catalog list "
     #         '--endpoint "{endpoint}" '
     #         '--project "{projectName}" ',
     #         checks=[
     #             self.check("length(@)", 1),
-    #             self.check("[0].name", "{poolName}"),
+    #             self.check("[0].name", "{catalogName}"),
     #         ],
     #     )
 
     #     self.cmd(
-    #         "az devcenter dev pool show "
-    #         '--name "{poolName}" '
+    #         "az devcenter dev catalog show "
     #         '--endpoint "{endpoint}" '
+    #         '--project "{projectName}" '
+    #         '--name "{catalogName}" ',
+    #         checks=[
+    #             self.check("name", "{catalogName}"),
+    #         ],
+    #     )
+
+    # @ResourceGroupPreparer(
+    #     name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
+    # )
+    # def test_env_definition_dataplane_scenario(self):
+    #     self.kwargs.update(
+    #         {
+    #             "location": "centraluseuap",
+    #         }
+    #     )
+
+    #     create_catalog(self)
+    #     function_app_id = f"/projects/{self.kwargs.get('projectName', '')}/catalogs/{self.kwargs.get('catalogName', '')}/environmentDefinitions/functionapp"
+    #     sandbox_id = f"/projects/{self.kwargs.get('projectName', '')}/catalogs/{self.kwargs.get('catalogName', '')}/environmentDefinitions/sandbox"
+    #     webapp_id = f"/projects/{self.kwargs.get('projectName', '')}/catalogs/{self.kwargs.get('catalogName', '')}/environmentDefinitions/webapp"
+
+    #     self.kwargs.update(
+    #         {
+    #             "functionAppName": "FunctionApp",
+    #             "sandboxName": "Sandbox",
+    #             "webAppName": "WebApp",
+    #             "functionAppId": function_app_id,
+    #             "sandboxId": sandbox_id,
+    #             "webAppId": webapp_id,
+    #         }
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter dev environment-definition list "
+    #         '--dev-center "{devcenterName}" '
     #         '--project "{projectName}" ',
     #         checks=[
-    #             self.check("name", "{poolName}"),
-    #             self.check("storageProfile.osDisk.diskSizeGb", "1024"),
-    #             self.check("hardwareProfile.skuName", "{skuName}"),
-    #             self.check("localAdministrator", "Enabled"),
-    #             self.check("osType", "Windows"),
-    #             self.check("location", "{location}"),
-    #             self.check("hibernateSupport", "Enabled"),
-    #             self.check(
-    #                 "imageReference.name",
-    #                 "MicrosoftWindowsDesktop_windows-ent-cpc_win11-22h2-ent-cpc-os",
-    #             ),
-    #             self.check("stopOnDisconnect.gracePeriodMinutes", "60"),
-    #             self.check("stopOnDisconnect.status", "Enabled"),
+    #             self.check("length(@)", 3),
+    #             self.check("[0].catalogName", "{catalogName}"),
+    #             self.check("[0].name", "{functionAppName}"),
+    #             self.check("[0].id", "{functionAppId}"),
+    #             self.check("[1].catalogName", "{catalogName}"),
+    #             self.check("[1].name", "{sandboxName}"),
+    #             self.check("[1].id", "{sandboxId}"),
+    #             self.check("[2].catalogName", "{catalogName}"),
+    #             self.check("[2].name", "{webAppName}"),
+    #             self.check("[2].id", "{webAppId}"),
     #         ],
     #     )
 
     #     self.cmd(
-    #         "az devcenter dev schedule show "
-    #         '--pool "{poolName}" '
-    #         '--endpoint "{endpoint}" '
-    #         '--project "{projectName}" ',
+    #         "az devcenter dev environment-definition list "
+    #         '--dev-center "{devcenterName}" '
+    #         '--project "{projectName}" '
+    #         '--catalog-name  "{catalogName}" ',
     #         checks=[
-    #             self.check("name", "default"),
-    #             self.check("frequency", "Daily"),
-    #             self.check("time", "{time}"),
-    #             self.check("timeZone", "{timeZone}"),
-    #             self.check("type", "StopDevBox"),
+    #             self.check("length(@)", 3),
+    #             self.check("[0].catalogName", "{catalogName}"),
+    #             self.check("[0].name", "{functionAppName}"),
+    #             self.check("[0].id", "{functionAppId}"),
+    #             self.check("[1].catalogName", "{catalogName}"),
+    #             self.check("[1].name", "{sandboxName}"),
+    #             self.check("[1].id", "{sandboxId}"),
+    #             self.check("[2].catalogName", "{catalogName}"),
+    #             self.check("[2].name", "{webAppName}"),
+    #             self.check("[2].id", "{webAppId}"),
     #         ],
     #     )
 
-    @ResourceGroupPreparer(
-        name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
-    )
-    def test_catalog_dataplane_scenario(self):
-        self.kwargs.update(
-            {
-                "location": "centraluseuap",
-            }
-        )
+    #     self.cmd(
+    #         "az devcenter dev environment-definition show "
+    #         '--dev-center "{devcenterName}" '
+    #         '--project "{projectName}" '
+    #         '--catalog-name  "{catalogName}" '
+    #         '--definition-name "{sandboxName}"',
+    #         checks=[
+    #             self.check("name", "{sandboxName}"),
+    #             self.check("id", "{sandboxId}"),
+    #         ],
+    #     )
 
-        create_catalog(self)
+    #     #endpoint
 
-        self.cmd(
-            "az devcenter dev catalog list "
-            '--dev-center "{devcenterName}" '
-            '--project "{projectName}" ',
-            checks=[
-                self.check("length(@)", 1),
-                self.check("[0].name", "{catalogName}"),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter dev environment-definition list "
+    #         '--endpoint "{endpoint}" '
+    #         '--project "{projectName}" ',
+    #         checks=[
+    #             self.check("length(@)", 3),
+    #             self.check("[0].catalogName", "{catalogName}"),
+    #             self.check("[0].name", "{functionAppName}"),
+    #             self.check("[0].id", "{functionAppId}"),
+    #             self.check("[1].catalogName", "{catalogName}"),
+    #             self.check("[1].name", "{sandboxName}"),
+    #             self.check("[1].id", "{sandboxId}"),
+    #             self.check("[2].catalogName", "{catalogName}"),
+    #             self.check("[2].name", "{webAppName}"),
+    #             self.check("[2].id", "{webAppId}"),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter dev catalog show "
-            '--dev-center "{devcenterName}" '
-            '--project "{projectName}" '
-            '--name "{catalogName}" ',
-            checks=[
-                self.check("name", "{catalogName}"),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter dev environment-definition list "
+    #         '--endpoint "{endpoint}" '
+    #         '--project "{projectName}" '
+    #         '--catalog-name  "{catalogName}" ',
+    #         checks=[
+    #             self.check("length(@)", 3),
+    #             self.check("[0].catalogName", "{catalogName}"),
+    #             self.check("[0].name", "{functionAppName}"),
+    #             self.check("[0].id", "{functionAppId}"),
+    #             self.check("[1].catalogName", "{catalogName}"),
+    #             self.check("[1].name", "{sandboxName}"),
+    #             self.check("[1].id", "{sandboxId}"),
+    #             self.check("[2].catalogName", "{catalogName}"),
+    #             self.check("[2].name", "{webAppName}"),
+    #             self.check("[2].id", "{webAppId}"),
+    #         ],
+    #     )
 
-        #endpoint
+    #     self.cmd(
+    #         "az devcenter dev environment-definition show "
+    #         '--endpoint "{endpoint}" '
+    #         '--project "{projectName}" '
+    #         '--catalog-name  "{catalogName}" '
+    #         '--definition-name "{sandboxName}"',
+    #         checks=[
+    #             self.check("name", "{sandboxName}"),
+    #             self.check("id", "{sandboxId}"),
+    #         ],
+    #     )
 
-        self.cmd(
-            "az devcenter dev catalog list "
-            '--endpoint "{endpoint}" '
-            '--project "{projectName}" ',
-            checks=[
-                self.check("length(@)", 1),
-                self.check("[0].name", "{catalogName}"),
-            ],
-        )
+    # @ResourceGroupPreparer(
+    #     name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
+    # )
+    # def test_env_type_dataplane_scenario(self):
+    #     self.kwargs.update(
+    #         {
+    #             "location": "centraluseuap",
+    #         }
+    #     )
+    #     create_proj_env_type(self)
 
-        self.cmd(
-            "az devcenter dev catalog show "
-            '--endpoint "{endpoint}" '
-            '--project "{projectName}" '
-            '--name "{catalogName}" ',
-            checks=[
-                self.check("name", "{catalogName}"),
-            ],
-        )
-
-    @ResourceGroupPreparer(
-        name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
-    )
-    def test_env_definition_dataplane_scenario(self):
-        self.kwargs.update(
-            {
-                "location": "centraluseuap",
-            }
-        )
-
-        create_catalog(self)
-        function_app_id = f"/projects/{self.kwargs.get('projectName', '')}/catalogs/{self.kwargs.get('catalogName', '')}/environmentDefinitions/functionapp"
-        sandbox_id = f"/projects/{self.kwargs.get('projectName', '')}/catalogs/{self.kwargs.get('catalogName', '')}/environmentDefinitions/sandbox"
-        webapp_id = f"/projects/{self.kwargs.get('projectName', '')}/catalogs/{self.kwargs.get('catalogName', '')}/environmentDefinitions/webapp"
-
-        self.kwargs.update(
-            {
-                "functionAppName": "FunctionApp",
-                "sandboxName": "Sandbox",
-                "webAppName": "WebApp",
-                "functionAppId": function_app_id,
-                "sandboxId": sandbox_id,
-                "webAppId": webapp_id,
-            }
-        )
-
-        self.cmd(
-            "az devcenter dev environment-definition list "
-            '--dev-center "{devcenterName}" '
-            '--project "{projectName}" ',
-            checks=[
-                self.check("length(@)", 3),
-                self.check("[0].catalogName", "{catalogName}"),
-                self.check("[0].name", "{functionAppName}"),
-                self.check("[0].id", "{functionAppId}"),
-                self.check("[1].catalogName", "{catalogName}"),
-                self.check("[1].name", "{sandboxName}"),
-                self.check("[1].id", "{sandboxId}"),
-                self.check("[2].catalogName", "{catalogName}"),
-                self.check("[2].name", "{webAppName}"),
-                self.check("[2].id", "{webAppId}"),
-            ],
-        )
-
-        self.cmd(
-            "az devcenter dev environment-definition list "
-            '--dev-center "{devcenterName}" '
-            '--project "{projectName}" '
-            '--catalog-name  "{catalogName}" ',
-            checks=[
-                self.check("length(@)", 3),
-                self.check("[0].catalogName", "{catalogName}"),
-                self.check("[0].name", "{functionAppName}"),
-                self.check("[0].id", "{functionAppId}"),
-                self.check("[1].catalogName", "{catalogName}"),
-                self.check("[1].name", "{sandboxName}"),
-                self.check("[1].id", "{sandboxId}"),
-                self.check("[2].catalogName", "{catalogName}"),
-                self.check("[2].name", "{webAppName}"),
-                self.check("[2].id", "{webAppId}"),
-            ],
-        )
-
-        self.cmd(
-            "az devcenter dev environment-definition show "
-            '--dev-center "{devcenterName}" '
-            '--project "{projectName}" '
-            '--catalog-name  "{catalogName}" '
-            '--definition-name "{sandboxName}"',
-            checks=[
-                self.check("name", "{sandboxName}"),
-                self.check("id", "{sandboxId}"),
-            ],
-        )
-
-        #endpoint
-
-        self.cmd(
-            "az devcenter dev environment-definition list "
-            '--endpoint "{endpoint}" '
-            '--project "{projectName}" ',
-            checks=[
-                self.check("length(@)", 3),
-                self.check("[0].catalogName", "{catalogName}"),
-                self.check("[0].name", "{functionAppName}"),
-                self.check("[0].id", "{functionAppId}"),
-                self.check("[1].catalogName", "{catalogName}"),
-                self.check("[1].name", "{sandboxName}"),
-                self.check("[1].id", "{sandboxId}"),
-                self.check("[2].catalogName", "{catalogName}"),
-                self.check("[2].name", "{webAppName}"),
-                self.check("[2].id", "{webAppId}"),
-            ],
-        )
-
-        self.cmd(
-            "az devcenter dev environment-definition list "
-            '--endpoint "{endpoint}" '
-            '--project "{projectName}" '
-            '--catalog-name  "{catalogName}" ',
-            checks=[
-                self.check("length(@)", 3),
-                self.check("[0].catalogName", "{catalogName}"),
-                self.check("[0].name", "{functionAppName}"),
-                self.check("[0].id", "{functionAppId}"),
-                self.check("[1].catalogName", "{catalogName}"),
-                self.check("[1].name", "{sandboxName}"),
-                self.check("[1].id", "{sandboxId}"),
-                self.check("[2].catalogName", "{catalogName}"),
-                self.check("[2].name", "{webAppName}"),
-                self.check("[2].id", "{webAppId}"),
-            ],
-        )
-
-        self.cmd(
-            "az devcenter dev environment-definition show "
-            '--endpoint "{endpoint}" '
-            '--project "{projectName}" '
-            '--catalog-name  "{catalogName}" '
-            '--definition-name "{sandboxName}"',
-            checks=[
-                self.check("name", "{sandboxName}"),
-                self.check("id", "{sandboxId}"),
-            ],
-        )
-
-    @ResourceGroupPreparer(
-        name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
-    )
-    def test_env_type_dataplane_scenario(self):
-        self.kwargs.update(
-            {
-                "location": "centraluseuap",
-            }
-        )
-        create_proj_env_type(self)
-
-        self.cmd(
-            "az devcenter dev environment-type list "
-            '--dev-center "{devcenterName}" '
-            '--project "{projectName}" ',
-            checks=[
-                self.check("length(@)", 1),
-                self.check("[0].name", "{envTypeName}"),
-                self.check("[0].deploymentTargetId", "/subscriptions/{subscriptionId}"),
-            ],
-        )
+    #     self.cmd(
+    #         "az devcenter dev environment-type list "
+    #         '--dev-center "{devcenterName}" '
+    #         '--project "{projectName}" ',
+    #         checks=[
+    #             self.check("length(@)", 1),
+    #             self.check("[0].name", "{envTypeName}"),
+    #             self.check("[0].deploymentTargetId", "/subscriptions/{subscriptionId}"),
+    #         ],
+    #     )
 
     # @ResourceGroupPreparer(
     #     name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
@@ -2091,7 +2089,6 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
     #     )
 
     #     param1 = '{\\"name\\":\\"test1\\"}'
-    #     print(param1)
     #     self.kwargs.update(
     #         {
     #             "paramTest": param1,
