@@ -53,7 +53,7 @@ def load_command_table(self, _):
         g.custom_command('exec', 'containerapp_ssh', validator=validate_ssh)
         g.custom_command('up', 'containerapp_up', supports_no_wait=False, exception_handler=ex_handler_factory())
         g.custom_command('browse', 'open_containerapp_in_browser')
-        g.custom_command('patch', 'patch_run_interactive', is_preview=True)
+        # g.custom_command('patch', 'patch_run_interactive', is_preview=True)
 
     with self.command_group('containerapp replica') as g:
         g.custom_show_command('show', 'get_replica')  # TODO implement the table transformer
@@ -202,5 +202,6 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_workload_profile')
 
     with self.command_group('containerapp patch', is_preview=True) as g:
-        g.custom_command('list','patch_list',is_preview=True)
-        g.custom_command('run','patch_run',is_preview=True)
+        g.custom_command('list', 'patch_list', is_preview=True)
+        g.custom_command('run', 'patch_run', is_preview=True)
+        g.custom_command('interactive-run', 'patch_run_interactive', is_preview=True)

@@ -4305,22 +4305,14 @@ def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile
     except Exception as e:
         handle_raw_exception(e)
 
-def patch_list(cmd, resource_group_name, managed_env=None, show_all=False):
+
+def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
     if is_docker_running() is False:
         logger.warning("Please install or start Docker and try again.")
         return
     pack_exec_path = get_pack_exec_path()
     print("\rStarting process 1/5...", end="", flush=True)
-    if managed_env:
-        ca_list = list_containerapp(cmd, resource_group_name, managed_env)
-    else:
-        env_list = list_managed_environments(cmd, resource_group_name)
-        env_names = []
-        for env in env_list:
-            env_names.append(env["name"])
-        ca_list = []
-        for env_name in env_names:
-            ca_list += list_containerapp(cmd, resource_group_name, env_name)
+    ca_list = list_containerapp(cmd, resource_group_name, managed_env)
     imgs = []
     print("\rStarting process 2/5...", end="", flush=True)
     if ca_list:
@@ -4415,7 +4407,7 @@ def patch_run_interactive(cmd, resource_group_name=None, managed_env=None, show_
     user_input = input("Do you want to apply all the patch or specify by id? (y/n/id)\n")
     if user_input != "n":
         telemetry_core.add_extension_event('containerapp',{'Context.Default.AzureCLI.PatchRun':"Ran patch run command"})
-    return patch_apply(cmd, patchable_check_results, user_input, resource_group_name, pack_exec_path)
+    return patch_apply(cmd, patchable_check_results, user_input, pack_exec_path)
 
 
 def patch_run(cmd, resource_group_name=None, managed_env=None, show_all=False):
@@ -4434,7 +4426,7 @@ def patch_run(cmd, resource_group_name=None, managed_env=None, show_all=False):
     print(patchable_check_results_json)
     if without_unpatchable_results == []:
         return
-    return patch_apply(cmd, patchable_check_results, "y", resource_group_name, pack_exec_path)
+    return patch_apply(cmd, patchable_check_results, "y", pack_exec_path)
 
 
 def patch_apply(cmd, patch_check_list, method, pack_exec_path):
@@ -4472,8 +4464,9 @@ def patch_apply(cmd, patch_check_list, method, pack_exec_path):
                 return
         print("Invalid patch method or id.")
         return
-    telemetry_core.add_extension_event('containerapp',{'Context.Default.AzureCLI.PatchApplyCount':{patch_apply_count[0]}})
+    telemetry_core.add_extension_event('containerapp', {'Context.Default.AzureCLI.PatchApplyCount':{patch_apply_count[0]}})
     return results
+
 
 def patch_cli_call(cmd, resource_group, container_app_name, container_name, target_image_name, new_run_image, pack_exec_path, patch_apply_count):
     try:
@@ -4485,7 +4478,7 @@ def patch_cli_call(cmd, resource_group, container_app_name, container_name, targ
         print(f"Publishing {new_target_image_name} to registry...")
         subprocess.run(f"docker push -q {new_target_image_name}", shell=True)
         print("Patch applied and published successfully.\nNew image: " + new_target_image_name)
-        patch_apply_counter+=1
+        patch_apply_counter += 1
         patch_apply_count.append(patch_apply_counter)
     except Exception:
         print("Error: Failed to apply patch and publish. Check if registry is logged in and has write access.")

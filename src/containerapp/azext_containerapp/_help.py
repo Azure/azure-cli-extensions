@@ -1280,7 +1280,7 @@ helps['containerapp patch'] = """
 
 helps['containerapp patch list'] = """
     type: command
-    short-summary: List Container Apps to be patched.Patching is only available for the apps built using the source to cloud feature.
+    short-summary: List Container Apps to be patched. Patching is only available for the apps built using the source to cloud feature.
     exmaples:
     - name: List Container Apps that can be patched.
       text: |
@@ -1292,7 +1292,19 @@ helps['containerapp patch list'] = """
 
 helps['containerapp patch run'] = """
     type: command
-    short-summary: List and select Container Apps to be patched.Patching is only available for the apps built using the source to cloud feature.
+    short-summary: List and apply Container Apps to be patched. Patching is only available for the apps built using the source to cloud feature.
+    exmaples:
+    - name: List Container Apps that can be patched and apply patch.
+      text: |
+          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv
+    - name: List patchable and unpatchable Container Apps and apply patch.
+      text: |
+          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv --show-all
+"""
+
+helps['containerapp patch interactive-run'] = """
+    type: command
+    short-summary: List and select Container Apps to be patched in an interactive way. Patching is only available for the apps built using the source to cloud feature.
     exmaples:
     - name: List Container Apps that can be patched and apply patch.
       text: |
