@@ -357,7 +357,7 @@ def load_arguments(self, _):
             "hibernate",
             arg_type=get_three_state_flag(),
             help="Optional parameter to hibernate the dev box.",
-            is_preview =True
+            is_preview=True,
         )
 
     with self.argument_context(
@@ -720,7 +720,12 @@ def load_arguments(self, _):
             "endpoint",
             arg_type=endpoint,
         )
-        c.argument("catalog_name", options_list=["--name", "-n", "--catalog-name"], type=str, help="The name of the catalog")
+        c.argument(
+            "catalog_name",
+            options_list=["--name", "-n", "--catalog-name"],
+            type=str,
+            help="The name of the catalog",
+        )
 
     with self.argument_context("devcenter dev environment-type list") as c:
         c.argument(
@@ -768,5 +773,8 @@ def load_arguments(self, _):
         )
         c.argument("catalog_name", type=str, help="The name of the catalog")
         c.argument(
-            "definition_name", options_list=["--name", "-n", "--definition-name"], type=str, help="The name of the environment definition"
+            "definition_name",
+            options_list=["--name", "-n", "--definition-name"],
+            type=str,
+            help="The name of the environment definition",
         )

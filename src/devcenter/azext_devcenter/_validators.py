@@ -7,12 +7,12 @@ import re
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     InvalidArgumentValueError,
-    MutuallyExclusiveArgumentError
+    MutuallyExclusiveArgumentError,
 )
 from azure.cli.core.aaz import has_value
 
 
-locale.setlocale(locale.LC_ALL, '')
+locale.setlocale(locale.LC_ALL, "")
 
 
 # Control plane
@@ -57,18 +57,22 @@ or endpoint (--endpoint) parameter should be set."""
         raise MutuallyExclusiveArgumentError(error_message)
     if endpoint is not None:
         check_valid_uri = re.match(
-            r"(https)://.+.*\.(devcenter.azure-test.net|devcenter.azure.com)[/]?$", endpoint
+            r"(https)://.+.*\.(devcenter.azure-test.net|devcenter.azure.com)[/]?$",
+            endpoint,
         )
         if check_valid_uri is None:
-            raise InvalidArgumentValueError(f"""The endpoint '{endpoint}' is invalid.""")
+            raise InvalidArgumentValueError(
+                f"""The endpoint '{endpoint}' is invalid."""
+            )
     if endpoint is None and dev_center is None:
         error_message = """Either an endpoint (--endpoint) \
 or dev-center (--dev-center --dev-center-name -d) should be set."""
         raise RequiredArgumentMissingError(error_message)
 
+
 def validate_env_name_already_exists(env_iterator, name, user_id, project):
     for env in env_iterator:
-        if (env.name.casefold() == name.casefold()):
+        if env.name.casefold() == name.casefold():
             error_message = f"""An environment with the name '{name}' \
 already exists for the user-id '{user_id}' in this project '{project}'."""
             raise InvalidArgumentValueError(error_message)

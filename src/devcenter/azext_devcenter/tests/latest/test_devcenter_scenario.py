@@ -32,7 +32,7 @@ from .helper import (
     create_environment_dependencies,
     create_pool,
     create_dev_box_dependencies,
-    get_endpoint
+    get_endpoint,
 )
 
 
@@ -1454,7 +1454,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             checks=[
                 self.check("length(@)", 1),
                 self.check("[0].name", "{projectName}"),
-                self.check("[0].maxDevBoxesPerUser", "{devBoxLimit}")
+                self.check("[0].maxDevBoxesPerUser", "{devBoxLimit}"),
             ],
         )
 
@@ -1464,18 +1464,18 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--dev-center "{devcenterName}" ',
             checks=[
                 self.check("name", "{projectName}"),
-                self.check("maxDevBoxesPerUser", "{devBoxLimit}")
+                self.check("maxDevBoxesPerUser", "{devBoxLimit}"),
             ],
         )
 
-        #test using endpoint
+        # test using endpoint
 
         self.cmd(
             "az devcenter dev project list " '--endpoint "{endpoint}" ',
             checks=[
                 self.check("length(@)", 1),
                 self.check("[0].name", "{projectName}"),
-                self.check("[0].maxDevBoxesPerUser", "{devBoxLimit}")
+                self.check("[0].maxDevBoxesPerUser", "{devBoxLimit}"),
             ],
         )
 
@@ -1485,10 +1485,9 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--endpoint "{endpoint}" ',
             checks=[
                 self.check("name", "{projectName}"),
-                self.check("maxDevBoxesPerUser", "{devBoxLimit}")
+                self.check("maxDevBoxesPerUser", "{devBoxLimit}"),
             ],
         )
-
 
     @ResourceGroupPreparer(
         name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
@@ -1517,7 +1516,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             ],
         )
 
-        #TODO add back idle checks once feature is available
+        # TODO add back idle checks once feature is available
 
         self.cmd(
             "az devcenter dev pool show "
@@ -1553,7 +1552,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             ],
         )
 
-        #test using endpoint
+        # test using endpoint
 
         self.cmd(
             "az devcenter dev pool list "
@@ -1631,7 +1630,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             ],
         )
 
-        #endpoint
+        # endpoint
 
         self.cmd(
             "az devcenter dev catalog list "
@@ -1728,7 +1727,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             ],
         )
 
-        #endpoint
+        # endpoint
 
         self.cmd(
             "az devcenter dev environment-definition list "
@@ -1925,7 +1924,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--dev-center "{devcenterName}" '
         )
 
-        #TODO: restart not working
+        # TODO: restart not working
         # self.cmd(
         #     "az devcenter dev dev-box restart "
         #     '--name "{devBoxName}" '
@@ -2020,13 +2019,15 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             checks=[
                 self.check("[0].action.name", "{actionName}"),
                 self.check("[0].action.actionType", "Stop"),
-                self.check("[0].action.next.scheduledTime", "2023-05-13T05:30:00+00:00"),
+                self.check(
+                    "[0].action.next.scheduledTime", "2023-05-13T05:30:00+00:00"
+                ),
                 self.check("[0].action.suspendedUntil", "2023-05-13T05:30:00+00:00"),
                 self.check(
                     "[0].action.sourceId",
                     "/projects/{projectName}/pools/{poolName}/schedules/default",
                 ),
-                self.check("[0].result", "Succeeded")
+                self.check("[0].result", "Succeeded"),
             ],
         )
 
@@ -2094,10 +2095,9 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
         self.kwargs.update(
             {
                 "parameters": functionAppParameters,
-                "environmentDefinitionName": "FunctionApp"
+                "environmentDefinitionName": "FunctionApp",
             }
         )
-
 
         self.cmd(
             "az devcenter dev environment create "

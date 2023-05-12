@@ -73,7 +73,7 @@ use a different tenant where you have access to projects."""
 def get_earliest_time(action_iterator):
     earliest_time = None
     for action in action_iterator:
-        if (action.next is not None):
+        if action.next is not None:
             action_time = action.next.scheduled_time
             if earliest_time is None or action_time < earliest_time:
                 earliest_time = action_time

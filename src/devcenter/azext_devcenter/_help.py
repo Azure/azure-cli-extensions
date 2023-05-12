@@ -189,12 +189,12 @@ helps[
     examples:
       - name: Delete using dev center
         text: |-
-               az devcenter dev dev-box delete --name "MyDevBox" --dev-center-name "ContosoDevCenter"  \
+               az devcenter dev dev-box delete --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
                --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
       - name: Delete using endpoint
         text: |-
-               az devcenter dev dev-box delete --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/"  \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+               az devcenter dev dev-box delete --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
@@ -206,11 +206,11 @@ helps[
       - name: Get remote connection using dev center
         text: |-
                az devcenter dev dev-box show-remote-connection --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
       - name: Get remote connection using dev center
         text: |-
                az devcenter dev dev-box show-remote-connection --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
@@ -226,7 +226,7 @@ helps[
       - name: Start using endpoint
         text: |-
                az devcenter dev dev-box start --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
@@ -242,7 +242,7 @@ helps[
       - name: Restart using endpoint
         text: |-
                az devcenter dev dev-box restart --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
@@ -258,7 +258,7 @@ helps[
       - name: Stop using endpoint
         text: |-
                az devcenter dev dev-box stop --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
-               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
@@ -483,11 +483,11 @@ helps[
       - name: List using dev center
         text: |-
                az devcenter dev catalog list --dev-center-name "ContosoDevCenter" \
-               --project-name "DevProject"
+--project-name "DevProject"
       - name: List using endpoint
         text: |-
                az devcenter dev catalog list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
-               --project-name "DevProject"
+--project-name "DevProject"
 """
 
 helps[
@@ -499,11 +499,11 @@ helps[
       - name: Get using dev center
         text: |-
                az devcenter dev catalog show --dev-center-name "ContosoDevCenter" \
-               --project-name "DevProject" --catalog-name "foo"
+--project-name "DevProject" --catalog-name "foo"
       - name: Get using endpoint
         text: |-
                az devcenter dev catalog show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
-               --project-name "DevProject" --catalog-name "foo"
+--project-name "DevProject" --catalog-name "foo"
 """
 
 helps[
@@ -521,12 +521,12 @@ helps[
     examples:
       - name: List using dev center
         text: |-
-               az devcenter dev environment-type list --dev-center-name "ContosoDevCenter"  \
-              --project-name "DevProject"
+               az devcenter dev environment-type list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject"
       - name: List using endpoint
         text: |-
-               az devcenter dev environment-type list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/"  \
-              --project-name "DevProject"
+               az devcenter dev environment-type list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject"
 """
 
 helps[
