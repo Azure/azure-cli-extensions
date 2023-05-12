@@ -9,6 +9,7 @@ VNF = "vnf"
 CNF = "cnf"
 NSD = "nsd"
 
-# Artifact Types
-VHD_ARTIFACT = "VhdImageFile"
-ARM_TEMPLATE_ARTIFACT = "ArmTemplate"
+# Names of files used in the repo
+VNF_DEFINITION_BICEP_SOURCE_TEMPLATE = "vnfdefinition.bicep"
+VNF_MANIFEST_BICEP_SOURCE_TEMPLATE = "vnfartifactmanifests.bicep"
+VNF_DEFINITION_OUTPUT_BICEP_PREFIX = "nfd-bicep-"

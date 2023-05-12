@@ -3,28 +3,26 @@
 # License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------
 """Contains a base class for generating NFDs."""
-from typing import Dict, Any
 from knack.log import get_logger
+
+
 logger = get_logger(__name__)
+
 
 class NFDGenerator:
     """A class for generating an NFD from a config file."""
-    
+
     def __init__(
         self,
-        config: Dict[Any, Any]
     ) -> None:
-        """_summary_
+        """
+        Superclass for NFD generators.
 
-        :param definition_type: _description_
-        :type definition_type: str
-        :param config: _description_
-        :type config: Dict[Any, Any]
+        The sub-classes do the actual work
         """
-        self.config = config
-        
+        pass
+
     def generate_nfd(self) -> None:
-        """No-op on base class
-        """
+        """No-op on base class."""
         logger.error("Generate NFD called on base class. No-op")
         return
