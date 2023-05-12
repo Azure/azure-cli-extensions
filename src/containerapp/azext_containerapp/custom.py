@@ -4406,7 +4406,7 @@ def patch_run_interactive(cmd, resource_group_name=None, managed_env=None, show_
         return
     user_input = input("Do you want to apply all the patch or specify by id? (y/n/id)\n")
     if user_input != "n":
-        telemetry_core.add_extension_event('containerapp',{'Context.Default.AzureCLI.PatchRun':"Ran patch run command"})
+        telemetry_core.add_extension_event('containerapp', {'Context.Default.AzureCLI.PatchRun': "Ran patch run command"})
     return patch_apply(cmd, patchable_check_results, user_input, pack_exec_path)
 
 
@@ -4464,7 +4464,7 @@ def patch_apply(cmd, patch_check_list, method, pack_exec_path):
                 return
         print("Invalid patch method or id.")
         return
-    telemetry_core.add_extension_event('containerapp', {'Context.Default.AzureCLI.PatchApplyCount':{patch_apply_count[0]}})
+    telemetry_core.add_extension_event('containerapp', {'Context.Default.AzureCLI.PatchApplyCount': {patch_apply_count[0]}})
     return results
 
 
