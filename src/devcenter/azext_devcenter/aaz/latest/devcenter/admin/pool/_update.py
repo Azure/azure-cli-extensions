@@ -99,7 +99,7 @@ class Update(AAZCommand):
             help="Name of a network connection in parent project of this pool.",
         )
 
-        #TODO: re-add once idle is ready, uncomment out other blocks of code in this file
+        #TODO: Uncomment once idle is ready, uncomment out other blocks of code in this file
         # _args_schema.stop_on_disconnect = AAZObjectArg(
         #     options=["--stop-on-disconnect"],
         #     arg_group="Properties",

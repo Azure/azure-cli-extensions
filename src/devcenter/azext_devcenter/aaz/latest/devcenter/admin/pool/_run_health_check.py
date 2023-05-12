@@ -10,10 +10,10 @@
 
 from azure.cli.core.aaz import *
 
-
-@register_command(
-    "devcenter admin pool run-health-check",
-)
+#TODO: Uncomment once feature is complete
+# @register_command(
+#     "devcenter admin pool run-health-check",
+# )
 class RunHealthCheck(AAZCommand):
     """Triggers a refresh of the pool status.
 

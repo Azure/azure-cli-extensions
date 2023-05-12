@@ -10,7 +10,6 @@
 
 from azure.cli.core.aaz import *
 
-
 @register_command(
     "devcenter admin network-connection run-health-check",
 )
