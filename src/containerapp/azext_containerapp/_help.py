@@ -1272,14 +1272,44 @@ helps['containerapp compose create'] = """
               --compose-file-path "path/to/docker-compose.yml"
 """
 
+# Patch commands
+helps['containerapp patch'] = """
+    type: group
+    short-summary: Patch Azure Container Apps.
+"""
+
 helps['containerapp patch list'] = """
     type: command
-    short-summary: List patchable and unpatchable container apps.
-    examples:
-    - name: List patchable container apps.
+    short-summary: List Container Apps to be patched. Patching is only available for the apps built using the source to cloud feature.
+    exmaples:
+    - name: List Container Apps that can be patched.
       text: |
-          az containerapp list -g MyResourceGroup --environment MyContainerappEnv
-    - name: List patchable and non-patchable container apps.
+          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv
+    - name: List patchable and unpatchable Container Apps.
       text: |
-          az containerapp list -g MyResourceGroup --environment MyContainerappEnv --show-all
+          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv --show-all
+"""
+
+helps['containerapp patch run'] = """
+    type: command
+    short-summary: List and apply Container Apps to be patched. Patching is only available for the apps built using the source to cloud feature.
+    exmaples:
+    - name: List Container Apps that can be patched and apply patch.
+      text: |
+          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv
+    - name: List patchable and unpatchable Container Apps and apply patch.
+      text: |
+          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv --show-all
+"""
+
+helps['containerapp patch interactive-run'] = """
+    type: command
+    short-summary: List and select Container Apps to be patched in an interactive way. Patching is only available for the apps built using the source to cloud feature.
+    exmaples:
+    - name: List Container Apps that can be patched and apply patch.
+      text: |
+          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv
+    - name: List patchable and unpatchable Container Apps and apply patch.
+      text: |
+          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv --show-all
 """
