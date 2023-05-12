@@ -297,15 +297,20 @@ ManagedCertificateEnvelop = {
 # ContainerApp Patch
 ImageProperties = {
     "imageName": None,
-    "targetContainerAppName": None
+    "targetContainerName": None,
+    "targetContainerAppName": None,
+    "revisionMode": None,
 }
 
 ImagePatchableCheck = {
     "targetContainerAppName": None,
+    "targetContainerName": None,
+    "revisionMode": None,
+    "targetImageName": None,
     "oldRunImage": None,
     "newRunImage": None,
     "id": None,
-    "reason": None
+    "reason": None,
 }
 
 OryxMarinerRunImgTagProperty = {
