@@ -36,6 +36,7 @@ class CnfNfdGenerator(NFDGenerator):
 
         self.artifacts = []
         self.nf_applications = []
+        # JORDAN: need to add the bit to schema before properties?
         self.deployment_parameter_schema = {}
 
         self._bicep_path = os.path.join(
@@ -56,14 +57,15 @@ class CnfNfdGenerator(NFDGenerator):
             for helm_package in self.config.helm_packages:
                 # Unpack the chart into the tmp folder
                 print("HELMPACKAGE", helm_package)
-                # JORDAN: changes to pass in path to chart instead of whole package
+                # JORDAN: changes to pass in path to chart instead of whole package, check which way we want to do this
                 self._extract_chart(helm_package['path_to_chart'])
                 # Validate chart
+                
                 # Get schema for each chart (extract mappings and take the schema bits we need from values.schema.json)
-                self.get_chart_mapping_schema(helm_package)
-                # self.deployment_parameter_schema["properties"].update(self.get_chart_mapping_schema(helm_package.name))
-                print("DS", self.deployment_parameter_schema)
-                # Add that schema to the big schema.
+                # + Add that schema to the big schema.
+                # Jordan: check if this should still be dict or if should be json by now?
+                self.deployment_parameter_schema["properties"] = self.get_chart_mapping_schema(helm_package)
+
                 # generate the NF application for the chart
                 self.generate_nf_application(helm_package)
                 # Workout the list of artifacts for the chart
@@ -156,8 +158,8 @@ class CnfNfdGenerator(NFDGenerator):
         (name, version) = self.get_chart_name_and_version(helm_package["path_to_chart"])
         return {
             "artifactType": "HelmPackage",
-            "name": helm_package.name,
-            "dependsOnProfile": helm_package.depends_on,
+            "name": helm_package["name"],
+            "dependsOnProfile": helm_package["depends_on"],
             "artifactProfile": {
                 "artifactStore": {
                     "id": "[resourceId('Microsoft.HybridNetwork/publishers/artifactStores', parameters('publisherName'), parameters('acrArtifactStoreName'))]"
@@ -179,7 +181,7 @@ class CnfNfdGenerator(NFDGenerator):
                     "releaseNamespace": name,
                     "releaseName": name,
                     "helmPackageVersion": version,
-                    "values": self.generate_parmeter_mappings(),
+                    "values": self.generate_parmeter_mappings(helm_package),
                 },
             },
         }
@@ -187,22 +189,37 @@ class CnfNfdGenerator(NFDGenerator):
     def get_artifact_list(self, helm_package: HelmPackageConfig) -> List[Any]:
         pass
 
-    ## JORDAN DO THIS FIRST
+    ## JORDAN: this is done cheating by not actually looking at the schema
     def get_chart_mapping_schema(self, helm_package: HelmPackageConfig) -> Dict[Any, Any]:
         # We need to take the mappings from the values.nondef.yaml file and generate the schema
         # from the values.schema.json file.
         # Basically take the bits of the schema that are relevant to the parameters requested.
         non_def_values = helm_package['path_to_chart'] + "/values.nondef.yaml"
         
-        with open(non_def_values) as f:
-            data = yaml.load(f, Loader=yaml.FullLoader)
-            print(data)
-        chart = helm_package['path_to_chart'] + '/Chart.yaml'
-        values = helm_package['path_to_chart'] + '/values.json'
-        schema = helm_package['path_to_chart'] + '/values.schema.json'
-        # go through schema, find the properties 
-        pass
+        with open(non_def_values, 'r') as stream:
+            data = yaml.load(stream, Loader=yaml.SafeLoader)
+            deploy_params_list = []
+            params_for_schema = self.find_deploy_params(data, deploy_params_list)
+        
+        schema_dict = {}
+        for i in params_for_schema:
+            schema_dict[i] = {"type": "string", "description": "no descr"}
+        print(schema_dict)    
+        return schema_dict
 
+    def find_deploy_params(self, nested_dict, deploy_params_list):
+        for k,v in nested_dict.items():
+            if isinstance(v, str) and "deployParameters" in v:
+                # only add the parameter name (not deployParam. or anything after)
+                param = v.split(".",1)[1]
+                param = param.split('}', 1)[0]
+                deploy_params_list.append(param)
+                print(deploy_params_list)
+            elif hasattr(v, 'items'): #v is a dict
+                self.find_deploy_params(v, deploy_params_list)
+                    
+        return deploy_params_list
+            
     ## Jordan DONE
     ## think we need to be careful what we are naming things here, we've passed it the path to chart not the helm package
     def get_chart_name_and_version(
@@ -222,7 +239,22 @@ class CnfNfdGenerator(NFDGenerator):
         # Need to work out what we are doing here???
         pass
 
-    ## JORDAN DO THIS 3rd
-    def generate_parmeter_mappings(self) -> str:
+    ## JORDAN talk to Jacob about ARM to bicep stuff
+    ## This is just experimenting, don't think this is returning correct format?
+    def generate_parmeter_mappings(self, helm_package: HelmPackageConfig) -> str:
         # Basically copy the values.nondef.yaml file to the right place.
-        pass
+        values = helm_package["path_to_chart"] + '/values.nondef.yaml'
+        with open(values) as f:
+            data = yaml.load(f, Loader=yaml.FullLoader)
+        with open('values.nondef.json', 'w') as file:
+            json.dump(data, file)
+            # values_json = json.dump(data, file)
+            
+        with open('values.nondef.json', 'r') as fi:
+            values_json = json.load(fi)
+            
+        return values_json
+        
+        # return "string(loadJsonContent('values.nondef.json')"
+        ## Note: if it was just bicep file, could return 'string(json....)' but because it is arm template to bicep we can't
+        # return  "string(loadJsonContent('tmp/values.nondef.yaml'))"
