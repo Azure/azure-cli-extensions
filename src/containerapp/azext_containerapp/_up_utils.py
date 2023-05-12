@@ -487,17 +487,12 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         image_name = self.image if self.image is not None else self.name
         from datetime import datetime
 
-        # Moving this to skip the buildpacks scenario for now due to issues with buildpacks
-        # now = datetime.now()
-        # # Add version tag for acr image
-        # image_name += ":{}".format(
-        #     str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
-        # )
-
         self.image = self.registry_server + "/" + image_name
 
+        now = datetime.now()
+        tag_now_suffix = str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
+
         if build_from_source:
-            # TODO should we prompt for confirmation here?
             logger.warning("No dockerfile detected. Attempting to build a container directly from the provided source...")
 
             try:
@@ -507,7 +502,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 logger.warning("Attempting to build image using buildpacks...")
                 run_image_tag = get_latest_buildpack_run_tag("aspnet", "7.0")
                 if run_image_tag is not None:
-                    image_name = f"{image_name}:{run_image_tag}"
+                    image_name = f"{image_name}:{run_image_tag}-{tag_now_suffix}"
                 self.build_container_from_source_with_buildpack(image_name, source)
                 self.image = self.registry_server + "/" + image_name
                 return
@@ -520,21 +515,15 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             # If we're unable to use the buildpack, build source using an ACR Task
             # Moving tagging img to here
             # Skipping the buildpacks scenario for now due to issues with buildpacks
-            now = datetime.now()
             # Add version tag for acr image
-            image_name += ":{}".format(
-                str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
-            )
+            image_name += ":{}".format(tag_now_suffix)
             logger.warning("Attempting to build image using ACR Task...")
             self.build_container_from_source_with_acr_task(image_name, source)
         else:
             # Moving tagging img to here
             # Skipping the buildpacks scenario for now due to issues with buildpacks
-            now = datetime.now()
             # Add version tag for acr image
-            image_name += ":{}".format(
-                str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
-            )
+            image_name += ":{}".format(tag_now_suffix)
             queue_acr_build(
                 self.cmd,
                 self.acr.resource_group.name,

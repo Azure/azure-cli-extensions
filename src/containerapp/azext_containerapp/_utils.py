@@ -1810,19 +1810,19 @@ def patchable_check(repo_tag_split: str, oryx_builder_run_img_tags, inspect_resu
             "reason": "Image not based on dotnet Mariner."
         }
         return result
-    # elif len(str(tag_prop["version"]).split(".")) == 2:
-    #     result = {
-    #         "targetContainerAppName": inspect_result["targetContainerAppName"],
-    #         "targetContainerName": inspect_result["targetContainerName"],
-    #         "targetContainerAppEnvironmentName": inspect_result["targetContainerAppEnvironmentName"],
-    #         "targetResourceGroup": inspect_result["targetResourceGroup"],
-    #         "targetImageName": inspect_result["image_name"],
-    #         "oldRunImage": repo_tag_split,
-    #         "newRunImage": None,
-    #         "id": None,
-    #         "reason": "Image is a patchless version."
-    #     }
-    #     return result
+    elif len(str(tag_prop["version"]).split(".")) == 2:
+        result = {
+            "targetContainerAppName": inspect_result["targetContainerAppName"],
+            "targetContainerName": inspect_result["targetContainerName"],
+            "targetContainerAppEnvironmentName": inspect_result["targetContainerAppEnvironmentName"],
+            "targetResourceGroup": inspect_result["targetResourceGroup"],
+            "targetImageName": inspect_result["image_name"],
+            "oldRunImage": repo_tag_split,
+            "newRunImage": None,
+            "id": None,
+            "reason": "Image is using a version that doesn't contain a patch information."
+        }
+        return result
     repo_tag_split = repo_tag_split.split("-")
     if repo_tag_split[1] == "dotnet":
         matching_version_info = oryx_builder_run_img_tags[repo_tag_split[2]][str(tag_prop["version"].major) + "." + str(tag_prop["version"].minor)][tag_prop["support"]][tag_prop["marinerVersion"]]
@@ -1864,7 +1864,6 @@ def patchable_check(repo_tag_split: str, oryx_builder_run_img_tags, inspect_resu
 def get_current_mariner_tags() -> list(OryxMarinerRunImgTagProperty):
     r = requests.get("https://mcr.microsoft.com/v2/oryx/builder/tags/list")
     tags = r.json()
-    # tags = dict(tags=["run-dotnet-aspnet-7.0.1-cbl-mariner2.0", "run-dotnet-aspnet-7.0.1-cbl-mariner1.0", "run-dotnet-aspnet-7.1.0-cbl-mariner2.0"])
     tag_list = {}
     # only keep entries that container keyword "mariner"
     tags = [tag for tag in tags["tags"] if "mariner" in tag]

@@ -4386,7 +4386,7 @@ def patch_get_image_inspection(pack_exec_path, img, info_list):
     info_list.append(inspect_result)
 
 
-def patch_run_interactive(cmd, resource_group_name=None, managed_env=None, show_all=False):
+def patch_interactive(cmd, resource_group_name=None, managed_env=None, show_all=False):
     if is_docker_running() is False:
         logger.warning("Please install or start Docker and try again.")
         return
@@ -4406,7 +4406,7 @@ def patch_run_interactive(cmd, resource_group_name=None, managed_env=None, show_
     patch_apply(cmd, patchable_check_results, user_input, pack_exec_path)
 
 
-def patch_run(cmd, resource_group_name=None, managed_env=None, show_all=False):
+def patch_apply(cmd, resource_group_name=None, managed_env=None, show_all=False):
     if is_docker_running() is False:
         logger.warning("Please install or start Docker and try again.")
         return
@@ -4428,7 +4428,7 @@ def patch_run(cmd, resource_group_name=None, managed_env=None, show_all=False):
 def patch_apply(cmd, patch_check_list, method, pack_exec_path):
     m = method.strip().lower()
     # Track number of times patches were applied successfully.
-    patch_run_count = 0
+    patch_apply_count = 0
     if m == "y":
         for patch_check in patch_check_list:
             if patch_check["id"]:
@@ -4440,8 +4440,8 @@ def patch_apply(cmd, patch_check_list, method, pack_exec_path):
                                    patch_check["targetImageName"],
                                    patch_check["newRunImage"],
                                    pack_exec_path)
-                    # Increment patch_run_count with every successful patch.
-                    patch_run_count += 1
+                    # Increment patch_apply_count with every successful patch.
+                    patch_apply_count += 1
     elif m == "n":
         print("No patch applied.")
         return
@@ -4456,19 +4456,19 @@ def patch_apply(cmd, patch_check_list, method, pack_exec_path):
                                patch_check["targetImageName"],
                                patch_check["newRunImage"],
                                pack_exec_path)
-                patch_run_properties = {
-                    'Context.Default.AzureCLI.PatchRunUserResponse': method,
-                    'Context.Default.AzureCLI.PatchRunCount': 1
+                patch_apply_properties = {
+                    'Context.Default.AzureCLI.PatchApplyUserResponse': method,
+                    'Context.Default.AzureCLI.PatchApplyCount': 1
                 }
-                telemetry_core.add_extension_event('containerapp', patch_run_properties)
+                telemetry_core.add_extension_event('containerapp', patch_apply_properties)
                 return
         print("Invalid patch method or id.")
         return
-    patch_run_properties = {
+    patch_apply_properties = {
         'Context.Default.AzureCLI.UserResponse': "yes",
-        'Context.Default.AzureCLI.PatchRunCount': patch_run_count
+        'Context.Default.AzureCLI.PatchApplyCount': patch_apply_count
     }
-    telemetry_core.add_extension_event('containerapp', patch_run_properties)
+    telemetry_core.add_extension_event('containerapp', patch_apply_properties)
     return
 
 
