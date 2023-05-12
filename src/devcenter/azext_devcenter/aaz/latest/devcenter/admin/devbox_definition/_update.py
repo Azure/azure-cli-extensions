@@ -87,6 +87,7 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Indicates whether dev boxes created with this definition are capable of hibernation. Not all images are capable of supporting hibernation. To find out more see https://aka.ms/devbox/hibernate",
             nullable=True,
+            is_preview=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.image_reference = AAZObjectArg(

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin devbox-definition show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get a Dev Box definition

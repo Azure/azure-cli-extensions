@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update a pool.
 
     :example: Update
-        az devcenter admin pool update --devbox-definition-name "WebDevBox2" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --stop-on-disconnect status="Disabled"
+        az devcenter admin pool update --devbox-definition-name "WebDevBox2" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {
@@ -98,25 +98,27 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Name of a network connection in parent project of this pool.",
         )
-        _args_schema.stop_on_disconnect = AAZObjectArg(
-            options=["--stop-on-disconnect"],
-            arg_group="Properties",
-            help="Stop on disconnect configuration settings for dev boxes created in this pool.",
-            nullable=True,
-        )
 
-        stop_on_disconnect = cls._args_schema.stop_on_disconnect
-        stop_on_disconnect.grace_period_minutes = AAZIntArg(
-            options=["grace-period-minutes"],
-            help="The specified time in minutes to wait before stopping a dev box once disconnect is detected.",
-            nullable=True,
-        )
-        stop_on_disconnect.status = AAZStrArg(
-            options=["status"],
-            help="Whether the feature to stop the dev box on disconnect once the grace period has lapsed is enabled.",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
+        #TODO: re-add once idle is ready, uncomment out other blocks of code in this file
+        # _args_schema.stop_on_disconnect = AAZObjectArg(
+        #     options=["--stop-on-disconnect"],
+        #     arg_group="Properties",
+        #     help="Stop on disconnect configuration settings for dev boxes created in this pool.",
+        #     nullable=True,
+        # )
+
+        # stop_on_disconnect = cls._args_schema.stop_on_disconnect
+        # stop_on_disconnect.grace_period_minutes = AAZIntArg(
+        #     options=["grace-period-minutes"],
+        #     help="The specified time in minutes to wait before stopping a dev box once disconnect is detected.",
+        #     nullable=True,
+        # )
+        # stop_on_disconnect.status = AAZStrArg(
+        #     options=["status"],
+        #     help="Whether the feature to stop the dev box on disconnect once the grace period has lapsed is enabled.",
+        #     nullable=True,
+        #     enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        # )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -370,12 +372,12 @@ class Update(AAZCommand):
                 properties.set_prop("devBoxDefinitionName", AAZStrType, ".dev_box_definition_name", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("localAdministrator", AAZStrType, ".local_administrator", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkConnectionName", AAZStrType, ".network_connection_name", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("stopOnDisconnect", AAZObjectType, ".stop_on_disconnect")
+            #     properties.set_prop("stopOnDisconnect", AAZObjectType, ".stop_on_disconnect")
 
-            stop_on_disconnect = _builder.get(".properties.stopOnDisconnect")
-            if stop_on_disconnect is not None:
-                stop_on_disconnect.set_prop("gracePeriodMinutes", AAZIntType, ".grace_period_minutes")
-                stop_on_disconnect.set_prop("status", AAZStrType, ".status")
+            # stop_on_disconnect = _builder.get(".properties.stopOnDisconnect")
+            # if stop_on_disconnect is not None:
+            #     stop_on_disconnect.set_prop("gracePeriodMinutes", AAZIntType, ".grace_period_minutes")
+            #     stop_on_disconnect.set_prop("status", AAZStrType, ".status")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -461,9 +463,9 @@ class _UpdateHelper:
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
-        properties.stop_on_disconnect = AAZObjectType(
-            serialized_name="stopOnDisconnect",
-        )
+        # properties.stop_on_disconnect = AAZObjectType(
+        #     serialized_name="stopOnDisconnect",
+        # )
 
         health_status_details = _schema_pool_read.properties.health_status_details
         health_status_details.Element = AAZObjectType()
@@ -476,11 +478,11 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
 
-        stop_on_disconnect = _schema_pool_read.properties.stop_on_disconnect
-        stop_on_disconnect.grace_period_minutes = AAZIntType(
-            serialized_name="gracePeriodMinutes",
-        )
-        stop_on_disconnect.status = AAZStrType()
+        # stop_on_disconnect = _schema_pool_read.properties.stop_on_disconnect
+        # stop_on_disconnect.grace_period_minutes = AAZIntType(
+        #     serialized_name="gracePeriodMinutes",
+        # )
+        # stop_on_disconnect.status = AAZStrType()
 
         system_data = _schema_pool_read.system_data
         system_data.created_at = AAZStrType(
