@@ -1275,41 +1275,38 @@ helps['containerapp compose create'] = """
 # Patch commands
 helps['containerapp patch'] = """
     type: group
-    short-summary: Patch Azure Container Apps.
+    short-summary: Patch Azure Container Apps. Patching is only available for the apps built using the source to cloud feature. See https://aka.ms/aca-local-source-to-cloud
 """
 
 helps['containerapp patch list'] = """
     type: command
-    short-summary: List Container Apps to be patched. Patching is only available for the apps built using the source to cloud feature.
-    exmaples:
-    - name: List Container Apps that can be patched.
+    short-summary: List container apps that can be patched. Patching is only available for the apps built using the source to cloud feature. See https://aka.ms/aca-local-source-to-cloud
+    examples:
+    - name: List container apps that can be patched.
       text: |
-          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv
-    - name: List patchable and unpatchable Container Apps.
+          az containerapp patch list -g MyResourceGroup --environment MyContainerAppEnv
+    - name: List patchable and unpatchable container apps.
       text: |
-          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv --show-all
+          az containerapp patch list -g MyResourceGroup --environment MyContainerAppEnv --show-all
 """
 
 helps['containerapp patch run'] = """
     type: command
-    short-summary: List and apply Container Apps to be patched. Patching is only available for the apps built using the source to cloud feature.
-    exmaples:
-    - name: List Container Apps that can be patched and apply patch.
+    short-summary: List and apply container apps to be patched. Patching is only available for the apps built using the source to cloud feature. See https://aka.ms/aca-local-source-to-cloud
+    examples:
+    - name: List container apps that can be patched and apply patch.
       text: |
-          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv
-    - name: List patchable and unpatchable Container Apps and apply patch.
-      text: |
-          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv --show-all
+          az containerapp patch run -g MyResourceGroup --environment MyContainerAppEnv
 """
 
 helps['containerapp patch interactive-run'] = """
     type: command
-    short-summary: List and select Container Apps to be patched in an interactive way. Patching is only available for the apps built using the source to cloud feature.
-    exmaples:
-    - name: List Container Apps that can be patched and apply patch.
+    short-summary: List and select container apps to be patched in an interactive way. Patching is only available for the apps built using the source to cloud feature. See https://aka.ms/aca-local-source-to-cloud
+    examples:
+    - name: List container apps that can be patched and apply patch.
       text: |
-          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv
-    - name: List patchable and unpatchable Container Apps and apply patch.
+          az containerapp patch interactive-run -g MyResourceGroup --environment MyContainerAppEnv
+    - name: List patchable and unpatchable container apps and apply patch to the patchable ones.
       text: |
-          az containerapp patch -g MyResourceGroup --environment MyContainerappEnv --show-all
+          az containerapp patch interactive-run -g MyResourceGroup --environment MyContainerAppEnv --show-all
 """
