@@ -391,7 +391,9 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         command = [pack_exec_path, 'build', image_name, '--builder', builder_image_name, '--path', source]
         buildpack_run_tag = get_latest_buildpack_run_tag("aspnet", "7.0")
         if buildpack_run_tag is not None:
-            command.extend(['--run-image', f"mcr.microsoft.com/oryx/builder:{buildpack_run_tag}"])
+            buildpack_run_image = f"mcr.microsoft.com/oryx/builder:{buildpack_run_tag}"
+            logger.debug(f"Determined the run image to use as {buildpack_run_image}.")
+            command.extend(['--run-image', buildpack_run_image])
 
         logger.debug(f"Calling '{' '.join(command)}'")
         try:

@@ -53,7 +53,6 @@ def load_command_table(self, _):
         g.custom_command('exec', 'containerapp_ssh', validator=validate_ssh)
         g.custom_command('up', 'containerapp_up', supports_no_wait=False, exception_handler=ex_handler_factory())
         g.custom_command('browse', 'open_containerapp_in_browser')
-        # g.custom_command('patch', 'patch_run_interactive', is_preview=True)
 
     with self.command_group('containerapp replica') as g:
         g.custom_show_command('show', 'get_replica')  # TODO implement the table transformer

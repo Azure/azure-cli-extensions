@@ -1795,15 +1795,15 @@ def get_pack_exec_path():
     return None
 
 
-def patchable_check(repo_tag_split: str, oryx_builder_run_img_tags, bom):
+def patchable_check(repo_tag_split: str, oryx_builder_run_img_tags, inspect_result):
     tag_prop = parse_oryx_mariner_tag(repo_tag_split)
     if tag_prop is None:
         result = {
-            "targetContainerAppName": bom["targetContainerAppName"],
-            "targetContainerName": bom["targetContainerName"],
-            "targetContainerAppEnvironmentName": bom["targetContainerAppEnvironmentName"],
-            "targetResourceGroup": bom["targetResourceGroup"],
-            "targetImageName": bom["image_name"],
+            "targetContainerAppName": inspect_result["targetContainerAppName"],
+            "targetContainerName": inspect_result["targetContainerName"],
+            "targetContainerAppEnvironmentName": inspect_result["targetContainerAppEnvironmentName"],
+            "targetResourceGroup": inspect_result["targetResourceGroup"],
+            "targetImageName": inspect_result["image_name"],
             "oldRunImage": repo_tag_split,
             "newRunImage": None,
             "id": None,
@@ -1812,11 +1812,11 @@ def patchable_check(repo_tag_split: str, oryx_builder_run_img_tags, bom):
         return result
     # elif len(str(tag_prop["version"]).split(".")) == 2:
     #     result = {
-    #         "targetContainerAppName": bom["targetContainerAppName"],
-    #         "targetContainerName": bom["targetContainerName"],
-    #         "targetContainerAppEnvironmentName": bom["targetContainerAppEnvironmentName"],
-    #         "targetResourceGroup": bom["targetResourceGroup"],
-    #         "targetImageName": bom["image_name"],
+    #         "targetContainerAppName": inspect_result["targetContainerAppName"],
+    #         "targetContainerName": inspect_result["targetContainerName"],
+    #         "targetContainerAppEnvironmentName": inspect_result["targetContainerAppEnvironmentName"],
+    #         "targetResourceGroup": inspect_result["targetResourceGroup"],
+    #         "targetImageName": inspect_result["image_name"],
     #         "oldRunImage": repo_tag_split,
     #         "newRunImage": None,
     #         "id": None,
@@ -1826,14 +1826,14 @@ def patchable_check(repo_tag_split: str, oryx_builder_run_img_tags, bom):
     repo_tag_split = repo_tag_split.split("-")
     if repo_tag_split[1] == "dotnet":
         matching_version_info = oryx_builder_run_img_tags[repo_tag_split[2]][str(tag_prop["version"].major) + "." + str(tag_prop["version"].minor)][tag_prop["support"]][tag_prop["marinerVersion"]]
-    # Check if the image minor version is four less than the latest minor version
+    # Check if the image minor version is less than the latest minor version
     if tag_prop["version"] < matching_version_info[0]["version"]:
         result = {
-            "targetContainerAppName": bom["targetContainerAppName"],
-            "targetContainerName": bom["targetContainerName"],
-            "targetContainerAppEnvironmentName": bom["targetContainerAppEnvironmentName"],
-            "targetResourceGroup": bom["targetResourceGroup"],
-            "targetImageName": bom["image_name"],
+            "targetContainerAppName": inspect_result["targetContainerAppName"],
+            "targetContainerName": inspect_result["targetContainerName"],
+            "targetContainerAppEnvironmentName": inspect_result["targetContainerAppEnvironmentName"],
+            "targetResourceGroup": inspect_result["targetResourceGroup"],
+            "targetImageName": inspect_result["image_name"],
             "oldRunImage": tag_prop["fullTag"],
         }
         if (tag_prop["version"].minor == matching_version_info[0]["version"].minor) and (tag_prop["version"].micro < matching_version_info[0]["version"].micro):
@@ -1848,15 +1848,15 @@ def patchable_check(repo_tag_split: str, oryx_builder_run_img_tags, bom):
             result["reason"] = "The image is not pachable Please check for major or minor version upgrade."
     else:
         result = {
-            "targetContainerAppName": bom["targetContainerAppName"],
-            "targetContainerName": bom["targetContainerName"],
-            "targetContainerAppEnvironmentName": bom["targetContainerAppEnvironmentName"],
-            "targetResourceGroup": bom["targetResourceGroup"],
-            "targetImageName": bom["image_name"],
+            "targetContainerAppName": inspect_result["targetContainerAppName"],
+            "targetContainerName": inspect_result["targetContainerName"],
+            "targetContainerAppEnvironmentName": inspect_result["targetContainerAppEnvironmentName"],
+            "targetResourceGroup": inspect_result["targetResourceGroup"],
+            "targetImageName": inspect_result["image_name"],
             "oldRunImage": tag_prop["fullTag"],
             "newRunImage": None,
             "id": None,
-            "reason": "You're already up to date!"
+            "reason": "The image is already up to date."
         }
     return result
 
@@ -1890,6 +1890,14 @@ def get_current_mariner_tags() -> list(OryxMarinerRunImgTagProperty):
             else:
                 tag_list[framework] = {major_minor_ver: {support: {mariner_ver: [tag_obj]}}}
     return tag_list
+
+
+def get_latest_buildpack_run_tag(framework, version, support = "lts", mariner_version = "cbl-mariner2.0"):
+    tags = get_current_mariner_tags()
+    try:
+        return tags[framework][version][support][mariner_version][0]["fullTag"]
+    except KeyError:
+        return None
 
 
 def parse_oryx_mariner_tag(tag: str) -> OryxMarinerRunImgTagProperty:
