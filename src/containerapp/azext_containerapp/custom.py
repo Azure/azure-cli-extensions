@@ -4402,7 +4402,7 @@ def patch_run_interactive(cmd, resource_group_name=None, managed_env=None, show_
     print(patchable_check_results_json)
     if without_unpatchable_results == []:
         return
-    user_input = input("Do you want to apply all the patch or specify by id? (y/n/id)\n")
+    user_input = input("Do you want to apply all the patches or specify by id? (y/n/id)\n")
     patch_apply(cmd, patchable_check_results, user_input, pack_exec_path)
 
 
@@ -4455,7 +4455,7 @@ def patch_apply(cmd, patch_check_list, method, pack_exec_path):
                                patch_check["targetContainerName"],
                                patch_check["targetImageName"],
                                patch_check["newRunImage"],
-                               pack_exec_path))
+                               pack_exec_path)
                 patch_run_properties = {
                     'Context.Default.AzureCLI.PatchRunUserResponse':method,
                     'Context.Default.AzureCLI.PatchRunCount':1
