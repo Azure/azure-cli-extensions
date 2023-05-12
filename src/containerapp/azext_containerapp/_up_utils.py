@@ -423,6 +423,21 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         except Exception as ex:
             raise CLIError(f"Unable to run 'pack build' command to produce runnable application image: {ex}")
 
+        # Temporary fix: using run time tag as customer image tag
+        # Waiting for buildpacks side to fix this issue: https://github.com/buildpacks/pack/issues/1753
+        retag_command = ['docker', 'tag', image_name, f"{image_name}:{buildpack_run_tag}"]
+        logger.debug(f"Calling '{' '.join(retag_command)}'")
+        logger.warning(f"Tagging image {image_name} with tag {buildpack_run_tag}...")
+        try:
+            process = subprocess.Popen(retag_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = process.communicate()
+            if process.returncode != 0:
+                raise CLIError(f"Error thrown when running 'docker tag': {stderr.decode('utf-8')}")
+            logger.debug(f"Successfully tagged image {image_name} with tag {buildpack_run_tag}.")
+        except Exception as ex:
+            raise CLIError(f"Unable to run 'docker tag' command to tag image: {ex}")
+        image_name = f"{image_name}:{buildpack_run_tag}"
+
         # Run 'docker push' to push the image to the ACR
         command = ['docker', 'push', image_name]
         logger.debug(f"Calling '{' '.join(command)}'")
