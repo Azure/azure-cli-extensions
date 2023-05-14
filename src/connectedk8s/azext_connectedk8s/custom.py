@@ -505,12 +505,18 @@ def install_helm_client():
 
         # Downloading compressed helm client executable
         logger.warning("Downloading helm client for first time. This can take few minutes...")
-        try:
-            response = urllib.request.urlopen(requestUri)
-        except Exception as e:
-            telemetry.set_exception(exception=e, fault_type=consts.Download_Helm_Fault_Type,
-                                    summary='Unable to download helm client.')
-            raise CLIInternalError("Failed to download helm client.", recommendation="Please check your internet connection." + str(e))
+        retry_count = 3
+        retry_delay = 5
+        for i in range(retry_count):
+            try:
+                response = urllib.request.urlopen(requestUri)
+                break
+            except Exception as e:
+                if i == retry_count - 1:
+                    telemetry.set_exception(exception=e, fault_type=consts.Download_Helm_Fault_Type,
+                                            summary='Unable to download helm client.')
+                    raise CLIInternalError("Failed to download helm client.", recommendation="Please check your internet connection." + str(e))
+                time.sleep(retry_delay)
 
         responseContent = response.read()
         response.close()
