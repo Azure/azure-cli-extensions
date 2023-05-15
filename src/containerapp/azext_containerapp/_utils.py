@@ -7,7 +7,7 @@
 import time
 import json
 import platform
-import docker
+import subprocess
 import stat
 import io
 import os
@@ -1730,19 +1730,14 @@ def format_location(location=None):
 
 
 def is_docker_running():
-    # check to see if docker is running
-    client = None
-    out = True
     try:
-        client = docker.from_env()
-        # need any command that will show the docker daemon is not running
-        client.containers.list()
-    except docker.errors.DockerException:
-        out = False
-    finally:
-        if client:
-            client.close()
-    return out
+        # Run a simple 'docker stats --no-stream' command to check if the Docker daemon is running
+        command = ["docker", "stats", "--no-stream"]
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        _, _ = process.communicate()
+        return process.returncode == 0
+    except Exception:
+        return False
 
 
 def get_pack_exec_path():
