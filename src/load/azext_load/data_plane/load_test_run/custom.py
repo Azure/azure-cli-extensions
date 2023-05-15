@@ -1,5 +1,6 @@
 from azext_load.data_plane.utils.utils import (
     create_or_update_test_run_body,
+    download_file,
     get_admin_data_plane_client,
     get_test_run_id,
     get_testrun_data_plane_client,
@@ -105,9 +106,7 @@ def download_test_run_files(
                     url = artifact_data.get("url")
                     file_name = artifact_data.get("fileName")
                     file_path = os.path.join(path, file_name)
-                    response = requests.get(url)
-                    with open(file_path, "wb") as f:
-                        f.write(response.content)
+                    download_file(url, file_path)
             logger.warning("Input artifacts downloaded to %s", path)
         else:
             logger.warning("No input artifacts found for test run %s", test_run_id)
@@ -119,9 +118,7 @@ def download_test_run_files(
                 url = test_run_data.get("testArtifacts", {}).get("outputArtifacts", {}).get("logsFileInfo").get("url")
                 file_name = test_run_data.get("testArtifacts", {}).get("outputArtifacts", {}).get("logsFileInfo", {}).get("fileName")
                 file_path = os.path.join(path, file_name)
-                response = requests.get(url)
-                with open(file_path, "wb") as f:
-                    f.write(response.content)
+                download_file(url, file_path)
                 logger.warning("Log file downloaded to %s", file_path)
             else:
                 logger.info("No log file found for test run %s", test_run_id)
@@ -135,9 +132,7 @@ def download_test_run_files(
                 url = test_run_data.get("testArtifacts", {}).get("outputArtifacts", {}).get("resultFileInfo").get("url")
                 file_name = test_run_data.get("testArtifacts", {}).get("outputArtifacts", {}).get("resultFileInfo", {}).get("fileName")
                 file_path = os.path.join(path, file_name)
-                response = requests.get(url)
-                with open(file_path, "wb") as f:
-                    f.write(response.content)
+                download_file(url, file_path)
                 logger.warning("Results file downloaded to %s", file_path)
             else:
                 logger.info("No results file found for test run %s", test_run_id)

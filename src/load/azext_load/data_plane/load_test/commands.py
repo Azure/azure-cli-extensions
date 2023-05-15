@@ -33,3 +33,13 @@ def load_test_commands(self, _):
         g.custom_command("list", "list_test_server_metrics")
         g.custom_command("add", "add_test_server_metrics")
         g.custom_command("remove", "remove_test_server_metrics", confirmation=True)
+
+    with self.command_group(
+        "load test file",
+        custom_command_type=admin_custom_sdk,
+        is_preview=True,
+    ) as g:
+        g.custom_command("upload", "upload_test_file")
+        g.custom_command("list", "list_test_file")
+        g.custom_command("delete", "delete_test_file", confirmation=True)
+        g.custom_command("download", "download_test_file")
