@@ -272,7 +272,21 @@ def create_or_update_body(
                     logger.warning(
                         "CSV splitting is not supported currently in CLI. Please use portal to split CSVs"
                     )
-                # implementation of failure criteria, secrets, cert and env var is pending
+                # implementation of failure criteria is pending
+
+                if data.get("failureCriteria"):
+                    new_body["passFailCriteria"] = {}
+                    new_body["passFailCriteria"]["passFailMetrics"] = {}
+                    for index, items in enumerate(data["failureCriteria"]):
+                        id = get_test_run_id()
+                        name = list(items.keys())[0]
+                        components = list(items.values())[0]
+                        new_body["passFailCriteria"]["passFailMetrics"][id] = {}
+                        new_body["passFailCriteria"]["passFailMetrics"][id]["aggregate"] = components.split("(")[0].strip()
+                        new_body["passFailCriteria"]["passFailMetrics"][id]["clientMetric"] = components.split("(")[1].split(")")[0].strip()
+                        new_body["passFailCriteria"]["passFailMetrics"][id]["condition"] = components.split(")")[1].strip()[0]
+                        new_body["passFailCriteria"]["passFailMetrics"][id]["value"] = components.split(new_body["passFailCriteria"]["passFailMetrics"][id]["condition"])[1].strip()
+                        new_body["passFailCriteria"]["passFailMetrics"][id]["requestName"] = name
         except (IOError, OSError) as ex:
             if getattr(ex, "errno", 0) == errno.ENOENT:
                 raise ValidationError(f"{load_test_config_file} does not exist") from ex
