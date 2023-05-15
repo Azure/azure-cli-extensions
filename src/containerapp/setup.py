@@ -49,7 +49,7 @@ CLASSIFIERS = [
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
     'pycomposefile>=0.0.29',
-    'docker>=6.1.2'
+    'docker'
 ]
 
 # Install pack CLI to build runnable application images from source
