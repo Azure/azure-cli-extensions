@@ -2,21 +2,21 @@
 # Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT
 # License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------
-"""Contains class for deploying generated definitions using the Python SDK."""
+"""Contains class for deploying generated definitions using ARM."""
 import json
 import os
 import shutil
 import subprocess  # noqa
 from typing import Any, Dict, Optional
+import tempfile
 
 from knack.log import get_logger
 from azext_aosm.deploy.artifact_manifest import ArtifactManifestOperator
 from azext_aosm.util.management_clients import ApiClients
 from azure.mgmt.resource.resources.v2021_04_01.models import DeploymentExtended
-from pathlib import Path
 
 from azext_aosm.deploy.pre_deploy import PreDeployerViaSDK
-from azext_aosm._configuration import Configuration, VNFConfiguration
+from azext_aosm._configuration import NFConfiguration, VNFConfiguration
 from azext_aosm.util.constants import (
     VNF_DEFINITION_BICEP_SOURCE_TEMPLATE,
     VNF_MANIFEST_BICEP_SOURCE_TEMPLATE,
@@ -27,22 +27,23 @@ logger = get_logger(__name__)
 
 
 class DeployerViaArm:
-    """A class to deploy Artifact Manifests, NFDs and NSDs from a bicep template using ARM."""
+    """
+    A class to deploy Artifact Manifests, NFDs and NSDs from bicep templates using ARM.
 
-    # @@@TODO - not sure this class is required as we can't publish complex objects
-    # using the SDK
+    Uses the SDK to pre-deploy less complex resources and then ARM to deploy the bicep
+    templates.
+    """
+
     def __init__(
         self,
         api_clients: ApiClients,
-        config: Configuration,
+        config: NFConfiguration,
     ) -> None:
         """
         Initializes a new instance of the Deployer class.
 
-        :param aosm_client: The client to use for managing AOSM resources.
-        :type aosm_client: HybridNetworkManagementClient
-        :param resource_client: The client to use for managing Azure resources.
-        :type resource_client: ResourceManagementClient
+        :param api_clients: ApiClients object for AOSM and ResourceManagement
+        :param config: The configuration for this NF
         """
         logger.debug("Create ARM/Bicep Deployer")
         self.api_clients = api_clients
@@ -79,7 +80,7 @@ class DeployerViaArm:
             )
 
         if parameters_json_file:
-            message: str = f"Use parameters from file {parameters_json_file}"
+            message = f"Use parameters from file {parameters_json_file}"
             logger.info(message)
             print(message)
             with open(parameters_json_file, "r", encoding="utf-8") as f:
@@ -321,11 +322,11 @@ class DeployerViaArm:
 
         return depl_props.outputs
 
-    def convert_bicep_to_arm(self, bicep_template: str) -> Any:
+    def convert_bicep_to_arm(self, bicep_template_path: str) -> Any:
         """
         Convert a bicep template into an ARM template.
 
-        :param bicep_template: The path to the bicep template to be converted
+        :param bicep_template_path: The path to the bicep template to be converted
 
         :raise RuntimeError if az CLI is not installed.
         :return: Output dictionary from the bicep template.
@@ -338,39 +339,41 @@ class DeployerViaArm:
             raise RuntimeError(
                 "The Azure CLI is not installed - cannot render ARM templates."
             )
-        logger.debug(f"Converting {bicep_template} to ARM template")
+        logger.debug(f"Converting {bicep_template_path} to ARM template")
 
-        arm_template_name = bicep_template.replace(".bicep", ".json")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            bicep_filename = os.path.basename(bicep_template_path)
+            arm_template_name = bicep_filename.replace(".bicep", ".json")
 
-        try:
-            bicep_output = subprocess.run(  # noqa
-                [
-                    str(shutil.which("az")),
-                    "bicep",
-                    "build",
-                    "--file",
-                    bicep_template,
-                    "--outfile",
-                    arm_template_name,
-                ],
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-            logger.debug("az bicep output: %s", str(bicep_output))
-        except subprocess.CalledProcessError as e:
-            logger.error(
-                "ARM template compilation failed! See logs for full "
-                "output. The failing command was %s",
-                e.cmd,
-            )
-            logger.debug("bicep build stdout: %s", e.stdout)
-            logger.debug("bicep build stderr: %s", e.stderr)
-            raise
+            try:
+                bicep_output = subprocess.run(  # noqa
+                    [
+                        str(shutil.which("az")),
+                        "bicep",
+                        "build",
+                        "--file",
+                        bicep_template_path,
+                        "--outfile",
+                        os.path.join(tmpdir, arm_template_name),
+                    ],
+                    check=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+                logger.debug("az bicep output: %s", str(bicep_output))
+            except subprocess.CalledProcessError as e:
+                logger.error(
+                    "ARM template compilation failed! See logs for full "
+                    "output. The failing command was %s",
+                    e.cmd,
+                )
+                logger.debug("bicep build stdout: %s", e.stdout)
+                logger.debug("bicep build stderr: %s", e.stderr)
+                raise
 
-        with open(arm_template_name, "r", encoding="utf-8") as template_file:
-            arm_json = json.loads(template_file.read())
-
-        os.remove(arm_template_name)
+            with open(
+                os.path.join(tmpdir, arm_template_name), "r", encoding="utf-8"
+            ) as template_file:
+                arm_json = json.loads(template_file.read())
 
         return arm_json

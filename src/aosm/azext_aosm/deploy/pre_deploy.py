@@ -17,28 +17,30 @@ from azext_aosm.vendored_sdks.models import (
     NetworkFunctionDefinitionGroup,
     NetworkServiceDesignGroup,
     Publisher,
+    ProvisioningState,
 )
-from azext_aosm._configuration import Configuration, VNFConfiguration
-from azext_aosm.util.constants import PROV_STATE_SUCCEEDED
+from azext_aosm._configuration import NFConfiguration, VNFConfiguration
 
 logger = get_logger(__name__)
 
 
 class PreDeployerViaSDK:
-    """A class for checking or publishing resources required by NFDs/NSDs."""
+    """
+    A class for checking or publishing resources required by NFDs/NSDs.
+
+    Uses the SDK to deploy rather than ARM, as the objects it deploys are not complex.
+    """
 
     def __init__(
         self,
         api_clients: ApiClients,
-        config: Configuration,
+        config: NFConfiguration,
     ) -> None:
         """
         Initializes a new instance of the Deployer class.
 
-        :param aosm_client: The client to use for managing AOSM resources.
-        :type aosm_client: HybridNetworkManagementClient
-        :param resource_client: The client to use for managing Azure resources.
-        :type resource_client: ResourceManagementClient
+        :param api_clients: ApiClients object for AOSM and ResourceManagement
+        :param config: The configuration for this NF
         """
 
         self.api_clients = api_clients
@@ -54,19 +56,18 @@ class PreDeployerViaSDK:
         Raises a NotFoundError exception if the resource group does not exist.
         Raises a PermissionsError exception if we don't have permissions to check resource group existence.
         """
-        rg: ResourceGroup
         if not self.api_clients.resource_client.resource_groups.check_existence(
             resource_group_name
         ):
             logger.info(f"RG {resource_group_name} not found. Create it.")
             print(f"Creating resource group {resource_group_name}.")
             rg_params: ResourceGroup = ResourceGroup(location=self.config.location)
-            rg = self.api_clients.resource_client.resource_groups.create_or_update(
+            self.api_clients.resource_client.resource_groups.create_or_update(
                 resource_group_name, rg_params
             )
         else:
             print(f"Resource group {resource_group_name} exists.")
-            rg = self.api_clients.resource_client.resource_groups.get(
+            self.api_clients.resource_client.resource_groups.get(
                 resource_group_name
             )
 
@@ -177,7 +178,7 @@ class PreDeployerViaSDK:
             # on
             arty: ArtifactStore = poller.result()
 
-            if arty.provisioning_state != PROV_STATE_SUCCEEDED:
+            if arty.provisioning_state != ProvisioningState.SUCCEEDED:
                 logger.debug(f"Failed to provision artifact store: {arty.name}")
                 raise RuntimeError(
                     f"Creation of artifact store proceeded, but the provisioning"
@@ -210,8 +211,10 @@ class PreDeployerViaSDK:
         Finds the parameters from self.config
         """
         if not isinstance(self.config, VNFConfiguration):
+            # This is a coding error but worth checking.
             raise AzCLIError(
-                "Check that storage account artifact store exists failed as requires VNFConfiguration file"
+                "Cannot check that the storage account artifact store exists as "
+                "the configuration file doesn't map to VNFConfiguration"
             )
 
         self.ensure_artifact_store_exists(

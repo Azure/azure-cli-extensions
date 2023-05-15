@@ -3,15 +3,19 @@
 """A module to handle interacting with artifact manifests."""
 
 from knack.log import get_logger
-from functools import cached_property
+from functools import cached_property, lru_cache
 from typing import Any, List, Union
-
-import requests
+from azure.cli.core.azclierror import AzCLIError
 from azext_aosm.deploy.artifact import Artifact
 from azure.storage.blob import BlobClient
 from oras.client import OrasClient
-from azext_aosm._configuration import Configuration, VNFConfiguration
-from azext_aosm.vendored_sdks.models import ArtifactAccessCredential, ArtifactManifest
+from azext_aosm._configuration import NFConfiguration
+from azext_aosm.vendored_sdks.models import (
+    ArtifactManifest,
+    ManifestArtifactFormat,
+    CredentialType,
+    ArtifactType,
+)
 
 from azext_aosm.util.management_clients import ApiClients
 
@@ -23,7 +27,7 @@ class ArtifactManifestOperator:
 
     def __init__(
         self,
-        config: Configuration,
+        config: NFConfiguration,
         api_clients: ApiClients,
         store_name: str,
         manifest_name: str,
@@ -34,7 +38,6 @@ class ArtifactManifestOperator:
         self.config = config
         self.store_name = store_name
         self.artifacts = self._get_artifact_list()
-        self._manifest_credentials = None
 
     @cached_property
     def _manifest_credentials(self) -> Any:
@@ -47,6 +50,7 @@ class ArtifactManifestOperator:
             artifact_manifest_name=self.manifest_name,
         ).as_dict()
 
+    @lru_cache(maxsize=32)  # noqa: B019
     def _oras_client(self, acr_url: str) -> OrasClient:
         """
         Returns an OrasClient object for uploading to the artifact store ACR.
@@ -77,35 +81,61 @@ class ArtifactManifestOperator:
         # Instatiate an Artifact object for each artifact in the manifest.
         if manifest.artifacts:
             for artifact in manifest.artifacts:
-                assert artifact.artifact_name
-                assert artifact.artifact_type
-                assert artifact.artifact_version
+                if not (
+                    artifact.artifact_name
+                    and artifact.artifact_type
+                    and artifact.artifact_version
+                ):
+                    raise AzCLIError(
+                        "Cannot upload artifact. Artifact returned from "
+                        "manifest query is missing required information."
+                        f"{artifact}"
+                    )
 
                 artifacts.append(
                     Artifact(
                         artifact_name=artifact.artifact_name,
                         artifact_type=artifact.artifact_type,
                         artifact_version=artifact.artifact_version,
-                        artifact_client=self._get_artifact_client(
-                            artifact.artifact_name, artifact.artifact_version
-                        ),
+                        artifact_client=self._get_artifact_client(artifact),
                     )
                 )
 
         return artifacts
 
     def _get_artifact_client(
-        self, artifact_name: str, artifact_version: str
+        self, artifact: ManifestArtifactFormat
     ) -> Union[BlobClient, OrasClient]:
         """
         Get the artifact client required for uploading the artifact.
 
-        :param artifact_name: name of the artifact
-        :param artifact_version: artifact version
+        :param artifact - a ManifestArtifactFormat with the artifact info.
         """
-        if self._manifest_credentials["credential_type"] == "AzureStorageAccountToken":
-            container_basename = artifact_name.replace("-", "")
-            blob_url = self._get_blob_url(f"{container_basename}-{artifact_version}")
+        # Appease mypy - an error will be raised before this if these are blank
+        assert artifact.artifact_name
+        assert artifact.artifact_type
+        assert artifact.artifact_version
+        if (
+            self._manifest_credentials["credential_type"]
+            == CredentialType.AZURE_STORAGE_ACCOUNT_TOKEN
+        ):
+            # Check we have the required artifact types for this credential. Indicates
+            # a coding error if we hit this but worth checking.
+            if not (
+                artifact.artifact_type == ArtifactType.IMAGE_FILE
+                or artifact.artifact_type == ArtifactType.VHD_IMAGE_FILE
+            ):
+                raise AzCLIError(
+                    f"Cannot upload artifact {artifact.artifact_name}."
+                    " Artifact manifest credentials of type "
+                    f"{CredentialType.AZURE_STORAGE_ACCOUNT_TOKEN} are not expected "
+                    f"for Artifacts of type {artifact.artifact_type}"
+                )
+
+            container_basename = artifact.artifact_name.replace("-", "")
+            blob_url = self._get_blob_url(
+                f"{container_basename}-{artifact.artifact_version}"
+            )
             return BlobClient.from_blob_url(blob_url)
         else:
             return self._oras_client(self._manifest_credentials["acr_server_url"])

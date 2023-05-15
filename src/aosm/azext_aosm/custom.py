@@ -11,6 +11,7 @@ from knack.log import get_logger
 from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 from azext_aosm.generate_nfd.vnf_bicep_nfd_generator import VnfBicepNfdGenerator
+from azext_aosm.delete.delete import ResourceDeleter
 from azext_aosm.deploy.deploy_with_arm import DeployerViaArm
 from azext_aosm.util.constants import VNF, CNF  # , NSD
 from azext_aosm.util.management_clients import ApiClients
@@ -18,8 +19,7 @@ from azext_aosm.vendored_sdks import HybridNetworkManagementClient
 from azext_aosm._client_factory import cf_resources
 from azext_aosm._configuration import (
     get_configuration,
-    validate_configuration,
-    Configuration,
+    NFConfiguration,
 )
 
 
@@ -81,7 +81,7 @@ def generate_definition_config(definition_type: str, output_file: str = "input.j
         logger.info(f"Empty definition configuration has been written to {output_file}")
 
 
-def _get_config_from_file(config_file: str, definition_type: str) -> Configuration:
+def _get_config_from_file(config_file: str, definition_type: str) -> NFConfiguration:
     """
     Read input config file JSON and turn it into a Configuration object.
 
@@ -93,7 +93,6 @@ def _get_config_from_file(config_file: str, definition_type: str) -> Configurati
         config_as_dict = json.loads(f.read())
 
     config = get_configuration(definition_type, config_as_dict)
-    validate_configuration(config)
     return config
 
 
@@ -180,11 +179,10 @@ def delete_published_definition(
     api_clients = ApiClients(
         aosm_client=client, resource_client=cf_resources(cmd.cli_ctx)
     )
-    from azext_aosm.delete.delete import ResourceDeleter
 
     delly = ResourceDeleter(api_clients, config)
     if definition_type == VNF:
-        delly.delete_vnf(all=clean)
+        delly.delete_vnf(clean=clean)
 
 
 def show_publisher():

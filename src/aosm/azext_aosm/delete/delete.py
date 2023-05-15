@@ -3,16 +3,10 @@
 # License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------
 """Contains class for deploying generated definitions using the Python SDK."""
-from typing import Any, Dict
 from knack.log import get_logger
 
-from azure.mgmt.resource.resources.v2021_04_01.models import (
-    GenericResourceExpanded,
-    Provider,
-)
-
 from azext_aosm.util.management_clients import ApiClients
-from azext_aosm._configuration import Configuration, VNFConfiguration
+from azext_aosm._configuration import NFConfiguration, VNFConfiguration
 from azext_aosm.util.utils import input_ack
 
 
@@ -22,8 +16,8 @@ logger = get_logger(__name__)
 class ResourceDeleter:
     def __init__(
         self,
-        ApiClients: ApiClients,
-        config: Configuration,
+        api_clients: ApiClients,
+        config: NFConfiguration,
     ) -> None:
         """
         Initializes a new instance of the Deployer class.
@@ -34,19 +28,20 @@ class ResourceDeleter:
         :type resource_client: ResourceManagementClient
         """
         logger.debug("Create ARM/Bicep Deployer")
-        self.api_clients = ApiClients
+        self.api_clients = api_clients
         self.config = config
 
-    def delete_vnf(self, all: bool = False):
+    def delete_vnf(self, clean: bool = False):
         """
-        Delete the NFDV and manifests.
+        Delete the NFDV and manifests.  If they don't exist it still reports them as
+        deleted.
 
-        :param all: Delete the NFDG, artifact stores and publisher too.
+        :param clean: Delete the NFDG, artifact stores and publisher too.
                     defaults to False
                     Use with care.
         """
         assert isinstance(self.config, VNFConfiguration)
-        if all:
+        if clean:
             print(
                 f"Are you sure you want to delete all resources associated with NFD {self.config.nf_name} including the artifact stores and publisher {self.config.publisher_name}?"
             )
@@ -73,7 +68,7 @@ class ResourceDeleter:
         self.delete_artifact_manifest("sa")
         self.delete_artifact_manifest("acr")
 
-        if all:
+        if clean:
             logger.info("Delete called for all resources.")
             self.delete_nfdg()
             self.delete_artifact_store("acr")
@@ -81,7 +76,7 @@ class ResourceDeleter:
             self.delete_publisher()
 
     def delete_nfdv(self):
-        message: str = f"Delete NFDV {self.config.version} from group {self.config.nfdg_name} and publisher {self.config.publisher_name}"
+        message = f"Delete NFDV {self.config.version} from group {self.config.nfdg_name} and publisher {self.config.publisher_name}"
         logger.debug(message)
         print(message)
         try:
@@ -120,7 +115,7 @@ class ResourceDeleter:
             raise CLIInternalError(
                 "Delete artifact manifest called for invalid store type. Valid types are sa and acr."
             )
-        message: str = (
+        message = (
             f"Delete Artifact manifest {manifest_name} from artifact store {store_name}"
         )
         logger.debug(message)
@@ -142,7 +137,7 @@ class ResourceDeleter:
 
     def delete_nfdg(self) -> None:
         """Delete the NFDG."""
-        message: str = f"Delete NFD Group {self.config.nfdg_name}"
+        message = f"Delete NFD Group {self.config.nfdg_name}"
         logger.debug(message)
         print(message)
         try:
@@ -154,7 +149,7 @@ class ResourceDeleter:
             poller.result()
             print("Deleted NFD Group")
         except Exception:
-            logger.error(f"Failed to delete NFDG.")
+            logger.error("Failed to delete NFDG.")
             raise
 
     def delete_artifact_store(self, store_type: str) -> None:
@@ -174,7 +169,7 @@ class ResourceDeleter:
             raise CLIInternalError(
                 "Delete artifact store called for invalid store type. Valid types are sa and acr."
             )
-        message: str = f"Delete Artifact store {store_name}"
+        message = f"Delete Artifact store {store_name}"
         logger.debug(message)
         print(message)
         try:
@@ -195,7 +190,7 @@ class ResourceDeleter:
 
         Warning - dangerous
         """
-        message: str = f"Delete Publisher {self.config.publisher_name}"
+        message = f"Delete Publisher {self.config.publisher_name}"
         logger.debug(message)
         print(message)
         try:
@@ -206,49 +201,5 @@ class ResourceDeleter:
             poller.result()
             print("Deleted Publisher")
         except Exception:
-            logger.error(f"Failed to delete publisher")
+            logger.error("Failed to delete publisher")
             raise
-
-    # def delete_resource(self, resource: GenericResourceExpanded) -> bool:
-    #     """
-    #     Delete a resource.
-
-    #     They can fail to delete if resources are deleted out of dependency order. We
-    #     catch exceptions in this case, log them, and return False.
-
-    #     :param resource: The resource to delete
-    #     :return: True/False on whether we successfully deleted.
-    #     """
-    #     # We need to find an API version relevant to the resource.
-    #     if resource.type not in self.resource_type_api_versions_cache.keys():
-    #         api_version = self.find_latest_api_ver_for_resource_type(resource)
-
-    #         if not api_version:
-    #             raise RuntimeError(
-    #                 f"Azure API did not return an API version for {resource.type}."
-    #                 f"Cannot delete resource {resource.name}"
-    #             )
-    #         else:
-    #             assert resource.type is not None
-    #             self.resource_type_api_versions_cache[resource.type] = api_version
-
-    #     try:
-    #         # Now delete the resource
-    #         assert resource.id is not None
-    #         logger.debug(
-    #             f"Delete the resource {resource.id} with "
-    #             f"api_version {self.resource_type_api_versions_cache.get(resource.type)}"
-    #         )
-    #         poller = self.resource_client.resources.begin_delete_by_id(
-    #             resource_id=resource.id,
-    #             api_version=self.resource_type_api_versions_cache.get(resource.type),
-    #         )
-    #         # This makes it wait to be done.
-    #         poller.result()
-    #     except Exception as delEx:
-    #         # We expect these to happen if resources are deleted out of dependency
-    #         # order
-    #         logger.info(f"Failed to delete {resource.name} {delEx}")
-    #         return False
-
-    #     return True

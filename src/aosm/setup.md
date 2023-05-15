@@ -8,6 +8,8 @@
 Follow [https://github.com/Azure/azure-cli-dev-tools](https://github.com/Azure/azure-cli-dev-tools)
 
 Clone both azure-cli and azure-cli-extensions
+
+Note for azure-cli-extensions we are currently on a fork : https://github.com/jddarby/azure-cli-extensions
 ```bash
 # Go into your git clone of az-cli-extensions
 cd az-cli-extensions

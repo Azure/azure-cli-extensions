@@ -5,7 +5,6 @@
 """Clients for the python SDK along with useful caches."""
 
 from knack.log import get_logger
-from dataclasses import dataclass
 from azure.mgmt.resource import ResourceManagementClient
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
 

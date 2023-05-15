@@ -7,7 +7,6 @@
 from argcomplete.completers import FilesCompleter
 from azure.cli.core import AzCommandsLoader
 
-# from knack.arguments import CLIArgumentType
 from .util.constants import VNF, CNF, NSD
 
 
