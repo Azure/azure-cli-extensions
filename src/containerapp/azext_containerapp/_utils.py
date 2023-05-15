@@ -16,7 +16,6 @@ import zipfile
 import hashlib
 import re
 import requests
-import docker
 import packaging.version as SemVer
 
 from urllib.parse import urlparse
