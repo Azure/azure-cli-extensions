@@ -7,6 +7,7 @@
 import time
 import json
 import platform
+import stat
 import io
 import os
 import tarfile
@@ -1745,7 +1746,6 @@ def is_docker_running():
 
 def get_pack_exec_path():
     try:
-
         dir_path = os.path.dirname(os.path.realpath(__file__))
         bin_folder = os.path.join(dir_path, "bin")
         if not os.path.exists(bin_folder):
@@ -1785,6 +1785,11 @@ def get_pack_exec_path():
                         if tar_info.isfile() and tar_info.name.endswith(exec_name):
                             with open(exec_path, "wb") as f:
                                 f.write(tar.extractfile(tar_info).read())
+
+        # Add executable permissions for the current user if they don't exist
+        if not os.access(exec_path, os.X_OK):
+            st = os.stat(exec_path)
+            os.chmod(exec_path, st.st_mode | stat.S_IXUSR)
 
         return exec_path
     except Exception as e:
