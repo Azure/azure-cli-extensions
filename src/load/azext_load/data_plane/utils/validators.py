@@ -120,8 +120,8 @@ def validate_metric_id(namespace):
         )
 
 def validate_path(namespace):
-    if not isinstance(namespace.test_run_id, str):
-        raise TypeError(f"Invalid path type: {type(namespace.path)}")
+    #if not isinstance(namespace.test_run_id, str):
+    #    raise TypeError(f"Invalid path type: {type(namespace.path)}")
     if not os.path.exists(namespace.path):
         raise ValueError(f"Provided path '{namespace.path}' does not exist")
     if not os.path.isdir(namespace.path):
