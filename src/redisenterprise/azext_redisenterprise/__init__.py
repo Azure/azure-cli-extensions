@@ -9,7 +9,7 @@ from azure.cli.core import AzCommandsLoader
 from azext_redisenterprise._help import helps  # pylint: disable=unused-import
 
 
-class DemoCommandsLoader(AzCommandsLoader):
+class RedisEnterpriseManagementClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
@@ -39,4 +39,4 @@ class DemoCommandsLoader(AzCommandsLoader):
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = DemoCommandsLoader
+COMMAND_LOADER_CLS = RedisEnterpriseManagementClientCommandsLoader
