@@ -552,6 +552,7 @@ Pending
 0.5.49
 ++++++
 
+* Update to use 2021-11-01-preview api-version.
 * Update the minimum required cli core version to `2.31.0`.
 * Add support for Alias Minor Version.
 
