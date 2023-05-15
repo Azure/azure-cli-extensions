@@ -57,8 +57,10 @@ class CnfNfdGenerator(NFDGenerator):
             for helm_package in self.config.helm_packages:
                 # Unpack the chart into the tmp folder
                 print("HELMPACKAGE", helm_package)
+                helm_package = HelmPackageConfig(**helm_package)
+                print(type(helm_package))
                 # JORDAN: changes to pass in path to chart instead of whole package, check which way we want to do this
-                self._extract_chart(helm_package['path_to_chart'])
+                self._extract_chart(helm_package.path_to_chart)
                 # Validate chart
                 
                 # Get schema for each chart (extract mappings and take the schema bits we need from values.schema.json)
@@ -181,6 +183,8 @@ class CnfNfdGenerator(NFDGenerator):
                     "releaseNamespace": name,
                     "releaseName": name,
                     "helmPackageVersion": version,
+                    ## "values": "string(loadJsonContent('values.nondef.json')"
+                    ## will process this after and will remove the "" so it will be valid 
                     "values": self.generate_parmeter_mappings(helm_package),
                 },
             },
