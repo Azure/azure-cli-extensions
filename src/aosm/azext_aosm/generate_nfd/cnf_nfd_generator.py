@@ -59,19 +59,20 @@ class CnfNfdGenerator(NFDGenerator):
                 print("HELMPACKAGE", helm_package)
                 helm_package = HelmPackageConfig(**helm_package)
                 print(type(helm_package))
-                # JORDAN: changes to pass in path to chart instead of whole package, check which way we want to do this
+
                 self._extract_chart(helm_package.path_to_chart)
                 # Validate chart
                 
                 # Get schema for each chart (extract mappings and take the schema bits we need from values.schema.json)
                 # + Add that schema to the big schema.
-                # Jordan: check if this should still be dict or if should be json by now?
                 self.deployment_parameter_schema["properties"] = self.get_chart_mapping_schema(helm_package)
 
                 # generate the NF application for the chart
                 self.generate_nf_application(helm_package)
+                
                 # Workout the list of artifacts for the chart
                 self.artifacts.append(self.get_artifact_list(helm_package.name))
+                
             # Write NFD bicep
             self.write_nfd_bicep_file()
             # Write schema to schema/deploymentParameterSchema.json
@@ -106,7 +107,7 @@ class CnfNfdGenerator(NFDGenerator):
             tar = tarfile.open(fname, "r:")
             tar.extractall(path=self.tmp_folder_name)
             tar.close()
-        # JORDAN: avoiding tar extract errors 
+        # JORDAN: avoiding tar extract errors, fix and remove later 
         else:
             shutil.copytree(fname, self.tmp_folder_name, dirs_exist_ok=True)
 
@@ -157,11 +158,11 @@ class CnfNfdGenerator(NFDGenerator):
     def generate_nf_application(
         self, helm_package: HelmPackageConfig
     ) -> Dict[str, Any]:
-        (name, version) = self.get_chart_name_and_version(helm_package["path_to_chart"])
+        (name, version) = self.get_chart_name_and_version(helm_package)
         return {
             "artifactType": "HelmPackage",
-            "name": helm_package["name"],
-            "dependsOnProfile": helm_package["depends_on"],
+            "name": helm_package.name,
+            "dependsOnProfile": helm_package.depends_on,
             "artifactProfile": {
                 "artifactStore": {
                     "id": "[resourceId('Microsoft.HybridNetwork/publishers/artifactStores', parameters('publisherName'), parameters('acrArtifactStoreName'))]"
@@ -198,7 +199,7 @@ class CnfNfdGenerator(NFDGenerator):
         # We need to take the mappings from the values.nondef.yaml file and generate the schema
         # from the values.schema.json file.
         # Basically take the bits of the schema that are relevant to the parameters requested.
-        non_def_values = helm_package['path_to_chart'] + "/values.nondef.yaml"
+        non_def_values = helm_package.path_to_chart + "/values.nondef.yaml"
         
         with open(non_def_values, 'r') as stream:
             data = yaml.load(stream, Loader=yaml.SafeLoader)
@@ -211,6 +212,7 @@ class CnfNfdGenerator(NFDGenerator):
         print(schema_dict)    
         return schema_dict
 
+    ## JORDAN: change this to save the key and value that has deployParam in it so we can check the schema for the key
     def find_deploy_params(self, nested_dict, deploy_params_list):
         for k,v in nested_dict.items():
             if isinstance(v, str) and "deployParameters" in v:
@@ -224,13 +226,11 @@ class CnfNfdGenerator(NFDGenerator):
                     
         return deploy_params_list
             
-    ## Jordan DONE
-    ## think we need to be careful what we are naming things here, we've passed it the path to chart not the helm package
     def get_chart_name_and_version(
-        self, helm_package: Dict[Any, Any]
+        self, helm_package: HelmPackageConfig
     ) -> Tuple[str, str]:
-        # We need to get the chart name and version from the Chart.yaml file.
-        chart = helm_package + '/Chart.yaml'
+        
+        chart = helm_package.path_to_chart + '/Chart.yaml'
         
         with open(chart) as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
@@ -243,16 +243,14 @@ class CnfNfdGenerator(NFDGenerator):
         # Need to work out what we are doing here???
         pass
 
-    ## JORDAN talk to Jacob about ARM to bicep stuff
-    ## This is just experimenting, don't think this is returning correct format?
+    ## JORDAN: change this to return string(loadJson).. with the file in output 
     def generate_parmeter_mappings(self, helm_package: HelmPackageConfig) -> str:
         # Basically copy the values.nondef.yaml file to the right place.
-        values = helm_package["path_to_chart"] + '/values.nondef.yaml'
+        values = helm_package.path_to_chart + '/values.nondef.yaml'
         with open(values) as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
         with open('values.nondef.json', 'w') as file:
             json.dump(data, file)
-            # values_json = json.dump(data, file)
             
         with open('values.nondef.json', 'r') as fi:
             values_json = json.load(fi)
