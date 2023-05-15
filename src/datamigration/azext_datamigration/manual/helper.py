@@ -19,6 +19,8 @@ import subprocess
 import time
 import urllib.request
 import re
+import requests
+import shutil
 from zipfile import ZipFile
 from azure.cli.core.azclierror import CLIInternalError
 from azure.cli.core.azclierror import FileOperationError
@@ -107,19 +109,23 @@ def loginMigration_console_app_setup():
 # TdeMigration helper function to do console app setup (mkdir, download and extract)
 # -----------------------------------------------------------------------------------------------------------------
 def tdeMigration_console_app_setup():
-
     validate_os_env()
 
-    defaultOutputFolder = get_tdeMigration_default_output_folder()
+    # Create downloads directory if it doesn't already exists
+    default_output_folder = get_tdeMigration_default_output_folder()
+    downloads_folder = os.path.join(default_output_folder, "Downloads")
+    os.makedirs(downloads_folder, exist_ok=True)
+
+    # check and download console app
+    console_app_version = check_and_download_tdeMigration_console_app(downloads_folder)
+    if(console_app_version == None):
+        print("Connection to NuGet.org required. Please check connection and try again.")
+        return None
 
     # Assigning base folder path\TdeConsoleApp\console
-    baseFolder = os.path.join(defaultOutputFolder, "Downloads", "TdeConsoleApp")
-    exePath = os.path.join(baseFolder, "console", "Microsoft.SqlServer.Migration.Tde.ConsoleApp.exe")
-    # check and download console app
-    check_and_download_tdeMigration_console_app(baseFolder)
+    console_app_location = os.path.join(downloads_folder, console_app_version)
 
-    # Creating base folder structure
-    create_dir_path(baseFolder)
+    exePath = os.path.join(console_app_location, "tools", "Microsoft.SqlServer.Migration.Tde.ConsoleApp.exe")
 
     return exePath
 
@@ -210,31 +216,100 @@ def check_and_download_loginMigration_console_app(exePath, baseFolder):
 
 
 # -----------------------------------------------------------------------------------------------------------------
+# Get latest version of TDE Console App on NuGet.org
+# -----------------------------------------------------------------------------------------------------------------
+def get_latest_nuget_org_version(package_id):
+    # Get Nuget.org service index
+    service_index_response = None
+    try:
+        service_index_response = requests.get("https://api.nuget.org/v3/index.json")
+    except Exception:
+        print("Unable to connect to NuGet.org to check for updates.")
+
+    if(service_index_response == None or
+       service_index_response.status_code != 200 or
+       len(service_index_response.content) > 999999):
+        return None
+
+    json_response = json.loads(service_index_response.content)
+    nuget_org_resources = json_response["resources"]
+
+    package_base_address_type = "PackageBaseAddress/3.0.0"
+    package_base_address_url = None
+
+    for resource in nuget_org_resources:
+        if resource["@type"] == package_base_address_type:
+            package_base_address_url = resource["@id"]
+            break
+
+    if package_base_address_url == None:
+        return None
+
+    package_versions_response = None
+    package_versions_response = requests.get("%s%s/index.json" % (package_base_address_url, package_id.lower()))
+    if(package_versions_response.status_code != 200 or len(package_versions_response.content) > 999999):
+        return None
+
+    package_versions_json = json.loads(package_versions_response.content)
+    package_versions_array = package_versions_json["versions"]
+    return package_versions_array[len(package_versions_array) - 1]
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Get latest local version of TDE Console App
+# -----------------------------------------------------------------------------------------------------------------
+def get_latest_local_name_and_version(downloads_folder):
+    nuget_versions = os.listdir(downloads_folder)
+    if(len(nuget_versions) == 0):
+        return None
+
+    nuget_versions.sort(reverse=True)
+    return nuget_versions[0]
+
+
+# -----------------------------------------------------------------------------------------------------------------
 # TdeMigration helper function to check if console app exists, if not download it.
 # -----------------------------------------------------------------------------------------------------------------
-def check_and_download_tdeMigration_console_app(baseFolder):
+def check_and_download_tdeMigration_console_app(downloads_folder):
+    # Get latest TdeConsoleApp name from nuget.org
+    package_id = "Microsoft.SqlServer.Migration.TdeConsoleApp"
 
-    # TODO: Check if there is a more recent NuGet on nuget.org
-    #       If so, download new version.
-    #       If download is successful delete old files
+    latest_nuget_org_version = get_latest_nuget_org_version(package_id)
+    latest_nuget_org_name_and_version = "%s.%s" % (package_id, latest_nuget_org_version)
+    latest_local_name_and_version = get_latest_local_name_and_version(downloads_folder)
 
-    itemsInFolder = os.listdir(baseFolder)
-    consoleFolderExists = itemsInFolder.__contains__('console');
+    if(latest_nuget_org_version == None):
+        # Cannot retrieve latest version on NuGet.org, return latest local version
+        return latest_local_name_and_version
 
-    if consoleFolderExists == False:
-        nugets = []
-        for item in itemsInFolder:
-            if re.match(r"Microsoft\.SqlServer\.Migration\.TdeConsoleApp\..*\.nupkg", item):
-                nugets.append(item)
+    if(latest_local_name_and_version != None and
+       latest_local_name_and_version >= latest_nuget_org_name_and_version):
+        # Console app is up to date, do not download update
+        return latest_local_name_and_version
 
-        nugets.sort(reverse=True)
-        latestNugetFile = nugets[0]
-        zipDestination = os.path.join(baseFolder, latestNugetFile)
-        nuget = ZipFile(zipDestination, "r")
-        nuget.extractall(path=baseFolder)
-        consoleFolderExists = True
+    # Download latest version of NuGet
+    latest_nuget_org_download_directory = os.path.join(downloads_folder, latest_nuget_org_name_and_version)
+    os.makedirs(latest_nuget_org_download_directory, exist_ok=True)
 
-    return consoleFolderExists
+    latest_nuget_org_download_name = "%s/%s" % (latest_nuget_org_download_directory, "%s.nupkg" % (latest_nuget_org_name_and_version))
+    download_url = "https://www.nuget.org/api/v2/package/%s/%s" % (package_id, latest_nuget_org_version)
+
+    # Extract downloaded NuGet
+    urllib.request.urlretrieve(download_url, filename=latest_nuget_org_download_name)
+    with ZipFile(latest_nuget_org_download_name, 'r') as zipFile:
+        zipFile.extractall(path=latest_nuget_org_download_directory)
+
+    exe_path = os.path.join(latest_nuget_org_download_directory, "tools", "Microsoft.SqlServer.Migration.Tde.ConsoleApp.exe")
+
+    if(os.path.exists(exe_path)):
+        for nuget_version in os.listdir(downloads_folder):
+            if(nuget_version != latest_nuget_org_name_and_version):
+                shutil.rmtree(os.path.join(downloads_folder, nuget_version))
+
+    else:
+        return latest_local_name_and_version
+
+    return latest_nuget_org_name_and_version
 
 
 # -----------------------------------------------------------------------------------------------------------------
