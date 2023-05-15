@@ -1289,7 +1289,7 @@ helps['containerapp patch list'] = """
     - name: List patchable container apps by resource group and managed environment.
       text: |
           az containerapp patch list -g MyResourceGroup --environment MyContainerAppEnv
-    - name: List patchable and unpatchable container apps.
+    - name: List patchable and unpatchable container apps by resource group and managed environment with the show-all option.
       text: |
           az containerapp patch list -g MyResourceGroup --environment MyContainerAppEnv --show-all
 """
