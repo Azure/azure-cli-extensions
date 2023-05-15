@@ -33,6 +33,14 @@ long-summary: Update an existing load test run.
 """
 
 helps[
+    "load test-run stop"
+] = """
+type: command
+short-summary: Stop the execution load test run.
+long-summary: Stop the execution load test run.
+"""
+
+helps[
     "load test-run delete"
 ] = """
 type: command
