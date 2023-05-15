@@ -13,7 +13,7 @@ Pending
 +++++++
 
 0.5.139
-* [AKS] `az aks create` and `az aks nodepool add`: Add warning message when specifying `--os-sku` to `Mariner` or `CBLMariner`.
+* `az aks create` and `az aks nodepool add`: Add warning message when specifying `--os-sku` to `Mariner` or `CBLMariner`.
 
 0.5.138
 +++++++
