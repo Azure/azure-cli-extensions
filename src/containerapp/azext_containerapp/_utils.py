@@ -1791,11 +1791,6 @@ def get_pack_exec_path():
             st = os.stat(exec_path)
             os.chmod(exec_path, st.st_mode | stat.S_IXUSR)
 
-        # Add executable permissions for the current user if they don't exist
-        if not os.access(exec_path, os.X_OK):
-            st = os.stat(exec_path)
-            os.chmod(exec_path, st.st_mode | stat.S_IXUSR)
-
         return exec_path
     except Exception as e:
         # Swallow any exceptions thrown when attempting to install pack CLI

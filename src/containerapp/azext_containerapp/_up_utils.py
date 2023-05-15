@@ -380,9 +380,9 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         logger.debug(f"Calling '{' '.join(command)}'")
         try:
             with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
-                stdout, stderr = process.communicate()  # pylint: disable=unused-variable
+                outputs = process.communicate()
                 if process.returncode != 0:
-                    raise CLIError(f"Error thrown when running 'pack config': {stderr.decode('utf-8')}")
+                    raise CLIError(f"Error thrown when running 'pack config': {outputs[1].decode('utf-8')}")  # outputs[1] is stderr, outputs[0] is stdout
                 logger.debug(f"Successfully set the default builder to {builder_image_name}.")
         except Exception as ex:
             raise ValidationError(f"Unable to run 'pack config' command to set default builder: {ex}") from ex
@@ -431,9 +431,9 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         logger.warning(f"Built image {image_name} locally using buildpacks, attempting to push to registry...")
         try:
             with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
-                stdout, stderr = process.communicate()
+                outputs = process.communicate()
                 if process.returncode != 0:
-                    raise CLIError(f"Error thrown when running 'docker push': {stderr.decode('utf-8')}")
+                    raise CLIError(f"Error thrown when running 'docker push': {outputs[1].decode('utf-8')}")  # outputs[1] is stderr, outputs[0] is stdout
                 logger.debug(f"Successfully pushed image {image_name} to ACR.")
         except Exception as ex:
             raise CLIError(f"Unable to run 'docker push' command to push image to ACR: {ex}") from ex
