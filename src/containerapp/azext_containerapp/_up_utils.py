@@ -7,8 +7,8 @@
 
 from tempfile import NamedTemporaryFile
 from urllib.parse import urlparse
-import requests
 import subprocess
+import requests
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -359,7 +359,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             self.cmd.cli_ctx, registry_name
         )
 
-    def build_container_from_source_with_buildpack(self, image_name, source):
+    def build_container_from_source_with_buildpack(self, image_name, source):  # pylint: disable=too-many-statements
         # Ensure that Docker is running
         if not is_docker_running():
             raise ValidationError("Docker is not running. Please start Docker to use buildpacks.")
@@ -379,13 +379,13 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         command = [pack_exec_path, 'config', 'default-builder', builder_image_name]
         logger.debug(f"Calling '{' '.join(command)}'")
         try:
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            stdout, stderr = process.communicate()
-            if process.returncode != 0:
-                raise CLIError(f"Error thrown when running 'pack config': {stderr.decode('utf-8')}")
-            logger.debug(f"Successfully set the default builder to {builder_image_name}.")
+            with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+                stdout, stderr = process.communicate()  # pylint: disable=unused-variable
+                if process.returncode != 0:
+                    raise CLIError(f"Error thrown when running 'pack config': {stderr.decode('utf-8')}")
+                logger.debug(f"Successfully set the default builder to {builder_image_name}.")
         except Exception as ex:
-            raise ValidationError(f"Unable to run 'pack config' command to set default builder: {ex}")
+            raise ValidationError(f"Unable to run 'pack config' command to set default builder: {ex}") from ex
 
         # Run 'pack build' to produce a runnable application image for the Container App
         command = [pack_exec_path, 'build', image_name, '--builder', builder_image_name, '--path', source]
@@ -398,45 +398,45 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         logger.debug(f"Calling '{' '.join(command)}'")
         try:
             is_non_supported_platform = False
-            process = subprocess.Popen(command, stdout=subprocess.PIPE)
+            with subprocess.Popen(command, stdout=subprocess.PIPE) as process:
 
-            # Stream output of 'pack build' to warning stream
-            while process.stdout.readable():
-                line = process.stdout.readline()
-                if not line:
-                    break
+                # Stream output of 'pack build' to warning stream
+                while process.stdout.readable():
+                    line = process.stdout.readline()
+                    if not line:
+                        break
 
-                stdout_line = str(line.strip(), 'utf-8')
-                logger.warning(stdout_line)
-                if not is_non_supported_platform and "No buildpack groups passed detection" in stdout_line:
-                    is_non_supported_platform = True
+                    stdout_line = str(line.strip(), 'utf-8')
+                    logger.warning(stdout_line)
+                    if not is_non_supported_platform and "No buildpack groups passed detection" in stdout_line:
+                        is_non_supported_platform = True
 
-            # Update the result of process.returncode
-            process.communicate()
-            if is_non_supported_platform:
-                raise ValidationError("Current buildpacks do not support the platform targeted in the provided source code.")
+                # Update the result of process.returncode
+                process.communicate()
+                if is_non_supported_platform:
+                    raise ValidationError("Current buildpacks do not support the platform targeted in the provided source code.")
 
-            if process.returncode != 0:
-                raise CLIError(f"Non-zero exit code returned from 'pack build'; please check the above output for more details.")
+                if process.returncode != 0:
+                    raise CLIError("Non-zero exit code returned from 'pack build'; please check the above output for more details.")
 
-            logger.debug(f"Successfully built image {image_name} using buildpacks.")
+                logger.debug(f"Successfully built image {image_name} using buildpacks.")
         except ValidationError as ex:
             raise ex
         except Exception as ex:
-            raise CLIError(f"Unable to run 'pack build' command to produce runnable application image: {ex}")
+            raise CLIError(f"Unable to run 'pack build' command to produce runnable application image: {ex}") from ex
 
         # Run 'docker push' to push the image to the ACR
         command = ['docker', 'push', image_name]
         logger.debug(f"Calling '{' '.join(command)}'")
         logger.warning(f"Built image {image_name} locally using buildpacks, attempting to push to registry...")
         try:
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            stdout, stderr = process.communicate()
-            if process.returncode != 0:
-                raise CLIError(f"Error thrown when running 'docker push': {stderr.decode('utf-8')}")
-            logger.debug(f"Successfully pushed image {image_name} to ACR.")
+            with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+                stdout, stderr = process.communicate()
+                if process.returncode != 0:
+                    raise CLIError(f"Error thrown when running 'docker push': {stderr.decode('utf-8')}")
+                logger.debug(f"Successfully pushed image {image_name} to ACR.")
         except Exception as ex:
-            raise CLIError(f"Unable to run 'docker push' command to push image to ACR: {ex}")
+            raise CLIError(f"Unable to run 'docker push' command to push image to ACR: {ex}") from ex
 
     def build_container_from_source_with_acr_task(self, image_name, source):
         from azure.cli.command_modules.acr.task import acr_task_create, acr_task_run
@@ -509,7 +509,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             except ValidationError as e:
                 logger.warning(f"Unable to use buildpacks to build image from source: {e}\nFalling back to ACR Task...")
             except CLIError as e:
-                logger.error(f"Failed to use buildpacks to build image from source.")
+                logger.error("Failed to use buildpacks to build image from source.")
                 raise e
 
             # If we're unable to use the buildpack, build source using an ACR Task
