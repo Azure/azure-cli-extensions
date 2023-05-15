@@ -64,7 +64,9 @@ or endpoint (--endpoint) parameter should be set."""
             raise InvalidArgumentValueError(
                 f"""The endpoint '{endpoint}' is invalid. Please ensure that the \
 endpoint starts with 'https' and is properly formatted. Run \
-'az devcenter admin project show' to get the endpoint or contact your admin for assistance."""
+'az devcenter admin project show' to view the endpoint of a specific project. \
+Run 'az devcenter admin project list' to view the \
+list of available projects. Contact your admin for further assistance."""
             )
     if endpoint is None and dev_center is None:
         error_message = """Either an endpoint (--endpoint) \
