@@ -4311,6 +4311,8 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
         logger.warning("Please install or start Docker and try again.")
         return
     pack_exec_path = get_pack_exec_path()
+    if pack_exec_path is None:
+        return
     print("\rListing container apps...", end="", flush=True)
     ca_list = list_containerapp(cmd, resource_group_name, managed_env)
     imgs = []
@@ -4320,7 +4322,12 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
             managed_env_name = ca["properties"]["managedEnvironmentId"].split('/')[-1]
             containers = ca["properties"]["template"]["containers"]
             for container in containers:
-                result = dict(imageName=container["image"], targetContainerName=container["name"], targetContainerAppName=ca["name"], targetContainerAppEnvironmentName=managed_env_name, targetResourceGroup=resource_group_name)
+                result = dict(
+                    imageName=container["image"],
+                    targetContainerName=container["name"],
+                    targetContainerAppName=ca["name"],
+                    targetContainerAppEnvironmentName=managed_env_name,
+                    targetResourceGroup=resource_group_name)
                 imgs.append(result)
     # Inspect the images
     results = []
@@ -4340,12 +4347,30 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
     print("\rChecking for patches...", end="", flush=True)
     for inspect_result in inspect_results:
         if inspect_result["remote_info"] == 401:
-            results.append(dict(targetContainerName=inspect_result["targetContainerName"], targetContainerAppName=inspect_result["targetContainerAppName"], targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"], targetResourceGroup=inspect_result["targetResourceGroup"], targetImageName=inspect_result["image_name"], oldRunImage=None, newRunImage=None, id=None, reason=failed_reason))
+            results.append(dict(
+                targetContainerName=inspect_result["targetContainerName"],
+                targetContainerAppName=inspect_result["targetContainerAppName"],
+                targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
+                targetResourceGroup=inspect_result["targetResourceGroup"],
+                targetImageName=inspect_result["image_name"],
+                oldRunImage=None,
+                newRunImage=None,
+                id=None,
+                reason=failed_reason))
         else:
             # Divide run-images into different parts by "/"
             run_images_props = inspect_result["remote_info"]["run_images"]
             if run_images_props is None:
-                results.append(dict(targetContainerName=inspect_result["targetContainerName"], targetContainerAppName=inspect_result["targetContainerAppName"], targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"], targetResourceGroup=inspect_result["targetResourceGroup"], targetImageName=inspect_result["image_name"], oldRunImage=None, newRunImage=None, id=None, reason=not_based_mariner_reason))
+                results.append(dict(
+                    targetContainerName=inspect_result["targetContainerName"],
+                    targetContainerAppName=inspect_result["targetContainerAppName"],
+                    targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
+                    targetResourceGroup=inspect_result["targetResourceGroup"],
+                    targetImageName=inspect_result["image_name"],
+                    oldRunImage=None,
+                    newRunImage=None,
+                    id=None,
+                    reason=not_based_mariner_reason))
             else:
                 for run_images_prop in run_images_props:
                     if run_images_prop["name"].find("mcr.microsoft.com/oryx/builder") != -1:
@@ -4356,10 +4381,26 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
                             check_result = patchable_check(run_images_tag, oryx_run_img_tags, inspect_result=inspect_result)
                             results.append(check_result)
                         else:
-                            results.append(dict(targetContainerName=inspect_result["targetContainerName"], targetContainerAppName=inspect_result["targetContainerAppName"], targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"], targetResourceGroup=inspect_result["targetResourceGroup"], targetImageName=inspect_result["image_name"], oldRunImage=inspect_result["remote_info"]["run_images"]["name"], newRunImage=None, id=None, reason=failed_reason))
+                            results.append(dict(
+                                targetContainerName=inspect_result["targetContainerName"],
+                                targetContainerAppName=inspect_result["targetContainerAppName"],
+                                targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
+                                targetResourceGroup=inspect_result["targetResourceGroup"],
+                                targetImageName=inspect_result["image_name"],
+                                oldRunImage=inspect_result["remote_info"]["run_images"]["name"],
+                                newRunImage=None,
+                                id=None,
+                                reason=failed_reason))
                     else:
-                        # Not based on image from mcr.microsoft.com/dotnet
-                        results.append(dict(targetContainerAppName=inspect_result["targetContainerAppName"], targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"], targetResourceGroup=inspect_result["targetResourceGroup"], oldRunImage=inspect_result["remote_info"]["run_images"], newRunImage=None, id=None, reason=mcr_check_reason))
+                        # Not based on image from mcr.microsoft.com/oryx/builder
+                        results.append(dict(
+                            targetContainerAppName=inspect_result["targetContainerAppName"],
+                            targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
+                            targetResourceGroup=inspect_result["targetResourceGroup"],
+                            oldRunImage=inspect_result["remote_info"]["run_images"],
+                            newRunImage=None,
+                            id=None,
+                            reason=mcr_check_reason))
     # Make sure that we clear the first line before showing the new output
     print("\r                                   \r", end="", flush=True)
     if show_all is False:
@@ -4372,7 +4413,20 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
 
 def patch_get_image_inspection(pack_exec_path, img, info_list):
     if (img["imageName"].find("run-dotnet") != -1) and (img["imageName"].find("cbl-mariner") != -1):
-        inspect_result = {"remote_info": {"run_images": [{"name": "mcr.microsoft.com/oryx/builder:" + img["imageName"].split(":")[-1]}]}, "image_name": img["imageName"], "targetContainerName": img["targetContainerName"], "targetContainerAppName": img["targetContainerAppName"], "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"], "targetResourceGroup": img["targetResourceGroup"]}
+        inspect_result = {
+            "remote_info":
+            {
+                "run_images":
+                [{
+                    "name": "mcr.microsoft.com/oryx/builder:" + img["imageName"].split(":")[-1]
+                }]
+            },
+            "image_name": img["imageName"],
+            "targetContainerName": img["targetContainerName"],
+            "targetContainerAppName": img["targetContainerAppName"],
+            "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"],
+            "targetResourceGroup": img["targetResourceGroup"]
+        }
     else:
         with subprocess.Popen(pack_exec_path + " inspect-image " + img["imageName"] + " --output json", shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE) as img_info:
             img_info_out, img_info_err = img_info.communicate()
@@ -4380,7 +4434,12 @@ def patch_get_image_inspection(pack_exec_path, img, info_list):
                 inspect_result = dict(remote_info=401, image_name=img["imageName"])
             else:
                 inspect_result = json.loads(img_info_out)
-            inspect_result.update({"targetContainerName": img["targetContainerName"], "targetContainerAppName": img["targetContainerAppName"], "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"], "targetResourceGroup": img["targetResourceGroup"]})
+            inspect_result.update({
+                "targetContainerName": img["targetContainerName"],
+                "targetContainerAppName": img["targetContainerAppName"],
+                "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"],
+                "targetResourceGroup": img["targetResourceGroup"]
+            })
     info_list.append(inspect_result)
 
 
@@ -4390,6 +4449,8 @@ def patch_interactive(cmd, resource_group_name=None, managed_env=None, show_all=
         return
     patchable_check_results = patch_list(cmd, resource_group_name, managed_env, show_all=show_all)
     pack_exec_path = get_pack_exec_path()
+    if pack_exec_path is None:
+        return
     if patchable_check_results is None:
         return
     patchable_check_results_json = json.dumps(patchable_check_results, indent=2)
@@ -4410,6 +4471,8 @@ def patch_apply(cmd, resource_group_name=None, managed_env=None, show_all=False)
         return
     patchable_check_results = patch_list(cmd, resource_group_name, managed_env, show_all=show_all)
     pack_exec_path = get_pack_exec_path()
+    if pack_exec_path is None:
+        return
     if patchable_check_results is None:
         return
     patchable_check_results_json = json.dumps(patchable_check_results, indent=2)
@@ -4424,29 +4487,28 @@ def patch_apply(cmd, resource_group_name=None, managed_env=None, show_all=False)
 
 
 def patch_apply_handle_input(cmd, patch_check_list, method, pack_exec_path):
-    m = method.strip().lower()
+    input_method = method.strip().lower()
     # Track number of times patches were applied successfully.
     patch_apply_count = 0
-    if m == "y":
+    if input_method == "y":
         for patch_check in patch_check_list:
-            if patch_check["id"]:
-                if patch_check["newRunImage"]:
-                    patch_cli_call(cmd,
-                                   patch_check["targetResourceGroup"],
-                                   patch_check["targetContainerAppName"],
-                                   patch_check["targetContainerName"],
-                                   patch_check["targetImageName"],
-                                   patch_check["newRunImage"],
-                                   pack_exec_path)
-                    # Increment patch_apply_count with every successful patch.
-                    patch_apply_count += 1
-    elif m == "n":
+            if patch_check["id"] and patch_check["newRunImage"]:
+                patch_cli_call(cmd,
+                               patch_check["targetResourceGroup"],
+                               patch_check["targetContainerAppName"],
+                               patch_check["targetContainerName"],
+                               patch_check["targetImageName"],
+                               patch_check["newRunImage"],
+                               pack_exec_path)
+                # Increment patch_apply_count with every successful patch.
+                patch_apply_count += 1
+    elif input_method == "n":
         print("No patch applied.")
         return
     else:
         # Check if method is an existing id in the list
         for patch_check in patch_check_list:
-            if patch_check["id"] == method:
+            if patch_check["id"] == input_method:
                 patch_cli_call(cmd,
                                patch_check["targetResourceGroup"],
                                patch_check["targetContainerAppName"],
@@ -4455,7 +4517,7 @@ def patch_apply_handle_input(cmd, patch_check_list, method, pack_exec_path):
                                patch_check["newRunImage"],
                                pack_exec_path)
                 patch_apply_properties = {
-                    'Context.Default.AzureCLI.PatchApplyUserResponse': method,
+                    'Context.Default.AzureCLI.PatchApplyUserResponse': input_method,
                     'Context.Default.AzureCLI.PatchApplyCount': 1
                 }
                 telemetry_core.add_extension_event('containerapp', patch_apply_properties)

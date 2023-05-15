@@ -1801,45 +1801,28 @@ def get_pack_exec_path():
 
 def patchable_check(repo_tag_split: str, oryx_builder_run_img_tags, inspect_result):
     tag_prop = parse_oryx_mariner_tag(repo_tag_split)
+    result = {
+        "targetContainerAppName": inspect_result["targetContainerAppName"],
+        "targetContainerName": inspect_result["targetContainerName"],
+        "targetContainerAppEnvironmentName": inspect_result["targetContainerAppEnvironmentName"],
+        "targetResourceGroup": inspect_result["targetResourceGroup"],
+        "targetImageName": inspect_result["image_name"],
+        "oldRunImage": repo_tag_split,
+        "newRunImage": None,
+        "id": None,
+    }
     if tag_prop is None:
-        result = {
-            "targetContainerAppName": inspect_result["targetContainerAppName"],
-            "targetContainerName": inspect_result["targetContainerName"],
-            "targetContainerAppEnvironmentName": inspect_result["targetContainerAppEnvironmentName"],
-            "targetResourceGroup": inspect_result["targetResourceGroup"],
-            "targetImageName": inspect_result["image_name"],
-            "oldRunImage": repo_tag_split,
-            "newRunImage": None,
-            "id": None,
-            "reason": "Image not based on dotnet Mariner."
-        }
+        result["reason"] = "Image not based from a Mariner tag in mcr.microsoft.com/oryx/dotnet."
         return result
     elif len(str(tag_prop["version"]).split(".")) == 2:
-        result = {
-            "targetContainerAppName": inspect_result["targetContainerAppName"],
-            "targetContainerName": inspect_result["targetContainerName"],
-            "targetContainerAppEnvironmentName": inspect_result["targetContainerAppEnvironmentName"],
-            "targetResourceGroup": inspect_result["targetResourceGroup"],
-            "targetImageName": inspect_result["image_name"],
-            "oldRunImage": repo_tag_split,
-            "newRunImage": None,
-            "id": None,
-            "reason": "Image is using a version that doesn't contain a patch information."
-        }
+        result["reason"] = "Image is using a run image version that doesn't contain a patch information."
         return result
     repo_tag_split = repo_tag_split.split("-")
     if repo_tag_split[1] == "dotnet":
         matching_version_info = oryx_builder_run_img_tags[repo_tag_split[2]][str(tag_prop["version"].major) + "." + str(tag_prop["version"].minor)][tag_prop["support"]][tag_prop["marinerVersion"]]
     # Check if the image minor version is less than the latest minor version
     if tag_prop["version"] < matching_version_info[0]["version"]:
-        result = {
-            "targetContainerAppName": inspect_result["targetContainerAppName"],
-            "targetContainerName": inspect_result["targetContainerName"],
-            "targetContainerAppEnvironmentName": inspect_result["targetContainerAppEnvironmentName"],
-            "targetResourceGroup": inspect_result["targetResourceGroup"],
-            "targetImageName": inspect_result["image_name"],
-            "oldRunImage": tag_prop["fullTag"],
-        }
+        result["oldRunImage"] = tag_prop["fullTag"]
         if (tag_prop["version"].minor == matching_version_info[0]["version"].minor) and (tag_prop["version"].micro < matching_version_info[0]["version"].micro):
             # Patchable
             result["newRunImage"] = "mcr.microsoft.com/oryx/builder:" + matching_version_info[0]["fullTag"]
@@ -1849,19 +1832,10 @@ def patchable_check(repo_tag_split: str, oryx_builder_run_img_tags, inspect_resu
             # Not patchable
             result["newRunImage"] = "mcr.microsoft.com/oryx/builder:" + matching_version_info[0]["fullTag"]
             result["id"] = None
-            result["reason"] = "The image is not pachable Please check for major or minor version upgrade."
+            result["reason"] = "The image is not patchable. Please check for major or minor version upgrade."
     else:
-        result = {
-            "targetContainerAppName": inspect_result["targetContainerAppName"],
-            "targetContainerName": inspect_result["targetContainerName"],
-            "targetContainerAppEnvironmentName": inspect_result["targetContainerAppEnvironmentName"],
-            "targetResourceGroup": inspect_result["targetResourceGroup"],
-            "targetImageName": inspect_result["image_name"],
-            "oldRunImage": tag_prop["fullTag"],
-            "newRunImage": None,
-            "id": None,
-            "reason": "The image is already up to date."
-        }
+        result["oldRunImage"] = tag_prop["fullTag"]
+        result["reason"] = "The image is already up to date."
     return result
 
 
@@ -1869,7 +1843,7 @@ def get_current_mariner_tags() -> list(OryxMarinerRunImgTagProperty):
     r = requests.get("https://mcr.microsoft.com/v2/oryx/builder/tags/list", timeout=30)
     tags = r.json()
     tag_list = {}
-    # only keep entries that container keyword "mariner"
+    # only keep entries that contain keyword "mariner"
     tags = [tag for tag in tags["tags"] if "mariner" in tag]
     for tag in tags:  # pylint: disable=too-many-nested-blocks
         tag_obj = parse_oryx_mariner_tag(tag)
