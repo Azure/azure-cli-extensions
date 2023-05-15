@@ -42,7 +42,7 @@ class WebappBasicE2EKubeTest(ScenarioTest):
         self.cmd('webapp update -g {} -n {} --https-only true'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", True)])
         self.cmd('webapp update -g {} -n {} --https-only false'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", False)])
 
-    @ResourceGroupPreparer(location="westus2")
+    @ResourceGroupPreparer(location="eastus")
     def test_win_webapp_quick_create_kube(self, resource_group):
         webapp_name = self.create_random_name(prefix='webapp-quick', length=24)
         plan = self.create_random_name(prefix='plan-quick', length=24)
@@ -58,7 +58,7 @@ class WebappBasicE2EKubeTest(ScenarioTest):
         self.cmd('webapp update -g {} -n {} --https-only true'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", True)])
         self.cmd('webapp update -g {} -n {} --https-only false'.format(resource_group, webapp_name), checks=[JMESPathCheck("httpsOnly", False)])
 
-    @ResourceGroupPreparer(name_prefix="clitest", random_name_length=24, location="westus2")
+    @ResourceGroupPreparer(name_prefix="clitest", random_name_length=24, location="eastus")
     def test_win_webapp_quick_create_runtime_kube(self, resource_group):
         webapp_name = self.create_random_name(prefix='webapp-quick', length=24)
         webapp_name_2 = self.create_random_name(prefix='webapp-quick', length=24)
