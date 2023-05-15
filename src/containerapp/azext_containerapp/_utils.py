@@ -7,17 +7,16 @@
 import time
 import json
 import platform
-import docker
 import stat
 import io
 import os
-import requests
-import hashlib
-import packaging.version as SemVer
-import re
 import tarfile
 import zipfile
-
+import hashlib
+import re
+import requests
+import docker
+import packaging.version as SemVer
 
 from urllib.parse import urlparse
 from urllib.request import urlopen
@@ -43,7 +42,7 @@ from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERV
                          LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
                          LOGS_STRING, PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS)
 from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel, ManagedCertificateEnvelop as ManagedCertificateEnvelopModel)
-from ._models import ImagePatchableCheck, OryxMarinerRunImgTagProperty
+from ._models import OryxMarinerRunImgTagProperty
 
 logger = get_logger(__name__)
 
@@ -1772,20 +1771,20 @@ def get_pack_exec_path():
 
         # Attempt to install the pack CLI
         url = f"https://github.com/buildpacks/pack/releases/download/{pack_cli_version}/{compressed_download_file_name}"
-        req = urlopen(url)
-        compressed_file = io.BytesIO(req.read())
-        if host_os == "Windows":
-            zip_file = zipfile.ZipFile(compressed_file)
-            for file in zip_file.namelist():
-                if file.endswith(exec_name):
-                    with open(exec_path, "wb") as f:
-                        f.write(zip_file.read(file))
-        else:
-            with tarfile.open(fileobj=compressed_file, mode="r:gz") as tar:
-                for tar_info in tar:
-                    if tar_info.isfile() and tar_info.name.endswith(exec_name):
-                        with open(exec_path, "wb") as f:
-                            f.write(tar.extractfile(tar_info).read())
+        with urlopen(url) as req:
+            compressed_file = io.BytesIO(req.read())
+            if host_os == "Windows":
+                with zipfile.ZipFile(compressed_file) as zip_file:
+                    for file in zip_file.namelist():
+                        if file.endswith(exec_name):
+                            with open(exec_path, "wb") as f:
+                                f.write(zip_file.read(file))
+            else:
+                with tarfile.open(fileobj=compressed_file, mode="r:gz") as tar:
+                    for tar_info in tar:
+                        if tar_info.isfile() and tar_info.name.endswith(exec_name):
+                            with open(exec_path, "wb") as f:
+                                f.write(tar.extractfile(tar_info).read())
 
         # Add executable permissions for the current user if they don't exist
         if not os.access(exec_path, os.X_OK):
@@ -1867,19 +1866,19 @@ def patchable_check(repo_tag_split: str, oryx_builder_run_img_tags, inspect_resu
 
 
 def get_current_mariner_tags() -> list(OryxMarinerRunImgTagProperty):
-    r = requests.get("https://mcr.microsoft.com/v2/oryx/builder/tags/list")
+    r = requests.get("https://mcr.microsoft.com/v2/oryx/builder/tags/list", timeout=30)
     tags = r.json()
     tag_list = {}
     # only keep entries that container keyword "mariner"
     tags = [tag for tag in tags["tags"] if "mariner" in tag]
-    for tag in tags:
+    for tag in tags:  # pylint: disable=too-many-nested-blocks
         tag_obj = parse_oryx_mariner_tag(tag)
         if tag_obj:
             major_minor_ver = str(tag_obj["version"].major) + "." + str(tag_obj["version"].minor)
             support = tag_obj["support"]
             framework = tag_obj["framework"]
             mariner_ver = tag_obj["marinerVersion"]
-            if framework in tag_list.keys():
+            if framework in tag_list:
                 if major_minor_ver in tag_list[framework].keys():
                     if support in tag_list[framework][major_minor_ver].keys():
                         if mariner_ver in tag_list[framework][major_minor_ver][support].keys():
@@ -1896,7 +1895,7 @@ def get_current_mariner_tags() -> list(OryxMarinerRunImgTagProperty):
     return tag_list
 
 
-def get_latest_buildpack_run_tag(framework, version, support = "lts", mariner_version = "cbl-mariner2.0"):
+def get_latest_buildpack_run_tag(framework, version, support="lts", mariner_version="cbl-mariner2.0"):
     tags = get_current_mariner_tags()
     try:
         return tags[framework][version][support][mariner_version][0]["fullTag"]
