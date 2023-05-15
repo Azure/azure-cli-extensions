@@ -498,7 +498,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             try:
                 # First try to build source using buildpacks
                 # Temporary fix: using run time tag as customer image tag
-                # Waiting for buildpacks side to fix this issue: https://github.com/buildpacks/pack/issues/1753
+                # Waiting for buildpacks side to fix this issue: https://github.com/buildpacks/pack/issues/1750
                 logger.warning("Attempting to build image using buildpacks...")
                 run_image_tag = get_latest_buildpack_run_tag("aspnet", "7.0")
                 if run_image_tag is not None:
