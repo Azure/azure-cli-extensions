@@ -66,7 +66,7 @@ or endpoint (--endpoint) parameter should be set."""
 endpoint starts with 'https' and is properly formatted. Run \
 'az devcenter admin project show' to view the endpoint of a specific project. \
 Run 'az devcenter admin project list' to view the \
-list of projects available. Contact your admin for further assistance."""
+list of available projects. Contact your admin for further assistance."""
             )
     if endpoint is None and dev_center is None:
         error_message = """Either an endpoint (--endpoint) \
