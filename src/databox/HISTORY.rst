@@ -5,7 +5,8 @@ Release History
 
 0.1.3
 ++++++
-* `az databox job create`: Add new parameter `--transfer-type`
+* `az databox job create`: Add new parameter `--transfer-type` and `--kek-type`
+* Migrate azure-stack-hci commands to aaz
 
 0.1.2
 ++++++

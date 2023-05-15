@@ -19,7 +19,8 @@ class DataboxScenario(ScenarioTest):
             'job_name': job_name,
             'job_name_2': job_name_2,
             'storage_account_1': storage_account_1,
-            'storage_account_2': storage_account_2
+            'storage_account_2': storage_account_2,
+            'managed-rg': self.create_random_name('rg-', 10)
         })
 
         # Create a databox job with sku 'DataBox'.
@@ -39,15 +40,26 @@ class DataboxScenario(ScenarioTest):
                  '--company-name Microsoft '
                  '--storage-account {storage_account_1} {storage_account_2} '
                  '--staging-storage-account {storage_account_1} '
-                 '--resource-group-for-managed-disk rg-for-managed-disk',
-                 checks=[JMESPathCheck('status', 'DeviceOrdered')])
+                 '--resource-group-for-managed-disk {managed-rg} '
+                 '--transfer-type ImportToAzure '
+                 '--kek-type MicrosoftManaged',
+                 checks=[
+                     self.check('status', 'DeviceOrdered'),
+                     self.check('transferType', 'ImportToAzure'),
+                     self.check('keyEncryptionKey.kekType', 'MicrosoftManaged')
+                 ])
 
         self.cmd('databox job update '
                  '--resource-group {rg} '
                  '--name {job_name} '
                  '--contact-name "Public SDK Test 1" '
-                 '--email-list testing1@microsoft.com',
-                 checks=[])
+                 '--email-list testing1@microsoft.com '
+                 '--phone 14258828081',
+                 checks=[
+                     self.check('details.contactDetails.contactName', 'Public SDK Test 1'),
+                     self.check('details.contactDetails.emailList[0]', 'testing1@microsoft.com'),
+                     self.check('details.contactDetails.phone', '14258828081')
+                 ])
 
         self.cmd('databox job show '
                  '--resource-group {rg} '
@@ -105,8 +117,10 @@ class DataboxScenario(ScenarioTest):
                  '--country US '
                  '--postal-code 98052 '
                  '--company-name Microsoft '
-                 '--storage-account {storage_account_1}',
-                 checks=[JMESPathCheck('status', 'DeviceOrdered')])
+                 '--storage-account {storage_account_1} '
+                 '--transfer-type ImportToAzure',
+                 checks=[JMESPathCheck('status', 'DeviceOrdered')],
+                 )
 
         self.cmd('databox job cancel '
                  '--resource-group {rg} '

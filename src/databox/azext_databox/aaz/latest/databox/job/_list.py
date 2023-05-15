@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all the jobs available under the subscription.
+
+    :example: List job by resource group
+        az databox job list -g rg
     """
 
     _aaz_info = {

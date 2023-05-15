@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a new job with the specified parameters.
+
+    :example: Create job
+        az databox job create -g rg -n job-name --sku databox --contact-name 'test' --phone 14258828080 --email-list testing@microsoft.com --street-address1 "1 MICROSOFT WAY" --city Redmond --state-or-province WA --country US --postal-code 98052 --company-name Microsoft --storage-account account-id --staging-storage-account account-id --resource-group-for-managed-disk rg --transfer-type ImportToAzure --kek-type MicrosoftManaged
     """
 
     _aaz_info = {
@@ -86,286 +89,20 @@ class Create(AAZCommand):
         # define Arg Group "Details"
 
         _args_schema = cls._args_schema
-        _args_schema.data_export_details = AAZListArg(
-            options=["--data-export-details"],
-            arg_group="Details",
-            help="Details of the data to be exported from azure.",
-        )
-        _args_schema.data_import_details = AAZListArg(
-            options=["--data-import-details"],
-            arg_group="Details",
-            help="Details of the data to be imported into azure.",
-        )
         _args_schema.expected_data_size = AAZIntArg(
             options=["--expected-data-size"],
             arg_group="Details",
             help="The expected size of the data, which needs to be transferred in this job, in terabytes.",
         )
-        _args_schema.key_encryption_key = AAZObjectArg(
-            options=["--key-encryption-key"],
-            arg_group="Details",
-            help="Details about which key encryption type is being used.",
-        )
-
-        data_export_details = cls._args_schema.data_export_details
-        data_export_details.Element = AAZObjectArg()
-
-        _element = cls._args_schema.data_export_details.Element
-        _element.account_details = AAZObjectArg(
-            options=["account-details"],
-            help="Account details of the data to be transferred",
-            required=True,
-        )
-        _element.log_collection_level = AAZStrArg(
-            options=["log-collection-level"],
-            help="Level of the logs to be collected.",
-            default="Error",
-            enum={"Error": "Error", "Verbose": "Verbose"},
-        )
-        _element.transfer_configuration = AAZObjectArg(
-            options=["transfer-configuration"],
-            help="Configuration for the data transfer.",
-            required=True,
-        )
-
-        account_details = cls._args_schema.data_export_details.Element.account_details
-        account_details.managed_disk = AAZObjectArg(
-            options=["managed-disk"],
-        )
-        account_details.storage_account = AAZObjectArg(
-            options=["storage-account"],
-        )
-        account_details.share_password = AAZStrArg(
-            options=["share-password"],
-        )
-
-        managed_disk = cls._args_schema.data_export_details.Element.account_details.managed_disk
-        managed_disk.resource_group_id = AAZStrArg(
-            options=["resource-group-id"],
-            required=True,
-        )
-        managed_disk.staging_storage_account_id = AAZStrArg(
-            options=["staging-storage-account-id"],
-            required=True,
-        )
-
-        storage_account = cls._args_schema.data_export_details.Element.account_details.storage_account
-        storage_account.storage_account_id = AAZStrArg(
-            options=["storage-account-id"],
-            required=True,
-        )
-
-        transfer_configuration = cls._args_schema.data_export_details.Element.transfer_configuration
-        transfer_configuration.transfer_all_details = AAZObjectArg(
-            options=["transfer-all-details"],
-            help="Map of filter type and the details to transfer all data. This field is required only if the TransferConfigurationType is given as TransferAll",
-        )
-        transfer_configuration.transfer_configuration_type = AAZStrArg(
-            options=["transfer-configuration-type"],
-            help="Type of the configuration for transfer.",
-            required=True,
-            enum={"TransferAll": "TransferAll", "TransferUsingFilter": "TransferUsingFilter"},
-        )
-        transfer_configuration.transfer_filter_details = AAZObjectArg(
-            options=["transfer-filter-details"],
-            help="Map of filter type and the details to filter. This field is required only if the TransferConfigurationType is given as TransferUsingFilter.",
-        )
-
-        transfer_all_details = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_all_details
-        transfer_all_details.include = AAZObjectArg(
-            options=["include"],
-            help="Details to transfer all data.",
-        )
-
-        include = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_all_details.include
-        include.data_account_type = AAZStrArg(
-            options=["data-account-type"],
-            help="Type of the account of data",
-            required=True,
-            default="StorageAccount",
-            enum={"ManagedDisk": "ManagedDisk", "StorageAccount": "StorageAccount"},
-        )
-        include.transfer_all_blobs = AAZBoolArg(
-            options=["transfer-all-blobs"],
-            help="To indicate if all Azure blobs have to be transferred",
-        )
-        include.transfer_all_files = AAZBoolArg(
-            options=["transfer-all-files"],
-            help="To indicate if all Azure Files have to be transferred",
-        )
-
-        transfer_filter_details = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details
-        transfer_filter_details.include = AAZObjectArg(
-            options=["include"],
-            help="Details of the filtering the transfer of data.",
-        )
-
-        include = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.include
-        include.azure_file_filter_details = AAZObjectArg(
-            options=["azure-file-filter-details"],
-            help="Filter details to transfer Azure files.",
-        )
-        include.blob_filter_details = AAZObjectArg(
-            options=["blob-filter-details"],
-            help="Filter details to transfer blobs.",
-        )
-        include.data_account_type = AAZStrArg(
-            options=["data-account-type"],
-            help="Type of the account of data.",
-            required=True,
-            default="StorageAccount",
-            enum={"ManagedDisk": "ManagedDisk", "StorageAccount": "StorageAccount"},
-        )
-        include.filter_file_details = AAZListArg(
-            options=["filter-file-details"],
-            help="Details of the filter files to be used for data transfer.",
-        )
-
-        azure_file_filter_details = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.include.azure_file_filter_details
-        azure_file_filter_details.file_path_list = AAZListArg(
-            options=["file-path-list"],
-            help="List of full path of the files to be transferred.",
-        )
-        azure_file_filter_details.file_prefix_list = AAZListArg(
-            options=["file-prefix-list"],
-            help="Prefix list of the Azure files to be transferred.",
-        )
-        azure_file_filter_details.file_share_list = AAZListArg(
-            options=["file-share-list"],
-            help="List of file shares to be transferred.",
-        )
-
-        file_path_list = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.include.azure_file_filter_details.file_path_list
-        file_path_list.Element = AAZStrArg()
-
-        file_prefix_list = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.include.azure_file_filter_details.file_prefix_list
-        file_prefix_list.Element = AAZStrArg()
-
-        file_share_list = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.include.azure_file_filter_details.file_share_list
-        file_share_list.Element = AAZStrArg()
-
-        blob_filter_details = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.include.blob_filter_details
-        blob_filter_details.blob_path_list = AAZListArg(
-            options=["blob-path-list"],
-            help="List of full path of the blobs to be transferred.",
-        )
-        blob_filter_details.blob_prefix_list = AAZListArg(
-            options=["blob-prefix-list"],
-            help="Prefix list of the Azure blobs to be transferred.",
-        )
-        blob_filter_details.container_list = AAZListArg(
-            options=["container-list"],
-            help="List of blob containers to be transferred.",
-        )
-
-        blob_path_list = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.include.blob_filter_details.blob_path_list
-        blob_path_list.Element = AAZStrArg()
-
-        blob_prefix_list = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.include.blob_filter_details.blob_prefix_list
-        blob_prefix_list.Element = AAZStrArg()
-
-        container_list = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.include.blob_filter_details.container_list
-        container_list.Element = AAZStrArg()
-
-        filter_file_details = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.include.filter_file_details
-        filter_file_details.Element = AAZObjectArg()
-
-        _element = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.include.filter_file_details.Element
-        _element.filter_file_path = AAZStrArg(
-            options=["filter-file-path"],
-            help="Path of the file that contains the details of all items to transfer.",
-            required=True,
-        )
-        _element.filter_file_type = AAZStrArg(
-            options=["filter-file-type"],
-            help="Type of the filter file.",
-            required=True,
-            enum={"AzureBlob": "AzureBlob", "AzureFile": "AzureFile"},
-        )
-
-        data_import_details = cls._args_schema.data_import_details
-        data_import_details.Element = AAZObjectArg()
-
-        _element = cls._args_schema.data_import_details.Element
-        _element.account_details = AAZObjectArg(
-            options=["account-details"],
-            help="Account details of the data to be transferred",
-            required=True,
-        )
-        _element.log_collection_level = AAZStrArg(
-            options=["log-collection-level"],
-            help="Level of the logs to be collected.",
-            default="Error",
-            enum={"Error": "Error", "Verbose": "Verbose"},
-        )
-
-        account_details = cls._args_schema.data_import_details.Element.account_details
-        account_details.managed_disk = AAZObjectArg(
-            options=["managed-disk"],
-        )
-        account_details.storage_account = AAZObjectArg(
-            options=["storage-account"],
-        )
-        account_details.share_password = AAZStrArg(
-            options=["share-password"],
-        )
-
-        managed_disk = cls._args_schema.data_import_details.Element.account_details.managed_disk
-        managed_disk.resource_group_id = AAZStrArg(
-            options=["resource-group-id"],
-            required=True,
-        )
-        managed_disk.staging_storage_account_id = AAZStrArg(
-            options=["staging-storage-account-id"],
-            required=True,
-        )
-
-        storage_account = cls._args_schema.data_import_details.Element.account_details.storage_account
-        storage_account.storage_account_id = AAZStrArg(
-            options=["storage-account-id"],
-            required=True,
-        )
-
-        key_encryption_key = cls._args_schema.key_encryption_key
-        key_encryption_key.identity_properties = AAZObjectArg(
-            options=["identity-properties"],
-            help="Managed identity properties used for key encryption.",
-        )
-        key_encryption_key.kek_type = AAZStrArg(
-            options=["kek-type"],
-            help="Type of encryption key used for key encryption.",
-            required=True,
-            default="MicrosoftManaged",
-            enum={"CustomerManaged": "CustomerManaged", "MicrosoftManaged": "MicrosoftManaged"},
-        )
-        key_encryption_key.kek_url = AAZStrArg(
-            options=["kek-url"],
-            help="Key encryption key. It is required in case of Customer managed KekType.",
-        )
-        key_encryption_key.kek_vault_resource_id = AAZStrArg(
-            options=["kek-vault-resource-id"],
-            help="Kek vault resource id. It is required in case of Customer managed KekType.",
-        )
-
-        identity_properties = cls._args_schema.key_encryption_key.identity_properties
-        identity_properties.type = AAZStrArg(
-            options=["type"],
-            help="Managed service identity type.",
-        )
-        identity_properties.user_assigned = AAZObjectArg(
-            options=["user-assigned"],
-            help="User assigned identity properties.",
-        )
-
-        user_assigned = cls._args_schema.key_encryption_key.identity_properties.user_assigned
-        user_assigned.resource_id = AAZStrArg(
-            options=["resource-id"],
-            help="Arm resource id for user assigned identity to be used to fetch MSI token.",
-        )
 
         # define Arg Group "JobResource"
 
         _args_schema = cls._args_schema
+        _args_schema.identity = AAZObjectArg(
+            options=["--identity"],
+            arg_group="JobResource",
+            help="Msi identity of the resource",
+        )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="JobResource",
             help="The location of the resource. This will be one of the supported and registered Azure Regions (e.g. West US, East US, Southeast Asia, etc.). The region of a resource cannot be changed once it is created, but if an identical region is specified on update the request will succeed.",
@@ -380,8 +117,66 @@ class Create(AAZCommand):
             help="The list of key value pairs that describe the resource. These tags can be used in viewing and grouping this resource (across resource groups).",
         )
 
+        identity = cls._args_schema.identity
+        identity.type = AAZStrArg(
+            options=["type"],
+            help="Identity type",
+            default="None",
+        )
+        identity.user_assigned_identities = AAZDictArg(
+            options=["user-assigned-identities"],
+            help="User Assigned Identities",
+        )
+
+        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            blank={},
+        )
+
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
+
+        # define Arg Group "KeyEncryptionKey"
+
+        _args_schema = cls._args_schema
+        _args_schema.kek_identity = AAZObjectArg(
+            options=["--kek-identity"],
+            arg_group="KeyEncryptionKey",
+            help="Managed identity properties used for key encryption.",
+        )
+        _args_schema.kek_type = AAZStrArg(
+            options=["--kek-type"],
+            arg_group="KeyEncryptionKey",
+            help="Type of encryption key used for key encryption.",
+            default="MicrosoftManaged",
+            enum={"CustomerManaged": "CustomerManaged", "MicrosoftManaged": "MicrosoftManaged"},
+        )
+        _args_schema.kek_url = AAZStrArg(
+            options=["--kek-url"],
+            arg_group="KeyEncryptionKey",
+            help="Key encryption key. It is required in case of Customer managed KekType.",
+        )
+        _args_schema.kek_vault_resource_id = AAZStrArg(
+            options=["--kek-vault-resource-id"],
+            arg_group="KeyEncryptionKey",
+            help="Kek vault resource id. It is required in case of Customer managed KekType.",
+        )
+
+        kek_identity = cls._args_schema.kek_identity
+        kek_identity.type = AAZStrArg(
+            options=["type"],
+            help="Managed service identity type.",
+        )
+        kek_identity.user_assigned = AAZObjectArg(
+            options=["user-assigned"],
+            help="User assigned identity properties.",
+        )
+
+        user_assigned = cls._args_schema.kek_identity.user_assigned
+        user_assigned.resource_id = AAZStrArg(
+            options=["resource-id"],
+            help="Arm resource id for user assigned identity to be used to fetch MSI token.",
+        )
 
         # define Arg Group "Properties"
 
@@ -664,10 +459,20 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("identity", AAZObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("type", AAZStrType, ".type")
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+
+            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
+            if user_assigned_identities is not None:
+                user_assigned_identities.set_elements(AAZObjectType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -677,11 +482,9 @@ class Create(AAZCommand):
             details = _builder.get(".properties.details")
             if details is not None:
                 details.set_prop("contactDetails", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
-                details.set_prop("dataExportDetails", AAZListType, ".data_export_details")
-                details.set_prop("dataImportDetails", AAZListType, ".data_import_details")
                 details.set_prop("expectedDataSizeInTeraBytes", AAZIntType, ".expected_data_size")
                 details.set_prop("jobDetailsType", AAZStrType, ".", typ_kwargs={"flags": {"required": True}})
-                details.set_prop("keyEncryptionKey", AAZObjectType, ".key_encryption_key")
+                details.set_prop("keyEncryptionKey", AAZObjectType)
                 details.set_prop("shippingAddress", AAZObjectType)
                 details.discriminate_by("jobDetailsType", "DataBox")
                 details.discriminate_by("jobDetailsType", "DataBoxCustomerDisk")
@@ -699,134 +502,9 @@ class Create(AAZCommand):
             if email_list is not None:
                 email_list.set_elements(AAZStrType, ".")
 
-            data_export_details = _builder.get(".properties.details.dataExportDetails")
-            if data_export_details is not None:
-                data_export_details.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.details.dataExportDetails[]")
-            if _elements is not None:
-                _elements.set_prop("accountDetails", AAZObjectType, ".account_details", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("logCollectionLevel", AAZStrType, ".log_collection_level")
-                _elements.set_prop("transferConfiguration", AAZObjectType, ".transfer_configuration", typ_kwargs={"flags": {"required": True}})
-
-            account_details = _builder.get(".properties.details.dataExportDetails[].accountDetails")
-            if account_details is not None:
-                account_details.set_const("dataAccountType", "ManagedDisk", AAZStrType, ".managed_disk", typ_kwargs={"flags": {"required": True}})
-                account_details.set_const("dataAccountType", "StorageAccount", AAZStrType, ".storage_account", typ_kwargs={"flags": {"required": True}})
-                account_details.set_prop("sharePassword", AAZStrType, ".share_password", typ_kwargs={"flags": {"secret": True}})
-                account_details.discriminate_by("dataAccountType", "ManagedDisk")
-                account_details.discriminate_by("dataAccountType", "StorageAccount")
-
-            disc_managed_disk = _builder.get(".properties.details.dataExportDetails[].accountDetails{dataAccountType:ManagedDisk}")
-            if disc_managed_disk is not None:
-                disc_managed_disk.set_prop("resourceGroupId", AAZStrType, ".managed_disk.resource_group_id", typ_kwargs={"flags": {"required": True}})
-                disc_managed_disk.set_prop("stagingStorageAccountId", AAZStrType, ".managed_disk.staging_storage_account_id", typ_kwargs={"flags": {"required": True}})
-
-            disc_storage_account = _builder.get(".properties.details.dataExportDetails[].accountDetails{dataAccountType:StorageAccount}")
-            if disc_storage_account is not None:
-                disc_storage_account.set_prop("storageAccountId", AAZStrType, ".storage_account.storage_account_id", typ_kwargs={"flags": {"required": True}})
-
-            transfer_configuration = _builder.get(".properties.details.dataExportDetails[].transferConfiguration")
-            if transfer_configuration is not None:
-                transfer_configuration.set_prop("transferAllDetails", AAZObjectType, ".transfer_all_details")
-                transfer_configuration.set_prop("transferConfigurationType", AAZStrType, ".transfer_configuration_type", typ_kwargs={"flags": {"required": True}})
-                transfer_configuration.set_prop("transferFilterDetails", AAZObjectType, ".transfer_filter_details")
-
-            transfer_all_details = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferAllDetails")
-            if transfer_all_details is not None:
-                transfer_all_details.set_prop("include", AAZObjectType, ".include")
-
-            include = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferAllDetails.include")
-            if include is not None:
-                include.set_prop("dataAccountType", AAZStrType, ".data_account_type", typ_kwargs={"flags": {"required": True}})
-                include.set_prop("transferAllBlobs", AAZBoolType, ".transfer_all_blobs")
-                include.set_prop("transferAllFiles", AAZBoolType, ".transfer_all_files")
-
-            transfer_filter_details = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails")
-            if transfer_filter_details is not None:
-                transfer_filter_details.set_prop("include", AAZObjectType, ".include")
-
-            include = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include")
-            if include is not None:
-                include.set_prop("azureFileFilterDetails", AAZObjectType, ".azure_file_filter_details")
-                include.set_prop("blobFilterDetails", AAZObjectType, ".blob_filter_details")
-                include.set_prop("dataAccountType", AAZStrType, ".data_account_type", typ_kwargs={"flags": {"required": True}})
-                include.set_prop("filterFileDetails", AAZListType, ".filter_file_details")
-
-            azure_file_filter_details = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.azureFileFilterDetails")
-            if azure_file_filter_details is not None:
-                azure_file_filter_details.set_prop("filePathList", AAZListType, ".file_path_list")
-                azure_file_filter_details.set_prop("filePrefixList", AAZListType, ".file_prefix_list")
-                azure_file_filter_details.set_prop("fileShareList", AAZListType, ".file_share_list")
-
-            file_path_list = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.azureFileFilterDetails.filePathList")
-            if file_path_list is not None:
-                file_path_list.set_elements(AAZStrType, ".")
-
-            file_prefix_list = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.azureFileFilterDetails.filePrefixList")
-            if file_prefix_list is not None:
-                file_prefix_list.set_elements(AAZStrType, ".")
-
-            file_share_list = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.azureFileFilterDetails.fileShareList")
-            if file_share_list is not None:
-                file_share_list.set_elements(AAZStrType, ".")
-
-            blob_filter_details = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.blobFilterDetails")
-            if blob_filter_details is not None:
-                blob_filter_details.set_prop("blobPathList", AAZListType, ".blob_path_list")
-                blob_filter_details.set_prop("blobPrefixList", AAZListType, ".blob_prefix_list")
-                blob_filter_details.set_prop("containerList", AAZListType, ".container_list")
-
-            blob_path_list = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.blobFilterDetails.blobPathList")
-            if blob_path_list is not None:
-                blob_path_list.set_elements(AAZStrType, ".")
-
-            blob_prefix_list = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.blobFilterDetails.blobPrefixList")
-            if blob_prefix_list is not None:
-                blob_prefix_list.set_elements(AAZStrType, ".")
-
-            container_list = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.blobFilterDetails.containerList")
-            if container_list is not None:
-                container_list.set_elements(AAZStrType, ".")
-
-            filter_file_details = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.filterFileDetails")
-            if filter_file_details is not None:
-                filter_file_details.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.filterFileDetails[]")
-            if _elements is not None:
-                _elements.set_prop("filterFilePath", AAZStrType, ".filter_file_path", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("filterFileType", AAZStrType, ".filter_file_type", typ_kwargs={"flags": {"required": True}})
-
-            data_import_details = _builder.get(".properties.details.dataImportDetails")
-            if data_import_details is not None:
-                data_import_details.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.details.dataImportDetails[]")
-            if _elements is not None:
-                _elements.set_prop("accountDetails", AAZObjectType, ".account_details", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("logCollectionLevel", AAZStrType, ".log_collection_level")
-
-            account_details = _builder.get(".properties.details.dataImportDetails[].accountDetails")
-            if account_details is not None:
-                account_details.set_const("dataAccountType", "ManagedDisk", AAZStrType, ".managed_disk", typ_kwargs={"flags": {"required": True}})
-                account_details.set_const("dataAccountType", "StorageAccount", AAZStrType, ".storage_account", typ_kwargs={"flags": {"required": True}})
-                account_details.set_prop("sharePassword", AAZStrType, ".share_password", typ_kwargs={"flags": {"secret": True}})
-                account_details.discriminate_by("dataAccountType", "ManagedDisk")
-                account_details.discriminate_by("dataAccountType", "StorageAccount")
-
-            disc_managed_disk = _builder.get(".properties.details.dataImportDetails[].accountDetails{dataAccountType:ManagedDisk}")
-            if disc_managed_disk is not None:
-                disc_managed_disk.set_prop("resourceGroupId", AAZStrType, ".managed_disk.resource_group_id", typ_kwargs={"flags": {"required": True}})
-                disc_managed_disk.set_prop("stagingStorageAccountId", AAZStrType, ".managed_disk.staging_storage_account_id", typ_kwargs={"flags": {"required": True}})
-
-            disc_storage_account = _builder.get(".properties.details.dataImportDetails[].accountDetails{dataAccountType:StorageAccount}")
-            if disc_storage_account is not None:
-                disc_storage_account.set_prop("storageAccountId", AAZStrType, ".storage_account.storage_account_id", typ_kwargs={"flags": {"required": True}})
-
             key_encryption_key = _builder.get(".properties.details.keyEncryptionKey")
             if key_encryption_key is not None:
-                key_encryption_key.set_prop("identityProperties", AAZObjectType, ".identity_properties")
+                key_encryption_key.set_prop("identityProperties", AAZObjectType, ".kek_identity")
                 key_encryption_key.set_prop("kekType", AAZStrType, ".kek_type", typ_kwargs={"flags": {"required": True}})
                 key_encryption_key.set_prop("kekUrl", AAZStrType, ".kek_url")
                 key_encryption_key.set_prop("kekVaultResourceID", AAZStrType, ".kek_vault_resource_id")

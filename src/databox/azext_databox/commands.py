@@ -15,4 +15,3 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group('workloads sap-virtual-instance'):
         from azext_databox.custom import JobCreate
         self.command_table['databox job create'] = JobCreate(loader=self)
-

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListCredential(AAZCommand):
     """This method gets the unencrypted secrets related to the job.
+
+    :example: List credential
+        az databox job list-credential -g rg -n job-name
     """
 
     _aaz_info = {
@@ -42,7 +45,7 @@ class ListCredential(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.job_name = AAZStrArg(
-            options=["--job-name"],
+            options=["-n", "--name", "--job-name"],
             help="The name of the job Resource within the specified resource group. job names must be between 3 and 24 characters in length and use any alphanumeric and underscore only",
             required=True,
             id_part="name",

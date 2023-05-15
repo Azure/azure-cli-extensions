@@ -370,6 +370,17 @@ databox job create:
     staging_storage_account:
       rule_exclusions:
       - option_length_too_long
+    transfer_configuration_type:
+      rule_exclusions:
+      - option_length_too_long
+    transfer_filter_details:
+      rule_exclusions:
+      - option_length_too_long
+databox job mark-devices-shipped:
+  parameters:
+    deliver_package_details:
+      rule_exclusions:
+        - option_length_too_long
 databricks workspace create:
   parameters:
     managed_resource_group:

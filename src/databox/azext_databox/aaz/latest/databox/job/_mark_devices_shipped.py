@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class MarkDevicesShipped(AAZCommand):
     """Request to mark devices for a given job as shipped
+
+    :example: Mark devices shipped
+        az databox job mark-devices-shipped -g rg -n job-name
     """
 
     _aaz_info = {
@@ -42,7 +45,7 @@ class MarkDevicesShipped(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.job_name = AAZStrArg(
-            options=["--job-name"],
+            options=["-n", "--name", "--job-name"],
             help="The name of the job Resource within the specified resource group. job names must be between 3 and 24 characters in length and use any alphanumeric and underscore only",
             required=True,
             id_part="name",
@@ -59,19 +62,19 @@ class MarkDevicesShipped(AAZCommand):
         # define Arg Group "MarkDevicesShippedRequest"
 
         _args_schema = cls._args_schema
-        _args_schema.deliver_to_dc_package_details = AAZObjectArg(
-            options=["--deliver-to-dc-package-details"],
+        _args_schema.deliver_package_details = AAZObjectArg(
+            options=["--deliver-package-details"],
             arg_group="MarkDevicesShippedRequest",
             help="Delivery package details",
             required=True,
         )
 
-        deliver_to_dc_package_details = cls._args_schema.deliver_to_dc_package_details
-        deliver_to_dc_package_details.carrier_name = AAZStrArg(
+        deliver_package_details = cls._args_schema.deliver_package_details
+        deliver_package_details.carrier_name = AAZStrArg(
             options=["carrier-name"],
             help="Name of the carrier.",
         )
-        deliver_to_dc_package_details.tracking_id = AAZStrArg(
+        deliver_package_details.tracking_id = AAZStrArg(
             options=["tracking-id"],
             help="Tracking Id of shipment.",
         )
@@ -160,7 +163,7 @@ class MarkDevicesShipped(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("deliverToDcPackageDetails", AAZObjectType, ".deliver_to_dc_package_details", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("deliverToDcPackageDetails", AAZObjectType, ".deliver_package_details", typ_kwargs={"flags": {"required": True}})
 
             deliver_to_dc_package_details = _builder.get(".deliverToDcPackageDetails")
             if deliver_to_dc_package_details is not None:

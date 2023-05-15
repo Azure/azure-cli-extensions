@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about the specified job.
+
+    :example: Show job
+        az databox job show -g rg -n job-name
     """
 
     _aaz_info = {

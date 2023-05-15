@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a job.
+
+    :example: Delete job
+        az databox job delete -n job-name -g rg -y
     """
 
     _aaz_info = {

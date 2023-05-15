@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Cancel(AAZCommand):
     """CancelJob.
+
+    :example: Cancel job
+        az databox job cancel -g rg --job-name name --reason reason
     """
 
     _aaz_info = {
@@ -42,7 +45,7 @@ class Cancel(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.job_name = AAZStrArg(
-            options=["--job-name"],
+            options=["-n", "--name", "--job-name"],
             help="The name of the job Resource within the specified resource group. job names must be between 3 and 24 characters in length and use any alphanumeric and underscore only",
             required=True,
             id_part="name",
