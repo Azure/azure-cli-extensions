@@ -13,8 +13,6 @@ import re
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 import requests
-import json
-import subprocess
 
 from azure.cli.core import telemetry as telemetry_core
 
@@ -4376,13 +4374,13 @@ def patch_get_image_inspection(pack_exec_path, img, info_list):
     if (img["imageName"].find("run-dotnet") != -1) and (img["imageName"].find("cbl-mariner") != -1):
         inspect_result = {"remote_info": {"run_images": [{"name": "mcr.microsoft.com/oryx/builder:" + img["imageName"].split(":")[-1]}]}, "image_name": img["imageName"], "targetContainerName": img["targetContainerName"], "targetContainerAppName": img["targetContainerAppName"], "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"], "targetResourceGroup": img["targetResourceGroup"]}
     else:
-        img_info = subprocess.Popen(pack_exec_path + " inspect-image " + img["imageName"] + " --output json", shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-        img_info_out, img_info_err = img_info.communicate()
-        if img_info_err.find(b"status code 401 Unauthorized") != -1 or img_info_err.find(b"unable to find image") != -1:
-            inspect_result = dict(remote_info=401, image_name=img["imageName"])
-        else:
-            inspect_result = json.loads(img_info_out)
-        inspect_result.update({"targetContainerName": img["targetContainerName"], "targetContainerAppName": img["targetContainerAppName"], "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"], "targetResourceGroup": img["targetResourceGroup"]})
+        with subprocess.Popen(pack_exec_path + " inspect-image " + img["imageName"] + " --output json", shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE) as img_info:
+            img_info_out, img_info_err = img_info.communicate()
+            if img_info_err.find(b"status code 401 Unauthorized") != -1 or img_info_err.find(b"unable to find image") != -1:
+                inspect_result = dict(remote_info=401, image_name=img["imageName"])
+            else:
+                inspect_result = json.loads(img_info_out)
+            inspect_result.update({"targetContainerName": img["targetContainerName"], "targetContainerAppName": img["targetContainerAppName"], "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"], "targetResourceGroup": img["targetResourceGroup"]})
     info_list.append(inspect_result)
 
 
@@ -4403,7 +4401,7 @@ def patch_interactive(cmd, resource_group_name=None, managed_env=None, show_all=
     if without_unpatchable_results == []:
         return
     user_input = input("Do you want to apply all the patches or specify by id? (y/n/id)\n")
-    patch_apply(cmd, patchable_check_results, user_input, pack_exec_path)
+    patch_apply_handle_input(cmd, patchable_check_results, user_input, pack_exec_path)
 
 
 def patch_apply(cmd, resource_group_name=None, managed_env=None, show_all=False):
@@ -4422,10 +4420,10 @@ def patch_apply(cmd, resource_group_name=None, managed_env=None, show_all=False)
     print(patchable_check_results_json)
     if without_unpatchable_results == []:
         return
-    patch_apply(cmd, patchable_check_results, "y", pack_exec_path)
+    patch_apply_handle_input(cmd, patchable_check_results, "y", pack_exec_path)
 
 
-def patch_apply(cmd, patch_check_list, method, pack_exec_path):
+def patch_apply_handle_input(cmd, patch_check_list, method, pack_exec_path):
     m = method.strip().lower()
     # Track number of times patches were applied successfully.
     patch_apply_count = 0
@@ -4475,11 +4473,11 @@ def patch_apply(cmd, patch_check_list, method, pack_exec_path):
 def patch_cli_call(cmd, resource_group, container_app_name, container_name, target_image_name, new_run_image, pack_exec_path):
     try:
         print("Applying patch for container app: " + container_app_name + " container: " + container_name)
-        subprocess.run(f"{pack_exec_path} rebase -q {target_image_name} --run-image {new_run_image}", shell=True)
+        subprocess.run(f"{pack_exec_path} rebase -q {target_image_name} --run-image {new_run_image}", shell=True, check=True)
         new_target_image_name = target_image_name.split(":")[0] + ":" + new_run_image.split(":")[1]
-        subprocess.run(f"docker tag {target_image_name} {new_target_image_name}", shell=True)
+        subprocess.run(f"docker tag {target_image_name} {new_target_image_name}", shell=True, check=True)
         print(f"Publishing {new_target_image_name} to registry...")
-        subprocess.run(f"docker push -q {new_target_image_name}", shell=True)
+        subprocess.run(f"docker push -q {new_target_image_name}", shell=True, check=True)
         print("Patch applied and published successfully.\nNew image: " + new_target_image_name)
     except Exception:
         print("Error: Failed to apply patch and publish. Check if registry is logged in and has write access.")
