@@ -90,21 +90,23 @@ def configure_backup(test):
     })
 
     # TODO add failing validation check some time. Not required at the moment.
+
+    # The backup vault creation appeared to be flaky, and the test ran after adding this line. Might need to investigate.
     bvout = test.cmd('az dataprotection backup-vault show -g "{rgname}" --vault-name {vaultname}').get_output_in_json()
     print(bvout)
 
     # uncomment when running live, run only in record mode - grant permission
-    test.cmd('az dataprotection backup-instance update-msi-permissions '
-             '--datasource-type AzureKubernetesService '
-             '--operation Backup '
-             '--permissions-scope ResourceGroup '
-             '--vault-name "{vaultname}" '
-             '--resource-group "{rgname}" '
-             '--backup-instance "{backup_instance_json}" -y')
-    time.sleep(60)
+    # test.cmd('az dataprotection backup-instance update-msi-permissions '
+    #          '--datasource-type AzureKubernetesService '
+    #          '--operation Backup '
+    #          '--permissions-scope ResourceGroup '
+    #          '--vault-name "{vaultname}" '
+    #          '--resource-group "{rgname}" '
+    #          '--backup-instance "{backup_instance_json}" -y')
+    # time.sleep(60)
 
     # Also uncomment when running live, only run in record mode - provide trusted access
-    helper_trusted_access(test)
+    # helper_trusted_access(test)
 
     test.cmd('az dataprotection backup-instance create -g "{rgname}" --vault-name "{vaultname}" --backup-instance "{backup_instance_json}"')
 
@@ -127,6 +129,7 @@ def helper_trusted_access(test):
                 '--roles Microsoft.DataProtection/backupVaults/backup-operator') 
         time.sleep(10)
     except:
+        # This is usually failing in the event of the trusted access already existing, so we can skip it unless a new error shows.
         pass
 
 def trigger_backup(test):
@@ -163,18 +166,18 @@ def trigger_restore_original_location(test):
     test.kwargs.update({"restore_request": restore_json})
 
     # uncomment when running live, run only in record mode - grant permission
-    test.cmd('az dataprotection backup-instance update-msi-permissions '
-             '--datasource-type AzureKubernetesService '
-             '--operation Restore '
-             '--permissions-scope Resource '
-             '--vault-name "{vaultname}" '
-             '--resource-group "{rgname}" '
-             '--restore-request-object "{restore_request}" '
-             '--snapshot-resource-group-id "{rg_id}" -y')
-    time.sleep(60)
+    # test.cmd('az dataprotection backup-instance update-msi-permissions '
+    #          '--datasource-type AzureKubernetesService '
+    #          '--operation Restore '
+    #          '--permissions-scope Resource '
+    #          '--vault-name "{vaultname}" '
+    #          '--resource-group "{rgname}" '
+    #          '--restore-request-object "{restore_request}" '
+    #          '--snapshot-resource-group-id "{rg_id}" -y')
+    # time.sleep(60)
 
     # Also uncomment when running live, only run in record mode - provide trusted access
-    helper_trusted_access(test)
+    # helper_trusted_access(test)
 
     test.cmd('az dataprotection backup-instance validate-for-restore -g "{rgname}" --vault-name "{vaultname}" -n "{backup_instance_name}" --restore-request-object "{restore_request}"')
 
@@ -193,7 +196,7 @@ def trigger_restore_original_location(test):
             raise Exception("Undefined job status received")
 
 def delete_backup(test):
-    test.cmd('az dataprotection backup-instance delete -g "{rgname}" --vault-name "{vaultname}" -n "{backup_instance_name}" --yes')
+    test.cmd('az dataprotection backup-instance delete -g "{rgname}" --vault-name "{vaultname}" --ids "{backup_instance_id}" --yes')
 
 def cleanup(test):
     delete_backup(test)
@@ -202,6 +205,7 @@ def cleanup(test):
     try:
         test.cmd('az aks trustedaccess rolebinding delete -g "{rgname}" --cluster-name "{akscluster1}" -n aksRoleBindingName --yes')    
     except:
+        # This is usually failing in the event of the trusted access already not existing, so we can skip it unless a new error shows.
         pass
 
 @AllowLargeResponse()
