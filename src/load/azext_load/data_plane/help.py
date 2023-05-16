@@ -132,3 +132,22 @@ parameters:
       long-summary: |
           Name of the resource group
 """
+
+helps[
+    "load test-run metrics"
+] = """
+type: group
+short-summary: Command group with commands related to test-run metrics.
+long-summary: Command group with commands related to test-run metrics.
+parameters:
+    - name: --load-test-resource, --name, -n
+      type: string
+      short-summary: 'Name or ARM resource ID of the load test resource'
+      long-summary: |
+          Name or ARM resource ID of the load test resource
+    - name: --resource-group, -g
+      type: string
+      short-summary: 'Name of the resource group'
+      long-summary: |
+          Name of the resource group
+"""
