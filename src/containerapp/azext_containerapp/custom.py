@@ -1478,10 +1478,9 @@ def create_containerappsjob(cmd,
             metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
             auth_def = parse_auth_flags(scale_rule_auth)
             scale_rule_def["name"] = scale_rule_name
-            scale_rule_def["custom"] = {}
-            scale_rule_def["custom"]["type"] = scale_rule_type
-            scale_rule_def["custom"]["metadata"] = metadata_def
-            scale_rule_def["custom"]["auth"] = auth_def
+            scale_rule_def["type"] = scale_rule_type
+            scale_rule_def["metadata"] = metadata_def
+            scale_rule_def["auth"] = auth_def
 
             if not scale_def:
                 scale_def = JobScaleModel
@@ -1573,7 +1572,7 @@ def create_containerappsjob(cmd,
     containerappjob_def = ContainerAppsJobModel
     containerappjob_def["location"] = location
     containerappjob_def["identity"] = identity_def
-    containerappjob_def["properties"]["managedEnvironmentId"] = managed_env
+    containerappjob_def["properties"]["environmentId"] = managed_env
     containerappjob_def["properties"]["configuration"] = config_def
     containerappjob_def["properties"]["template"] = template_def
     containerappjob_def["tags"] = tags
@@ -1706,7 +1705,7 @@ def update_containerappsjob(cmd,
                                          scale_rule_auth=scale_rule_auth,
                                          polling_interval=polling_interval,
                                          min_executions=min_executions,
-                                         max_replicas=max_executions,
+                                         max_executions=max_executions,
                                          no_wait=no_wait)
 
 
@@ -1783,7 +1782,7 @@ def update_containerappsjob_logic(cmd,
     if workload_profile_name:
         new_containerappsjob["properties"]["workloadProfileName"] = workload_profile_name
 
-        parsed_managed_env = parse_resource_id(containerappsjob_def["properties"]["managedEnvironmentId"])
+        parsed_managed_env = parse_resource_id(containerappsjob_def["properties"]["environmentId"])
         managed_env_name = parsed_managed_env['name']
         managed_env_rg = parsed_managed_env['resource_group']
         managed_env_info = None
@@ -1866,11 +1865,9 @@ def update_containerappsjob_logic(cmd,
                     metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
                     auth_def = parse_auth_flags(scale_rule_auth)
                     scale_rule_def["name"] = scale_rule_name
-                    scale_rule_def["http"] = None
-                    scale_rule_def["custom"] = {}
-                    scale_rule_def["custom"]["type"] = scale_rule_type
-                    scale_rule_def["custom"]["metadata"] = metadata_def
-                    scale_rule_def["custom"]["auth"] = auth_def
+                    scale_rule_def["type"] = scale_rule_type
+                    scale_rule_def["metadata"] = metadata_def
+                    scale_rule_def["auth"] = auth_def
                     if not scale_def:
                         scale_def = JobScaleModel
                     scale_def["rules"] = [scale_rule_def]
@@ -2114,10 +2111,10 @@ def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_w
     _remove_readonly_attributes(containerappsjob_def)
 
     # Validate managed environment
-    if not containerappsjob_def["properties"].get('managedEnvironmentId'):
+    if not containerappsjob_def["properties"].get('environmentId'):
         raise RequiredArgumentMissingError('managedEnvironmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
-    env_id = containerappsjob_def["properties"]['managedEnvironmentId']
+    env_id = containerappsjob_def["properties"]['environmentId']
     env_name = None
     env_rg = None
     env_info = None
@@ -2215,10 +2212,10 @@ def update_containerappjob_yaml(cmd, name, resource_group_name, file_name, no_wa
     _remove_readonly_attributes(containerappsjob_def)
 
     # Validate managed environment
-    if not containerappsjob_def["properties"].get('managedEnvironmentId'):
+    if not containerappsjob_def["properties"].get('environmentId'):
         raise RequiredArgumentMissingError('managedEnvironmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
-    env_id = containerappsjob_def["properties"]['managedEnvironmentId']
+    env_id = containerappsjob_def["properties"]['environmentId']
     env_name = None
     env_rg = None
     env_info = None

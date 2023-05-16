@@ -34,7 +34,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
 
         ## test for CRUD operations on Container App Job resource with trigger type as manual
         # create a Container App Job resource with trigger type as manual
-        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --replica-timeout 200 --replica-retry-limit 2 --trigger-type manual --image mcr.microsoft.com/k8se/quickstart:latest --cpu '0.25' --memory '0.5Gi'".format(resource_group, job, env))
+        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --replica-timeout 200 --replica-retry-limit 2 --trigger-type manual --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.25' --memory '0.5Gi'".format(resource_group, job, env))
 
         # verify the container app job resource
         self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job), checks=[
@@ -49,7 +49,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         self.assertTrue(len(jobs_list) == 1)
 
         # update the Container App Job resource
-        self.cmd("az containerapp job update --resource-group {} --name {} --replica-timeout 300 --replica-retry-limit 1 --image mcr.microsoft.com/k8se/quickstart:latest --cpu '0.5' --memory '1.0Gi'".format(resource_group, job))
+        self.cmd("az containerapp job update --resource-group {} --name {} --replica-timeout 300 --replica-retry-limit 1 --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.5' --memory '1.0Gi'".format(resource_group, job))
 
         # verify the updated Container App Job resource
         self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job), checks=[
@@ -57,7 +57,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck('properties.configuration.replicaTimeout', 300),
             JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
             JMESPathCheck('properties.configuration.triggerType', "manual", case_sensitive=False),
-            JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart:latest"),
+            JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
             JMESPathCheck('properties.template.containers[0].resources.cpu', "0.5"),
             JMESPathCheck('properties.template.containers[0].resources.memory', "1Gi"),
         ])
@@ -73,7 +73,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         job2 = self.create_random_name(prefix='job2', length=24)
 
         # create a Container App Job resource with trigger type as schedule
-        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --replica-timeout 200 --replica-retry-limit 2 --trigger-type schedule --cron-expression '*/5 * * * *' --image mcr.microsoft.com/k8se/quickstart:latest --cpu '0.25' --memory '0.5Gi'".format(resource_group, job2, env))
+        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --replica-timeout 200 --replica-retry-limit 2 --trigger-type schedule --cron-expression '*/5 * * * *' --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.25' --memory '0.5Gi'".format(resource_group, job2, env))
 
         # verify the container app job resource
         self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job2), checks=[
@@ -89,7 +89,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         self.assertTrue(len(jobs_list) == 1)
 
         # update the Container App Job resource
-        self.cmd("az containerapp job update --resource-group {} --name {} --replica-timeout 300 --replica-retry-limit 1 --cron-expression '*/10 * * * *' --image mcr.microsoft.com/k8se/quickstart:latest --cpu '0.5' --memory '1.0Gi'".format(resource_group, job2))
+        self.cmd("az containerapp job update --resource-group {} --name {} --replica-timeout 300 --replica-retry-limit 1 --cron-expression '*/10 * * * *' --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.5' --memory '1.0Gi'".format(resource_group, job2))
 
         # verify the updated Container App Job resource
         self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job2), checks=[
@@ -98,7 +98,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
             JMESPathCheck('properties.configuration.triggerType', "schedule", case_sensitive=False),
             JMESPathCheck('properties.configuration.scheduleTriggerConfig.cronExpression', "*/10 * * * *"),
-            JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart:latest"),
+            JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
             JMESPathCheck('properties.template.containers[0].resources.cpu', "0.5"),
             JMESPathCheck('properties.template.containers[0].resources.memory', "1Gi"),
         ])
