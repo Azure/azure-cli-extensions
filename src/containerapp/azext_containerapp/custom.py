@@ -4530,7 +4530,7 @@ def patch_apply_handle_input(cmd, patch_check_list, method, pack_exec_path):
             logger.error("Invalid patch method or id.")
     
     patch_apply_properties = {
-        'Context.Default.AzureCLI.UserResponse': telemetry_record_method,
+        'Context.Default.AzureCLI.PatchUserResponse': telemetry_record_method,
         'Context.Default.AzureCLI.PatchApplyCount': patch_apply_count
     }
     telemetry_core.add_extension_event('containerapp', patch_apply_properties)
