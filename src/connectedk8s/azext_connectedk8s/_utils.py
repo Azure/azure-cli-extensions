@@ -240,10 +240,18 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
             return consts.Diagnostic_Check_Incomplete, storage_space_available
         # Validating if outbound connectiivty is working or not and displaying proper result
         if(outbound_connectivity_response != "000"):
+            if consts.Outbound_Connectivity_Failed_String_For_OBO_Endpoint in outbound_connectivity_check_log:
+                failed_obo_enpoint = outbound_connectivity_check_log.split(consts.Outbound_Connectivity_Check_Result_String)[0]
+                failed_obo_enpoint_url = failed_obo_enpoint.split(consts.Outbound_Connectivity_Failed_String_For_OBO_Endpoint)[1]
+                logger.warning("The outbound network connectivity check for has failed for the endpoint - " + failed_obo_enpoint_url + "\nThis will affect the \"cluser-connect\" functionality. If you have configured an outbound proxy in your environment, please ensure that all endpoints are properly whitelisted by referring to the network requirements outlined here: https://learn.microsoft.com/en-us/azure/azure-arc/network-requirements-consolidated?tabs=azure-cloud#azure-arc-enabled-kubernetes-endpoints.\n")
+                telemetry.set_exception(exception='Outbound network connectivity check failed for the OBO endpoint', fault_type=consts.Outbound_Connectivity_Check_Failed, summary="Outbound network connectivity check failed for the OBO endpoint")
             if storage_space_available:
                 outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
                 with open(outbound_connectivity_check_path, 'w+') as outbound:
-                    outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully.")
+                    if consts.Outbound_Connectivity_Failed_String_For_OBO_Endpoint in outbound_connectivity_check_log:
+                        outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully." + "\nOutbound connectivity failed for the endpoint-" + failed_obo_enpoint_url + "This is an optional endpoint needed for cluster-connect feature." )
+                    else:
+                        outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully.")
             return consts.Diagnostic_Check_Passed, storage_space_available
         else:
             logger.warning("Error: We found an issue with outbound network connectivity from the cluster.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server' \n")
