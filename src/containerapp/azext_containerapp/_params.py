@@ -419,14 +419,14 @@ def load_arguments(self, _):
     with self.argument_context('containerapp patch list') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('managed_env', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
-        c.argument('show_all', options_list=['--show-all'], help='Show all patchable and unpatchable container apps')
+        c.argument('show_all', help='Show all patchable and unpatchable container apps')
 
     with self.argument_context('containerapp patch apply') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('managed_env', validator=validate_managed_env_name_or_id, options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
-        c.argument('show_all', options_list=['--show-all'], help='Show all patchable and unpatchable container apps')
+        c.argument('show_all', help='Show all patchable and unpatchable container apps')
 
     with self.argument_context('containerapp patch interactive') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('managed_env', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
-        c.argument('show_all', options_list=['--show-all'], help='Show all patchable and unpatchable container apps')
+        c.argument('show_all', help='Show all patchable and unpatchable container apps')

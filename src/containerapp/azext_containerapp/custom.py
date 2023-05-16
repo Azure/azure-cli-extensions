@@ -4391,7 +4391,7 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
                                 targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
                                 targetResourceGroup=inspect_result["targetResourceGroup"],
                                 targetImageName=inspect_result["image_name"],
-                                oldRunImage=inspect_result["remote_info"]["run_images"]["name"],
+                                oldRunImage=run_images_tag,
                                 newRunImage=None,
                                 id=None,
                                 reason=failed_reason))
