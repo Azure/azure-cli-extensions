@@ -11,8 +11,15 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+0.5.139
+* `az aks create` and `az aks nodepool add`: Add warning message when specifying `--os-sku` to `Mariner` or `CBLMariner`.
+
+0.5.138
++++++++
 * Vendor new SDK and bump API version to 2023-03-02-preview.
 * fix: don't use current kube_proxy_config on UPDATE
+* GA update for Azure Monitor Metrics Addon (managed prometheus metrics) for AKS
 
 0.5.137
 +++++++
@@ -548,6 +555,7 @@ Pending
 0.5.49
 ++++++
 
+* Update to use 2021-11-01-preview api-version.
 * Update the minimum required cli core version to `2.31.0`.
 * Add support for Alias Minor Version.
 

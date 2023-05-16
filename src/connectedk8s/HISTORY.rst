@@ -1,7 +1,13 @@
 .. :changelog:
 
 Release History
-===============
+
+1.3.17
+++++++
+
+* Added a spinner which runs while ARM resource is being provisioned
+* Added additional logging to indicate which step is running
+
 1.3.16
 ++++++
 * Adding force delete in connect command in case of stale resources present during onboarding

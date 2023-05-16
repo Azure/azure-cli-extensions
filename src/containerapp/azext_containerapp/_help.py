@@ -550,6 +550,24 @@ helps['containerapp env workload-profile set'] = """
           az containerapp env workload-profile set -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 2
 """
 
+helps['containerapp env workload-profile add'] = """
+    type: command
+    short-summary: Create a workload profile in a Container Apps environment
+    examples:
+    - name: Create a workload profile in a Container Apps environment
+      text: |
+          az containerapp env workload-profile add -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 2
+"""
+
+helps['containerapp env workload-profile update'] = """
+    type: command
+    short-summary: Update an existing workload profile in a Container Apps environment
+    examples:
+    - name: Update an existing workload profile in a Container Apps environment
+      text: |
+          az containerapp env workload-profile update -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 3
+"""
+
 # Container Apps Job Commands
 helps['containerapp job'] = """
     type: group
