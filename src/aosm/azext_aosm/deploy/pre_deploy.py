@@ -8,7 +8,7 @@ from knack.log import get_logger
 
 from azure.core import exceptions as azure_exceptions
 from azure.cli.core.azclierror import AzCLIError
-from azure.mgmt.resource.resources.v2022_09_01.models import ResourceGroup
+from azure.mgmt.resource.resources.models import ResourceGroup
 
 from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.vendored_sdks.models import (
