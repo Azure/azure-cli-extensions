@@ -1288,10 +1288,10 @@ helps['containerapp patch list'] = """
     - name: List patchable container apps by resource group.
       text: |
           az containerapp patch list -g MyResourceGroup
-    - name: List patchable container apps by resource group and managed environment.
+    - name: List patchable container apps by managed environment.
       text: |
           az containerapp patch list -g MyResourceGroup --environment MyContainerAppEnv
-    - name: List patchable and unpatchable container apps by resource group and managed environment with the show-all option.
+    - name: List patchable and unpatchable container apps by managed environment with the show-all option.
       text: |
           az containerapp patch list -g MyResourceGroup --environment MyContainerAppEnv --show-all
 """
@@ -1306,10 +1306,10 @@ helps['containerapp patch apply'] = """
     - name: List patchable container apps by resource group and apply patch.
       text: |
           az containerapp patch apply -g MyResourceGroup
-    - name: List patchable container apps by resource group and managed environment and apply patch.
+    - name: List patchable container apps by managed environment and apply patch.
       text: |
           az containerapp patch apply -g MyResourceGroup --environment MyContainerAppEnv
-    - name: List patchable and unpatchable container apps by resource group and managed environment with the show-all option and apply patch for patchable container apps.
+    - name: List patchable and unpatchable container apps by managed environment with the show-all option and apply patch for patchable container apps.
       text: |
           az containerapp patch apply -g MyResourceGroup --environment MyContainerAppEnv --show-all
 """
@@ -1324,10 +1324,10 @@ helps['containerapp patch interactive'] = """
     - name: List patchable container apps by resource group and apply patch interactively.
       text: |
           az containerapp patch interactive -g MyResourceGroup
-    - name: List patchable container apps by resource group and managed environment and apply patch interactively.
+    - name: List patchable container apps by managed environment and apply patch interactively.
       text: |
           az containerapp patch interactive -g MyResourceGroup --environment MyContainerAppEnv
-    - name: List patchable and unpatchable container apps by resource group and managed environment with the show-all option and apply patch for patchable container apps interactively.
+    - name: List patchable and unpatchable container apps by managed environment with the show-all option and apply patch for patchable container apps interactively.
       text: |
           az containerapp patch interactive -g MyResourceGroup --environment MyContainerAppEnv --show-all
 """
