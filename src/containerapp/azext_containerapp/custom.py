@@ -4559,7 +4559,7 @@ def patch_apply_handle_input(cmd, patch_check_list, method, pack_exec_path):
         else:
             telemetry_record_method = "invalid"
             logger.error("Invalid patch method or id.")
-    
+
     patch_apply_properties = {
         'Context.Default.AzureCLI.PatchUserResponse': telemetry_record_method,
         'Context.Default.AzureCLI.PatchApplyCount': patch_apply_count
