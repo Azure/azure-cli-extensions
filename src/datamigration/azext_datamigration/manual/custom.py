@@ -299,23 +299,23 @@ def datamigration_login_migration(src_sql_connection_str=None,
 #  Migrate TDE certificate from source SQL Server to the target Azure SQL Server.
 # -----------------------------------------------------------------------------------------------------------------
 def datamigration_tde_migration(source_sql_connection_string=None,
-                                  target_subscription_id=None,
-                                  target_resource_group_name=None,
-                                  target_managed_instance_name=None,
-                                  network_share_path=None,
-                                  network_share_domain=None,
-                                  network_share_user_name=None,
-                                  network_share_password=None,
-                                  database_name=None):
+                                target_subscription_id=None,
+                                target_resource_group_name=None,
+                                target_managed_instance_name=None,
+                                network_share_path=None,
+                                network_share_domain=None,
+                                network_share_user_name=None,
+                                network_share_password=None,
+                                database_name=None):
 
     try:
         # Setup the console app
         exePath = helper.tdeMigration_console_app_setup()
 
-        if(exePath == None):
+        if exePath is None:
             return
 
-        if(os.path.exists(exePath) == False):
+        if os.path.exists(exePath) is False:
             print("Failed to locate executable.")
             return
 

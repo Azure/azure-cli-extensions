@@ -18,10 +18,9 @@ import platform
 import subprocess
 import time
 import urllib.request
-import re
-import requests
-import shutil
 from zipfile import ZipFile
+import shutil
+import requests
 from azure.cli.core.azclierror import CLIInternalError
 from azure.cli.core.azclierror import FileOperationError
 from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -118,7 +117,7 @@ def tdeMigration_console_app_setup():
 
     # check and download console app
     console_app_version = check_and_download_tdeMigration_console_app(downloads_folder)
-    if(console_app_version == None):
+    if console_app_version is None:
         print("Connection to NuGet.org required. Please check connection and try again.")
         return None
 
@@ -226,7 +225,7 @@ def get_latest_nuget_org_version(package_id):
     except Exception:
         print("Unable to connect to NuGet.org to check for updates.")
 
-    if(service_index_response == None or
+    if(service_index_response is None or
        service_index_response.status_code != 200 or
        len(service_index_response.content) > 999999):
         return None
@@ -242,11 +241,11 @@ def get_latest_nuget_org_version(package_id):
             package_base_address_url = resource["@id"]
             break
 
-    if package_base_address_url == None:
+    if package_base_address_url is None:
         return None
 
     package_versions_response = None
-    package_versions_response = requests.get("%s%s/index.json" % (package_base_address_url, package_id.lower()))
+    package_versions_response = requests.get(f"{package_base_address_url}{package_id.lower()}/index.json")
     if(package_versions_response.status_code != 200 or len(package_versions_response.content) > 999999):
         return None
 
@@ -260,7 +259,7 @@ def get_latest_nuget_org_version(package_id):
 # -----------------------------------------------------------------------------------------------------------------
 def get_latest_local_name_and_version(downloads_folder):
     nuget_versions = os.listdir(downloads_folder)
-    if(len(nuget_versions) == 0):
+    if len(nuget_versions) == 0:
         return None
 
     nuget_versions.sort(reverse=True)
@@ -275,15 +274,14 @@ def check_and_download_tdeMigration_console_app(downloads_folder):
     package_id = "Microsoft.SqlServer.Migration.TdeConsoleApp"
 
     latest_nuget_org_version = get_latest_nuget_org_version(package_id)
-    latest_nuget_org_name_and_version = "%s.%s" % (package_id, latest_nuget_org_version)
+    latest_nuget_org_name_and_version = f"{package_id}.{latest_nuget_org_version}"
     latest_local_name_and_version = get_latest_local_name_and_version(downloads_folder)
 
-    if(latest_nuget_org_version == None):
+    if latest_nuget_org_version is None:
         # Cannot retrieve latest version on NuGet.org, return latest local version
         return latest_local_name_and_version
 
-    if(latest_local_name_and_version != None and
-       latest_local_name_and_version >= latest_nuget_org_name_and_version):
+    if latest_local_name_and_version is not None and latest_local_name_and_version >= latest_nuget_org_name_and_version:
         # Console app is up to date, do not download update
         return latest_local_name_and_version
 
@@ -291,8 +289,8 @@ def check_and_download_tdeMigration_console_app(downloads_folder):
     latest_nuget_org_download_directory = os.path.join(downloads_folder, latest_nuget_org_name_and_version)
     os.makedirs(latest_nuget_org_download_directory, exist_ok=True)
 
-    latest_nuget_org_download_name = "%s/%s" % (latest_nuget_org_download_directory, "%s.nupkg" % (latest_nuget_org_name_and_version))
-    download_url = "https://www.nuget.org/api/v2/package/%s/%s" % (package_id, latest_nuget_org_version)
+    latest_nuget_org_download_name = f"{latest_nuget_org_download_directory}/{latest_nuget_org_name_and_version}.nupkg"
+    download_url = f"https://www.nuget.org/api/v2/package/{package_id}/{latest_nuget_org_version}"
 
     # Extract downloaded NuGet
     urllib.request.urlretrieve(download_url, filename=latest_nuget_org_download_name)
@@ -301,9 +299,9 @@ def check_and_download_tdeMigration_console_app(downloads_folder):
 
     exe_path = os.path.join(latest_nuget_org_download_directory, "tools", "Microsoft.SqlServer.Migration.Tde.ConsoleApp.exe")
 
-    if(os.path.exists(exe_path)):
+    if os.path.exists(exe_path):
         for nuget_version in os.listdir(downloads_folder):
-            if(nuget_version != latest_nuget_org_name_and_version):
+            if nuget_version != latest_nuget_org_name_and_version:
                 shutil.rmtree(os.path.join(downloads_folder, nuget_version))
 
     else:
