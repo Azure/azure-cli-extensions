@@ -7,6 +7,7 @@ Release History
 ++++++
 * `az databox job create`: Add new parameter `--transfer-type` `--transfer-configuration-type` `--transfer-filter-details` to support managing import or export` jobs
 * `az databox job create/update`: Add new parameter `--kek-type` `--kek-identity` `--kek-url` `--kek-vault-resource-id` to support managing customer managed key
+* `az databox job`: Add new subcommand `mark-devices-shipped` to support marking devices shipped
 * Migrate azure-stack-hci commands to aaz
 
 0.1.2
