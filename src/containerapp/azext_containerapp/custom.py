@@ -4495,6 +4495,7 @@ def patch_apply_handle_input(cmd, patch_check_list, method, pack_exec_path):
     # Track number of times patches were applied successfully.
     patch_apply_count = 0
     if input_method == "y":
+        telemetry_record_method = "y"
         for patch_check in patch_check_list:
             if patch_check["id"] and patch_check["newRunImage"]:
                 patch_cli_call(cmd,
@@ -4507,6 +4508,7 @@ def patch_apply_handle_input(cmd, patch_check_list, method, pack_exec_path):
                 # Increment patch_apply_count with every successful patch.
                 patch_apply_count += 1
     elif input_method == "n":
+        telemetry_record_method = "n"
         logger.warning("No patch applied.")
         return
     else:
@@ -4521,11 +4523,14 @@ def patch_apply_handle_input(cmd, patch_check_list, method, pack_exec_path):
                                patch_check["newRunImage"],
                                pack_exec_path)
                 patch_apply_count += 1
+                telemetry_record_method = input_method
                 break
         else:
+            telemetry_record_method = "invalid"
             logger.error("Invalid patch method or id.")
+    
     patch_apply_properties = {
-        'Context.Default.AzureCLI.UserResponse': input_method,
+        'Context.Default.AzureCLI.UserResponse': telemetry_record_method,
         'Context.Default.AzureCLI.PatchApplyCount': patch_apply_count
     }
     telemetry_core.add_extension_event('containerapp', patch_apply_properties)
