@@ -34,7 +34,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
 
         ## test for CRUD operations on Container App Job resource with trigger type as manual
         # create a Container App Job resource with trigger type as manual
-        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --replica-timeout 200 --replica-retry-limit 2 --trigger-type manual --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.25' --memory '0.5Gi'".format(resource_group, job, env))
+        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --replica-timeout 200 --replica-retry-limit 2 --trigger-type manual --parallelism 1 --replica-completion-count 1 --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.25' --memory '0.5Gi'".format(resource_group, job, env))
 
         # verify the container app job resource
         self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job), checks=[
@@ -73,7 +73,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         job2 = self.create_random_name(prefix='job2', length=24)
 
         # create a Container App Job resource with trigger type as schedule
-        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --replica-timeout 200 --replica-retry-limit 2 --trigger-type schedule --cron-expression '*/5 * * * *' --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.25' --memory '0.5Gi'".format(resource_group, job2, env))
+        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --replica-timeout 200 --replica-retry-limit 2 --trigger-type schedule --parallelism 1 --replica-completion-count 1 --cron-expression '*/5 * * * *' --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.25' --memory '0.5Gi'".format(resource_group, job2, env))
 
         # verify the container app job resource
         self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job2), checks=[

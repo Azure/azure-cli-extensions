@@ -31,7 +31,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         ])
 
         # create a Container App Job resource
-        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --replica-timeout 200 --replica-retry-limit 1 --trigger-type manual --image mcr.microsoft.com/k8se/quickstart:latest --cpu '0.25' --memory '0.5Gi'".format(resource_group, job, env))
+        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --replica-timeout 200 --replica-retry-limit 1 --trigger-type manual --replica-completion-count 1 --parallelism 1 --image mcr.microsoft.com/k8se/quickstart:latest --cpu '0.25' --memory '0.5Gi'".format(resource_group, job, env))
 
         # wait for 60s for the job to be provisioned
         jobProvisioning = True
@@ -53,3 +53,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         # get list of all executions for the job
         executionList = self.cmd("az containerapp job execution list --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()
         self.assertTrue(len(executionList) == 1)
+        
+        # get single execution for the job
+        singleExecution = self.cmd("az containerapp job execution show --resource-group {} --name {} --job-execution-name {}".format(resource_group, job, execution['name'])).get_output_in_json()
+        self.assertEqual(job in singleExecution['name'], True)

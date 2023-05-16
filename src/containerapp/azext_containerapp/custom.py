@@ -2319,7 +2319,7 @@ def listexecution_containerappsjob(cmd, resource_group_name, name):
 def getSingleExecution_containerappsjob(cmd, resource_group_name, name, job_execution_name):
     try:
         execution = ContainerAppsJobClient.getSingleExecution(cmd=cmd, resource_group_name=resource_group_name, name=name, job_execution_name=job_execution_name)
-        return execution['value'][0]
+        return execution
     except CLIError as e:
         handle_raw_exception(e)
 
