@@ -1732,9 +1732,9 @@ def is_docker_running():
     try:
         # Run a simple 'docker stats --no-stream' command to check if the Docker daemon is running
         command = ["docker", "stats", "--no-stream"]
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        _, _ = process.communicate()
-        return process.returncode == 0
+        with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+            _, _ = process.communicate()
+            return process.returncode == 0
     except Exception:
         return False
 
