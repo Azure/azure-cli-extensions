@@ -133,7 +133,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_connect(self,resource_group):
-
         managed_cluster_name = self.create_random_name(prefix='test-connect', length=24)
         kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
         self.kwargs.update({
@@ -427,7 +426,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_update(self,resource_group):
-
         managed_cluster_name = self.create_random_name(prefix='test-update', length=24)
         kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')) 
         self.kwargs.update({
@@ -487,7 +485,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_troubleshoot(self,resource_group):
-
         managed_cluster_name = self.create_random_name(prefix='test-troubleshoot', length=24)
         kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         self.kwargs.update({
@@ -520,7 +517,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location='eastus2euap', random_name_length=16)
     def test_proxy(self,resource_group):
-
         managed_cluster_name = self.create_random_name(prefix='test-proxy', length=24)
         kubeconfig="%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
         kubeconfig2="%s" % (_get_test_data_file(managed_cluster_name + '-config2.yaml'))
