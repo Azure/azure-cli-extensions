@@ -1795,7 +1795,11 @@ def get_pack_exec_path():
 
 
 def patchable_check(repo_tag_split: str, oryx_builder_run_img_tags, inspect_result):
+    # Check if the run image is based from a dotnet Mariner image in mcr.microsoft.com/oryx/builder
+    # Get all the dotnet mariner run image tags from mcr.microsoft.com/oryx/builder and
+    # compare the customer's run image with the latest patch version of the run image
     tag_prop = parse_oryx_mariner_tag(repo_tag_split)
+    # Parsing the tag to a tag object
     result = {
         "targetContainerAppName": inspect_result["targetContainerAppName"],
         "targetContainerName": inspect_result["targetContainerName"],
@@ -1807,13 +1811,20 @@ def patchable_check(repo_tag_split: str, oryx_builder_run_img_tags, inspect_resu
         "id": None,
     }
     if tag_prop is None:
+        # If customer run image is not dotnet and tag doesn't match with oryx run image tag format,
+        # return the result with the reason
         result["reason"] = "Image not based from a Mariner tag in mcr.microsoft.com/oryx/dotnet."
         return result
     elif len(str(tag_prop["version"]).split(".")) == 2:
+        # If customer run image is dotnet, but the tag doesn't contain a patch version
+        # e.g.: run-dontnet-aspnet-7.0-cbl-mariner2.0-xxxxxxx
         result["reason"] = "Image is using a run image version that doesn't contain a patch information."
         return result
     repo_tag_split = repo_tag_split.split("-")
     if repo_tag_split[1] == "dotnet":
+        # If customer run image is dotnet, and successfully parsed, check if the run image is based from a dotnet Mariner image in mcr.microsoft.com/oryx/builder
+        # Indexing to the correct framework, support, major and minor version, and mariner version
+        # e.g.: run_img_tags -> framework -> support -> major.minor -> mariner version
         matching_version_info = oryx_builder_run_img_tags[repo_tag_split[2]][str(tag_prop["version"].major) + "." + str(tag_prop["version"].minor)][tag_prop["support"]][tag_prop["marinerVersion"]]
     # Check if the image minor version is less than the latest minor version
     if tag_prop["version"] < matching_version_info[0]["version"]:
@@ -1829,6 +1840,7 @@ def patchable_check(repo_tag_split: str, oryx_builder_run_img_tags, inspect_resu
             result["id"] = None
             result["reason"] = "The image is not patchable. Please check for major or minor version upgrade."
     else:
+        # Image is already up to date
         result["oldRunImage"] = tag_prop["fullTag"]
         result["reason"] = "The image is already up to date."
     return result
@@ -1840,27 +1852,24 @@ def get_current_mariner_tags() -> list(OryxMarinerRunImgTagProperty):
     tag_list = {}
     # only keep entries that contain keyword "mariner"
     tags = [tag for tag in tags["tags"] if "mariner" in tag]
-    for tag in tags:  # pylint: disable=too-many-nested-blocks
+    for tag in tags:
         tag_obj = parse_oryx_mariner_tag(tag)
         if tag_obj:
             major_minor_ver = str(tag_obj["version"].major) + "." + str(tag_obj["version"].minor)
             support = tag_obj["support"]
             framework = tag_obj["framework"]
             mariner_ver = tag_obj["marinerVersion"]
-            if framework in tag_list:
-                if major_minor_ver in tag_list[framework].keys():
-                    if support in tag_list[framework][major_minor_ver].keys():
-                        if mariner_ver in tag_list[framework][major_minor_ver][support].keys():
-                            tag_list[framework][major_minor_ver][support][mariner_ver].append(tag_obj)
-                            tag_list[framework][major_minor_ver][support][mariner_ver].sort(reverse=True, key=lambda x: x["version"])
-                        else:
-                            tag_list[framework][major_minor_ver][support][mariner_ver] = [tag_obj]
-                    else:
-                        tag_list[framework][major_minor_ver][support] = {mariner_ver: [tag_obj]}
-                else:
-                    tag_list[framework][major_minor_ver] = {support: {mariner_ver: [tag_obj]}}
-            else:
+            if framework not in tag_list:
                 tag_list[framework] = {major_minor_ver: {support: {mariner_ver: [tag_obj]}}}
+            elif major_minor_ver not in tag_list[framework]:
+                tag_list[framework][major_minor_ver] = {support: {mariner_ver: [tag_obj]}}
+            elif support not in tag_list[framework][major_minor_ver]:
+                tag_list[framework][major_minor_ver][support] = {mariner_ver: [tag_obj]}
+            elif mariner_ver not in tag_list[framework][major_minor_ver][support]:
+                tag_list[framework][major_minor_ver][support][mariner_ver] = [tag_obj]
+            else:
+                tag_list[framework][major_minor_ver][support][mariner_ver].append(tag_obj)
+                tag_list[framework][major_minor_ver][support][mariner_ver].sort(reverse=True, key=lambda x: x["version"])
     return tag_list
 
 
@@ -1875,6 +1884,14 @@ def get_latest_buildpack_run_tag(framework, version, support="lts", mariner_vers
 def parse_oryx_mariner_tag(tag: str) -> OryxMarinerRunImgTagProperty:
     tag_split = tag.split("-")
     if tag_split[0] == "run" and tag_split[1] == "dotnet":
+        # Example: run-dotnet-aspnet-7.0.1-cbl-mariner2.0-20210415.1
+        # Result: tag_obj = {
+        #    "fullTag": "run-dotnet-aspnet-7.0.1-cbl-mariner2.0-20210415.1",
+        #    "version": "7.0.1",
+        #    "framework": "aspnet",
+        #    "marinerVersion": "cbl-mariner2.0",
+        #    "architectures": None,
+        #    "support": "lts"}
         version_re = r"(\d+\.\d+(\.\d+)?).*?(cbl-mariner(\d+\.\d+))"
         re_matches = re.findall(version_re, tag)
         if re_matches.count == 0:

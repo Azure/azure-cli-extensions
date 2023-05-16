@@ -488,7 +488,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         from datetime import datetime
 
         self.image = self.registry_server + "/" + image_name
-
+        # Creating a tag for the image using the current time to avoid overwriting customer's existing images
         now = datetime.now()
         tag_now_suffix = str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
 
