@@ -4120,8 +4120,7 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
     if excluded_paths is not None:
         if "globalValidation" not in existing_auth:
             existing_auth["globalValidation"] = {}
-        excluded_paths_list_string = excluded_paths[1:-1]
-        existing_auth["globalValidation"]["excludedPaths"] = excluded_paths_list_string.split(",")
+        existing_auth["globalValidation"]["excludedPaths"] = excluded_paths.split(",")
 
     existing_auth = update_http_settings_in_auth_settings(existing_auth, require_https,
                                                           proxy_convention, proxy_custom_host_header,
@@ -4282,6 +4281,38 @@ def show_workload_profile(cmd, resource_group_name, env_name, workload_profile_n
 
 
 def set_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):
+    return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
+
+
+def add_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):
+    try:
+        r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=env_name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    workload_profiles = r["properties"]["workloadProfiles"]
+
+    workload_profiles_lower = [p["name"].lower() for p in workload_profiles]
+
+    if workload_profile_name.lower() in workload_profiles_lower:
+        raise ValidationError(f"Cannot add workload profile with name {workload_profile_name} because it already exists in this environment")
+
+    return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
+
+
+def update_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):
+    try:
+        r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=env_name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    workload_profiles = r["properties"]["workloadProfiles"]
+
+    workload_profiles_lower = [p["name"].lower() for p in workload_profiles]
+
+    if workload_profile_name.lower() not in workload_profiles_lower:
+        raise ValidationError(f"Workload profile with name {workload_profile_name} does not exist in this environment. The workload profiles available in this environment are {','.join([p['name'] for p in workload_profiles])}")
+
     return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
 
 

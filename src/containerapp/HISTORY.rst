@@ -4,6 +4,10 @@ Release History
 ===============
 Upcoming
 ++++++
+* Split 'az containerapp env workload-profile set' into 'az containerapp env workload-profile add' and 'az containerapp env workload-profile update'
+* Add 'az containerapp env workload-profile add' to support creating a workload profile in an environment
+* Add 'az containerapp env workload-profile update' to support updating an existing workload profile in an environment
+* 'az containerapp auth update': fix excluded paths first and last character being cutoff
 * 'az containerapp update': remove the environmentId in the PATCH payload if it has not been changed
 * Upgrade api-version to 2023-04-01-preview
 
