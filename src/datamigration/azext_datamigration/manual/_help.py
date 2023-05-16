@@ -75,7 +75,7 @@ helps['datamigration tde-migration'] = """
     examples:
       - name: Migrate TDE certificate from source SQL Server to the target Azure SQL Server.
         text: |-
-               az datamigration tde-migration --source-sql-connection-string "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --target-subscription-id "00000000-0000-0000-0000-000000000000" --target-resource-group-name "ResourceGroupName" --target-managed-instance-name "TargetManagedInstanceName" --network-share-path "\\NetworkShare\Folder" --network-share-domain "NetworkShare" --network-share-user-name "NetworkShareUserName" --network-share-password "$securePassword" --database-name "TdeDb_0" "TdeDb_1" "TdeDb_2"
+               az datamigration tde-migration --source-sql-connection-string "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --target-subscription-id "00000000-0000-0000-0000-000000000000" --target-resource-group-name "ResourceGroupName" --target-managed-instance-name "TargetManagedInstanceName" --network-share-path "\\NetworkShare\Folder" --network-share-domain "NetworkShare" --network-share-user-name "NetworkShareUserName" --network-share-password "" --database-name "TdeDb_0" "TdeDb_1" "TdeDb_2"
 """
 
 helps['datamigration register-integration-runtime'] = """
