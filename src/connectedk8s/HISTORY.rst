@@ -2,6 +2,13 @@
 
 Release History
 
+1.3.18
+++++++
+
+* Checking Outbound connectivity to OBO endpoint 
+* Cleaning up CRD in case release namespace is delete/not-present
+* Adding retries in Helm client download
+
 1.3.17
 ++++++
 
