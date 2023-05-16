@@ -74,12 +74,19 @@ class CnfNfdGenerator(NFDGenerator):
                     json.dump(self.artifacts, file, indent=4)
                 
             # Write NFD bicep
-            self.write_nfd_bicep_file()
+            #' JRODAN: this needs to return the name of the file? so we can copy or we can just search for .bicep
+            nfd_bicep_file = self.write_nfd_bicep_file()
             # Write schema to schema/deploymentParameterSchema.json
             # Write Artifact Mainfest bicep
 
             # Copy contents of tmp folder to output folder.
-
+            #JORDAN: check what files we def want: bicep, schema and mappings (deployParams and configMappings folders)
+            if not os.path.exists('output'):
+                os.mkdir('output')
+            nfd_bicep_path = os.path.join(self.tmp_folder_name,(nfd_bicep_file + '.bicep') )
+            print(nfd_bicep_path)
+            shutil.copy(nfd_bicep_path, 'output')
+            
         # Delete tmp folder
         shutil.rmtree(self.tmp_folder_name)
 
@@ -142,7 +149,9 @@ class CnfNfdGenerator(NFDGenerator):
         ]["networkFunctionApplications"] = self.nf_applications
 
         self.write_arm_to_bicep(cnf_arm_template_dict, f"{self.tmp_folder_name}/{self.config.nf_name}-nfdv.json")
-
+        
+        return f"{self.config.nf_name}-nfdv"
+        
     def write_arm_to_bicep(self, arm_template_dict: Dict[Any, Any], arm_file: str):
         with open(arm_file, 'w', encoding="UTF-8") as f:
             print("Writing ARM template to json file.")
@@ -236,12 +245,19 @@ class CnfNfdGenerator(NFDGenerator):
         # Basically take the bits of the schema that are relevant to the parameters requested.
         
         non_def_values = os.path.join(self.tmp_folder_name, helm_package.name, "values.nondef.yaml")
-
-        with open(non_def_values, 'r') as stream:
-            data = yaml.load(stream, Loader=yaml.SafeLoader)
-            deploy_params_list = []
-            params_for_schema = self.find_deploy_params(data, deploy_params_list)
+        values_schema = os.path.join(self.tmp_folder_name, helm_package.name, "values.schema.json")
         
+        with open(non_def_values, 'r') as stream:
+            values_data = yaml.load(stream, Loader=yaml.SafeLoader)
+        
+        with open(values_schema, 'r') as f:
+            data = json.load(f)
+            schema_data = data["properties"]
+        # print(schema_data)
+        deploy_params_list = []
+        params_for_schema = self.find_deploy_params(values_data, schema_data, deploy_params_list, {})
+        
+        print("params", params_for_schema)
         schema_dict = {}
         for i in params_for_schema:
             schema_dict[i] = {"type": "string", "description": "no descr"}
@@ -249,17 +265,25 @@ class CnfNfdGenerator(NFDGenerator):
         return schema_dict
 
     ## JORDAN: change this to save the key and value that has deployParam in it so we can check the schema for the key
-    def find_deploy_params(self, nested_dict, deploy_params_list):
+    def find_deploy_params(self, nested_dict, schema_nested_dict, deploy_params_list, dict_path):
         for k,v in nested_dict.items():
+            # #reset
+            # dict_path = {}
+            test = {}
             if isinstance(v, str) and "deployParameters" in v:
                 # only add the parameter name (not deployParam. or anything after)
                 param = v.split(".",1)[1]
                 param = param.split('}', 1)[0]
+                # dict_path[k] = param
+                ## identify the zone param 
                 deploy_params_list.append(param)
+                test[k] = param
                 print(deploy_params_list)
+                print(test)
             elif hasattr(v, 'items'): #v is a dict
-                self.find_deploy_params(v, deploy_params_list)
-                    
+                # dict_path[k] = {}
+                self.find_deploy_params(v, deploy_params_list, dict_path)
+            # print("dict", dict_path)        
         return deploy_params_list
             
     def get_chart_name_and_version(
@@ -279,7 +303,6 @@ class CnfNfdGenerator(NFDGenerator):
         # Need to work out what we are doing here???
         pass
 
-    ## JORDAN: change this to return string(loadJson).. with the file in output 
     def generate_parmeter_mappings(self, helm_package: HelmPackageConfig) -> str:
         # Basically copy the values.nondef.yaml file to the right place.
         values = os.path.join(self.tmp_folder_name, helm_package.name, "values.nondef.yaml")
