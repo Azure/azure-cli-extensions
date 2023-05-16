@@ -238,9 +238,9 @@ class JobCreate(_JobCreate):
                 if not has_value(args.transfer_configuration_type):
                     raise ArgumentUsageError('You must provide --transfer-configuration-type when --transfer-type  is ExportFromAzure.')
                 for detail in data_import_or_export_details:
-                    if args.transfer_configuration_type == 'TransferAll':
+                    if args.transfer_configuration_type.to_serialized_data() == 'TransferAll':
                         transfer_configuration = {
-                            "transferConfigurationType": 'TransferAll',
+                            "transferConfigurationType": "TransferAll",
                             "transferAllDetails": {
                                 "include": {
                                     "dataAccountType": "StorageAccount",
@@ -250,10 +250,12 @@ class JobCreate(_JobCreate):
                             }
                         }
                         detail['transferConfiguration'] = transfer_configuration
-                    if args.transfer_configuration_type == 'TransferUsingFilter':
+                    if args.transfer_configuration_type.to_serialized_data() == 'TransferUsingFilter':
+                        if not has_value(args.transfer_configuration_type):
+                            raise ArgumentUsageError('You must provide --transfer-filter-details when --transfer-configuration-type  is TransferUsingFilter.')
                         transfer_configuration = {
                             "transferConfigurationType": 'TransferUsingFilter',
-                            "transferFilterDetails": args.transfer_filter_details
+                            "transferFilterDetails": args.transfer_filter_details.to_serialized_data()
                         }
                         detail['transferConfiguration'] = transfer_configuration
                 output['properties']['details']["dataExportDetails"] = data_import_or_export_details

@@ -487,7 +487,6 @@ class Create(AAZCommand):
                 details.set_prop("keyEncryptionKey", AAZObjectType)
                 details.set_prop("shippingAddress", AAZObjectType)
                 details.discriminate_by("jobDetailsType", "DataBox")
-                details.discriminate_by("jobDetailsType", "DataBoxCustomerDisk")
                 details.discriminate_by("jobDetailsType", "DataBoxDisk")
                 details.discriminate_by("jobDetailsType", "DataBoxHeavy")
 
@@ -532,28 +531,6 @@ class Create(AAZCommand):
             disc_data_box = _builder.get(".properties.details{jobDetailsType:DataBox}")
             if disc_data_box is not None:
                 disc_data_box.set_prop("devicePassword", AAZStrType, ".data_box.device_password")
-
-            disc_data_box_customer_disk = _builder.get(".properties.details{jobDetailsType:DataBoxCustomerDisk}")
-            if disc_data_box_customer_disk is not None:
-                disc_data_box_customer_disk.set_prop("enableManifestBackup", AAZBoolType, ".data_box_customer_disk.enable_manifest_backup")
-                disc_data_box_customer_disk.set_prop("importDiskDetailsCollection", AAZDictType, ".data_box_customer_disk.import_disk_details_collection")
-                disc_data_box_customer_disk.set_prop("returnToCustomerPackageDetails", AAZObjectType, ".data_box_customer_disk.return_to_customer_package_details", typ_kwargs={"flags": {"required": True}})
-
-            import_disk_details_collection = _builder.get(".properties.details{jobDetailsType:DataBoxCustomerDisk}.importDiskDetailsCollection")
-            if import_disk_details_collection is not None:
-                import_disk_details_collection.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".properties.details{jobDetailsType:DataBoxCustomerDisk}.importDiskDetailsCollection{}")
-            if _elements is not None:
-                _elements.set_prop("bitLockerKey", AAZStrType, ".bit_locker_key", typ_kwargs={"flags": {"required": True, "secret": True}})
-                _elements.set_prop("manifestFile", AAZStrType, ".manifest_file", typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("manifestHash", AAZStrType, ".manifest_hash", typ_kwargs={"flags": {"required": True}})
-
-            return_to_customer_package_details = _builder.get(".properties.details{jobDetailsType:DataBoxCustomerDisk}.returnToCustomerPackageDetails")
-            if return_to_customer_package_details is not None:
-                return_to_customer_package_details.set_prop("carrierAccountNumber", AAZStrType, ".carrier_account_number", typ_kwargs={"flags": {"secret": True}})
-                return_to_customer_package_details.set_prop("carrierName", AAZStrType, ".carrier_name")
-                return_to_customer_package_details.set_prop("trackingId", AAZStrType, ".tracking_id")
 
             disc_data_box_disk = _builder.get(".properties.details{jobDetailsType:DataBoxDisk}")
             if disc_data_box_disk is not None:
@@ -1221,168 +1198,6 @@ class Create(AAZCommand):
             copy_progress = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBox").copy_progress
             copy_progress.Element = AAZObjectType()
             _CreateHelper._build_schema_copy_progress_read(copy_progress.Element)
-
-            disc_data_box_customer_disk = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk")
-            disc_data_box_customer_disk.copy_progress = AAZListType(
-                serialized_name="copyProgress",
-                flags={"read_only": True},
-            )
-            disc_data_box_customer_disk.deliver_to_dc_package_details = AAZObjectType(
-                serialized_name="deliverToDcPackageDetails",
-            )
-            disc_data_box_customer_disk.enable_manifest_backup = AAZBoolType(
-                serialized_name="enableManifestBackup",
-            )
-            disc_data_box_customer_disk.export_disk_details_collection = AAZDictType(
-                serialized_name="exportDiskDetailsCollection",
-                flags={"read_only": True},
-            )
-            disc_data_box_customer_disk.import_disk_details_collection = AAZDictType(
-                serialized_name="importDiskDetailsCollection",
-            )
-            disc_data_box_customer_disk.return_to_customer_package_details = AAZObjectType(
-                serialized_name="returnToCustomerPackageDetails",
-                flags={"required": True},
-            )
-
-            copy_progress = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").copy_progress
-            copy_progress.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").copy_progress.Element
-            _element.account_id = AAZStrType(
-                serialized_name="accountId",
-                flags={"read_only": True},
-            )
-            _element.actions = AAZListType(
-                flags={"read_only": True},
-            )
-            _element.bytes_processed = AAZIntType(
-                serialized_name="bytesProcessed",
-                flags={"read_only": True},
-            )
-            _element.copy_status = AAZStrType(
-                serialized_name="copyStatus",
-                flags={"read_only": True},
-            )
-            _element.data_account_type = AAZStrType(
-                serialized_name="dataAccountType",
-                flags={"read_only": True},
-            )
-            _element.directories_errored_out = AAZIntType(
-                serialized_name="directoriesErroredOut",
-                flags={"read_only": True},
-            )
-            _element.error = AAZObjectType()
-            _CreateHelper._build_schema_cloud_error_read(_element.error)
-            _element.files_errored_out = AAZIntType(
-                serialized_name="filesErroredOut",
-                flags={"read_only": True},
-            )
-            _element.files_processed = AAZIntType(
-                serialized_name="filesProcessed",
-                flags={"read_only": True},
-            )
-            _element.invalid_directories_processed = AAZIntType(
-                serialized_name="invalidDirectoriesProcessed",
-                flags={"read_only": True},
-            )
-            _element.invalid_file_bytes_uploaded = AAZIntType(
-                serialized_name="invalidFileBytesUploaded",
-                flags={"read_only": True},
-            )
-            _element.invalid_files_processed = AAZIntType(
-                serialized_name="invalidFilesProcessed",
-                flags={"read_only": True},
-            )
-            _element.is_enumeration_in_progress = AAZBoolType(
-                serialized_name="isEnumerationInProgress",
-                flags={"read_only": True},
-            )
-            _element.renamed_container_count = AAZIntType(
-                serialized_name="renamedContainerCount",
-                flags={"read_only": True},
-            )
-            _element.serial_number = AAZStrType(
-                serialized_name="serialNumber",
-                flags={"read_only": True},
-            )
-            _element.storage_account_name = AAZStrType(
-                serialized_name="storageAccountName",
-                flags={"read_only": True},
-            )
-            _element.total_bytes_to_process = AAZIntType(
-                serialized_name="totalBytesToProcess",
-                flags={"read_only": True},
-            )
-            _element.total_files_to_process = AAZIntType(
-                serialized_name="totalFilesToProcess",
-                flags={"read_only": True},
-            )
-            _element.transfer_type = AAZStrType(
-                serialized_name="transferType",
-                flags={"read_only": True},
-            )
-
-            actions = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").copy_progress.Element.actions
-            actions.Element = AAZStrType()
-
-            deliver_to_dc_package_details = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").deliver_to_dc_package_details
-            deliver_to_dc_package_details.carrier_name = AAZStrType(
-                serialized_name="carrierName",
-            )
-            deliver_to_dc_package_details.tracking_id = AAZStrType(
-                serialized_name="trackingId",
-            )
-
-            export_disk_details_collection = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").export_disk_details_collection
-            export_disk_details_collection.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").export_disk_details_collection.Element
-            _element.backup_manifest_cloud_path = AAZStrType(
-                serialized_name="backupManifestCloudPath",
-                flags={"read_only": True},
-            )
-            _element.manifest_file = AAZStrType(
-                serialized_name="manifestFile",
-                flags={"read_only": True},
-            )
-            _element.manifest_hash = AAZStrType(
-                serialized_name="manifestHash",
-                flags={"read_only": True},
-            )
-
-            import_disk_details_collection = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").import_disk_details_collection
-            import_disk_details_collection.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").import_disk_details_collection.Element
-            _element.backup_manifest_cloud_path = AAZStrType(
-                serialized_name="backupManifestCloudPath",
-                flags={"read_only": True},
-            )
-            _element.bit_locker_key = AAZStrType(
-                serialized_name="bitLockerKey",
-                flags={"required": True, "secret": True},
-            )
-            _element.manifest_file = AAZStrType(
-                serialized_name="manifestFile",
-                flags={"required": True},
-            )
-            _element.manifest_hash = AAZStrType(
-                serialized_name="manifestHash",
-                flags={"required": True},
-            )
-
-            return_to_customer_package_details = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").return_to_customer_package_details
-            return_to_customer_package_details.carrier_account_number = AAZStrType(
-                serialized_name="carrierAccountNumber",
-                flags={"secret": True},
-            )
-            return_to_customer_package_details.carrier_name = AAZStrType(
-                serialized_name="carrierName",
-            )
-            return_to_customer_package_details.tracking_id = AAZStrType(
-                serialized_name="trackingId",
-            )
 
             disc_data_box_disk = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxDisk")
             disc_data_box_disk.copy_progress = AAZListType(

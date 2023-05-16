@@ -13,17 +13,16 @@ class DataboxScenario(ScenarioTest):
     @StorageAccountPreparer(parameter_name='storage_account_1')
     @StorageAccountPreparer(parameter_name='storage_account_2')
     def test_databox(self, storage_account_1, storage_account_2):
-        job_name = self.create_random_name('job', 24)
-        job_name_2 = self.create_random_name('job', 24)
         self.kwargs.update({
-            'job_name': job_name,
-            'job_name_2': job_name_2,
+            'job_name': self.create_random_name('job', 24),
+            'job_name_2': self.create_random_name('job', 24),
+            'job_name_3': self.create_random_name('job', 24),
             'storage_account_1': storage_account_1,
             'storage_account_2': storage_account_2,
             'managed-rg': self.create_random_name('rg-', 10)
         })
 
-        # Create a databox job with sku 'DataBox'.
+        # Create a databox job with sku 'DataBox' and transfer-type 'ImportToAzure'.
         self.cmd('databox job create '
                  '--resource-group {rg} '
                  '--name {job_name} '
@@ -46,7 +45,7 @@ class DataboxScenario(ScenarioTest):
                  checks=[
                      self.check('status', 'DeviceOrdered'),
                      self.check('transferType', 'ImportToAzure'),
-                     self.check('keyEncryptionKey.kekType', 'MicrosoftManaged')
+                     self.check('details.keyEncryptionKey.kekType', 'MicrosoftManaged')
                  ])
 
         self.cmd('databox job update '
@@ -61,15 +60,16 @@ class DataboxScenario(ScenarioTest):
                      self.check('details.contactDetails.phone', '14258828081')
                  ])
 
-        self.cmd('databox job show '
-                 '--resource-group {rg} '
-                 '--name {job_name}',
-                 checks=[
-                     JMESPathCheck('name', job_name),
-                     JMESPathCheck('isCancellable', True),
-                     JMESPathCheck('isDeletable', False),
-                     JMESPathCheck('details.contactDetails.contactName', 'Public SDK Test 1'),
-                     JMESPathCheck('details.contactDetails.emailList[0]', 'testing1@microsoft.com')])
+        self.cmd('databox job show --resource-group {rg} --name {job_name}', checks=[
+            self.check('name', '{job_name}'),
+            self.check('isCancellable', True),
+            self.check('isDeletable', False),
+            self.check('details.contactDetails.contactName', 'Public SDK Test 1'),
+            self.check('details.contactDetails.emailList[0]', 'testing1@microsoft.com'),
+            self.check('status', 'DeviceOrdered'),
+            self.check('transferType', 'ImportToAzure'),
+            self.check('details.keyEncryptionKey.kekType', 'MicrosoftManaged')
+         ])
 
         self.cmd('databox job list '
                  '--resource-group {rg}',
@@ -86,9 +86,9 @@ class DataboxScenario(ScenarioTest):
                  '--resource-group {rg} '
                  '--name {job_name}',
                  checks=[
-                     JMESPathCheck('name', job_name),
-                     JMESPathCheck('isCancellable', False),
-                     JMESPathCheck('isDeletable', True)])
+                     self.check('name', '{job_name}'),
+                     self.check('isCancellable', False),
+                     self.check('isDeletable', True)])
 
         self.cmd('databox job delete '
                  '--resource-group {rg} '
@@ -139,6 +139,34 @@ class DataboxScenario(ScenarioTest):
                  '--resource-group {rg} '
                  '--name {job_name_2}',
                  expect_failure=True)
+
+        # Create databox job with transfer-type 'ExportFromAzure'.
+        self.cmd('databox job create '
+                 '--resource-group {rg} '
+                 '--name {job_name_3} '
+                 '--location westus '
+                 '--sku DataBox '
+                 '--expected-data-size 1 '
+                 '--contact-name "Public SDK Test" '
+                 '--phone 14258828080 '
+                 '--email-list testing@microsoft.com '
+                 '--street-address1 "1 MICROSOFT WAY" '
+                 '--city Redmond '
+                 '--state-or-province WA '
+                 '--country US '
+                 '--postal-code 98052 '
+                 '--company-name Microsoft '
+                 '--storage-account {storage_account_1} '
+                 '--transfer-type ExportFromAzure '
+                 '--transfer-configuration-type TransferAll',
+                 checks=[
+                     self.check('status', 'DeviceOrdered'),
+                     self.check('transferType', 'ExportFromAzure'),
+                     self.check('details.dataExportDetails[0].transferConfiguration.transferConfigurationType', 'TransferAll')
+                 ])
+
+        self.cmd('databox job cancel --resource-group {rg} --name {job_name_3} --reason "CancelTest" -y')
+        self.cmd('databox job delete --resource-group {rg} --name {job_name_3} -y')
 
         # DataBox service will create a lock 'DATABOX_SERVICE' on the storage account under the resource group when creating a job. In order to clean up the resource group, we need delete the lock first.
         self.cmd('lock delete '

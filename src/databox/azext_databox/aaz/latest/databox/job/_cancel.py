@@ -13,12 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "databox job cancel",
+    confirmation="Are you sure you want to perform this operation?",
 )
 class Cancel(AAZCommand):
     """CancelJob.
 
     :example: Cancel job
-        az databox job cancel -g rg --job-name name --reason reason
+        az databox job cancel -g rg --job-name name --reason reason -y
     """
 
     _aaz_info = {
