@@ -56,11 +56,11 @@ class Wait(AAZWaitCommand):
         self.VirtualHubsGet(ctx=self.ctx)()
         self.post_operations()
 
-    # @register_callback
+    @register_callback
     def pre_operations(self):
         pass
 
-    # @register_callback
+    @register_callback
     def post_operations(self):
         pass
 
@@ -180,7 +180,7 @@ class Wait(AAZWaitCommand):
             properties.azure_firewall = AAZObjectType(
                 serialized_name="azureFirewall",
             )
-            _build_schema_sub_resource_read(properties.azure_firewall)
+            _WaitHelper._build_schema_sub_resource_read(properties.azure_firewall)
             properties.bgp_connections = AAZListType(
                 serialized_name="bgpConnections",
                 flags={"read_only": True},
@@ -188,7 +188,7 @@ class Wait(AAZWaitCommand):
             properties.express_route_gateway = AAZObjectType(
                 serialized_name="expressRouteGateway",
             )
-            _build_schema_sub_resource_read(properties.express_route_gateway)
+            _WaitHelper._build_schema_sub_resource_read(properties.express_route_gateway)
             properties.hub_routing_preference = AAZStrType(
                 serialized_name="hubRoutingPreference",
             )
@@ -199,7 +199,7 @@ class Wait(AAZWaitCommand):
             properties.p2_s_vpn_gateway = AAZObjectType(
                 serialized_name="p2SVpnGateway",
             )
-            _build_schema_sub_resource_read(properties.p2_s_vpn_gateway)
+            _WaitHelper._build_schema_sub_resource_read(properties.p2_s_vpn_gateway)
             properties.preferred_routing_gateway = AAZStrType(
                 serialized_name="preferredRoutingGateway",
             )
@@ -221,7 +221,7 @@ class Wait(AAZWaitCommand):
             properties.security_partner_provider = AAZObjectType(
                 serialized_name="securityPartnerProvider",
             )
-            _build_schema_sub_resource_read(properties.security_partner_provider)
+            _WaitHelper._build_schema_sub_resource_read(properties.security_partner_provider)
             properties.security_provider_name = AAZStrType(
                 serialized_name="securityProviderName",
             )
@@ -241,22 +241,23 @@ class Wait(AAZWaitCommand):
             properties.virtual_wan = AAZObjectType(
                 serialized_name="virtualWan",
             )
+            _WaitHelper._build_schema_sub_resource_read(properties.virtual_wan)
             properties.vpn_gateway = AAZObjectType(
                 serialized_name="vpnGateway",
             )
-            _build_schema_sub_resource_read(properties.vpn_gateway)
+            _WaitHelper._build_schema_sub_resource_read(properties.vpn_gateway)
 
             bgp_connections = cls._schema_on_200.properties.bgp_connections
             bgp_connections.Element = AAZObjectType()
-            _build_schema_sub_resource_read(bgp_connections.Element)
+            _WaitHelper._build_schema_sub_resource_read(bgp_connections.Element)
 
             ip_configurations = cls._schema_on_200.properties.ip_configurations
             ip_configurations.Element = AAZObjectType()
-            _build_schema_sub_resource_read(ip_configurations.Element)
+            _WaitHelper._build_schema_sub_resource_read(ip_configurations.Element)
 
             route_maps = cls._schema_on_200.properties.route_maps
             route_maps.Element = AAZObjectType()
-            _build_schema_sub_resource_read(route_maps.Element)
+            _WaitHelper._build_schema_sub_resource_read(route_maps.Element)
 
             route_table = cls._schema_on_200.properties.route_table
             route_table.routes = AAZListType()
@@ -330,30 +331,29 @@ class Wait(AAZWaitCommand):
             virtual_router_ips = cls._schema_on_200.properties.virtual_router_ips
             virtual_router_ips.Element = AAZStrType()
 
-            virtual_wan = cls._schema_on_200.properties.virtual_wan
-            virtual_wan.id = AAZStrType()
-
             tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-_schema_sub_resource_read = None
+class _WaitHelper:
+    """Helper class for Wait"""
 
+    _schema_sub_resource_read = None
 
-def _build_schema_sub_resource_read(_schema):
-    global _schema_sub_resource_read
-    if _schema_sub_resource_read is not None:
-        _schema.id = _schema_sub_resource_read.id
-        return
+    @classmethod
+    def _build_schema_sub_resource_read(cls, _schema):
+        if cls._schema_sub_resource_read is not None:
+            _schema.id = cls._schema_sub_resource_read.id
+            return
 
-    _schema_sub_resource_read = AAZObjectType()
+        cls._schema_sub_resource_read = _schema_sub_resource_read = AAZObjectType()
 
-    sub_resource_read = _schema_sub_resource_read
-    sub_resource_read.id = AAZStrType()
+        sub_resource_read = _schema_sub_resource_read
+        sub_resource_read.id = AAZStrType()
 
-    _schema.id = _schema_sub_resource_read.id
+        _schema.id = cls._schema_sub_resource_read.id
 
 
 __all__ = ["Wait"]

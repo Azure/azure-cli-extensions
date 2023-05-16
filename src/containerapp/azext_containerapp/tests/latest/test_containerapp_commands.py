@@ -781,7 +781,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         identity = self.create_random_name(prefix='id', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
-        image_name = f"{acr}.azurecr.io/azuredocs/containerapps-helloworld:latest"
+        image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
 
         create_containerapp_env(self, env, resource_group)
 
@@ -804,7 +804,7 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         app = self.create_random_name(prefix='aca', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
-        image_name = f"{acr}.azurecr.io/azuredocs/containerapps-helloworld:latest"
+        image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
 
         create_containerapp_env(self, env, resource_group)
 
@@ -886,6 +886,21 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].secretRef", "app-key"),
 
         ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --cpu 0.5 --no-wait')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.template.containers[0].resources.cpu", "0.5"),
+            JMESPathCheck("properties.template.scale.rules[0].name", "my-datadog-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.type", "datadog"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.queryValue", "7"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.age", "120"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.metricUnavailableValue", "0"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[0].triggerParameter", "apiKey"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[0].secretRef", "api-key"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].triggerParameter", "appKey"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].secretRef", "app-key"),
+        ])
+
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
@@ -976,6 +991,15 @@ class ContainerappScaleTests(ScenarioTest):
                 scale:
                   minReplicas: 1
                   maxReplicas: 3
+                  rules:
+                  - http:
+                      auth:
+                      - secretRef: secretref
+                        triggerParameter: trigger
+                      metadata:
+                        concurrentRequests: '50'
+                        key: value
+                    name: http-scale-rule
             identity:
               type: UserAssigned
               userAssignedIdentities:
@@ -996,7 +1020,12 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
-            JMESPathCheck("properties.template.scale.maxReplicas", 3)
+            JMESPathCheck("properties.template.scale.maxReplicas", 3),
+            JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.concurrentRequests", "50"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
         ])
 
         # test environmentId
@@ -1034,6 +1063,7 @@ class ContainerappScaleTests(ScenarioTest):
                         scale:
                           minReplicas: 1
                           maxReplicas: 3
+                          rules: []
                     """
         write_test_file(containerapp_file_name, containerapp_yaml_text)
 
@@ -1049,7 +1079,24 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
-            JMESPathCheck("properties.template.scale.maxReplicas", 3)
+            JMESPathCheck("properties.template.scale.maxReplicas", 3),
+            JMESPathCheck("properties.template.scale.rules", None)
+        ])
+
+        # test update without environmentId
+        containerapp_yaml_text = f"""
+                            properties:
+                              template:
+                                revisionSuffix: myrevision3
+                            """
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+
+        self.cmd(f'containerapp update -n {app} -g {resource_group} --yaml {containerapp_file_name}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
+            JMESPathCheck("properties.template.revisionSuffix", "myrevision3")
         ])
         clean_up_test_file(containerapp_file_name)
 

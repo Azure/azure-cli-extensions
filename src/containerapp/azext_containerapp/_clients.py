@@ -15,8 +15,8 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2022-11-01-preview"
-CURRENT_API_VERSION = "2022-11-01-preview"
+PREVIEW_API_VERSION = "2023-04-01-preview"
+CURRENT_API_VERSION = "2023-04-01-preview"
 POLLING_TIMEOUT = 600  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -196,7 +196,7 @@ class ContainerAppClient():
         r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(container_app_envelope))
 
         if no_wait:
-            return r.json()
+            return
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
             response = poll_results(cmd, operation_url)
@@ -540,7 +540,7 @@ class ManagedEnvironmentClient():
         r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(managed_environment_envelope))
 
         if no_wait:
-            return r.json()
+            return
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
             if "managedEnvironmentOperationStatuses" in operation_url:

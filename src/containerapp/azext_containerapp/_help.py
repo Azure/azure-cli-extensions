@@ -55,6 +55,12 @@ helps['containerapp create'] = """
                                     "cloud=AzurePublicCloud" \\
                                     "queueLength": "5" "queueName": "foo" \\
               --scale-rule-auth "connection=my-connection-string-secret-name"
+    - name: Create a container app with secrets and mounts them in a volume.
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+              --image my-app:v1.0 --environment MyContainerappEnv \\
+              --secrets mysecret=secretvalue1 anothersecret="secret value 2" \\
+              --secret-volume-mount "mnt/secrets"
 """
 
 helps['containerapp update'] = """
@@ -544,6 +550,24 @@ helps['containerapp env workload-profile set'] = """
           az containerapp env workload-profile set -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 2
 """
 
+helps['containerapp env workload-profile add'] = """
+    type: command
+    short-summary: Create a workload profile in a Container Apps environment
+    examples:
+    - name: Create a workload profile in a Container Apps environment
+      text: |
+          az containerapp env workload-profile add -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 2
+"""
+
+helps['containerapp env workload-profile update'] = """
+    type: command
+    short-summary: Update an existing workload profile in a Container Apps environment
+    examples:
+    - name: Update an existing workload profile in a Container Apps environment
+      text: |
+          az containerapp env workload-profile update -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 3
+"""
+
 # Certificates Commands
 helps['containerapp env certificate'] = """
     type: group
@@ -886,10 +910,10 @@ helps['containerapp secret set'] = """
     examples:
     - name: Add secrets to a container app.
       text: |
-          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MySecretName1=MySecretValue1 MySecretName2=keyvaultref:http://example.vault.azure.net/secret/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
+          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MySecretName1=MySecretValue1 MySecretName2=keyvaultref:https://example.vault.azure.net/secrets/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
     - name: Update a secret.
       text: |
-          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue MyExistingSecretName2=keyvaultref:https://example.vault.azure.net/secret/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
+          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue MyExistingSecretName2=keyvaultref:https://example.vault.azure.net/secrets/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
 """
 
 helps['containerapp github-action'] = """

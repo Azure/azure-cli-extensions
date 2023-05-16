@@ -10,10 +10,11 @@ from pkg_resources import parse_version
 from knack.log import get_logger
 from azext_confcom.config import DEFAULT_REGO_FRAGMENTS
 from azext_confcom import os_util
-from azext_confcom.template_util import pretty_print_func, print_func
+from azext_confcom.template_util import pretty_print_func, print_func, str_to_sha256
 from azext_confcom.init_checks import run_initial_docker_checks
 from azext_confcom.template_util import inject_policy_into_template, print_existing_policy_from_arm_template
 from azext_confcom import security_policy
+from azext_confcom.security_policy import OutputType
 
 
 logger = get_logger(__name__)
@@ -27,7 +28,6 @@ def acipolicygen_confcom(
     infrastructure_svn: str,
     tar_mapping_location: str,
     approve_wildcards: str = False,
-    use_json: bool = False,
     outraw: bool = False,
     outraw_pretty_print: bool = False,
     diff: bool = False,
@@ -40,27 +40,26 @@ def acipolicygen_confcom(
 ):
 
     if sum(map(bool, [input_path, arm_template, image_name])) != 1:
-        logger.error("Can only generate CCE policy from one source at a time")
-        sys.exit(1)
+        error_out("Can only generate CCE policy from one source at a time")
     if sum(map(bool, [print_policy_to_terminal, outraw, outraw_pretty_print])) > 1:
-        logger.error("Can only print in one format at a time")
-        sys.exit(1)
+        error_out("Can only print in one format at a time")
     elif (diff and input_path) or (diff and image_name):
-        logger.error("Can only diff CCE policy from ARM Template")
-        sys.exit(1)
+        error_out("Can only diff CCE policy from ARM Template")
     elif arm_template_parameters and not arm_template:
-        logger.error(
+        error_out(
             "Can only use ARM Template Parameters if ARM Template is also present"
         )
-        sys.exit(1)
+    elif save_to_file and arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
+        error_out("Must print policy to terminal when saving to file")
 
     if print_existing_policy:
-        if not arm_template:
-            logger.error("Can only print existing policy from ARM Template")
-            sys.exit(1)
-        else:
-            print_existing_policy_from_arm_template(arm_template, arm_template_parameters)
-            sys.exit(0)
+        print_existing_policy_from_arm_template(arm_template, arm_template_parameters)
+        sys.exit(0)
+
+    if debug_mode:
+        logger.warning("WARNING: %s %s",
+                       "Debug mode must only be used for debugging purposes. ",
+                       "It should not be used for production systems.\n")
 
     tar_mapping = tar_mapping_validation(tar_mapping_location)
 
@@ -69,13 +68,7 @@ def acipolicygen_confcom(
     container_group_policies = None
 
     # warn user that input infrastructure_svn is less than the configured default value
-    if infrastructure_svn and parse_version(infrastructure_svn) < parse_version(
-        DEFAULT_REGO_FRAGMENTS[0]["minimum_svn"]
-    ):
-        logger.warning(
-            "Input Infrastructure Fragment Software Version Number is less than the default Infrastructure SVN: %s",
-            DEFAULT_REGO_FRAGMENTS[0]["minimum_svn"],
-        )
+    check_infrastructure_svn(infrastructure_svn)
 
     # telling the user what operation we're doing
     logger.warning(
@@ -122,17 +115,27 @@ def acipolicygen_confcom(
             exit_code = validate_sidecar_in_policy(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
         elif diff:
             exit_code = get_diff_outputs(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
-        elif arm_template and (not print_policy_to_terminal and not outraw and not outraw_pretty_print):
+        elif arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
+            seccomp_profile_hashes = {x.get_id(): x.get_seccomp_profile_sha256() for x in policy.get_images()}
             result = inject_policy_into_template(arm_template, arm_template_parameters,
-                                                 policy.get_serialized_output(output_type, use_json), count)
+                                                 policy.get_serialized_output(), count,
+                                                 seccomp_profile_hashes)
             if result:
-                print("CCE Policy successfully injected into ARM Template")
+                # this is always going to be the unencoded policy
+                print(str_to_sha256(policy.get_serialized_output(OutputType.RAW)))
+                logger.info("CCE Policy successfully injected into ARM Template")
         else:
             # output to terminal
-            print(f"{policy.get_serialized_output(output_type, use_json)}\n\n")
+            print(f"{policy.get_serialized_output(output_type)}\n\n")
             # output to file
             if save_to_file:
-                policy.save_to_file(save_to_file, output_type, use_json)
+                logger.warning(
+                    "%s %s %s",
+                    "(Deprecation Warning) the --save-to-file (-s) flag is deprecated ",
+                    "and will be removed in a future release. ",
+                    "Please print to the console and redirect to a file instead."
+                )
+                policy.save_to_file(save_to_file, output_type)
 
     sys.exit(exit_code)
 
@@ -141,6 +144,16 @@ def update_confcom(cmd, instance, tags=None):
     with cmd.update_context(instance) as c:
         c.set_param("tags", tags)
     return instance
+
+
+def check_infrastructure_svn(infrastructure_svn):
+    if infrastructure_svn and parse_version(infrastructure_svn) < parse_version(
+        DEFAULT_REGO_FRAGMENTS[0]["minimum_svn"]
+    ):
+        logger.warning(
+            "Input Infrastructure Fragment Software Version Number is less than the default Infrastructure SVN: %s",
+            DEFAULT_REGO_FRAGMENTS[0]["minimum_svn"],
+        )
 
 
 def validate_sidecar_in_policy(policy: security_policy.AciPolicy, outraw_pretty_print: bool):
@@ -220,3 +233,8 @@ def get_output_type(outraw, outraw_pretty_print):
     elif outraw_pretty_print:
         output_type = security_policy.OutputType.PRETTY_PRINT
     return output_type
+
+
+def error_out(error_string):
+    logger.error(error_string)
+    sys.exit(1)

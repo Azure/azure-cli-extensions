@@ -84,7 +84,7 @@ def load_arguments(self, _):
         c.argument('min_replicas', type=int, help="The minimum number of replicas.")
         c.argument('max_replicas', type=int, help="The maximum number of replicas.")
         c.argument('scale_rule_name', options_list=['--scale-rule-name', '--srn'], help="The name of the scale rule.")
-        c.argument('scale_rule_type', options_list=['--scale-rule-type', '--srt'], help="The type of the scale rule. Default: http.")
+        c.argument('scale_rule_type', options_list=['--scale-rule-type', '--srt'], help="The type of the scale rule. Default: http. For more information please visit https://learn.microsoft.com/azure/container-apps/scale-app#scale-triggers")
         c.argument('scale_rule_http_concurrency', type=int, options_list=['--scale-rule-http-concurrency', '--srhc', '--srtc', '--scale-rule-tcp-concurrency'], help="The maximum number of concurrent requests before scale out. Only supported for http and tcp scale rules.")
         c.argument('scale_rule_metadata', nargs="+", options_list=['--scale-rule-metadata', '--srm'], help="Scale rule metadata. Metadata must be in format \"<key>=<value> <key>=<value> ...\".")
         c.argument('scale_rule_auth', nargs="+", options_list=['--scale-rule-auth', '--sra'], help="Scale rule auth parameters. Auth parameters must be in format \"<triggerParameter>=<secretRef> <triggerParameter>=<secretRef> ...\".")
@@ -119,6 +119,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp create') as c:
         c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="Name of the workload profile to run the app on.", is_preview=True)
+        c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets", is_preview=True)
 
     with self.argument_context('containerapp create', arg_group='Identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
@@ -133,6 +134,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp update', arg_group='Container') as c:
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile', is_preview=True)
+        c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets", is_preview=True)
 
     with self.argument_context('containerapp scale') as c:
         c.argument('min_replicas', type=int, help="The minimum number of replicas.")
@@ -365,7 +367,6 @@ def load_arguments(self, _):
         c.argument('config_file_path', help='The path of the config file containing auth settings if they come from a file.')
         c.argument('unauthenticated_client_action', options_list=['--unauthenticated-client-action', '--action'], arg_type=get_enum_type(UNAUTHENTICATED_CLIENT_ACTION), help='The action to take when an unauthenticated client attempts to access the app.')
         c.argument('redirect_provider', help='The default authentication provider to use when multiple providers are configured.')
-        c.argument('enable_token_store', arg_type=get_three_state_flag(), help='true to durably store platform-specific security tokens that are obtained during login flows; otherwise, false.')
         c.argument('require_https', arg_type=get_three_state_flag(), help='false if the authentication/authorization responses not having the HTTPS scheme are permissible; otherwise, true.')
         c.argument('proxy_convention', arg_type=get_enum_type(FORWARD_PROXY_CONVENTION), help='The convention used to determine the url of the request made.')
         c.argument('proxy_custom_host_header', options_list=['--proxy-custom-host-header', '--custom-host-header'], help='The name of the header containing the host of the request.')
@@ -411,5 +412,15 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env workload-profile set') as c:
         c.argument('workload_profile_type', help="The type of workload profile to add or update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
+        c.argument('min_nodes', help="The minimum node count for the workload profile")
+        c.argument('max_nodes', help="The maximum node count for the workload profile")
+
+    with self.argument_context('containerapp env workload-profile add') as c:
+        c.argument('workload_profile_type', help="The type of workload profile to add to this environment. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
+        c.argument('min_nodes', help="The minimum node count for the workload profile")
+        c.argument('max_nodes', help="The maximum node count for the workload profile")
+
+    with self.argument_context('containerapp env workload-profile update') as c:
+        c.argument('workload_profile_type', help="The type of workload profile to update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
         c.argument('min_nodes', help="The minimum node count for the workload profile")
         c.argument('max_nodes', help="The maximum node count for the workload profile")

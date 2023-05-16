@@ -10,6 +10,7 @@ from azure.cli.core.util import sdk_no_wait
 from .vendored_sdks.appplatform.v2023_03_01_preview import models
 from ._buildservices_factory import BuildService
 from azure.cli.core.commands import LongRunningOperation
+from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -49,8 +50,10 @@ def create_build_service(cmd, client, resource_group, service, disable_build_ser
             resource_group, service, DEFAULT_CONTAINER_REGISTRY_NAME, container_registry_resource)
         LongRunningOperation(cmd.cli_ctx)(poller)
 
+        subscription = get_subscription_id(cmd.cli_ctx)
+        service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(subscription, resource_group, service)
         build_service_properties = models.BuildServiceProperties(
-            container_registry=DEFAULT_CONTAINER_REGISTRY_NAME)
+            container_registry='{}/containerregistries/{}'.format(service_resource_id, DEFAULT_CONTAINER_REGISTRY_NAME))
         build_service_resource = models.BuildService(
             properties=build_service_properties)
         return client.build_service.begin_create_or_update(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, build_service_resource)
