@@ -29,7 +29,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from ._client_factory import handle_raw_exception, handle_non_404_exception
-from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient
+from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient, WorkloadProfileClient
 from ._github_oauth import get_github_access_token
 from ._models import (
     ManagedEnvironment as ManagedEnvironmentModel,
@@ -54,7 +54,9 @@ from ._models import (
     ContainerAppCustomDomain as ContainerAppCustomDomainModel,
     AzureFileProperties as AzureFilePropertiesModel,
     CustomDomainConfiguration as CustomDomainConfigurationModel,
-    ScaleRule as ScaleRuleModel)
+    ScaleRule as ScaleRuleModel,
+    Volume as VolumeModel,
+    VolumeMount as VolumeMountModel,)
 
 from ._utils import (_validate_subscription_registered, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
@@ -70,7 +72,8 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      create_acrpull_role_assignment, is_registry_msi_system, clean_null_values, _populate_secret_values,
                      validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart,
                      set_ip_restrictions, certificate_location_matches, certificate_matches, generate_randomized_managed_cert_name,
-                     check_managed_cert_name_availability, prepare_managed_certificate_envelop)
+                     check_managed_cert_name_availability, prepare_managed_certificate_envelop,
+                     get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported, _generate_secret_volume_name)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -93,16 +96,28 @@ def process_loaded_yaml(yaml_containerapp):
             # Update (PATCH) ignores them so it's okay to remove them as well
             yaml_containerapp['identity']['userAssignedIdentities'][identity] = {}
 
-    nested_properties = ["provisioningState", "managedEnvironmentId", "environmentId", "latestRevisionName", "latestRevisionFqdn",
-                         "customDomainVerificationId", "configuration", "template", "outboundIPAddresses"]
+    nested_properties = ["provisioningState",
+                         "managedEnvironmentId",
+                         "environmentId",
+                         "latestRevisionName",
+                         "latestRevisionFqdn",
+                         "customDomainVerificationId",
+                         "configuration",
+                         "template",
+                         "outboundIPAddresses",
+                         "workloadProfileName",
+                         "latestReadyRevisionName",
+                         "eventStreamEndpoint"]
     for nested_property in nested_properties:
         tmp = yaml_containerapp.get(nested_property)
-        if tmp:
+        if nested_property in yaml_containerapp:
             yaml_containerapp['properties'][nested_property] = tmp
             del yaml_containerapp[nested_property]
 
     if "managedEnvironmentId" in yaml_containerapp['properties']:
-        yaml_containerapp['properties']["environmentId"] = yaml_containerapp['properties']['managedEnvironmentId']
+        tmp = yaml_containerapp['properties']['managedEnvironmentId']
+        if tmp:
+            yaml_containerapp['properties']["environmentId"] = tmp
         del yaml_containerapp['properties']['managedEnvironmentId']
 
     return yaml_containerapp
@@ -164,7 +179,7 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
 
     if not containerapp_def:
         raise ValidationError("The containerapp '{}' does not exist".format(name))
-
+    existed_environment_id = containerapp_def['properties']['environmentId']
     containerapp_def = None
 
     # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
@@ -210,11 +225,15 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
             containerapp_def["properties"]["template"] = {}
         containerapp_def["properties"]["template"]["revisionSuffix"] = None
 
+    # Remove the environmentId in the PATCH payload if it has not been changed
+    if safe_get(containerapp_def, "properties", "environmentId") and safe_get(containerapp_def, "properties", "environmentId").lower() == existed_environment_id.lower():
+        del containerapp_def["properties"]['environmentId']
+
     try:
         r = ContainerAppClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
 
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+        if not no_wait and "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting":
             logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(
                 name, resource_group_name
             ))
@@ -265,6 +284,10 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
     # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
     _remove_additional_attributes(containerapp_def)
     _remove_readonly_attributes(containerapp_def)
+
+    # Remove extra workloadProfileName introduced in deserialization
+    if "workloadProfileName" in containerapp_def:
+        del containerapp_def["workloadProfileName"]
 
     # Validate managed environment
     if not containerapp_def["properties"].get('environmentId'):
@@ -355,7 +378,9 @@ def create_containerapp(cmd,
                         system_assigned=False,
                         disable_warnings=False,
                         user_assigned=None,
-                        registry_identity=None):
+                        registry_identity=None,
+                        workload_profile_name=None,
+                        secret_volume_mount=None):
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name)
     validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
@@ -395,6 +420,9 @@ def create_containerapp(cmd,
 
     location = managed_env_info["location"]
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "containerApps")
+
+    if not workload_profile_name and "workloadProfiles" in managed_env_info:
+        workload_profile_name = get_default_workload_profile_name_from_env(cmd, managed_env_info, managed_env_rg)
 
     external_ingress = None
     if ingress is not None:
@@ -533,6 +561,19 @@ def create_containerapp(cmd,
     template_def["containers"] = [container_def]
     template_def["scale"] = scale_def
 
+    if secret_volume_mount is not None:
+        volume_def = VolumeModel
+        volume_mount_def = VolumeMountModel
+        # generate a volume name
+        volume_def["name"] = _generate_secret_volume_name()
+        volume_def["storageType"] = "Secret"
+
+        # mount the volume to the container
+        volume_mount_def["volumeName"] = volume_def["name"]
+        volume_mount_def["mountPath"] = secret_volume_mount
+        container_def["volumeMounts"] = [volume_mount_def]
+        template_def["volumes"] = [volume_def]
+
     if revision_suffix is not None:
         template_def["revisionSuffix"] = revision_suffix
 
@@ -543,6 +584,10 @@ def create_containerapp(cmd,
     containerapp_def["properties"]["configuration"] = config_def
     containerapp_def["properties"]["template"] = template_def
     containerapp_def["tags"] = tags
+
+    if workload_profile_name:
+        containerapp_def["properties"]["workloadProfileName"] = workload_profile_name
+        ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile_name, managed_env_info)
 
     if registry_identity:
         if is_registry_msi_system(registry_identity):
@@ -612,16 +657,18 @@ def update_containerapp_logic(cmd,
                               from_revision=None,
                               ingress=None,
                               target_port=None,
+                              workload_profile_name=None,
                               registry_server=None,
                               registry_user=None,
-                              registry_pass=None):
+                              registry_pass=None,
+                              secret_volume_mount=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     validate_revision_suffix(revision_suffix)
 
-    # Validate that max_replicas is set to 0-30
+    # Validate that max_replicas is set to 0-1000
     if max_replicas is not None:
-        if max_replicas < 1 or max_replicas > 30:
-            raise ArgumentUsageError('--max-replicas must be in the range [1,30]')
+        if max_replicas < 1 or max_replicas > 1000:
+            raise ArgumentUsageError('--max-replicas must be in the range [1,1000]')
 
     if yaml:
         if image or min_replicas or max_replicas or\
@@ -661,7 +708,7 @@ def update_containerapp_logic(cmd,
 
     update_map = {}
     update_map['scale'] = min_replicas or max_replicas or scale_rule_name
-    update_map['container'] = image or container_name or set_env_vars is not None or remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None
+    update_map['container'] = image or container_name or set_env_vars is not None or remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None or secret_volume_mount is not None
     update_map['ingress'] = ingress or target_port
     update_map['registry'] = registry_server or registry_user or registry_pass
 
@@ -671,6 +718,23 @@ def update_containerapp_logic(cmd,
     if revision_suffix is not None:
         new_containerapp["properties"]["template"] = {} if "template" not in new_containerapp["properties"] else new_containerapp["properties"]["template"]
         new_containerapp["properties"]["template"]["revisionSuffix"] = revision_suffix
+
+    if workload_profile_name:
+        new_containerapp["properties"]["workloadProfileName"] = workload_profile_name
+
+        parsed_managed_env = parse_resource_id(containerapp_def["properties"]["managedEnvironmentId"])
+        managed_env_name = parsed_managed_env['name']
+        managed_env_rg = parsed_managed_env['resource_group']
+        managed_env_info = None
+        try:
+            managed_env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=managed_env_rg, name=managed_env_name)
+        except:
+            pass
+
+        if not managed_env_info:
+            raise ValidationError("Error parsing the managed environment '{}' from the specified containerapp".format(managed_env_name))
+
+        ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile_name, managed_env_info)
 
     # Containers
     if update_map["container"]:
@@ -732,6 +796,35 @@ def update_containerapp_logic(cmd,
                             "cpu": cpu,
                             "memory": memory
                         }
+                if secret_volume_mount is not None:
+                    new_containerapp["properties"]["template"]["volumes"] = containerapp_def["properties"]["template"]["volumes"]
+                    if "volumeMounts" not in c or not c["volumeMounts"]:
+                        # if no volume mount exists, create a new volume and then mount
+                        volume_def = VolumeModel
+                        volume_mount_def = VolumeMountModel
+                        volume_def["name"] = _generate_secret_volume_name()
+                        volume_def["storageType"] = "Secret"
+
+                        volume_mount_def["volumeName"] = volume_def["name"]
+                        volume_mount_def["mountPath"] = secret_volume_mount
+
+                        if "volumes" not in new_containerapp["properties"]["template"]:
+                            new_containerapp["properties"]["template"]["volumes"] = [volume_def]
+                        else:
+                            new_containerapp["properties"]["template"]["volumes"].append(volume_def)
+                        c["volumeMounts"] = volume_mount_def
+                    else:
+                        if len(c["volumeMounts"]) > 1:
+                            raise ValidationError("Usage error: --secret-volume-mount can only be used with a container that has a single volume mount, to define multiple volumes and mounts please use --yaml")
+                        else:
+                            # check that the only volume is of type secret
+                            volume_name = c["volumeMounts"][0]["volumeName"]
+                            for v in new_containerapp["properties"]["template"]["volumes"]:
+                                if v["name"].lower() == volume_name.lower():
+                                    if v["storageType"] != "Secret":
+                                        raise ValidationError("Usage error: --secret-volume-mount can only be used to update volume mounts with volumes of type secret. To update other types of volumes please use --yaml")
+                                    break
+                            c["volumeMounts"][0]["mountPath"] = secret_volume_mount
 
         # If not updating existing container, add as new container
         if not updating_existing_container:
@@ -776,9 +869,24 @@ def update_containerapp_logic(cmd,
                     container_def["args"] = args
             if resources_def is not None:
                 container_def["resources"] = resources_def
+            if secret_volume_mount is not None:
+                new_containerapp["properties"]["template"]["volumes"] = containerapp_def["properties"]["template"]["volumes"]
+                # generate a new volume name
+                volume_def = VolumeModel
+                volume_mount_def = VolumeMountModel
+                volume_def["name"] = _generate_secret_volume_name()
+                volume_def["storageType"] = "Secret"
+
+                # mount the volume to the container
+                volume_mount_def["volumeName"] = volume_def["name"]
+                volume_mount_def["mountPath"] = secret_volume_mount
+                container_def["volumeMounts"] = [volume_mount_def]
+                if "volumes" not in new_containerapp["properties"]["template"]:
+                    new_containerapp["properties"]["template"]["volumes"] = [volume_def]
+                else:
+                    new_containerapp["properties"]["template"]["volumes"].append(volume_def)
 
             new_containerapp["properties"]["template"]["containers"].append(container_def)
-
     # Scale
     if update_map["scale"]:
         new_containerapp["properties"]["template"] = {} if "template" not in new_containerapp["properties"] else new_containerapp["properties"]["template"]
@@ -898,7 +1006,7 @@ def update_containerapp_logic(cmd,
         r = ContainerAppClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=new_containerapp, no_wait=no_wait)
 
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+        if not no_wait and "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting":
             logger.warning('Containerapp update in progress. Please monitor the update using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
 
         return r
@@ -929,7 +1037,9 @@ def update_containerapp(cmd,
                         startup_command=None,
                         args=None,
                         tags=None,
-                        no_wait=False):
+                        workload_profile_name=None,
+                        no_wait=False,
+                        secret_volume_mount=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -955,7 +1065,9 @@ def update_containerapp(cmd,
                                      startup_command=startup_command,
                                      args=args,
                                      tags=tags,
-                                     no_wait=no_wait)
+                                     workload_profile_name=workload_profile_name,
+                                     no_wait=no_wait,
+                                     secret_volume_mount=secret_volume_mount)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
@@ -1022,6 +1134,7 @@ def create_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
+                               enable_workload_profiles=False,
                                no_wait=False):
     if zone_redundant:
         if not infrastructure_subnet_resource_id:
@@ -1061,6 +1174,9 @@ def create_managed_environment(cmd,
     managed_env_def["properties"]["appLogsConfiguration"] = app_logs_config_def
     managed_env_def["tags"] = tags
     managed_env_def["properties"]["zoneRedundant"] = zone_redundant
+
+    if enable_workload_profiles is True:
+        managed_env_def["properties"]["workloadProfiles"] = get_default_workload_profiles(cmd, location)
 
     if hostname:
         customDomain = CustomDomainConfigurationModel
@@ -1125,6 +1241,10 @@ def update_managed_environment(cmd,
                                certificate_file=None,
                                certificate_password=None,
                                tags=None,
+                               workload_profile_type=None,
+                               workload_profile_name=None,
+                               min_nodes=None,
+                               max_nodes=None,
                                no_wait=False):
     if logs_destination == "log-analytics" or logs_customer_id or logs_key:
         if logs_destination != "log-analytics":
@@ -1140,7 +1260,8 @@ def update_managed_environment(cmd,
     # General setup
     env_def = {}
     safe_set(env_def, "location", value=r["location"])  # required for API
-    safe_set(env_def, "tags", value=tags)
+    if tags:
+        safe_set(env_def, "tags", value=tags)
 
     # Logs
     if logs_destination:
@@ -1163,6 +1284,36 @@ def update_managed_environment(cmd,
         safe_set(cert_def, "dnsSuffix", value=hostname)
         if certificate_password:
             safe_set(cert_def, "certificatePassword", value=certificate_password)
+
+    if workload_profile_name:
+        if "workloadProfiles" not in r["properties"] or not r["properties"]["workloadProfiles"]:
+            raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enable-workload-profiles'")
+
+        if workload_profile_type:
+            workload_profile_type = workload_profile_type.upper()
+        workload_profiles = r["properties"]["workloadProfiles"]
+        profile = [p for p in workload_profiles if p["name"].lower() == workload_profile_name.lower()]
+        update = False  # flag for updating an existing profile
+        if profile:
+            profile = profile[0]
+            update = True
+        else:
+            profile = {"name": workload_profile_name}
+
+        if workload_profile_type:
+            profile["workloadProfileType"] = workload_profile_type
+        if max_nodes:
+            profile["maximumCount"] = max_nodes
+        if min_nodes:
+            profile["minimumCount"] = min_nodes
+
+        if not update:
+            workload_profiles.append(profile)
+        else:
+            idx = [i for i, p in enumerate(workload_profiles) if p["name"].lower() == workload_profile_name.lower()][0]
+            workload_profiles[idx] = profile
+
+        safe_set(env_def, "properties", "workloadProfiles", value=workload_profiles)
 
     try:
         r = ManagedEnvironmentClient.update(
@@ -1594,6 +1745,7 @@ def copy_revision(cmd,
                   startup_command=None,
                   args=None,
                   tags=None,
+                  workload_profile_name=None,
                   no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
@@ -1627,6 +1779,7 @@ def copy_revision(cmd,
                                      args=args,
                                      tags=tags,
                                      no_wait=no_wait,
+                                     workload_profile_name=workload_profile_name,
                                      from_revision=from_revision)
 
 
@@ -2104,6 +2257,46 @@ def show_ip_restrictions(cmd, name, resource_group_name):
         return safe_get(containerapp_def, "properties", "configuration", "ingress", "ipSecurityRestrictions", default=[])
     except:
         return []
+
+
+def set_ingress_sticky_session(cmd, name, resource_group_name, affinity, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    containerapp_patch = {}
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "stickySessions", "affinity", value=affinity)
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch, no_wait=no_wait)
+        return r['properties']['configuration']['ingress']
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_ingress_sticky_session(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
+
+    try:
+        return containerapp_def["properties"]["configuration"]["ingress"]
+    except Exception as e:
+        raise ValidationError("Ingress must be enabled to enable sticky sessions. Try running `az containerapp ingress -h` for more info.") from e
 
 
 def show_registry(cmd, name, resource_group_name, server):
@@ -2724,6 +2917,7 @@ def containerapp_up(cmd,
                     branch=None,
                     browse=False,
                     context_path=None,
+                    workload_profile_name=None,
                     service_principal_client_id=None,
                     service_principal_client_secret=None,
                     service_principal_tenant_id=None):
@@ -2732,7 +2926,7 @@ def containerapp_up(cmd,
                             _get_registry_details, _create_github_action, _set_up_defaults, up_output,
                             check_env_name_on_rg, get_token, _validate_containerapp_name, _has_dockerfile)
     from ._github_oauth import cache_github_token
-    HELLOWORLD = "mcr.microsoft.com/azuredocs/containerapps-helloworld"
+    HELLOWORLD = "mcr.microsoft.com/k8se/quickstart"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
 
     _validate_containerapp_name(name)
@@ -2762,7 +2956,7 @@ def containerapp_up(cmd,
 
     resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
     env = ContainerAppEnvironment(cmd, managed_env, resource_group, location=location, logs_key=logs_key, logs_customer_id=logs_customer_id)
-    app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, ingress)
+    app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress)
 
     _set_up_defaults(cmd, name, resource_group_name, logs_customer_id, location, resource_group, env, app)
 
@@ -2795,7 +2989,7 @@ def containerapp_up(cmd,
     up_output(app, no_dockerfile=(source and not _has_dockerfile(source, dockerfile)))
 
 
-def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, registry_pass):
+def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, env_vars, ingress, target_port, registry_server, registry_user, workload_profile_name, registry_pass):
     containerapp_def = None
     try:
         containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
@@ -2803,8 +2997,8 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
         pass
 
     if containerapp_def:
-        return update_containerapp_logic(cmd=cmd, name=name, resource_group_name=resource_group_name, image=image, replace_env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, container_name=name)
-    return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
+        return update_containerapp_logic(cmd=cmd, name=name, resource_group_name=resource_group_name, image=image, replace_env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name)
+    return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name)
 
 
 def create_managed_certificate(cmd, name, resource_group_name, hostname, validation_method, certificate_name=None):
@@ -2815,9 +3009,9 @@ def create_managed_certificate(cmd, name, resource_group_name, hostname, validat
         cert_name = generate_randomized_managed_cert_name(hostname, resource_group_name)
         if not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
             cert_name = None
-    certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method)
+    certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method.upper())
     try:
-        r = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, True, validation_method == 'TXT')
+        r = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, True, validation_method.upper() == 'TXT')
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -3042,13 +3236,13 @@ def bind_hostname(cmd, resource_group_name, name, hostname, thumbprint=None, cer
                     cert_name = random_name
             logger.warning("Creating managed certificate '%s' for %s.\nIt may take up to 20 minutes to create and issue a managed certificate.", cert_name, standardized_hostname)
 
-            validation = validation_method
+            validation = validation_method.upper()
             while validation not in ["TXT", "CNAME", "HTTP"]:
-                validation = prompt_str('\nPlease choose one of the following domain validation methods: TXT, CNAME, HTTP\nYour answer: ')
+                validation = prompt_str('\nPlease choose one of the following domain validation methods: TXT, CNAME, HTTP\nYour answer: ').upper()
 
-            certificate_envelop = prepare_managed_certificate_envelop(cmd, env_name, resource_group_name, standardized_hostname, validation_method, location)
+            certificate_envelop = prepare_managed_certificate_envelop(cmd, env_name, resource_group_name, standardized_hostname, validation, location)
             try:
-                managed_cert = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, env_name, cert_name, certificate_envelop, False, validation_method == 'TXT')
+                managed_cert = ManagedEnvironmentClient.create_or_update_managed_certificate(cmd, resource_group_name, env_name, cert_name, certificate_envelop, False, validation == 'TXT')
             except Exception as e:
                 handle_raw_exception(e)
             cert_id = managed_cert["id"]
@@ -3875,7 +4069,7 @@ def remove_openid_connect_provider_settings(cmd, resource_group_name, name, prov
 
 def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=None,
                        runtime_version=None, config_file_path=None, unauthenticated_client_action=None,
-                       redirect_provider=None, enable_token_store=None, require_https=None,
+                       redirect_provider=None, require_https=None,
                        proxy_convention=None, proxy_custom_host_header=None,
                        proxy_custom_proto_header=None, excluded_paths=None):
     from ._utils import set_field_in_auth_settings, update_http_settings_in_auth_settings
@@ -3915,18 +4109,10 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
             existing_auth["globalValidation"] = {}
         existing_auth["globalValidation"]["redirectToProvider"] = redirect_provider
 
-    if enable_token_store is not None:
-        if "login" not in existing_auth:
-            existing_auth["login"] = {}
-        if "tokenStore" not in existing_auth["login"]:
-            existing_auth["login"]["tokenStore"] = {}
-        existing_auth["login"]["tokenStore"]["enabled"] = enable_token_store
-
     if excluded_paths is not None:
         if "globalValidation" not in existing_auth:
             existing_auth["globalValidation"] = {}
-        excluded_paths_list_string = excluded_paths[1:-1]
-        existing_auth["globalValidation"]["excludedPaths"] = excluded_paths_list_string.split(",")
+        existing_auth["globalValidation"]["excludedPaths"] = excluded_paths.split(",")
 
     existing_auth = update_http_settings_in_auth_settings(existing_auth, require_https,
                                                           proxy_convention, proxy_custom_host_header,
@@ -4069,3 +4255,80 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                 max_replicas=replicas,)
         )
     return containerapps_from_compose
+
+
+def list_supported_workload_profiles(cmd, location):
+    return WorkloadProfileClient.list_supported(cmd, location)
+
+
+def list_workload_profiles(cmd, resource_group_name, env_name):
+    return WorkloadProfileClient.list(cmd, resource_group_name, env_name)
+
+
+def show_workload_profile(cmd, resource_group_name, env_name, workload_profile_name):
+    workload_profiles = WorkloadProfileClient.list(cmd, resource_group_name, env_name)
+    profile = [p for p in workload_profiles if p["name"].lower() == workload_profile_name.lower()]
+    if not profile:
+        raise ValidationError(f"No such workload profile found on the environment. The workload profile(s) on the environment are: {','.join([p['name'] for p in workload_profiles])}")
+    return profile[0]
+
+
+def set_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):
+    return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
+
+
+def add_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):
+    try:
+        r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=env_name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    workload_profiles = r["properties"]["workloadProfiles"]
+
+    workload_profiles_lower = [p["name"].lower() for p in workload_profiles]
+
+    if workload_profile_name.lower() in workload_profiles_lower:
+        raise ValidationError(f"Cannot add workload profile with name {workload_profile_name} because it already exists in this environment")
+
+    return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
+
+
+def update_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):
+    try:
+        r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=env_name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    workload_profiles = r["properties"]["workloadProfiles"]
+
+    workload_profiles_lower = [p["name"].lower() for p in workload_profiles]
+
+    if workload_profile_name.lower() not in workload_profiles_lower:
+        raise ValidationError(f"Workload profile with name {workload_profile_name} does not exist in this environment. The workload profiles available in this environment are {','.join([p['name'] for p in workload_profiles])}")
+
+    return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
+
+
+def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile_name):
+    try:
+        r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=env_name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    if "workloadProfiles" not in r["properties"] or not r["properties"]["workloadProfiles"]:
+        raise ValidationError("This environment does not allow for workload profiles. Can create a compatible environment with 'az containerapp env create --enable-workload-profiles'")
+
+    if workload_profile_name.lower() == "consumption":
+        raise ValidationError("Cannot delete the 'Consumption' workload profile")
+
+    workload_profiles = [p for p in r["properties"]["workloadProfiles"] if p["name"].lower() != workload_profile_name.lower()]
+
+    r["properties"]["workloadProfiles"] = workload_profiles
+
+    try:
+        r = ManagedEnvironmentClient.create(
+            cmd=cmd, resource_group_name=resource_group_name, name=env_name, managed_environment_envelope=r)
+
+        return r
+    except Exception as e:
+        handle_raw_exception(e)

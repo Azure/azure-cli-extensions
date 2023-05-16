@@ -7,9 +7,10 @@
 from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from msrestazure.azure_exceptions import CloudError
-from azure.core.exceptions import (ResourceNotFoundError)
+from azure.core.exceptions import (ResourceNotFoundError, HttpResponseError)
 from ._resource_quantity import (validate_cpu as validate_cpu_value, validate_memory as validate_memory_value)
 from ._client_factory import cf_spring
+from ._build_service import (DEFAULT_BUILD_SERVICE_NAME)
 
 
 logger = get_logger(__name__)
@@ -98,16 +99,18 @@ def _get_active_deployment(client, resource_group, service, name):
         raise InvalidArgumentValueError('App {} not found'.format(name))
 
 
-def validate_deloy_path(namespace):
+def validate_deloy_path(cmd, namespace):
     arguments = [namespace.artifact_path, namespace.source_path, namespace.container_image]
     if all(not x for x in arguments):
         raise InvalidArgumentValueError('One of --artifact-path, --source-path, --container-image must be provided.')
     _deploy_path_mutual_exclusive(arguments)
+    _validate_container_registry(cmd, namespace)
 
 
-def validate_deloyment_create_path(namespace):
+def validate_deloyment_create_path(cmd, namespace):
     arguments = [namespace.artifact_path, namespace.source_path, namespace.container_image]
     _deploy_path_mutual_exclusive(arguments)
+    _validate_container_registry(cmd, namespace)
 
 
 def _deploy_path_mutual_exclusive(args):
@@ -138,3 +141,18 @@ def _get_app_name_from_namespace(namespace):
     elif hasattr(namespace, 'name'):
         return namespace.name
     return None
+
+
+def _validate_container_registry(cmd, namespace):
+    client = cf_spring(cmd.cli_ctx)
+    try:
+        build_service = client.build_service.get_build_service(namespace.resource_group,
+                                                               namespace.service,
+                                                               DEFAULT_BUILD_SERVICE_NAME)
+        if build_service.properties.container_registry:
+            if namespace.source_path or namespace.artifact_path:
+                raise InvalidArgumentValueError(
+                    "The instance using your own container registry can only use '--container-image' to deploy."
+                    " See more details in https://learn.microsoft.com/en-us/azure/spring-apps/how-to-deploy-with-custom-container-image?tabs=azure-cli")
+    except HttpResponseError:
+        pass

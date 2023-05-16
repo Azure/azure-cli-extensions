@@ -3,6 +3,15 @@
 Release History
 ===============
 
+0.14.7
+++++++
+* `az network firewall policy create/update`: Add parameters `--private-ranges` and `--learn-ranges`
+
+0.14.6
+++++++
+* `az network firewall create/update`: Add parameter `--route-server-id`
+* Add command `az network firewall learned-ip-prefix`
+
 0.14.5
 ++++++
 * Fix `az network firewall create`: Creation fails with AZFW_Hub SKU

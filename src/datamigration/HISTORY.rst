@@ -3,9 +3,14 @@
 Release History
 ===============
 
+=======
 0.5.0
 ++++++
 * [NEW COMMAND] `az datamigration tde-migration` : Migrate TDE certificate from source SQL Server to the target Azure SQL Server.
+
+0.4.1
+++++++
+* Bug fix for list-logins parameter in command "az datamigration login-migration".
 
 0.4.0
 ++++++

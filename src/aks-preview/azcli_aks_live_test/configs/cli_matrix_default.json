@@ -5,21 +5,27 @@
         ]
     },
     "exclude": {
-        "CBLMariner compatibility issue": [
-            "test_aks_nodepool_add_with_ossku"
-        ],
-        "missing feature registration": [
-            "test_aks_create_enable_encryption",
+        "edge, missing feature registration": [
             "test_aks_create_edge_zone"
         ],
-        "missing namespace registration (AME tenant)": [
+        "encryption, missing feature registration": [
+            "test_aks_create_enable_encryption"
+        ],
+        "gpu, no quota": [
+            "test_aks_nodepool_add_with_gpu_instance_profile"
+        ],
+        "monitoring addon, missing namespace registration": [
             "test_aks_create_with_monitoring_aad_auth_msi",
             "test_aks_create_with_monitoring_aad_auth_uai",
             "test_aks_enable_monitoring_with_aad_auth_msi",
             "test_aks_enable_monitoring_with_aad_auth_uai"
         ],
-        "no gpu quota": [
-            "test_aks_nodepool_add_with_gpu_instance_profile"
+        "overlay migration, missing toggle": [
+            "test_aks_azure_cni_overlay_migration"
+        ],
+        "v2 monitoring addon, missing namespace registration": [
+            "test_aks_create_with_azuremonitormetrics",
+            "test_aks_update_with_azuremonitormetrics"
         ]
     }
 }

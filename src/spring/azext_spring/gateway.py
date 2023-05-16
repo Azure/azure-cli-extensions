@@ -11,7 +11,7 @@ from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 
 from .custom import LOG_RUNNING_PROMPT
-from .vendored_sdks.appplatform.v2023_01_01_preview import models
+from .vendored_sdks.appplatform.v2023_03_01_preview import models
 from ._utils import get_spring_sku
 
 logger = get_logger(__name__)
@@ -54,6 +54,8 @@ def gateway_update(cmd, client, resource_group, service,
                    max_age=None,
                    allow_credentials=None,
                    exposed_headers=None,
+                   enable_certificate_verification=None,
+                   certificate_names=None,
                    no_wait=False
                    ):
     gateway = client.gateways.get(resource_group, service, DEFAULT_NAME)
@@ -77,6 +79,9 @@ def gateway_update(cmd, client, resource_group, service,
     cors_properties = _update_cors(
         gateway.properties.cors_properties, allowed_origins, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers)
 
+    client_auth = _update_client_auth(client, resource_group, service,
+                                      gateway.properties.client_auth, enable_certificate_verification, certificate_names)
+
     resource_requests = models.GatewayResourceRequests(
         cpu=cpu or gateway.properties.resource_requests.cpu,
         memory=memory or gateway.properties.resource_requests.memory
@@ -93,6 +98,7 @@ def gateway_update(cmd, client, resource_group, service,
         cors_properties=cors_properties,
         apm_types=update_apm_types,
         environment_variables=environment_variables,
+        client_auth=client_auth,
         resource_requests=resource_requests)
 
     sku = models.Sku(name=gateway.sku.name, tier=gateway.sku.tier,
@@ -118,6 +124,10 @@ def gateway_clear(cmd, client, resource_group, service, no_wait=False):
     logger.warning(LOG_RUNNING_PROMPT)
     return sdk_no_wait(no_wait, client.gateways.begin_create_or_update,
                        resource_group, service, DEFAULT_NAME, gateway_resource)
+
+
+def gateway_sync_cert(cmd, client, service, resource_group, no_wait=False):
+    return client.gateways.begin_restart(resource_group, service, DEFAULT_NAME)
 
 
 def gateway_custom_domain_show(cmd, client, resource_group, service, domain_name):
@@ -227,6 +237,28 @@ def _update_envs(existing, envs_dict, secrets_dict):
     if secrets_dict is not None:
         envs.secrets = secrets_dict
     return envs
+
+
+def _update_client_auth(client, resource_group, service, existing, enable_certificate_verification, certificate_names):
+    if enable_certificate_verification is None and certificate_names is None:
+        return existing
+    client_auth = existing if existing is not None else models.GatewayPropertiesClientAuth()
+    if enable_certificate_verification is not None:
+        client_auth.certificate_verification = models.GatewayCertificateVerification.ENABLED if enable_certificate_verification else models.GatewayCertificateVerification.DISABLED
+    if certificate_names is not None:
+        client_auth.certificates = []
+        if certificate_names == "":
+            # Clear certificates
+            return client_auth
+        certs_in_asa = client.certificates.list(resource_group, service)
+        certs_array = certificate_names.split(",")
+        for name in certs_array:
+            cert_in_asa = next((c for c in certs_in_asa if c.name == name), None)
+            if cert_in_asa:
+                client_auth.certificates.append(cert_in_asa.id)
+            else:
+                raise InvalidArgumentValueError(f"Certificate {name} not found in Azure Spring Apps.")
+    return client_auth
 
 
 def _validate_route_config_not_exist(client, resource_group, service, name):

@@ -271,9 +271,15 @@ def datamigration_login_migration(src_sql_connection_str=None,
             # joining paramaters together in a string
             cmd = f'{exePath} LoginsMigration --sourceSqlConnectionString {src_sql_connection_str}'
 
+            # formating the parameter list into a string
             for param in parameterList:
-                if parameterList[param] is not None:
+                if parameterList[param] is not None and not param.__contains__("list"):
                     cmd += f' {param} "{parameterList[param]}"'
+
+                # in case the parameter input is list format it accordingly
+                elif param.__contains__("list") and parameterList[param] is not None:
+                    parameterList[param] = " ".join(f"\"{i}\"" for i in parameterList[param])
+                    cmd += f' {param} {parameterList[param]}'
             subprocess.call(cmd, shell=False)
 
         # When Config file.

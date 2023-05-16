@@ -25,7 +25,7 @@ from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
-from ._clients import ContainerAppClient, ManagedEnvironmentClient
+from ._clients import ContainerAppClient, ManagedEnvironmentClient, WorkloadProfileClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
                          LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
@@ -306,9 +306,9 @@ def _ensure_location_allowed(cmd, location, resource_provider, resource_type):
             if res and getattr(res, 'resource_type', "") == resource_type:
                 res_locations = getattr(res, 'locations', [])
 
-        res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+        res_locations = [format_location(res_loc) for res_loc in res_locations if res_loc.strip()]
 
-        location_formatted = location.lower().replace(" ", "")
+        location_formatted = format_location(location)
         if location_formatted not in res_locations:
             raise ValidationError(f"Location '{location}' is not currently supported. To get list of supported locations, run `az provider show -n {resource_provider} --query \"resourceTypes[?resourceType=='{resource_type}'].locations\"`")
 
@@ -344,21 +344,42 @@ def parse_env_var_flags(env_list, is_update_containerapp=False):
 
 
 def parse_secret_flags(secret_list):
-    secret_pairs = {}
-
-    for pair in secret_list:
-        key_val = pair.split('=', 1)
-        if len(key_val) != 2:
-            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\".")
-        if key_val[0] in secret_pairs:
-            raise ValidationError("Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
-        secret_pairs[key_val[0]] = key_val[1]
-
+    secret_entries = []
     secret_var_def = []
-    for key, value in secret_pairs.items():
+
+    for secret in secret_list:
+        key_val = secret.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\".")
+        if key_val[0] in secret_entries:
+            raise ValidationError("Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
+        secret_entries.append(key_val[0])
+
+        name = key_val[0]
+        value = key_val[1]
+        kv_url = ""
+        identity_Id = ""
+
+        kv_identity = value.split(',', 2)
+        if len(kv_identity) == 1:
+            if kv_identity[0].startswith('keyvaultref:'):
+                raise ValidationError("Identityref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\".")
+            if kv_identity[0].startswith('identityref:'):
+                raise ValidationError("Keyvaultref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\".")
+
+        if len(kv_identity) == 2:
+            kv = kv_identity[0]
+            identity = kv_identity[1]
+            if kv.startswith('keyvaultref:') and identity.startswith('identityref:'):
+                kv_url = kv.split('keyvaultref:', 1)[1]
+                identity_Id = identity.split('identityref:', 1)[1]
+                value = ""
+
         secret_var_def.append({
-            "name": key,
-            "value": value
+            "name": name,
+            "value": value,
+            "keyVaultUrl": kv_url,
+            "identity": identity_Id
         })
 
     return secret_var_def
@@ -535,6 +556,24 @@ def _new_tiny_guid():
     return ''.join(random.choices(string.ascii_letters + string.digits, k=4))
 
 
+#  Generate a random volume name using same method as log analytics workspace
+def _generate_secret_volume_name():
+    import re
+    prefix = "secret-volume"
+    # volume name must be lowercase
+    suffix = _new_tiny_guid().lower()
+    maxLength = 40
+
+    name = "{}-{}".format(
+        prefix,
+        suffix
+    )
+
+    if len(name) > maxLength:
+        name = name[:maxLength]
+    return name
+
+
 # Follow same naming convention as Portal
 def _generate_log_analytics_workspace_name(resource_group_name):
     import re
@@ -665,13 +704,14 @@ def _ensure_identity_resource_id(subscription_id, resource_group, resource):
 def _add_or_update_secrets(containerapp_def, add_secrets):
     if "secrets" not in containerapp_def["properties"]["configuration"]:
         containerapp_def["properties"]["configuration"]["secrets"] = []
-
     for new_secret in add_secrets:
         is_existing = False
         for existing_secret in containerapp_def["properties"]["configuration"]["secrets"]:
             if existing_secret["name"].lower() == new_secret["name"].lower():
                 is_existing = True
                 existing_secret["value"] = new_secret["value"]
+                existing_secret["keyVaultUrl"] = new_secret["keyVaultUrl"]
+                existing_secret["identity"] = new_secret["identity"]
                 break
 
         if not is_existing:
@@ -830,7 +870,7 @@ def clean_null_values(d):
         return {
             k: v
             for k, v in ((k, clean_null_values(v)) for k, v in d.items())
-            if v
+            if v or isinstance(v, list)
         }
     if isinstance(d, list):
         return [v for v in map(clean_null_values, d) if v]
@@ -1502,15 +1542,25 @@ def set_managed_identity(cmd, resource_group_name, containerapp_def, system_assi
 
 
 def create_acrpull_role_assignment(cmd, registry_server, registry_identity=None, service_principal=None, skip_error=False):
+    from azure.cli.command_modules.acr._utils import ResourceNotFound
+
     if registry_identity:
         registry_identity_parsed = parse_resource_id(registry_identity)
-        registry_identity_name, registry_identity_rg = registry_identity_parsed.get("name"), registry_identity_parsed.get("resource_group")
-        sp_id = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI).user_assigned_identities.get(resource_name=registry_identity_name, resource_group_name=registry_identity_rg).principal_id
+        registry_identity_name, registry_identity_rg, registry_identity_sub = registry_identity_parsed.get("name"), registry_identity_parsed.get("resource_group"), registry_identity_parsed.get("subscription")
+        sp_id = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI, subscription_id=registry_identity_sub).user_assigned_identities.get(resource_name=registry_identity_name, resource_group_name=registry_identity_rg).principal_id
     else:
         sp_id = service_principal
 
     client = get_mgmt_service_client(cmd.cli_ctx, ContainerRegistryManagementClient).registries
-    acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
+    try:
+        acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
+    except ResourceNotFound as e:
+        message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
+                   f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope <container-registry-resource-id> --role acrpull'. \n"
+                   "You may have to restart the containerapp with 'az containerapp revision restart'.")
+        logger.warning(message)
+        return
+
     retries = 10
     while retries > 0:
         try:
@@ -1563,6 +1613,41 @@ def list_environment_locations(cmd):
     res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
 
     return res_locations
+
+
+# normalizes workload profile type
+def get_workload_profile_type(cmd, name, location):
+    return name.upper()
+
+
+def get_default_workload_profile(cmd, location):
+    return "Consumption"
+
+
+def get_default_workload_profile_name_from_env(cmd, env_def, resource_group):
+    location = env_def["location"]
+    api_default = get_default_workload_profile(cmd, location)
+    env_profiles = WorkloadProfileClient.list(cmd, resource_group, env_def["name"])
+    if api_default in [p["name"] for p in env_profiles]:
+        return api_default
+    return env_profiles[0]["name"]
+
+
+def get_default_workload_profiles(cmd, location):
+    profiles = [
+        {
+            "workloadProfileType": "Consumption",
+            "Name": "Consumption"
+        }
+    ]
+    return profiles
+
+
+def ensure_workload_profile_supported(cmd, env_name, env_rg, workload_profile_name, managed_env_info):
+    profile_names = [p["name"] for p in safe_get(managed_env_info, "properties", "workloadProfiles", default=[])]
+    profile_names_lower = [p.lower() for p in profile_names]
+    if workload_profile_name.lower() not in profile_names_lower:
+        raise ValidationError(f"Not a valid workload profile name: '{workload_profile_name}'. The valid workload profiles names for this environment are: '{', '.join(profile_names)}'")
 
 
 def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, action):
@@ -1623,3 +1708,9 @@ def certificate_thumbprint_matches(certificate_object, thumbprint=None):
 
 def certificate_matches(certificate_object, location=None, thumbprint=None):
     return certificate_location_matches(certificate_object, location) and certificate_thumbprint_matches(certificate_object, thumbprint)
+
+
+def format_location(location=None):
+    if location:
+        return location.lower().replace(" ", "").replace("(", "").replace(")", "")
+    return location
