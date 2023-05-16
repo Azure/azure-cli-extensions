@@ -3,6 +3,7 @@ from azure.cli.core.commands.parameters import (
     get_resource_name_completion_list,
     quotes,
     resource_group_name_type,
+    get_generic_completion_list
 )
 from knack.arguments import CLIArgumentType
 
@@ -235,6 +236,7 @@ end_iso_time = CLIArgumentType(
 
 interval = CLIArgumentType(
     validator=validators.validate_interval,
+    completer=get_generic_completion_list(validators.allowed_intervals),
     options_list=["--interval"],
     type=str,
     help=f"ISO 8601 formatted interval. Allowed values: {', '.join(validators.allowed_intervals)}",
