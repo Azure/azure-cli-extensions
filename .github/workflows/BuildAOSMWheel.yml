@@ -1,0 +1,31 @@
+on:
+  push:
+    branches:
+      - add-aosm-extension
+
+jobs:
+  build_aosm:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/azure-cli/tools:latest
+    permissions: write-all
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Build AOSM Wheel
+        run: |
+          # Pretend we have a valid git repo to satisfy azdev.
+          mkdir .git
+          azdev setup -r .
+          azdev extension build aosm
+      - name: Upload AOSM Wheel
+        uses: actions/upload-artifact@v3
+        with:
+          name: aosm-extension
+          path: dist/*.whl
+      - name: Update Release
+        uses: pyTooling/Actions/releaser@r0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            dist/*.whl
+          tag: aosm-extension
