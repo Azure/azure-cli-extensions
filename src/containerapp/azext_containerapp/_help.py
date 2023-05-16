@@ -1300,19 +1300,34 @@ helps['containerapp patch apply'] = """
     type: command
     short-summary: List and apply container apps to be patched. Patching is only available for the apps built using the source to cloud feature. See https://aka.ms/aca-local-source-to-cloud
     examples:
-    - name: List container apps that can be patched and apply patch.
+    - name: List patchable container apps in the current subscription and apply patch.
+      text: |
+          az containerapp patch apply
+    - name: List patchable container apps by resource group and apply patch.
+      text: |
+          az containerapp patch apply -g MyResourceGroup
+    - name: List patchable container apps by resource group and managed environment and apply patch.
       text: |
           az containerapp patch apply -g MyResourceGroup --environment MyContainerAppEnv
+    - name: List patchable and unpatchable container apps by resource group and managed environment with the show-all option and apply patch for patchable container apps.
+      text: |
+          az containerapp patch list -g MyResourceGroup --environment MyContainerAppEnv --show-all
 """
 
 helps['containerapp patch interactive'] = """
     type: command
     short-summary: List and select container apps to be patched in an interactive way. Patching is only available for the apps built using the source to cloud feature. See https://aka.ms/aca-local-source-to-cloud
     examples:
-    - name: List container apps that can be patched and apply patch.
+    - name: List patchable container apps in the current subscription and apply patch interactively.
+      text: |
+          az containerapp patch interactive
+    - name: List patchable container apps by resource group and apply patch interactively.
+      text: |
+          az containerapp patch interactive -g MyResourceGroup
+    - name: List patchable container apps by resource group and managed environment and apply patch interactively.
       text: |
           az containerapp patch interactive -g MyResourceGroup --environment MyContainerAppEnv
-    - name: List patchable and unpatchable container apps and apply patch to the patchable ones.
+    - name: List patchable and unpatchable container apps by resource group and managed environment with the show-all option and apply patch for patchable container apps interactively.
       text: |
           az containerapp patch interactive -g MyResourceGroup --environment MyContainerAppEnv --show-all
 """
