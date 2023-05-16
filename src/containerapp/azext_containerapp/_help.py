@@ -1311,7 +1311,7 @@ helps['containerapp patch apply'] = """
           az containerapp patch apply -g MyResourceGroup --environment MyContainerAppEnv
     - name: List patchable and unpatchable container apps by resource group and managed environment with the show-all option and apply patch for patchable container apps.
       text: |
-          az containerapp patch list -g MyResourceGroup --environment MyContainerAppEnv --show-all
+          az containerapp patch apply -g MyResourceGroup --environment MyContainerAppEnv --show-all
 """
 
 helps['containerapp patch interactive'] = """
