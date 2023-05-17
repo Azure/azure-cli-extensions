@@ -214,6 +214,6 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_workload_profile')
 
     with self.command_group('containerapp patch', is_preview=True) as g:
-        g.custom_command('list', 'patch_list', is_preview=True)
-        g.custom_command('apply', 'patch_apply', is_preview=True)
-        g.custom_command('interactive', 'patch_interactive', is_preview=True)
+        g.custom_command('list', 'patch_list')
+        g.custom_command('apply', 'patch_apply')
+        g.custom_command('interactive', 'patch_interactive')
