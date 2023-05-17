@@ -1559,12 +1559,6 @@ def create_containerappsjob(cmd,
     validate_container_app_name(name, AppType.ContainerAppJob.name)
     validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
 
-    if replica_timeout is None:
-        raise RequiredArgumentMissingError('Usage error: --replica_timeout is required')
-
-    if replica_retry_limit is None:
-        raise RequiredArgumentMissingError('Usage error: --replica_retry_limit is required')
-
     if registry_identity and not is_registry_msi_system(registry_identity):
         logger.info("Creating an acrpull role assignment for the registry identity")
         create_acrpull_role_assignment(cmd, registry_server, registry_identity, skip_error=True)
@@ -1576,6 +1570,12 @@ def create_containerappsjob(cmd,
                 startup_command or args or tags:
             not disable_warnings and logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         return create_containerappsjob_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
+
+    if replica_timeout is None:
+        raise RequiredArgumentMissingError('Usage error: --replica_timeout is required')
+
+    if replica_retry_limit is None:
+        raise RequiredArgumentMissingError('Usage error: --replica_retry_limit is required')
 
     if not image:
         image = HELLO_WORLD_IMAGE
@@ -2227,6 +2227,7 @@ def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_w
     try:
         deserializer = create_deserializer()
         containerappsjob_def = deserializer('ContainerAppsJob', yaml_containerappsjob)
+        print(containerappsjob_def)
     except DeserializationError as ex:
         raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps job YAML spec.') from ex
 
@@ -2238,6 +2239,13 @@ def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_w
 
     containerappsjob_def = _convert_object_from_snake_to_camel_case(_object_to_dict(containerappsjob_def))
     containerappsjob_def['tags'] = tags
+
+    # Validate managed environment
+    if not yaml_containerappsjob["properties"].get('environmentId'):
+        raise RequiredArgumentMissingError('environmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+
+    containerappsjob_def["managedEnvironmentId"] = yaml_containerappsjob["properties"]['environmentId']
+    env_id = containerappsjob_def["managedEnvironmentId"]
 
     # update configuration
     config_def = JobConfigurationModel
@@ -2264,11 +2272,6 @@ def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_w
     _remove_additional_attributes(containerappsjob_def)
     _remove_readonly_attributes(containerappsjob_def)
 
-    # Validate managed environment
-    if not containerappsjob_def["properties"].get('environmentId'):
-        raise RequiredArgumentMissingError('managedEnvironmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
-
-    env_id = containerappsjob_def["properties"]['environmentId']
     env_name = None
     env_rg = None
     env_info = None
