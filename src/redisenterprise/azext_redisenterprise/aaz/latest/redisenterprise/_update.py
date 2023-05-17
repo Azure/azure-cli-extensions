@@ -74,7 +74,7 @@ class Update(AAZCommand):
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned, UserAssigned": "SystemAssigned, UserAssigned", "UserAssigned": "UserAssigned"},
         )
         _args_schema.user_assigned_identities = AAZDictArg(
-            options=["--user-assigned-identities"],
+            options=["--assigned-identities", "--user-assigned-identities"],
             arg_group="Identity",
             help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
             nullable=True,
@@ -90,14 +90,14 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.key_encryption_identity_type = AAZStrArg(
-            options=["--key-encryption-identity-type"],
+            options=["--key-identity-type", "--key-encryption-identity-type"],
             arg_group="KeyEncryptionKeyIdentity",
             help="Only userAssignedIdentity is supported in this API version; other types may be supported in the future",
             nullable=True,
             enum={"systemAssignedIdentity": "systemAssignedIdentity", "userAssignedIdentity": "userAssignedIdentity"},
         )
         _args_schema.user_assigned_identity_resource_id = AAZStrArg(
-            options=["--user-assigned-identity-resource-id"],
+            options=["--identity-resource-id", "--user-assigned-identity-resource-id"],
             arg_group="KeyEncryptionKeyIdentity",
             help="User assigned identity to use for accessing key encryption key Url. Ex: /subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId.",
             nullable=True,
