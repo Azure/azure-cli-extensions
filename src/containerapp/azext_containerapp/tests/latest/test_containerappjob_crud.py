@@ -16,7 +16,6 @@ from .utils import create_containerapp_env
 class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
-    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     
     # test for CRUD operations on Container App Job resource with trigger type as manual
     def test_containerapp_manualjob_crudoperations_e2e(self, resource_group):

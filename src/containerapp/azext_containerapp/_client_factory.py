@@ -41,7 +41,7 @@ def handle_raw_exception(e):
         raise CLIInternalError("Bad Request: Workload profile name is not yet supported in this region.")
 
     if "Error starting job" in stringErr:
-        raise CLIInternalError("Error starting job.")
+        raise CLIInternalError("There was an error starting the job execution. Please check input parameters and try again.")
 
     if "{" in stringErr and "}" in stringErr:
         jsonError = stringErr[stringErr.index("{"):stringErr.rindex("}") + 1]

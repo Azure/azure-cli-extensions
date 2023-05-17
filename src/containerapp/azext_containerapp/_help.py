@@ -624,9 +624,9 @@ helps['containerapp job create'] = """
               --trigger-type Manual \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
-              --replica-completion-count 1 \
+              --replica-completion-count 1 \\
               --parallelism 1 \\
-              --image imageName
+              --image imageName \\
               --workload-profile-name my-wlp
     - name: Create a container apps job with Trigger Type as Schedule.
       text: |
@@ -634,8 +634,8 @@ helps['containerapp job create'] = """
               --trigger-type Schedule \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
-              --replica-completion-count 1 \
-              --parallelism 1
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
               --cron-expression \"*/1 * * * *\" \\
               --image imageName
     - name: Create a container apps job with Trigger Type as Event.
@@ -644,7 +644,7 @@ helps['containerapp job create'] = """
               --trigger-type Event \\
               --replica-timeout 5 \\
               --replica-retry-limit 2 \\
-              --replica-completion-count 1 \
+              --replica-completion-count 1 \\
               --parallelism 1 \\
               --polling-interval 30 \\
               --min-executions 0 \\
@@ -654,7 +654,7 @@ helps['containerapp job create'] = """
               --scale-rule-metadata "accountName=mystorageaccountname" \\
                                     "cloud=AzurePublicCloud" \\
                                     "queueLength": "5" "queueName": "foo" \\
-              --scale-rule-auth "connection=my-connection-string-secret-name"
+              --scale-rule-auth "connection=my-connection-string-secret-name" \\
               --image imageName
 """
 

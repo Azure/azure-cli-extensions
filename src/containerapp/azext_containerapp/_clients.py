@@ -1107,7 +1107,7 @@ class ContainerAppsJobClient():
         return r.json()
 
     @classmethod
-    def getExecutions(cls, cmd, resource_group_name, name):
+    def get_executions(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = CURRENT_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -1123,7 +1123,7 @@ class ContainerAppsJobClient():
         return r.json()
 
     @classmethod
-    def getSingleExecution(cls, cmd, resource_group_name, name, job_execution_name):
+    def get_single_execution(cls, cmd, resource_group_name, name, job_execution_name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         api_version = CURRENT_API_VERSION
         sub_id = get_subscription_id(cmd.cli_ctx)
