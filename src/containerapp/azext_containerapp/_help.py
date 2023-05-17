@@ -377,6 +377,46 @@ helps['containerapp env create'] = """
               --location eastus2
 """
 
+helps['containerapp service'] = """
+    type: group
+    short-summary: Commands to manage services available within the environment.
+"""
+
+helps['containerapp service list'] = """
+    type: command
+    short-summary: List all services within the environment.
+"""
+
+helps['containerapp service redis'] = """
+    type: group
+    short-summary: Commands to manage the redis service for the Container Apps environment.
+"""
+
+helps['containerapp service postgres'] = """
+    type: group
+    short-summary: Commands to manage the postgres service for the Container Apps environment.
+"""
+
+helps['containerapp service redis create'] = """
+    type: command
+    short-summary: Command to create the redis service.
+"""
+
+helps['containerapp service postgres create'] = """
+    type: command
+    short-summary: Command to create the postgres service.
+"""
+
+helps['containerapp service redis delete'] = """
+    type: command
+    short-summary: Command to delete the redis service.
+"""
+
+helps['containerapp service postgres delete'] = """
+    type: command
+    short-summary: Command to delete the postgres service.
+"""
+
 helps['containerapp env update'] = """
     type: command
     short-summary: Update a Container Apps environment.
@@ -548,6 +588,24 @@ helps['containerapp env workload-profile set'] = """
     - name: Create or update an existing workload profile in a Container Apps environment
       text: |
           az containerapp env workload-profile set -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 2
+"""
+
+helps['containerapp env workload-profile add'] = """
+    type: command
+    short-summary: Create a workload profile in a Container Apps environment
+    examples:
+    - name: Create a workload profile in a Container Apps environment
+      text: |
+          az containerapp env workload-profile add -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 2
+"""
+
+helps['containerapp env workload-profile update'] = """
+    type: command
+    short-summary: Update an existing workload profile in a Container Apps environment
+    examples:
+    - name: Update an existing workload profile in a Container Apps environment
+      text: |
+          az containerapp env workload-profile update -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 3
 """
 
 # Certificates Commands
