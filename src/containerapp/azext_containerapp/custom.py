@@ -4497,19 +4497,22 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
     pack_exec_path = get_pack_exec_path()
     if pack_exec_path is None:
         return
-    print("\rListing container apps...", end="", flush=True)
+    logger.warning("Listing container apps...")
     ca_list = list_containerapp(cmd, resource_group_name, managed_env)
     imgs = []
     if ca_list:
         for ca in ca_list:
-            resource_group_name = re.search('/subscriptions/[^/]+/resourceGroups/([^/]+)/', ca["id"]).group(1)
-            managed_env_name = ca["properties"]["managedEnvironmentId"].split('/')[-1]
-            containers = ca["properties"]["template"]["containers"]
+            id_parts = parse_resource_id(ca["id"])
+            resource_group_name = id_parts.get('resource_group')
+            container_app_name = id_parts.get('name')
+            managed_env_id_parts = parse_resource_id(ca["properties"]["managedEnvironmentId"])
+            managed_env_name = managed_env_id_parts.get('name')
+            containers = safe_get(ca, "properties", "template", "containers")
             for container in containers:
                 result = dict(
                     imageName=container["image"],
                     targetContainerName=container["name"],
-                    targetContainerAppName=ca["name"],
+                    targetContainerAppName=container_app_name,
                     targetContainerAppEnvironmentName=managed_env_name,
                     targetResourceGroup=resource_group_name)
                 imgs.append(result)
@@ -4517,7 +4520,7 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
     results = []
     inspect_results = []
     # Multi-worker
-    print("\rInspecting container apps images...", end="", flush=True)
+    logger.warning("Inspecting container apps images...")
     with ThreadPoolExecutor(max_workers=10) as executor:
         [executor.submit(patch_get_image_inspection, pack_exec_path, img, inspect_results) for img in imgs]
 
@@ -4528,7 +4531,7 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
     mcr_check_reason = "Image not from mcr.microsoft.com/oryx/builder"
     results = []
     # Start checking if the images are based on Mariner
-    print("\rChecking for patches...", end="", flush=True)
+    logger.warning("Checking for patches...")
     for inspect_result in inspect_results:
         if inspect_result["remote_info"] == 401:
             results.append(dict(
@@ -4585,8 +4588,6 @@ def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
                             newRunImage=None,
                             id=None,
                             reason=mcr_check_reason))
-    # Make sure that we clear the first line before showing the new output
-    print("\r                                   \r", end="", flush=True)
     if show_all is False:
         results = [result for result in results if result["id"] is not None]
     if not results:
@@ -4642,7 +4643,7 @@ def patch_interactive(cmd, resource_group_name=None, managed_env=None, show_all=
     without_unpatchable_results = [result for result in patchable_check_results if result["id"] is not None]
     if without_unpatchable_results == [] and (patchable_check_results is None or show_all is False):
         return
-    print(patchable_check_results_json)
+    logger.warning(patchable_check_results_json)
     if without_unpatchable_results == []:
         return
     user_input = input("Do you want to apply all the patches or specify by id? (y/n/id)\n")
@@ -4664,7 +4665,7 @@ def patch_apply(cmd, resource_group_name=None, managed_env=None, show_all=False)
     without_unpatchable_results = [result for result in patchable_check_results if result["id"] is not None]
     if without_unpatchable_results == [] and (patchable_check_results is None or show_all is False):
         return
-    print(patchable_check_results_json)
+    logger.warning(patchable_check_results_json)
     if without_unpatchable_results == []:
         return
     patch_apply_handle_input(cmd, patchable_check_results, "y", pack_exec_path)
@@ -4708,7 +4709,6 @@ def patch_apply_handle_input(cmd, patch_check_list, method, pack_exec_path):
         else:
             telemetry_record_method = "invalid"
             logger.error("Invalid patch method or id.")
-
     patch_apply_properties = {
         'Context.Default.AzureCLI.PatchUserResponse': telemetry_record_method,
         'Context.Default.AzureCLI.PatchApplyCount': patch_apply_count
@@ -4737,7 +4737,7 @@ def patch_cli_call(cmd, resource_group, container_app_name, container_name, targ
                                                resource_group_name=resource_group,
                                                container_name=container_name,
                                                image=new_target_image_name)
-        print(json.dumps(update_info_json, indent=2))
+        logger.warning(json.dumps(update_info_json, indent=2))
         logger.warning("Container app revision created successfully from the patched image.")
         return
     except Exception:
