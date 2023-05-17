@@ -1,13 +1,12 @@
+import os
+
+import requests
 from azext_load.data_plane.utils.utils import (
     create_or_update_test_run_body,
     download_file,
-    get_admin_data_plane_client,
-    get_test_run_id,
     get_testrun_data_plane_client,
 )
-from azure.cli.core.azclierror import ValidationError
 from knack.log import get_logger
-import os, requests
 
 logger = get_logger(__name__)
 
@@ -15,6 +14,7 @@ logger = get_logger(__name__)
 def create_test_run(
     cmd,
     load_test_resource,
+    test_run_id,
     test_id,
     display_name=None,
     existing_test_id=None,
@@ -36,11 +36,11 @@ def create_test_run(
     )
     logger.info("Creating test run with following request %s", test_run_body)
     poller = client.begin_test_run(
-        test_run_id=get_test_run_id(),
+        test_run_id=test_run_id,
         body=test_run_body,
         old_test_run_id=existing_test_id,
     )
-    response = poller.polling_method()._initial_response
+    response = poller.polling_method().resource()
     if not no_wait:
         response = poller.result()
     logger.info("Test run created with following response %s", response)

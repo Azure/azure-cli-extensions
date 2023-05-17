@@ -89,6 +89,7 @@ def get_load_test_resource_endpoint(
     logger.info("Azure Load Testing data plane URI: %s", data_plane_uri)
     return data_plane_uri
 
+
 def get_login_credentials(cli_ctx, subscription_id=None):
     from azure.cli.core._profile import Profile
 
@@ -372,11 +373,11 @@ def create_or_update_test_run_body(
         new_body["secrets"] = secrets
     if certificate is not None:
         new_body["certificate"] = certificate
-    
+
     return new_body
 
 
-def get_test_run_id():
+def get_random_uuid():
     return str(uuid.uuid4())
 
 

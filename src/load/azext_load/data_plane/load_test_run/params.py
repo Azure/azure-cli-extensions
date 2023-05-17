@@ -5,6 +5,7 @@ def load_arguments(self, _):
     # Load Test Run
     with self.argument_context("load test-run create") as c:
         c.argument("existing_test_run_id", argtypes.existing_test_run_id)
+        c.argument("test_run_id", argtypes.test_run_id)
         c.argument("test_id", argtypes.test_id)
         c.argument("display_name", argtypes.test_run_display_name)
         c.argument("description", argtypes.test_run_description)
