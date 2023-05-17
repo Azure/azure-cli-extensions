@@ -442,17 +442,7 @@ def load_arguments(self, _):
         c.argument('max_nodes', help="The maximum node count for the workload profile")
 
     # Patch
-    with self.argument_context('containerapp patch list') as c:
+    with self.argument_context('containerapp patch') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type)
         c.argument('managed_env', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
-        c.argument('show_all', help='Show all patchable and unpatchable container apps')
-
-    with self.argument_context('containerapp patch apply') as c:
-        c.argument('resource_group_name', arg_type=resource_group_name_type)
-        c.argument('managed_env', validator=validate_managed_env_name_or_id, options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
-        c.argument('show_all', help='Show all patchable and unpatchable container apps')
-
-    with self.argument_context('containerapp patch interactive') as c:
-        c.argument('resource_group_name', arg_type=resource_group_name_type)
-        c.argument('managed_env', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
-        c.argument('show_all', help='Show all patchable and unpatchable container apps')
+        c.argument('show_all', action='store_true', help='Show all patchable and unpatchable container apps')
