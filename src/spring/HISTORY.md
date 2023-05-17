@@ -1,6 +1,6 @@
 Release History
 ===============
-1.12.0
+1.12.0 (WIP)
 ---
 * Add new parameter `--workload-profile` for `az spring app create` and `az spring app update`.
 
