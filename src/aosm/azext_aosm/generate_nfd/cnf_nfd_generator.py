@@ -7,15 +7,22 @@ import json
 import os
 import re
 import shutil
-import subprocess
 import tarfile
-from typing import Dict, List, Any, Tuple, Optional
+from typing import Dict, List, Any, Tuple, Optional, Iterator
 
 import yaml
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
+from jinja2 import Template, StrictUndefined
 from knack.log import get_logger
 from azext_aosm._configuration import CNFConfiguration, HelmPackageConfig
-from azext_aosm.util.constants import CNF_DEFINITION_BICEP_SOURCE_TEMPLATE
+from azext_aosm.util.constants import (
+    CNF_DEFINITION_BICEP_TEMPLATE,
+    CNF_DEFINITION_JINJA2_SOURCE_TEMPLATE,
+    CNF_MANIFEST_BICEP_TEMPLATE,
+    CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE,
+    IMAGE_LINE_REGEX,
+    IMAGE_PULL_SECRET_LINE_REGEX,
+)
 
 logger = get_logger(__name__)
 
@@ -31,17 +38,18 @@ class CnfNfdGenerator(NFDGenerator):
     def __init__(self, config: CNFConfiguration):
         super(NFDGenerator, self).__init__()
         self.config = config
-        self.bicep_template_name = CNF_DEFINITION_BICEP_SOURCE_TEMPLATE
+        self.nfd_jinja2_template_path = os.path.join(os.path.dirname(__file__), "templates", CNF_DEFINITION_JINJA2_SOURCE_TEMPLATE)
+        self.manifest_jinja2_template_path = os.path.join(os.path.dirname(__file__), "templates", CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE)
         self.output_folder_name = self.config.build_output_folder_name
         self.tmp_folder_name = "tmp"
 
         self.artifacts = []
-        self.nf_applications = []
+        self.nf_application_configurations = []
         # JORDAN: need to add the bit to schema before properties?
         self.deployment_parameter_schema = {}
 
         self._bicep_path = os.path.join(
-            self.output_folder_name, self.bicep_template_name
+            self.output_folder_name, CNF_DEFINITION_BICEP_TEMPLATE
         )
 
     def generate_nfd(self):
@@ -56,32 +64,53 @@ class CnfNfdGenerator(NFDGenerator):
             )
         else:
             for helm_package in self.config.helm_packages:
-                # Unpack the chart into the tmp folder
+                # Why are we having to do this???
                 helm_package = HelmPackageConfig(**helm_package)
+                # Unpack the chart into the tmp folder
                 self._extract_chart(helm_package.path_to_chart)
                 # Validate chartz
-                
+
                 # Get schema for each chart (extract mappings and take the schema bits we need from values.schema.json)
                 # + Add that schema to the big schema.
-                self.deployment_parameter_schema["properties"] = self.get_chart_mapping_schema(helm_package)
+                # self.deployment_parameter_schema[
+                #     "properties"
+                # ] = self.get_chart_mapping_schema(helm_package)
+
+                # Get all image line matches for files in the chart.
+                image_line_matches = self.find_pattern_matches_in_chart(
+                    helm_package, IMAGE_LINE_REGEX
+                )
+                # Get all imagePullSecrets line matches for files in the chart.
+                image_pull_secret_line_matches = (
+                    self.find_pattern_matches_in_chart(
+                        helm_package, IMAGE_PULL_SECRET_LINE_REGEX
+                    )
+                )
 
                 # generate the NF application for the chart
-                self.nf_applications.append(self.generate_nf_application(helm_package))
-                # Workout the list of artifacts for the chart
-                self.artifacts += self.get_artifact_list(helm_package)
-                
-                with open('artifacts.json', 'w') as file:
-                    json.dump(self.artifacts, file, indent=4)
-                
+                self.nf_application_configurations.append(
+                    self.generate_nf_application_config(
+                        helm_package,
+                        image_line_matches,
+                        image_pull_secret_line_matches,
+                    )
+                )
+                # Workout the list of artifacts for the chart and
+                # update the list for the NFD
+                self.artifacts += self.get_artifact_list(
+                    helm_package, set(image_line_matches)
+                )
+
             # Write NFD bicep
             self.write_nfd_bicep_file()
             # Write schema to schema/deploymentParameterSchema.json
             # Write Artifact Mainfest bicep
+            self.write__manifest_bicep_file()
 
             # Copy contents of tmp folder to output folder.
 
         # Delete tmp folder
-        shutil.rmtree(self.tmp_folder_name)
+        #shutil.rmtree(self.tmp_folder_name)
 
     @property
     def bicep_path(self) -> Optional[str]:
@@ -107,7 +136,7 @@ class CnfNfdGenerator(NFDGenerator):
             tar = tarfile.open(fname, "r:")
             tar.extractall(path=self.tmp_folder_name)
             tar.close()
-        # JORDAN: avoiding tar extract errors, fix and remove later 
+        # JORDAN: avoiding tar extract errors, fix and remove later
         else:
             shutil.copytree(fname, self.tmp_folder_name, dirs_exist_ok=True)
 
@@ -129,172 +158,181 @@ class CnfNfdGenerator(NFDGenerator):
         logger.info("Create NFD bicep %s", self.output_folder_name)
         os.mkdir(self.output_folder_name)
 
+    def write__manifest_bicep_file(self):
+        # This will write the bicep file for the Artifact Manifest.
+        with open(self.manifest_jinja2_template_path, 'r', encoding='UTF-8') as f:
+            template: Template = Template(
+                f.read(),
+                undefined=StrictUndefined,
+            )
+
+        bicep_contents: str = template.render(
+            artifacts=self.artifacts,
+        )
+
+        path = os.path.join(self.tmp_folder_name, CNF_MANIFEST_BICEP_TEMPLATE)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(bicep_contents)
+
     def write_nfd_bicep_file(self):
         # This will write the bicep file for the NFD.
-        code_dir = os.path.dirname(__file__)
-        arm_template_path = os.path.join(code_dir, "templates/cnfdefinition.json")
+        with open(self.nfd_jinja2_template_path, 'r', encoding='UTF-8') as f:
+            template: Template = Template(
+                f.read(),
+                undefined=StrictUndefined,
+            )
 
-        with open(arm_template_path, "r", encoding="UTF-8") as f:
-            cnf_arm_template_dict = json.load(f)
+        bicep_contents: str = template.render(
+            deployParametersPath="schema/deploymentParameterSchema.json",
+            nf_application_configurations=self.nf_application_configurations,
+        )
 
-        cnf_arm_template_dict["resources"][0]["properties"][
-            "networkFunctionTemplate"
-        ]["networkFunctionApplications"] = self.nf_applications
+        path = os.path.join(self.tmp_folder_name, CNF_DEFINITION_BICEP_TEMPLATE)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(bicep_contents)
 
-        self.write_arm_to_bicep(cnf_arm_template_dict, f"{self.tmp_folder_name}/{self.config.nf_name}-nfdv.json")
-
-    def write_arm_to_bicep(self, arm_template_dict: Dict[Any, Any], arm_file: str):
-        with open(arm_file, 'w', encoding="UTF-8") as f:
-            print("Writing ARM template to json file.")
-            json.dump(arm_template_dict, f, indent=4)
-        try:
-            cmd = f"az bicep decompile --file {os.path.abspath(arm_file)} --only-show-errors"
-            subprocess.run(cmd, shell=True, check=True)
-        except subprocess.CalledProcessError as e:
-            raise e
-        finally:
-            os.remove(arm_file)
-
-    def generate_nf_application(
-        self, helm_package: HelmPackageConfig
+    def generate_nf_application_config(
+        self,
+        helm_package: HelmPackageConfig,
+        image_line_matches: List[Tuple[str, ...]],
+        image_pull_secret_line_matches: List[Tuple[str, ...]],
     ) -> Dict[str, Any]:
         (name, version) = self.get_chart_name_and_version(helm_package)
+        registryValuesPaths = set([m[0] for m in image_line_matches])
+        imagePullSecretsValuesPaths = set(image_pull_secret_line_matches)
+
         return {
-            "artifactType": "HelmPackage",
             "name": helm_package.name,
+            "chartName": name,
+            "chartVersion": version,
             "dependsOnProfile": helm_package.depends_on,
-            "artifactProfile": {
-                "artifactStore": {
-                    "id": "[resourceId('Microsoft.HybridNetwork/publishers/artifactStores', parameters('publisherName'), parameters('acrArtifactStoreName'))]"
-                },
-                "helmArtifactProfile": {
-                    "helmPackageName": name,
-                    "helmPackageVersionRange": version,
-                    "registryValuesPaths": [
-                        "'global.registry.docker.repoPath'"
-                    ],
-                    "imagePullSecretsValuesPaths": [
-                        "'global.registry.docker.imagePullSecrets'"
-                    ],
-                },
-            },
-            "deployParametersMappingRuleProfile": {
-                "applicationEnablement": "'Enabled'",
-                "helmMappingRuleProfile": {
-                    "releaseNamespace": name,
-                    "releaseName": name,
-                    "helmPackageVersion": version,
-                    ## will process this after and will remove the "" so it will be valid 
-                    "values": f"string(loadJsonContent({self.generate_parmeter_mappings(helm_package)})",
-                },
-            },
+            "registryValuesPaths": list(registryValuesPaths),
+            "imagePullSecretsValuesPaths": list(imagePullSecretsValuesPaths),
+            # "valueMappingsPath": self.generate_parmeter_mappings(helm_package),
+            "valueMappingsPath": "",
         }
 
-    def get_artifact_list(self, helm_package: HelmPackageConfig) -> List[Any]:
+    def _find_yaml_files(self, directory) -> Iterator[str]:
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                if file.endswith(".yaml") or file.endswith(".yml"):
+                    yield os.path.join(root, file)
+
+    def find_pattern_matches_in_chart(
+        self, helm_package: HelmPackageConfig, pattern: str
+    ) -> List[Tuple[str, ...]]:
+        chart_dir = os.path.join(self.tmp_folder_name, helm_package.name)
+        matches = []
+
+        for file in self._find_yaml_files(chart_dir):
+            with open(file, "r", encoding="UTF-8") as f:
+                contents = f.read()
+                matches += re.findall(pattern, contents)
+
+        return matches
+
+    def get_artifact_list(
+        self,
+        helm_package: HelmPackageConfig,
+        image_line_matches: List[Tuple[str, ...]],
+    ) -> List[Any]:
         artifact_list = []
-        (chart_name, chart_version) = self.get_chart_name_and_version(helm_package)
+        (chart_name, chart_version) = self.get_chart_name_and_version(
+            helm_package
+        )
         helm_artifact = {
-            "artifactName" : chart_name,
-            "artifactType" : "OCIArtifact",
-            "artifactVersion": chart_version
+            "name": chart_name,
+            "version": chart_version,
         }
         artifact_list.append(helm_artifact)
-       
-        image_versions = {}
-        path = os.path.join(self.tmp_folder_name, helm_package.name)
 
-        for root, dirs, files in os.walk(path):
-            for filename in files:
-                if filename.endswith(".yaml") or filename.endswith(".yml"):
-                    image_versions.update(self.find_images(os.path.join(root, filename)))
-            
-        for image_name,image_version in image_versions.items():
-            artifact_list.append({
-                "artifactName" : image_name,
-                "artifactType" : "OCIArtifact",
-                "artifactVersion": image_version
-            })
-        
+        for match in image_line_matches:
+            artifact_list.append(
+                {
+                    "name": match[1],
+                    "version": match[2],
+                }
+            )
+
         return artifact_list
-        
-    def find_images(self, filename):
-        image_versions = {}
-        with open(filename) as f:
-            image_matches = [re.search(r"/(.+):(.+)", line) for line in f if "image:" in line ]
-        
-        for match in image_matches:
-            if match and (match.group(1) not in image_versions):
-                version = re.sub('[^a-zA-Z0-9]+$', '', match.group(2))
-                image_versions[match.group(1)] = version
-                
-        return image_versions
-    
+
     ## JORDAN: this is done cheating by not actually looking at the schema
-    def get_chart_mapping_schema(self, helm_package: HelmPackageConfig) -> Dict[Any, Any]:
+    def get_chart_mapping_schema(
+        self, helm_package: HelmPackageConfig
+    ) -> Dict[Any, Any]:
         # We need to take the mappings from the values.nondef.yaml file and generate the schema
         # from the values.schema.json file.
         # Basically take the bits of the schema that are relevant to the parameters requested.
-        
-        non_def_values = os.path.join(self.tmp_folder_name, helm_package.name, "values.nondef.yaml")
 
-        with open(non_def_values, 'r') as stream:
+        non_def_values = os.path.join(
+            self.tmp_folder_name, helm_package.name, "values.nondef.yaml"
+        )
+
+        with open(non_def_values, "r") as stream:
             data = yaml.load(stream, Loader=yaml.SafeLoader)
             deploy_params_list = []
-            params_for_schema = self.find_deploy_params(data, deploy_params_list)
-        
+            params_for_schema = self.find_deploy_params(
+                data, deploy_params_list
+            )
+
         schema_dict = {}
         for i in params_for_schema:
             schema_dict[i] = {"type": "string", "description": "no descr"}
-   
+
         return schema_dict
 
     ## JORDAN: change this to save the key and value that has deployParam in it so we can check the schema for the key
     def find_deploy_params(self, nested_dict, deploy_params_list):
-        for k,v in nested_dict.items():
+        for k, v in nested_dict.items():
             if isinstance(v, str) and "deployParameters" in v:
                 # only add the parameter name (not deployParam. or anything after)
-                param = v.split(".",1)[1]
-                param = param.split('}', 1)[0]
+                param = v.split(".", 1)[1]
+                param = param.split("}", 1)[0]
                 deploy_params_list.append(param)
                 print(deploy_params_list)
-            elif hasattr(v, 'items'): #v is a dict
+            elif hasattr(v, "items"):  # v is a dict
                 self.find_deploy_params(v, deploy_params_list)
-                    
+
         return deploy_params_list
-            
+
     def get_chart_name_and_version(
         self, helm_package: HelmPackageConfig
     ) -> Tuple[str, str]:
-        
-        chart = os.path.join(self.tmp_folder_name, helm_package.name, "Chart.yaml")
-        
+        chart = os.path.join(
+            self.tmp_folder_name, helm_package.name, "Chart.yaml"
+        )
+
         with open(chart) as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
             chart_name = data["name"]
             chart_version = data["version"]
-        
+
         return (chart_name, chart_version)
 
-    def some_fun_to_check_ragistry_and_image_secret_path(self):
-        # Need to work out what we are doing here???
-        pass
-
-    ## JORDAN: change this to return string(loadJson).. with the file in output 
-    def generate_parmeter_mappings(self, helm_package: HelmPackageConfig) -> str:
+    ## JORDAN: change this to return string(loadJson).. with the file in output
+    def generate_parmeter_mappings(
+        self, helm_package: HelmPackageConfig
+    ) -> str:
         # Basically copy the values.nondef.yaml file to the right place.
-        values = os.path.join(self.tmp_folder_name, helm_package.name, "values.nondef.yaml")
-        
-        mappings_folder_path = os.path.join(self.tmp_folder_name, "configMappings")
+        values = os.path.join(
+            self.tmp_folder_name, helm_package.name, "values.nondef.yaml"
+        )
+
+        mappings_folder_path = os.path.join(
+            self.tmp_folder_name, "configMappings"
+        )
         mappings_filename = f"{helm_package.name}-mappings.json"
         if not os.path.exists(mappings_folder_path):
             os.mkdir(mappings_folder_path)
 
-        mapping_file_path = os.path.join(mappings_folder_path, mappings_filename)
+        mapping_file_path = os.path.join(
+            mappings_folder_path, mappings_filename
+        )
 
         with open(values) as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
 
-        with open(mapping_file_path, 'w') as file:
+        with open(mapping_file_path, "w") as file:
             json.dump(data, file)
 
         return os.path.join("configMappings", mappings_filename)

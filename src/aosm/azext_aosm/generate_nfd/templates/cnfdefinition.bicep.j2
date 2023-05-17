@@ -46,35 +46,38 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
   properties: {
     // versionState should be changed to 'Active' once it is finalized.
     versionState: 'Preview'
-    deployParameters: string(loadJsonContent('schemas/deploymentParameters.json'))
+    deployParameters: string(loadJsonContent('{{ deployParametersPath }}'))
     networkFunctionType: 'ContainerizedNetworkFunction'
     networkFunctionTemplate: {
       nfviType: 'AzureArcKubernetes'
-      networkFunctionApplications: [ for (application, index) in nfApplicationConfigurations: {
+      networkFunctionApplications: [ 
+      {%- for configuration in nf_application_configurations %}
+        {
           artifactType: 'HelmPackage'
-          name: application.name
-          dependsOnProfile: application.dependsOnProfile
+          name: '{{ configuration.name }}'
+          dependsOnProfile: {{ configuration.dependsOnProfile }}
           artifactProfile: {
             artifactStore: {
               id: acrArtifactStore.id
             }
             helmArtifactProfile: {
-              helmPackageName: application.name
-              helmPackageVersionRange: application.name
-              registryValuesPaths: application.registryValuesPaths
-              imagePullSecretsValuesPaths: application.imagePullSecretsValuesPaths
+              helmPackageName: '{{ configuration.chartName }}'
+              helmPackageVersionRange: '{{ configuration.chartVersion }}'
+              registryValuesPaths: {{ configuration.registryValuesPaths }}
+              imagePullSecretsValuesPaths: {{ configuration.imagePullSecretsValuesPaths }}
             }
           }
           deployParametersMappingRuleProfile: {
             applicationEnablement: 'Enabled'
             helmMappingRuleProfile: {
-              releaseNamespace: application.name
-              releaseName: application.name
-              helmPackageVersion: application.helmPackageVersion
-              values: string(loadFileAsBase64(nfApplicationConfigurations[index].valuesFilePath))
+              releaseNamespace: '{{ configuration.chartName }}'
+              releaseName: '{{ configuration.chartName }}'
+              helmPackageVersion: '{{ configuration.chartVersion }}'
+              values: string(loadJsonContent('{{ configuration.valueMappingsPath }}'))
             }
           }
         }
+      {%- endfor %}
       ]
     }
   }

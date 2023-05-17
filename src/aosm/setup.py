@@ -35,7 +35,7 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = ["oras~=0.1.17", "azure-storage-blob>=12.15.0"]
+DEPENDENCIES = ["oras~=0.1.17", "azure-storage-blob>=12.15.0", "jinja2>=3.1.2"]
 
 with open("README.md", "r", encoding="utf-8") as f:
     README = f.read()
