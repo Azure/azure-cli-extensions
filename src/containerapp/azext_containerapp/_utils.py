@@ -1894,7 +1894,7 @@ def parse_oryx_mariner_tag(tag: str) -> OryxMarinerRunImgTagProperty:
         #    "support": "lts"}
         version_re = r"(\d+\.\d+(\.\d+)?).*?(cbl-mariner(\d+\.\d+))"
         re_matches = re.findall(version_re, tag)
-        if re_matches.count == 0:
+        if len(re_matches) == 0:
             tag_obj = None
         else:
             tag_obj = dict(fullTag=tag, version=SemVer.parse(re_matches[0][0]), framework=tag_split[2], marinerVersion=re_matches[0][2], architectures=None, support="lts")
