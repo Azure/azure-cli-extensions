@@ -1,5 +1,6 @@
 import re
 import os
+from datetime import datetime
 
 from msrestazure.tools import is_valid_resource_id
 
@@ -100,12 +101,14 @@ def validate_app_component_id(namespace):
         )
     # /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{providerName}/components/{resourceName}"
 
+
 def validate_app_component_type(namespace):
     provider_name = "/".join(namespace.app_component_id.split("/")[6:8]).casefold()
     if provider_name != namespace.app_component_type.casefold():
         raise ValueError(
             f"Type of app-component-id and app-component-type mismatch: {provider_name} vs {namespace.app_component_type}"
         )
+
 
 def validate_metric_id(namespace):
     if not isinstance(namespace.metric_id, str):
@@ -119,12 +122,53 @@ def validate_metric_id(namespace):
             f"Provided Azure Resource ID is not a valid server metrics resource: {namespace.metric_id}"
         )
 
+
 def validate_path(namespace):
-    #if not isinstance(namespace.test_run_id, str):
-    #    raise TypeError(f"Invalid path type: {type(namespace.path)}")
+    if not isinstance(namespace.path, str):
+        raise TypeError(f"Invalid path type: {type(namespace.path)}")
     if not os.path.exists(namespace.path):
         raise ValueError(f"Provided path '{namespace.path}' does not exist")
     if not os.path.isdir(namespace.path):
         raise ValueError(f"Provided path '{namespace.path}' is not a directory")
     if not os.access(namespace.path, os.W_OK | os.X_OK):
         raise ValueError(f"Provided path '{namespace.path}' is not writable")
+
+
+def validate_start_iso_time(namespace):
+    _validate_iso_time(namespace.start_time)
+
+
+def validate_end_iso_time(namespace):
+    _validate_iso_time(namespace.end_time)
+
+
+def _validate_iso_time(string):
+    if string is None:
+        return
+    if not isinstance(string, str):
+        raise TypeError(f"Invalid time type: {type(string)}")
+    try:
+        datetime.strptime(string, "%Y-%m-%dT%H:%M:%S.%fZ")
+        return
+    except ValueError:
+        pass
+    try:
+        datetime.strptime(string, "%Y-%m-%dT%H:%M:%SZ")
+        return
+    except ValueError:
+        pass
+    raise ValueError(f"Invalid time format: '{string}'. Expected ISO 8601 format.")
+
+
+allowed_intervals = ["PT10S", "PT1H", "PT1M", "PT5M", "PT5S"]
+
+
+def validate_interval(namespace):
+    if namespace.interval is None:
+        return
+    if not isinstance(namespace.interval, str):
+        raise TypeError(f"Invalid interval type: {type(namespace.interval)}")
+    if namespace.interval not in allowed_intervals:
+        raise ValueError(
+            f"Invalid interval value: {namespace.interval}. Allowed values: {', '.join(allowed_intervals)}"
+        )

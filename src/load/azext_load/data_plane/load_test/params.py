@@ -47,12 +47,12 @@ def load_arguments(self, _):
 
     # Load Test Server Metrics
     with self.argument_context("load test server-metrics") as c:
-        c.argument("metric_id", argtypes.metric_id)
+        c.argument("metric_id", argtypes.server_metric_id)
 
     with self.argument_context("load test server-metrics add") as c:
-        c.argument("metric_name", argtypes.metric_name)
-        c.argument("metric_namespace", argtypes.metric_namespace)
-        c.argument("aggregation", argtypes.aggregation)
+        c.argument("metric_name", argtypes.server_metric_name)
+        c.argument("metric_namespace", argtypes.server_metric_namespace)
+        c.argument("aggregation", argtypes.server_metric_aggregation)
         c.argument("app_component_id", argtypes.app_component_id)
         c.argument("app_component_type", argtypes.app_component_type)
     #

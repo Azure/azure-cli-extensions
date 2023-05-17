@@ -111,3 +111,35 @@ type: command
 short-summary: Remove an server-metrics from a test run.
 long-summary: Remove the given server-metrics from the test run.
 """
+
+helps[
+    "load test-run metrics get-namespaces"
+] = """
+type: command
+short-summary: Get all metric namespaces for a load test run.
+long-summary: Get all metric namespaces for a load test run.
+"""
+
+helps[
+    "load test-run metrics list"
+] = """
+type: command
+short-summary: List metrics for a load test run.
+long-summary: List metrics for a load test run.
+"""
+
+helps[
+    "load test-run metrics get-definitions"
+] = """
+type: command
+short-summary: Get all metric definitions for a load test run.
+long-summary: Get all metric definitions for a load test run.
+"""
+
+helps[
+    "load test-run metrics get-dimensions"
+] = """
+type: command
+short-summary: Get all metric dimensions for a load test run.
+long-summary: Get all metric dimensions for a load test run.
+"""

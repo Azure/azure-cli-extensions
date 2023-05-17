@@ -42,7 +42,7 @@ def get_test_run_id_completion_list():
         client = get_testrun_data_plane_client(
             cmd, load_test_resource, resource_group_name
         )
-        test_run_ids = [test.get("testRunId") for test in client.list_test_runs(test_id=test_id) if "testRunId" in test]
+        test_run_ids = [test_run.get("testRunId") for test_run in client.list_test_runs(test_id=test_id) if "testRunId" in test_run]
         logger.debug("Test Run IDs list in Test Run ID completer: %s", test_run_ids)
         return test_run_ids
 

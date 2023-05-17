@@ -35,12 +35,35 @@ def load_arguments(self, _):
 
     # Load Test Run Server Metrics
     with self.argument_context("load test-run server-metrics") as c:
-        c.argument("metric_id", argtypes.metric_id)
+        c.argument("metric_id", argtypes.server_metric_id)
 
     with self.argument_context("load test-run server-metrics add") as c:
-        c.argument("metric_name", argtypes.metric_name)
-        c.argument("metric_namespace", argtypes.metric_namespace)
-        c.argument("aggregation", argtypes.aggregation)
+        c.argument("metric_name", argtypes.server_metric_name)
+        c.argument("metric_namespace", argtypes.server_metric_namespace)
+        c.argument("aggregation", argtypes.server_metric_aggregation)
         c.argument("app_component_id", argtypes.app_component_id)
         c.argument("app_component_type", argtypes.app_component_type)
+    #
+
+    # Load Test Run Metrics
+    with self.argument_context("load test-run metrics") as c:
+        c.argument("test_run_id", argtypes.test_run_id)
+
+    with self.argument_context("load test-run metrics list") as c:
+        c.argument("metric_name", argtypes.metric_name)
+        c.argument("metric_namespace", argtypes.metric_namespace)
+        c.argument("start_time", argtypes.start_iso_time)
+        c.argument("end_time", argtypes.end_iso_time)
+        c.argument("interval", argtypes.interval)
+
+    with self.argument_context("load test-run metrics get-definitions") as c:
+        c.argument("metric_namespace", argtypes.metric_namespace)
+
+    with self.argument_context("load test-run metrics get-dimensions") as c:
+        c.argument("metric_name", argtypes.metric_name)
+        c.argument("dimension_name", argtypes.metric_dimension)
+        c.argument("metric_namespace", argtypes.metric_namespace)
+        c.argument("start_time", argtypes.start_iso_time)
+        c.argument("end_time", argtypes.end_iso_time)
+        c.argument("interval", argtypes.interval)
     #

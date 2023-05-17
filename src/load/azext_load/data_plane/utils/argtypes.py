@@ -3,6 +3,7 @@ from azure.cli.core.commands.parameters import (
     get_resource_name_completion_list,
     quotes,
     resource_group_name_type,
+    get_generic_completion_list
 )
 from knack.arguments import CLIArgumentType
 
@@ -131,21 +132,21 @@ path = CLIArgumentType(
 
 test_run_input = CLIArgumentType(
     options_list=["--input"],
-    action='store_true',
+    action="store_true",
     default=False,
     help="Download the input files zip.",
 )
 
 test_run_log = CLIArgumentType(
     options_list=["--log"],
-    action='store_true',
+    action="store_true",
     default=False,
     help="Download the log files zip.",
 )
 
 test_run_results = CLIArgumentType(
     options_list=["--result"],
-    action='store_true',
+    action="store_true",
     default=False,
     help="Download the results files zip.",
 )
@@ -176,27 +177,67 @@ app_component_kind = CLIArgumentType(
     help="Kind of the app component.",
 )
 
-metric_id = CLIArgumentType(
+server_metric_id = CLIArgumentType(
     validator=validators.validate_metric_id,
     options_list=["--metric-id"],
     type=str,
     help="Fully qualified ID of the server metric.",
 )
 
-metric_name = CLIArgumentType(
+server_metric_name = CLIArgumentType(
     options_list=["--metric-name"],
     type=str,
     help="Name of the server metric.",
 )
 
-metric_namespace = CLIArgumentType(
+server_metric_namespace = CLIArgumentType(
     options_list=["--metric-namespace"],
     type=str,
     help="Namespace of the server metric.",
 )
 
-aggregation = CLIArgumentType(
+server_metric_aggregation = CLIArgumentType(
     options_list=["--aggregation"],
     type=str,
     help="Aggregation of the server metric.",
+)
+
+metric_name = CLIArgumentType(
+    options_list=["--metric-name"],
+    type=str,
+    help="Name of the metric.",
+)
+
+metric_namespace = CLIArgumentType(
+    options_list=["--metric-namespace"],
+    type=str,
+    help="Namespace of the metric.",
+)
+
+metric_dimension = CLIArgumentType(
+    options_list=["--metric-dimension"],
+    type=str,
+    help="Value of the metric dimension.",
+)
+
+start_iso_time = CLIArgumentType(
+    validator=validators.validate_start_iso_time,
+    options_list=["--start-time"],
+    type=str,
+    help="ISO 8601 formatted start time.",
+)
+
+end_iso_time = CLIArgumentType(
+    validator=validators.validate_end_iso_time,
+    options_list=["--end-time"],
+    type=str,
+    help="ISO 8601 formatted end time.",
+)
+
+interval = CLIArgumentType(
+    validator=validators.validate_interval,
+    completer=get_generic_completion_list(validators.allowed_intervals),
+    options_list=["--interval"],
+    type=str,
+    help=f"ISO 8601 formatted interval. Allowed values: {', '.join(validators.allowed_intervals)}",
 )

@@ -8,6 +8,7 @@ from azext_load.data_plane.utils.utils import (
 from azure.cli.core.azclierror import ValidationError
 from knack.log import get_logger
 import os, requests
+
 logger = get_logger(__name__)
 
 
@@ -45,10 +46,12 @@ def create_test_run(
     logger.info("Test run created with following response %s", response)
     return response
 
+
 def get_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Getting test run %s", test_run_id)
     return client.get_test_run(test_run_id=test_run_id)
+
 
 def update_test_run(
     cmd,
@@ -66,20 +69,24 @@ def update_test_run(
     logger.info("Updating test run %s", test_run_id)
     return client._test_run_initial(test_run_id=test_run_id, body=test_run_body)
 
+
 def delete_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Deleting test run %s", test_run_id)
     return client.delete_test_run(test_run_id=test_run_id)
+
 
 def list_test_runs(cmd, test_id, load_test_resource, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Listing test runs for test %s", test_id)
     return client.list_test_runs(test_id=test_id)
 
+
 def stop_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Stopping test run %s", test_run_id)
     return client.stop_test_run(test_run_id=test_run_id)
+
 
 def download_test_run_files(
     cmd,
@@ -98,10 +105,12 @@ def download_test_run_files(
     if test_run_input:
         logger.info("Downloading input artifacts for test run %s", test_run_id)
         if test_run_data.get("testArtifacts", {}).get("inputArtifacts") is not None:
-            #logger.info(test_run_data.get("testArtifacts", {}).get("inputArtifacts"))
-            input_artifacts = test_run_data.get("testArtifacts", {}).get("inputArtifacts")
+            # logger.info(test_run_data.get("testArtifacts", {}).get("inputArtifacts"))
+            input_artifacts = test_run_data.get("testArtifacts", {}).get(
+                "inputArtifacts"
+            )
             for artifact_type, artifact_data in input_artifacts.items():
-                #logger.info(("artifact_type = %s,  artifact_data = %s", artifact_type, artifact_data))
+                # logger.info(("artifact_type = %s,  artifact_data = %s", artifact_type, artifact_data))
                 if len(artifact_data) > 0 and artifact_data.get("url") is not None:
                     url = artifact_data.get("url")
                     file_name = artifact_data.get("fileName")
@@ -114,32 +123,69 @@ def download_test_run_files(
     if test_run_log:
         logger.info("Downloading log file for test run %s", test_run_id)
         if test_run_data.get("testArtifacts", {}).get("outputArtifacts") is not None:
-            if test_run_data.get("testArtifacts", {}).get("outputArtifacts", {}).get("logsFileInfo") is not None:
-                url = test_run_data.get("testArtifacts", {}).get("outputArtifacts", {}).get("logsFileInfo").get("url")
-                file_name = test_run_data.get("testArtifacts", {}).get("outputArtifacts", {}).get("logsFileInfo", {}).get("fileName")
+            if (
+                test_run_data.get("testArtifacts", {})
+                .get("outputArtifacts", {})
+                .get("logsFileInfo")
+                is not None
+            ):
+                url = (
+                    test_run_data.get("testArtifacts", {})
+                    .get("outputArtifacts", {})
+                    .get("logsFileInfo")
+                    .get("url")
+                )
+                file_name = (
+                    test_run_data.get("testArtifacts", {})
+                    .get("outputArtifacts", {})
+                    .get("logsFileInfo", {})
+                    .get("fileName")
+                )
                 file_path = os.path.join(path, file_name)
                 download_file(url, file_path)
                 logger.warning("Log file downloaded to %s", file_path)
             else:
                 logger.info("No log file found for test run %s", test_run_id)
         else:
-            logger.info("No results file and output artifacts found for test run %s", test_run_id)
-            
+            logger.info(
+                "No results file and output artifacts found for test run %s",
+                test_run_id,
+            )
+
     if test_run_results:
         logger.info("Downloading results file for test run %s", test_run_id)
         if test_run_data.get("testArtifacts", {}).get("outputArtifacts") is not None:
-            if test_run_data.get("testArtifacts", {}).get("outputArtifacts", {}).get("resultFileInfo") is not None:
-                url = test_run_data.get("testArtifacts", {}).get("outputArtifacts", {}).get("resultFileInfo").get("url")
-                file_name = test_run_data.get("testArtifacts", {}).get("outputArtifacts", {}).get("resultFileInfo", {}).get("fileName")
+            if (
+                test_run_data.get("testArtifacts", {})
+                .get("outputArtifacts", {})
+                .get("resultFileInfo")
+                is not None
+            ):
+                url = (
+                    test_run_data.get("testArtifacts", {})
+                    .get("outputArtifacts", {})
+                    .get("resultFileInfo")
+                    .get("url")
+                )
+                file_name = (
+                    test_run_data.get("testArtifacts", {})
+                    .get("outputArtifacts", {})
+                    .get("resultFileInfo", {})
+                    .get("fileName")
+                )
                 file_path = os.path.join(path, file_name)
                 download_file(url, file_path)
                 logger.warning("Results file downloaded to %s", file_path)
             else:
                 logger.info("No results file found for test run %s", test_run_id)
         else:
-            logger.info("No results file and output artifacts found for test run %s", test_run_id)
+            logger.info(
+                "No results file and output artifacts found for test run %s",
+                test_run_id,
+            )
 
-#app components
+
+# app components
 def add_test_run_app_components(
     cmd,
     load_test_resource,
@@ -166,6 +212,7 @@ def add_test_run_app_components(
     logger.debug("Adding app component to the test run... %s", body)
     return client.create_or_update_app_components(test_run_id=test_run_id, body=body)
 
+
 def list_test_run_app_components(
     cmd,
     load_test_resource,
@@ -175,6 +222,7 @@ def list_test_run_app_components(
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.debug("Listing app components for the given test run...")
     return client.get_app_components(test_run_id=test_run_id)
+
 
 def remove_test_run_app_components(
     cmd,
@@ -188,7 +236,9 @@ def remove_test_run_app_components(
     logger.debug("Removing app component from the test run... %s", body)
     return client.create_or_update_app_components(test_run_id=test_run_id, body=body)
 
-#server metrics
+
+# server metrics
+
 
 def add_test_run_server_metrics(
     cmd,
@@ -216,7 +266,9 @@ def add_test_run_server_metrics(
         },
     }
     logger.debug("Adding server metrics to the test run... %s", body)
-    return client.create_or_update_server_metrics_config(test_run_id=test_run_id, body=body)
+    return client.create_or_update_server_metrics_config(
+        test_run_id=test_run_id, body=body
+    )
 
 
 def list_test_run_server_metrics(
@@ -240,34 +292,99 @@ def remove_test_run_server_metrics(
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = {"testRunId": test_run_id, "metrics": {metric_id: None}}
     logger.debug("Removing server metrics from the test run... %s", body)
-    return client.create_or_update_server_metrics_config(test_run_id=test_run_id, body=body)
+    return client.create_or_update_server_metrics_config(
+        test_run_id=test_run_id, body=body
+    )
 
 
-def get_client_metrics(cmd, load_test_resource, test_run_id, resource_group_name=None):
+def get_test_run_metric_namespaces(
+    cmd, load_test_resource, test_run_id, resource_group_name=None
+):
+    client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+    namespaces = client.get_metric_namespaces(test_run_id)
+    return namespaces
+
+
+def list_test_run_metrics(
+    cmd,
+    load_test_resource,
+    test_run_id,
+    metric_name,
+    metric_namespace,
+    start_time=None,
+    end_time=None,
+    interval=None,
+    resource_group_name=None,
+):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
 
-    test_run_response = client.get_test_run(test_run_id)
-
-    metric_namespaces = client.get_metric_namespaces(test_run_id)
-
-    metric_definitions = client.get_metric_definitions(
-        test_run_id, metric_namespace=metric_namespaces["value"][0]["name"]
-    )
+    if start_time is None or end_time is None:
+        test_run_response = client.get_test_run(test_run_id)
+        if start_time is None:
+            start_time = test_run_response["startDateTime"]
+        if end_time is None:
+            end_time = test_run_response["endDateTime"]
 
     metrics = client.list_metrics(
         test_run_id,
-        metric_name=metric_definitions["value"][0]["name"],
-        metric_namespace=metric_namespaces["value"][0]["name"],
+        metric_name=metric_name,
+        metric_namespace=metric_namespace,
         time_interval="{start}/{end}".format(
-            start=test_run_response["startDateTime"],
-            end=test_run_response["endDateTime"],
+            start=start_time,
+            end=end_time,
         ),
+        interval=interval,
     )
 
-    response = []
-    for metric in metrics:
-        response.append(metric)
-
+    response = [metric for metric in metrics]
     return response
+
+
+def get_test_run_metric_definitions(
+    cmd, load_test_resource, test_run_id, metric_namespace, resource_group_name=None
+):
+    client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+    metric_definitions = client.get_metric_definitions(
+        test_run_id, metric_namespace=metric_namespace
+    )
+    return metric_definitions
+
+
+def get_test_run_metric_dimensions(
+    cmd,
+    load_test_resource,
+    test_run_id,
+    metric_name,
+    metric_namespace,
+    dimension_name,
+    start_time=None,
+    end_time=None,
+    interval=None,
+    resource_group_name=None,
+):
+    client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+
+    if start_time is None or end_time is None:
+        test_run_response = client.get_test_run(test_run_id)
+        if start_time is None:
+            start_time = test_run_response["startDateTime"]
+        if end_time is None:
+            end_time = test_run_response["endDateTime"]
+
+    dimensions = client.list_metric_dimension_values(
+        test_run_id,
+        dimension_name,
+        metric_name=metric_name,
+        metric_namespace=metric_namespace,
+        time_interval="{start}/{end}".format(
+            start=start_time,
+            end=end_time,
+        ),
+        interval=interval,
+    )
+
+    response = [dimension for dimension in dimensions]
+    return response
+
 
 # TODO: Add log statements everywhere
