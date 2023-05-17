@@ -7175,6 +7175,41 @@ class Scale(_serialization.Model):
         self.rules = rules
 
 
+class ServiceBinding(_serialization.Model):
+    """The metadata for service bindings to a container app.
+    :ivar service_id: Required. The ARM ID of the service that the Container App will bind to.
+    :vartype service_id: str
+    :ivar name: Optional. The custom name for the binding.
+    :vartype name: str
+    """
+
+    _validation = {
+        'service_id': {'required': True},
+    }
+
+    _attribute_map = {
+        'service_id': {'key': 'serviceId', 'type': 'str'},
+        'name': {'key': 'name', 'type': 'str'}
+    }
+
+    def __init__(
+            self,
+            *,
+            service_id: str,
+            name: Optional[str] = None,
+            **kwargs: Any
+    ) -> None:
+        """
+        :keyword service_id: Required. The ARM ID of the service that the Container App will bind to.
+        :paramtype service_id: str
+        :keyword name: Optional. The custom name for the binding.
+        :paramtype name: str
+        """
+        super().__init__(**kwargs)
+        self.service_id = service_id
+        self.name = name
+
+
 class ScaleRule(_serialization.Model):
     """Container App container scaling rule.
 
@@ -7584,6 +7619,8 @@ class Template(_serialization.Model):
     :vartype scale: ~azure.mgmt.appcontainers.models.Scale
     :ivar volumes: List of volume definitions for the Container App.
     :vartype volumes: list[~azure.mgmt.appcontainers.models.Volume]
+    :ivar service_binds: List of service bindings for the Container App.
+    :vartype service_binds: list[~commondefinitions.models.ServiceBinding]
     """
 
     _attribute_map = {
@@ -7592,6 +7629,7 @@ class Template(_serialization.Model):
         "containers": {"key": "containers", "type": "[Container]"},
         "scale": {"key": "scale", "type": "Scale"},
         "volumes": {"key": "volumes", "type": "[Volume]"},
+        "service_binds": {"key": "serviceBinds", "type": "[ServiceBinding]"}
     }
 
     def __init__(
@@ -7602,6 +7640,7 @@ class Template(_serialization.Model):
         containers: Optional[List["_models.Container"]] = None,
         scale: Optional["_models.Scale"] = None,
         volumes: Optional[List["_models.Volume"]] = None,
+        service_binds: Optional[List["_models.ServiceBinding"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -7615,6 +7654,8 @@ class Template(_serialization.Model):
         :paramtype scale: ~azure.mgmt.appcontainers.models.Scale
         :keyword volumes: List of volume definitions for the Container App.
         :paramtype volumes: list[~azure.mgmt.appcontainers.models.Volume]
+        :param service_binds: List of service bindings for the Container App.
+        :type service_binds: list[~azure.mgmt.appcontainers.models.ServiceBinding]
         """
         super().__init__(**kwargs)
         self.revision_suffix = revision_suffix
@@ -7622,6 +7663,7 @@ class Template(_serialization.Model):
         self.containers = containers
         self.scale = scale
         self.volumes = volumes
+        self.service_binds = service_binds
 
 
 class TrafficWeight(_serialization.Model):

@@ -133,6 +133,11 @@ Scale = {
     "rules": []  # list of ScaleRule
 }
 
+ServiceBinding = {
+    "serviceId": None,
+    "name": None
+}
+
 JobScale = {
     "minExecutions": None,
     "maxExecutions": None,
@@ -179,7 +184,8 @@ Template = {
     "containers": None,  # [Container]
     "initContainers": None,  # [Container]
     "scale": Scale,
-    "volumes": None  # [Volume]
+    "volumes": None,  # [Volume]
+    "serviceBinds": None  # [ServiceBinding]
 }
 
 Configuration = {
@@ -239,6 +245,23 @@ UserAssignedIdentity = {
 ManagedServiceIdentity = {
     "type": None,  # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
     "userAssignedIdentities": None  # {string: UserAssignedIdentity}
+}
+
+ServiceConnector = {
+    "properties": {
+        "targetService": {
+            "id": None,
+            "type": "AzureResource"
+        },
+        "authInfo": {
+            "authType": None,
+        },
+        "scope": None,
+    }
+}
+
+Service = {
+    "type": None
 }
 
 ContainerApp = {

@@ -377,6 +377,46 @@ helps['containerapp env create'] = """
               --location eastus2
 """
 
+helps['containerapp service'] = """
+    type: group
+    short-summary: Commands to manage services available within the environment.
+"""
+
+helps['containerapp service list'] = """
+    type: command
+    short-summary: List all services within the environment.
+"""
+
+helps['containerapp service redis'] = """
+    type: group
+    short-summary: Commands to manage the redis service for the Container Apps environment.
+"""
+
+helps['containerapp service postgres'] = """
+    type: group
+    short-summary: Commands to manage the postgres service for the Container Apps environment.
+"""
+
+helps['containerapp service redis create'] = """
+    type: command
+    short-summary: Command to create the redis service.
+"""
+
+helps['containerapp service postgres create'] = """
+    type: command
+    short-summary: Command to create the postgres service.
+"""
+
+helps['containerapp service redis delete'] = """
+    type: command
+    short-summary: Command to delete the redis service.
+"""
+
+helps['containerapp service postgres delete'] = """
+    type: command
+    short-summary: Command to delete the postgres service.
+"""
+
 helps['containerapp env update'] = """
     type: command
     short-summary: Update a Container Apps environment.
