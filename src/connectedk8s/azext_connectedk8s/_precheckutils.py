@@ -59,7 +59,7 @@ def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, h
             cluster_diagnostic_checks_container_log_list = cluster_diagnostic_checks_container_log.split("\n")
             cluster_diagnostic_checks_container_log_list.pop(-1)
             dns_check_log = ""
-            outbound_check_log =""
+            outbound_check_log = ""
             counter_container_logs = 1
             # For retrieving only cluster_diagnostic_checks logs from the output
             for outputs in cluster_diagnostic_checks_container_log_list:

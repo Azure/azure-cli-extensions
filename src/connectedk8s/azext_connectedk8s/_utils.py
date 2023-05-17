@@ -249,7 +249,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
                 outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
                 with open(outbound_connectivity_check_path, 'w+') as outbound:
                     if consts.Outbound_Connectivity_Failed_String_For_OBO_Endpoint in outbound_connectivity_check_log:
-                        outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully." + "\nOutbound connectivity failed for the endpoint-" + failed_obo_enpoint_url + "This is an optional endpoint needed for cluster-connect feature." )
+                        outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully." + "\nOutbound connectivity failed for the endpoint-" + failed_obo_enpoint_url + "This is an optional endpoint needed for cluster-connect feature.")
                     else:
                         outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully.")
             return consts.Diagnostic_Check_Passed, storage_space_available
