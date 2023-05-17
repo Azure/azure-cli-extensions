@@ -61,15 +61,15 @@ def load_arguments(self, _):
                    arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned, UserAssigned']),
                    help='Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).',
                    arg_group='Identity')
-        c.argument('key_encryption_identity_type', options_list=['--key-encryption-identity-type'],
+        c.argument('key_encryption_identity_type', options_list=['--key-encryption-identity-type', '--key-identity-type'],
                    arg_type=get_enum_type(['systemAssignedIdentity', 'userAssignedIdentity']),
                    help='Only userAssignedIdentity is supported in this API version; other types may be supported in the future.',
                    arg_group='KeyEncryptionKeyIdentity')
-        c.argument('user_assigned_identity_resource_id', options_list=['--user-assigned-identity-resource-id'],
+        c.argument('user_assigned_identity_resource_id', options_list=['--user-assigned-identity-resource-id', '--identity-resource-id'],
                    type=str, help='User assigned identity to use for accessing key encryption key Url. '
                    'Ex: /subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId.',
                    arg_group='KeyEncryptionKeyIdentity')
-        c.argument('user_assigned_identities', options_list=['--user-assigned-identities'],
+        c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '--assigned-identities'],
                    type=validate_file_or_dict, help='The set of user assigned identities associated with the resource. '
                    'The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '
                    '\'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. '
@@ -119,15 +119,15 @@ def load_arguments(self, _):
                    arg_type=get_enum_type(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned, UserAssigned']),
                    help='Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).',
                    arg_group='Identity')
-        c.argument('key_encryption_identity_type', options_list=['--key-encryption-identity-type'],
+        c.argument('key_encryption_identity_type', options_list=['--key-encryption-identity-type', '--key-identity-type'],
                    arg_type=get_enum_type(['systemAssignedIdentity', 'userAssignedIdentity']),
                    help='Only userAssignedIdentity is supported in this API version; other types may be supported in the future.',
                    arg_group='KeyEncryptionKeyIdentity')
-        c.argument('user_assigned_identity_resource_id', options_list=['--user-assigned-identity-resource-id'], type=str,
+        c.argument('user_assigned_identity_resource_id', options_list=['--user-assigned-identity-resource-id', '--identity-resource-id'], type=str,
                    help='User assigned identity to use for accessing key encryption key Url. '
                    'Ex: /subscriptions/<sub uuid>/resourceGroups/<resource group>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myId.',
                    arg_group='KeyEncryptionKeyIdentity')
-        c.argument('user_assigned_identities', options_list=['--user-assigned-identities'],
+        c.argument('user_assigned_identities', options_list=['--user-assigned-identities', '--assigned-identities'],
                    type=validate_file_or_dict, help='The set of user assigned identities associated with the resource. '
                    'The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '
                    '\'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. '
