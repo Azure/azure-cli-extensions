@@ -88,6 +88,17 @@ def load_command_table(self, _):
         g.custom_command('set', 'create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('remove', 'remove_storage', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
+    with self.command_group('containerapp service', is_preview=True) as g:
+        g.custom_command('list', 'list_all_services')
+
+    with self.command_group('containerapp service redis') as g:
+        g.custom_command('create', 'create_redis_service', supports_no_wait=True)
+        g.custom_command('delete', 'delete_redis_service', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp service postgres') as g:
+        g.custom_command('create', 'create_postgres_service', supports_no_wait=True)
+        g.custom_command('delete', 'delete_postgres_service', confirmation=True, supports_no_wait=True)
+
     with self.command_group('containerapp identity') as g:
         g.custom_command('assign', 'assign_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('remove', 'remove_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
@@ -197,10 +208,12 @@ def load_command_table(self, _):
         g.custom_command('list-supported', 'list_supported_workload_profiles')
         g.custom_command('list', 'list_workload_profiles')
         g.custom_show_command('show', 'show_workload_profile')
-        g.custom_command('set', 'set_workload_profile')
+        g.custom_command('set', 'set_workload_profile', deprecate_info=g.deprecate(hide=True))
+        g.custom_command('add', 'add_workload_profile')
+        g.custom_command('update', 'update_workload_profile')
         g.custom_command('delete', 'delete_workload_profile')
 
     with self.command_group('containerapp patch', is_preview=True) as g:
-        g.custom_command('list', 'patch_list', is_preview=True)
-        g.custom_command('apply', 'patch_apply', is_preview=True)
-        g.custom_command('interactive', 'patch_interactive', is_preview=True)
+        g.custom_command('list', 'patch_list')
+        g.custom_command('apply', 'patch_apply')
+        g.custom_command('interactive', 'patch_interactive')
