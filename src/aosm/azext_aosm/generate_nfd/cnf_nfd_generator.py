@@ -109,10 +109,11 @@ class CnfNfdGenerator(NFDGenerator):
                 )
                 # Workout the list of artifacts for the chart and
                 # update the list for the NFD
-                self.artifacts += self.get_artifact_list(
+                chart_artifacts = self.get_artifact_list(
                     helm_package, set(image_line_matches)
                 )
-
+                self.artifacts += [a for a in chart_artifacts if a not in self.artifacts]
+                
             # Write NFD bicep
             self.write_nfd_bicep_file()
 
@@ -126,7 +127,7 @@ class CnfNfdGenerator(NFDGenerator):
             self.copy_to_output_folder()
 
         # Delete tmp folder
-        # shutil.rmtree(self.tmp_folder_name)
+        shutil.rmtree(self.tmp_folder_name)
 
     @property
     def bicep_path(self) -> Optional[str]:
@@ -200,7 +201,7 @@ class CnfNfdGenerator(NFDGenerator):
             )
 
         bicep_contents: str = template.render(
-            deployParametersPath="schema/deploymentParameterSchema.json",
+            deployParametersPath="schemas/deploymentParameters.json",
             nf_application_configurations=self.nf_application_configurations,
         )
 
