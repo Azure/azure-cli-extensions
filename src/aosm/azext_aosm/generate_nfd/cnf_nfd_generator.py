@@ -16,7 +16,7 @@ from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 from knack.log import get_logger
 from azext_aosm._configuration import CNFConfiguration, HelmPackageConfig
 from azext_aosm.util.constants import CNF_DEFINITION_BICEP_SOURCE_TEMPLATE
-
+from azure.cli.core.azclierror import InvalidTemplateError
 logger = get_logger(__name__)
 
 
@@ -46,7 +46,8 @@ class CnfNfdGenerator(NFDGenerator):
 
     def generate_nfd(self):
         """Generate a VNF NFD which comprises an group, an Artifact Manifest and a NFDV."""
-        # Create tmp folder.
+        
+        # Create tmp folder.       
         os.mkdir(self.tmp_folder_name)
 
         if self.bicep_path:
@@ -67,26 +68,23 @@ class CnfNfdGenerator(NFDGenerator):
 
                 # generate the NF application for the chart
                 self.nf_applications.append(self.generate_nf_application(helm_package))
+                
                 # Workout the list of artifacts for the chart
                 self.artifacts += self.get_artifact_list(helm_package)
-                
                 with open('artifacts.json', 'w') as file:
                     json.dump(self.artifacts, file, indent=4)
                 
             # Write NFD bicep
-            #' JRODAN: this needs to return the name of the file? so we can copy or we can just search for .bicep
             nfd_bicep_file = self.write_nfd_bicep_file()
+            
             # Write schema to schema/deploymentParameterSchema.json
+            self.write_schema_to_file()
+
             # Write Artifact Mainfest bicep
 
             # Copy contents of tmp folder to output folder.
-            #JORDAN: check what files we def want: bicep, schema and mappings (deployParams and configMappings folders)
-            if not os.path.exists('output'):
-                os.mkdir('output')
-            nfd_bicep_path = os.path.join(self.tmp_folder_name,(nfd_bicep_file + '.bicep') )
-            print(nfd_bicep_path)
-            shutil.copy(nfd_bicep_path, 'output')
-            
+            self.copy_to_output_folder(nfd_bicep_file)      
+
         # Delete tmp folder
         shutil.rmtree(self.tmp_folder_name)
 
@@ -105,7 +103,6 @@ class CnfNfdGenerator(NFDGenerator):
         :param helm_package: The helm package to extract.
         :type helm_package: HelmPackageConfig
         """
-        print("fname", fname)
         if fname.endswith("tar.gz") or fname.endswith("tgz"):
             tar = tarfile.open(fname, "r:gz")
             tar.extractall(path=self.tmp_folder_name)
@@ -136,6 +133,27 @@ class CnfNfdGenerator(NFDGenerator):
         logger.info("Create NFD bicep %s", self.output_folder_name)
         os.mkdir(self.output_folder_name)
 
+    def write_schema_to_file(self):
+        full_schema = os.path.join(self.tmp_folder_name, 'deploymentParameters.json')
+        with open(full_schema, 'w', encoding="UTF-8") as f:
+            print("Writing schema to json file.")
+            json.dump(self.deployment_parameter_schema, f, indent=4)
+            
+    def copy_to_output_folder(self, nfd_bicep_file):
+        
+        if not os.path.exists(self.output_folder_name):
+            os.mkdir(self.output_folder_name)
+            os.mkdir(self.output_folder_name + '/schemas')
+            
+        nfd_bicep_path = os.path.join(self.tmp_folder_name,(nfd_bicep_file + '.bicep') )
+        shutil.copy(nfd_bicep_path, self.output_folder_name)
+        
+        config_mappings_path = os.path.join(self.tmp_folder_name,'configMappings' )
+        shutil.copytree(config_mappings_path, self.output_folder_name + '/configMappings', dirs_exist_ok=True)
+        
+        full_schema = os.path.join(self.tmp_folder_name, 'deploymentParameters.json')
+        shutil.copy(full_schema, self.output_folder_name + '/schemas' + '/deploymentParameters.json')  
+            
     def write_nfd_bicep_file(self):
         # This will write the bicep file for the NFD.
         code_dir = os.path.dirname(__file__)
@@ -238,12 +256,7 @@ class CnfNfdGenerator(NFDGenerator):
                 
         return image_versions
     
-    ## JORDAN: this is done cheating by not actually looking at the schema
-    def get_chart_mapping_schema(self, helm_package: HelmPackageConfig) -> Dict[Any, Any]:
-        # We need to take the mappings from the values.nondef.yaml file and generate the schema
-        # from the values.schema.json file.
-        # Basically take the bits of the schema that are relevant to the parameters requested.
-        
+    def get_chart_mapping_schema(self, helm_package: HelmPackageConfig) -> Dict[Any, Any]:        
         non_def_values = os.path.join(self.tmp_folder_name, helm_package.name, "values.nondef.yaml")
         values_schema = os.path.join(self.tmp_folder_name, helm_package.name, "values.schema.json")
         
@@ -253,38 +266,38 @@ class CnfNfdGenerator(NFDGenerator):
         with open(values_schema, 'r') as f:
             data = json.load(f)
             schema_data = data["properties"]
-        # print(schema_data)
-        deploy_params_list = []
-        params_for_schema = self.find_deploy_params(values_data, schema_data, deploy_params_list, {})
+      
+        try:              
+            final_schema = self.find_deploy_params(values_data, schema_data, {})
+        except KeyError:
+            raise InvalidTemplateError(f"ERROR: Your schema and values for the helm package '{helm_package.name}' do not match. Please fix this and run the command again.")
         
-        print("params", params_for_schema)
-        schema_dict = {}
-        for i in params_for_schema:
-            schema_dict[i] = {"type": "string", "description": "no descr"}
-   
-        return schema_dict
+        return final_schema
 
-    ## JORDAN: change this to save the key and value that has deployParam in it so we can check the schema for the key
-    def find_deploy_params(self, nested_dict, schema_nested_dict, deploy_params_list, dict_path):
+    def find_deploy_params(self, nested_dict, schema_nested_dict, final_schema):
+        original_schema_nested_dict = schema_nested_dict
         for k,v in nested_dict.items():
-            # #reset
-            # dict_path = {}
-            test = {}
-            if isinstance(v, str) and "deployParameters" in v:
+            # if value is a string and contains deployParameters.
+            if isinstance(v, str) and f"deployParameters." in v:
                 # only add the parameter name (not deployParam. or anything after)
                 param = v.split(".",1)[1]
                 param = param.split('}', 1)[0]
-                # dict_path[k] = param
-                ## identify the zone param 
-                deploy_params_list.append(param)
-                test[k] = param
-                print(deploy_params_list)
-                print(test)
-            elif hasattr(v, 'items'): #v is a dict
-                # dict_path[k] = {}
-                self.find_deploy_params(v, deploy_params_list, dict_path)
-            # print("dict", dict_path)        
-        return deploy_params_list
+                # add the schema for k (from the big schema) to the (smaller) schema
+                final_schema.update({k :schema_nested_dict["properties"][k]})
+
+            # else if value is a (non-empty) dictionary (i.e another layer of nesting)
+            elif hasattr(v, 'items') and v.items(): 
+                # handling schema having properties which doesn't map directly to the values file nesting
+                if "properties" in schema_nested_dict.keys():
+                    schema_nested_dict = schema_nested_dict["properties"][k]
+                else:
+                    schema_nested_dict = schema_nested_dict[k]
+                # recursively call function with values (i.e the nested dictionary)    
+                self.find_deploy_params(v, schema_nested_dict, final_schema)
+                # reset the schema dict to its original value (once finished with that level of recursion)
+                schema_nested_dict = original_schema_nested_dict 
+      
+        return final_schema
             
     def get_chart_name_and_version(
         self, helm_package: HelmPackageConfig
@@ -309,11 +322,12 @@ class CnfNfdGenerator(NFDGenerator):
         
         mappings_folder_path = os.path.join(self.tmp_folder_name, "configMappings")
         mappings_filename = f"{helm_package.name}-mappings.json"
+        
         if not os.path.exists(mappings_folder_path):
             os.mkdir(mappings_folder_path)
 
         mapping_file_path = os.path.join(mappings_folder_path, mappings_filename)
-
+        
         with open(values) as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
 
