@@ -13,8 +13,12 @@ class LoadScenario(ScenarioTest):
     #
     load_test_config_file = r"C:\\Users\\hbisht\\Desktop\\config.yaml"
     test_plan = r"C:\\Users\\hbisht\\Desktop\\LoadTest2.jmx"
-    app_component_id = "/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss"
-    app_component_type = "Microsoft.Compute/virtualMachineScaleSets"
+    app_component_id = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss"
+    app_component_type = r"Microsoft.Compute/virtualMachineScaleSets"
+    metric_id = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss/providers/microsoft.insights/metricdefinitions/Percentage CPU"
+    metric_name = r"Percentage_CPU"
+    metric_namespace = r"microsoft.compute/virtualmachinescalesets"
+    aggregation = r"Average"
 
     # test case for 'az load test list' command
     def testcase_load_test_list(self):
@@ -273,7 +277,7 @@ class LoadScenario(ScenarioTest):
         {
             "load_test_resource": LoadScenario.load_test_resource,
             "resource_group": LoadScenario.resource_group,
-            "test_id": "app-component-test-case-1507-2608",
+            "test_id": "update-test-case-1507-2608",
             "load_test_config_file": LoadScenario.load_test_config_file,
             "test_plan": LoadScenario.test_plan,
         }
@@ -337,7 +341,7 @@ class LoadScenario(ScenarioTest):
         {
             "load_test_resource": LoadScenario.load_test_resource,
             "resource_group": LoadScenario.resource_group,
-            "test_id": "update-test-case-1507-2608",
+            "test_id": "app-component-test-case-1507-2608",
             "load_test_config_file": LoadScenario.load_test_config_file,
             "test_plan": LoadScenario.test_plan,
             "app_component_id": LoadScenario.app_component_id,
@@ -364,43 +368,45 @@ class LoadScenario(ScenarioTest):
         # assuming the app component is already created
         # Adding an app component to the load test
         response = self.cmd(
-            "az load test app-component add "
+            "az load test app-components add "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             "--app-component-name {app_component_name} "
             "--app-component-type {app_component_type} "
-            "app-component-id {app_component_id} ",
+            "--app-component-id {app_component_id} ",
             checks=checks,
         ).get_output_in_json()
 
         # Verify that the app component was added by making use of the list command
 
         list_of_app_components = self.cmd(
-            "az load test app-component list "
+            "az load test app-components list "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
         ).get_output_in_json()
-        assert self.kwargs["app_component_id"] == [list_of_app_components.get("components",{}).get(self.kwargs["app_component_id"])]
+        assert list_of_app_components.get("components",{}).get(self.kwargs["app_component_id"])
+        assert self.kwargs["app_component_id"] == list_of_app_components.get("components",{}).get(self.kwargs["app_component_id"]).get("resourceId")
 
         # Remove app component
         self.cmd(
-            "az load test app-component remove "
+            "az load test app-components remove "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             "--app-component-id {app_component_id} "
+            "--yes"
         )
 
         list_of_app_components = self.cmd(
-            "az load test app-component list "
+            "az load test app-components list "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
         ).get_output_in_json()
 
-        assert self.kwargs["app_component_id"] not in [component.get(self.kwargs["app_component_id"]) for component in list_of_app_components]
+        assert not list_of_app_components.get("components",{}).get(self.kwargs["app_component_id"])
 
         # Delete the load test
         self.cmd(
@@ -420,6 +426,124 @@ class LoadScenario(ScenarioTest):
 
         assert self.kwargs["test_id"] not in [test.get("testId") for test in list_of_tests]
 
+    def testcase_load_server_metrics(self):
+        self.kwargs.update(
+        {
+            "load_test_resource": LoadScenario.load_test_resource,
+            "resource_group": LoadScenario.resource_group,
+            "test_id": "server-metrics-test-case-1507-2608",
+            "load_test_config_file": LoadScenario.load_test_config_file,
+            "test_plan": LoadScenario.test_plan,
+            "metric_id": LoadScenario.metric_id,
+            "metric_name": LoadScenario.metric_name,
+            "metric_namespace": LoadScenario.metric_namespace,
+            "aggregation": LoadScenario.aggregation,
+            "app_component_id": LoadScenario.app_component_id,
+            "app_component_name": "my-app-component",
+            "app_component_type": LoadScenario.app_component_type,
+            
+        }
+        )
+        checks = [
+            JMESPathCheck("testId", self.kwargs["test_id"]),
+        ]
+
+        # Create a new load test
+        self.cmd(
+            "az load test create "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--load-test-config-file {load_test_config_file} "
+            "--test-plan {test_plan}",
+            checks=checks,
+        )
+
+        # assuming the app component is already created
+        self.cmd(
+            "az load test app-components add "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--app-component-name {app_component_name} "
+            "--app-component-type {app_component_type} "
+            "--app-component-id {app_component_id} ",
+            checks=checks,
+        ).get_output_in_json()
+
+        # Verify that the app component was added by making use of the list command
+
+        list_of_app_components = self.cmd(
+            "az load test app-components list "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+        ).get_output_in_json()
+        assert list_of_app_components.get("components",{}).get(self.kwargs["app_component_id"])
+        assert self.kwargs["app_component_id"] == list_of_app_components.get("components",{}).get(self.kwargs["app_component_id"]).get("resourceId")
+
+        # Adding an server metrics to the load test
+        self.cmd(
+            "az load test server-metrics add "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--metric-id \"{metric_id}\" "
+            "--metric-name {metric_name} "
+            "--metric-namespace {metric_namespace} "
+            "--aggregation {aggregation} "
+            "--app-component-type {app_component_type} "
+            "--app-component-id {app_component_id} ",
+            checks=checks,
+        ).get_output_in_json()
+
+        # Verify that the server metrics was added by making use of the list command
+
+        list_of_server_metrics = self.cmd(
+            "az load test server-metrics list "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+        ).get_output_in_json()
+        assert list_of_server_metrics.get("metrics",{}).get(self.kwargs["metric_id"])
+        assert self.kwargs["metric_id"] == list_of_server_metrics.get("metrics",{}).get(self.kwargs["metric_id"], {}).get("id")
+
+        # Remove server metrics
+        self.cmd(
+            "az load test server-metrics remove "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--metric-id \"{metric_id}\" "
+            "--yes"
+        )
+
+        list_of_server_metrics = self.cmd(
+            "az load test server-metrics list "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+        ).get_output_in_json()
+
+        assert not list_of_app_components.get("metrics",{}).get(self.kwargs["metric_id"])
+
+        # Delete the load test
+        self.cmd(
+            "az load test delete "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--yes"
+        )
+
+        # Verify that the load test was deleted
+        list_of_tests = self.cmd(
+            "az load test list "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group}"
+        ).get_output_in_json()
+
+        assert self.kwargs["test_id"] not in [test.get("testId") for test in list_of_tests]
 
 
 ##TO-DO update download files test case according to new changes
