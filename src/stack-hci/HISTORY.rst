@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.1.7
+++++++
+* Upgrade api-version to 2023-03-01
+* Migrate azure-stack-hci commands to aaz
+
 0.1.6
 ++++++
 * Upgrade api-version to 2022-05-01

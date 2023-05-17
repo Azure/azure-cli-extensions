@@ -7,6 +7,7 @@ Release History
 * Add 'source_backup_location' parameter to 'cosmosdb restore' command
 * Add support for performing in-account restore of deleted databases and graphs in a Gremlin account.
 * Add support for performing in-account restore of deleted tables in a Table account.
+* Add `--enable-burst-capacity` parameter for create/update database account.
 
 ++++++
 0.23.0

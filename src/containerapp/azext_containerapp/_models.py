@@ -79,10 +79,16 @@ Container = {
     "volumeMounts": None,  # [VolumeMount]
 }
 
+SecretVolumeItem = {
+    "secretRef": None,
+    "path": None,
+}
+
 Volume = {
     "name": None,
-    "storageType": "EmptyDir",  # AzureFile or EmptyDir
-    "storageName": None  # None for EmptyDir, otherwise name of storage resource
+    "storageType": "EmptyDir",  # AzureFile, EmptyDir or Secret
+    "storageName": None,   # None for EmptyDir or Secret, otherwise name of storage resource
+    "secrets": None,  # [SecretVolumeItem]
 }
 
 ScaleRuleAuth = {
@@ -127,6 +133,11 @@ Scale = {
     "rules": []  # list of ScaleRule
 }
 
+ServiceBinding = {
+    "serviceId": None,
+    "name": None
+}
+
 TrafficWeight = {
     "revisionName": None,
     "weight": None,
@@ -166,7 +177,8 @@ Template = {
     "containers": None,  # [Container]
     "initContainers": None,  # [Container]
     "scale": Scale,
-    "volumes": None  # [Volume]
+    "volumes": None,  # [Volume]
+    "serviceBinds": None  # [ServiceBinding]
 }
 
 Configuration = {
@@ -184,6 +196,23 @@ UserAssignedIdentity = {
 ManagedServiceIdentity = {
     "type": None,  # 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned,UserAssigned'
     "userAssignedIdentities": None  # {string: UserAssignedIdentity}
+}
+
+ServiceConnector = {
+    "properties": {
+        "targetService": {
+            "id": None,
+            "type": "AzureResource"
+        },
+        "authInfo": {
+            "authType": None,
+        },
+        "scope": None,
+    }
+}
+
+Service = {
+    "type": None
 }
 
 ContainerApp = {

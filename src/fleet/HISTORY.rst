@@ -19,3 +19,7 @@ Release History
 0.2.1
 ++++++
 * Update fleet member commands
+
+0.2.2
+++++++
+* Add fleet multi-cluster update commands

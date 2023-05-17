@@ -9,7 +9,7 @@ from azure.cli.core.commands import CliCommandType
 from .custom import build_af_rule_list, build_af_rule_show, build_af_rule_delete
 from .profiles import CUSTOM_FIREWALL
 
-from ._client_factory import cf_firewalls, cf_firewall_fqdn_tags, cf_firewall_policies, cf_firewall_policy_rule_collection_groups
+from ._client_factory import cf_firewalls, cf_firewall_fqdn_tags, cf_firewall_policy_rule_collection_groups
 from ._util import (
     list_network_resource_property, get_network_resource_property_entry, delete_network_resource_property_entry)
 
@@ -39,13 +39,6 @@ def load_command_table(self, _):
         min_api='2018-08-01'
     )
 
-    network_firewall_policies_sdk = CliCommandType(
-        operations_tmpl='azext_firewall.vendored_sdks.v2021_08_01.operations#FirewallPoliciesOperations.{}',
-        client_factory=cf_firewall_policies,
-        resource_type=CUSTOM_FIREWALL,
-        min_api='2019-07-01'
-    )
-
     network_firewall_policy_rule_groups = CliCommandType(
         operations_tmpl='azext_firewall.vendored_sdks.v2021_08_01.operations#FirewallPolicyRuleCollectionGroupsOperations.{}',
         client_factory=cf_firewall_policy_rule_collection_groups,
@@ -53,20 +46,11 @@ def load_command_table(self, _):
         min_api='2019-07-01'
     )
 
-    network_firewall_policies_custom = CliCommandType(
-        operations_tmpl='azext_firewall.custom#{}',
-        client_factory=cf_firewall_policies,
-        resource_type=CUSTOM_FIREWALL,
-        min_api='2019-07-01'
-    )
-
     # region AzureFirewalls
-    with self.command_group('network firewall', network_firewall_sdk) as g:
-        g.custom_command('create', 'create_azure_firewall')
-        g.command('delete', 'begin_delete')
-        g.custom_command('list', 'list_azure_firewalls')
-        g.show_command('show')
-        g.generic_update_command('update', setter_name="begin_create_or_update", custom_func_name='update_azure_firewall')
+    with self.command_group('network firewall'):
+        from .custom import AzureFirewallCreate, AzureFirewallUpdate
+        self.command_table['network firewall create'] = AzureFirewallCreate(loader=self)
+        self.command_table['network firewall update'] = AzureFirewallUpdate(loader=self)
 
     with self.command_group('network firewall threat-intel-allowlist', network_firewall_sdk, is_preview=True, min_api='2019-09-01') as g:
         g.custom_command('create', 'create_azure_firewall_threat_intel_allowlist')
@@ -121,15 +105,10 @@ def load_command_table(self, _):
     # endregion
 
     # region AzureFirewallPolicies
-    with self.command_group('network firewall policy', network_firewall_policies_sdk, resource_type=CUSTOM_FIREWALL, min_api='2019-07-01') as g:
-        g.custom_command('create', 'create_azure_firewall_policies', exception_handler=exception_handler)
-        g.command('delete', 'begin_delete')
-        g.custom_command('list', 'list_azure_firewall_policies')
-        g.show_command('show')
-        g.generic_update_command('update', custom_func_name='update_azure_firewall_policies',
-                                 setter_name='set_azure_firewall_policies',
-                                 setter_type=network_firewall_policies_custom,
-                                 exception_handler=exception_handler)
+    with self.command_group('network firewall policy'):
+        from .custom import AzureFirewallPoliciesCreate, AzureFirewallPoliciesUpdate
+        self.command_table['network firewall policy create'] = AzureFirewallPoliciesCreate(loader=self)
+        self.command_table['network firewall policy update'] = AzureFirewallPoliciesUpdate(loader=self)
 
     with self.command_group('network firewall policy intrusion-detection', resource_type=CUSTOM_FIREWALL, min_api='2021-08-01', is_preview=True) as g:
         g.custom_command('add', 'add_firewall_policy_intrusion_detection_config', exception_handler=exception_handler)

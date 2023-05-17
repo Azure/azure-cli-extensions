@@ -7,20 +7,25 @@
 import time
 import json
 import platform
+import re
 
 from urllib.parse import urlparse
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingError, CLIInternalError,
-                                       ResourceNotFoundError, FileOperationError, CLIError, UnauthorizedError)
+                                       ResourceNotFoundError, FileOperationError, CLIError, UnauthorizedError,
+                                       InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.utils import _normalize_location
 from .aaz.latest.network.vnet import Show as VNetShow
 from azure.cli.command_modules.role.custom import create_role_assignment
 from azure.cli.command_modules.acr.custom import acr_show
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core._profile import Profile
 from azure.cli.core.profiles import ResourceType
 from azure.mgmt.containerregistry import ContainerRegistryManagementClient
+from azure.mgmt.resource import ResourceManagementClient
+from azure.mgmt.servicelinker import ServiceLinkerManagementClient
 
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
@@ -30,7 +35,10 @@ from ._client_factory import handle_raw_exception, providers_client_factory, cf_
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
                          LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
                          LOGS_STRING, PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS)
-from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel, ManagedCertificateEnvelop as ManagedCertificateEnvelopModel)
+from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel,
+                      ManagedCertificateEnvelop as ManagedCertificateEnvelopModel,
+                      ServiceConnector as ServiceConnectorModel)
+from ._managed_service_utils import ManagedRedisUtils, ManagedCosmosDBUtils, ManagedPostgreSQLUtils
 
 logger = get_logger(__name__)
 
@@ -350,7 +358,7 @@ def parse_secret_flags(secret_list):
     for secret in secret_list:
         key_val = secret.split('=', 1)
         if len(key_val) != 2:
-            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\.")
+            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\".")
         if key_val[0] in secret_entries:
             raise ValidationError("Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
         secret_entries.append(key_val[0])
@@ -363,9 +371,9 @@ def parse_secret_flags(secret_list):
         kv_identity = value.split(',', 2)
         if len(kv_identity) == 1:
             if kv_identity[0].startswith('keyvaultref:'):
-                raise ValidationError("Identityref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\.")
+                raise ValidationError("Identityref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\".")
             if kv_identity[0].startswith('identityref:'):
-                raise ValidationError("Keyvaultref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\.")
+                raise ValidationError("Keyvaultref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\".")
 
         if len(kv_identity) == 2:
             kv = kv_identity[0]
@@ -383,6 +391,158 @@ def parse_secret_flags(secret_list):
         })
 
     return secret_var_def
+
+
+def get_linker_client(cmd):
+    resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
+    profile = Profile(cli_ctx=cmd.cli_ctx)
+    credential, subscription_id, _ = profile.get_login_credentials(
+        subscription_id=get_subscription_id(cmd.cli_ctx), resource=resource)
+    linker_client = ServiceLinkerManagementClient(credential)
+    return linker_client
+
+
+def process_service(cmd, resource_list, service_name, arg_dict, subscription_id, resource_group_name, name,
+                    binding_name, service_connector_def_list, service_bindings_def_list):
+    # Check if the service exists in the list of dict
+    for service in resource_list:
+        if service["name"] == service_name:
+            if service["type"] == "Microsoft.Cache/Redis":
+                service_connector_def_list.append(
+                    ManagedRedisUtils.build_redis_service_connector_def(subscription_id, resource_group_name,
+                                                                        service_name, arg_dict,
+                                                                        name, binding_name))
+            elif service["type"] == "Microsoft.DocumentDb/databaseAccounts":
+                service_connector_def_list.append(
+                    ManagedCosmosDBUtils.build_cosmosdb_service_connector_def(subscription_id, resource_group_name,
+                                                                              service_name, arg_dict,
+                                                                              name, binding_name))
+            elif service["type"] == "Microsoft.DBforPostgreSQL/flexibleServers":
+                service_connector_def_list.append(
+                    ManagedPostgreSQLUtils.build_postgresql_service_connector_def(subscription_id, resource_group_name,
+                                                                                  service_name, arg_dict,
+                                                                                  name, binding_name))
+            elif service["type"] == "Microsoft.App/containerApps":
+                containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name,
+                                                           name=service_name)
+
+                if not containerapp_def:
+                    raise ResourceNotFoundError(f"The service '{service_name}' does not exist")
+
+                configuration = containerapp_def["properties"]["configuration"]["service"]
+                if configuration is None or configuration["type"] not in ["redis", "postgres"]:
+                    raise ResourceNotFoundError(f"The service '{service_name}' does not exist")
+
+                service_bindings_def_list.append({
+                    "serviceId": containerapp_def["id"],
+                    "name": binding_name
+                })
+
+            else:
+                raise ValidationError("Service not supported")
+            break
+    else:
+        raise ResourceNotFoundError("Service with the given name does not exist")
+
+
+def validate_binding_name(binding_name):
+    pattern = r'^(?=.{1,60}$)[a-zA-Z0-9._]+$'
+    return bool(re.match(pattern, binding_name))
+
+
+def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def_list, resource_group_name, name):
+    linker_client = get_linker_client(cmd)
+    containerapp_def = None
+
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:  # pylint: disable=bare-except
+        pass
+    all_bindings = []
+
+    if containerapp_def:
+        managed_bindings = linker_client.linker.list(resource_uri=containerapp_def["id"])
+        service_binds = containerapp_def["properties"].get("template", {}).get("serviceBinds", [])
+
+        if managed_bindings:
+            all_bindings.extend([item.name for item in managed_bindings])
+        if service_binds:
+            all_bindings.extend([item["name"] for item in service_binds])
+
+    service_binding_names = [service_bind["name"] for service_bind in service_bindings_def_list]
+    linker_names = [connector["linker_name"] for connector in service_connectors_def_list]
+
+    all_bindings_set = set(all_bindings)
+    service_binding_names_set = set(service_binding_names)
+    linker_names_set = set(linker_names)
+
+    if len(all_bindings_set | service_binding_names_set | linker_names_set) != len(all_bindings_set) + len(
+            service_binding_names_set) + len(linker_names_set):
+        # There are duplicate elements across the lists
+        return False
+    elif len(all_bindings_set) + len(service_binding_names_set) + len(linker_names_set) != len(all_bindings) + len(
+            service_binding_names) + len(linker_names):
+        # There are duplicate elements within one or more of the lists
+        return False
+    else:
+        # There are no duplicate elements among the lists or within any of the lists
+        return True
+
+
+def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name):
+    # Make it return both managed and dev bindings
+    service_bindings_def_list = []
+    service_connector_def_list = []
+
+    for service_binding_str in service_bindings_list:
+        parts = service_binding_str.split(",")
+        arg_dict = {}
+
+        for part in parts:
+            key_value = part.split("=")
+
+            if len(key_value) == 1:
+                # This means we don't have comma separated args
+                pass
+            else:
+                arg_dict[key_value[0]] = key_value[1]
+
+        service_binding = parts[0].split(':')
+        service_name = service_binding[0]
+
+        if len(service_binding) == 1:
+            binding_name = service_name
+        else:
+            binding_name = service_binding[1]
+
+        if not validate_binding_name(binding_name):
+            raise InvalidArgumentValueError("The Binding Name can only contain letters, numbers (0-9), periods ('.'), "
+                                            "and underscores ('_'). The length must not be more than 60 characters.")
+
+        resource_client = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient)
+
+        if "resourcegroup" in arg_dict:
+            # Search in target rg
+            resources = resource_client.resources.list_by_resource_group(
+                arg_dict["resourcegroup"])
+            resource_group_name = arg_dict["resourcegroup"]
+        else:
+            # Search in current rg
+            resources = resource_client.resources.list_by_resource_group(
+                resource_group_name)
+
+        # Create a list with required items
+        resource_list = []
+        for item in resources:
+            resource_list.append({"name": item.name, "type": item.type, "id": item.id})
+
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+        # Will work for both create and update
+        process_service(cmd, resource_list, service_name, arg_dict, subscription_id, resource_group_name,
+                        name, binding_name, service_connector_def_list, service_bindings_def_list)
+
+    return service_connector_def_list, service_bindings_def_list
 
 
 def parse_metadata_flags(metadata_list, metadata_def={}):  # pylint: disable=dangerous-default-value
@@ -554,6 +714,24 @@ def _new_tiny_guid():
     import random
     import string
     return ''.join(random.choices(string.ascii_letters + string.digits, k=4))
+
+
+#  Generate a random volume name using same method as log analytics workspace
+def _generate_secret_volume_name():
+    import re
+    prefix = "secret-volume"
+    # volume name must be lowercase
+    suffix = _new_tiny_guid().lower()
+    maxLength = 40
+
+    name = "{}-{}".format(
+        prefix,
+        suffix
+    )
+
+    if len(name) > maxLength:
+        name = name[:maxLength]
+    return name
 
 
 # Follow same naming convention as Portal
@@ -1524,15 +1702,25 @@ def set_managed_identity(cmd, resource_group_name, containerapp_def, system_assi
 
 
 def create_acrpull_role_assignment(cmd, registry_server, registry_identity=None, service_principal=None, skip_error=False):
+    from azure.cli.command_modules.acr._utils import ResourceNotFound
+
     if registry_identity:
         registry_identity_parsed = parse_resource_id(registry_identity)
-        registry_identity_name, registry_identity_rg = registry_identity_parsed.get("name"), registry_identity_parsed.get("resource_group")
-        sp_id = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI).user_assigned_identities.get(resource_name=registry_identity_name, resource_group_name=registry_identity_rg).principal_id
+        registry_identity_name, registry_identity_rg, registry_identity_sub = registry_identity_parsed.get("name"), registry_identity_parsed.get("resource_group"), registry_identity_parsed.get("subscription")
+        sp_id = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI, subscription_id=registry_identity_sub).user_assigned_identities.get(resource_name=registry_identity_name, resource_group_name=registry_identity_rg).principal_id
     else:
         sp_id = service_principal
 
     client = get_mgmt_service_client(cmd.cli_ctx, ContainerRegistryManagementClient).registries
-    acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
+    try:
+        acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
+    except ResourceNotFound as e:
+        message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
+                   f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope <container-registry-resource-id> --role acrpull'. \n"
+                   "You may have to restart the containerapp with 'az containerapp revision restart'.")
+        logger.warning(message)
+        return
+
     retries = 10
     while retries > 0:
         try:
