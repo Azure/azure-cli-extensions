@@ -449,6 +449,8 @@ def load_arguments(self, _):
                        help="A space-separated string containing resource ids of certificates for client authentication. e.g: --client_auth_certs='id0 id1'. Use '' to clear existing certificates.")
             c.argument('secrets', nargs='*', arg_group='StandardGen2',
                        help='A list of secret(s) for the app. Format "key[=value]" and separated by space.')
+            c.argument('workload_profile', arg_group='StandardGen2',
+                       help='The workload profile used in the managed environment. Default to "Consumption".')
 
     for scope in ['spring app update', 'spring app deployment create', 'spring app deploy', 'spring app create']:
         with self.argument_context(scope) as c:
