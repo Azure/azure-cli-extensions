@@ -209,7 +209,6 @@ def cleanup(test):
         # This is usually failing in the event of the trusted access already not existing, so we can skip it unless a new error shows.
         pass
 
-@AllowLargeResponse()
 def call_scenario(test):
     setup(test)
     try:
@@ -227,5 +226,6 @@ class DataprotectionScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(DataprotectionScenarioTest, self).__init__(*args, **kwargs)
 
+    @AllowLargeResponse()
     def test_dataprotection_aks(self):
         call_scenario(self)
