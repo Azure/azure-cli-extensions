@@ -170,6 +170,33 @@ def load_arguments(self: AzCommandsLoader, _):
             help="Skip shutdown and power-off immediately.",
         )
 
+    with self.argument_context('scvmm vm create-checkpoint') as c:
+        c.argument(
+            'checkpoint_name',
+            options_list=['--checkpoint-name'],
+            help="Name of the checkpoint to be created.",
+        )
+
+        c.argument(
+            'checkpoint_description',
+            options_list=['--checkpoint-description'],
+            help="Description of the checkpoint to be created.",
+        )
+
+    with self.argument_context('scvmm vm delete-checkpoint') as c:
+        c.argument(
+            'checkpoint_id',
+            options_list=['--checkpoint-id'],
+            help="Checkpoint UUID.",
+        )
+
+    with self.argument_context('scvmm vm restore-checkpoint') as c:
+        c.argument(
+            'checkpoint_id',
+            options_list=['--checkpoint-id'],
+            help="Checkpoint UUID.",
+        )
+
     with self.argument_context('scvmm vm nic') as c:
         c.argument('nic_name', options_list=['--name', '-n'], help="Name of the NIC.")
         c.argument('nic_id', options_list=['--nic-id'], help="UUID of the NIC.")
@@ -254,6 +281,11 @@ def load_arguments(self: AzCommandsLoader, _):
             'retain',
             action='store_true',
             help='Disable the VM from azure but retain the VM in VMM.',
+        )
+        c.argument(
+            'deleteFromHost',
+            action='store_true',
+            help='Delete the VM from the SCVMM.',
         )
 
     with self.argument_context('scvmm avset') as c:
