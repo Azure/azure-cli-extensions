@@ -562,10 +562,11 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         image_name = self.image if self.image is not None else self.name
         from datetime import datetime
 
-        self.image = self.registry_server + "/" + image_name
         # Creating a tag for the image using the current time to avoid overwriting customer's existing images
         now = datetime.now()
         tag_now_suffix = str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
+        image_name_with_tag = image_name + ":{}".format(tag_now_suffix)
+        self.image = self.registry_server + "/" + image_name_with_tag
 
         if build_from_source:
             logger.warning("No dockerfile detected. Attempting to build a container directly from the provided source...")
@@ -575,11 +576,12 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
                 # Temporary fix: using run time tag as customer image tag
                 # Waiting for buildpacks side to fix this issue: https://github.com/buildpacks/pack/issues/1750
                 logger.warning("Attempting to build image using buildpacks...")
+                buildpack_image_name_with_tag = image_name_with_tag
                 run_image_tag = get_latest_buildpack_run_tag("aspnet", "7.0")
                 if run_image_tag is not None:
-                    image_name = f"{image_name}:{run_image_tag}-{tag_now_suffix}"
-                self.build_container_from_source_with_buildpack(image_name, source)
-                self.image = self.registry_server + "/" + image_name
+                    buildpack_image_name_with_tag = f"{image_name}:{run_image_tag}-{tag_now_suffix}"
+                self.build_container_from_source_with_buildpack(buildpack_image_name_with_tag, source)
+                self.image = self.registry_server + "/" + buildpack_image_name_with_tag
                 return
             except ValidationError as e:
                 logger.warning(f"Unable to use buildpacks to build image from source: {e}\nFalling back to ACR Task...")
@@ -591,19 +593,17 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             # Moving tagging img to here
             # Skipping the buildpacks scenario for now due to issues with buildpacks
             # Add version tag for acr image
-            image_name += ":{}".format(tag_now_suffix)
             logger.warning("Attempting to build image using ACR Task...")
-            self.build_container_from_source_with_acr_task(image_name, source)
+            self.build_container_from_source_with_acr_task(image_name_with_tag, source)
         else:
             # Moving tagging img to here
             # Skipping the buildpacks scenario for now due to issues with buildpacks
             # Add version tag for acr image
-            image_name += ":{}".format(tag_now_suffix)
             queue_acr_build(
                 self.cmd,
                 self.acr.resource_group.name,
                 self.acr.name,
-                image_name,
+                image_name_with_tag,
                 source,
                 dockerfile,
                 quiet,
