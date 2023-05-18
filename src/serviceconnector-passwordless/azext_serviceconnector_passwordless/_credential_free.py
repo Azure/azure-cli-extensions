@@ -570,6 +570,10 @@ class PostgresFlexHandler(TargetHandler):
         self.dbname = target_segments.get('child_name_1')
 
     def enable_target_aad_auth(self):
+        target = run_cli_cmd(
+            'az postgres flexible-server show --ids {}'.format(self.target_id))
+        if target.get('authConfig').get('activeDirectoryAuth') == "Enabled":
+            return
         run_cli_cmd('az postgres flexible-server update -g {} -n {} --subscription {} --active-directory-auth Enabled'.format(
             self.resource_group, self.db_server, self.subscription))
 
