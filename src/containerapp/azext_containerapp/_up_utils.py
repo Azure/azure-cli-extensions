@@ -28,7 +28,7 @@ from knack.log import get_logger
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
-from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient
+from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, ContainerAppsJobClient
 
 from ._utils import (
     get_randomized_name,
@@ -44,6 +44,7 @@ from ._utils import (
     create_service_principal_for_github_action,
     repo_url_to_name,
     get_container_app_if_exists,
+    get_containerapps_job_if_exists,
     trigger_workflow,
     _ensure_location_allowed,
     register_provider_if_needed,
@@ -66,6 +67,7 @@ from ._constants import (MAXIMUM_SECRET_LENGTH,
 
 from .custom import (
     create_managed_environment,
+    create_containerappsjob,
     containerapp_up_logic,
     list_containerapp,
     list_managed_environments,
@@ -262,6 +264,79 @@ class ContainerAppEnvironment(Resource):
                 name=self.name,
             )
         return rid
+
+
+class ContainerAppsJob(Resource):  # pylint: disable=too-many-instance-attributes
+    def __init__(
+        self,
+        cmd,
+        name: str,
+        resource_group: "ResourceGroup",
+        exists: bool = None,
+        image=None,
+        env: "ContainerAppEnvironment" = None,
+        target_port=None,
+        registry_server=None,
+        registry_user=None,
+        registry_pass=None,
+        env_vars=None,
+        trigger_type=None,
+        replica_timeout=None,
+        replica_retry_limit=None,
+        replica_completion_count=None,
+        parallelism=None,
+        cron_expression=None,
+    ):
+
+        super().__init__(cmd, name, resource_group, exists)
+        self.image = image
+        self.env = env
+        self.target_port = target_port
+        self.registry_server = registry_server
+        self.registry_user = registry_user
+        self.registry_pass = registry_pass
+        self.env_vars = env_vars
+        self.trigger_type = trigger_type,
+        self.replica_timeout = replica_timeout,
+        self.replica_retry_limit = replica_retry_limit
+        self.replica_completion_count = replica_completion_count
+        self.parallelism = parallelism
+        self.cron_expression = cron_expression
+        self.should_create_acr = False
+        self.acr: "AzureContainerRegistry" = None
+
+    def _get(self):
+        return ContainerAppsJobClient.show(self.cmd, self.resource_group.name, self.name)
+
+    def create(self, no_registry=False):
+        # no_registry: don't pass in a registry during create even if the app has one (used for GH actions)
+        if get_containerapps_job_if_exists(self.cmd, self.resource_group.name, self.name):
+            logger.warning(
+                f"Updating Containerapps job {self.name} in resource group {self.resource_group.name}"
+            )
+        else:
+            logger.warning(
+                f"Creating Containerapps job {self.name} in resource group {self.resource_group.name}"
+            )
+
+        return create_containerappsjob(
+            cmd=self.cmd,
+            name=self.name,
+            resource_group_name=self.resource_group.name,
+            image=self.image,
+            managed_env=self.env.get_rid(),
+            target_port=self.target_port,
+            registry_server=None if no_registry else self.registry_server,
+            registry_pass=None if no_registry else self.registry_pass,
+            registry_user=None if no_registry else self.registry_user,
+            env_vars=self.env_vars,
+            trigger_type=self.trigger_type,
+            replica_timeout=self.replica_timeout,
+            replica_retry_limit=self.replica_retry_limit,
+            replica_completion_count=self.replica_completion_count,
+            parallelism=self.parallelism,
+            cron_expression=self.cron_expression
+        )
 
 
 class AzureContainerRegistry(Resource):

@@ -17,6 +17,7 @@ import hashlib
 import re
 import requests
 import packaging.version as SemVer
+from enum import Enum
 
 from urllib.parse import urlparse
 from urllib.request import urlopen
@@ -40,7 +41,7 @@ from azure.mgmt.servicelinker import ServiceLinkerManagementClient
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
-from ._clients import ContainerAppClient, ManagedEnvironmentClient, WorkloadProfileClient
+from ._clients import ContainerAppClient, ManagedEnvironmentClient, WorkloadProfileClient, ContainerAppsJobClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
                          LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
@@ -51,6 +52,12 @@ from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDoma
 from ._models import OryxMarinerRunImgTagProperty
 from ._managed_service_utils import ManagedRedisUtils, ManagedCosmosDBUtils, ManagedPostgreSQLUtils
 
+
+class AppType(Enum):
+    ContainerApp = 1
+    ContainerAppJob = 2
+
+
 logger = get_logger(__name__)
 
 
@@ -59,10 +66,15 @@ def register_provider_if_needed(cmd, rp_name):
         _register_resource_provider(cmd, rp_name)
 
 
-def validate_container_app_name(name):
-    if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
-        raise ValidationError(f"Container App names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
-                              f"Please shorten {name}")
+def validate_container_app_name(name, appType):
+    if (appType == AppType.ContainerAppJob.name):
+        if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
+            raise ValidationError(f"Container App Job names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
+                                  f"Please shorten {name}")
+    if (appType == AppType.ContainerApp.name):
+        if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
+            raise ValidationError(f"Container App Job names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
+                                  f"Please shorten {name}")
 
 
 def retry_until_success(operation, err_txt, retry_limit, *args, **kwargs):
@@ -689,6 +701,15 @@ def get_container_app_if_exists(cmd, resource_group_name, name):
     except:  # pylint: disable=bare-except
         pass
     return app
+
+
+def get_containerapps_job_if_exists(cmd, resource_group_name, name):
+    job = None
+    try:
+        job = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:  # pylint: disable=bare-except
+        pass
+    return job
 
 
 def _get_name(name_or_rid):
