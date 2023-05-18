@@ -1579,10 +1579,10 @@ def create_containerappsjob(cmd,
         return create_containerappsjob_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
 
     if replica_timeout is None:
-        raise RequiredArgumentMissingError('Usage error: --replica_timeout is required')
+        raise RequiredArgumentMissingError('Usage error: --replica-timeout is required')
 
     if replica_retry_limit is None:
-        raise RequiredArgumentMissingError('Usage error: --replica_retry_limit is required')
+        raise RequiredArgumentMissingError('Usage error: --replica-retry-limit is required')
 
     if not image:
         image = HELLO_WORLD_IMAGE
