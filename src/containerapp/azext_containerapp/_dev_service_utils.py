@@ -9,7 +9,7 @@ from ._clients import ManagedEnvironmentClient, ContainerAppClient
 from ._constants import (
     CONTAINER_APPS_RP
 )
-from ._utils import register_provider_if_needed, validate_container_app_name
+from ._utils import register_provider_if_needed, validate_container_app_name, AppType
 
 
 class DevServiceUtils:
@@ -19,7 +19,7 @@ class DevServiceUtils:
         from .custom import create_containerapp
 
         register_provider_if_needed(cmd, CONTAINER_APPS_RP)
-        validate_container_app_name(service_name)
+        validate_container_app_name(service_name, AppType.ContainerApp.name)
 
         env_info = None
 
