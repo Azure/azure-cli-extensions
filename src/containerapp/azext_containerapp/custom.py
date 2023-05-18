@@ -2227,7 +2227,6 @@ def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_w
     try:
         deserializer = create_deserializer()
         containerappsjob_def = deserializer('ContainerAppsJob', yaml_containerappsjob)
-        print(containerappsjob_def)
     except DeserializationError as ex:
         raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps job YAML spec.') from ex
 
