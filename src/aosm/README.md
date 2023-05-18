@@ -28,7 +28,7 @@ Especially as this extension is still in development, you may encounter bugs or
 usability issues as you try to use it in its current form. It would be much
 appreciated if you could report these so that we're aware of them!
 
-The process for bug reporting is here:
+The (Microsoft internal) process for bug reporting during development is here:
 https://eng.ms/docs/strategic-missions-and-technologies/strategic-missions-and-technologies-organization/azure-for-operators/aiops/aiops-orchestration/aosm-product-docs/processes/bug_process
 
 CLI issues should be tagged and triaged as UX bugs.
