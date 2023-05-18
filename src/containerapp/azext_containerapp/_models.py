@@ -316,3 +316,31 @@ ManagedCertificateEnvelop = {
         "validationMethod": None  # str
     }
 }
+
+# ContainerApp Patch
+ImageProperties = {
+    "imageName": None,
+    "targetContainerName": None,
+    "targetContainerAppName": None,
+    "revisionMode": None,
+}
+
+ImagePatchableCheck = {
+    "targetContainerAppName": None,
+    "targetContainerName": None,
+    "revisionMode": None,
+    "targetImageName": None,
+    "oldRunImage": None,
+    "newRunImage": None,
+    "id": None,
+    "reason": None,
+}
+
+OryxMarinerRunImgTagProperty = {
+    "fullTag": None,
+    "framework": None,
+    "version": None,
+    "marinerVersion": None,
+    "architectures": None,
+    "support": None,
+}
