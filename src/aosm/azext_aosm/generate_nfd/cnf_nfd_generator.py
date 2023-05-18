@@ -72,13 +72,13 @@ class CnfNfdGenerator(NFDGenerator):
         os.mkdir(self.tmp_folder_name)
 
         if self.bicep_path:
-            print(f"Using the existing NFD bicep template {self.bicep_path}.")
-            print(
-                f"To generate a new NFD, delete the folder {os.path.dirname(self.bicep_path)} and re-run this command."
+            shutil.rmtree(self.tmp_folder_name)
+            raise InvalidTemplateError(
+                f"ERROR: Using the existing NFD bicep template {self.bicep_path}.\nPlease fix this and run the command again."
             )
         else:
             for helm_package in self.config.helm_packages:
-                # Why are we having to do this???
+                # TO FIGURE OUT: Why are we having to do this???
                 helm_package = HelmPackageConfig(**helm_package)
                 # Unpack the chart into the tmp folder
                 self._extract_chart(helm_package.path_to_chart)
@@ -96,8 +96,6 @@ class CnfNfdGenerator(NFDGenerator):
                 image_line_matches = self.find_pattern_matches_in_chart(
                     helm_package, IMAGE_LINE_REGEX
                 )
-                
-
                 
                 # Generate the NF application configuration for the chart
                 self.nf_application_configurations.append(
@@ -316,7 +314,7 @@ class CnfNfdGenerator(NFDGenerator):
         self, helm_package: HelmPackageConfig
     ) -> Dict[Any, Any]:
         non_def_values = os.path.join(
-            self.tmp_folder_name, helm_package.name, "values.nondef.yaml"
+            self.tmp_folder_name, helm_package.name, "values.mappings.yaml"
         )
         values_schema = os.path.join(
             self.tmp_folder_name, helm_package.name, "values.schema.json"
@@ -386,9 +384,9 @@ class CnfNfdGenerator(NFDGenerator):
     def generate_parmeter_mappings(
         self, helm_package: HelmPackageConfig
     ) -> str:
-        # Basically copy the values.nondef.yaml file to the right place.
+        # Basically copy the values.mappings.yaml file to the right place.
         values = os.path.join(
-            self.tmp_folder_name, helm_package.name, "values.nondef.yaml"
+            self.tmp_folder_name, helm_package.name, "values.mappings.yaml"
         )
 
         mappings_folder_path = os.path.join(
