@@ -636,7 +636,6 @@ def devcenter_dev_box_list(
     )
     if project_name is not None and user_id is not None:
         return cf_dataplane.dev_box.list_by_project(user_id=user_id)
-    cf_dataplane = cf_devcenter_dataplane(cmd.cli_ctx, endpoint, dev_center)
     if user_id is not None:
         return cf_dataplane.dev_box.list_by_user(user_id=user_id)
     return cf_dataplane.dev_box.list()
