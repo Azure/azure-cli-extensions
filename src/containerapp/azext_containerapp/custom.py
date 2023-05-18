@@ -8,8 +8,13 @@ import threading
 import sys
 import time
 from urllib.parse import urlparse
-import requests
 import json
+import re
+import subprocess
+from concurrent.futures import ThreadPoolExecutor
+import requests
+
+from azure.cli.core import telemetry as telemetry_core
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -28,6 +33,7 @@ from knack.prompting import prompt_y_n, prompt as prompt_str
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
+
 
 from ._client_factory import handle_raw_exception, handle_non_404_exception
 from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient, WorkloadProfileClient, ContainerAppsJobClient
@@ -67,7 +73,7 @@ from ._models import (
     CustomDomainConfiguration as CustomDomainConfigurationModel,
     ScaleRule as ScaleRuleModel,
     Volume as VolumeModel,
-    VolumeMount as VolumeMountModel,)
+    VolumeMount as VolumeMountModel)
 
 from ._utils import (_validate_subscription_registered, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
@@ -85,7 +91,8 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      set_ip_restrictions, certificate_location_matches, certificate_matches, generate_randomized_managed_cert_name,
                      check_managed_cert_name_availability, prepare_managed_certificate_envelop,
                      get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported, _generate_secret_volume_name,
-                     parse_service_bindings, get_linker_client, check_unique_bindings, AppType)
+                     parse_service_bindings, get_linker_client, check_unique_bindings,
+                     get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, AppType)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -5246,9 +5253,9 @@ def show_auth_config(cmd, resource_group_name, name):
     except:
         pass
     return auth_settings
+
+
 # Compose
-
-
 def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       resource_group_name,
                                       managed_env,
@@ -5446,3 +5453,258 @@ def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile
         return r
     except Exception as e:
         handle_raw_exception(e)
+
+
+def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
+    if is_docker_running() is False:
+        logger.error("Please install or start Docker and try again.")
+        return
+    pack_exec_path = get_pack_exec_path()
+    if pack_exec_path is None:
+        return
+    logger.warning("Listing container apps...")
+    ca_list = list_containerapp(cmd, resource_group_name, managed_env)
+    imgs = []
+    if ca_list:
+        for ca in ca_list:
+            id_parts = parse_resource_id(ca["id"])
+            resource_group_name = id_parts.get('resource_group')
+            container_app_name = id_parts.get('name')
+            managed_env_id_parts = parse_resource_id(ca["properties"]["managedEnvironmentId"])
+            managed_env_name = managed_env_id_parts.get('name')
+            containers = safe_get(ca, "properties", "template", "containers")
+            for container in containers:
+                result = dict(
+                    imageName=container["image"],
+                    targetContainerName=container["name"],
+                    targetContainerAppName=container_app_name,
+                    targetContainerAppEnvironmentName=managed_env_name,
+                    targetResourceGroup=resource_group_name)
+                imgs.append(result)
+    # Inspect the images
+    results = []
+    inspect_results = []
+    # Multi-worker
+    logger.warning("Inspecting container apps images...")
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        [executor.submit(patch_get_image_inspection, pack_exec_path, img, inspect_results) for img in imgs]
+
+    # Get the current tags of Dotnet Mariners
+    oryx_run_img_tags = get_current_mariner_tags()
+    failed_reason = "Failed to inspect the image. Please make sure that you are authenticated to the container registry and that the image exists."
+    not_based_mariner_reason = "Image not based on Mariner"
+    mcr_check_reason = "Image not from mcr.microsoft.com/oryx/builder"
+    results = []
+    # Start checking if the images are based on Mariner
+    logger.warning("Checking for patches...")
+    for inspect_result in inspect_results:
+        if inspect_result["remote_info"] == 401:
+            results.append(dict(
+                targetContainerName=inspect_result["targetContainerName"],
+                targetContainerAppName=inspect_result["targetContainerAppName"],
+                targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
+                targetResourceGroup=inspect_result["targetResourceGroup"],
+                targetImageName=inspect_result["image_name"],
+                oldRunImage=None,
+                newRunImage=None,
+                id=None,
+                reason=failed_reason))
+        else:
+            # Divide run-images into different parts by "/"
+            run_images_props = inspect_result["remote_info"]["run_images"]
+            if run_images_props is None:
+                results.append(dict(
+                    targetContainerName=inspect_result["targetContainerName"],
+                    targetContainerAppName=inspect_result["targetContainerAppName"],
+                    targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
+                    targetResourceGroup=inspect_result["targetResourceGroup"],
+                    targetImageName=inspect_result["image_name"],
+                    oldRunImage=None,
+                    newRunImage=None,
+                    id=None,
+                    reason=not_based_mariner_reason))
+            else:
+                for run_images_prop in run_images_props:
+                    if run_images_prop["name"].find("mcr.microsoft.com/oryx/builder") != -1:
+                        run_images_prop = run_images_prop["name"].split(":")
+                        run_images_tag = run_images_prop[1]
+                        # Based on Mariners
+                        if run_images_tag.find('mariner') != -1:
+                            check_result = patchable_check(run_images_tag, oryx_run_img_tags, inspect_result=inspect_result)
+                            results.append(check_result)
+                        else:
+                            results.append(dict(
+                                targetContainerName=inspect_result["targetContainerName"],
+                                targetContainerAppName=inspect_result["targetContainerAppName"],
+                                targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
+                                targetResourceGroup=inspect_result["targetResourceGroup"],
+                                targetImageName=inspect_result["image_name"],
+                                oldRunImage=run_images_tag,
+                                newRunImage=None,
+                                id=None,
+                                reason=failed_reason))
+                    else:
+                        # Not based on image from mcr.microsoft.com/oryx/builder
+                        results.append(dict(
+                            targetContainerAppName=inspect_result["targetContainerAppName"],
+                            targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
+                            targetResourceGroup=inspect_result["targetResourceGroup"],
+                            oldRunImage=inspect_result["remote_info"]["run_images"],
+                            newRunImage=None,
+                            id=None,
+                            reason=mcr_check_reason))
+    if show_all is False:
+        results = [result for result in results if result["id"] is not None]
+    if not results:
+        logger.warning("No container apps available to patch at this time. Use --show-all to show the container apps that cannot be patched.")
+        return
+    return results
+
+
+def patch_get_image_inspection(pack_exec_path, img, info_list):
+    if (img["imageName"].find("run-dotnet") != -1) and (img["imageName"].find("cbl-mariner") != -1):
+        inspect_result = {
+            "remote_info":
+            {
+                "run_images":
+                [{
+                    "name": "mcr.microsoft.com/oryx/builder:" + img["imageName"].split(":")[-1]
+                }]
+            },
+            "image_name": img["imageName"],
+            "targetContainerName": img["targetContainerName"],
+            "targetContainerAppName": img["targetContainerAppName"],
+            "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"],
+            "targetResourceGroup": img["targetResourceGroup"]
+        }
+    else:
+        with subprocess.Popen(pack_exec_path + " inspect-image " + img["imageName"] + " --output json", shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE) as img_info:
+            img_info_out, img_info_err = img_info.communicate()
+            if img_info_err.find(b"status code 401 Unauthorized") != -1 or img_info_err.find(b"unable to find image") != -1:
+                inspect_result = dict(remote_info=401, image_name=img["imageName"])
+            else:
+                inspect_result = json.loads(img_info_out)
+            inspect_result.update({
+                "targetContainerName": img["targetContainerName"],
+                "targetContainerAppName": img["targetContainerAppName"],
+                "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"],
+                "targetResourceGroup": img["targetResourceGroup"]
+            })
+    info_list.append(inspect_result)
+
+
+def patch_interactive(cmd, resource_group_name=None, managed_env=None, show_all=False):
+    if is_docker_running() is False:
+        logger.error("Please install or start Docker and try again.")
+        return
+    patchable_check_results = patch_list(cmd, resource_group_name, managed_env, show_all=show_all)
+    pack_exec_path = get_pack_exec_path()
+    if pack_exec_path is None:
+        return
+    if patchable_check_results is None:
+        return
+    patchable_check_results_json = json.dumps(patchable_check_results, indent=2)
+    without_unpatchable_results = []
+    without_unpatchable_results = [result for result in patchable_check_results if result["id"] is not None]
+    if without_unpatchable_results == [] and (patchable_check_results is None or show_all is False):
+        return
+    logger.warning(patchable_check_results_json)
+    if without_unpatchable_results == []:
+        return
+    user_input = input("Do you want to apply all the patches or specify by id? (y/n/id)\n")
+    patch_apply_handle_input(cmd, patchable_check_results, user_input, pack_exec_path)
+
+
+def patch_apply(cmd, resource_group_name=None, managed_env=None, show_all=False):
+    if is_docker_running() is False:
+        logger.error("Please install or start Docker and try again.")
+        return
+    patchable_check_results = patch_list(cmd, resource_group_name, managed_env, show_all=show_all)
+    pack_exec_path = get_pack_exec_path()
+    if pack_exec_path is None:
+        return
+    if patchable_check_results is None:
+        return
+    patchable_check_results_json = json.dumps(patchable_check_results, indent=2)
+    without_unpatchable_results = []
+    without_unpatchable_results = [result for result in patchable_check_results if result["id"] is not None]
+    if without_unpatchable_results == [] and (patchable_check_results is None or show_all is False):
+        return
+    logger.warning(patchable_check_results_json)
+    if without_unpatchable_results == []:
+        return
+    patch_apply_handle_input(cmd, patchable_check_results, "y", pack_exec_path)
+
+
+def patch_apply_handle_input(cmd, patch_check_list, method, pack_exec_path):
+    input_method = method.strip().lower()
+    # Track number of times patches were applied successfully.
+    patch_apply_count = 0
+    if input_method == "y":
+        telemetry_record_method = "y"
+        for patch_check in patch_check_list:
+            if patch_check["id"] and patch_check["newRunImage"]:
+                patch_cli_call(cmd,
+                               patch_check["targetResourceGroup"],
+                               patch_check["targetContainerAppName"],
+                               patch_check["targetContainerName"],
+                               patch_check["targetImageName"],
+                               patch_check["newRunImage"],
+                               pack_exec_path)
+                # Increment patch_apply_count with every successful patch.
+                patch_apply_count += 1
+    elif input_method == "n":
+        telemetry_record_method = "n"
+        logger.warning("No patch applied.")
+        return
+    else:
+        # Check if method is an existing id in the list
+        for patch_check in patch_check_list:
+            if patch_check["id"] == input_method:
+                patch_cli_call(cmd,
+                               patch_check["targetResourceGroup"],
+                               patch_check["targetContainerAppName"],
+                               patch_check["targetContainerName"],
+                               patch_check["targetImageName"],
+                               patch_check["newRunImage"],
+                               pack_exec_path)
+                patch_apply_count += 1
+                telemetry_record_method = input_method
+                break
+        else:
+            telemetry_record_method = "invalid"
+            logger.error("Invalid patch method or id.")
+    patch_apply_properties = {
+        'Context.Default.AzureCLI.PatchUserResponse': telemetry_record_method,
+        'Context.Default.AzureCLI.PatchApplyCount': patch_apply_count
+    }
+    telemetry_core.add_extension_event('containerapp', patch_apply_properties)
+    return
+
+
+def patch_cli_call(cmd, resource_group, container_app_name, container_name, target_image_name, new_run_image, pack_exec_path):
+    try:
+        logger.warning("Applying patch for container app: " + container_app_name + " container: " + container_name)
+        subprocess.run(f"{pack_exec_path} rebase -q {target_image_name} --run-image {new_run_image}", shell=True, check=True)
+        new_target_image_name = target_image_name.split(":")[0] + ":" + new_run_image.split(":")[1]
+        subprocess.run(f"docker tag {target_image_name} {new_target_image_name}", shell=True, check=True)
+        logger.debug(f"Publishing {new_target_image_name} to registry...")
+        subprocess.run(f"docker push -q {new_target_image_name}", shell=True, check=True)
+        logger.warning("Patch applied and published successfully.\nNew image: " + new_target_image_name)
+    except Exception:
+        logger.error("Error: Failed to apply patch and publish. Check if registry is logged in and has write access.")
+        raise
+    try:
+        logger.warning("Patching container app: " + container_app_name + " container: " + container_name)
+        logger.info("Creating new revision with image: " + new_target_image_name)
+        update_info_json = update_containerapp(cmd,
+                                               name=container_app_name,
+                                               resource_group_name=resource_group,
+                                               container_name=container_name,
+                                               image=new_target_image_name)
+        logger.warning(json.dumps(update_info_json, indent=2))
+        logger.warning("Container app revision created successfully from the patched image.")
+        return
+    except Exception:
+        logger.error("Error: Failed to create new revision with the container app.")
+        raise

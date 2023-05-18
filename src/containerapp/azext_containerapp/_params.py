@@ -337,7 +337,7 @@ def load_arguments(self, _):
         c.argument('name', configured_default='name', id_part=None)
         c.argument('managed_env', configured_default='managed_env')
         c.argument('registry_server', configured_default='registry_server')
-        c.argument('source', help='Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using Oryx. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.')
+        c.argument('source', help='Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.')
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('browse', help='Open the app in a web browser after creation and deployment, if possible.')
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
@@ -440,6 +440,12 @@ def load_arguments(self, _):
         c.argument('workload_profile_type', help="The type of workload profile to update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
         c.argument('min_nodes', help="The minimum node count for the workload profile")
         c.argument('max_nodes', help="The maximum node count for the workload profile")
+
+    # Patch
+    with self.argument_context('containerapp patch') as c:
+        c.argument('resource_group_name', arg_type=resource_group_name_type)
+        c.argument('managed_env', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
+        c.argument('show_all', action='store_true', help='Show all patchable and unpatchable container apps')
 
     # Container App job
     with self.argument_context('containerapp job') as c:
