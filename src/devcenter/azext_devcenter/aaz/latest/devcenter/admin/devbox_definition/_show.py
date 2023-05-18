@@ -15,12 +15,12 @@ from azure.cli.core.aaz import *
     "devcenter admin devbox-definition show",
 )
 class Show(AAZCommand):
-    """Get a Dev Box definition
+    """Get a dev box definition
 
-    :example: Show dev center dev box definition
+    :example: Get dev center dev box definition
         az devcenter admin devbox-definition show --name "WebDevBox" --dev-center-name "Contoso" --resource-group "rg1"
 
-    :example: Show project dev box definition
+    :example: Get project dev box definition
         az devcenter admin devbox-definition show --name "WebDevBox" --project-name "ContosoProject" --resource-group "rg1"
     """
 
