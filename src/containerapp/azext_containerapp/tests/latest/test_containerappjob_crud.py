@@ -11,15 +11,17 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+from azext_containerapp.tests.latest.common import TEST_LOCATION
 from .utils import create_containerapp_env
 
 class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
-    
     # test for CRUD operations on Container App Job resource with trigger type as manual
     def test_containerapp_manualjob_crudoperations_e2e(self, resource_group):
         import requests
+        
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
         job = self.create_random_name(prefix='job1', length=24)

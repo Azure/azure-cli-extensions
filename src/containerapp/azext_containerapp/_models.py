@@ -280,7 +280,7 @@ ContainerAppsJob = {
     "location": None,
     "identity": None,  # ManagedServiceIdentity
     "properties": {
-        "managedEnvironmentId": None,
+        "environmentId": None,
         "configuration": None,  # JobConfiguration
         "template": None  # JobTemplate
     },

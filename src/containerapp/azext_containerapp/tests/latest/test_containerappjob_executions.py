@@ -11,6 +11,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+from azext_containerapp.tests.latest.common import TEST_LOCATION
 from .utils import create_containerapp_env
 
 class ContainerAppJobsExecutionsTest(ScenarioTest):
@@ -18,6 +19,8 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerapp_job_executionstest_e2e(self, resource_group):
         import requests
+        
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
         job = self.create_random_name(prefix='job2', length=24)
@@ -36,7 +39,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         jobProvisioning = True
         timeout = time.time() + 60*1   # 1 minutes from now
         while(jobProvisioning):
-            jobProvisioning = self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()['properties']['provisioningState'] == "Succeeded"
+            jobProvisioning = self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()['properties']['provisioningState'] != "Succeeded"
             if(time.time() > timeout):
                 break
 

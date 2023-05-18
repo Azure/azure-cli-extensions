@@ -949,7 +949,11 @@ class ContainerAppsJobClient():
                 resource_group_name,
                 name,
                 api_version)
-            return poll(cmd, request_url, "inprogress")
+            response = poll_results(cmd, request_url)
+            if response is None:
+                raise ResourceNotFoundError("Could not find a container App Job")
+            else:
+                return response
 
         return r.json()
 
@@ -987,14 +991,6 @@ class ContainerAppsJobClient():
             formatted = formatter(app)
             app_list.append(formatted)
 
-        while j.get("nextLink") is not None:
-            request_url = j["nextLink"]
-            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
-            j = r.json()
-            for app in j["value"]:
-                formatted = formatter(app)
-                app_list.append(formatted)
-
         return app_list
 
     @classmethod
@@ -1016,14 +1012,6 @@ class ContainerAppsJobClient():
         for app in j["value"]:
             formatted = formatter(app)
             app_list.append(formatted)
-
-        while j.get("nextLink") is not None:
-            request_url = j["nextLink"]
-            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
-            j = r.json()
-            for app in j["value"]:
-                formatted = formatter(app)
-                app_list.append(formatted)
 
         return app_list
 
