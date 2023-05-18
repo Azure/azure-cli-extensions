@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.2
+++++++
+* Fix some issues and support Service Principal for local connection.
+
 0.3.1
 ++++++
 * Support User-Assigned Managed Identity and Service Principal.
