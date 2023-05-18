@@ -6,7 +6,7 @@ Release History
 ++++++
 
 * Checking Outbound connectivity to OBO endpoint 
-* Cleaning up CRD in case release namespace is delete/not-present
+* Cleaning up stale CRDs if present during onboarding (even in absence of azure-arc release)
 * Adding retries in Helm client download
 
 1.3.17

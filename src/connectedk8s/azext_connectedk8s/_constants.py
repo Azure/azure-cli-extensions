@@ -197,7 +197,7 @@ K8s_Cluster_Info = "k8s_cluster_info.txt"
 Outbound_Network_Connectivity_Check = "outbound_network_connectivity_check.txt"
 Events_of_Incomplete_Diagnoser_Job = "diagnoser_failure_events.txt"
 # Connect Precheck Diagnoser constants
-Cluster_Diagnostic_Checks_Job_Registry_Path = "mcr.microsoft.com/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.1.1"
+Cluster_Diagnostic_Checks_Job_Registry_Path = "connectprecheck.azurecr.io/helm/new-pre-onboarding-inspector:0.1.9-new"
 Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type = "Error while installing cluster diagnostic checks helm release"
 Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type = "Error occured while executing cluster diagnostic checks"
 Cluster_Diagnostic_Checks_Release_Cleanup_Failed = "Error occured while cleaning up the cluster diagnostic checks helm release"
@@ -213,7 +213,8 @@ Cluster_Diagnostic_Checks_Job_Log_Save_Failed = 'Failed to save cluster diagnost
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity Result:"
 Outbound_Connectivity_Check_String = "Outbound Network Connectivity"
-Outbound_Connectivity_Failed_String_For_OBO_Endpoint = "Outbound Network Connectivity Failed for OBO endpoint:"
+Outbound_Connectivity_Check_String_For_OBO_Endpoint = "Outbound Network Connectivity Check for OBO endpoints"
+Outbound_Connectivity_Check_Failed_For_OBO = "Outbound network connectivity check failed for OBO endpoint"
 DNS_Check_Result_String = "DNS Result:"
 AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = '2.30.0'
 CLIENT_PROXY_VERSION = '1.3.022011'
