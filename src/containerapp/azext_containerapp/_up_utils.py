@@ -7,6 +7,7 @@
 
 from tempfile import NamedTemporaryFile
 from urllib.parse import urlparse
+import subprocess
 import requests
 
 from azure.cli.core.azclierror import (
@@ -48,7 +49,11 @@ from ._utils import (
     register_provider_if_needed,
     validate_environment_location,
     list_environment_locations,
-    format_location
+    format_location,
+    is_docker_running,
+    get_pack_exec_path,
+    get_latest_buildpack_run_tag
+
 )
 
 from ._constants import (MAXIMUM_SECRET_LENGTH,
@@ -354,7 +359,86 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             self.cmd.cli_ctx, registry_name
         )
 
-    def build_container_from_source(self, image_name, source):
+    def build_container_from_source_with_buildpack(self, image_name, source):  # pylint: disable=too-many-statements
+        # Ensure that Docker is running
+        if not is_docker_running():
+            raise ValidationError("Docker is not running. Please start Docker to use buildpacks.")
+
+        # Ensure that the pack CLI is installed
+        pack_exec_path = get_pack_exec_path()
+        if pack_exec_path is None:
+            raise ValidationError("The pack CLI could not be installed.")
+
+        logger.info("Docker is running and pack CLI is installed; attempting to use buildpacks to build container image...")
+
+        registry_name = self.registry_server.lower()
+        image_name = f"{registry_name}/{image_name}"
+        builder_image_name = "mcr.microsoft.com/oryx/builder:builder-dotnet-7.0"
+
+        # Ensure that the builder is trusted
+        command = [pack_exec_path, 'config', 'default-builder', builder_image_name]
+        logger.debug(f"Calling '{' '.join(command)}'")
+        try:
+            with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+                _, stderr = process.communicate()
+                if process.returncode != 0:
+                    raise CLIError(f"Error thrown when running 'pack config': {stderr.decode('utf-8')}")
+                logger.debug(f"Successfully set the default builder to {builder_image_name}.")
+        except Exception as ex:
+            raise ValidationError(f"Unable to run 'pack config' command to set default builder: {ex}") from ex
+
+        # Run 'pack build' to produce a runnable application image for the Container App
+        command = [pack_exec_path, 'build', image_name, '--builder', builder_image_name, '--path', source]
+        buildpack_run_tag = get_latest_buildpack_run_tag("aspnet", "7.0")
+        if buildpack_run_tag is not None:
+            buildpack_run_image = f"mcr.microsoft.com/oryx/builder:{buildpack_run_tag}"
+            logger.debug(f"Determined the run image to use as {buildpack_run_image}.")
+            command.extend(['--run-image', buildpack_run_image])
+
+        logger.debug(f"Calling '{' '.join(command)}'")
+        try:
+            is_non_supported_platform = False
+            with subprocess.Popen(command, stdout=subprocess.PIPE) as process:
+
+                # Stream output of 'pack build' to warning stream
+                while process.stdout.readable():
+                    line = process.stdout.readline()
+                    if not line:
+                        break
+
+                    stdout_line = str(line.strip(), 'utf-8')
+                    logger.warning(stdout_line)
+                    if not is_non_supported_platform and "No buildpack groups passed detection" in stdout_line:
+                        is_non_supported_platform = True
+
+                # Update the result of process.returncode
+                process.communicate()
+                if is_non_supported_platform:
+                    raise ValidationError("Current buildpacks do not support the platform targeted in the provided source code.")
+
+                if process.returncode != 0:
+                    raise CLIError("Non-zero exit code returned from 'pack build'; please check the above output for more details.")
+
+                logger.debug(f"Successfully built image {image_name} using buildpacks.")
+        except ValidationError as ex:
+            raise ex
+        except Exception as ex:
+            raise CLIError(f"Unable to run 'pack build' command to produce runnable application image: {ex}") from ex
+
+        # Run 'docker push' to push the image to the ACR
+        command = ['docker', 'push', image_name]
+        logger.debug(f"Calling '{' '.join(command)}'")
+        logger.warning(f"Built image {image_name} locally using buildpacks, attempting to push to registry...")
+        try:
+            with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+                _, stderr = process.communicate()
+                if process.returncode != 0:
+                    raise CLIError(f"Error thrown when running 'docker push': {stderr.decode('utf-8')}")
+                logger.debug(f"Successfully pushed image {image_name} to ACR.")
+        except Exception as ex:
+            raise CLIError(f"Unable to run 'docker push' command to push image to ACR: {ex}") from ex
+
+    def build_container_from_source_with_acr_task(self, image_name, source):
         from azure.cli.command_modules.acr.task import acr_task_create, acr_task_run
         from azure.cli.command_modules.acr._client_factory import cf_acr_tasks, cf_acr_runs
         from azure.cli.core.profiles import ResourceType
@@ -403,19 +487,43 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         image_name = self.image if self.image is not None else self.name
         from datetime import datetime
 
-        now = datetime.now()
-        # Add version tag for acr image
-        image_name += ":{}".format(
-            str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
-        )
-
         self.image = self.registry_server + "/" + image_name
+        # Creating a tag for the image using the current time to avoid overwriting customer's existing images
+        now = datetime.now()
+        tag_now_suffix = str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
 
         if build_from_source:
-            # TODO should we prompt for confirmation here?
             logger.warning("No dockerfile detected. Attempting to build a container directly from the provided source...")
-            self.build_container_from_source(image_name, source)
+
+            try:
+                # First try to build source using buildpacks
+                # Temporary fix: using run time tag as customer image tag
+                # Waiting for buildpacks side to fix this issue: https://github.com/buildpacks/pack/issues/1750
+                logger.warning("Attempting to build image using buildpacks...")
+                run_image_tag = get_latest_buildpack_run_tag("aspnet", "7.0")
+                if run_image_tag is not None:
+                    image_name = f"{image_name}:{run_image_tag}-{tag_now_suffix}"
+                self.build_container_from_source_with_buildpack(image_name, source)
+                self.image = self.registry_server + "/" + image_name
+                return
+            except ValidationError as e:
+                logger.warning(f"Unable to use buildpacks to build image from source: {e}\nFalling back to ACR Task...")
+            except CLIError as e:
+                logger.error("Failed to use buildpacks to build image from source.")
+                raise e
+
+            # If we're unable to use the buildpack, build source using an ACR Task
+            # Moving tagging img to here
+            # Skipping the buildpacks scenario for now due to issues with buildpacks
+            # Add version tag for acr image
+            image_name += ":{}".format(tag_now_suffix)
+            logger.warning("Attempting to build image using ACR Task...")
+            self.build_container_from_source_with_acr_task(image_name, source)
         else:
+            # Moving tagging img to here
+            # Skipping the buildpacks scenario for now due to issues with buildpacks
+            # Add version tag for acr image
+            image_name += ":{}".format(tag_now_suffix)
             queue_acr_build(
                 self.cmd,
                 self.acr.resource_group.name,
