@@ -6,31 +6,21 @@ param location string = resourceGroup().location
 param publisherName string
 @description('Name of an existing ACR-backed Artifact Store, deployed under the publisher.')
 param acrArtifactStoreName string
-@description('Name of an existing Storage Account-backed Artifact Store, deployed under the publisher.')
-param saArtifactStoreName string
 @description('Name of an existing Network Function Definition Group')
 param nfDefinitionGroup string
 @description('The version of the NFDV you want to deploy, in format A-B-C')
 param nfDefinitionVersion string
-@description('The configuration of the network function applications')
-param nfApplicationConfigurations array
 
 // Created by the az aosm definition publish command before the template is deployed
-resource publisher 'Microsoft.HybridNetwork/publishers@2022-09-01-preview' existing = {
+resource publisher 'Microsoft.HybridNetwork/publishers@2023-04-01-preview' existing = {
   name: publisherName
   scope: resourceGroup()
 }
 
 // Created by the az aosm definition publish command before the template is deployed
-resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2022-09-01-preview' existing = {
+resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-04-01-preview' existing = {
   parent: publisher
   name: acrArtifactStoreName
-}
-
-// Created by the az aosm definition publish command before the template is deployed
-resource saArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-04-01-preview' existing = {
-  parent: publisher
-  name: saArtifactStoreName
 }
 
 // Created by the az aosm definition publish command before the template is deployed
