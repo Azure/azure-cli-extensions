@@ -80,6 +80,9 @@ class Update(AAZCommand):
             options=["--domain-password"],
             arg_group="Properties",
             help="The password for the account used to join domain.",
+            blank=AAZPromptInput(
+                msg="Domain password:",
+            ),
         )
         _args_schema.domain_username = AAZStrArg(
             options=["--domain-username"],

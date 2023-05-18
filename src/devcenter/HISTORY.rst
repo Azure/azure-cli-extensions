@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.2.0
+1.0.0
 ++++++
 * Update control plane and data plane APIs to v2023-04-01
 * Azure Deployment Environments GA release
