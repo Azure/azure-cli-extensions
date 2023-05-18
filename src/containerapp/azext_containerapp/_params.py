@@ -128,6 +128,12 @@ def load_arguments(self, _):
     with self.argument_context('containerapp create', arg_group='Container') as c:
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
 
+    # Springboard
+    with self.argument_context('containerapp create', arg_group='Service Binding') as c:
+        c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services(bindings) to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
+        c.argument('service_type', help="The service information for dev services.")
+        c.ignore('service_type')
+
     with self.argument_context('containerapp show') as c:
         c.argument('show_secrets', help="Show Containerapp secrets.", action='store_true')
 
@@ -135,6 +141,11 @@ def load_arguments(self, _):
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile', is_preview=True)
         c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets", is_preview=True)
+
+    # Springboard
+    with self.argument_context('containerapp update', arg_group='Service Binding') as c:
+        c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services(bindings) to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
+        c.argument('unbind_service_bindings', nargs='*', options_list=['--unbind'], help="Space separated list of services(bindings) to be removed from this app. e.g. BIND_NAME1...")
 
     with self.argument_context('containerapp scale') as c:
         c.argument('min_replicas', type=int, help="The minimum number of replicas.")
@@ -166,6 +177,11 @@ def load_arguments(self, _):
         c.argument('hostname', options_list=['--custom-domain-dns-suffix', '--dns-suffix'], help='The DNS suffix for the environment\'s custom domain.')
         c.argument('certificate_file', options_list=['--custom-domain-certificate-file', '--certificate-file'], help='The filepath of the certificate file (.pfx or .pem) for the environment\'s custom domain. To manage certificates for container apps, use `az containerapp env certificate`.')
         c.argument('certificate_password', options_list=['--custom-domain-certificate-password', '--certificate-password'], help='The certificate file password for the environment\'s custom domain.')
+
+    with self.argument_context('containerapp service') as c:
+        c.argument('service_name', options_list=['--name', '-n'], help="The service name.")
+        c.argument('environment_name', options_list=['--environment'], help="The environment name.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
 
     with self.argument_context('containerapp env create') as c:
         c.argument('zone_redundant', options_list=["--zone-redundant", "-z"], help="Enable zone redundancy on the environment. Cannot be used without --infrastructure-subnet-resource-id. If used with --location, the subnet's location must match")
@@ -412,5 +428,15 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env workload-profile set') as c:
         c.argument('workload_profile_type', help="The type of workload profile to add or update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
+        c.argument('min_nodes', help="The minimum node count for the workload profile")
+        c.argument('max_nodes', help="The maximum node count for the workload profile")
+
+    with self.argument_context('containerapp env workload-profile add') as c:
+        c.argument('workload_profile_type', help="The type of workload profile to add to this environment. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
+        c.argument('min_nodes', help="The minimum node count for the workload profile")
+        c.argument('max_nodes', help="The maximum node count for the workload profile")
+
+    with self.argument_context('containerapp env workload-profile update') as c:
+        c.argument('workload_profile_type', help="The type of workload profile to update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
         c.argument('min_nodes', help="The minimum node count for the workload profile")
         c.argument('max_nodes', help="The maximum node count for the workload profile")
