@@ -28,10 +28,10 @@ PASSWORDLESS_TARGET_RESOURCES = [
 # pylint: disable=line-too-long
 SUPPORTED_AUTH_TYPE = {
     RESOURCE.Local: {
-        RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount],
-        RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount],
-        RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount],
-        RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount],
+        RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
+        RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
+        RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
+        RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
     },
     RESOURCE.WebApp: {
         RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],

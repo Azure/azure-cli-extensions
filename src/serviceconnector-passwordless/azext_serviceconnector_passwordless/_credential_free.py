@@ -67,7 +67,7 @@ def get_enable_mi_for_db_linker_func(yes=False):
         if target_handler is None:
             return None
 
-        user_object_id = auth_info.get('principal_id')
+        user_object_id = auth_info.get('principal_id') if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserAccount] else None
         if user_object_id is None:
             user_object_id = get_object_id_of_current_user()
 
@@ -76,53 +76,51 @@ def get_enable_mi_for_db_linker_func(yes=False):
                 "No object id for current user {}".format(target_handler.login_username))
 
         target_handler.user_object_id = user_object_id
-        if source_type != RESOURCE.Local:
-            source_object_id = None
-            if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.SystemIdentity]:
-                # enable source mi
-                source_object_id = source_handler.get_identity_pid()
-                target_handler.identity_object_id = source_object_id
-                try:
-                    identity_info = run_cli_cmd(
-                        'az ad sp show --id {}'.format(source_object_id), 15, 10)
-                    target_handler.identity_client_id = identity_info.get(
-                        'appId')
-                    target_handler.identity_name = identity_info.get(
-                        'displayName')
-                except CLIInternalError as e:
-                    if 'AADSTS530003' in e.error_msg:
-                        logger.warning(
-                            'Please ask your IT department for help to join this device to Azure Active Directory.')
-                    raise e
-            elif auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserIdentity]:
-                mi_client_id = auth_info.get('client_id')
-                mi_sub_id = auth_info.get('subscription_id')
-                umi_info = run_cli_cmd(
-                    f'az identity list --subscription {mi_sub_id} --query "[?clientId==\'{mi_client_id}\']"')
-                if umi_info is None or len(umi_info) == 0:
+        if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.SystemIdentity]:
+            # enable source mi
+            source_object_id = source_handler.get_identity_pid()
+            target_handler.identity_object_id = source_object_id
+            try:
+                identity_info = run_cli_cmd(
+                    'az ad sp show --id {}'.format(source_object_id), 15, 10)
+                target_handler.identity_client_id = identity_info.get(
+                    'appId')
+                target_handler.identity_name = identity_info.get(
+                    'displayName')
+            except CLIInternalError as e:
+                if 'AADSTS530003' in e.error_msg:
+                    logger.warning(
+                        'Please ask your IT department for help to join this device to Azure Active Directory.')
+                raise e
+        elif auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserIdentity]:
+            mi_client_id = auth_info.get('client_id')
+            mi_sub_id = auth_info.get('subscription_id')
+            umi_info = run_cli_cmd(
+                f'az identity list --subscription {mi_sub_id} --query "[?clientId==\'{mi_client_id}\']"')
+            if umi_info is None or len(umi_info) == 0:
+                raise ResourceNotFoundError(
+                    "No identity found for client id {}".format(mi_client_id))
+            source_object_id = umi_info[0].get('principalId')
+            target_handler.identity_object_id = source_object_id
+            target_handler.identity_client_id = mi_client_id
+            target_handler.identity_name = umi_info[0].get('name')
+        elif auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.ServicePrincipalSecret]:
+            sp_client_id = auth_info.get('client_id')
+            sp_object_id = auth_info.get('principal_id')
+            try:
+                sp_info = run_cli_cmd(
+                    'az ad sp show --id {}'.format(sp_client_id))
+                if sp_info is None:
                     raise ResourceNotFoundError(
-                        "No identity found for client id {}".format(mi_client_id))
-                source_object_id = umi_info[0].get('principalId')
-                target_handler.identity_object_id = source_object_id
-                target_handler.identity_client_id = mi_client_id
-                target_handler.identity_name = umi_info[0].get('name')
-            elif auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.ServicePrincipalSecret]:
-                sp_client_id = auth_info.get('client_id')
-                sp_object_id = auth_info.get('principal_id')
-                try:
-                    sp_info = run_cli_cmd(
-                        'az ad sp show --id {}'.format(sp_client_id))
-                    if sp_info is None:
-                        raise ResourceNotFoundError(
-                            "Not found the service principal with client id {}".format(sp_client_id))
-                    target_handler.identity_object_id = sp_object_id
-                    target_handler.identity_client_id = sp_client_id
-                    target_handler.identity_name = sp_info.get('displayName')
-                except CLIInternalError as e:
-                    if 'AADSTS530003' in e.error_msg:
-                        logger.warning(
-                            'Please ask your IT department for help to join this device to Azure Active Directory.')
-                    raise e
+                        "Not found the service principal with client id {}".format(sp_client_id))
+                target_handler.identity_object_id = sp_object_id
+                target_handler.identity_client_id = sp_client_id
+                target_handler.identity_name = sp_info.get('displayName')
+            except CLIInternalError as e:
+                if 'AADSTS530003' in e.error_msg:
+                    logger.warning(
+                        'Please ask your IT department for help to join this device to Azure Active Directory.')
+                raise e
 
         # enable target aad authentication and set login user as db aad admin
         target_handler.enable_target_aad_auth()
@@ -572,6 +570,10 @@ class PostgresFlexHandler(TargetHandler):
         self.dbname = target_segments.get('child_name_1')
 
     def enable_target_aad_auth(self):
+        target = run_cli_cmd(
+            'az postgres flexible-server show --ids {}'.format(self.target_id))
+        if target.get('authConfig').get('activeDirectoryAuth') == "Enabled":
+            return
         run_cli_cmd('az postgres flexible-server update -g {} -n {} --subscription {} --active-directory-auth Enabled'.format(
             self.resource_group, self.db_server, self.subscription))
 
