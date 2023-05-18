@@ -5,20 +5,48 @@ This package is for the 'aosm' extension to support Azure Operator Service Manag
 functions.
 i.e. `az aosm`
 
-Install via `az extension add --name aosm`
-
-
 # Background
-The `az aosm` extension provides support for publishing Network Function Definitions
-to use with Azure Operator Service Manager or Network Function Manager.
 
-# Pre-requisites
-## VNFs
+The `az aosm` extension is intended to provide support for working with AOSM
+resources and definitions. Currently it only implements commands which aid the
+process of publishing Network Function Definitions and Network Service Designs to
+use with Azure Operator Service Manager or Network Function Manager.
+
+# Installation
+
+Eventually the extension will be published through the usual process and it will be
+installed as usual, via `az extension add --name aosm`
+
+Until then, the latest development version can be found here:
+https://github.com/jddarby/azure-cli-extensions/releases/download/aosm-extension/aosm-0.1.0-py2.py3-none-any.whl
+
+To install, download this wheel and run:
+`az extension add --source path/to/aosm-0.1.0-py2.py3-none-any.whl`
+
+# Bug Reporting
+
+Especially as this extension is still in development, you may encounter bugs or
+usability issues as you try to use it in its current form. It would be much
+appreciated if you could report these so that we're aware of them!
+
+The process for bug reporting is here:
+https://eng.ms/docs/strategic-missions-and-technologies/strategic-missions-and-technologies-organization/azure-for-operators/aiops/aiops-orchestration/aosm-product-docs/processes/bug_process
+
+CLI issues should be tagged and triaged as UX bugs.
+
+# Definitions
+
+These commands help with the publishing of Network Function Definition and Network
+Service Design resources.
+
+## Pre-requisites
+
+### VNFs
 For VNFs, you will need a single ARM template which would create the Azure resources
 for your VNF, for example a Virtual Machine, disks and NICs. You'll also need a VHD
 image that would be used for the VNF Virtual Machine.
 
-# Command examples
+## Command examples
 
 Get help on command arguments
 
@@ -27,7 +55,7 @@ Get help on command arguments
 `az aosm definition build -h`
 etc...
 
-All these commands take a `--definition-type` argument of `vnf`, `cnf` or (coming) `nsd`
+All these commands take a `--definition-type` argument of `vnf`, `cnf` or `nsd`
 
 Create an example config file for building a definition
 
