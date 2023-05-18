@@ -15,6 +15,7 @@ from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 
 logger = get_logger(__name__)
+DEFAULT_APM_NAME = "default"
 
 
 def create_or_update_apm(cmd, client, resource_group, service,
@@ -35,8 +36,10 @@ def apm_list(cmd, client, resource_group, service):
 def list_support_apm_types(cmd, client, resource_group, service):
     return client.services.list_supported_apm_types(resource_group, service)
 
+
 def list_apms_enabled_globally(cmd, client, resource_group, service):
     return client.services.list_globally_enabled_apms(resource_group, service)
+
 
 def enable_apm_globally(cmd, client, resource_group, service, name):
     apm_resource = client.apms.get(resource_group, service, name)
@@ -55,15 +58,15 @@ def apm_delete(cmd, client, resource_group, service, name):
     return sdk_no_wait(False, client.apms.begin_delete, resource_group, service, name)
 
 
-def create_default_apm_for_application_insights(cmd, client, resource_group, name, location,
+def create_default_apm_for_application_insights(cmd, client, resource_group, service_name, location,
                                                 app_insights_key, app_insights, sampling_rate):
     logger.warning("Start configure Application Insights")
     apm_resource = models.ApmResource()
-    apm_resource.properties = _get_apm_properties(cmd, resource_group, name, location, app_insights_key, app_insights,
+    apm_resource.properties = _get_apm_properties(cmd, resource_group, service_name, location, app_insights_key, app_insights,
                                                   sampling_rate)
 
     if apm_resource.properties:
-        return client.apms.begin_create_or_update(resource_group, name, apm_resource)
+        return client.apms.begin_create_or_update(resource_group, service_name, DEFAULT_APM_NAME, apm_resource)
 
 
 def _build_apm_resource(type, properties_dict, secrets_dict):
@@ -137,7 +140,7 @@ def _get_app_insights_connection_string(cli_ctx, resource_group, name):
 
     if not appinsights or not appinsights.connection_string:
         raise ResourceNotFoundError(
-            "App Insights {} under resource group {} was not found.".format(name, resource_group))
+            "Application Insights {} under resource group {} was not found.".format(name, resource_group))
 
     return appinsights.connection_string
 
