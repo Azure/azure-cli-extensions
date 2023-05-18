@@ -50,9 +50,9 @@ image that would be used for the VNF Virtual Machine.
 
 Get help on command arguments
 
-`az aosm -h` 
-`az aosm definition -h`
-`az aosm definition build -h`
+`az aosm -h`  
+`az aosm definition -h`  
+`az aosm definition build -h`  
 etc...
 
 All these commands take a `--definition-type` argument of `vnf`, `cnf` or `nsd`
