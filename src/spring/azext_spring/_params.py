@@ -721,10 +721,10 @@ def load_arguments(self, _):
     for scope in ['show', 'delete']:
         with self.argument_context('spring container-registry {}'.format(scope)) as c:
             c.argument('name', help="The container registry name.")
-            
+
     with self.argument_context('spring build-service') as c:
         c.argument('service', service_name_type, validator=only_support_enterprise)
- 
+
     with self.argument_context('spring build-service update') as c:
         c.argument('registry_name', help="The container registry name.")
 
