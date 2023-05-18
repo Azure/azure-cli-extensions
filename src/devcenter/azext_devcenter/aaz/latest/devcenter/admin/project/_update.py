@@ -82,12 +82,6 @@ class Update(AAZCommand):
             help="Description of the project.",
             nullable=True,
         )
-        _args_schema.dev_center_id = AAZStrArg(
-            options=["--dev-center-id"],
-            arg_group="Properties",
-            help="Resource ID of an associated dev center.",
-            nullable=True,
-        )
         _args_schema.max_dev_boxes_per_user = AAZIntArg(
             options=["--max-dev-boxes-per-user"],
             arg_group="Properties",
@@ -340,7 +334,6 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("devCenterId", AAZStrType, ".dev_center_id")
                 properties.set_prop("maxDevBoxesPerUser", AAZIntType, ".max_dev_boxes_per_user")
 
             tags = _builder.get(".tags")
