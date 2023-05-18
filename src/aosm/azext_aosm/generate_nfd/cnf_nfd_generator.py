@@ -56,7 +56,11 @@ class CnfNfdGenerator(NFDGenerator):
 
         self.artifacts = []
         self.nf_application_configurations = []
-        self.deployment_parameter_schema = {}
+        self.deployment_parameter_schema = {
+            "$schema": "https://json-schema.org/draft-07/schema#",
+            "title": "DeployParametersSchema",
+            "type": "object",
+            "properties": {}}
 
         self._bicep_path = os.path.join(
             self.output_folder_name, CNF_DEFINITION_BICEP_TEMPLATE
@@ -81,11 +85,20 @@ class CnfNfdGenerator(NFDGenerator):
 
                 # TODO: Validate charts
 
+                # Get schema for each chart (extract mappings and take the schema bits we need from values.schema.json)
+                # + Add that schema to the big schema.
+                self.deployment_parameter_schema[
+                    "properties"
+                ] = self.get_chart_mapping_schema(helm_package)
+                
                 # Get all image line matches for files in the chart.
                 # Do this here so we don't have to do it multiple times.
                 image_line_matches = self.find_pattern_matches_in_chart(
                     helm_package, IMAGE_LINE_REGEX
                 )
+                
+
+                
                 # Generate the NF application configuration for the chart
                 self.nf_application_configurations.append(
                     self.generate_nf_application_config(
@@ -199,9 +212,8 @@ class CnfNfdGenerator(NFDGenerator):
             self.tmp_folder_name, "deploymentParameters.json"
         )
         with open(full_schema, "w", encoding="UTF-8") as f:
-            print("Writing schema to json file.")
             json.dump(self.deployment_parameter_schema, f, indent=4)
-
+        
     def copy_to_output_folder(self) -> None:
         if not os.path.exists(self.output_folder_name):
             os.mkdir(self.output_folder_name)
@@ -335,8 +347,13 @@ class CnfNfdGenerator(NFDGenerator):
         for k, v in nested_dict.items():
             # if value is a string and contains deployParameters.
             if isinstance(v, str) and re.search(DEPLOYMENT_PARAMETER_MAPPING_REGEX, v):
+                
+                # only add the parameter name (e.g. from {deployParameter.zone} only param = zone)
+                param = v.split(".", 1)[1]
+                param = param.split("}", 1)[0]
+                
                 # add the schema for k (from the big schema) to the (smaller) schema
-                final_schema.update({k: schema_nested_dict["properties"][k]})
+                final_schema.update({param: { "type" : schema_nested_dict["properties"][k]["type"]}})
 
             # else if value is a (non-empty) dictionary (i.e another layer of nesting)
             elif hasattr(v, "items") and v.items():
@@ -390,6 +407,6 @@ class CnfNfdGenerator(NFDGenerator):
             data = yaml.load(f, Loader=yaml.FullLoader)
 
         with open(mapping_file_path, "w", encoding="utf-8") as file:
-            json.dump(data, file)
+            json.dump(data, file, indent=4)
 
         return os.path.join("configMappings", mappings_filename)
