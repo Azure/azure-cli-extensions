@@ -14,14 +14,13 @@ import yaml
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 from jinja2 import Template, StrictUndefined
 from knack.log import get_logger
-from azext_aosm._configuration import (
-    CNFConfiguration, HelmPackageConfig
-)
+from azext_aosm._configuration import CNFConfiguration, HelmPackageConfig
 from azext_aosm.util.constants import (
     CNF_DEFINITION_BICEP_TEMPLATE,
     CNF_DEFINITION_JINJA2_SOURCE_TEMPLATE,
     CNF_MANIFEST_BICEP_TEMPLATE,
     CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE,
+    DEPLOYMENT_PARAMETER_MAPPING_REGEX,
     IMAGE_LINE_REGEX,
     IMAGE_PULL_SECRET_LINE_REGEX,
 )
@@ -39,6 +38,7 @@ class CnfNfdGenerator(NFDGenerator):
     """
 
     def __init__(self, config: CNFConfiguration):
+        """Create a new VNF NFD Generator."""
         super(NFDGenerator, self).__init__()
         self.config = config
         self.nfd_jinja2_template_path = os.path.join(
@@ -56,16 +56,14 @@ class CnfNfdGenerator(NFDGenerator):
 
         self.artifacts = []
         self.nf_application_configurations = []
-        # JORDAN: need to add the bit to schema before properties?
         self.deployment_parameter_schema = {}
 
         self._bicep_path = os.path.join(
             self.output_folder_name, CNF_DEFINITION_BICEP_TEMPLATE
         )
 
-    def generate_nfd(self):
+    def generate_nfd(self) -> None:
         """Generate a VNF NFD which comprises an group, an Artifact Manifest and a NFDV."""
-
         # Create tmp folder.
         os.mkdir(self.tmp_folder_name)
 
@@ -80,52 +78,37 @@ class CnfNfdGenerator(NFDGenerator):
                 helm_package = HelmPackageConfig(**helm_package)
                 # Unpack the chart into the tmp folder
                 self._extract_chart(helm_package.path_to_chart)
-                # Validate chartz
 
-                # Get schema for each chart (extract mappings and take the schema bits we need from values.schema.json)
-                # + Add that schema to the big schema.
-                # self.deployment_parameter_schema[
-                #     "properties"
-                # ] = self.get_chart_mapping_schema(helm_package)
+                # TODO: Validate charts
 
                 # Get all image line matches for files in the chart.
+                # Do this here so we don't have to do it multiple times.
                 image_line_matches = self.find_pattern_matches_in_chart(
                     helm_package, IMAGE_LINE_REGEX
                 )
-                # Get all imagePullSecrets line matches for files in the chart.
-                image_pull_secret_line_matches = (
-                    self.find_pattern_matches_in_chart(
-                        helm_package, IMAGE_PULL_SECRET_LINE_REGEX
-                    )
-                )
-
-                # generate the NF application for the chart
+                # Generate the NF application configuration for the chart
                 self.nf_application_configurations.append(
                     self.generate_nf_application_config(
                         helm_package,
                         image_line_matches,
-                        image_pull_secret_line_matches,
+                        self.find_pattern_matches_in_chart(
+                            helm_package, IMAGE_PULL_SECRET_LINE_REGEX
+                        ),
                     )
                 )
                 # Workout the list of artifacts for the chart and
-                # update the list for the NFD
+                # update the list for the NFD with any unique artifacts.
                 chart_artifacts = self.get_artifact_list(
                     helm_package, set(image_line_matches)
                 )
-                self.artifacts += [a for a in chart_artifacts if a not in self.artifacts]
-                
-            # Write NFD bicep
+                self.artifacts += [
+                    a for a in chart_artifacts if a not in self.artifacts
+                ]
+
             self.write_nfd_bicep_file()
-
-            # Write schema to schema/deploymentParameterSchema.json
             self.write_schema_to_file()
-
-            # Write Artifact Mainfest bicep
             self.write_manifest_bicep_file()
-
-            # Copy contents of tmp folder to output folder.
             self.copy_to_output_folder()
-
         # Delete tmp folder
         shutil.rmtree(self.tmp_folder_name)
 
@@ -152,8 +135,8 @@ class CnfNfdGenerator(NFDGenerator):
             tar = tarfile.open(fname, "r:")
             tar.extractall(path=self.tmp_folder_name)
             tar.close()
-        # JORDAN: avoiding tar extract errors, fix and remove later
         else:
+            # Throw error here
             shutil.copytree(fname, self.tmp_folder_name, dirs_exist_ok=True)
 
     def _create_nfd_folder(self) -> None:
@@ -174,7 +157,7 @@ class CnfNfdGenerator(NFDGenerator):
         logger.info("Create NFD bicep %s", self.output_folder_name)
         os.mkdir(self.output_folder_name)
 
-    def write_manifest_bicep_file(self):
+    def write_manifest_bicep_file(self) -> None:
         # This will write the bicep file for the Artifact Manifest.
         with open(
             self.manifest_jinja2_template_path, "r", encoding="UTF-8"
@@ -192,7 +175,7 @@ class CnfNfdGenerator(NFDGenerator):
         with open(path, "w", encoding="utf-8") as f:
             f.write(bicep_contents)
 
-    def write_nfd_bicep_file(self):
+    def write_nfd_bicep_file(self) -> None:
         # This will write the bicep file for the NFD.
         with open(self.nfd_jinja2_template_path, "r", encoding="UTF-8") as f:
             template: Template = Template(
@@ -211,7 +194,7 @@ class CnfNfdGenerator(NFDGenerator):
         with open(path, "w", encoding="utf-8") as f:
             f.write(bicep_contents)
 
-    def write_schema_to_file(self):
+    def write_schema_to_file(self) -> None:
         full_schema = os.path.join(
             self.tmp_folder_name, "deploymentParameters.json"
         )
@@ -219,7 +202,7 @@ class CnfNfdGenerator(NFDGenerator):
             print("Writing schema to json file.")
             json.dump(self.deployment_parameter_schema, f, indent=4)
 
-    def copy_to_output_folder(self):
+    def copy_to_output_folder(self) -> None:
         if not os.path.exists(self.output_folder_name):
             os.mkdir(self.output_folder_name)
             os.mkdir(self.output_folder_name + "/schemas")
@@ -327,10 +310,10 @@ class CnfNfdGenerator(NFDGenerator):
             self.tmp_folder_name, helm_package.name, "values.schema.json"
         )
 
-        with open(non_def_values, "r", encoding='utf-8') as stream:
+        with open(non_def_values, "r", encoding="utf-8") as stream:
             values_data = yaml.load(stream, Loader=yaml.SafeLoader)
 
-        with open(values_schema, "r", encoding='utf-8') as f:
+        with open(values_schema, "r", encoding="utf-8") as f:
             data = json.load(f)
             schema_data = data["properties"]
 
@@ -347,14 +330,11 @@ class CnfNfdGenerator(NFDGenerator):
 
     def find_deploy_params(
         self, nested_dict, schema_nested_dict, final_schema
-    ):
+    ) -> Dict[Any, Any]:
         original_schema_nested_dict = schema_nested_dict
         for k, v in nested_dict.items():
             # if value is a string and contains deployParameters.
-            if isinstance(v, str) and f"deployParameters." in v:
-                # only add the parameter name (not deployParam. or anything after)
-                param = v.split(".", 1)[1]
-                param = param.split("}", 1)[0]
+            if isinstance(v, str) and re.search(DEPLOYMENT_PARAMETER_MAPPING_REGEX, v):
                 # add the schema for k (from the big schema) to the (smaller) schema
                 final_schema.update({k: schema_nested_dict["properties"][k]})
 
@@ -379,7 +359,7 @@ class CnfNfdGenerator(NFDGenerator):
             self.tmp_folder_name, helm_package.name, "Chart.yaml"
         )
 
-        with open(chart, 'r', encoding='utf-8') as f:
+        with open(chart, "r", encoding="utf-8") as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
             chart_name = data["name"]
             chart_version = data["version"]

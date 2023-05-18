@@ -20,3 +20,4 @@ CNF_MANIFEST_BICEP_TEMPLATE = "cnfartifactmanifest.bicep"
 
 IMAGE_LINE_REGEX = r"image: \{\{ .Values.(.+?) \}\}/(.+?):(\d+\.\d+\.\d+(-\w+)?(\.\d+)?)"
 IMAGE_PULL_SECRET_LINE_REGEX = r"imagePullSecrets: \[name: \{\{ .Values.(.+?) \}\}\]"
+DEPLOYMENT_PARAMETER_MAPPING_REGEX = r"\{deployParameters.(.+?)\}"
