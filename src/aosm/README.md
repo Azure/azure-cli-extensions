@@ -1,18 +1,17 @@
 # Microsoft Azure CLI 'aosm' Extension
-==========================================
 
 This package is for the 'aosm' extension to support Azure Operator Service Manager 
 functions.
 i.e. `az aosm`
 
-# Background
+## Background
 
 The `az aosm` extension is intended to provide support for working with AOSM
 resources and definitions. Currently it only implements commands which aid the
 process of publishing Network Function Definitions and Network Service Designs to
 use with Azure Operator Service Manager or Network Function Manager.
 
-# Installation
+## Installation
 
 Eventually the extension will be published through the usual process and it will be
 installed as usual, via `az extension add --name aosm`
@@ -23,7 +22,7 @@ https://github.com/jddarby/azure-cli-extensions/releases/download/aosm-extension
 To install, download this wheel and run:
 `az extension add --source path/to/aosm-0.1.0-py2.py3-none-any.whl`
 
-# Bug Reporting
+## Bug Reporting
 
 Especially as this extension is still in development, you may encounter bugs or
 usability issues as you try to use it in its current form. It would be much
@@ -34,19 +33,20 @@ https://eng.ms/docs/strategic-missions-and-technologies/strategic-missions-and-t
 
 CLI issues should be tagged and triaged as UX bugs.
 
-# Definitions
+## Definitions
 
 These commands help with the publishing of Network Function Definition and Network
 Service Design resources.
 
-## Pre-requisites
+### Pre-requisites
 
-### VNFs
+#### VNFs
+
 For VNFs, you will need a single ARM template which would create the Azure resources
 for your VNF, for example a Virtual Machine, disks and NICs. You'll also need a VHD
 image that would be used for the VNF Virtual Machine.
 
-## Command examples
+### Command examples
 
 Get help on command arguments
 
