@@ -681,6 +681,24 @@ helps['spring build-service'] = """
     short-summary: (Enterprise Tier Only) Commands to manage Build Service
 """
 
+helps['spring build-service update'] = """
+    type: command
+    short-summary: Update the build service.
+    examples:
+        - name: Update the build service when using your own container registry.
+          text: az spring build-service update --registry-name my-acr --service clitest --resource-group cli
+        - name: Update the build service when using ASA own container registry.
+          text: az spring build-service update --service clitest --resource-group cli
+"""
+
+helps['spring build-service show'] = """
+    type: command
+    short-summary: Show the build service.
+    examples:
+        - name: Show the build service.
+          text: az spring build-service show --service clitest --resource-group cli
+"""
+
 helps['spring build-service builder'] = """
     type: group
     short-summary: (Enterprise Tier Only) Commands to manage Builder Resource
@@ -797,12 +815,28 @@ helps['spring container-registry'] = """
     short-summary: (Enterprise Tier Only) Commands to manage Container Registry Resource
 """
 
+helps['spring container-registry create'] = """
+    type: command
+    short-summary: Create a container registry.
+    examples:
+        - name: Create a container registry.
+          text: az spring container-registry create --name my-acr --server test.azurecr.io --username test --password xxx --service clitest --resource-group cli
+"""
+
 helps['spring container-registry update'] = """
     type: command
     short-summary: Update a container registry.
     examples:
         - name: Update a container registry.
-          text: az spring container-registry update --name default --server test.azurecr.io --username test --password xxx --service clitest --resource-group cli
+          text: az spring container-registry update --name my-acr --server test.azurecr.io --username test --password xxx --service clitest --resource-group cli
+"""
+
+helps['spring container-registry delete'] = """
+    type: command
+    short-summary: Delete a container registry.
+    examples:
+        - name: Delete a container registry.
+          text: az spring container-registry delete --name my-acr --service clitest --resource-group cli
 """
 
 helps['spring container-registry show'] = """
@@ -810,7 +844,15 @@ helps['spring container-registry show'] = """
     short-summary: Show a container registry.
     examples:
         - name: Show a container registry.
-          text: az spring container-registry show --name default --service clitest --resource-group cli
+          text: az spring container-registry show --name my-acr --service clitest --resource-group cli
+"""
+
+helps['spring container-registry list'] = """
+    type: command
+    short-summary: List all container registries.
+    examples:
+        - name: List all container registries.
+          text: az spring container-registry list --service clitest --resource-group cli
 """
 
 helps['spring application-live-view'] = """

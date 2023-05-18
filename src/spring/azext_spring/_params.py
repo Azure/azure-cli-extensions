@@ -19,7 +19,8 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_managed_environment, validate_dataplane_public_endpoint)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_source_path, validate_artifact_path, validate_build_create,
-                                     validate_build_update, validate_container_registry, validate_central_build_instance,
+                                     validate_build_update, validate_container_registry_create,
+                                     validate_container_registry_update, validate_central_build_instance,
                                      validate_builder_update, validate_build_pool_size, validate_build_service,
                                      validate_git_uri, validate_acc_git_url, validate_acc_git_refs, validate_acs_patterns, validate_config_file_patterns,
                                      validate_routes, validate_gateway_instance_count, validate_git_interval,
@@ -705,14 +706,27 @@ def load_arguments(self, _):
     with self.argument_context('spring container-registry') as c:
         c.argument('service', service_name_type, validator=only_support_enterprise)
 
-    with self.argument_context('spring container-registry update') as c:
-        c.argument('name', help="The container registry name.", validator=validate_container_registry)
-        c.argument('server', help="The container registry sever.", validator=validate_container_registry)
-        c.argument('username', help="The container registry username.", validator=validate_container_registry)
-        c.argument('password', help="The container registry password.", validator=validate_container_registry)
+    with self.argument_context('spring container-registry create') as c:
+        c.argument('name', help="The container registry name.", validator=validate_container_registry_create)
+        c.argument('server', help="The container registry sever.", validator=validate_container_registry_create)
+        c.argument('username', help="The container registry username.", validator=validate_container_registry_create)
+        c.argument('password', help="The container registry password.", validator=validate_container_registry_create)
 
-    with self.argument_context('spring container-registry show') as c:
-        c.argument('name', help="The container registry name.")
+    with self.argument_context('spring container-registry update') as c:
+        c.argument('name', help="The container registry name.", validator=validate_container_registry_update)
+        c.argument('server', help="The container registry sever.", validator=validate_container_registry_update)
+        c.argument('username', help="The container registry username.", validator=validate_container_registry_update)
+        c.argument('password', help="The container registry password.", validator=validate_container_registry_update)
+
+    for scope in ['show', 'delete']:
+        with self.argument_context('spring container-registry {}'.format(scope)) as c:
+            c.argument('name', help="The container registry name.")
+            
+    with self.argument_context('spring build-service') as c:
+        c.argument('service', service_name_type, validator=only_support_enterprise)
+ 
+    with self.argument_context('spring build-service update') as c:
+        c.argument('registry_name', help="The container registry name.")
 
     with self.argument_context('spring build-service build') as c:
         c.argument('service', service_name_type, validator=validate_central_build_instance)

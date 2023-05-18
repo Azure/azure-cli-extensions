@@ -1,6 +1,14 @@
 Release History
 ===============
-1.12.0 (WIP)
+1.13.0
+---
+* Add new command -- `az spring container-registry create` to craete container registry resource.
+* Add new command -- `az spring container-registry delete` to delete container registry resource.
+* Add new command -- `az spring container-registry list` to list all the container registry resources.
+* Add new command -- `az spring build-service update` to update build service.
+* Add new command -- `az spring build-service show` to show build service resource.
+
+1.12.0
 ---
 * Add new parameter `--workload-profile` for `az spring app create` and `az spring app update`.
 
