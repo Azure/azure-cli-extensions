@@ -17,10 +17,10 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get an attached network connection configured for a dev center or project.
 
-    :example: Show dev center attached network connection
+    :example: Get dev center attached network connection
         az devcenter admin attached-network show --name "{attachedNetworkConnectionName}" --dev-center-name "Contoso" --resource-group "rg1"
 
-    :example: Show project attached network connection
+    :example: Get project attached network connection
         az devcenter admin attached-network show --name "{attachedNetworkConnectionName}" --project-name "{projectName}" --resource-group "rg1"
     """
 
