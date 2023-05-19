@@ -6,6 +6,7 @@ Release History
 1.4.1
 ++++++++++++++++++
 * microsoft.azureml.kubernetes: Fix sslSecret parameter in update operation
+* microsoft.azuremonitor.containers.metrics : public preview support for managed prometheus in ARC clusters
 
 1.4.0
 ++++++++++++++++++
@@ -43,7 +44,7 @@ Release History
 
 1.3.4
 ++++++++++++++++++
-* Fix to address the error TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running command az k8s-extension extension-types list 
+* Fix to address the error TypeError: cf_k8s_extension() takes 1 positional argument but 2 were given while running command az k8s-extension extension-types list
 
 1.3.3
 ++++++++++++++++++
@@ -97,9 +98,9 @@ Release History
 1.2.0
 ++++++++++++++++++
 * microsoft.azureml.kubernetes: Update AzureMLKubernetes install parameters on inferenceRouterServiceType and internalLoadBalancerProvider
-* microsoft.openservicemesh: Change extension validation logic osm-arc 
-* microsoft.azuremonitor.containers: Add Managed Identity Auth support for ContainerInsights Extension 
-* microsoft.azuremonitor.containers: Bring back containerInsights solution addition in MSI mode 
+* microsoft.openservicemesh: Change extension validation logic osm-arc
+* microsoft.azuremonitor.containers: Add Managed Identity Auth support for ContainerInsights Extension
+* microsoft.azuremonitor.containers: Bring back containerInsights solution addition in MSI mode
 
 1.1.0
 ++++++++++++++++++
@@ -162,7 +163,7 @@ Release History
 0.5.0
 ++++++++++++++++++
 * Add microsoft.openservicemesh customization to check distros
-* Delete customization for partners 
+* Delete customization for partners
 
 0.4.3
 ++++++++++++++++++
@@ -199,7 +200,7 @@ Release History
 ++++++++++++++++++
 
 * Remove `k8s-extension update` until PATCH is supported
-* Improved logging for overwriting extension name with default 
+* Improved logging for overwriting extension name with default
 
 0.2.0
 ++++++++++++++++++

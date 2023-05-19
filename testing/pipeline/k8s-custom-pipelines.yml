@@ -31,6 +31,10 @@ stages:
       path: ./test/extensions/public/AzureMLKubernetes.Tests.ps1
   - template: ./templates/run-test.yml
     parameters:
+      jobName: AzureMonitorMetrics
+      path: ./test/extensions/public/AzureMonitorMetrics.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
       jobName: AzureMonitor
       path: ./test/extensions/public/AzureMonitor.Tests.ps1
   - template: ./templates/run-test.yml
@@ -57,7 +61,7 @@ stages:
     pool:
       vmImage: 'ubuntu-20.04'
     displayName: "Build and Publish the Extension Artifact"
-    variables: 
+    variables:
       CLI_REPO_PATH: $(Agent.BuildDirectory)/s
       workingDirectory: $(CLI_REPO_PATH)
       displayName: "Setup and Build Extension with azdev"
@@ -67,9 +71,9 @@ stages:
         CLI_REPO_PATH: $(CLI_REPO_PATH)
         IS_PRIVATE_BRANCH: $(IS_PRIVATE_BRANCH)
     - task: PublishBuildArtifacts@1
-      inputs: 
+      inputs:
         pathToPublish: $(CLI_REPO_PATH)/dist
-      
+
 - stage: AzureCLIOfficial
   displayName: "Azure Official CLI Code Checks"
   dependsOn: []
