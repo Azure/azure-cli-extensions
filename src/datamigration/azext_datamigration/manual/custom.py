@@ -14,6 +14,7 @@
 import os
 import signal
 import subprocess
+from knack.prompting import prompt_pass
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
 from azure.cli.core.azclierror import RequiredArgumentMissingError
 from azure.cli.core.azclierror import UnclassifiedUserFault
@@ -313,6 +314,12 @@ def datamigration_tde_migration(source_sql_connection_string=None,
                                 network_share_user_name=None,
                                 network_share_password=None,
                                 database_name=None):
+
+    if source_sql_connection_string is None:
+        prompt_pass('Connection String:', confirm=False)
+
+    if network_share_password is None:
+        prompt_pass('Network Share Password:', confirm=False)
 
     try:
         # Setup the console app
