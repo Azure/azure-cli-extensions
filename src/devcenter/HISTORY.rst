@@ -6,6 +6,8 @@ Release History
 ++++++
 * Update control plane and data plane APIs to v2023-04-01
 * Azure Deployment Environments GA release
+* Update to network connection health detail to health check 
+* Update delay upcoming action to delay action 
 
 0.1.2
 ++++++
