@@ -316,10 +316,10 @@ def datamigration_tde_migration(source_sql_connection_string=None,
                                 database_name=None):
 
     if source_sql_connection_string is None:
-        prompt_pass('Connection String:', confirm=False)
+        source_sql_connection_string = prompt_pass('Connection String:', confirm=False)
 
     if network_share_password is None:
-        prompt_pass('Network Share Password:', confirm=False)
+        network_share_password = prompt_pass('Network Share Password:', confirm=False)
 
     try:
         # Setup the console app
