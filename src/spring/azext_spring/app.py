@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from datetime import datetime
 
 # pylint: disable=wrong-import-order
 from knack.log import get_logger
@@ -17,6 +18,8 @@ from ._app_factory import app_selector
 from ._deployment_deployable_factory import deployable_selector
 from ._app_validator import _get_active_deployment
 from .custom import app_tail_log_internal
+import datetime
+from time import sleep
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -77,7 +80,8 @@ def app_create(cmd, client, resource_group, service, name,
                scale_rule_http_concurrency=None,
                scale_rule_metadata=None,
                scale_rule_auth=None,
-               secrets=None):
+               secrets=None,
+               workload_profile=None):
     '''app_create
     Create app with an active deployment, deployment should be deployed with default banner
     1. Create app
@@ -123,7 +127,8 @@ def app_create(cmd, client, resource_group, service, name,
         'session_max_age': session_max_age,
         'backend_protocol': backend_protocol,
         'client_auth_certs': client_auth_certs,
-        'secrets': secrets
+        'secrets': secrets,
+        'workload_profile_name': workload_profile
     }
     create_deployment_kwargs = {
         'cpu': cpu,
@@ -150,17 +155,6 @@ def app_create(cmd, client, resource_group, service, name,
         'scale_rule_metadata': scale_rule_metadata,
         'scale_rule_auth': scale_rule_auth,
     }
-    update_app_kwargs = {
-        'enable_persistent_storage': enable_persistent_storage,
-        'public': assign_endpoint,
-        'public_for_vnet': assign_public_endpoint,
-        'ingress_read_timeout': ingress_read_timeout,
-        'ingress_send_timeout': ingress_send_timeout,
-        'session_affinity': session_affinity,
-        'session_max_age': session_max_age,
-        'backend_protocol': backend_protocol,
-        'client_auth_certs': client_auth_certs
-    }
 
     deployable = deployable_selector(**create_deployment_kwargs, **basic_kwargs)
     create_deployment_kwargs['source_type'] = deployable.get_source_type(**create_deployment_kwargs, **basic_kwargs)
@@ -170,23 +164,20 @@ def app_create(cmd, client, resource_group, service, name,
     deployment_factory.validate_instance_count(instance_count)
 
     app_resource = app_factory.format_resource(**create_app_kwargs, **basic_kwargs)
-    logger.warning('[1/3] Creating app {}'.format(name))
+    banner_deployment_name = deployment_name or DEFAULT_DEPLOYMENT_NAME
+    deployment_resource = deployment_factory.format_resource(**create_deployment_kwargs, **basic_kwargs)
+
+    logger.warning('[1/2] Creating app {}'.format(name))
     app_poller = client.apps.begin_create_or_update(resource_group, service, name, app_resource)
     wait_till_end(cmd, app_poller)
 
-    banner_deployment_name = deployment_name or DEFAULT_DEPLOYMENT_NAME
-    logger.warning('[2/3] Creating default deployment with name "{}"'.format(banner_deployment_name))
-    deployment_resource = deployment_factory.format_resource(**create_deployment_kwargs, **basic_kwargs)
+    logger.warning('[2/2] Creating default deployment with name "{}"'.format(banner_deployment_name))
     poller = client.deployments.begin_create_or_update(resource_group,
                                                        service,
                                                        name,
                                                        banner_deployment_name,
                                                        deployment_resource)
-    logger.warning('[3/3] Updating app "{}" (this operation can take a while to complete)'.format(name))
-    app_resource = app_factory.format_resource(**update_app_kwargs, **basic_kwargs)
-    app_poller = client.apps.begin_update(resource_group, service, name, app_resource)
-
-    wait_till_end(cmd, poller, app_poller)
+    wait_till_end(cmd, poller)
     logger.warning('App create succeeded')
     return app_get(cmd, client, resource_group, service, name)
 
@@ -207,6 +198,7 @@ def app_update(cmd, client, resource_group, service, name,
                session_max_age=None,
                backend_protocol=None,
                client_auth_certs=None,
+               workload_profile=None,
                # deployment.source
                runtime_version=None,
                jvm_options=None,
@@ -274,6 +266,7 @@ def app_update(cmd, client, resource_group, service, name,
         'backend_protocol': backend_protocol,
         'client_auth_certs': client_auth_certs,
         'secrets': secrets,
+        'workload_profile_name': workload_profile
     }
     if deployment is None:
         updated_deployment_kwargs = {k: v for k, v in deployment_kwargs.items() if v}
@@ -413,6 +406,8 @@ def app_deploy(cmd, client, resource_group, service, name,
                          resource_group, service, name, deployment.name,
                          deployment_resource)
     if not disable_app_log:
+        # We will wait for the poller to be done to print the deploy process
+        _print_deploy_process(client, poller, resource_group, service, name, deployment.name)
         _log_application(cmd, client, no_wait, poller, resource_group, service, name, deployment.name)
     if "succeeded" != poller.status().lower():
         return poller
@@ -447,9 +442,66 @@ def _log_application(cmd, client, no_wait, poller, resource_group, service, app_
                               since=300, timeout=10, get_app_log=_get_app_log_deploy_phase)
     except Exception:
         # ignore
-        return
+        pass
     if deployment_error:
         raise deployment_error
+
+
+def _print_deploy_process(client, poller, resource_group, service, app_name, deployment_name):
+    try:
+        deployment_resource = _get_deployment_ignore_exception(client, resource_group, service, app_name,
+                                                               deployment_name)
+        if deployment_resource is not None:
+            instance_count = deployment_resource.sku.capacity
+            rolling_number = max(1, instance_count // 4)
+            rounds = int(instance_count // rolling_number + 0 if instance_count % rolling_number == 0 else 1)
+
+            if instance_count > 1:
+                instance_desc = str(instance_count) + " instances"
+                rounds_desc = str(rounds) + " rounds"
+            else:
+                instance_desc = str(instance_count) + " instance"
+                rounds_desc = str(rounds) + " round"
+            logger.warning('Azure Spring Apps will use rolling upgrade to update your deployment, you have {}, '
+                           'Azure Spring Apps will update the deployment in {}.'.format(instance_desc, rounds_desc))
+            last_round = 0
+
+            deployment_time = deployment_resource.system_data.last_modified_at.strftime("%Y-%m-%dT%H:%M:%S%z")
+            while not poller.done():
+                deployment_resource = _get_deployment_ignore_exception(client, resource_group, service, app_name,
+                                                                       deployment_name)
+                if deployment_resource is not None:
+                    instances = deployment_resource.properties.instances
+                    new_instance_count = 0
+                    for temp_instance in instances:
+                        if temp_instance.start_time > deployment_time:
+                            new_instance_count += 1
+                    instance_round = instance_count // rounds
+                    current_round = new_instance_count // instance_round + (0 if new_instance_count % instance_round == 0 else 1)
+                    if current_round != last_round:
+                        if int(current_round) > 1:
+                            old_desc = "{} old instances are".format(int(new_instance_count))
+                        else:
+                            old_desc = "{} old instance is".format(int(new_instance_count))
+                        if int(new_instance_count) > 1:
+                            new_desc = "{} new instances are".format(int(new_instance_count))
+                        else:
+                            new_desc = "{} new instance is".format(int(new_instance_count))
+                        logger.warning(
+                            'The deployment is in round {}, {} deleted/deleting and {} '
+                            'started/starting'.format(int(current_round), old_desc, new_desc))
+                        last_round = current_round
+                sleep(5)
+            logger.warning("Your application is successfully deployed.")
+    except Exception:
+        pass
+
+
+def _get_deployment_ignore_exception(client, resource_group, service, app_name, deployment_name):
+    try:
+        return client.deployments.get(resource_group, service, app_name, deployment_name)
+    except Exception:
+        pass
 
 
 def _get_app_log_deploy_phase(url, auth, format_json, exceptions):

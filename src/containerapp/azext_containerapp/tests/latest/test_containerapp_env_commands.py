@@ -122,6 +122,13 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.appLogsConfiguration.destination', None),
         ])
 
+        self.cmd('containerapp env update -g {} -n {} --logs-destination none --no-wait'.format(resource_group, env_name))
+
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.appLogsConfiguration.destination', None),
+        ])
+
 
 
     @AllowLargeResponse(8192)
@@ -288,13 +295,13 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd('containerapp hostname add -g {} -n {} --hostname {}'.format(resource_group, ca_name, hostname_1), expect_failure=True)
         
         # create a managed certificate
-        self.cmd('containerapp env certificate create -n {} -g {} --hostname {} -v CNAME -c {}'.format(env_name, resource_group, hostname_1, cert_name), checks=[
+        self.cmd('containerapp env certificate create -n {} -g {} --hostname {} -v cname -c {}'.format(env_name, resource_group, hostname_1, cert_name), checks=[
             JMESPathCheck('type', "Microsoft.App/managedEnvironments/managedCertificates"),
             JMESPathCheck('name', cert_name),
             JMESPathCheck('properties.subjectName', hostname_1),
         ]).get_output_in_json()
 
-        self.cmd('containerapp env certificate create -n {} -g {} --hostname {} -v CNAME'.format(env_name, resource_group, hostname_1), expect_failure=True)
+        self.cmd('containerapp env certificate create -n {} -g {} --hostname {} -v cname'.format(env_name, resource_group, hostname_1), expect_failure=True)
         self.cmd('containerapp env certificate list -g {} -n {} -m'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 1),
         ])
@@ -309,7 +316,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
         
-        self.cmd('containerapp hostname bind -g {} -n {} --hostname {} --environment {} -v CNAME'.format(resource_group, ca_name, hostname_1, env_name))
+        self.cmd('containerapp hostname bind -g {} -n {} --hostname {} --environment {} -v cname'.format(resource_group, ca_name, hostname_1, env_name))
         certs = self.cmd('containerapp env certificate list -g {} -n {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 1),
         ]).get_output_in_json()
@@ -411,6 +418,13 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_1),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {} --dns-suffix {}'.format(resource_group, env_name, hostname_2))
+
+        self.cmd(f'containerapp env show -n {env_name} -g {resource_group}', checks=[
+            JMESPathCheck('name', env_name),
+            JMESPathCheck('properties.customDomainConfiguration.dnsSuffix', hostname_2),
         ])
 
 

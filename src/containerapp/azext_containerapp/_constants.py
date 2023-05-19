@@ -13,9 +13,18 @@ ACR_IMAGE_SUFFIX = ".azurecr.io"
 
 LOG_ANALYTICS_RP = "Microsoft.OperationalInsights"
 CONTAINER_APPS_RP = "Microsoft.App"
+SERVICE_LINKER_RP = "Microsoft.ServiceLinker"
 
 MANAGED_CERTIFICATE_RT = "managedCertificates"
 PRIVATE_CERTIFICATE_RT = "certificates"
+
+DEV_POSTGRES_IMAGE = 'postgres'
+DEV_POSTGRES_SERVICE_TYPE = 'postgres'
+DEV_POSTGRES_CONTAINER_NAME = 'postgres'
+
+DEV_REDIS_IMAGE = 'redis'
+DEV_REDIS_SERVICE_TYPE = 'redis'
+DEV_REDIS_CONTAINER_NAME = 'redis'
 
 PENDING_STATUS = "Pending"
 SUCCEEDED_STATUS = "Succeeded"
@@ -49,6 +58,6 @@ steps:
 """
 DEFAULT_PORT = 8080  # used for no dockerfile scenario; not the hello world image
 
-HELLO_WORLD_IMAGE = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+HELLO_WORLD_IMAGE = "mcr.microsoft.com/k8se/quickstart:latest"
 
 LOGS_STRING = '[{"category":"ContainerAppConsoleLogs","categoryGroup":null,"enabled":true,"retentionPolicy":{"days":0,"enabled":false}},{"category":"ContainerAppSystemLogs","categoryGroup":null,"enabled":true,"retentionPolicy":{"days":0,"enabled":false}}]'  # pylint: disable=line-too-long

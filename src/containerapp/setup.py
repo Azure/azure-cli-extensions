@@ -8,6 +8,17 @@
 
 from codecs import open
 from setuptools import setup, find_packages
+from urllib.request import urlopen
+
+from azext_containerapp._utils import get_pack_exec_path
+
+import io
+import os
+import platform
+import requests
+import tarfile
+import zipfile
+
 try:
     from azure_bdist_wheel import cmdclass
 except ImportError:
@@ -17,7 +28,7 @@ except ImportError:
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 
-VERSION = '0.3.24'
+VERSION = '0.3.31'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -36,9 +47,10 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = [
-    'pycomposefile>=0.0.29'
-]
+DEPENDENCIES = ['pycomposefile>=0.0.29']
+
+# Install pack CLI to build runnable application images from source
+_ = get_pack_exec_path()
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()
@@ -59,5 +71,11 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_containerapp': ['azext_metadata.json']},
+    package_data={
+        "azext_containerapp": [
+            "azext_metadata.json",
+            "bin/pack.exe",  # Windows
+            "bin/pack"       # Linux/Darwin
+        ]
+    },
 )

@@ -1,7 +1,7 @@
 interactions:
 - request:
-    body: '{"location": "eastus", "properties": {"dnsSettings": {"servers": ["10.0.0.1",
-      "10.0.0.2", "10.0.0.3"], "enableProxy": false}}}'
+    body: '{"location": "eastus", "properties": {"dnsSettings": {"enableProxy": false,
+      "servers": ["10.0.0.1", "10.0.0.2", "10.0.0.3"]}}}'
     headers:
       Accept:
       - application/json
@@ -18,22 +18,22 @@ interactions:
       ParameterSetName:
       - --resource-group --location --name --dns-servers
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\": {\r\n
-        \     \"servers\": [\r\n        \"10.0.0.1\",\r\n        \"10.0.0.2\",\r\n
-        \       \"10.0.0.3\"\r\n      ]\r\n    },\r\n    \"childPolicies\": [],\r\n
-        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
-        \"Updating\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
+        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
+        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\":
+        {\r\n      \"servers\": [\r\n        \"10.0.0.1\",\r\n        \"10.0.0.2\",\r\n
+        \       \"10.0.0.3\"\r\n      ]\r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
         \ \"name\": \"fwp01\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"93931ede-f427-4748-8073-d9ebfba6a9c0\",\r\n  \"location\": \"eastus\"\r\n}"
+        \ \"etag\": \"ec0d3210-f149-4cde-bffd-c76bfbb1e2b6\",\r\n  \"location\": \"eastus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/nfvOperations/c23e7503-40ca-453d-a705-438a1e1b2589?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/nfvOperations/c1e97cad-3d9a-457e-a70e-511fd5d3fce8?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -41,7 +41,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Jun 2022 11:39:23 GMT
+      - Tue, 09 May 2023 02:18:19 GMT
       expires:
       - '-1'
       pragma:
@@ -53,7 +53,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -71,9 +71,9 @@ interactions:
       ParameterSetName:
       - --resource-group --location --name --dns-servers
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/nfvOperations/c23e7503-40ca-453d-a705-438a1e1b2589?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/nfvOperations/c1e97cad-3d9a-457e-a70e-511fd5d3fce8?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
@@ -85,7 +85,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Jun 2022 11:39:33 GMT
+      - Tue, 09 May 2023 02:18:19 GMT
       expires:
       - '-1'
       pragma:
@@ -117,19 +117,19 @@ interactions:
       ParameterSetName:
       - --resource-group --location --name --dns-servers
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\": {\r\n
-        \     \"servers\": [\r\n        \"10.0.0.1\",\r\n        \"10.0.0.2\",\r\n
-        \       \"10.0.0.3\"\r\n      ]\r\n    },\r\n    \"childPolicies\": [],\r\n
-        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
-        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
+        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
+        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\":
+        {\r\n      \"servers\": [\r\n        \"10.0.0.1\",\r\n        \"10.0.0.2\",\r\n
+        \       \"10.0.0.3\"\r\n      ]\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
         \ \"name\": \"fwp01\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"93931ede-f427-4748-8073-d9ebfba6a9c0\",\r\n  \"location\": \"eastus\"\r\n}"
+        \ \"etag\": \"ec0d3210-f149-4cde-bffd-c76bfbb1e2b6\",\r\n  \"location\": \"eastus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -138,9 +138,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Jun 2022 11:39:33 GMT
+      - Tue, 09 May 2023 02:18:20 GMT
       etag:
-      - '"93931ede-f427-4748-8073-d9ebfba6a9c0"'
+      - '"ec0d3210-f149-4cde-bffd-c76bfbb1e2b6"'
       expires:
       - '-1'
       pragma:
@@ -172,19 +172,19 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\": {\r\n
-        \     \"servers\": [\r\n        \"10.0.0.1\",\r\n        \"10.0.0.2\",\r\n
-        \       \"10.0.0.3\"\r\n      ]\r\n    },\r\n    \"childPolicies\": [],\r\n
-        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
-        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
+        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
+        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\":
+        {\r\n      \"servers\": [\r\n        \"10.0.0.1\",\r\n        \"10.0.0.2\",\r\n
+        \       \"10.0.0.3\"\r\n      ]\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
         \ \"name\": \"fwp01\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"93931ede-f427-4748-8073-d9ebfba6a9c0\",\r\n  \"location\": \"eastus\"\r\n}"
+        \ \"etag\": \"ec0d3210-f149-4cde-bffd-c76bfbb1e2b6\",\r\n  \"location\": \"eastus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -193,9 +193,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Jun 2022 11:39:35 GMT
+      - Tue, 09 May 2023 02:18:23 GMT
       etag:
-      - '"93931ede-f427-4748-8073-d9ebfba6a9c0"'
+      - '"ec0d3210-f149-4cde-bffd-c76bfbb1e2b6"'
       expires:
       - '-1'
       pragma:
@@ -227,19 +227,19 @@ interactions:
       ParameterSetName:
       - --resource --name --dns-servers --enable-dns-proxy
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\": {\r\n
-        \     \"servers\": [\r\n        \"10.0.0.1\",\r\n        \"10.0.0.2\",\r\n
-        \       \"10.0.0.3\"\r\n      ]\r\n    },\r\n    \"childPolicies\": [],\r\n
-        \   \"ruleCollectionGroups\": [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\":
-        \"Succeeded\"\r\n  },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
+        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
+        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\":
+        {\r\n      \"servers\": [\r\n        \"10.0.0.1\",\r\n        \"10.0.0.2\",\r\n
+        \       \"10.0.0.3\"\r\n      ]\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n
+        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
         \ \"name\": \"fwp01\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"93931ede-f427-4748-8073-d9ebfba6a9c0\",\r\n  \"location\": \"eastus\"\r\n}"
+        \ \"etag\": \"ec0d3210-f149-4cde-bffd-c76bfbb1e2b6\",\r\n  \"location\": \"eastus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -248,9 +248,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Jun 2022 11:39:37 GMT
+      - Tue, 09 May 2023 02:18:26 GMT
       etag:
-      - '"93931ede-f427-4748-8073-d9ebfba6a9c0"'
+      - '"ec0d3210-f149-4cde-bffd-c76bfbb1e2b6"'
       expires:
       - '-1'
       pragma:
@@ -270,8 +270,8 @@ interactions:
       message: OK
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01",
-      "location": "eastus", "properties": {"threatIntelMode": "Alert", "dnsSettings":
-      {"servers": ["10.0.1.0"], "enableProxy": true}, "sku": {"tier": "Standard"}}}'
+      "location": "eastus", "properties": {"dnsSettings": {"enableProxy": true, "servers":
+      ["10.0.1.0"]}, "sku": {"tier": "Standard"}, "threatIntelMode": "Alert"}}'
     headers:
       Accept:
       - application/json
@@ -288,22 +288,22 @@ interactions:
       ParameterSetName:
       - --resource --name --dns-servers --enable-dns-proxy
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\": {\r\n
-        \     \"servers\": [\r\n        \"10.0.1.0\"\r\n      ],\r\n      \"enableProxy\":
-        true\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
-        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Updating\"\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
+        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
+        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\":
+        {\r\n      \"servers\": [\r\n        \"10.0.1.0\"\r\n      ],\r\n      \"enableProxy\":
+        true\r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
         \ \"name\": \"fwp01\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"4f6506fd-b0be-49cf-bea7-62b177262306\",\r\n  \"location\": \"eastus\"\r\n}"
+        \ \"etag\": \"de69b90c-6360-43db-a812-43e680b1c395\",\r\n  \"location\": \"eastus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/nfvOperations/5c06d01f-176f-423d-9b5e-3c54de429eb9?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/nfvOperations/24ce5720-c7aa-4be8-9bdd-1da0f9c392be?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -311,7 +311,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Jun 2022 11:39:39 GMT
+      - Tue, 09 May 2023 02:18:27 GMT
       expires:
       - '-1'
       pragma:
@@ -327,7 +327,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1190'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -345,21 +345,21 @@ interactions:
       ParameterSetName:
       - --resource --name --dns-servers --enable-dns-proxy
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/nfvOperations/5c06d01f-176f-423d-9b5e-3c54de429eb9?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/nfvOperations/24ce5720-c7aa-4be8-9bdd-1da0f9c392be?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '29'
+      - '30'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Jun 2022 11:39:50 GMT
+      - Tue, 09 May 2023 02:18:27 GMT
       expires:
       - '-1'
       pragma:
@@ -391,19 +391,65 @@ interactions:
       ParameterSetName:
       - --resource --name --dns-servers --enable-dns-proxy
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/nfvOperations/24ce5720-c7aa-4be8-9bdd-1da0f9c392be?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 May 2023 02:18:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource --name --dns-servers --enable-dns-proxy
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\": {\r\n
-        \     \"servers\": [\r\n        \"10.0.1.0\"\r\n      ],\r\n      \"enableProxy\":
-        true\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
-        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
+        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
+        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\":
+        {\r\n      \"servers\": [\r\n        \"10.0.1.0\"\r\n      ],\r\n      \"enableProxy\":
+        true\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
         \ \"name\": \"fwp01\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"4f6506fd-b0be-49cf-bea7-62b177262306\",\r\n  \"location\": \"eastus\"\r\n}"
+        \ \"etag\": \"de69b90c-6360-43db-a812-43e680b1c395\",\r\n  \"location\": \"eastus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -412,9 +458,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Jun 2022 11:39:50 GMT
+      - Tue, 09 May 2023 02:18:38 GMT
       etag:
-      - '"4f6506fd-b0be-49cf-bea7-62b177262306"'
+      - '"de69b90c-6360-43db-a812-43e680b1c395"'
       expires:
       - '-1'
       pragma:
@@ -446,19 +492,19 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\": {\r\n
-        \     \"servers\": [\r\n        \"10.0.1.0\"\r\n      ],\r\n      \"enableProxy\":
-        true\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
-        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
+        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
+        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\":
+        {\r\n      \"servers\": [\r\n        \"10.0.1.0\"\r\n      ],\r\n      \"enableProxy\":
+        true\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
         \ \"name\": \"fwp01\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"4f6506fd-b0be-49cf-bea7-62b177262306\",\r\n  \"location\": \"eastus\"\r\n}"
+        \ \"etag\": \"de69b90c-6360-43db-a812-43e680b1c395\",\r\n  \"location\": \"eastus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -467,9 +513,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Jun 2022 11:39:52 GMT
+      - Tue, 09 May 2023 02:18:42 GMT
       etag:
-      - '"4f6506fd-b0be-49cf-bea7-62b177262306"'
+      - '"de69b90c-6360-43db-a812-43e680b1c395"'
       expires:
       - '-1'
       pragma:
@@ -501,19 +547,19 @@ interactions:
       ParameterSetName:
       - --resource --name
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\": {\r\n
-        \     \"servers\": [\r\n        \"10.0.1.0\"\r\n      ],\r\n      \"enableProxy\":
-        true\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
-        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
+        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
+        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\":
+        {\r\n      \"servers\": [\r\n        \"10.0.1.0\"\r\n      ],\r\n      \"enableProxy\":
+        true\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
         \ \"name\": \"fwp01\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"4f6506fd-b0be-49cf-bea7-62b177262306\",\r\n  \"location\": \"eastus\"\r\n}"
+        \ \"etag\": \"de69b90c-6360-43db-a812-43e680b1c395\",\r\n  \"location\": \"eastus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -522,9 +568,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Jun 2022 11:39:53 GMT
+      - Tue, 09 May 2023 02:18:43 GMT
       etag:
-      - '"4f6506fd-b0be-49cf-bea7-62b177262306"'
+      - '"de69b90c-6360-43db-a812-43e680b1c395"'
       expires:
       - '-1'
       pragma:
@@ -544,8 +590,8 @@ interactions:
       message: OK
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01",
-      "location": "eastus", "properties": {"threatIntelMode": "Alert", "dnsSettings":
-      {"servers": ["10.0.1.0"], "enableProxy": true}, "sku": {"tier": "Standard"}}}'
+      "location": "eastus", "properties": {"dnsSettings": {"enableProxy": true, "servers":
+      ["10.0.1.0"]}, "sku": {"tier": "Standard"}, "threatIntelMode": "Alert"}}'
     headers:
       Accept:
       - application/json
@@ -562,22 +608,22 @@ interactions:
       ParameterSetName:
       - --resource --name
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\": {\r\n
-        \     \"servers\": [\r\n        \"10.0.1.0\"\r\n      ],\r\n      \"enableProxy\":
-        true\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
-        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Updating\"\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
+        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
+        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\":
+        {\r\n      \"servers\": [\r\n        \"10.0.1.0\"\r\n      ],\r\n      \"enableProxy\":
+        true\r\n    },\r\n    \"provisioningState\": \"Updating\"\r\n  },\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
         \ \"name\": \"fwp01\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"61652663-02db-4a6f-96e0-6b578e86240e\",\r\n  \"location\": \"eastus\"\r\n}"
+        \ \"etag\": \"51c73b9b-6e0a-48cb-b81c-fbacf1a29b6a\",\r\n  \"location\": \"eastus\"\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/nfvOperations/08d9fcab-1dcb-4ca0-b9cd-435c99f92482?api-version=2021-08-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/nfvOperations/0985c3fe-879d-4711-b17c-c487f72c29a0?api-version=2022-01-01
       cache-control:
       - no-cache
       content-length:
@@ -585,7 +631,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Jun 2022 11:39:56 GMT
+      - Tue, 09 May 2023 02:18:44 GMT
       expires:
       - '-1'
       pragma:
@@ -601,7 +647,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1192'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -619,21 +665,21 @@ interactions:
       ParameterSetName:
       - --resource --name
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/nfvOperations/08d9fcab-1dcb-4ca0-b9cd-435c99f92482?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/nfvOperations/0985c3fe-879d-4711-b17c-c487f72c29a0?api-version=2022-01-01
   response:
     body:
-      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+      string: "{\r\n  \"status\": \"InProgress\"\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '29'
+      - '30'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Jun 2022 11:40:06 GMT
+      - Tue, 09 May 2023 02:18:45 GMT
       expires:
       - '-1'
       pragma:
@@ -665,19 +711,65 @@ interactions:
       ParameterSetName:
       - --resource --name
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/nfvOperations/0985c3fe-879d-4711-b17c-c487f72c29a0?api-version=2022-01-01
+  response:
+    body:
+      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '29'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 May 2023 02:18:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network firewall policy update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource --name
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\": {\r\n
-        \     \"servers\": [\r\n        \"10.0.1.0\"\r\n      ],\r\n      \"enableProxy\":
-        true\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
-        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
+        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
+        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\":
+        {\r\n      \"servers\": [\r\n        \"10.0.1.0\"\r\n      ],\r\n      \"enableProxy\":
+        true\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
         \ \"name\": \"fwp01\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"61652663-02db-4a6f-96e0-6b578e86240e\",\r\n  \"location\": \"eastus\"\r\n}"
+        \ \"etag\": \"51c73b9b-6e0a-48cb-b81c-fbacf1a29b6a\",\r\n  \"location\": \"eastus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -686,9 +778,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Jun 2022 11:40:07 GMT
+      - Tue, 09 May 2023 02:18:55 GMT
       etag:
-      - '"61652663-02db-4a6f-96e0-6b578e86240e"'
+      - '"51c73b9b-6e0a-48cb-b81c-fbacf1a29b6a"'
       expires:
       - '-1'
       pragma:
@@ -720,19 +812,19 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2022-01-01
   response:
     body:
       string: "{\r\n  \"properties\": {\r\n    \"sku\": {\r\n      \"tier\": \"Standard\"\r\n
-        \   },\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\": {\r\n
-        \     \"servers\": [\r\n        \"10.0.1.0\"\r\n      ],\r\n      \"enableProxy\":
-        true\r\n    },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\":
-        [],\r\n    \"firewalls\": [],\r\n    \"provisioningState\": \"Succeeded\"\r\n
-        \ },\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
+        \   },\r\n    \"childPolicies\": [],\r\n    \"ruleCollectionGroups\": [],\r\n
+        \   \"firewalls\": [],\r\n    \"threatIntelMode\": \"Alert\",\r\n    \"dnsSettings\":
+        {\r\n      \"servers\": [\r\n        \"10.0.1.0\"\r\n      ],\r\n      \"enableProxy\":
+        true\r\n    },\r\n    \"provisioningState\": \"Succeeded\"\r\n  },\r\n  \"id\":
+        \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01\",\r\n
         \ \"name\": \"fwp01\",\r\n  \"type\": \"Microsoft.Network/FirewallPolicies\",\r\n
-        \ \"etag\": \"61652663-02db-4a6f-96e0-6b578e86240e\",\r\n  \"location\": \"eastus\"\r\n}"
+        \ \"etag\": \"51c73b9b-6e0a-48cb-b81c-fbacf1a29b6a\",\r\n  \"location\": \"eastus\"\r\n}"
     headers:
       cache-control:
       - no-cache
@@ -741,9 +833,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 22 Jun 2022 11:40:08 GMT
+      - Tue, 09 May 2023 02:18:57 GMT
       etag:
-      - '"61652663-02db-4a6f-96e0-6b578e86240e"'
+      - '"51c73b9b-6e0a-48cb-b81c-fbacf1a29b6a"'
       expires:
       - '-1'
       pragma:
@@ -765,7 +857,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -777,9 +869,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name
       User-Agent:
-      - AZURECLI/2.37.0 azsdk-python-azure-mgmt-network/19.3.0 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2021-08-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_firewall_policy_with_dns_settings000001/providers/Microsoft.Network/firewallPolicies/fwp01?api-version=2022-01-01
   response:
     body:
       string: ''
@@ -789,7 +881,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 22 Jun 2022 11:40:14 GMT
+      - Tue, 09 May 2023 02:19:00 GMT
       expires:
       - '-1'
       pragma:
@@ -801,7 +893,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14996'
+      - '14999'
     status:
       code: 200
       message: OK

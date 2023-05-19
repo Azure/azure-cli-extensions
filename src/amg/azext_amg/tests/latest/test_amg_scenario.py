@@ -337,19 +337,36 @@ class AmgScenarioTest(ScenarioTest):
             self.kwargs.update({
                 'dashboardDefinition': test_dashboard,
                 'dashboardTitle': dashboard_title,
+                'dashboardTitle2': dashboard_title + '2',
                 'dashboardSlug': slug,
             })
+
+            # dashboard under own folder
             response_create = self.cmd('grafana dashboard create -g {rg} -n {name} --folder "{folderTitle}"  --definition "{dashboardDefinition}" --title "{dashboardTitle}"').get_output_in_json()
 
             self.kwargs.update({
                 'dashboardUid': response_create["uid"],
             })
 
+            # dashboard under "General" 
+            response_create = self.cmd('grafana dashboard create -g {rg} -n {name}  --definition "{dashboardDefinition}" --title "{dashboardTitle}"').get_output_in_json()
+            self.kwargs.update({
+                'dashboardUid2': response_create["uid"],
+            })
+
+            # 2nd dashboard under own folder 
+            response_create = self.cmd('grafana dashboard create -g {rg} -n {name} --folder "{folderTitle}"  --definition "{dashboardDefinition}" --title "{dashboardTitle2}"').get_output_in_json()
+
+            self.kwargs.update({
+                'dashboardUid3': response_create["uid"],
+            })
+
+
             with tempfile.TemporaryDirectory() as temp_dir:
                 self.kwargs.update({
                     'tempDir': temp_dir
                 })
-                self.cmd('grafana backup -g {rg} -n {name} -d "{tempDir}" --folders-to-include "{folderTitle}" --components datasources dashboards folders')
+                self.cmd('grafana backup -g {rg} -n {name} -d "{tempDir}" --folders-to-include "{folderTitle}" General --components datasources dashboards folders')
 
                 filenames = next(os.walk(temp_dir), (None, None, []))[2]
                 self.assertTrue(len(filenames) == 1)
@@ -366,15 +383,29 @@ class AmgScenarioTest(ScenarioTest):
 
             self.cmd('grafana data-source show -g {rg} -n {name} --data-source "{dataSourceName}"')
             self.cmd('grafana folder show -g {rg} -n {name} --folder "{folderTitle}"')
+
             self.cmd('grafana dashboard show -g {rg} -n {name} --dashboard "{dashboardUid}"', checks=[
                 self.check("[dashboard.title]", "['{dashboardTitle}']"),
                 self.check("[meta.folderTitle]", "['{folderTitle}']")])
-
-            self.cmd('grafana dashboard sync --source {id} --destination {id2} --folders-to-include "{folderTitle}"')
+            self.cmd('grafana dashboard show -g {rg} -n {name} --dashboard "{dashboardUid2}"', checks=[
+                self.check("[dashboard.title]", "['{dashboardTitle}']"),
+                self.check("[meta.folderTitle]", "['General']")])
+            
+            self.cmd('grafana dashboard sync --source {id} --destination {id2} --folders-to-include "{folderTitle}" general')
             self.cmd('grafana folder show -g {rg} -n {name2} --folder "{folderTitle}"')
             self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid}"', checks=[
                 self.check("[dashboard.title]", "['{dashboardTitle}']"),
                 self.check("[meta.folderTitle]", "['{folderTitle}']")])
+            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid2}"', checks=[
+                self.check("[dashboard.title]", "['{dashboardTitle}']"),
+                self.check("[meta.folderTitle]", "['General']")])
+
+            self.cmd('grafana dashboard delete -g {rg} -n {name2} --dashboard "{dashboardUid}"')
+            self.cmd('grafana dashboard delete -g {rg} -n {name2} --dashboard "{dashboardUid3}"')
+            self.cmd('grafana dashboard sync --source {id} --destination {id2} --folders-to-include "{folderTitle}" --dashboards-to-include "{dashboardTitle}"')
+            self.cmd('grafana dashboard list -g {rg} -n {name2}', checks=[
+                self.check("length([?uid == '{dashboardUid3}'])", 0),
+                self.check("length([?uid == '{dashboardUid}'])", 1)])
 
 
     def _get_signed_in_user(self):

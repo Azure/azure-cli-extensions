@@ -146,6 +146,13 @@ class DatabricksClientScenarioTest(ScenarioTest):
                          self.check('publicNetworkAccess', 'Enabled'),
                          self.check('requiredNsgRules', 'AllRules')])
 
+        self.cmd('az databricks workspace update '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--sku standard ',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('sku.name', 'standard')])
+
         self.cmd('az databricks workspace delete '
                  '--resource-group {rg} '
                  '--name {workspace_name} '
@@ -186,6 +193,55 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '--name {access_connector_name} ',
                  checks=[self.check('name', '{access_connector_name}'),
                          self.check('properties.provisioningState', 'Succeeded')])
+
+        self.cmd('az databricks access-connector delete '
+                 '--resource-group {rg} '
+                 '--name {access_connector_name} ',
+                 checks=[])
+
+    @ResourceGroupPreparer(name_prefix='cli_test_access_connector', location="westus")
+    def test_access_connector_v2(self, resource_group):
+        self.kwargs.update({
+            'identity_name': 'my-test-identity',
+            'access_connector_name': 'my-test-access-connector',
+            'type': 'UserAssigned',
+        })
+
+        self.kwargs['identity_id'] = self.cmd('az identity create -n {identity_name} -g {rg}').get_output_in_json()['id']
+        self.cmd('az databricks access-connector create '
+                 '--resource-group {rg} '
+                 '--name {access_connector_name} '
+                 '--location westus '
+                 '--identity-type {type} '
+                 '--user-assigned-identities {{{identity_id}:{{}}}}',
+                 checks=[self.check('name', '{access_connector_name}'),
+                         self.check('properties.provisioningState', 'Succeeded'),
+                         self.check('identity.type', 'UserAssigned'),
+                         self.check('type(identity.userAssignedIdentities)', 'object')])
+
+        self.cmd('az databricks access-connector delete '
+                 '--resource-group {rg} '
+                 '--name {access_connector_name} ',
+                 checks=[])
+
+        self.cmd('az databricks access-connector create '
+                 '--resource-group {rg} '
+                 '--name {access_connector_name} '
+                 '--location westus '
+                 '--identity-type None ',
+                 checks=[self.check('name', '{access_connector_name}'),
+                         self.check('properties.provisioningState', 'Succeeded'),
+                         self.check('identity.type', 'None')])
+
+        self.cmd('az databricks access-connector update '
+                 '--resource-group {rg} '
+                 '--name {access_connector_name} '
+                 '--identity-type {type} '
+                 '--user-assigned-identities {{{identity_id}:{{}}}}',
+                 checks=[self.check('name', '{access_connector_name}'),
+                         self.check('properties.provisioningState', 'Succeeded'),
+                         self.check('identity.type', 'UserAssigned'),
+                         self.check('type(identity.userAssignedIdentities)', 'object')])
 
         self.cmd('az databricks access-connector delete '
                  '--resource-group {rg} '
@@ -295,6 +351,75 @@ class DatabricksClientScenarioTest(ScenarioTest):
 
         self.cmd('az databricks workspace outbound-endpoint list -g {rg} --workspace-name {workspace_name}',
                  checks=self.check('type(@)', 'array'))
+
+        self.cmd('az databricks workspace delete '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '-y',
+                 checks=[])
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_databricks_v3', location="eastus2euap")
+    def test_databricks_v3(self, resource_group):
+        self.kwargs.update({
+            'workspace_name': self.create_random_name(prefix='wn', length=12),
+            'loc': 'eastus2euap',
+            'vnet_name': self.create_random_name(prefix='vnet', length=12),
+            'subnet_name': self.create_random_name(prefix='subnet', length=12),
+            'nsg_name': self.create_random_name(prefix='nsg', length=12),
+        })
+        self.cmd('az network nsg create -g {rg} -n {nsg_name}')
+
+        vnet = self.cmd('az network vnet create -g {rg} -n {vnet_name} -l {loc} --nsg {nsg_name}', checks=[
+            self.check('newVNet.location', '{loc}'),
+            self.check('newVNet.name', '{vnet_name}'),
+            self.check('newVNet.provisioningState', 'Succeeded')
+        ]).get_output_in_json()
+        self.kwargs['vnet_id'] = vnet['newVNet']['id']
+
+        self.cmd('az network vnet subnet create -g {rg} '
+                 '--vnet-name {vnet_name} '
+                 '-n private-subnet '
+                 '--address-prefixes 10.0.1.0/24 '
+                 '--disable-private-endpoint-network-policies false '
+                 '--nsg {nsg_name} '
+                 '--delegations "Microsoft.Databricks/workspaces"')
+
+        self.cmd('az network vnet subnet create -g {rg} '
+                 '--vnet-name {vnet_name} -n public-subnet '
+                 '--address-prefixes 10.0.64.0/24 '
+                 '--disable-private-endpoint-network-policies false '
+                 '--nsg {nsg_name} '
+                 '--delegations "Microsoft.Databricks/workspaces"')
+
+        self.cmd('az network vnet subnet create -g {rg} '
+                 '-n {subnet_name} '
+                 '--vnet-name {vnet_name} '
+                 '--disable-private-endpoint-network-policies true '
+                 '--address-prefixes 10.0.32.0/24 '
+                 '--nsg {nsg_name}')
+
+        self.cmd('az databricks workspace create -g {rg} '
+                 '-l {loc} '
+                 '-n {workspace_name} '
+                 '--private-subnet private-subnet '
+                 '--public-subnet public-subnet '
+                 '--vnet {vnet_id} --sku premium',
+                 checks=[self.check('location', '{loc}'),
+                         self.check('name', '{workspace_name}'),
+                         self.check('provisioningState', 'Succeeded')])
+
+        self.cmd('az databricks workspace update -g {rg} '
+                 '-n {workspace_name} '
+                 '--public-network-access Disabled '
+                 '--required-nsg-rules "NoAzureDatabricksRules" '
+                 '--enable-no-public-ip true '
+                 '--storage-account-sku-name Standard_GRS',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('publicNetworkAccess', 'Disabled'),
+                         self.check('parameters.enableNoPublicIp.value', True),
+                         self.check('requiredNsgRules', 'NoAzureDatabricksRules'),
+                         self.check('parameters.storageAccountSkuName.value', 'Standard_GRS')])
 
         self.cmd('az databricks workspace delete '
                  '--resource-group {rg} '

@@ -11,6 +11,41 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Vendor new SDK and bump API version to 2023-04-02-preview.
+
+0.5.139
+* `az aks create` and `az aks nodepool add`: Add warning message when specifying `--os-sku` to `Mariner` or `CBLMariner`.
+
+0.5.138
++++++++
+* Vendor new SDK and bump API version to 2023-03-02-preview.
+* fix: don't use current kube_proxy_config on UPDATE
+* GA update for Azure Monitor Metrics Addon (managed prometheus metrics) for AKS
+
+0.5.137
++++++++
+* Fix role assignment failure caused by the breaking change of default API version bump of the auth SDK
+
+0.5.136
++++++++
+* fix: remove uneeded location check for DCR, DCRA in azure monitor metrics addon (aks)
+* Refactor: use decorator mode in pod_cidr and network_plugin_mode getters to read from mc only during CREATE
+
+0.5.135
++++++++
+* Add `--network-dataplane` flag to `az aks create`.
+* Allow updating the pod CIDR and network plugin mode to migrate clusters to Azure CNI Overlay.
+
+0.5.134
++++++++
+* Add cluster upgrade settings options `--upgrade-settings`, and `--upgrade-override-until`.
+
+0.5.133
++++++++
+* Add `az aks mesh` commands for Azure Service Mesh.
+* `az aks create/update`: Replace `--uptime-sla` and `--no-uptime-sla` argument with `--tier` argument.
+* Raise a ClientRequestError when creating the same cluster again in command `az aks create`.
+* Vendor new SDK and bump API version to 2023-02-02-preview.
 
 0.5.132
 +++++++
@@ -521,6 +556,7 @@ Pending
 0.5.49
 ++++++
 
+* Update to use 2021-11-01-preview api-version.
 * Update the minimum required cli core version to `2.31.0`.
 * Add support for Alias Minor Version.
 
