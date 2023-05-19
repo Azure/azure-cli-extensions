@@ -6,7 +6,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=too-many-lines, too-many-branches, too-many-locals
-# pylint: disable=too-many-statements, line-too-long
+# pylint: disable=too-many-statements, line-too-long, protected-access
 
 from knack.log import get_logger
 
@@ -28,7 +28,7 @@ class JobCreate(_JobCreate):
         )
         args_schema.storage_accounts.Element = AAZResourceIdArg(
             fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
-                                                "/providers/Microsoft.Storage/storageAccounts/{}",)
+                                                "/providers/Microsoft.Storage/storageAccounts/{}")
         )
         args_schema.staging_storage_account = AAZResourceIdArg(
             options=["--staging-storage-account"],
@@ -51,212 +51,75 @@ class JobCreate(_JobCreate):
             help="Path to the map of filter type and the details to filter.",
             fmt=AAZFreeFormDictArgFormat()
         )
+        args_schema.data_box._registered = False
+        args_schema.data_box_disk._registered = False
+        args_schema.data_box_heavy._registered = False
+        args_schema.data_import_details._registered = False
+        args_schema.data_export_details._registered = False
         return args_schema
 
-    class JobsCreate(_JobCreate.JobsCreate):
-        @property
-        def content(self):
-            from azure.cli.core.aaz import AAZObjectType, AAZStrType, AAZDictType, AAZIntType, AAZListType, AAZBoolType
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
-            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, ".",
-                              typ_kwargs={"flags": {"required": True, "client_flatten": True}})
-            _builder.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
+    def pre_operations(self):
+        args = self.ctx.args
+        if args.sku == 'DataBox':
+            args.data_box = {}
+        if args.sku == 'DataBoxDisk':
+            args.data_box_disk = {}
+        if args.sku == 'DataBoxHeavy':
+            args.data_box_heavy = {}
 
-            identity = _builder.get(".identity")
-            if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type")
-                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+        if args.sku == 'DataBoxDisk' and not has_value(args.expected_data_size):
+            raise ArgumentUsageError("You must provide '--expected-data-size' when the 'sku' is 'DataBoxDisk'.")
+        if not has_value(args.storage_accounts) and not has_value(args.staging_storage_account):
+            raise ArgumentUsageError("You must provide at least one '--storage-account' or the combination of '--staging-storage-account' and '--resource-group-for-managed-disk'")
 
-            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
-            if user_assigned_identities is not None:
-                user_assigned_identities.set_elements(AAZObjectType, ".")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("details", AAZObjectType)
-                properties.set_prop("transferType", AAZStrType, ".transfer_type",
-                                    typ_kwargs={"flags": {"required": True}})
-
-            details = _builder.get(".properties.details")
-            if details is not None:
-                details.set_prop("contactDetails", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
-                details.set_prop("expectedDataSizeInTeraBytes", AAZIntType, ".expected_data_size")
-                details.set_prop("jobDetailsType", AAZStrType, ".")
-                details.set_prop("keyEncryptionKey", AAZObjectType)
-                details.set_prop("shippingAddress", AAZObjectType)
-                details.discriminate_by("jobDetailsType", "DataBox")
-                details.discriminate_by("jobDetailsType", "DataBoxCustomerDisk")
-                details.discriminate_by("jobDetailsType", "DataBoxDisk")
-                details.discriminate_by("jobDetailsType", "DataBoxHeavy")
-
-            contact_details = _builder.get(".properties.details.contactDetails")
-            if contact_details is not None:
-                contact_details.set_prop("contactName", AAZStrType, ".contact_name",
-                                         typ_kwargs={"flags": {"required": True}})
-                contact_details.set_prop("emailList", AAZListType, ".email_list",
-                                         typ_kwargs={"flags": {"required": True}})
-                contact_details.set_prop("mobile", AAZStrType, ".mobile")
-                contact_details.set_prop("phone", AAZStrType, ".phone", typ_kwargs={"flags": {"required": True}})
-
-            email_list = _builder.get(".properties.details.contactDetails.emailList")
-            if email_list is not None:
-                email_list.set_elements(AAZStrType, ".")
-
-            key_encryption_key = _builder.get(".properties.details.keyEncryptionKey")
-            if key_encryption_key is not None:
-                key_encryption_key.set_prop("identityProperties", AAZObjectType, ".kek_identity")
-                key_encryption_key.set_prop("kekType", AAZStrType, ".kek_type",
-                                            typ_kwargs={"flags": {"required": True}})
-                key_encryption_key.set_prop("kekUrl", AAZStrType, ".kek_url")
-                key_encryption_key.set_prop("kekVaultResourceID", AAZStrType, ".kek_vault_resource_id")
-
-            identity_properties = _builder.get(".properties.details.keyEncryptionKey.identityProperties")
-            if identity_properties is not None:
-                identity_properties.set_prop("type", AAZStrType, ".type")
-                identity_properties.set_prop("userAssigned", AAZObjectType, ".user_assigned")
-
-            user_assigned = _builder.get(".properties.details.keyEncryptionKey.identityProperties.userAssigned")
-            if user_assigned is not None:
-                user_assigned.set_prop("resourceId", AAZStrType, ".resource_id")
-
-            shipping_address = _builder.get(".properties.details.shippingAddress")
-            if shipping_address is not None:
-                shipping_address.set_prop("city", AAZStrType, ".city")
-                shipping_address.set_prop("companyName", AAZStrType, ".company_name")
-                shipping_address.set_prop("country", AAZStrType, ".country", typ_kwargs={"flags": {"required": True}})
-                shipping_address.set_prop("postalCode", AAZStrType, ".postal_code")
-                shipping_address.set_prop("stateOrProvince", AAZStrType, ".state_or_province")
-                shipping_address.set_prop("streetAddress1", AAZStrType, ".street_address1",
-                                          typ_kwargs={"flags": {"required": True}})
-                shipping_address.set_prop("streetAddress2", AAZStrType, ".street_address2")
-                shipping_address.set_prop("streetAddress3", AAZStrType, ".street_address3")
-
-            disc_data_box = _builder.get(".properties.details{jobDetailsType:DataBox}")
-            if disc_data_box is not None:
-                disc_data_box.set_prop("devicePassword", AAZStrType, ".data_box.device_password")
-
-            disc_data_box_customer_disk = _builder.get(".properties.details{jobDetailsType:DataBoxCustomerDisk}")
-            if disc_data_box_customer_disk is not None:
-                disc_data_box_customer_disk.set_prop("enableManifestBackup", AAZBoolType,
-                                                     ".data_box_customer_disk.enable_manifest_backup")
-                disc_data_box_customer_disk.set_prop("importDiskDetailsCollection", AAZDictType,
-                                                     ".data_box_customer_disk.import_disk_details_collection")
-                disc_data_box_customer_disk.set_prop("returnToCustomerPackageDetails", AAZObjectType,
-                                                     ".data_box_customer_disk.return_to_customer_package_details",
-                                                     typ_kwargs={"flags": {"required": True}})
-
-            import_disk_details_collection = _builder.get(
-                ".properties.details{jobDetailsType:DataBoxCustomerDisk}.importDiskDetailsCollection")
-            if import_disk_details_collection is not None:
-                import_disk_details_collection.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(
-                ".properties.details{jobDetailsType:DataBoxCustomerDisk}.importDiskDetailsCollection{}")
-            if _elements is not None:
-                _elements.set_prop("bitLockerKey", AAZStrType, ".bit_locker_key",
-                                   typ_kwargs={"flags": {"required": True, "secret": True}})
-                _elements.set_prop("manifestFile", AAZStrType, ".manifest_file",
-                                   typ_kwargs={"flags": {"required": True}})
-                _elements.set_prop("manifestHash", AAZStrType, ".manifest_hash",
-                                   typ_kwargs={"flags": {"required": True}})
-
-            return_to_customer_package_details = _builder.get(
-                ".properties.details{jobDetailsType:DataBoxCustomerDisk}.returnToCustomerPackageDetails")
-            if return_to_customer_package_details is not None:
-                return_to_customer_package_details.set_prop("carrierAccountNumber", AAZStrType,
-                                                            ".carrier_account_number",
-                                                            typ_kwargs={"flags": {"secret": True}})
-                return_to_customer_package_details.set_prop("carrierName", AAZStrType, ".carrier_name")
-                return_to_customer_package_details.set_prop("trackingId", AAZStrType, ".tracking_id")
-
-            disc_data_box_disk = _builder.get(".properties.details{jobDetailsType:DataBoxDisk}")
-            if disc_data_box_disk is not None:
-                disc_data_box_disk.set_prop("passkey", AAZStrType, ".data_box_disk.passkey")
-                disc_data_box_disk.set_prop("preferredDisks", AAZDictType, ".data_box_disk.preferred_disks")
-
-            preferred_disks = _builder.get(".properties.details{jobDetailsType:DataBoxDisk}.preferredDisks")
-            if preferred_disks is not None:
-                preferred_disks.set_elements(AAZIntType, ".")
-
-            disc_data_box_heavy = _builder.get(".properties.details{jobDetailsType:DataBoxHeavy}")
-            if disc_data_box_heavy is not None:
-                disc_data_box_heavy.set_prop("devicePassword", AAZStrType, ".data_box_heavy.device_password")
-
-            sku = _builder.get(".sku")
-            if sku is not None:
-                sku.set_prop("name", AAZStrType, ".sku", typ_kwargs={"flags": {"required": True}})
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
-
-            output = self.serialize_content(_content_value)
-
-            args = self.ctx.args
-            output['properties']['details']['jobDetailsType'] = args.sku.to_serialized_data()
-
-            if args.sku.to_serialized_data() == 'DataBoxDisk' and not has_value(args.expected_data_size):
-                raise ArgumentUsageError("You must provide '--expected-data-size' when the 'sku' is 'DataBoxDisk'.")
-
-            if not has_value(args.storage_accounts) and not has_value(args.staging_storage_account):
-                raise ArgumentUsageError("You must provide at least one '--storage-account' or the combination of '--staging-storage-account' and '--resource-group-for-managed-disk'")
-
-            data_import_or_export_details = []
-            if has_value(args.storage_accounts):
-                for storage_account in args.storage_accounts.to_serialized_data():
-                    account_detail = {
-                        'accountDetails': {
-                            'storageAccountId': storage_account,
-                            'dataAccountType': 'StorageAccount'
+        data_import_or_export_details = []
+        if has_value(args.storage_accounts):
+            for storage_account in args.storage_accounts:
+                account_details = {
+                    'account_details': {
+                        'storage_account': {
+                            'storage_account_id': storage_account
                         }
-                    }
-                    data_import_or_export_details.append(account_detail)
-
-            if has_value(args.staging_storage_account):
-                resource_group_for_managed_disk = args.resource_group_for_managed_disk.to_serialized_data() if has_value(
-                    args.resource_group_for_managed_disk) else None
-                account_detail = {
-                    'accountDetails': {
-                        'stagingStorageAccountId': args.staging_storage_account.to_serialized_data(),
-                        'dataAccountType': 'ManagedDisk',
-                        'resourceGroupId': resource_group_for_managed_disk
                     }
                 }
-                data_import_or_export_details.append(account_detail)
+                data_import_or_export_details.append(account_details)
+        if has_value(args.staging_storage_account):
+            account_details = {
+                'account_details': {
+                    'managed_disk': {
+                        'staging_storage_account_id': args.staging_storage_account,
+                        'resource_group_id': args.resource_group_for_managed_disk
+                    }
+                }
+            }
+            data_import_or_export_details.append(account_details)
 
-            if args.transfer_type.to_serialized_data() == 'ImportToAzure':
-                output['properties']['details']["dataImportDetails"] = data_import_or_export_details
+        if args.transfer_type == 'ImportToAzure':
+            args.data_import_details = data_import_or_export_details
 
-            if args.transfer_type.to_serialized_data() == 'ExportFromAzure':
-                if not has_value(args.transfer_configuration_type):
-                    raise ArgumentUsageError('You must provide --transfer-configuration-type when --transfer-type  is ExportFromAzure.')
-                for detail in data_import_or_export_details:
-                    if args.transfer_configuration_type.to_serialized_data() == 'TransferAll':
-                        transfer_configuration = {
-                            "transferConfigurationType": "TransferAll",
-                            "transferAllDetails": {
-                                "include": {
-                                    "dataAccountType": "StorageAccount",
-                                    "transferAllBlobs": True,
-                                    "transferAllFiles": True
-                                }
+        if args.transfer_type == 'ExportFromAzure':
+            if not has_value(args.transfer_configuration_type):
+                raise ArgumentUsageError('You must provide --transfer-configuration-type when --transfer-type  is ExportFromAzure.')
+            for detail in data_import_or_export_details:
+                if args.transfer_configuration_type == 'TransferAll':
+                    data_account_type = 'StorageAccount' if 'storage_account' in detail['account_details'] else 'ManagedDisk'
+                    transfer_configuration = {
+                        'transfer_configuration_type': args.transfer_configuration_type,
+                        'transfer_all_details': {
+                            'include': {
+                                'data_account_type': data_account_type,
+                                'transfer_all_blobs': True,
+                                'transfer_all_files': True
                             }
                         }
-                        detail['transferConfiguration'] = transfer_configuration
-                    if args.transfer_configuration_type.to_serialized_data() == 'TransferUsingFilter':
-                        if not has_value(args.transfer_configuration_type):
-                            raise ArgumentUsageError('You must provide --transfer-filter-details when --transfer-configuration-type  is TransferUsingFilter.')
-                        transfer_configuration = {
-                            "transferConfigurationType": 'TransferUsingFilter',
-                            "transferFilterDetails": args.transfer_filter_details.to_serialized_data()
-                        }
-                        detail['transferConfiguration'] = transfer_configuration
-                output['properties']['details']["dataExportDetails"] = data_import_or_export_details
-            return output
+                    }
+                    detail['transfer_configuration'] = transfer_configuration
+                if args.transfer_configuration_type == 'TransferUsingFilter':
+                    if not has_value(args.transfer_configuration_type):
+                        raise ArgumentUsageError('You must provide --transfer-filter-details when --transfer-configuration-type  is TransferUsingFilter.')
+                    transfer_configuration = {
+                        "transfer_configuration_type": args.transfer_configuration_type,
+                        "transfer_filter_details": args.transfer_filter_details
+                    }
+                    detail['transfer_configuration'] = transfer_configuration
+            args.data_export_details = data_import_or_export_details

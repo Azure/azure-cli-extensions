@@ -89,10 +89,335 @@ class Create(AAZCommand):
         # define Arg Group "Details"
 
         _args_schema = cls._args_schema
+        _args_schema.data_box = AAZObjectArg(
+            options=["--data-box"],
+            arg_group="Details",
+            help="Databox Job Details.",
+        )
+        _args_schema.data_box_customer_disk = AAZObjectArg(
+            options=["--data-box-customer-disk"],
+            arg_group="Details",
+            help="Customer disk job details.",
+        )
+        _args_schema.data_box_disk = AAZObjectArg(
+            options=["--data-box-disk"],
+            arg_group="Details",
+            help="Databox Heavy Device Job Details",
+        )
+        _args_schema.data_box_heavy = AAZObjectArg(
+            options=["--data-box-heavy"],
+            arg_group="Details",
+            help="Databox Heavy Device Job Details",
+        )
+        _args_schema.data_export_details = AAZListArg(
+            options=["--data-export-details"],
+            arg_group="Details",
+            help="Details of the data to be exported from azure.",
+        )
+        _args_schema.data_import_details = AAZListArg(
+            options=["--data-import-details"],
+            arg_group="Details",
+            help="Details of the data to be imported into azure.",
+        )
         _args_schema.expected_data_size = AAZIntArg(
             options=["--expected-data-size"],
             arg_group="Details",
             help="The expected size of the data, which needs to be transferred in this job, in terabytes.",
+        )
+
+        data_box = cls._args_schema.data_box
+        data_box.device_password = AAZStrArg(
+            options=["device-password"],
+            help="Set Device password for unlocking Databox. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\-$%^!+=;:_()]+",
+        )
+
+        data_box_customer_disk = cls._args_schema.data_box_customer_disk
+        data_box_customer_disk.enable_manifest_backup = AAZBoolArg(
+            options=["enable-manifest-backup"],
+            help="Flag to indicate if disk manifest should be backed-up in the Storage Account.",
+            default=False,
+        )
+        data_box_customer_disk.import_disk_details_collection = AAZDictArg(
+            options=["import-disk-details-collection"],
+            help="Contains the map of disk serial number to the disk details for import jobs.",
+        )
+        data_box_customer_disk.return_to_customer_package_details = AAZObjectArg(
+            options=["return-to-customer-package-details"],
+            help="Return package shipping details.",
+            required=True,
+        )
+
+        import_disk_details_collection = cls._args_schema.data_box_customer_disk.import_disk_details_collection
+        import_disk_details_collection.Element = AAZObjectArg()
+
+        _element = cls._args_schema.data_box_customer_disk.import_disk_details_collection.Element
+        _element.bit_locker_key = AAZStrArg(
+            options=["bit-locker-key"],
+            help="BitLocker key used to encrypt the disk.",
+            required=True,
+        )
+        _element.manifest_file = AAZStrArg(
+            options=["manifest-file"],
+            help="The relative path of the manifest file on the disk.",
+            required=True,
+        )
+        _element.manifest_hash = AAZStrArg(
+            options=["manifest-hash"],
+            help="The Base16-encoded MD5 hash of the manifest file on the disk.",
+            required=True,
+        )
+
+        return_to_customer_package_details = cls._args_schema.data_box_customer_disk.return_to_customer_package_details
+        return_to_customer_package_details.carrier_account_number = AAZStrArg(
+            options=["carrier-account-number"],
+            help="Carrier Account Number of customer for customer disk.",
+        )
+        return_to_customer_package_details.carrier_name = AAZStrArg(
+            options=["carrier-name"],
+            help="Name of the carrier.",
+        )
+        return_to_customer_package_details.tracking_id = AAZStrArg(
+            options=["tracking-id"],
+            help="Tracking Id of shipment.",
+        )
+
+        data_box_disk = cls._args_schema.data_box_disk
+        data_box_disk.passkey = AAZStrArg(
+            options=["passkey"],
+            help="User entered passkey for DataBox Disk job.",
+        )
+        data_box_disk.preferred_disks = AAZDictArg(
+            options=["preferred-disks"],
+            help="User preference on what size disks are needed for the job. The map is from the disk size in TB to the count. Eg. {2,5} means 5 disks of 2 TB size. Key is string but will be checked against an int.",
+        )
+
+        preferred_disks = cls._args_schema.data_box_disk.preferred_disks
+        preferred_disks.Element = AAZIntArg()
+
+        data_box_heavy = cls._args_schema.data_box_heavy
+        data_box_heavy.device_password = AAZStrArg(
+            options=["device-password"],
+            help="Set Device password for unlocking Databox Heavy. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\-$%^!+=;:_()]+",
+        )
+
+        data_export_details = cls._args_schema.data_export_details
+        data_export_details.Element = AAZObjectArg()
+
+        _element = cls._args_schema.data_export_details.Element
+        _element.account_details = AAZObjectArg(
+            options=["account-details"],
+            help="Account details of the data to be transferred",
+            required=True,
+        )
+        _element.log_collection_level = AAZStrArg(
+            options=["log-collection-level"],
+            help="Level of the logs to be collected.",
+            default="Error",
+            enum={"Error": "Error", "Verbose": "Verbose"},
+        )
+        _element.transfer_configuration = AAZObjectArg(
+            options=["transfer-configuration"],
+            help="Configuration for the data transfer.",
+            required=True,
+        )
+
+        account_details = cls._args_schema.data_export_details.Element.account_details
+        account_details.managed_disk = AAZObjectArg(
+            options=["managed-disk"],
+        )
+        account_details.storage_account = AAZObjectArg(
+            options=["storage-account"],
+        )
+        account_details.share_password = AAZStrArg(
+            options=["share-password"],
+            help="Password for all the shares to be created on the device. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\-$%^!+=;:_()]+",
+        )
+
+        managed_disk = cls._args_schema.data_export_details.Element.account_details.managed_disk
+        managed_disk.resource_group_id = AAZStrArg(
+            options=["resource-group-id"],
+            help="Resource Group Id of the compute disks.",
+            required=True,
+        )
+        managed_disk.staging_storage_account_id = AAZStrArg(
+            options=["staging-storage-account-id"],
+            help="Resource Id of the storage account that can be used to copy the vhd for staging.",
+            required=True,
+        )
+
+        storage_account = cls._args_schema.data_export_details.Element.account_details.storage_account
+        storage_account.storage_account_id = AAZStrArg(
+            options=["storage-account-id"],
+            help="Storage Account Resource Id.",
+            required=True,
+        )
+
+        transfer_configuration = cls._args_schema.data_export_details.Element.transfer_configuration
+        transfer_configuration.transfer_all_details = AAZObjectArg(
+            options=["transfer-all-details"],
+            help="Map of filter type and the details to transfer all data. This field is required only if the TransferConfigurationType is given as TransferAll",
+        )
+        transfer_configuration.transfer_configuration_type = AAZStrArg(
+            options=["transfer-configuration-type"],
+            help="Type of the configuration for transfer.",
+            required=True,
+            enum={"TransferAll": "TransferAll", "TransferUsingFilter": "TransferUsingFilter"},
+        )
+        transfer_configuration.transfer_filter_details = AAZObjectArg(
+            options=["transfer-filter-details"],
+            help="Map of filter type and the details to filter. This field is required only if the TransferConfigurationType is given as TransferUsingFilter.",
+        )
+
+        transfer_all_details = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_all_details
+        transfer_all_details.include = AAZObjectArg(
+            options=["include"],
+            help="Details to transfer all data.",
+        )
+
+        include = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_all_details.include
+        include.data_account_type = AAZStrArg(
+            options=["data-account-type"],
+            help="Type of the account of data",
+            required=True,
+            default="StorageAccount",
+            enum={"ManagedDisk": "ManagedDisk", "StorageAccount": "StorageAccount"},
+        )
+        include.transfer_all_blobs = AAZBoolArg(
+            options=["transfer-all-blobs"],
+            help="To indicate if all Azure blobs have to be transferred",
+        )
+        include.transfer_all_files = AAZBoolArg(
+            options=["transfer-all-files"],
+            help="To indicate if all Azure Files have to be transferred",
+        )
+
+        transfer_filter_details = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details
+        transfer_filter_details.azure_file_filter_details = AAZObjectArg(
+            options=["azure-file-filter-details"],
+            help="Filter details to transfer Azure files.",
+        )
+        transfer_filter_details.blob_filter_details = AAZObjectArg(
+            options=["blob-filter-details"],
+            help="Filter details to transfer blobs.",
+        )
+        transfer_filter_details.data_account_type = AAZStrArg(
+            options=["data-account-type"],
+            help="Type of the account of data.",
+            default="StorageAccount",
+            enum={"ManagedDisk": "ManagedDisk", "StorageAccount": "StorageAccount"},
+        )
+        transfer_filter_details.filter_file_details = AAZListArg(
+            options=["filter-file-details"],
+            help="Details of the filter files to be used for data transfer.",
+        )
+
+        azure_file_filter_details = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.azure_file_filter_details
+        azure_file_filter_details.file_path_list = AAZListArg(
+            options=["file-path-list"],
+            help="List of full path of the files to be transferred.",
+        )
+        azure_file_filter_details.file_prefix_list = AAZListArg(
+            options=["file-prefix-list"],
+            help="Prefix list of the Azure files to be transferred.",
+        )
+        azure_file_filter_details.file_share_list = AAZListArg(
+            options=["file-share-list"],
+            help="List of file shares to be transferred.",
+        )
+
+        file_path_list = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.azure_file_filter_details.file_path_list
+        file_path_list.Element = AAZStrArg()
+
+        file_prefix_list = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.azure_file_filter_details.file_prefix_list
+        file_prefix_list.Element = AAZStrArg()
+
+        file_share_list = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.azure_file_filter_details.file_share_list
+        file_share_list.Element = AAZStrArg()
+
+        blob_filter_details = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.blob_filter_details
+        blob_filter_details.blob_path_list = AAZListArg(
+            options=["blob-path-list"],
+            help="List of full path of the blobs to be transferred.",
+        )
+        blob_filter_details.blob_prefix_list = AAZListArg(
+            options=["blob-prefix-list"],
+            help="Prefix list of the Azure blobs to be transferred.",
+        )
+        blob_filter_details.container_list = AAZListArg(
+            options=["container-list"],
+            help="List of blob containers to be transferred.",
+        )
+
+        blob_path_list = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.blob_filter_details.blob_path_list
+        blob_path_list.Element = AAZStrArg()
+
+        blob_prefix_list = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.blob_filter_details.blob_prefix_list
+        blob_prefix_list.Element = AAZStrArg()
+
+        container_list = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.blob_filter_details.container_list
+        container_list.Element = AAZStrArg()
+
+        filter_file_details = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.filter_file_details
+        filter_file_details.Element = AAZObjectArg()
+
+        _element = cls._args_schema.data_export_details.Element.transfer_configuration.transfer_filter_details.filter_file_details.Element
+        _element.filter_file_path = AAZStrArg(
+            options=["filter-file-path"],
+            help="Path of the file that contains the details of all items to transfer.",
+            required=True,
+        )
+        _element.filter_file_type = AAZStrArg(
+            options=["filter-file-type"],
+            help="Type of the filter file.",
+            required=True,
+            enum={"AzureBlob": "AzureBlob", "AzureFile": "AzureFile"},
+        )
+
+        data_import_details = cls._args_schema.data_import_details
+        data_import_details.Element = AAZObjectArg()
+
+        _element = cls._args_schema.data_import_details.Element
+        _element.account_details = AAZObjectArg(
+            options=["account-details"],
+            help="Account details of the data to be transferred",
+            required=True,
+        )
+        _element.log_collection_level = AAZStrArg(
+            options=["log-collection-level"],
+            help="Level of the logs to be collected.",
+            default="Error",
+            enum={"Error": "Error", "Verbose": "Verbose"},
+        )
+
+        account_details = cls._args_schema.data_import_details.Element.account_details
+        account_details.managed_disk = AAZObjectArg(
+            options=["managed-disk"],
+        )
+        account_details.storage_account = AAZObjectArg(
+            options=["storage-account"],
+        )
+        account_details.share_password = AAZStrArg(
+            options=["share-password"],
+            help="Password for all the shares to be created on the device. Should not be passed for TransferType:ExportFromAzure jobs. If this is not passed, the service will generate password itself. This will not be returned in Get Call. Password Requirements :  Password must be minimum of 12 and maximum of 64 characters. Password must have at least one uppercase alphabet, one number and one special character. Password cannot have the following characters : IilLoO0 Password can have only alphabets, numbers and these characters : @#\-$%^!+=;:_()]+",
+        )
+
+        managed_disk = cls._args_schema.data_import_details.Element.account_details.managed_disk
+        managed_disk.resource_group_id = AAZStrArg(
+            options=["resource-group-id"],
+            help="Resource Group Id of the compute disks.",
+            required=True,
+        )
+        managed_disk.staging_storage_account_id = AAZStrArg(
+            options=["staging-storage-account-id"],
+            help="Resource Id of the storage account that can be used to copy the vhd for staging.",
+            required=True,
+        )
+
+        storage_account = cls._args_schema.data_import_details.Element.account_details.storage_account
+        storage_account.storage_account_id = AAZStrArg(
+            options=["storage-account-id"],
+            help="Storage Account Resource Id.",
+            required=True,
         )
 
         # define Arg Group "JobResource"
@@ -482,11 +807,17 @@ class Create(AAZCommand):
             details = _builder.get(".properties.details")
             if details is not None:
                 details.set_prop("contactDetails", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+                details.set_prop("dataExportDetails", AAZListType, ".data_export_details")
+                details.set_prop("dataImportDetails", AAZListType, ".data_import_details")
                 details.set_prop("expectedDataSizeInTeraBytes", AAZIntType, ".expected_data_size")
-                details.set_prop("jobDetailsType", AAZStrType, ".", typ_kwargs={"flags": {"required": True}})
+                details.set_const("jobDetailsType", "DataBox", AAZStrType, ".data_box", typ_kwargs={"flags": {"required": True}})
+                details.set_const("jobDetailsType", "DataBoxCustomerDisk", AAZStrType, ".data_box_customer_disk", typ_kwargs={"flags": {"required": True}})
+                details.set_const("jobDetailsType", "DataBoxDisk", AAZStrType, ".data_box_disk", typ_kwargs={"flags": {"required": True}})
+                details.set_const("jobDetailsType", "DataBoxHeavy", AAZStrType, ".data_box_heavy", typ_kwargs={"flags": {"required": True}})
                 details.set_prop("keyEncryptionKey", AAZObjectType)
                 details.set_prop("shippingAddress", AAZObjectType)
                 details.discriminate_by("jobDetailsType", "DataBox")
+                details.discriminate_by("jobDetailsType", "DataBoxCustomerDisk")
                 details.discriminate_by("jobDetailsType", "DataBoxDisk")
                 details.discriminate_by("jobDetailsType", "DataBoxHeavy")
 
@@ -500,6 +831,131 @@ class Create(AAZCommand):
             email_list = _builder.get(".properties.details.contactDetails.emailList")
             if email_list is not None:
                 email_list.set_elements(AAZStrType, ".")
+
+            data_export_details = _builder.get(".properties.details.dataExportDetails")
+            if data_export_details is not None:
+                data_export_details.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.details.dataExportDetails[]")
+            if _elements is not None:
+                _elements.set_prop("accountDetails", AAZObjectType, ".account_details", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("logCollectionLevel", AAZStrType, ".log_collection_level")
+                _elements.set_prop("transferConfiguration", AAZObjectType, ".transfer_configuration", typ_kwargs={"flags": {"required": True}})
+
+            account_details = _builder.get(".properties.details.dataExportDetails[].accountDetails")
+            if account_details is not None:
+                account_details.set_const("dataAccountType", "ManagedDisk", AAZStrType, ".managed_disk", typ_kwargs={"flags": {"required": True}})
+                account_details.set_const("dataAccountType", "StorageAccount", AAZStrType, ".storage_account", typ_kwargs={"flags": {"required": True}})
+                account_details.set_prop("sharePassword", AAZStrType, ".share_password", typ_kwargs={"flags": {"secret": True}})
+                account_details.discriminate_by("dataAccountType", "ManagedDisk")
+                account_details.discriminate_by("dataAccountType", "StorageAccount")
+
+            disc_managed_disk = _builder.get(".properties.details.dataExportDetails[].accountDetails{dataAccountType:ManagedDisk}")
+            if disc_managed_disk is not None:
+                disc_managed_disk.set_prop("resourceGroupId", AAZStrType, ".managed_disk.resource_group_id", typ_kwargs={"flags": {"required": True}})
+                disc_managed_disk.set_prop("stagingStorageAccountId", AAZStrType, ".managed_disk.staging_storage_account_id", typ_kwargs={"flags": {"required": True}})
+
+            disc_storage_account = _builder.get(".properties.details.dataExportDetails[].accountDetails{dataAccountType:StorageAccount}")
+            if disc_storage_account is not None:
+                disc_storage_account.set_prop("storageAccountId", AAZStrType, ".storage_account.storage_account_id", typ_kwargs={"flags": {"required": True}})
+
+            transfer_configuration = _builder.get(".properties.details.dataExportDetails[].transferConfiguration")
+            if transfer_configuration is not None:
+                transfer_configuration.set_prop("transferAllDetails", AAZObjectType, ".transfer_all_details")
+                transfer_configuration.set_prop("transferConfigurationType", AAZStrType, ".transfer_configuration_type", typ_kwargs={"flags": {"required": True}})
+                transfer_configuration.set_prop("transferFilterDetails", AAZObjectType, ".transfer_filter_details")
+
+            transfer_all_details = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferAllDetails")
+            if transfer_all_details is not None:
+                transfer_all_details.set_prop("include", AAZObjectType, ".include")
+
+            include = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferAllDetails.include")
+            if include is not None:
+                include.set_prop("dataAccountType", AAZStrType, ".data_account_type", typ_kwargs={"flags": {"required": True}})
+                include.set_prop("transferAllBlobs", AAZBoolType, ".transfer_all_blobs")
+                include.set_prop("transferAllFiles", AAZBoolType, ".transfer_all_files")
+
+            transfer_filter_details = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails")
+            if transfer_filter_details is not None:
+                transfer_filter_details.set_prop("include", AAZObjectType)
+
+            include = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include")
+            if include is not None:
+                include.set_prop("azureFileFilterDetails", AAZObjectType, ".azure_file_filter_details")
+                include.set_prop("blobFilterDetails", AAZObjectType, ".blob_filter_details")
+                include.set_prop("dataAccountType", AAZStrType, ".data_account_type", typ_kwargs={"flags": {"required": True}})
+                include.set_prop("filterFileDetails", AAZListType, ".filter_file_details")
+
+            azure_file_filter_details = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.azureFileFilterDetails")
+            if azure_file_filter_details is not None:
+                azure_file_filter_details.set_prop("filePathList", AAZListType, ".file_path_list")
+                azure_file_filter_details.set_prop("filePrefixList", AAZListType, ".file_prefix_list")
+                azure_file_filter_details.set_prop("fileShareList", AAZListType, ".file_share_list")
+
+            file_path_list = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.azureFileFilterDetails.filePathList")
+            if file_path_list is not None:
+                file_path_list.set_elements(AAZStrType, ".")
+
+            file_prefix_list = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.azureFileFilterDetails.filePrefixList")
+            if file_prefix_list is not None:
+                file_prefix_list.set_elements(AAZStrType, ".")
+
+            file_share_list = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.azureFileFilterDetails.fileShareList")
+            if file_share_list is not None:
+                file_share_list.set_elements(AAZStrType, ".")
+
+            blob_filter_details = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.blobFilterDetails")
+            if blob_filter_details is not None:
+                blob_filter_details.set_prop("blobPathList", AAZListType, ".blob_path_list")
+                blob_filter_details.set_prop("blobPrefixList", AAZListType, ".blob_prefix_list")
+                blob_filter_details.set_prop("containerList", AAZListType, ".container_list")
+
+            blob_path_list = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.blobFilterDetails.blobPathList")
+            if blob_path_list is not None:
+                blob_path_list.set_elements(AAZStrType, ".")
+
+            blob_prefix_list = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.blobFilterDetails.blobPrefixList")
+            if blob_prefix_list is not None:
+                blob_prefix_list.set_elements(AAZStrType, ".")
+
+            container_list = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.blobFilterDetails.containerList")
+            if container_list is not None:
+                container_list.set_elements(AAZStrType, ".")
+
+            filter_file_details = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.filterFileDetails")
+            if filter_file_details is not None:
+                filter_file_details.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.details.dataExportDetails[].transferConfiguration.transferFilterDetails.include.filterFileDetails[]")
+            if _elements is not None:
+                _elements.set_prop("filterFilePath", AAZStrType, ".filter_file_path", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("filterFileType", AAZStrType, ".filter_file_type", typ_kwargs={"flags": {"required": True}})
+
+            data_import_details = _builder.get(".properties.details.dataImportDetails")
+            if data_import_details is not None:
+                data_import_details.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.details.dataImportDetails[]")
+            if _elements is not None:
+                _elements.set_prop("accountDetails", AAZObjectType, ".account_details", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("logCollectionLevel", AAZStrType, ".log_collection_level")
+
+            account_details = _builder.get(".properties.details.dataImportDetails[].accountDetails")
+            if account_details is not None:
+                account_details.set_const("dataAccountType", "ManagedDisk", AAZStrType, ".managed_disk", typ_kwargs={"flags": {"required": True}})
+                account_details.set_const("dataAccountType", "StorageAccount", AAZStrType, ".storage_account", typ_kwargs={"flags": {"required": True}})
+                account_details.set_prop("sharePassword", AAZStrType, ".share_password", typ_kwargs={"flags": {"secret": True}})
+                account_details.discriminate_by("dataAccountType", "ManagedDisk")
+                account_details.discriminate_by("dataAccountType", "StorageAccount")
+
+            disc_managed_disk = _builder.get(".properties.details.dataImportDetails[].accountDetails{dataAccountType:ManagedDisk}")
+            if disc_managed_disk is not None:
+                disc_managed_disk.set_prop("resourceGroupId", AAZStrType, ".managed_disk.resource_group_id", typ_kwargs={"flags": {"required": True}})
+                disc_managed_disk.set_prop("stagingStorageAccountId", AAZStrType, ".managed_disk.staging_storage_account_id", typ_kwargs={"flags": {"required": True}})
+
+            disc_storage_account = _builder.get(".properties.details.dataImportDetails[].accountDetails{dataAccountType:StorageAccount}")
+            if disc_storage_account is not None:
+                disc_storage_account.set_prop("storageAccountId", AAZStrType, ".storage_account.storage_account_id", typ_kwargs={"flags": {"required": True}})
 
             key_encryption_key = _builder.get(".properties.details.keyEncryptionKey")
             if key_encryption_key is not None:
@@ -531,6 +987,28 @@ class Create(AAZCommand):
             disc_data_box = _builder.get(".properties.details{jobDetailsType:DataBox}")
             if disc_data_box is not None:
                 disc_data_box.set_prop("devicePassword", AAZStrType, ".data_box.device_password")
+
+            disc_data_box_customer_disk = _builder.get(".properties.details{jobDetailsType:DataBoxCustomerDisk}")
+            if disc_data_box_customer_disk is not None:
+                disc_data_box_customer_disk.set_prop("enableManifestBackup", AAZBoolType, ".data_box_customer_disk.enable_manifest_backup")
+                disc_data_box_customer_disk.set_prop("importDiskDetailsCollection", AAZDictType, ".data_box_customer_disk.import_disk_details_collection")
+                disc_data_box_customer_disk.set_prop("returnToCustomerPackageDetails", AAZObjectType, ".data_box_customer_disk.return_to_customer_package_details", typ_kwargs={"flags": {"required": True}})
+
+            import_disk_details_collection = _builder.get(".properties.details{jobDetailsType:DataBoxCustomerDisk}.importDiskDetailsCollection")
+            if import_disk_details_collection is not None:
+                import_disk_details_collection.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.details{jobDetailsType:DataBoxCustomerDisk}.importDiskDetailsCollection{}")
+            if _elements is not None:
+                _elements.set_prop("bitLockerKey", AAZStrType, ".bit_locker_key", typ_kwargs={"flags": {"required": True, "secret": True}})
+                _elements.set_prop("manifestFile", AAZStrType, ".manifest_file", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("manifestHash", AAZStrType, ".manifest_hash", typ_kwargs={"flags": {"required": True}})
+
+            return_to_customer_package_details = _builder.get(".properties.details{jobDetailsType:DataBoxCustomerDisk}.returnToCustomerPackageDetails")
+            if return_to_customer_package_details is not None:
+                return_to_customer_package_details.set_prop("carrierAccountNumber", AAZStrType, ".carrier_account_number", typ_kwargs={"flags": {"secret": True}})
+                return_to_customer_package_details.set_prop("carrierName", AAZStrType, ".carrier_name")
+                return_to_customer_package_details.set_prop("trackingId", AAZStrType, ".tracking_id")
 
             disc_data_box_disk = _builder.get(".properties.details{jobDetailsType:DataBoxDisk}")
             if disc_data_box_disk is not None:
@@ -1198,6 +1676,168 @@ class Create(AAZCommand):
             copy_progress = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBox").copy_progress
             copy_progress.Element = AAZObjectType()
             _CreateHelper._build_schema_copy_progress_read(copy_progress.Element)
+
+            disc_data_box_customer_disk = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk")
+            disc_data_box_customer_disk.copy_progress = AAZListType(
+                serialized_name="copyProgress",
+                flags={"read_only": True},
+            )
+            disc_data_box_customer_disk.deliver_to_dc_package_details = AAZObjectType(
+                serialized_name="deliverToDcPackageDetails",
+            )
+            disc_data_box_customer_disk.enable_manifest_backup = AAZBoolType(
+                serialized_name="enableManifestBackup",
+            )
+            disc_data_box_customer_disk.export_disk_details_collection = AAZDictType(
+                serialized_name="exportDiskDetailsCollection",
+                flags={"read_only": True},
+            )
+            disc_data_box_customer_disk.import_disk_details_collection = AAZDictType(
+                serialized_name="importDiskDetailsCollection",
+            )
+            disc_data_box_customer_disk.return_to_customer_package_details = AAZObjectType(
+                serialized_name="returnToCustomerPackageDetails",
+                flags={"required": True},
+            )
+
+            copy_progress = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").copy_progress
+            copy_progress.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").copy_progress.Element
+            _element.account_id = AAZStrType(
+                serialized_name="accountId",
+                flags={"read_only": True},
+            )
+            _element.actions = AAZListType(
+                flags={"read_only": True},
+            )
+            _element.bytes_processed = AAZIntType(
+                serialized_name="bytesProcessed",
+                flags={"read_only": True},
+            )
+            _element.copy_status = AAZStrType(
+                serialized_name="copyStatus",
+                flags={"read_only": True},
+            )
+            _element.data_account_type = AAZStrType(
+                serialized_name="dataAccountType",
+                flags={"read_only": True},
+            )
+            _element.directories_errored_out = AAZIntType(
+                serialized_name="directoriesErroredOut",
+                flags={"read_only": True},
+            )
+            _element.error = AAZObjectType()
+            _CreateHelper._build_schema_cloud_error_read(_element.error)
+            _element.files_errored_out = AAZIntType(
+                serialized_name="filesErroredOut",
+                flags={"read_only": True},
+            )
+            _element.files_processed = AAZIntType(
+                serialized_name="filesProcessed",
+                flags={"read_only": True},
+            )
+            _element.invalid_directories_processed = AAZIntType(
+                serialized_name="invalidDirectoriesProcessed",
+                flags={"read_only": True},
+            )
+            _element.invalid_file_bytes_uploaded = AAZIntType(
+                serialized_name="invalidFileBytesUploaded",
+                flags={"read_only": True},
+            )
+            _element.invalid_files_processed = AAZIntType(
+                serialized_name="invalidFilesProcessed",
+                flags={"read_only": True},
+            )
+            _element.is_enumeration_in_progress = AAZBoolType(
+                serialized_name="isEnumerationInProgress",
+                flags={"read_only": True},
+            )
+            _element.renamed_container_count = AAZIntType(
+                serialized_name="renamedContainerCount",
+                flags={"read_only": True},
+            )
+            _element.serial_number = AAZStrType(
+                serialized_name="serialNumber",
+                flags={"read_only": True},
+            )
+            _element.storage_account_name = AAZStrType(
+                serialized_name="storageAccountName",
+                flags={"read_only": True},
+            )
+            _element.total_bytes_to_process = AAZIntType(
+                serialized_name="totalBytesToProcess",
+                flags={"read_only": True},
+            )
+            _element.total_files_to_process = AAZIntType(
+                serialized_name="totalFilesToProcess",
+                flags={"read_only": True},
+            )
+            _element.transfer_type = AAZStrType(
+                serialized_name="transferType",
+                flags={"read_only": True},
+            )
+
+            actions = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").copy_progress.Element.actions
+            actions.Element = AAZStrType()
+
+            deliver_to_dc_package_details = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").deliver_to_dc_package_details
+            deliver_to_dc_package_details.carrier_name = AAZStrType(
+                serialized_name="carrierName",
+            )
+            deliver_to_dc_package_details.tracking_id = AAZStrType(
+                serialized_name="trackingId",
+            )
+
+            export_disk_details_collection = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").export_disk_details_collection
+            export_disk_details_collection.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").export_disk_details_collection.Element
+            _element.backup_manifest_cloud_path = AAZStrType(
+                serialized_name="backupManifestCloudPath",
+                flags={"read_only": True},
+            )
+            _element.manifest_file = AAZStrType(
+                serialized_name="manifestFile",
+                flags={"read_only": True},
+            )
+            _element.manifest_hash = AAZStrType(
+                serialized_name="manifestHash",
+                flags={"read_only": True},
+            )
+
+            import_disk_details_collection = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").import_disk_details_collection
+            import_disk_details_collection.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").import_disk_details_collection.Element
+            _element.backup_manifest_cloud_path = AAZStrType(
+                serialized_name="backupManifestCloudPath",
+                flags={"read_only": True},
+            )
+            _element.bit_locker_key = AAZStrType(
+                serialized_name="bitLockerKey",
+                flags={"required": True, "secret": True},
+            )
+            _element.manifest_file = AAZStrType(
+                serialized_name="manifestFile",
+                flags={"required": True},
+            )
+            _element.manifest_hash = AAZStrType(
+                serialized_name="manifestHash",
+                flags={"required": True},
+            )
+
+            return_to_customer_package_details = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxCustomerDisk").return_to_customer_package_details
+            return_to_customer_package_details.carrier_account_number = AAZStrType(
+                serialized_name="carrierAccountNumber",
+                flags={"secret": True},
+            )
+            return_to_customer_package_details.carrier_name = AAZStrType(
+                serialized_name="carrierName",
+            )
+            return_to_customer_package_details.tracking_id = AAZStrType(
+                serialized_name="trackingId",
+            )
 
             disc_data_box_disk = cls._schema_on_200.properties.details.discriminate_by("job_details_type", "DataBoxDisk")
             disc_data_box_disk.copy_progress = AAZListType(

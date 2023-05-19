@@ -69,7 +69,7 @@ class DataboxScenario(ScenarioTest):
             self.check('status', 'DeviceOrdered'),
             self.check('transferType', 'ImportToAzure'),
             self.check('details.keyEncryptionKey.kekType', 'MicrosoftManaged')
-         ])
+        ])
 
         self.cmd('databox job list '
                  '--resource-group {rg}',
@@ -162,7 +162,8 @@ class DataboxScenario(ScenarioTest):
                  checks=[
                      self.check('status', 'DeviceOrdered'),
                      self.check('transferType', 'ExportFromAzure'),
-                     self.check('details.dataExportDetails[0].transferConfiguration.transferConfigurationType', 'TransferAll')
+                     self.check('details.dataExportDetails[0].transferConfiguration.transferConfigurationType',
+                                'TransferAll')
                  ])
 
         self.cmd('databox job cancel --resource-group {rg} --name {job_name_3} --reason "CancelTest" -y')
@@ -180,3 +181,37 @@ class DataboxScenario(ScenarioTest):
                  '-g {rg} '
                  '--resource-name {storage_account_2} '
                  '--resource-type Microsoft.Storage/storageAccounts')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_databox')
+    @StorageAccountPreparer(parameter_name='storage_account_1')
+    def test_databox_custom_disk(self, storage_account_1):
+        self.kwargs.update({
+            'job_name': self.create_random_name('job', 24),
+            'storage_account_1': storage_account_1,
+            'managed-rg': self.create_random_name('rg-', 10),
+            'device_serial_number': 'CLISERIAL789'
+        })
+        self.cmd('databox job create '
+                 '--resource-group {rg} '
+                 '--name {job_name} '
+                 '--sku DataBoxCustomerDisk '
+                 '--contact-name "Public SDK Test" '
+                 '--phone 14258828080 '
+                 '--email-list testing@microsoft.com '
+                 '--street-address1 "1 MICROSOFT WAY" '
+                 '--city Redmond '
+                 '--state-or-province WA '
+                 '--country US '
+                 '--postal-code 98052 '
+                 '--company-name Microsoft '
+                 '--storage-account {storage_account_1} '
+                 '--resource-group-for-managed-disk {managed-rg} '
+                 '--transfer-type ImportToAzure '
+                 '--data-box-customer-disk {{returnToCustomerPackageDetails:{{carrierName:carrier1,carrierAccountNumber:0000}},importDiskDetailsCollection:{{{device_serial_number}:{{ManifestFile:SampleManifest.xml,ManifestHash:xxxx,BitLockerKey:xxx}}}}}}',
+                 checks=[
+                     self.check('transferType', 'ImportToAzure'),
+                     self.check('details.returnToCustomerPackageDetails.carrierName', 'carrier1')
+                 ])
+        self.cmd('databox job cancel --resource-group {rg} --name {job_name} --reason "CancelTest" -y')
+        self.cmd('databox job delete --resource-group {rg} --name {job_name} -y')
+        self.cmd('lock delete --name DATABOX_SERVICE -g {rg} --resource-name {storage_account_1} --resource-type Microsoft.Storage/storageAccounts')
