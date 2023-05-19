@@ -91,7 +91,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.datasource_auth_credentials = AAZObjectArg(
-            options=["--datasource-auth-credentials"],
+            options=["--datasource-auth-creds", "--datasource-auth-credentials"],
             arg_group="Properties",
             help="Credentials to use to authenticate with data source provider.",
             nullable=True,
