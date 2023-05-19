@@ -39,7 +39,7 @@ class DefaultDeployment:
             resource_requests=self._format_resource_request(**kwargs),
             container_probe_settings=self._format_container_probe(**kwargs),
             environment_variables=self._get_env(**kwargs),
-            apms=self._get_apm(**kwargs),
+            apms=self._get_apms(**kwargs),
             addon_configs=self._get_addon_configs(**kwargs),
             termination_grace_period_seconds=self._get_termination_grace_period_seconds(**kwargs),
             startup_probe=self._format_startup_probe(**kwargs),
@@ -101,8 +101,8 @@ class DefaultDeployment:
     def _get_env(self, env=None, **_):
         return env
 
-    def _get_apm(self, apm=None, **_):
-        return apm
+    def _get_apms(self, apms=None, **_):
+        return apms
 
     def _get_addon_configs(self, config_file_patterns=None, **_):
         if config_file_patterns is not None:

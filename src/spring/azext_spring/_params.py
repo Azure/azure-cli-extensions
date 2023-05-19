@@ -460,7 +460,7 @@ def load_arguments(self, _):
             c.argument('jvm_options', type=str, validator=validate_jvm_options,
                        help="A string containing jvm options, use '=' instead of ' ' for this argument to avoid bash parse error, eg: --jvm-options='-Xms1024m -Xmx2048m'")
             c.argument('env', env_type)
-            c.argument('apm', apm_type)
+            c.argument('apms', apm_type)
             c.argument('disable_probe', arg_type=get_three_state_flag(), help='If true, disable the liveness and readiness probe.')
             c.argument('main_entry', options_list=[
                 '--main-entry', '-m'], help="The path to the .NET executable relative to zip root.")
@@ -724,8 +724,8 @@ def load_arguments(self, _):
             c.argument('build_env', build_env_type)
             c.argument('source_path', arg_type=source_path_type, validator=validate_source_path)
             c.argument('artifact_path', help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_artifact_path)
-            c.argument('apm', apm_type)
-            c.argument('cert', nargs='+', help='Space-separated certificate resource IDs.', validator=validate_cert_reference)
+            c.argument('apms', apm_type)
+            c.argument('certificates', nargs='+', help='Space-separated certificate resource IDs.', validator=validate_cert_reference)
             c.argument('disable_validation', arg_type=get_three_state_flag(), help='If true, disable jar validation.')
 
     with self.argument_context('spring build-service build create') as c:

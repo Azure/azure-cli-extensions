@@ -60,7 +60,7 @@ class BuildService:
         except AttributeError as e:
             raise AzureInternalError("Failed to get a SAS URL to upload context. Error: {}".format(e))
 
-    def _queue_build(self, relative_path=None, builder=None, build_env=None, build_cpu=None, build_memory=None, app=None, deployment=None, build_name=None, apm=None, cert=None, **_):
+    def _queue_build(self, relative_path=None, builder=None, build_env=None, build_cpu=None, build_memory=None, app=None, deployment=None, build_name=None, apms=None, certificates=None, **_):
         subscription = get_subscription_id(self.cmd.cli_ctx)
         service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(subscription, self.resource_group, self.service)
         build_resource_requests = models.BuildResourceRequests(
@@ -71,8 +71,8 @@ class BuildService:
             agent_pool='{}/buildservices/default/agentPools/default'.format(service_resource_id),
             relative_path=relative_path,
             env=build_env if build_env else None,
-            apms=apm if apm else None,
-            certificates=cert if cert else None,
+            apms=apms if apms else None,
+            certificates=certificates if certificates else None,
             resource_requests=build_resource_requests)
         build = models.Build(properties=properties)
         if build_name is None:

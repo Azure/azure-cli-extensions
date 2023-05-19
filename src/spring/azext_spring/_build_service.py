@@ -107,7 +107,7 @@ def container_registry_show(cmd, client, resource_group, service, name=None):
 
 def create_or_update_build(cmd, client, resource_group, service, name=None, builder=None, build_env=None,
                            build_cpu=None, build_memory=None, source_path=None, artifact_path=None,
-                           apm=None, cert=None, disable_validation=None):
+                           apms=None, certificates=None, disable_validation=None):
     build_service = BuildService(cmd, client, resource_group, service)
     kwargs = {
         'build_name': name,
@@ -117,8 +117,8 @@ def create_or_update_build(cmd, client, resource_group, service, name=None, buil
         'builder': builder,
         'source_path': source_path,
         'artifact_path': artifact_path,
-        'apm': apm,
-        'cert': cert,
+        'apms': apms,
+        'certificates': certificates,
         'disable_validation': disable_validation
     }
     build_service.build_and_get_result(4, **kwargs)
