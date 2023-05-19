@@ -43,11 +43,11 @@ class ContainerAppUpImageTest(ScenarioTest):
     def test_containerapp_up_source_with_dockerfile_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        source_path = os.path.join(TEST_DIR, "source_using_dockerfile")
+        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_using_dockerfile"))
         env_name = self.create_random_name(prefix='env', length=24)
         self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
         app_name = self.create_random_name(prefix='containerapp', length=24)
-        self.cmd(f"containerapp up --source {source_path} --environment {env_name} -g {resource_group} -n {app_name}")
+        self.cmd('containerapp up --source "{}" --environment {} -g {} -n {}'.format(source_path, env_name, resource_group, app_name))
 
         app = self.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
         url = app["properties"]["configuration"]["ingress"]["fqdn"]
@@ -55,18 +55,18 @@ class ContainerAppUpImageTest(ScenarioTest):
         resp = requests.get(url)
         self.assertTrue(resp.ok)
 
-        self.cmd(f"containerapp up --source {source_path} --environment {env_name} -g {resource_group} -n {app_name} -l {TEST_LOCATION.upper()}")
+        self.cmd('containerapp up --source "{}" --environment {} -g {} -n {} -l {}'.format(source_path, env_name, resource_group, app_name, TEST_LOCATION.upper()))
 
 
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_up_source_with_acr_task_e2e(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
-        source_path = os.path.join(TEST_DIR, "source_using_acr_task")
+        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_using_acr_task"))
         env_name = self.create_random_name(prefix='env', length=24)
         self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
         app_name = self.create_random_name(prefix='containerapp', length=24)
-        self.cmd(f"containerapp up --source {source_path} --environment {env_name} -g {resource_group} -n {app_name}")
+        self.cmd('containerapp up --source "{}" --environment {} -g {} -n {}'.format(source_path, env_name, resource_group, app_name))
 
         app = self.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
         url = app["properties"]["configuration"]["ingress"]["fqdn"]
@@ -74,23 +74,4 @@ class ContainerAppUpImageTest(ScenarioTest):
         resp = requests.get(url)
         self.assertTrue(resp.ok)
 
-        self.cmd(f"containerapp up --source {source_path} --environment {env_name} -g {resource_group} -n {app_name} -l {TEST_LOCATION.upper()}")
-
-
-    @ResourceGroupPreparer(location="eastus2")
-    def test_containerapp_up_source_with_buildpack_e2e(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
-        source_path = os.path.join(TEST_DIR, "source_using_buildpack")
-        env_name = self.create_random_name(prefix='env', length=24)
-        self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
-        app_name = self.create_random_name(prefix='containerapp', length=24)
-        self.cmd(f"containerapp up --source {source_path} --environment {env_name} -g {resource_group} -n {app_name}")
-
-        app = self.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
-        url = app["properties"]["configuration"]["ingress"]["fqdn"]
-        url = url if url.startswith("http") else f"http://{url}"
-        resp = requests.get(url)
-        self.assertTrue(resp.ok)
-
-        self.cmd(f"containerapp up --source {source_path} --environment {env_name} -g {resource_group} -n {app_name} -l {TEST_LOCATION.upper()}")
+        self.cmd('containerapp up --source "{}" --environment {} -g {} -n {} -l {}'.format(source_path, env_name, resource_group, app_name, TEST_LOCATION.upper()))

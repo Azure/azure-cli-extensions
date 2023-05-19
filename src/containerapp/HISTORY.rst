@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.3.31
+++++++
+* Fix issue when using 'az containerapp up' to create a container app from a local source with a Dockerfile
+
 0.3.30
 ++++++
 * Add 'az containerapp service' for binding a service to a container app
