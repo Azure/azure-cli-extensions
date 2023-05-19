@@ -592,7 +592,7 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
-        if ('forbidden' in error_helm_install.decode("ascii") or 'timed out waiting for the condition' in error_helm_install.decode("ascii")):
+        if ('forbidden' in error_helm_install.decode("ascii") or 'timed out waiting for the condition' in error_helm_install.decode("ascii") or 'connection refused' in error_helm_install.decode("ascii")):
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
@@ -609,7 +609,7 @@ def get_release_namespace(kube_config, kube_context, helm_client_location, relea
     response_helm_release = Popen(cmd_helm_release, stdout=PIPE, stderr=PIPE)
     output_helm_release, error_helm_release = response_helm_release.communicate()
     if response_helm_release.returncode != 0:
-        if 'forbidden' in error_helm_release.decode("ascii"):
+        if 'forbidden' in error_helm_release.decode("ascii") or "Kubernetes cluster unreachable" in error_helm_release.decode("ascii"):
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_release.decode("ascii"), fault_type=consts.List_HelmRelease_Fault_Type,
                                 summary='Unable to list helm release')

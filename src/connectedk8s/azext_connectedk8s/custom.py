@@ -520,6 +520,8 @@ def install_helm_client():
                 break
             except Exception as e:
                 if i == retry_count - 1:
+                    if "Connection reset by peer" in str(e):
+                        telemetry.set_user_fault()
                     telemetry.set_exception(exception=e, fault_type=consts.Download_Helm_Fault_Type,
                                             summary='Unable to download helm client.')
                     raise CLIInternalError("Failed to download helm client.", recommendation="Please check your internet connection." + str(e))
