@@ -5,9 +5,9 @@ Release History
 1.3.18
 ++++++
 
-* Checking Outbound connectivity to OBO endpoint 
 * Cleaning up stale CRDs if present during onboarding (even in absence of azure-arc release)
 * Adding retries in Helm client download
+* Added some failures to be classified as userfaults
 
 1.3.17
 ++++++
