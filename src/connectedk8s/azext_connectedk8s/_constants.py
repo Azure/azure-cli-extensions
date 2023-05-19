@@ -212,9 +212,6 @@ Cluster_Diagnostic_Checks_Pod_Description_Save_Failed = 'Failed to save cluster 
 Cluster_Diagnostic_Checks_Job_Log_Save_Failed = 'Failed to save cluster diagnostic checks job log'
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity Result:"
-Outbound_Connectivity_Check_String = "Outbound Network Connectivity"
-Outbound_Connectivity_Check_String_For_OBO_Endpoint = "Outbound Network Connectivity Check for OBO endpoints"
-Outbound_Connectivity_Check_Failed_For_OBO = "Outbound network connectivity check failed for OBO endpoint"
 DNS_Check_Result_String = "DNS Result:"
 AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = '2.30.0'
 CLIENT_PROXY_VERSION = '1.3.022011'
