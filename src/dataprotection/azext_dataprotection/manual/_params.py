@@ -58,7 +58,7 @@ def load_arguments(self, _):
 
     with self.argument_context('dataprotection backup-instance initialize-backupconfig') as c:
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up.")
-        c.argument('excluded_resource_types', type=str, nargs='+', options_list=["--excluded-resource-types", "--excluded-resource-type"], 
+        c.argument('excluded_resource_types', type=str, nargs='+', options_list=["--excluded-resource-types", "--excluded-resource-type"],
                    help="List of resource types to be excluded for backup.")
         c.argument('included_resource_types', type=str, nargs='+', options_list=["--included-resource-types", "--included-resource-type"],
                    help="List of resource types to be included for backup.")
@@ -187,7 +187,7 @@ def load_arguments(self, _):
 
     with self.argument_context('dataprotection backup-instance initialize-restoreconfig') as c:
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
-        c.argument('excluded_resource_types', type=str, nargs='+', options_list=["--excluded-resource-types", "--excluded-resource-type"], 
+        c.argument('excluded_resource_types', type=str, nargs='+', options_list=["--excluded-resource-types", "--excluded-resource-type"],
                    help="List of resource types to be excluded for restore.")
         c.argument('included_resource_types', type=str, nargs='+', options_list=["--included-resource-types", "--included-resource-type"],
                    help="List of resource types to be included for restore.")
