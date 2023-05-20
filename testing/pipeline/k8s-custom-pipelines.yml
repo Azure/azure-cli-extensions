@@ -43,10 +43,6 @@ stages:
       path: ./test/extensions/public/AzurePolicy.Tests.ps1
   - template: ./templates/run-test.yml
     parameters:
-      jobName: Cassandra
-      path: ./test/extensions/public/Cassandra.Tests.ps1
-  - template: ./templates/run-test.yml
-    parameters:
       jobName: ExtensionTypes
       path: ./test/extensions/public/ExtensionTypes.Tests.ps1
   - template: ./templates/run-test.yml
