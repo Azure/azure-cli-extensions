@@ -10,7 +10,6 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-=======
 VERSION = '0.5.0'
 try:
     from azext_datamigration.manual.version import VERSION
