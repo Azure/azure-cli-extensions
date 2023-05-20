@@ -64,15 +64,15 @@ def load_arguments(self, _):
         c.argument('config_file_path', type=file_type, completer=FilesCompleter(), help='Path of the ConfigFile')
 
     with self.argument_context('datamigration tde-migration') as c:
-        c.argument('source_sql_connection_string', type=str, help='Connection string for the source SQL instance, using the formal connection string format.')
-        c.argument('target_subscription_id', type=str, help='Subscription Id of the target Azure SQL server.')
-        c.argument('target_resource_group_name', type=str, help='Resource group name of the target Azure SQL server.')
-        c.argument('target_managed_instance_name', type=str, help='Name of the Azure SQL Server.')
-        c.argument('network_share_path', type=str, help='Network share path.')
-        c.argument('network_share_domain', type=str, help='Network share domain.')
-        c.argument('network_share_user_name', type=str, help='Network share user name.')
-        c.argument('network_share_password', type=str, help='Network share password.')
-        c.argument('database_name', nargs='+', help='Source database name.')
+        c.argument('source_sql_connection_string', options_list=["--source-sql-connection-string", "--srcsqlcs"], type=str, help='Connection string for the source SQL instance, using the formal connection string format.')
+        c.argument('target_subscription_id', options_list=["--target-subscription-id", "--tgtsubscription"], type=str, help='Subscription Id of the target Azure SQL server.')
+        c.argument('target_resource_group_name', options_list=["--target-resource-group-name", "--tgtrg"], type=str, help='Resource group name of the target Azure SQL server.')
+        c.argument('target_managed_instance_name', options_list=["--target-managed-instance-name", "--tgtname"], type=str, help='Name of the Azure SQL Server.')
+        c.argument('network_share_path', options_list=["--network-share-path", "--networkpath"], type=str, help='Network share path.')
+        c.argument('network_share_domain', options_list=["--network-share-domain", "--networkdomain"], type=str, help='Network share domain.')
+        c.argument('network_share_user_name', options_list=["--network-share-user-name", "--networkuser"], type=str, help='Network share user name.')
+        c.argument('network_share_password', options_list=["--network-share-password", "--networkpw"], type=str, help='Network share password.')
+        c.argument('database_name', nargs='+', options_list=["--database-name", "--dbname"], help='Source database name.')
 
     with self.argument_context('datamigration register-integration-runtime') as c:
         c.argument('auth_key', type=str, help='AuthKey of SQL Migration Service')
