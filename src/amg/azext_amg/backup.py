@@ -17,6 +17,7 @@ import time
 from knack.log import get_logger
 
 from .utils import search_dashboard, get_dashboard
+from .utils import search_library_panels, get_library_panel
 from .utils import search_snapshot, get_snapshot
 from .utils import search_folders, get_folder, get_folder_permissions
 from .utils import search_datasource
@@ -27,6 +28,7 @@ logger = get_logger(__name__)
 
 def backup(grafana_name, grafana_url, backup_dir, components, http_headers, **kwargs):
     backup_functions = {'dashboards': _save_dashboards,
+                        'library_panels': _save_library_panels,
                         'folders': _save_folders,
                         'snapshots': _save_snapshots,
                         'annotations': _save_annotations,
@@ -35,6 +37,8 @@ def backup(grafana_name, grafana_url, backup_dir, components, http_headers, **kw
     timestamp = datetime.datetime.today().strftime('%Y%m%d%H%M')
     if components:
         # Backup only the components that provided via an argument
+        if 'dashboards' in components:  # dashboards won't load if linked library panels don't exist
+            components.insert(0, 'library_panels')
         for backup_function in components:
             backup_functions[backup_function](grafana_url, backup_dir, timestamp, http_headers, **kwargs)
     else:
@@ -49,8 +53,8 @@ def _archive(grafana_name, backup_dir, timestamp):
     archive_file = f'{backup_dir}/{grafana_name}-{timestamp}.tar.gz'
     backup_files = []
 
-    for folder_name in ['folders', 'datasources', 'dashboards', 'alert_channels', 'organizations',
-                        'users', 'snapshots', 'versions', 'annotations']:
+    for folder_name in ['folders', 'datasources', 'dashboards', 'library_panels', 'alert_channels',
+                        'organizations', 'users', 'snapshots', 'versions', 'annotations']:
         backup_path = f'{backup_dir}/{folder_name}/{timestamp}'
 
         for file_path in glob(backup_path):
@@ -87,10 +91,12 @@ def _save_dashboards(grafana_url, backup_dir, timestamp, http_headers, **kwargs)
         folders_to_exclude = kwargs.get('folders_to_exclude')
         if folders_to_include:
             folders_to_include = [f.lower() for f in folders_to_include]
-            dashboards = [d for d in dashboards if d.get('folderTitle', '').lower() in folders_to_include]
+            dashboards = [d for d in dashboards if (d.get('folderTitle', '').lower() in folders_to_include or
+                                                    not d.get('folderTitle', '') and 'general' in folders_to_include)]
         if folders_to_exclude:
             folders_to_exclude = [f.lower() for f in folders_to_exclude]
-            dashboards = [d for d in dashboards if d.get('folderTitle', '').lower() not in folders_to_exclude]
+            dashboards = [d for d in dashboards if (d.get('folderTitle', '').lower() not in folders_to_exclude or
+                                                    d.get('folderTitle', '') and 'general' in folders_to_exclude)]
 
         _print_an_empty_line()
         if len(dashboards) == 0:
@@ -136,6 +142,61 @@ def _get_individual_dashboard_setting_and_save(dashboards, folder_path, log_file
                         content,
                         folder_path)
                     f.write(board_uri + '\t' + board['title'] + '\n')
+
+
+# Save library panels
+def _save_library_panels(grafana_url, backup_dir, timestamp, http_headers, **kwargs):  # pylint: disable=unused-argument
+    folder_path = f'{backup_dir}/library_panels/{timestamp}'
+    log_file = f'library_panels_{timestamp}.txt'
+
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    current_page = 1
+    while True:
+        panels = _get_all_library_panels_in_grafana(current_page, grafana_url, http_headers)
+
+        _print_an_empty_line()
+        if len(panels) == 0:
+            break
+        current_page += 1
+        _get_individual_library_panel_setting_and_save(panels, folder_path, log_file, grafana_url, http_headers)
+        _print_an_empty_line()
+
+
+def _get_all_library_panels_in_grafana(page, grafana_url, http_headers):
+    (status, content) = search_library_panels(page, grafana_url, http_headers)
+    if status == 200:
+        library_panels = content
+        logger.info("There are %s library panels:", len(library_panels))
+        for panel in library_panels:
+            logger.info('name: %s', panel['name'])
+        return library_panels
+    logger.warning("Get library panel FAILED, status: %s, msg: %s", status, content)
+    return []
+
+
+def _save_library_panel_setting(panel_name, file_name, library_panel_settings, folder_path):
+    file_path = _save_json(file_name, library_panel_settings, folder_path, 'library_panel')
+    logger.warning("Library Panel: \"%s\" is saved", panel_name)
+    logger.info("    -> %s", file_path)
+
+
+def _get_individual_library_panel_setting_and_save(panels, folder_path, log_file, grafana_url, http_headers):
+    file_path = folder_path + '/' + log_file
+    if panels:
+        with open(file_path, 'w', encoding="utf8") as f:
+            for panel in panels:
+                panel_uri = panel['uid']
+
+                (status, content) = get_library_panel(panel_uri, grafana_url, http_headers)
+                if status == 200:
+                    _save_library_panel_setting(
+                        panel['name'],
+                        panel_uri,
+                        content['result'],
+                        folder_path)
+                    f.write(panel_uri + '\t' + panel['name'] + '\n')
 
 
 # Save snapshots

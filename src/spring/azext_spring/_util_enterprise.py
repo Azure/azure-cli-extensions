@@ -5,7 +5,7 @@
 
 # pylint: disable=wrong-import-order
 
-from .vendored_sdks.appplatform.v2023_01_01_preview import AppPlatformManagementClient
+from .vendored_sdks.appplatform.v2023_03_01_preview import AppPlatformManagementClient
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
 

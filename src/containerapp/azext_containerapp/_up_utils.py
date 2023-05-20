@@ -7,6 +7,7 @@
 
 from tempfile import NamedTemporaryFile
 from urllib.parse import urlparse
+import subprocess
 import requests
 
 from azure.cli.core.azclierror import (
@@ -27,7 +28,7 @@ from knack.log import get_logger
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
-from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient
+from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, ContainerAppsJobClient
 
 from ._utils import (
     get_randomized_name,
@@ -43,11 +44,17 @@ from ._utils import (
     create_service_principal_for_github_action,
     repo_url_to_name,
     get_container_app_if_exists,
+    get_containerapps_job_if_exists,
     trigger_workflow,
     _ensure_location_allowed,
     register_provider_if_needed,
     validate_environment_location,
-    list_environment_locations
+    list_environment_locations,
+    format_location,
+    is_docker_running,
+    get_pack_exec_path,
+    get_latest_buildpack_run_tag
+
 )
 
 from ._constants import (MAXIMUM_SECRET_LENGTH,
@@ -60,6 +67,7 @@ from ._constants import (MAXIMUM_SECRET_LENGTH,
 
 from .custom import (
     create_managed_environment,
+    create_containerappsjob,
     containerapp_up_logic,
     list_containerapp,
     list_managed_environments,
@@ -258,6 +266,79 @@ class ContainerAppEnvironment(Resource):
         return rid
 
 
+class ContainerAppsJob(Resource):  # pylint: disable=too-many-instance-attributes
+    def __init__(
+        self,
+        cmd,
+        name: str,
+        resource_group: "ResourceGroup",
+        exists: bool = None,
+        image=None,
+        env: "ContainerAppEnvironment" = None,
+        target_port=None,
+        registry_server=None,
+        registry_user=None,
+        registry_pass=None,
+        env_vars=None,
+        trigger_type=None,
+        replica_timeout=None,
+        replica_retry_limit=None,
+        replica_completion_count=None,
+        parallelism=None,
+        cron_expression=None,
+    ):
+
+        super().__init__(cmd, name, resource_group, exists)
+        self.image = image
+        self.env = env
+        self.target_port = target_port
+        self.registry_server = registry_server
+        self.registry_user = registry_user
+        self.registry_pass = registry_pass
+        self.env_vars = env_vars
+        self.trigger_type = trigger_type,
+        self.replica_timeout = replica_timeout,
+        self.replica_retry_limit = replica_retry_limit
+        self.replica_completion_count = replica_completion_count
+        self.parallelism = parallelism
+        self.cron_expression = cron_expression
+        self.should_create_acr = False
+        self.acr: "AzureContainerRegistry" = None
+
+    def _get(self):
+        return ContainerAppsJobClient.show(self.cmd, self.resource_group.name, self.name)
+
+    def create(self, no_registry=False):
+        # no_registry: don't pass in a registry during create even if the app has one (used for GH actions)
+        if get_containerapps_job_if_exists(self.cmd, self.resource_group.name, self.name):
+            logger.warning(
+                f"Updating Containerapps job {self.name} in resource group {self.resource_group.name}"
+            )
+        else:
+            logger.warning(
+                f"Creating Containerapps job {self.name} in resource group {self.resource_group.name}"
+            )
+
+        return create_containerappsjob(
+            cmd=self.cmd,
+            name=self.name,
+            resource_group_name=self.resource_group.name,
+            image=self.image,
+            managed_env=self.env.get_rid(),
+            target_port=self.target_port,
+            registry_server=None if no_registry else self.registry_server,
+            registry_pass=None if no_registry else self.registry_pass,
+            registry_user=None if no_registry else self.registry_user,
+            env_vars=self.env_vars,
+            trigger_type=self.trigger_type,
+            replica_timeout=self.replica_timeout,
+            replica_retry_limit=self.replica_retry_limit,
+            replica_completion_count=self.replica_completion_count,
+            parallelism=self.parallelism,
+            cron_expression=self.cron_expression
+        )
+
+
 class AzureContainerRegistry(Resource):
     def __init__(self, name: str, resource_group: "ResourceGroup"):  # pylint: disable=super-init-not-called
 
@@ -279,6 +360,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         registry_user=None,
         registry_pass=None,
         env_vars=None,
+        workload_profile_name=None,
         ingress=None,
     ):
 
@@ -291,6 +373,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         self.registry_pass = registry_pass
         self.env_vars = env_vars
         self.ingress = ingress
+        self.workload_profile_name = workload_profile_name
 
         self.should_create_acr = False
         self.acr: "AzureContainerRegistry" = None
@@ -320,6 +403,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             registry_pass=None if no_registry else self.registry_pass,
             registry_user=None if no_registry else self.registry_user,
             env_vars=self.env_vars,
+            workload_profile_name=self.workload_profile_name,
             ingress=self.ingress,
         )
 
@@ -350,7 +434,86 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             self.cmd.cli_ctx, registry_name
         )
 
-    def build_container_from_source(self, image_name, source):
+    def build_container_from_source_with_buildpack(self, image_name, source):  # pylint: disable=too-many-statements
+        # Ensure that Docker is running
+        if not is_docker_running():
+            raise ValidationError("Docker is not running. Please start Docker to use buildpacks.")
+
+        # Ensure that the pack CLI is installed
+        pack_exec_path = get_pack_exec_path()
+        if pack_exec_path is None:
+            raise ValidationError("The pack CLI could not be installed.")
+
+        logger.info("Docker is running and pack CLI is installed; attempting to use buildpacks to build container image...")
+
+        registry_name = self.registry_server.lower()
+        image_name = f"{registry_name}/{image_name}"
+        builder_image_name = "mcr.microsoft.com/oryx/builder:builder-dotnet-7.0"
+
+        # Ensure that the builder is trusted
+        command = [pack_exec_path, 'config', 'default-builder', builder_image_name]
+        logger.debug(f"Calling '{' '.join(command)}'")
+        try:
+            with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+                _, stderr = process.communicate()
+                if process.returncode != 0:
+                    raise CLIError(f"Error thrown when running 'pack config': {stderr.decode('utf-8')}")
+                logger.debug(f"Successfully set the default builder to {builder_image_name}.")
+        except Exception as ex:
+            raise ValidationError(f"Unable to run 'pack config' command to set default builder: {ex}") from ex
+
+        # Run 'pack build' to produce a runnable application image for the Container App
+        command = [pack_exec_path, 'build', image_name, '--builder', builder_image_name, '--path', source]
+        buildpack_run_tag = get_latest_buildpack_run_tag("aspnet", "7.0")
+        if buildpack_run_tag is not None:
+            buildpack_run_image = f"mcr.microsoft.com/oryx/builder:{buildpack_run_tag}"
+            logger.debug(f"Determined the run image to use as {buildpack_run_image}.")
+            command.extend(['--run-image', buildpack_run_image])
+
+        logger.debug(f"Calling '{' '.join(command)}'")
+        try:
+            is_non_supported_platform = False
+            with subprocess.Popen(command, stdout=subprocess.PIPE) as process:
+
+                # Stream output of 'pack build' to warning stream
+                while process.stdout.readable():
+                    line = process.stdout.readline()
+                    if not line:
+                        break
+
+                    stdout_line = str(line.strip(), 'utf-8')
+                    logger.warning(stdout_line)
+                    if not is_non_supported_platform and "No buildpack groups passed detection" in stdout_line:
+                        is_non_supported_platform = True
+
+                # Update the result of process.returncode
+                process.communicate()
+                if is_non_supported_platform:
+                    raise ValidationError("Current buildpacks do not support the platform targeted in the provided source code.")
+
+                if process.returncode != 0:
+                    raise CLIError("Non-zero exit code returned from 'pack build'; please check the above output for more details.")
+
+                logger.debug(f"Successfully built image {image_name} using buildpacks.")
+        except ValidationError as ex:
+            raise ex
+        except Exception as ex:
+            raise CLIError(f"Unable to run 'pack build' command to produce runnable application image: {ex}") from ex
+
+        # Run 'docker push' to push the image to the ACR
+        command = ['docker', 'push', image_name]
+        logger.debug(f"Calling '{' '.join(command)}'")
+        logger.warning(f"Built image {image_name} locally using buildpacks, attempting to push to registry...")
+        try:
+            with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+                _, stderr = process.communicate()
+                if process.returncode != 0:
+                    raise CLIError(f"Error thrown when running 'docker push': {stderr.decode('utf-8')}")
+                logger.debug(f"Successfully pushed image {image_name} to ACR.")
+        except Exception as ex:
+            raise CLIError(f"Unable to run 'docker push' command to push image to ACR: {ex}") from ex
+
+    def build_container_from_source_with_acr_task(self, image_name, source):
         from azure.cli.command_modules.acr.task import acr_task_create, acr_task_run
         from azure.cli.command_modules.acr._client_factory import cf_acr_tasks, cf_acr_runs
         from azure.cli.core.profiles import ResourceType
@@ -399,24 +562,48 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         image_name = self.image if self.image is not None else self.name
         from datetime import datetime
 
+        # Creating a tag for the image using the current time to avoid overwriting customer's existing images
         now = datetime.now()
-        # Add version tag for acr image
-        image_name += ":{}".format(
-            str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
-        )
-
-        self.image = self.registry_server + "/" + image_name
+        tag_now_suffix = str(now).replace(" ", "").replace("-", "").replace(".", "").replace(":", "")
+        image_name_with_tag = image_name + ":{}".format(tag_now_suffix)
+        self.image = self.registry_server + "/" + image_name_with_tag
 
         if build_from_source:
-            # TODO should we prompt for confirmation here?
             logger.warning("No dockerfile detected. Attempting to build a container directly from the provided source...")
-            self.build_container_from_source(image_name, source)
+
+            try:
+                # First try to build source using buildpacks
+                # Temporary fix: using run time tag as customer image tag
+                # Waiting for buildpacks side to fix this issue: https://github.com/buildpacks/pack/issues/1750
+                logger.warning("Attempting to build image using buildpacks...")
+                buildpack_image_name_with_tag = image_name_with_tag
+                run_image_tag = get_latest_buildpack_run_tag("aspnet", "7.0")
+                if run_image_tag is not None:
+                    buildpack_image_name_with_tag = f"{image_name}:{run_image_tag}-{tag_now_suffix}"
+                self.build_container_from_source_with_buildpack(buildpack_image_name_with_tag, source)
+                self.image = self.registry_server + "/" + buildpack_image_name_with_tag
+                return
+            except ValidationError as e:
+                logger.warning(f"Unable to use buildpacks to build image from source: {e}\nFalling back to ACR Task...")
+            except CLIError as e:
+                logger.error("Failed to use buildpacks to build image from source.")
+                raise e
+
+            # If we're unable to use the buildpack, build source using an ACR Task
+            # Moving tagging img to here
+            # Skipping the buildpacks scenario for now due to issues with buildpacks
+            # Add version tag for acr image
+            logger.warning("Attempting to build image using ACR Task...")
+            self.build_container_from_source_with_acr_task(image_name_with_tag, source)
         else:
+            # Moving tagging img to here
+            # Skipping the buildpacks scenario for now due to issues with buildpacks
+            # Add version tag for acr image
             queue_acr_build(
                 self.cmd,
                 self.acr.resource_group.name,
                 self.acr.name,
-                image_name,
+                image_name_with_tag,
                 source,
                 dockerfile,
                 quiet,
@@ -606,7 +793,7 @@ def _get_app_env_and_group(
         if env.name:
             matched_apps = [c for c in matched_apps if parse_resource_id(c["properties"]["environmentId"])["name"].lower() == env.name.lower()]
         if location:
-            matched_apps = [c for c in matched_apps if c["location"].lower() == location.lower()]
+            matched_apps = [c for c in matched_apps if format_location(c["location"]) == format_location(location)]
         if len(matched_apps) == 1:
             resource_group.name = parse_resource_id(matched_apps[0]["id"])[
                 "resource_group"
@@ -649,7 +836,7 @@ def _get_env_and_group_from_log_analytics(
                     == logs_customer_id
                 ]
             if location:
-                env_list = [e for e in env_list if e["location"] == location]
+                env_list = [e for e in env_list if format_location(e["location"]) == format_location(location)]
             if env_list:
                 # TODO check how many CA in env
                 env_details = parse_resource_id(env_list[0]["id"])
@@ -801,7 +988,7 @@ def _set_up_defaults(
         if not location:
             env_list = [e for e in list_managed_environments(cmd=cmd) if e["name"] == env.name]
         else:
-            env_list = [e for e in list_managed_environments(cmd=cmd) if e["name"] == env.name and e["location"] == location]
+            env_list = [e for e in list_managed_environments(cmd=cmd) if e["name"] == env.name and format_location(e["location"]) == format_location(location)]
         if len(env_list) == 1:
             resource_group.name = parse_resource_id(env_list[0]["id"])["resource_group"]
         if len(env_list) > 1:
@@ -918,7 +1105,7 @@ def check_env_name_on_rg(cmd, managed_env, resource_group_name, location):
         except:  # pylint: disable=bare-except
             pass
         if env_def:
-            if location != env_def["location"]:
+            if format_location(location) != format_location(env_def["location"]):
                 raise ValidationError("Environment {} already exists in resource group {} on location {}, cannot change location of existing environment to {}.".format(parse_resource_id(managed_env)["name"], resource_group_name, env_def["location"], location))
 
 

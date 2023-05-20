@@ -7,30 +7,56 @@
 import time
 import json
 import platform
+import subprocess
+import stat
+import io
+import os
+import tarfile
+import zipfile
+import hashlib
+import re
+import requests
+import packaging.version as SemVer
+from enum import Enum
 
 from urllib.parse import urlparse
+from urllib.request import urlopen
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from azure.cli.core.azclierror import (ValidationError, RequiredArgumentMissingError, CLIInternalError,
-                                       ResourceNotFoundError, FileOperationError, CLIError, UnauthorizedError)
+                                       ResourceNotFoundError, FileOperationError, CLIError, UnauthorizedError,
+                                       InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.appservice.utils import _normalize_location
 from .aaz.latest.network.vnet import Show as VNetShow
 from azure.cli.command_modules.role.custom import create_role_assignment
 from azure.cli.command_modules.acr.custom import acr_show
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core._profile import Profile
 from azure.cli.core.profiles import ResourceType
 from azure.mgmt.containerregistry import ContainerRegistryManagementClient
+from azure.mgmt.resource import ResourceManagementClient
+from azure.mgmt.servicelinker import ServiceLinkerManagementClient
 
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
 
-from ._clients import ContainerAppClient, ManagedEnvironmentClient
+from ._clients import ContainerAppClient, ManagedEnvironmentClient, WorkloadProfileClient, ContainerAppsJobClient
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
                          LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
                          LOGS_STRING, PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS)
-from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel, ManagedCertificateEnvelop as ManagedCertificateEnvelopModel)
+from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel,
+                      ManagedCertificateEnvelop as ManagedCertificateEnvelopModel,
+                      ServiceConnector as ServiceConnectorModel)
+from ._models import OryxMarinerRunImgTagProperty
+from ._managed_service_utils import ManagedRedisUtils, ManagedCosmosDBUtils, ManagedPostgreSQLUtils
+
+
+class AppType(Enum):
+    ContainerApp = 1
+    ContainerAppJob = 2
+
 
 logger = get_logger(__name__)
 
@@ -40,10 +66,15 @@ def register_provider_if_needed(cmd, rp_name):
         _register_resource_provider(cmd, rp_name)
 
 
-def validate_container_app_name(name):
-    if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
-        raise ValidationError(f"Container App names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
-                              f"Please shorten {name}")
+def validate_container_app_name(name, appType):
+    if (appType == AppType.ContainerAppJob.name):
+        if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
+            raise ValidationError(f"Container App Job names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
+                                  f"Please shorten {name}")
+    if (appType == AppType.ContainerApp.name):
+        if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
+            raise ValidationError(f"Container App Job names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
+                                  f"Please shorten {name}")
 
 
 def retry_until_success(operation, err_txt, retry_limit, *args, **kwargs):
@@ -306,9 +337,9 @@ def _ensure_location_allowed(cmd, location, resource_provider, resource_type):
             if res and getattr(res, 'resource_type', "") == resource_type:
                 res_locations = getattr(res, 'locations', [])
 
-        res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
+        res_locations = [format_location(res_loc) for res_loc in res_locations if res_loc.strip()]
 
-        location_formatted = location.lower().replace(" ", "")
+        location_formatted = format_location(location)
         if location_formatted not in res_locations:
             raise ValidationError(f"Location '{location}' is not currently supported. To get list of supported locations, run `az provider show -n {resource_provider} --query \"resourceTypes[?resourceType=='{resource_type}'].locations\"`")
 
@@ -344,24 +375,197 @@ def parse_env_var_flags(env_list, is_update_containerapp=False):
 
 
 def parse_secret_flags(secret_list):
-    secret_pairs = {}
-
-    for pair in secret_list:
-        key_val = pair.split('=', 1)
-        if len(key_val) != 2:
-            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\".")
-        if key_val[0] in secret_pairs:
-            raise ValidationError("Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
-        secret_pairs[key_val[0]] = key_val[1]
-
+    secret_entries = []
     secret_var_def = []
-    for key, value in secret_pairs.items():
+
+    for secret in secret_list:
+        key_val = secret.split('=', 1)
+        if len(key_val) != 2:
+            raise ValidationError("Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\".")
+        if key_val[0] in secret_entries:
+            raise ValidationError("Duplicate secret \"{secret}\" found, secret names must be unique.".format(secret=key_val[0]))
+        secret_entries.append(key_val[0])
+
+        name = key_val[0]
+        value = key_val[1]
+        kv_url = ""
+        identity_Id = ""
+
+        kv_identity = value.split(',', 2)
+        if len(kv_identity) == 1:
+            if kv_identity[0].startswith('keyvaultref:'):
+                raise ValidationError("Identityref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\".")
+            if kv_identity[0].startswith('identityref:'):
+                raise ValidationError("Keyvaultref is missing. Secrets must be in format \"<key>=<value> <key>=<value> ...\" or \"<key>=<keyvaultref:keyvaulturl,identityref:indentityId> ...\".")
+
+        if len(kv_identity) == 2:
+            kv = kv_identity[0]
+            identity = kv_identity[1]
+            if kv.startswith('keyvaultref:') and identity.startswith('identityref:'):
+                kv_url = kv.split('keyvaultref:', 1)[1]
+                identity_Id = identity.split('identityref:', 1)[1]
+                value = ""
+
         secret_var_def.append({
-            "name": key,
-            "value": value
+            "name": name,
+            "value": value,
+            "keyVaultUrl": kv_url,
+            "identity": identity_Id
         })
 
     return secret_var_def
+
+
+def get_linker_client(cmd):
+    resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
+    profile = Profile(cli_ctx=cmd.cli_ctx)
+    credential, subscription_id, _ = profile.get_login_credentials(
+        subscription_id=get_subscription_id(cmd.cli_ctx), resource=resource)
+    linker_client = ServiceLinkerManagementClient(credential)
+    return linker_client
+
+
+def process_service(cmd, resource_list, service_name, arg_dict, subscription_id, resource_group_name, name,
+                    binding_name, service_connector_def_list, service_bindings_def_list):
+    # Check if the service exists in the list of dict
+    for service in resource_list:
+        if service["name"] == service_name:
+            if service["type"] == "Microsoft.Cache/Redis":
+                service_connector_def_list.append(
+                    ManagedRedisUtils.build_redis_service_connector_def(subscription_id, resource_group_name,
+                                                                        service_name, arg_dict,
+                                                                        name, binding_name))
+            elif service["type"] == "Microsoft.DocumentDb/databaseAccounts":
+                service_connector_def_list.append(
+                    ManagedCosmosDBUtils.build_cosmosdb_service_connector_def(subscription_id, resource_group_name,
+                                                                              service_name, arg_dict,
+                                                                              name, binding_name))
+            elif service["type"] == "Microsoft.DBforPostgreSQL/flexibleServers":
+                service_connector_def_list.append(
+                    ManagedPostgreSQLUtils.build_postgresql_service_connector_def(subscription_id, resource_group_name,
+                                                                                  service_name, arg_dict,
+                                                                                  name, binding_name))
+            elif service["type"] == "Microsoft.App/containerApps":
+                containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name,
+                                                           name=service_name)
+
+                if not containerapp_def:
+                    raise ResourceNotFoundError(f"The service '{service_name}' does not exist")
+
+                configuration = containerapp_def["properties"]["configuration"]["service"]
+                if configuration is None or configuration["type"] not in ["redis", "postgres"]:
+                    raise ResourceNotFoundError(f"The service '{service_name}' does not exist")
+
+                service_bindings_def_list.append({
+                    "serviceId": containerapp_def["id"],
+                    "name": binding_name
+                })
+
+            else:
+                raise ValidationError("Service not supported")
+            break
+    else:
+        raise ResourceNotFoundError("Service with the given name does not exist")
+
+
+def validate_binding_name(binding_name):
+    pattern = r'^(?=.{1,60}$)[a-zA-Z0-9._]+$'
+    return bool(re.match(pattern, binding_name))
+
+
+def check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def_list, resource_group_name, name):
+    linker_client = get_linker_client(cmd)
+    containerapp_def = None
+
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:  # pylint: disable=bare-except
+        pass
+    all_bindings = []
+
+    if containerapp_def:
+        managed_bindings = linker_client.linker.list(resource_uri=containerapp_def["id"])
+        service_binds = containerapp_def["properties"].get("template", {}).get("serviceBinds", [])
+
+        if managed_bindings:
+            all_bindings.extend([item.name for item in managed_bindings])
+        if service_binds:
+            all_bindings.extend([item["name"] for item in service_binds])
+
+    service_binding_names = [service_bind["name"] for service_bind in service_bindings_def_list]
+    linker_names = [connector["linker_name"] for connector in service_connectors_def_list]
+
+    all_bindings_set = set(all_bindings)
+    service_binding_names_set = set(service_binding_names)
+    linker_names_set = set(linker_names)
+
+    if len(all_bindings_set | service_binding_names_set | linker_names_set) != len(all_bindings_set) + len(
+            service_binding_names_set) + len(linker_names_set):
+        # There are duplicate elements across the lists
+        return False
+    elif len(all_bindings_set) + len(service_binding_names_set) + len(linker_names_set) != len(all_bindings) + len(
+            service_binding_names) + len(linker_names):
+        # There are duplicate elements within one or more of the lists
+        return False
+    else:
+        # There are no duplicate elements among the lists or within any of the lists
+        return True
+
+
+def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name):
+    # Make it return both managed and dev bindings
+    service_bindings_def_list = []
+    service_connector_def_list = []
+
+    for service_binding_str in service_bindings_list:
+        parts = service_binding_str.split(",")
+        arg_dict = {}
+
+        for part in parts:
+            key_value = part.split("=")
+
+            if len(key_value) == 1:
+                # This means we don't have comma separated args
+                pass
+            else:
+                arg_dict[key_value[0]] = key_value[1]
+
+        service_binding = parts[0].split(':')
+        service_name = service_binding[0]
+
+        if len(service_binding) == 1:
+            binding_name = service_name
+        else:
+            binding_name = service_binding[1]
+
+        if not validate_binding_name(binding_name):
+            raise InvalidArgumentValueError("The Binding Name can only contain letters, numbers (0-9), periods ('.'), "
+                                            "and underscores ('_'). The length must not be more than 60 characters.")
+
+        resource_client = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient)
+
+        if "resourcegroup" in arg_dict:
+            # Search in target rg
+            resources = resource_client.resources.list_by_resource_group(
+                arg_dict["resourcegroup"])
+            resource_group_name = arg_dict["resourcegroup"]
+        else:
+            # Search in current rg
+            resources = resource_client.resources.list_by_resource_group(
+                resource_group_name)
+
+        # Create a list with required items
+        resource_list = []
+        for item in resources:
+            resource_list.append({"name": item.name, "type": item.type, "id": item.id})
+
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+        # Will work for both create and update
+        process_service(cmd, resource_list, service_name, arg_dict, subscription_id, resource_group_name,
+                        name, binding_name, service_connector_def_list, service_bindings_def_list)
+
+    return service_connector_def_list, service_bindings_def_list
 
 
 def parse_metadata_flags(metadata_list, metadata_def={}):  # pylint: disable=dangerous-default-value
@@ -499,6 +703,15 @@ def get_container_app_if_exists(cmd, resource_group_name, name):
     return app
 
 
+def get_containerapps_job_if_exists(cmd, resource_group_name, name):
+    job = None
+    try:
+        job = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:  # pylint: disable=bare-except
+        pass
+    return job
+
+
 def _get_name(name_or_rid):
     if is_valid_resource_id(name_or_rid):
         return parse_resource_id(name_or_rid)["name"]
@@ -533,6 +746,24 @@ def _new_tiny_guid():
     import random
     import string
     return ''.join(random.choices(string.ascii_letters + string.digits, k=4))
+
+
+#  Generate a random volume name using same method as log analytics workspace
+def _generate_secret_volume_name():
+    import re
+    prefix = "secret-volume"
+    # volume name must be lowercase
+    suffix = _new_tiny_guid().lower()
+    maxLength = 40
+
+    name = "{}-{}".format(
+        prefix,
+        suffix
+    )
+
+    if len(name) > maxLength:
+        name = name[:maxLength]
+    return name
 
 
 # Follow same naming convention as Portal
@@ -665,13 +896,14 @@ def _ensure_identity_resource_id(subscription_id, resource_group, resource):
 def _add_or_update_secrets(containerapp_def, add_secrets):
     if "secrets" not in containerapp_def["properties"]["configuration"]:
         containerapp_def["properties"]["configuration"]["secrets"] = []
-
     for new_secret in add_secrets:
         is_existing = False
         for existing_secret in containerapp_def["properties"]["configuration"]["secrets"]:
             if existing_secret["name"].lower() == new_secret["name"].lower():
                 is_existing = True
                 existing_secret["value"] = new_secret["value"]
+                existing_secret["keyVaultUrl"] = new_secret["keyVaultUrl"]
+                existing_secret["identity"] = new_secret["identity"]
                 break
 
         if not is_existing:
@@ -830,7 +1062,7 @@ def clean_null_values(d):
         return {
             k: v
             for k, v in ((k, clean_null_values(v)) for k, v in d.items())
-            if v
+            if v or isinstance(v, list)
         }
     if isinstance(d, list):
         return [v for v in map(clean_null_values, d) if v]
@@ -1502,15 +1734,25 @@ def set_managed_identity(cmd, resource_group_name, containerapp_def, system_assi
 
 
 def create_acrpull_role_assignment(cmd, registry_server, registry_identity=None, service_principal=None, skip_error=False):
+    from azure.cli.command_modules.acr._utils import ResourceNotFound
+
     if registry_identity:
         registry_identity_parsed = parse_resource_id(registry_identity)
-        registry_identity_name, registry_identity_rg = registry_identity_parsed.get("name"), registry_identity_parsed.get("resource_group")
-        sp_id = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI).user_assigned_identities.get(resource_name=registry_identity_name, resource_group_name=registry_identity_rg).principal_id
+        registry_identity_name, registry_identity_rg, registry_identity_sub = registry_identity_parsed.get("name"), registry_identity_parsed.get("resource_group"), registry_identity_parsed.get("subscription")
+        sp_id = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI, subscription_id=registry_identity_sub).user_assigned_identities.get(resource_name=registry_identity_name, resource_group_name=registry_identity_rg).principal_id
     else:
         sp_id = service_principal
 
     client = get_mgmt_service_client(cmd.cli_ctx, ContainerRegistryManagementClient).registries
-    acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
+    try:
+        acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
+    except ResourceNotFound as e:
+        message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
+                   f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope <container-registry-resource-id> --role acrpull'. \n"
+                   "You may have to restart the containerapp with 'az containerapp revision restart'.")
+        logger.warning(message)
+        return
+
     retries = 10
     while retries > 0:
         try:
@@ -1563,6 +1805,41 @@ def list_environment_locations(cmd):
     res_locations = [res_loc.lower().replace(" ", "").replace("(", "").replace(")", "") for res_loc in res_locations if res_loc.strip()]
 
     return res_locations
+
+
+# normalizes workload profile type
+def get_workload_profile_type(cmd, name, location):
+    return name.upper()
+
+
+def get_default_workload_profile(cmd, location):
+    return "Consumption"
+
+
+def get_default_workload_profile_name_from_env(cmd, env_def, resource_group):
+    location = env_def["location"]
+    api_default = get_default_workload_profile(cmd, location)
+    env_profiles = WorkloadProfileClient.list(cmd, resource_group, env_def["name"])
+    if api_default in [p["name"] for p in env_profiles]:
+        return api_default
+    return env_profiles[0]["name"]
+
+
+def get_default_workload_profiles(cmd, location):
+    profiles = [
+        {
+            "workloadProfileType": "Consumption",
+            "Name": "Consumption"
+        }
+    ]
+    return profiles
+
+
+def ensure_workload_profile_supported(cmd, env_name, env_rg, workload_profile_name, managed_env_info):
+    profile_names = [p["name"] for p in safe_get(managed_env_info, "properties", "workloadProfiles", default=[])]
+    profile_names_lower = [p.lower() for p in profile_names]
+    if workload_profile_name.lower() not in profile_names_lower:
+        raise ValidationError(f"Not a valid workload profile name: '{workload_profile_name}'. The valid workload profiles names for this environment are: '{', '.join(profile_names)}'")
 
 
 def set_ip_restrictions(ip_restrictions, ip_restriction_name, ip_address_range, description, action):
@@ -1623,3 +1900,184 @@ def certificate_thumbprint_matches(certificate_object, thumbprint=None):
 
 def certificate_matches(certificate_object, location=None, thumbprint=None):
     return certificate_location_matches(certificate_object, location) and certificate_thumbprint_matches(certificate_object, thumbprint)
+
+
+def format_location(location=None):
+    if location:
+        return location.lower().replace(" ", "").replace("(", "").replace(")", "")
+    return location
+
+
+def is_docker_running():
+    try:
+        # Run a simple 'docker stats --no-stream' command to check if the Docker daemon is running
+        command = ["docker", "stats", "--no-stream"]
+        with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+            _, _ = process.communicate()
+            return process.returncode == 0
+    except Exception:
+        return False
+
+
+def get_pack_exec_path():
+    try:
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        bin_folder = os.path.join(dir_path, "bin")
+        if not os.path.exists(bin_folder):
+            os.makedirs(bin_folder)
+
+        pack_cli_version = "v0.29.0"
+        exec_name = "pack"
+        compressed_download_file_name = f"pack-{pack_cli_version}"
+        host_os = platform.system()
+        if host_os == "Windows":
+            compressed_download_file_name = f"{compressed_download_file_name}-windows.zip"
+            exec_name = "pack.exe"
+        elif host_os == "Linux":
+            compressed_download_file_name = f"{compressed_download_file_name}-linux.tgz"
+        elif host_os == "Darwin":
+            compressed_download_file_name = f"{compressed_download_file_name}-macos.tgz"
+        else:
+            raise Exception(f"Unsupported host OS: {host_os}")
+
+        exec_path = os.path.join(bin_folder, exec_name)
+        if os.path.exists(exec_path):
+            return exec_path
+
+        # Attempt to install the pack CLI
+        url = f"https://github.com/buildpacks/pack/releases/download/{pack_cli_version}/{compressed_download_file_name}"
+        with urlopen(url) as req:
+            compressed_file = io.BytesIO(req.read())
+            if host_os == "Windows":
+                with zipfile.ZipFile(compressed_file) as zip_file:
+                    for file in zip_file.namelist():
+                        if file.endswith(exec_name):
+                            with open(exec_path, "wb") as f:
+                                f.write(zip_file.read(file))
+            else:
+                with tarfile.open(fileobj=compressed_file, mode="r:gz") as tar:
+                    for tar_info in tar:
+                        if tar_info.isfile() and tar_info.name.endswith(exec_name):
+                            with open(exec_path, "wb") as f:
+                                f.write(tar.extractfile(tar_info).read())
+
+        # Add executable permissions for the current user if they don't exist
+        if not os.access(exec_path, os.X_OK):
+            st = os.stat(exec_path)
+            os.chmod(exec_path, st.st_mode | stat.S_IXUSR)
+
+        return exec_path
+    except Exception as e:
+        # Swallow any exceptions thrown when attempting to install pack CLI
+        logger.warning(f"Failed to install pack CLI: {e}\n")
+
+    return None
+
+
+def patchable_check(repo_tag_split: str, oryx_builder_run_img_tags, inspect_result):
+    # Check if the run image is based from a dotnet Mariner image in mcr.microsoft.com/oryx/builder
+    # Get all the dotnet mariner run image tags from mcr.microsoft.com/oryx/builder and
+    # compare the customer's run image with the latest patch version of the run image
+    tag_prop = parse_oryx_mariner_tag(repo_tag_split)
+    # Parsing the tag to a tag object
+    result = {
+        "targetContainerAppName": inspect_result["targetContainerAppName"],
+        "targetContainerName": inspect_result["targetContainerName"],
+        "targetContainerAppEnvironmentName": inspect_result["targetContainerAppEnvironmentName"],
+        "targetResourceGroup": inspect_result["targetResourceGroup"],
+        "targetImageName": inspect_result["image_name"],
+        "oldRunImage": repo_tag_split,
+        "newRunImage": None,
+        "id": None,
+    }
+    if tag_prop is None:
+        # If customer run image is not dotnet and tag doesn't match with oryx run image tag format,
+        # return the result with the reason
+        result["reason"] = "Image not based from a Mariner tag in mcr.microsoft.com/oryx/dotnet."
+        return result
+    elif len(str(tag_prop["version"]).split(".")) == 2:
+        # If customer run image is dotnet, but the tag doesn't contain a patch version
+        # e.g.: run-dontnet-aspnet-7.0-cbl-mariner2.0-xxxxxxx
+        result["reason"] = "Image is using a run image version that doesn't contain a patch information."
+        return result
+    repo_tag_split = repo_tag_split.split("-")
+    if repo_tag_split[1] == "dotnet":
+        # If customer run image is dotnet, and successfully parsed, check if the run image is based from a dotnet Mariner image in mcr.microsoft.com/oryx/builder
+        # Indexing to the correct framework, support, major and minor version, and mariner version
+        # e.g.: run_img_tags -> framework -> support -> major.minor -> mariner version
+        matching_version_info = oryx_builder_run_img_tags[repo_tag_split[2]][str(tag_prop["version"].major) + "." + str(tag_prop["version"].minor)][tag_prop["support"]][tag_prop["marinerVersion"]]
+    # Check if the image minor version is less than the latest minor version
+    if tag_prop["version"] < matching_version_info[0]["version"]:
+        result["oldRunImage"] = tag_prop["fullTag"]
+        if (tag_prop["version"].minor == matching_version_info[0]["version"].minor) and (tag_prop["version"].micro < matching_version_info[0]["version"].micro):
+            # Patchable
+            result["newRunImage"] = "mcr.microsoft.com/oryx/builder:" + matching_version_info[0]["fullTag"]
+            result["id"] = hashlib.md5(str(result["oldRunImage"] + result["targetContainerName"] + result["targetContainerAppName"] + result["targetResourceGroup"] + result["newRunImage"]).encode()).hexdigest()
+            result["reason"] = "New security patch released for your current run image."
+        else:
+            # Not patchable
+            result["newRunImage"] = "mcr.microsoft.com/oryx/builder:" + matching_version_info[0]["fullTag"]
+            result["id"] = None
+            result["reason"] = "The image is not patchable. Please check for major or minor version upgrade."
+    else:
+        # Image is already up to date
+        result["oldRunImage"] = tag_prop["fullTag"]
+        result["reason"] = "The image is already up to date."
+    return result
+
+
+def get_current_mariner_tags() -> list(OryxMarinerRunImgTagProperty):
+    r = requests.get("https://mcr.microsoft.com/v2/oryx/builder/tags/list", timeout=30)
+    tags = r.json()
+    tag_list = {}
+    # only keep entries that contain keyword "mariner"
+    tags = [tag for tag in tags["tags"] if "mariner" in tag]
+    for tag in tags:
+        tag_obj = parse_oryx_mariner_tag(tag)
+        if tag_obj:
+            major_minor_ver = str(tag_obj["version"].major) + "." + str(tag_obj["version"].minor)
+            support = tag_obj["support"]
+            framework = tag_obj["framework"]
+            mariner_ver = tag_obj["marinerVersion"]
+            if framework not in tag_list:
+                tag_list[framework] = {major_minor_ver: {support: {mariner_ver: [tag_obj]}}}
+            elif major_minor_ver not in tag_list[framework]:
+                tag_list[framework][major_minor_ver] = {support: {mariner_ver: [tag_obj]}}
+            elif support not in tag_list[framework][major_minor_ver]:
+                tag_list[framework][major_minor_ver][support] = {mariner_ver: [tag_obj]}
+            elif mariner_ver not in tag_list[framework][major_minor_ver][support]:
+                tag_list[framework][major_minor_ver][support][mariner_ver] = [tag_obj]
+            else:
+                tag_list[framework][major_minor_ver][support][mariner_ver].append(tag_obj)
+                tag_list[framework][major_minor_ver][support][mariner_ver].sort(reverse=True, key=lambda x: x["version"])
+    return tag_list
+
+
+def get_latest_buildpack_run_tag(framework, version, support="lts", mariner_version="cbl-mariner2.0"):
+    tags = get_current_mariner_tags()
+    try:
+        return tags[framework][version][support][mariner_version][0]["fullTag"]
+    except KeyError:
+        return None
+
+
+def parse_oryx_mariner_tag(tag: str) -> OryxMarinerRunImgTagProperty:
+    tag_split = tag.split("-")
+    if tag_split[0] == "run" and tag_split[1] == "dotnet":
+        # Example: run-dotnet-aspnet-7.0.1-cbl-mariner2.0-20210415.1
+        # Result: tag_obj = {
+        #    "fullTag": "run-dotnet-aspnet-7.0.1-cbl-mariner2.0-20210415.1",
+        #    "version": "7.0.1",
+        #    "framework": "aspnet",
+        #    "marinerVersion": "cbl-mariner2.0",
+        #    "architectures": None,
+        #    "support": "lts"}
+        version_re = r"(\d+\.\d+(\.\d+)?).*?(cbl-mariner(\d+\.\d+))"
+        re_matches = re.findall(version_re, tag)
+        if len(re_matches) == 0:
+            tag_obj = None
+        else:
+            tag_obj = dict(fullTag=tag, version=SemVer.parse(re_matches[0][0]), framework=tag_split[2], marinerVersion=re_matches[0][2], architectures=None, support="lts")
+    else:
+        tag_obj = None
+    return tag_obj

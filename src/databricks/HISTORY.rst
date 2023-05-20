@@ -2,6 +2,19 @@
 
 Release History
 ===============
+0.10.1
++++++
+* az databricks workspace update: Add --public-network-access to allow updating the network access type for accessing workspace.
+* az databricks workspace update: Add --required-nsg-rules to allow use the type of Nsg rule for internal.
+* az databricks workspace update: Add --storage-account-sku-name to allow updating storage account sku name.
+* az databricks workspace update: Add --enable-no-public-ip to enable the no public ip feature.
+
+0.10.0
++++++
+* Upgrade API version from 2022-04-01-preview to 2022-10-01-preview and 2023-02-01
+* az databricks workspace update: add --sku to change the sku tier name
+* az databricks access-connector create/update: add --identities to set the user assigned identities associated with the resource.
+
 0.9.0
 +++++
 * Upgrade API version from 2021-04-01-preview to 2022-04-01-preview

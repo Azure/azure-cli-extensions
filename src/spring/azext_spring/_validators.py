@@ -21,7 +21,7 @@ from knack.log import get_logger
 from ._clierror import NotSupportedPricingTierError
 from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name, _java_runtime_in_number)
 from ._util_enterprise import is_enterprise_tier
-from .vendored_sdks.appplatform.v2023_01_01_preview import models
+from .vendored_sdks.appplatform.v2023_03_01_preview import models
 from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PLAN_ID, MARKETPLACE_PUBLISHER_ID)
 
 logger = get_logger(__name__)
@@ -236,14 +236,14 @@ def validate_remote_debugging_port(namespace):
 
 
 def validate_ingress_send_timeout(namespace):
-    if namespace.ingress_send_timeout is not None and (namespace.ingress_read_timeout < 1 or
-                                                       namespace.ingress_read_timeout > 1800):
+    if namespace.ingress_send_timeout is not None and (namespace.ingress_send_timeout < 1 or
+                                                       namespace.ingress_send_timeout > 1800):
         raise InvalidArgumentValueError("Invalid value: Ingress send timeout must be in the range [1,1800].")
 
 
 def validate_ingress_session_max_age(namespace):
     if namespace.session_max_age is not None \
-            and (namespace.ingress_read_timeout < 0 or namespace.ingress_read_timeout > 7 * 24 * 3600):
+            and (namespace.session_max_age < 0 or namespace.session_max_age > 7 * 24 * 3600):
         raise InvalidArgumentValueError("Invalid value: Ingress session max-age must between 0 seconds and 7 days.")
 
 
@@ -259,6 +259,14 @@ def validate_tracing_parameters_asc_create(namespace):
             "Conflict detected: '--app-insights' or '--app-insights-key' or '--sampling-rate' "
             "can not be set with '--disable-app-insights'.")
     _validate_app_insights_parameters(namespace)
+
+
+def validate_dataplane_public_endpoint(namespace):
+    if namespace.enable_log_stream_public_endpoint is not None and namespace.enable_dataplane_public_endpoint is not None:
+        if namespace.enable_log_stream_public_endpoint != namespace.enable_dataplane_public_endpoint:
+            raise InvalidArgumentValueError("The value of enable_log_stream_public_endpoint and "
+                                            "enable_dataplane_public_endpoint should be the same, "
+                                            "you cannot set one to false and another to true.")
 
 
 def validate_tracing_parameters_asc_update(namespace):
@@ -606,56 +614,55 @@ def validate_jar(namespace):
     if values is None:
         # ignore jar_file check
         return
-    file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, ms_sdk_version, jdk_version = values
 
     tips = ", if you choose to ignore these errors, turn validation off with --disable-validation"
-    if not has_jar and not has_class:
+    if not values["has_jar"] and not values["has_class"]:
         telemetry.set_user_fault("invalid_jar_no_class_jar")
         raise InvalidArgumentValueError(
             "Do not find any class or jar file, please check if your artifact is a valid fat jar" + tips)
-    if not has_manifest:
+    if not values["has_manifest"]:
         telemetry.set_user_fault("invalid_jar_no_manifest")
         raise InvalidArgumentValueError(
             "Do not find MANIFEST.MF, please check if your artifact is a valid fat jar" + tips)
-    if file_size / 1024 / 1024 < 10:
+    if values["file_size"] / 1024 / 1024 < 10:
         telemetry.set_user_fault("invalid_jar_thin_jar")
         raise InvalidArgumentValueError("Thin jar detected, please check if your artifact is a valid fat jar" + tips)
     version_number = int(runtime_version[len("Java_"):])
-    if jdk_version not in _java_runtime_in_number():
+    if values["jdk_version"] not in _java_runtime_in_number():
         raise InvalidArgumentValueError("Your java application is compiled with {}, currently the supported "
                                         "java version is Java_8, Java_11, Java_17, you can configure the java runtime "
-                                        "with --runtime-version".format("Java_" + str(jdk_version)) + tips)
-    if jdk_version > version_number:
+                                        "with --runtime-version".format("Java_" + str(values["jdk_version"])) + tips)
+    if values["jdk_version"] > version_number:
         telemetry.set_user_fault("invalid_java_runtime")
         raise InvalidArgumentValueError("Invalid java runtime, the runtime you configured is {}, the jar you use is "
                                         "compiled with {}, you can configure the java runtime with --runtime-version".
-                                        format(runtime_version, "Java_" + str(jdk_version)) + tips)
+                                        format(runtime_version, "Java_" + str(values["jdk_version"])) + tips)
     # validate spring boot version
-    if spring_boot_version and spring_boot_version.startswith('1'):
+    if values["spring_boot_version"] and values["spring_boot_version"].startswith('1'):
         telemetry.set_user_fault("old_spring_boot_version")
         raise InvalidArgumentValueError(
             "The spring boot {} you are using is not supported. To get the latest supported "
-            "versions please refer to: https://aka.ms/ascspringversion".format(spring_boot_version) + tips)
+            "versions please refer to: https://aka.ms/ascspringversion".format(values["spring_boot_version"]) + tips)
 
     # old spring cloud version, need to import ms sdk <= 2.2.1
-    if spring_cloud_version:
-        if spring_cloud_version < "2.2.5":
-            if not ms_sdk_version or ms_sdk_version > "2.2.1":
+    if values["spring_cloud_version"]:
+        if values["spring_cloud_version"] < "2.2.5":
+            if not values["ms_sdk_version"] or values["ms_sdk_version"] > "2.2.1":
                 telemetry.set_user_fault("old_spring_cloud_version")
                 raise InvalidArgumentValueError(
                     "The spring cloud {} you are using is not supported. To get the latest supported "
-                    "versions please refer to: https://aka.ms/ascspringversion".format(spring_cloud_version) + tips)
+                    "versions please refer to: https://aka.ms/ascspringversion".format(values["spring_cloud_version"]) + tips)
         else:
-            if ms_sdk_version and ms_sdk_version <= "2.2.1":
+            if values["ms_sdk_version"] and values["ms_sdk_version"] <= "2.2.1":
                 telemetry.set_user_fault("old_ms_sdk_version")
                 raise InvalidArgumentValueError(
                     "The spring-cloud-starter-azure-spring-cloud-client version {} is no longer "
                     "supported, please remove it or upgrade to a higher version, to get the latest "
                     "supported versions please refer to: "
                     "https://mvnrepository.com/artifact/com.microsoft.azure/spring-cloud-starter-azure"
-                    "-spring-cloud-client".format(ms_sdk_version) + tips)
+                    "-spring-cloud-client".format(values["ms_sdk_version"]) + tips)
 
-    if not has_actuator:
+    if not values["has_actuator"]:
         telemetry.set_user_fault("no_spring_actuator")
         logger.warning(
             "Seems you do not import spring actuator, thus metrics are not enabled, please refer to "
@@ -719,8 +726,10 @@ def _parse_jar_file(artifact_path):
                 if search(spring_cloud_eureka_pattern, file_name):
                     prefix = 'spring-cloud-netflix-eureka-client-'
                     spring_cloud_version = file_name[file_name.index(prefix) + len(prefix):file_name.index('.jar')]
-        return file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, \
-            ms_sdk_version, jdk_version
+        return dict(file_size=file_size, spring_boot_version=spring_boot_version,
+                    spring_cloud_version=spring_cloud_version, has_actuator=has_actuator,
+                    has_manifest=has_manifest, has_jar=has_jar, has_class=has_class,
+                    ms_sdk_version=ms_sdk_version, jdk_version=jdk_version)
     except Exception as err:  # pylint: disable=broad-except
         telemetry.set_exception("parse user jar file failed, " + str(err))
         return None

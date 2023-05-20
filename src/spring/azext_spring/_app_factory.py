@@ -5,7 +5,7 @@
 
 # pylint: disable=wrong-import-order
 from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueError
-from .vendored_sdks.appplatform.v2023_01_01_preview import models
+from .vendored_sdks.appplatform.v2023_05_01_preview import models
 from azure.cli.core.util import get_file_json
 
 
@@ -118,7 +118,8 @@ class DefaultApp:
                 share_name=item['customPersistentDiskProperties']['shareName'] if 'shareName' in item['customPersistentDiskProperties'] else None,
                 mount_path=item['customPersistentDiskProperties']['mountPath'],
                 mount_options=item['customPersistentDiskProperties']['mountOptions'] if 'mountOptions' in item['customPersistentDiskProperties'] else None,
-                read_only=item['customPersistentDiskProperties']['readOnly'] if 'readOnly' in item['customPersistentDiskProperties'] else None)
+                read_only=item['customPersistentDiskProperties']['readOnly'] if 'readOnly' in item['customPersistentDiskProperties'] else None,
+                enable_sub_path=item['customPersistentDiskProperties']['enableSubPath'] if 'enableSubPath' in item['customPersistentDiskProperties'] else None)
 
             custom_persistent_disks.append(
                 models.CustomPersistentDiskResource(

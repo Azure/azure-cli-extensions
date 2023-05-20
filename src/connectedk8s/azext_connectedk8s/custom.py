@@ -29,6 +29,7 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.prompting import NoTTYException
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core._profile import Profile
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core import telemetry
@@ -181,7 +182,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
         # Performing cluster-diagnostic-checks
         diagnostic_checks, storage_space_available = precheckutils.fetch_diagnostic_checks_results(api_instance, batchv1_api_instance, helm_client_location, kubectl_client_location, kube_config, kube_context, location, http_proxy, https_proxy, no_proxy, proxy_cert, azure_cloud, filepath_with_timestamp, storage_space_available)
-        utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1, True)
+        precheckutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
 
         if storage_space_available is False:
             logger.warning("There is no storage space available on your device and hence not saving cluster diagnostic check logs on your device")
@@ -194,7 +195,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Handling the user manual interrupt
     except KeyboardInterrupt:
         try:
-            utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0, True)
+            troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
         except Exception as e:
             pass
         raise ManualInterrupt('Process terminated externally.')
@@ -210,6 +211,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             telemetry.set_exception(exception='Cluster Diagnostic Prechecks Failed', fault_type=consts.Cluster_Diagnostic_Prechecks_Failed, summary="Cluster Diagnostic Prechecks Failed in the cluster")
             raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
 
+    print("The required pre-checks for onboarding have succeeded.")
+
     if not required_node_exists:
         telemetry.set_user_fault()
         telemetry.set_exception(exception="Couldn't find any node on the kubernetes cluster with the OS 'linux'", fault_type=consts.Linux_Node_Not_Exists,
@@ -223,8 +226,15 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         raise ValidationError("Your credentials doesn't have permission to create clusterrolebindings on this kubernetes cluster. Please check your permissions.")
 
     # Get kubernetes cluster info
-    kubernetes_distro = distribution
-    kubernetes_infra = infrastructure
+    if distribution == 'generic':
+        kubernetes_distro = get_kubernetes_distro(node_api_response)  # (cluster heuristics)
+    else:
+        kubernetes_distro = distribution
+
+    if infrastructure == 'generic':
+        kubernetes_infra = get_kubernetes_infra(node_api_response)  # (cluster heuristics)
+    else:
+        kubernetes_infra = infrastructure
 
     kubernetes_properties = {
         'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version,
@@ -232,6 +242,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
+
+    resource_id = f'/subscriptions/{subscription_id}/resourcegroups/{resource_group_name}/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}/location/{location}'
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.resourceid': resource_id})
 
     # Checking if it is an AKS cluster
     is_aks_cluster = check_aks_cluster(kube_config, kube_context)
@@ -291,7 +304,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                 except Exception as e:  # pylint: disable=broad-except
                     utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
                 cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit)
-                cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
+                cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
+                cc_response = LongRunningOperation(cmd.cli_ctx)(cc_response)
                 # Disabling cluster-connect if private link is getting enabled
                 if enable_private_link is True:
                     disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, values_file, values_file_provided, dp_endpoint_dogfood, release_train_dogfood, release_namespace, helm_client_location)
@@ -303,8 +317,12 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                          "is already onboarded to the resource group" +
                                          " '{}' with resource name '{}'.".format(configmap_rg_name, configmap_cluster_name))
         else:
-            # Cleanup agents and continue with put
-            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster)
+            logger.warning("Cleaning up the stale arc agents present on the cluster before starting new onboarding.")
+            # Explicit CRD Deletion
+            crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
+            # Cleaning up the cluster
+            utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster, True)
+
     else:
         if connected_cluster_exists(client, resource_group_name, cluster_name):
             telemetry.set_exception(exception='The connected cluster resource already exists', fault_type=consts.Resource_Already_Exists_Fault_Type,
@@ -363,12 +381,15 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Generate request payload
     cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit)
 
+    print("Azure resource provisioning has begun.")
     # Create connected cluster resource
-    put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
-
+    put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
+    put_cc_response = LongRunningOperation(cmd.cli_ctx)(put_cc_response)
+    print("Azure resource provisioning has finished.")
     # Checking if custom locations rp is registered and fetching oid if it is registered
     enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
 
+    print("Starting to install Azure arc agents on the Kubernetes cluster.")
     # Install azure-arc agents
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
@@ -565,6 +586,64 @@ def get_private_key(key_pair):
     return PEM.encode(privKey_DER, "RSA PRIVATE KEY")
 
 
+def get_kubernetes_distro(api_response):  # Heuristic
+    if api_response is None:
+        return "generic"
+    try:
+        for node in api_response.items:
+            labels = node.metadata.labels
+            provider_id = str(node.spec.provider_id)
+            annotations = node.metadata.annotations
+            if labels.get("node.openshift.io/os_id"):
+                return "openshift"
+            if labels.get("kubernetes.azure.com/node-image-version"):
+                return "aks"
+            if labels.get("cloud.google.com/gke-nodepool") or labels.get("cloud.google.com/gke-os-distribution"):
+                return "gke"
+            if labels.get("eks.amazonaws.com/nodegroup"):
+                return "eks"
+            if labels.get("minikube.k8s.io/version"):
+                return "minikube"
+            if provider_id.startswith("kind://"):
+                return "kind"
+            if provider_id.startswith("k3s://"):
+                return "k3s"
+            if annotations.get("rke.cattle.io/external-ip") or annotations.get("rke.cattle.io/internal-ip"):
+                return "rancher_rke"
+        return "generic"
+    except Exception as e:  # pylint: disable=broad-except
+        logger.debug("Error occured while trying to fetch kubernetes distribution: " + str(e))
+        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Distro_Fault_Type, 'Unable to fetch kubernetes distribution',
+                                           raise_error=False)
+        return "generic"
+
+
+def get_kubernetes_infra(api_response):  # Heuristic
+    if api_response is None:
+        return "generic"
+    try:
+        for node in api_response.items:
+            provider_id = str(node.spec.provider_id)
+            infra = provider_id.split(':')[0]
+            if infra == "k3s" or infra == "kind":
+                return "generic"
+            if infra == "azure":
+                return "azure"
+            if infra == "gce":
+                return "gcp"
+            if infra == "aws":
+                return "aws"
+            k8s_infra = utils.validate_infrastructure_type(infra)
+            if k8s_infra is not None:
+                return k8s_infra
+        return "generic"
+    except Exception as e:  # pylint: disable=broad-except
+        logger.debug("Error occured while trying to fetch kubernetes infrastructure: " + str(e))
+        utils.kubernetes_exception_handler(e, consts.Get_Kubernetes_Infra_Fault_Type, 'Unable to fetch kubernetes infrastructure',
+                                           raise_error=False)
+        return "generic"
+
+
 def check_linux_node(api_response):
     try:
         for item in api_response.items:
@@ -758,48 +837,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name,
         delete_cc_resource(client, resource_group_name, cluster_name, no_wait).result()
 
         # Explicit CRD Deletion
-
-        timeout_for_crd_deletion = "20s"
-        for crds in consts.CRD_FOR_FORCE_DELETE:
-            cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found", "--wait", "--timeout", "{}".format(timeout_for_crd_deletion)]
-            if kube_config:
-                cmd_helm_delete.extend(["--kubeconfig", kube_config])
-            if kube_context:
-                cmd_helm_delete.extend(["--context", kube_context])
-            response_helm_delete = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
-            _, error_helm_delete = response_helm_delete.communicate()
-
-        # Timer added to have sufficient time after CRD deletion
-        # to check the status of the CRD ( deleted or terminating )
-        time.sleep(3)
-
-        # patching yaml file path for removing CRD finalizer
-        current_path = os.path.abspath(os.path.dirname(__file__))
-        yaml_file_path = os.path.join(current_path, "remove_crd_finalizer.yaml")
-
-        # Patch if CRD is in Terminating state
-        for crds in consts.CRD_FOR_FORCE_DELETE:
-
-            cmd = [kubectl_client_location, "get", "crd", crds, "-ojson"]
-            if kube_config:
-                cmd.extend(["--kubeconfig", kube_config])
-            if kube_context:
-                cmd.extend(["--context", kube_context])
-            cmd_output = Popen(cmd, stdout=PIPE, stderr=PIPE)
-            _, error_helm_delete = cmd_output.communicate()
-
-            if(cmd_output.returncode == 0):
-                changed_cmd = json.loads(cmd_output.communicate()[0].strip())
-                status = changed_cmd['status']['conditions'][-1]['type']
-
-                if(status == "Terminating"):
-                    patch_cmd = [kubectl_client_location, "patch", "crd", crds, "--type=merge", "--patch-file", yaml_file_path]
-                    if kube_config:
-                        patch_cmd.extend(["--kubeconfig", kube_config])
-                    if kube_context:
-                        patch_cmd.extend(["--context", kube_context])
-                    output_patch_cmd = Popen(patch_cmd, stdout=PIPE, stderr=PIPE)
-                    _, error_helm_delete = output_patch_cmd.communicate()
+        crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
 
         if(release_namespace):
             utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster, True)
@@ -2289,8 +2327,27 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # Performing diagnoser container check
         diagnostic_checks[consts.Diagnoser_Check], storage_space_available = troubleshootutils.check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepath_with_timestamp, storage_space_available, absolute_path, probable_sufficient_resource_for_agents, helm_client_location, kubectl_client_location, release_namespace, diagnostic_checks[consts.KAP_Security_Policy_Check], kube_config, kube_context)
 
+        # saving secrets in azure-arc namespace
+        storage_space_available = troubleshootutils.get_secrets_azure_arc(corev1_api_instance, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
+
+        # saving helm values of azure-arc release
+        storage_space_available = troubleshootutils.get_helm_values_azure_arc(corev1_api_instance, helm_client_location, release_namespace, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
+
+        # saving metadata CR sanpshot
+        storage_space_available = troubleshootutils.get_metadata_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
+
+        # saving kube-aad-proxy CR snapshot only in the case private link is disabled
+        if connected_cluster.private_link_state == "Disabled":
+            storage_space_available = troubleshootutils.get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_config, kube_context, filepath_with_timestamp, storage_space_available)
+
+        # checking cluster connectivity status
+        cluster_connectivity_status = connected_cluster.connectivity_status
+
+        if cluster_connectivity_status != "Connected":
+            logger.warning("Cluster connectivity status is not connected. The current state of the cluster is : " + cluster_connectivity_status)
+
         # Adding cli output to the logs
-        diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
+        diagnostic_checks[consts.Storing_Diagnoser_Results_Logs] = troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 1)
 
         # If all the checks passed then display no error found
         all_checks_passed = True
@@ -2311,7 +2368,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
     # Handling the user manual interrupt
     except KeyboardInterrupt:
         try:
-            utils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
+            troubleshootutils.fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, 0)
         except Exception as e:
             pass
         raise ManualInterrupt('Process terminated externally.')
@@ -2352,3 +2409,48 @@ def install_kubectl_client():
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Download_And_Install_Kubectl_Fault_Type, summary="Failed to download and install kubectl")
         raise CLIInternalError("Unable to install kubectl. Error: ", str(e))
+
+
+def crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context):
+
+        timeout_for_crd_deletion = "20s"
+        for crds in consts.CRD_FOR_FORCE_DELETE:
+            cmd_helm_delete = [kubectl_client_location, "delete", "crds", crds, "--ignore-not-found", "--wait", "--timeout", "{}".format(timeout_for_crd_deletion)]
+            if kube_config:
+                cmd_helm_delete.extend(["--kubeconfig", kube_config])
+            if kube_context:
+                cmd_helm_delete.extend(["--context", kube_context])
+            response_helm_delete = Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
+            _, error_helm_delete = response_helm_delete.communicate()
+
+        # Timer added to have sufficient time after CRD deletion
+        # to check the status of the CRD ( deleted or terminating )
+        time.sleep(3)
+
+        # patching yaml file path for removing CRD finalizer
+        current_path = os.path.abspath(os.path.dirname(__file__))
+        yaml_file_path = os.path.join(current_path, "remove_crd_finalizer.yaml")
+
+        # Patch if CRD is in Terminating state
+        for crds in consts.CRD_FOR_FORCE_DELETE:
+
+            cmd = [kubectl_client_location, "get", "crd", crds, "-ojson"]
+            if kube_config:
+                cmd.extend(["--kubeconfig", kube_config])
+            if kube_context:
+                cmd.extend(["--context", kube_context])
+            cmd_output = Popen(cmd, stdout=PIPE, stderr=PIPE)
+            _, error_helm_delete = cmd_output.communicate()
+
+            if(cmd_output.returncode == 0):
+                changed_cmd = json.loads(cmd_output.communicate()[0].strip())
+                status = changed_cmd['status']['conditions'][-1]['type']
+
+                if(status == "Terminating"):
+                    patch_cmd = [kubectl_client_location, "patch", "crd", crds, "--type=merge", "--patch-file", yaml_file_path]
+                    if kube_config:
+                        patch_cmd.extend(["--kubeconfig", kube_config])
+                    if kube_context:
+                        patch_cmd.extend(["--context", kube_context])
+                    output_patch_cmd = Popen(patch_cmd, stdout=PIPE, stderr=PIPE)
+                    _, error_helm_delete = output_patch_cmd.communicate()

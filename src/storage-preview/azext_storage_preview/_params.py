@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.commands.parameters import (get_enum_type, get_three_state_flag, file_type, get_location_type,
+from azure.cli.core.commands.parameters import (get_enum_type, get_three_state_flag, get_location_type,
                                                 tags_type, edge_zone_type)
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
 from azure.cli.core.local_context import LocalContextAttribute, LocalContextAction, ALL
@@ -13,14 +13,12 @@ from ._validators import (get_datetime_type, validate_metadata, validate_bypass,
                           validate_azcopy_target_url, validate_included_datasets, validate_custom_domain,
                           validate_blob_directory_download_source_url, validate_blob_directory_upload_destination_url,
                           validate_storage_data_plane_list, validate_immutability_arguments,
-                          process_resource_group, add_upload_progress_callback, validate_encryption_source,
-                          PermissionScopeAddAction, SshPublicKeyAddAction)
+                          process_resource_group, validate_encryption_source)
 
-from .profiles import CUSTOM_MGMT_STORAGE, CUSTOM_DATA_STORAGE_FILEDATALAKE
+from .profiles import CUSTOM_MGMT_STORAGE
 
 
 def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statements
-    from argcomplete.completers import FilesCompleter
     from knack.arguments import CLIArgumentType
     from azure.cli.core.commands.parameters import get_resource_name_completion_list
 
@@ -58,6 +56,10 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                 help='Enable Azure Files Active Directory Domain Service Authentication for '
                                      'storage account. When --enable-files-adds is set to true, Azure Active '
                                      'Directory Properties arguments must be provided.')
+    aadkerb_type = CLIArgumentType(arg_type=get_three_state_flag(), min_api='2022-05-01',
+                                   arg_group='Azure Files Identity Based Authentication',
+                                   help='Enable Azure Files Active Directory Domain Service Kerberos Authentication '
+                                        'for the storage account')
     aadds_type = CLIArgumentType(arg_type=get_three_state_flag(), min_api='2018-11-01',
                                  arg_group='Azure Files Identity Based Authentication',
                                  help='Enable Azure Active Directory Domain Services authentication for Azure Files')
@@ -170,11 +172,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                                     '"[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,'
                                     '[default:]user|group|other|mask:[entity id or UPN]:r|-w|-x|-,...". '
                                     'e.g."user::rwx,user:john.doe@contoso:rwx,group::r--,other::---,mask::rwx".')
-    progress_type = CLIArgumentType(help='Include this flag to disable progress reporting for the command.',
-                                    action='store_true', validator=add_upload_progress_callback)
-    timeout_type = CLIArgumentType(
-        help='Request timeout in seconds. Applies to each call to the service.', type=int
-    )
 
     with self.argument_context('storage') as c:
         c.argument('container_name', container_name_type)
@@ -223,6 +220,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    is_preview=True, help='Enable local user features.')
         c.argument('enable_files_aadds', aadds_type)
         c.argument('enable_files_adds', adds_type)
+        c.argument('enable_files_aadkerb', aadkerb_type)
         c.argument('enable_large_file_share', arg_type=large_file_share_type)
         c.argument('domain_name', domain_name_type)
         c.argument('net_bios_domain_name', net_bios_domain_name_type)
@@ -325,6 +323,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    is_preview=True, help='Enable local user features.')
         c.argument('enable_files_aadds', aadds_type)
         c.argument('enable_files_adds', adds_type)
+        c.argument('enable_files_aadkerb', aadkerb_type)
         c.argument('enable_large_file_share', arg_type=large_file_share_type)
         c.argument('domain_name', domain_name_type)
         c.argument('net_bios_domain_name', net_bios_domain_name_type)
@@ -373,6 +372,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('public_network_access', arg_type=get_enum_type(public_network_access_enum), min_api='2021-06-01',
                    help='Enable or disable public network access to the storage account. '
                         'Possible values include: `Enabled` or `Disabled`.')
+        c.argument('account_name', acct_name_type, options_list=['--name', '-n'])
+        c.argument('resource_group_name', required=False, validator=process_resource_group)
 
     for scope in ['storage account create', 'storage account update']:
         with self.argument_context(scope, arg_group='Customer managed key', min_api='2017-06-01',
@@ -410,52 +411,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
             c.argument('subnet', help='Name or ID of subnet. If name is supplied, `--vnet-name` must be supplied.')
             c.argument('vnet_name', help='Name of a virtual network.', validator=validate_subnet)
             c.argument('action', action_type)
-
-    for item in ['update', 'network-rule']:
-        with self.argument_context('storage account {}'.format(item)) as c:
-            c.argument('account_name', acct_name_type, options_list=['--name', '-n'])
-            c.argument('resource_group_name', required=False, validator=process_resource_group)
-
-    with self.argument_context('storage account network-rule') as c:
-        c.argument('account_name', acct_name_type, id_part=None)
-        c.argument('ip_address', help='IPv4 address or CIDR range.')
-        c.argument('subnet', help='Name or ID of subnet. If name is supplied, `--vnet-name` must be supplied.')
-        c.argument('vnet_name', help='Name of a virtual network.', validator=validate_subnet)
-        c.argument('action', help='The action of virtual network rule.')
-        c.argument('resource_id', help='The resource id to add in network rule.')
-        c.argument('tenant_id', help='The tenant id to add in network rule.')
-
-    with self.argument_context('storage account local-user') as c:
-        c.argument('account_name', acct_name_type, options_list='--account-name', id_part=None)
-        c.argument('username', options_list=['--username', '--name', '-n'],
-                   help='The name of local user. The username must contain lowercase letters and numbers '
-                        'only. It must be unique only within the storage account.')
-
-    for item in ['create', 'update']:
-        with self.argument_context(f'storage account local-user {item}') as c:
-            c.argument('permission_scope', nargs='+', action=PermissionScopeAddAction,
-                       help='The permission scope argument list which includes the permissions, service, and resource_name.'
-                            'The permissions can be a combination of the below possible values: '
-                            'Read(r), Write (w), Delete (d), List (l), and Create (c). '
-                            'The service has possible values: blob, file. '
-                            'The resource-name is the container name or the file share name. '
-                            'Example: --permission-scope permissions=r service=blob resource-name=container1'
-                            'Can specify multiple permission scopes: '
-                            '--permission-scope permissions=rw service=blob resource-name=container1'
-                            '--permission-scope permissions=rwd service=file resource-name=share2')
-            c.argument('home_directory', help='The home directory.')
-            c.argument('ssh_authorized_key', nargs='+', action=SshPublicKeyAddAction,
-                       help='SSH authorized keys for SFTP. Includes an optional description and key. '
-                            'The key is the base64 encoded SSH public key , with format: '
-                            '<keyType> <keyData> e.g. ssh-rsa AAAABBBB.'
-                            'Example: --ssh_authorized_key description=description key="ssh-rsa AAAABBBB"'
-                            'or --ssh_authorized_key key="ssh-rsa AAAABBBB"')
-            c.argument('has_shared_key', arg_type=get_three_state_flag(),
-                       help='Indicates whether shared key exists. Set it to false to remove existing shared key.')
-            c.argument('has_ssh_key', arg_type=get_three_state_flag(),
-                       help='Indicates whether ssh key exists. Set it to false to remove existing SSH key.')
-            c.argument('has_ssh_password', arg_type=get_three_state_flag(),
-                       help='Indicates whether ssh password exists. Set it to false to remove existing SSH password.')
 
     with self.argument_context('storage blob service-properties update') as c:
         c.argument('delete_retention', arg_type=get_three_state_flag(), arg_group='Soft Delete',
@@ -645,61 +600,3 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='Recursively upload blobs. If enabled, all the blobs including the blobs in subdirectories will'
                         ' be uploaded.')
         c.ignore('destination')
-
-    with self.argument_context('storage file upload') as c:
-        t_file_content_settings = self.get_sdk('file.models#ContentSettings')
-
-        c.register_path_argument(default_file_param='local_file_path')
-        c.register_content_settings_argument(t_file_content_settings, update=False, guess_from_file='local_file_path',
-                                             process_md5=True)
-        c.argument('local_file_path', options_list='--source', type=file_type, completer=FilesCompleter(),
-                   help='Path of the local file to upload as the file content.')
-        c.extra('no_progress', progress_type)
-        c.argument('max_connections', type=int, help='Maximum number of parallel connections to use.')
-        c.extra('share_name', share_name_type, required=True)
-        c.argument('validate_content', action='store_true', min_api='2016-05-31',
-                   help='If true, calculates an MD5 hash for each range of the file. The storage service checks the '
-                        'hash of the content that has arrived with the hash that was sent. This is primarily valuable '
-                        'for detecting bitflips on the wire if using http instead of https as https (the default) will '
-                        'already validate. Note that this MD5 hash is not stored with the file.')
-
-    with self.argument_context('storage file upload-batch') as c:
-        from ._validators import process_file_upload_batch_parameters
-        c.argument('source', options_list=('--source', '-s'), validator=process_file_upload_batch_parameters)
-        c.argument('destination', options_list=('--destination', '-d'))
-        c.argument('max_connections', arg_group='Upload Control', type=int)
-        c.argument('validate_content', action='store_true', min_api='2016-05-31')
-        c.register_content_settings_argument(t_file_content_settings, update=False, arg_group='Content Settings',
-                                             process_md5=True)
-        c.extra('no_progress', progress_type)
-
-    with self.argument_context('storage fs service-properties update', resource_type=CUSTOM_DATA_STORAGE_FILEDATALAKE,
-                               min_api='2020-06-12') as c:
-        c.argument('delete_retention', arg_type=get_three_state_flag(), arg_group='Soft Delete',
-                   help='Enable soft-delete.')
-        c.argument('delete_retention_period', type=int, arg_group='Soft Delete',
-                   options_list=['--delete-retention-period', '--period'],
-                   help='Number of days that soft-deleted fs will be retained. Must be in range [1,365].')
-        c.argument('enable_static_website', options_list=['--static-website'], arg_group='Static Website',
-                   arg_type=get_three_state_flag(),
-                   help='Enable static-website.')
-        c.argument('index_document', help='Represent the name of the index document. This is commonly "index.html".',
-                   arg_group='Static Website')
-        c.argument('error_document_404_path', options_list=['--404-document'], arg_group='Static Website',
-                   help='Represent the path to the error document that should be shown when an error 404 is issued,'
-                        ' in other words, when a browser requests a page that does not exist.')
-
-    for item in ['list-deleted-path', 'undelete-path']:
-        with self.argument_context('storage fs {}'.format(item)) as c:
-            c.extra('file_system_name', options_list=['--file-system', '-f'],
-                    help="File system name.", required=True)
-            c.extra('timeout', timeout_type)
-
-    with self.argument_context('storage fs list-deleted-path') as c:
-        c.argument('path_prefix', help='Filter the results to return only paths under the specified path.')
-        c.argument('num_results', type=int, help='Specify the maximum number to return.')
-        c.argument('marker', help='A string value that identifies the portion of the list of containers to be '
-                   'returned with the next listing operation. The operation returns the NextMarker value within '
-                   'the response body if the listing operation did not return all containers remaining to be listed '
-                   'with the current page. If specified, this generator will begin returning results from the point '
-                   'where the previous generator stopped.')

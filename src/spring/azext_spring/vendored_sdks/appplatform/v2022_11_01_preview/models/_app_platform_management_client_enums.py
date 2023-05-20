@@ -198,10 +198,10 @@ class CustomizedAcceleratorProvisioningState(str, Enum, metaclass=CaseInsensitiv
 class CustomizedAcceleratorValidateResultState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """State of the customized accelerator validation result."""
 
-    #: Customized accelerator properties are valid.
     VALID = "Valid"
-    #: Customized accelerator properties are invalid.
+    """Customized accelerator properties are valid."""
     INVALID = "Invalid"
+    """Customized accelerator properties are invalid."""
 
 
 class DeploymentResourceProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -223,10 +223,10 @@ class DeploymentResourceStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 class DevToolPortalFeatureState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """State of the plugin."""
 
-    #: Enable the plugin in Dev Tool Portal.
     ENABLED = "Enabled"
-    #: Disable the plugin in Dev Tool Portal.
+    """Enable the plugin in Dev Tool Portal."""
     DISABLED = "Disabled"
+    """Disable the plugin in Dev Tool Portal."""
 
 
 class DevToolPortalProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -326,10 +326,10 @@ class PredefinedAcceleratorProvisioningState(str, Enum, metaclass=CaseInsensitiv
 class PredefinedAcceleratorState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """State of the predefined accelerator."""
 
-    #: Enable the predefined accelerator.
     ENABLED = "Enabled"
-    #: Disable the predefined accelerator.
+    """Enable the predefined accelerator."""
     DISABLED = "Disabled"
+    """Disable the predefined accelerator."""
 
 
 class ProbeActionType(str, Enum, metaclass=CaseInsensitiveEnumMeta):

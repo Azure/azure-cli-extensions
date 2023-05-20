@@ -1,7 +1,27 @@
 .. :changelog:
 
 Release History
-===============
+
+1.3.17
+++++++
+
+* Added a spinner which runs while ARM resource is being provisioned
+* Added additional logging to indicate which step is running
+
+1.3.16
+++++++
+* Adding force delete in connect command in case of stale resources present during onboarding
+* Bug fixes in diagnoser
+* Pushing armd id and location to telemetry
+* Adding test for connectedk8s proxy command
+
+1.3.15
+++++++
+
+* Diagnoser Enhancements - storing metadata and KAP CR snapshots , azure-arc helm values , azure-arc ns secret list
+* Removing circular imports of 1. custom from precheckutils and 2.(precheckutils and troubleshootutils) from utils
+* Adding back heuristics detection in connect command
+
 1.3.14
 ++++++
 

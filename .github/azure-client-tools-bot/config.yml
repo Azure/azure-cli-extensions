@@ -1,4 +1,13 @@
+files_check:
+  - files:
+      - "src/.*/HISTORY.rst"
+      - "src/.*/setup.py"
+    comment: |
+      If you want to release the new extension version.
+      Please write the description of changes into HISTORY.rst and update setup.py.
+    is_regex: true
+    type: necessary
+allowed_branches:
+  - "main"
 auto_choose_milestone:
-  enable: True
-  issue_expected_days: 7
   pr_expected_days: 7

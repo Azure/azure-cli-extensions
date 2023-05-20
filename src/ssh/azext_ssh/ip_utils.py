@@ -32,7 +32,7 @@ def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip):
         for ip_config in nic["ipConfigurations"]:
             if use_private_ip and ip_config.get("privateIPAddress", None):
                 return ip_config["privateIPAddress"]
-            public_ip_ref = ip_config["publicIPAddress"]
+            public_ip_ref = ip_config.get("publicIPAddress", None)
             if public_ip_ref and public_ip_ref.get("id", None):
                 parsed_ip_id = tools.parse_resource_id(public_ip_ref["id"])
                 api_args = {

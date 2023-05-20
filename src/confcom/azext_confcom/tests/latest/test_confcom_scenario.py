@@ -272,16 +272,17 @@ class PolicyGenerating(unittest.TestCase):
             cls.aci_policy = aci_policy
 
     def test_injected_sidecar_container_msi(self):
-        expected_sidecar_container_ser = "eyJjb250YWluZXJzIjp7ImVsZW1lbnRzIjp7IjAiOnsiYWxsb3dfZWxldmF0ZWQiOnRydWUsImFsbG93X3N0ZGlvX2FjY2VzcyI6dHJ1ZSwiY29tbWFuZCI6eyJlbGVtZW50cyI6eyIwIjoiL2Jpbi9zaCIsIjEiOiItYyIsIjIiOiJ1bnRpbCAuL21zaUF0bGFzQWRhcHRlcjsgZG8gZWNobyAkPyByZXN0YXJ0aW5nOyBkb25lIn0sImxlbmd0aCI6M30sImVudl9ydWxlcyI6eyJlbGVtZW50cyI6eyIwIjp7InBhdHRlcm4iOiJJREVOVElUWV9BUElfVkVSU0lPTj0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSwiMSI6eyJwYXR0ZXJuIjoiSURFTlRJVFlfSEVBREVSPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LCIxMCI6eyJwYXR0ZXJuIjoiRmFicmljX1NlcnZpY2VOYW1lPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LCIxMSI6eyJwYXR0ZXJuIjoiRmFicmljX0FwcGxpY2F0aW9uTmFtZT0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSwiMTIiOnsicGF0dGVybiI6IkZhYnJpY19Db2RlUGFja2FnZU5hbWU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjEzIjp7InBhdHRlcm4iOiJGYWJyaWNfU2VydmljZURuc05hbWU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjE0Ijp7InBhdHRlcm4iOiJBQ0lfTUlfREVGQVVMVD0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSwiMTUiOnsicGF0dGVybiI6IlRva2VuUHJveHlJcEFkZHJlc3NFbnZLZXlOYW1lPVtDb250YWluZXJUb0hvc3RBZGRyZXNzfEZhYnJpY19Ob2RlbFBPckZRRE5dIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LCIxNiI6eyJwYXR0ZXJuIjoiQ29udGFpbmVyVG9Ib3N0QWRkcmVzcz0iLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5Ijoic3RyaW5nIn0sIjE3Ijp7InBhdHRlcm4iOiJGYWJyaWNfTmV0d29ya2luZ01vZGU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjE4Ijp7InBhdHRlcm4iOiJhenVyZWNvbnRhaW5lcmluc3RhbmNlX3Jlc3RhcnRlZF9ieT0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSwiMiI6eyJwYXR0ZXJuIjoiSURFTlRJVFlfU0VSVkVSX1RIVU1CUFJJTlQ9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjMiOnsicGF0dGVybiI6IkFDSV9NSV9DTElFTlRfSURfLis9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjQiOnsicGF0dGVybiI6IkFDSV9NSV9SRVNfSURfLis9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0sIjUiOnsicGF0dGVybiI6IkhPU1ROQU1FPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LCI2Ijp7InBhdHRlcm4iOiJURVJNPXh0ZXJtIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InN0cmluZyJ9LCI3Ijp7InBhdHRlcm4iOiJQQVRIPS91c3IvbG9jYWwvc2JpbjovdXNyL2xvY2FsL2JpbjovdXNyL3NiaW46L3Vzci9iaW46L3NiaW46L2JpbiIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJzdHJpbmcifSwiOCI6eyJwYXR0ZXJuIjoiKCg/aSlGQUJSSUMpXy4rPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LCI5Ijp7InBhdHRlcm4iOiJGYWJyaWNfSWQrPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9fSwibGVuZ3RoIjoxOX0sImV4ZWNfcHJvY2Vzc2VzIjp7ImVsZW1lbnRzIjp7fSwibGVuZ3RoIjowfSwiaWQiOiJtY3IubWljcm9zb2Z0LmNvbS9hY2kvbXNpLWF0bGFzLWFkYXB0ZXI6bWFzdGVyXzIwMjAxMjAzLjEiLCJsYXllcnMiOnsiZWxlbWVudHMiOnsiMCI6IjYwNmZkNmJhZjVlYjFhNzFmZDI4NmFlYTI5NjcyYTA2YmZlNTVmMDAwN2RlZDkyZWU3MzE0MmEzNzU5MGVkMTkiLCIxIjoiOTBhZDJmNWIyYzQyNWE3YzQ1OGY5ZjVkMjFjZjA2NGMyMTVmMTRlNDA2ODAwOTY4ZjY0NGQyYWIwYjRkMDRkZiIsIjIiOiIxYzRiNjM2NWE3YjkzODM4N2RmZDgyMjg2MmNhNDFhZTU0OTBiNTQ5MGU0YzI2ZWI0YjVkYTk2YzY0MDk2MGNmIn0sImxlbmd0aCI6M30sIm1vdW50cyI6eyJlbGVtZW50cyI6e30sImxlbmd0aCI6MH0sInNpZ25hbHMiOnsiZWxlbWVudHMiOnt9LCJsZW5ndGgiOjB9LCJ3b3JraW5nX2RpciI6Ii9yb290LyJ9fSwibGVuZ3RoIjoxfX0="
+        expected_sidecar_container_ser = "cGFja2FnZSBtaWNyb3NvZnRjb250YWluZXJpbnN0YW5jZQoKYXBpX3ZlcnNpb24gOj0gIjAuMTAuMCIKZnJhbWV3b3JrX3ZlcnNpb24gOj0gIjAuMi4zIgoKY29udGFpbmVycyA6PSBbeyJhbGxvd19lbGV2YXRlZCI6ZmFsc2UsImFsbG93X3N0ZGlvX2FjY2VzcyI6dHJ1ZSwiY2FwYWJpbGl0aWVzIjp7ImFtYmllbnQiOltdLCJib3VuZGluZyI6WyJDQVBfQVVESVRfV1JJVEUiLCJDQVBfQ0hPV04iLCJDQVBfREFDX09WRVJSSURFIiwiQ0FQX0ZPV05FUiIsIkNBUF9GU0VUSUQiLCJDQVBfS0lMTCIsIkNBUF9NS05PRCIsIkNBUF9ORVRfQklORF9TRVJWSUNFIiwiQ0FQX05FVF9SQVciLCJDQVBfU0VURkNBUCIsIkNBUF9TRVRHSUQiLCJDQVBfU0VUUENBUCIsIkNBUF9TRVRVSUQiLCJDQVBfU1lTX0NIUk9PVCJdLCJlZmZlY3RpdmUiOlsiQ0FQX0FVRElUX1dSSVRFIiwiQ0FQX0NIT1dOIiwiQ0FQX0RBQ19PVkVSUklERSIsIkNBUF9GT1dORVIiLCJDQVBfRlNFVElEIiwiQ0FQX0tJTEwiLCJDQVBfTUtOT0QiLCJDQVBfTkVUX0JJTkRfU0VSVklDRSIsIkNBUF9ORVRfUkFXIiwiQ0FQX1NFVEZDQVAiLCJDQVBfU0VUR0lEIiwiQ0FQX1NFVFBDQVAiLCJDQVBfU0VUVUlEIiwiQ0FQX1NZU19DSFJPT1QiXSwiaW5oZXJpdGFibGUiOltdLCJwZXJtaXR0ZWQiOlsiQ0FQX0FVRElUX1dSSVRFIiwiQ0FQX0NIT1dOIiwiQ0FQX0RBQ19PVkVSUklERSIsIkNBUF9GT1dORVIiLCJDQVBfRlNFVElEIiwiQ0FQX0tJTEwiLCJDQVBfTUtOT0QiLCJDQVBfTkVUX0JJTkRfU0VSVklDRSIsIkNBUF9ORVRfUkFXIiwiQ0FQX1NFVEZDQVAiLCJDQVBfU0VUR0lEIiwiQ0FQX1NFVFBDQVAiLCJDQVBfU0VUVUlEIiwiQ0FQX1NZU19DSFJPT1QiXX0sImNvbW1hbmQiOlsiL2Jpbi9zaCIsIi1jIiwidW50aWwgLi9tc2lBdGxhc0FkYXB0ZXI7IGRvIGVjaG8gJD8gcmVzdGFydGluZzsgZG9uZSJdLCJlbnZfcnVsZXMiOlt7InBhdHRlcm4iOiJJREVOVElUWV9BUElfVkVSU0lPTj0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSx7InBhdHRlcm4iOiJJREVOVElUWV9IRUFERVI9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiSURFTlRJVFlfU0VSVkVSX1RIVU1CUFJJTlQ9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiQUNJX01JX0NMSUVOVF9JRF8uKz0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSx7InBhdHRlcm4iOiJBQ0lfTUlfUkVTX0lEXy4rPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6IkhPU1ROQU1FPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6IlRFUk09eHRlcm0iLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5Ijoic3RyaW5nIn0seyJwYXR0ZXJuIjoiUEFUSD0vdXNyL2xvY2FsL3NiaW46L3Vzci9sb2NhbC9iaW46L3Vzci9zYmluOi91c3IvYmluOi9zYmluOi9iaW4iLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5Ijoic3RyaW5nIn0seyJwYXR0ZXJuIjoiKCg/aSlGQUJSSUMpXy4rPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6IkZhYnJpY19JZCs9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiRmFicmljX1NlcnZpY2VOYW1lPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6IkZhYnJpY19BcHBsaWNhdGlvbk5hbWU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiRmFicmljX0NvZGVQYWNrYWdlTmFtZT0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSx7InBhdHRlcm4iOiJGYWJyaWNfU2VydmljZURuc05hbWU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiQUNJX01JX0RFRkFVTFQ9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiVG9rZW5Qcm94eUlwQWRkcmVzc0VudktleU5hbWU9W0NvbnRhaW5lclRvSG9zdEFkZHJlc3N8RmFicmljX05vZGVsUE9yRlFETl0iLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiQ29udGFpbmVyVG9Ib3N0QWRkcmVzcz0iLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5Ijoic3RyaW5nIn0seyJwYXR0ZXJuIjoiRmFicmljX05ldHdvcmtpbmdNb2RlPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6ImF6dXJlY29udGFpbmVyaW5zdGFuY2VfcmVzdGFydGVkX2J5PS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9XSwiZXhlY19wcm9jZXNzZXMiOltdLCJpZCI6Im1jci5taWNyb3NvZnQuY29tL2FjaS9tc2ktYXRsYXMtYWRhcHRlcjptYXN0ZXJfMjAyMDEyMDMuMSIsImxheWVycyI6WyI2MDZmZDZiYWY1ZWIxYTcxZmQyODZhZWEyOTY3MmEwNmJmZTU1ZjAwMDdkZWQ5MmVlNzMxNDJhMzc1OTBlZDE5IiwiOTBhZDJmNWIyYzQyNWE3YzQ1OGY5ZjVkMjFjZjA2NGMyMTVmMTRlNDA2ODAwOTY4ZjY0NGQyYWIwYjRkMDRkZiIsIjFjNGI2MzY1YTdiOTM4Mzg3ZGZkODIyODYyY2E0MWFlNTQ5MGI1NDkwZTRjMjZlYjRiNWRhOTZjNjQwOTYwY2YiXSwibW91bnRzIjpbXSwibm9fbmV3X3ByaXZpbGVnZXMiOmZhbHNlLCJzZWNjb21wX3Byb2ZpbGVfc2hhMjU2IjoiIiwic2lnbmFscyI6W10sInVzZXIiOnsiZ3JvdXBfaWRuYW1lcyI6W3sicGF0dGVybiI6IiIsInN0cmF0ZWd5IjoiYW55In1dLCJ1bWFzayI6IjAwMjIiLCJ1c2VyX2lkbmFtZSI6eyJwYXR0ZXJuIjoiIiwic3RyYXRlZ3kiOiJhbnkifX0sIndvcmtpbmdfZGlyIjoiL3Jvb3QvIn1d"
+
         image = self.aci_policy.get_images()[0]
         self.assertEqual(image.base, "mcr.microsoft.com/aci/msi-atlas-adapter")
         self.assertIsNotNone(image)
-        
+
         self.maxDiff = None
         expected_workingdir = "/root/"
         self.assertEqual(image._workingDir, expected_workingdir)
         self.assertEqual(
-            self.aci_policy.get_serialized_output(use_json=True),
+            self.aci_policy.get_serialized_output(),
             expected_sidecar_container_ser,
         )
 
@@ -312,7 +313,7 @@ class PolicyGeneratingDebugMode(unittest.TestCase):
             aci_policy.populate_policy_content_for_all_images()
             cls.aci_policy = aci_policy
 
-    def test_logging_enabled(self):
+    def test_debug_flags(self):
 
         policy = self.aci_policy.get_serialized_output(
             output_type=OutputType.RAW, rego_boilerplate=True
@@ -322,11 +323,17 @@ class PolicyGeneratingDebugMode(unittest.TestCase):
         expected_logging_string = "allow_runtime_logging := true"
         expected_properties_access = "allow_properties_access := true"
         expected_dump_stacks = "allow_dump_stacks := true"
+        expected_env_var_dropping = "allow_environment_variable_dropping := true"
+        expected_capability_dropping = "allow_capability_dropping := true"
+        expected_unencrypted_scratch = "allow_unencrypted_scratch := false"
 
         # make sure all these are included in the policy
         self.assertTrue(expected_logging_string in policy)
         self.assertTrue(expected_properties_access in policy)
         self.assertTrue(expected_dump_stacks in policy)
+        self.assertTrue(expected_env_var_dropping in policy)
+        self.assertTrue(expected_capability_dropping in policy)
+        self.assertTrue(expected_unencrypted_scratch in policy)
 
 
 # @unittest.skip("not in use")
@@ -400,12 +407,10 @@ class SidecarValidation(unittest.TestCase):
         self.assertTrue(
             json.loads(
                 self.aci_policy.get_serialized_output(
-                    use_json=True, output_type=OutputType.RAW
+                    output_type=OutputType.RAW, rego_boilerplate=False
                 )
-            )[config.POLICY_FIELD_CONTAINERS][config.POLICY_FIELD_CONTAINERS_ELEMENTS][
-                "0"
-            ][
-                config.POLICY_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS
+            )[0][
+            config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS
             ]
         )
 
@@ -568,6 +573,25 @@ class CustomJsonParsing(unittest.TestCase):
                 "sha256:83ac22b6cf50c51a1d11b3220316be73271e59d30a65f33f4391dc4cfabdc856",
             )
 
+    def test_infrastructure_svn(self):
+        custom_json = """
+        {
+            "version": "1.0",
+            "containers": [
+                {
+                    "containerImage": "rust:1.52.1",
+                    "environmentVariables": [],
+                    "command": ["echo", "hello"]
+                }
+            ]
+        }
+        """
+        with load_policy_from_str(custom_json) as aci_policy:
+            aci_policy.populate_policy_content_for_all_images()
+            output = aci_policy.get_serialized_output(OutputType.PRETTY_PRINT)
+
+            self.assertTrue('"0.2.3"' in output)
+
     def test_environment_variables_parsing(self):
         custom_json = """
         {
@@ -641,16 +665,15 @@ class CustomJsonParsing(unittest.TestCase):
         with load_policy_from_str(custom_json) as aci_policy:
             aci_policy.populate_policy_content_for_all_images()
             self.assertTrue(
-                json.loads(
-                    aci_policy.get_serialized_output(use_json=True, output_type=OutputType.RAW)
-                )[config.POLICY_FIELD_CONTAINERS][
-                    config.POLICY_FIELD_CONTAINERS_ELEMENTS
-                ][
-                    "0"
-                ][
-                    config.POLICY_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS
-                ]
-            )
+            json.loads(
+                aci_policy.get_serialized_output(
+                    output_type=OutputType.RAW, rego_boilerplate=False
+                    )
+            )[0][
+            config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS
+            ]
+        )
+
 
     def test_stdio_access_updated(self):
         custom_json = """
@@ -670,16 +693,15 @@ class CustomJsonParsing(unittest.TestCase):
             aci_policy.populate_policy_content_for_all_images()
 
             self.assertFalse(
-                json.loads(
-                    aci_policy.get_serialized_output(use_json=True, output_type=OutputType.RAW)
-                )[config.POLICY_FIELD_CONTAINERS][
-                    config.POLICY_FIELD_CONTAINERS_ELEMENTS
-                ][
-                    "0"
-                ][
-                    config.POLICY_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS
-                ]
-            )
+            json.loads(
+                aci_policy.get_serialized_output(
+                    output_type=OutputType.RAW, rego_boilerplate=False
+                )
+            )[0][
+            config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS
+            ]
+        )
+
 
 
 # @unittest.skip("not in use")
@@ -872,3 +894,5 @@ class CustomJsonParsingIncorrect(unittest.TestCase):
         with self.assertRaises(SystemExit) as exc_info:
             load_policy_from_str(custom_json)
         self.assertEqual(exc_info.exception.code, 1)
+
+

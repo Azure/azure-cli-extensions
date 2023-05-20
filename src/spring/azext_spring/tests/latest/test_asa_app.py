@@ -7,10 +7,14 @@ import os
 from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.util import CLIError
 from msrestazure.tools import resource_id
-from ...vendored_sdks.appplatform.v2023_01_01_preview import models
+from ...vendored_sdks.appplatform.v2023_03_01_preview import models
 from ..._utils import _get_sku_name
 from ...app import (app_create, app_update, app_deploy, deployment_create)
-from ...custom import (app_set_deployment, app_unset_deployment)
+from ...custom import (app_set_deployment, app_unset_deployment,
+                       deployment_enable_remote_debugging,
+                       deployment_disable_remote_debugging,
+                       deployment_get_remote_debugging,
+                       domain_update, domain_unbind)
 try:
     import unittest.mock as mock
 except ImportError:
@@ -110,6 +114,7 @@ class TestAppDeploy_Patch(BasicTest):
     def _get_basic_mock_client(self, sku='Standard'):
         client = super()._get_basic_mock_client(sku=sku)
         client.apps.get_resource_upload_url.return_value = self._get_upload_info()
+        client.deployments.get.return_value = self._get_deployment()
         return client
 
     def _get_upload_info(self):
@@ -229,6 +234,7 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
         client.build_service.create_or_update_build.return_value = self._get_build_resource()
         client.build_service.get_build_result.side_effect = [self._get_result_resource()]
         client.build_service.get_build_result_log.side_effect = ResourceNotFoundError('Log not found')
+        client.deployments.get.return_value = self._get_deployment()
         return client
 
     def _get_result_resource(self, status='Succeeded'):
@@ -365,6 +371,7 @@ class TestAppDeploy_Put(BasicTest):
     def _get_basic_mock_client(self, sku='Standard'):
         client = super()._get_basic_mock_client(sku=sku)
         client.apps.get_resource_upload_url.return_value = self._get_upload_info()
+        client.deployments.get.return_value = self._get_deployment()
         return client
 
     def _get_upload_info(self):
@@ -562,12 +569,52 @@ class TestAppUpdate(BasicTest):
         deployment.properties.source.net_core_main_entry_path = 'main-entry'
         with self.assertRaisesRegexp(CLIError, '--jvm-options cannot be set when --runtime-version is NetCore_31.'):
             self._execute('rg', 'asc', 'app', jvm_options='test-option', deployment=deployment)
+    
+    def test_vnet_public_endpoint(self):
+        deployment = self._get_deployment()
+
+        self._execute('rg', 'asc', 'app', assign_public_endpoint=True, deployment=deployment)
+        resource = self.patch_app_resource
+        self.assertTrue(resource.properties.vnet_addons.public_endpoint)
+
+        self._execute('rg', 'asc', 'app', deployment=deployment)
+        resource = self.patch_app_resource
+        self.assertIsNone(resource.properties.vnet_addons)
+   
+        self._execute('rg', 'asc', 'app', assign_public_endpoint=False, deployment=deployment)
+        resource = self.patch_app_resource
+        self.assertFalse(resource.properties.vnet_addons.public_endpoint)
+        
+    def test_client_auth(self):
+        deployment = self._get_deployment()
+        self._execute('rg', 'asc', 'app', client_auth_certs=['my-cert-id'], deployment=deployment)
+        resource = self.patch_app_resource
+        self.assertEqual(['my-cert-id'], resource.properties.ingress_settings.client_auth.certificates)
+
+    def test_app_i2a_tls(self):
+        deployment = self._get_deployment()
+
+        self._execute('rg', 'asc', 'app', enable_ingress_to_app_tls=True, deployment=deployment)
+        resource = self.patch_app_resource
+        self.assertTrue(resource.properties.enable_end_to_end_tls)
+
+        self._execute('rg', 'asc', 'app', deployment=deployment)
+        resource = self.patch_app_resource
+        self.assertIsNone(resource.properties.enable_end_to_end_tls)
+   
+        self._execute('rg', 'asc', 'app', enable_ingress_to_app_tls=False, deployment=deployment)
+        resource = self.patch_app_resource
+        self.assertFalse(resource.properties.enable_end_to_end_tls)    
+
+    def test_update_workload_profile(self):
+        self._execute('rg', 'asc', 'app', workload_profile='w2')
+        resource = self.patch_app_resource
+        self.assertEqual('w2', resource.properties.workload_profile_name)
 
 class TestAppCreate(BasicTest):
     def __init__(self, methodName: str = ...):
         super().__init__(methodName=methodName)
         self.put_app_resource = None
-        self.patch_app_resource = None
         self.put_deployment_resource = None
 
     def _get_basic_mock_client(self, sku='Standard'):
@@ -593,12 +640,6 @@ class TestAppCreate(BasicTest):
         self.assertEqual(5, len(call_args[0][0]))
         self.put_deployment_resource = call_args[0][0][4]
         self.put_deployment_resource.name = call_args[0][0][3]
-
-        call_args = client.apps.begin_update.call_args_list
-        self.assertEqual(1, len(call_args))
-        self.assertEqual(4, len(call_args[0][0]))
-        self.assertEqual(args[0:3], call_args[0][0][0:3])
-        self.patch_app_resource = call_args[0][0][3]
 
     def test_app_create_happy_path(self):
         self._execute('rg', 'asc', 'app', cpu='1', memory='1Gi', instance_count=1)
@@ -646,8 +687,6 @@ class TestAppCreate(BasicTest):
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True)
         resource = self.put_app_resource
         self.assertEqual(50, resource.properties.persistent_disk.size_in_gb)
-        resource = self.patch_app_resource
-        self.assertEqual(50, resource.properties.persistent_disk.size_in_gb)
 
     def test_app_with_persistent_storage_basic(self):
         client = self._get_basic_mock_client(sku='Basic')
@@ -659,15 +698,12 @@ class TestAppCreate(BasicTest):
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, assign_public_endpoint=True)
         resource = self.put_app_resource
         self.assertEqual(True, resource.properties.vnet_addons.public_endpoint)
-        resource = self.patch_app_resource
-        self.assertEqual(True, resource.properties.vnet_addons.public_endpoint)
         
     def test_app_with_ingress_settings(self):
         self._execute('rg', 'asc', 'app', instance_count=1, ingress_read_timeout=600, ingress_send_timeout=1200, session_affinity='Cookie', 
                       session_max_age=1000, backend_protocol='Default')
         resource = self.put_app_resource
         self.assertEqual(600, resource.properties.ingress_settings.read_timeout_in_seconds)
-        resource = self.patch_app_resource
         self.assertEqual(1200, resource.properties.ingress_settings.send_timeout_in_seconds)
         self.assertEqual("Cookie", resource.properties.ingress_settings.session_affinity)
         self.assertEqual(1000, resource.properties.ingress_settings.session_cookie_max_age)
@@ -679,17 +715,35 @@ class TestAppCreate(BasicTest):
         self.assertIsNotNone(resource.properties.ingress_settings.client_auth.certificates)
         self.assertEqual(0, len(resource.properties.ingress_settings.client_auth.certificates))
         self._execute('rg', 'asc', 'app', instance_count=1, client_auth_certs=['cert1', 'cert2'])
-        resource = self.patch_app_resource
+        resource = self.put_app_resource
         self.assertIsNotNone(resource.properties.ingress_settings.client_auth.certificates)
         self.assertEqual(2, len(resource.properties.ingress_settings.client_auth.certificates))
         self._execute('rg', 'asc', 'app', instance_count=1)
-        resource = self.patch_app_resource
+        resource = self.put_app_resource
         self.assertIsNone(resource.properties.ingress_settings)
 
     def test_app_create_with_deployment_name(self):
         self._execute('rg', 'asc', 'app', cpu='1', memory='1Gi', instance_count=1, deployment_name='hello')
         resource = self.put_deployment_resource
         self.assertEqual('hello', resource.name)
+
+    def test_create_vnet_public_endpoint(self):
+        self._execute('rg', 'asc', 'app', assign_public_endpoint=True, cpu='1', memory='1Gi', instance_count=1)
+        resource = self.put_app_resource
+        self.assertTrue(resource.properties.vnet_addons.public_endpoint)
+
+        self._execute('rg', 'asc', 'app', cpu='1', memory='1Gi', instance_count=1)
+        resource = self.put_app_resource
+        self.assertIsNone(resource.properties.vnet_addons)
+
+        self._execute('rg', 'asc', 'app', assign_public_endpoint=False, cpu='1', memory='1Gi', instance_count=1)
+        resource = self.put_app_resource
+        self.assertFalse(resource.properties.vnet_addons.public_endpoint)
+
+    def test_create_with_workload_profile(self):
+        self._execute('rg', 'asc', 'app', cpu='1', memory='1Gi', instance_count=1, workload_profile='w1')
+        resource = self.put_app_resource
+        self.assertEqual('w1', resource.properties.workload_profile_name)
 
 class TestDeploymentCreate(BasicTest):
     def __init__(self, methodName: str = ...):
@@ -786,3 +840,110 @@ class TestDeploymentCreate(BasicTest):
         resource = self.put_deployment_resource
         self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},\
                          resource.properties.deployment_settings.addon_configs)
+
+
+class RemoteDebugTest(BasicTest):
+    def __init__(self, methodName: str = ...):
+        super().__init__(methodName=methodName)
+
+    def test_enable(self):
+        client = self._get_basic_mock_client()
+        deployment = self._get_deployment()
+        deployment.name = 'my-deployment'
+        deployment_enable_remote_debugging(
+            _get_test_cmd(),
+            client,
+            'rg', 'asc', 'app', 123, deployment)
+        args = client.deployments.begin_enable_remote_debugging.call_args_list
+        self.assertEqual(1, len(args))
+        self.assertEqual(5, len(args[0][0]))
+        self.assertEqual(('rg', 'asc', 'app', 'my-deployment'), args[0][0][0:4])
+        resource = args[0][0][4]
+        self.assertEqual(123, resource.port)
+
+        client = self._get_basic_mock_client()
+        deployment = self._get_deployment()
+        deployment.name = 'my-deployment'
+        deployment_enable_remote_debugging(
+            _get_test_cmd(),
+            client,
+            'rg', 'asc', 'app', deployment=deployment)
+        args = client.deployments.begin_enable_remote_debugging.call_args_list
+        resource = args[0][0][4]
+        self.assertIsNone(resource.port)
+
+    def test_disable(self):
+        client = self._get_basic_mock_client()
+        deployment = self._get_deployment()
+        deployment.name = 'my-deployment'
+        deployment_disable_remote_debugging(
+            _get_test_cmd(),
+            client,
+            'rg', 'asc', 'app', deployment)
+        args = client.deployments.begin_disable_remote_debugging.call_args_list
+        self.assertEqual(1, len(args))
+        self.assertEqual(('rg', 'asc', 'app', 'my-deployment'), args[0][0])
+
+    def test_get(self):
+        client = self._get_basic_mock_client()
+        deployment = self._get_deployment()
+        deployment.name = 'my-deployment'
+        deployment_get_remote_debugging(
+            _get_test_cmd(),
+            client,
+            'rg', 'asc', 'app', deployment)
+        args = client.deployments.get_remote_debugging_config.call_args_list
+        self.assertEqual(1, len(args))
+        self.assertEqual(('rg', 'asc', 'app', 'my-deployment'), args[0][0])
+
+
+class CustomDomainTests(BasicTest):
+
+    def test_create_domain(self):
+        client = self._get_basic_mock_client()
+        domain_update(_get_test_cmd(), client,
+                      'rg', 'asc', 'app', 'my-domain')
+        args = client.custom_domains.begin_create_or_update.call_args_list
+        self.assertEqual(1, len(args))
+        self.assertEqual(5, len(args[0][0]))
+        self.assertEqual(('rg', 'asc', 'app', 'my-domain'), args[0][0][0:4])
+        resource = args[0][0][4]
+        self.assertIsNone(resource.properties.thumbprint)
+        self.assertIsNone(resource.properties.cert_name)
+        app_args = client.apps.begin_update.call_args_list
+        self.assertEqual(0, len(app_args))
+
+    def test_bind_cert(self):
+        def _get_cert(*_, **__):
+            resp = models.CertificateResource(
+                properties=models.CertificateProperties()
+            )
+            resp.properties.thumbprint = 'my-thumbprint'
+            return resp
+        client = self._get_basic_mock_client()
+        client.certificates.get = _get_cert
+        domain_update(_get_test_cmd(), client,
+                      'rg', 'asc', 'app', 'my-domain', 'my-cert')
+        args = client.custom_domains.begin_create_or_update.call_args_list
+        self.assertEqual(1, len(args))
+        self.assertEqual(5, len(args[0][0]))
+        self.assertEqual(('rg', 'asc', 'app', 'my-domain'), args[0][0][0:4])
+        resource = args[0][0][4]
+        self.assertEqual('my-thumbprint', resource.properties.thumbprint)
+        self.assertEqual('my-cert', resource.properties.cert_name)
+        app_args = client.apps.begin_update.call_args_list
+        self.assertEqual(0, len(app_args))
+
+    def test_create_domain_with_ingress(self):
+        client = self._get_basic_mock_client()
+        domain_update(_get_test_cmd(), client,
+                      'rg', 'asc', 'app', 'my-domain', enable_ingress_to_app_tls=True)
+        args = client.custom_domains.begin_create_or_update.call_args_list
+        self.assertEqual(1, len(args))
+        self.assertEqual(5, len(args[0][0]))
+        self.assertEqual(('rg', 'asc', 'app', 'my-domain'), args[0][0][0:4])
+        resource = args[0][0][4]
+        self.assertIsNone(resource.properties.thumbprint)
+        self.assertIsNone(resource.properties.cert_name)
+        app_args = client.apps.begin_update.call_args_list
+        self.assertEqual(1, len(app_args))

@@ -16,9 +16,11 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_ingress_timeout, validate_jar, validate_ingress_send_timeout,
                           validate_ingress_session_max_age, validate_config_server_ssh_or_warn,
                           validate_remote_debugging_port, validate_ingress_client_auth_certificates,
-                          validate_managed_environment)
+                          validate_managed_environment, validate_dataplane_public_endpoint)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
-                                     validate_builder_update, validate_build_pool_size,
+                                     validate_source_path, validate_artifact_path, validate_build_create,
+                                     validate_build_update, validate_container_registry, validate_central_build_instance,
+                                     validate_builder_update, validate_build_pool_size, validate_build_service,
                                      validate_git_uri, validate_acc_git_url, validate_acc_git_refs, validate_acs_patterns, validate_config_file_patterns,
                                      validate_routes, validate_gateway_instance_count, validate_git_interval,
                                      validate_api_portal_instance_count,
@@ -35,7 +37,7 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
-from .vendored_sdks.appplatform.v2023_01_01_preview.models._app_platform_management_client_enums import (SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
+from .vendored_sdks.appplatform.v2023_03_01_preview.models._app_platform_management_client_enums import (SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
 
 name_type = CLIArgumentType(options_list=[
@@ -46,7 +48,7 @@ build_env_type = CLIArgumentType(
     validator=validate_build_env, help="Space-separated environment variables in 'key[=value]' format.", nargs='*')
 service_name_type = CLIArgumentType(options_list=['--service', '-s'], help='The name of Azure Spring Apps instance, you can configure the default service using az configure --defaults spring=<name>.', configured_default='spring')
 app_name_type = CLIArgumentType(help='App name, you can configure the default app using az configure --defaults spring-cloud-app=<name>.', validator=validate_app_name, configured_default='spring-app')
-sku_type = CLIArgumentType(arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise', 'StandardGen2']), help='Name of SKU. Enterprise is still in Preview.')
+sku_type = CLIArgumentType(arg_type=get_enum_type(['Basic', 'Standard', 'Enterprise', 'StandardGen2']), help='Name of SKU.')
 source_path_type = CLIArgumentType(nargs='?', const='.',
                                    help="Deploy the specified source folder. The folder will be packed into tar, uploaded, and built using kpack. Default to the current folder if no value provided.",
                                    arg_group='Source Code deploy')
@@ -81,8 +83,15 @@ def load_arguments(self, _):
                    validator=validate_vnet, default="loadBalancer")
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
+                   validator=validate_dataplane_public_endpoint,
+                   deprecate_info=c.deprecate(target='--enable-log-stream-public-endpoint', redirect='--enable-dataplane-public-endpoint', hide=True),
                    options_list=['--enable-log-stream-public-endpoint', '--enable-lspa'],
                    help='If true, assign public endpoint for log streaming in vnet injection instance which could be accessed out of virtual network.')
+        c.argument('enable_dataplane_public_endpoint',
+                   arg_type=get_three_state_flag(),
+                   validator=validate_dataplane_public_endpoint,
+                   options_list=['--enable-dataplane-public-endpoint', '--enable-dppa'],
+                   help='If true, assign public endpoint for log streaming, remote debugging, app connect in vnet injection instance which could be accessed out of virtual network.')
         c.argument('enable_java_agent',
                    arg_group='Application Insights',
                    arg_type=get_three_state_flag(),
@@ -123,8 +132,23 @@ def load_arguments(self, _):
                    validator=validate_ingress_timeout)
         c.argument('build_pool_size',
                    arg_type=get_enum_type(['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9']),
+                   arg_group='Build Service',
                    validator=validate_build_pool_size,
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
+        c.argument('disable_build_service',
+                   arg_type=get_three_state_flag(),
+                   arg_group='Build Service',
+                   validator=validate_build_service,
+                   help='(Enterprise Tier Only) Disable build service.')
+        c.argument('registry_server',
+                   validator=validate_build_service,
+                   help='(Enterprise Tier Only) The container registry server used in build service.')
+        c.argument('registry_username',
+                   validator=validate_build_service,
+                   help='(Enterprise Tier Only) The container registry username used in build service.')
+        c.argument('registry_password',
+                   validator=validate_build_service,
+                   help='(Enterprise Tier Only) The container registry password used in build service.')
         c.argument('enable_application_configuration_service',
                    action='store_true',
                    options_list=['--enable-application-configuration-service', '--enable-acs'],
@@ -208,8 +232,15 @@ def load_arguments(self, _):
                    help='(Enterprise Tier Only) Size of build agent pool. See https://aka.ms/azure-spring-cloud-build-service-docs for size info.')
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
+                   validator=validate_dataplane_public_endpoint,
+                   deprecate_info=c.deprecate(target='--enable-log-stream-public-endpoint', redirect='--enable-dataplane-public-endpoint', hide=True),
                    options_list=['--enable-log-stream-public-endpoint', '--enable-lspa'],
                    help='If true, assign public endpoint for log streaming in vnet injection instance which could be accessed out of virtual network.')
+        c.argument('enable_dataplane_public_endpoint',
+                   arg_type=get_three_state_flag(),
+                   validator=validate_dataplane_public_endpoint,
+                   options_list=['--enable-dataplane-public-endpoint', '--enable-dppa'],
+                   help='If true, assign public endpoint for log streaming, remote debugging, app connect in vnet injection instance which could be accessed out of virtual network.')
 
     for scope in ['spring create', 'spring update']:
         with self.argument_context(scope) as c:
@@ -285,7 +316,7 @@ def load_arguments(self, _):
         c.argument('assign_public_endpoint',
                    arg_type=get_three_state_flag(),
                    help='If true, assign endpoint URL which could be accessed out of virtual network for vnet injection instance app.')
-        c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https', default=False)
+        c.argument('https_only', arg_type=get_three_state_flag(), help='If true, access app via https')
         c.argument('enable_ingress_to_app_tls', arg_type=get_three_state_flag(),
                    help='If true, enable ingress to app tls',
                    options_list=['--enable-ingress-to-app-tls', c.deprecate(target='--enable-end-to-end-tls', redirect='--enable-ingress-to-app-tls', hide=True)])
@@ -307,6 +338,7 @@ def load_arguments(self, _):
         c.argument('mount_path', type=str, help='The path for the persistent storage volume to be mounted.')
         c.argument('mount_options', nargs='+', help='[optional] The mount options for the persistent storage volume.', default=None)
         c.argument('read_only', arg_type=get_three_state_flag(), help='[optional] If true, the persistent storage volume will be read only.', default=False)
+        c.argument('enable_sub_path', arg_type=get_three_state_flag(), help='[optional] If true, will mount in separate subdirectories with the same path for each app instance .', default=False)
 
     for scope in ['spring app start', 'spring app stop', 'spring app restart', 'spring app deploy', 'spring app scale', 'spring app set-deployment', 'spring app show-deploy-log']:
         with self.argument_context(scope) as c:
@@ -417,6 +449,8 @@ def load_arguments(self, _):
                        help="A space-separated string containing resource ids of certificates for client authentication. e.g: --client_auth_certs='id0 id1'. Use '' to clear existing certificates.")
             c.argument('secrets', nargs='*', arg_group='StandardGen2',
                        help='A list of secret(s) for the app. Format "key[=value]" and separated by space.')
+            c.argument('workload_profile', arg_group='StandardGen2',
+                       help='The workload profile used in the managed environment. Default to "Consumption".')
 
     for scope in ['spring app update', 'spring app deployment create', 'spring app deploy', 'spring app create']:
         with self.argument_context(scope) as c:
@@ -668,6 +702,53 @@ def load_arguments(self, _):
                    arg_group='Application Insights',
                    help="Disable Application Insights.")
 
+    with self.argument_context('spring container-registry') as c:
+        c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    with self.argument_context('spring container-registry update') as c:
+        c.argument('name', help="The container registry name.", validator=validate_container_registry)
+        c.argument('server', help="The container registry sever.", validator=validate_container_registry)
+        c.argument('username', help="The container registry username.", validator=validate_container_registry)
+        c.argument('password', help="The container registry password.", validator=validate_container_registry)
+
+    with self.argument_context('spring container-registry show') as c:
+        c.argument('name', help="The container registry name.")
+
+    with self.argument_context('spring build-service build') as c:
+        c.argument('service', service_name_type, validator=validate_central_build_instance)
+
+    for scope in ['create', 'update']:
+        with self.argument_context('spring build-service build {}'.format(scope)) as c:
+            c.argument('build_env', build_env_type)
+            c.argument('source_path', arg_type=source_path_type, validator=validate_source_path)
+            c.argument('artifact_path', help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_artifact_path)
+            c.argument('disable_validation', arg_type=get_three_state_flag(), help='If true, disable jar validation.')
+
+    with self.argument_context('spring build-service build create') as c:
+        c.argument('name', help="The build name.", validator=validate_build_create)
+        c.argument('builder', help='The builder name used to build the executable.', default='default')
+        c.argument('build_cpu', arg_type=build_cpu_type, default="1")
+        c.argument('build_memory', arg_type=build_memory_type, default="2Gi")
+
+    with self.argument_context('spring build-service build update') as c:
+        c.argument('name', help="The build name.", validator=validate_build_update)
+        c.argument('builder', help='The builder name used to build the executable.', validator=validate_build_update)
+        c.argument('build_cpu', arg_type=build_cpu_type, validator=validate_build_update)
+        c.argument('build_memory', arg_type=build_memory_type, validator=validate_build_update)
+
+    with self.argument_context('spring build-service build delete') as c:
+        c.argument('name', help="The build name.")
+
+    with self.argument_context('spring build-service build show') as c:
+        c.argument('name', help="The build name.")
+
+    with self.argument_context('spring build-service build result') as c:
+        c.argument('service', service_name_type, validator=validate_central_build_instance)
+        c.argument('build_name', help="The build name of the result.")
+
+    with self.argument_context('spring build-service build result show') as c:
+        c.argument('name', help="The build result name.")
+
     with self.argument_context('spring build-service builder') as c:
         c.argument('service', service_name_type, validator=only_support_enterprise)
 
@@ -765,6 +846,11 @@ def load_arguments(self, _):
         c.argument('allow_credentials', arg_group='Cross-origin Resource Sharing (CORS)', arg_type=get_three_state_flag(),
                    help="Whether user credentials are supported on cross-site requests.")
         c.argument('exposed_headers', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of HTTP response headers to expose for cross-site requests.")
+        c.argument('enable_certificate_verification', arg_type=get_three_state_flag(),
+                   arg_group='Client Certificate Authentication',
+                   options_list=['--enable-certificate-verification', '--enable-cert-verify'],
+                   help='If true, will verify certificate in TLS connection from gateway to app.')
+        c.argument('certificate_names', arg_group='Client Certificate Authentication', help="Comma-separated list of certificate names in Azure Spring Apps.")
 
     for scope in ['spring gateway custom-domain',
                   'spring api-portal custom-domain']:
@@ -834,6 +920,7 @@ def load_arguments(self, _):
                   'spring application-accelerator customized-accelerator show',
                   'spring application-accelerator customized-accelerator create',
                   'spring application-accelerator customized-accelerator update',
+                  'spring application-accelerator customized-accelerator sync-cert',
                   'spring application-accelerator customized-accelerator delete']:
         with self.argument_context(scope) as c:
             c.argument('name', name_type, help='Name for customized accelerator.')
@@ -852,6 +939,7 @@ def load_arguments(self, _):
             c.argument('git_commit', type=str, help='Git repository commit to be used.', validator=validate_acc_git_refs)
             c.argument('git_tag', type=str, help='Git repository tag to be used.', validator=validate_acc_git_refs)
 
+            c.argument('ca_cert_name', help='CA certificate name.')
             c.argument('username', help='Username of git repository basic auth.')
             c.argument('password', help='Password of git repository basic auth.')
             c.argument('private_key', help='Private SSH Key algorithm of git repository.')

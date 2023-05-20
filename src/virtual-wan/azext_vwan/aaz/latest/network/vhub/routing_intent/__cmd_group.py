@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "network vhub routing-intent",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage routing intent in the virtual hub.

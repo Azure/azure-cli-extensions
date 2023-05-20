@@ -218,12 +218,19 @@ helps['aks create'] = """
               Using together with "azure" network plugin.
               Specify "azure" for Azure network policy manager and "calico" for calico network policy controller.
               Defaults to "" (network policy disabled).
+        - name: --network-dataplane
+          type: string
+          short-summary: The network dataplane to use.
+          long-summary: |
+              Network dataplane used in the Kubernetes cluster.
+              Specify "azure" to use the Azure dataplane (default) or "cilium" to enable Cilium dataplane.
         - name: --enable-cilium-dataplane
           type: bool
           short-summary: Use Cilium as the networking dataplane for the Kubernetes cluster.
           long-summary: |
               Used together with the "azure" network plugin.
               Requires either --pod-subnet-id or --network-plugin-mode=overlay.
+              This flag is deprecated in favor of --network-dataplane=cilium.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -301,7 +308,10 @@ helps['aks create'] = """
           long-summary: The restriction level of permissions allowed on the cluster's managed node resource group, supported values are Unrestricted, and ReadOnly (recommended ReadOnly).
         - name: --uptime-sla
           type: bool
-          short-summary: Enable a paid managed cluster service with a financially backed SLA.
+          short-summary: --uptime-sla is deprecated. Please use '--tier standard' instead.
+        - name: --tier
+          type: string
+          short-summary: Specify SKU tier for managed clusters. '--tier standard' enables a standard managed cluster service with a financially backed SLA. '--tier free' does not have a financially backed SLA.
         - name: --attach-acr
           type: string
           short-summary: Grant the 'acrpull' role assignment to the ACR specified by name or resource ID.
@@ -515,6 +525,27 @@ helps['aks create'] = """
         - name: --node-public-ip-tags
           type: string
           short-summary: The ipTags of the node public IPs.
+        - name: --enable-asm --enable-azure-service-mesh
+          type: bool
+          short-summary: Enable Azure Service Mesh.
+        - name: --enable-azuremonitormetrics
+          type: bool
+          short-summary: Enable Azure Monitor Metrics Profile
+        - name: --azure-monitor-workspace-resource-id
+          type: string
+          short-summary: Resource ID of the Azure Monitor Workspace
+        - name: --ksm-metric-labels-allow-list
+          type: string
+          short-summary: Comma-separated list of additional Kubernetes label keys that will be used in the resource' labels metric. By default the metric contains only name and namespace labels. To include additional labels provide a list of resource names in their plural form and Kubernetes label keys you would like to allow for them (e.g. '=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)'. A single '*' can be provided per resource instead to allow any labels, but that has severe performance implications (e.g. '=pods=[*]').
+        - name: --ksm-metric-annotations-allow-list
+          type: string
+          short-summary: Comma-separated list of additional Kubernetes label keys that will be used in the resource' labels metric. By default the metric contains only name and namespace labels. To include additional labels provide a list of resource names in their plural form and Kubernetes label keys you would like to allow for them (e.g.'=namespaces=[k8s-label-1,k8s-label-n,...],pods=[app],...)'. A single '*' can be provided per resource instead to allow any labels, but that has severe performance implications (e.g. '=pods=[*]').
+        - name: --grafana-resource-id
+          type: string
+          short-summary: Resource ID of the Azure Managed Grafana Workspace
+        - name: --enable-windows-recording-rules
+          type: bool
+          short-summary: Enable Windows Recording Rules when enabling the Azure Monitor Metrics addon
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -580,6 +611,10 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --network-plugin none
         - name: Create a kubernetes cluster with Custom CA Trust enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-custom-ca-trust
+        - name: Create a kubernetes cluster with Azure Service Mesh enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-service-mesh
+        - name: Create a kubernetes cluster with Azure Monitor Metrics enabled.
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azuremonitormetrics
 
 """.format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
 
@@ -641,10 +676,13 @@ helps['aks update'] = """
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000]
         - name: --uptime-sla
           type: bool
-          short-summary: Enable a paid managed cluster service with a financially backed SLA.
+          short-summary: Enable a standard managed cluster service with a financially backed SLA. --uptime-sla is deprecated. Please use '--tier standard' instead.
         - name: --no-uptime-sla
           type: bool
-          short-summary: Change a paid managed cluster to a free one.
+          short-summary: Change a standard managed cluster to a free one. --no-uptime-sla is deprecated. Please use '--tier free' instead.
+        - name: --tier
+          type: string
+          short-summary: Specify SKU tier for managed clusters. '--tier standard' enables a standard managed cluster service with a financially backed SLA. '--tier free' changes a standard managed cluster to a free one.
         - name: --load-balancer-managed-outbound-ip-count
           type: int
           short-summary: Load balancer managed outbound IP count.
@@ -730,6 +768,13 @@ helps['aks update'] = """
         - name: --node-os-upgrade-channel
           type: string
           short-summary: Manner in which the OS on your nodes is updated. It could be NodeImage, None, SecurityPatch or Unmanaged.
+        - name: --upgrade-settings
+          type: string
+          short-summary: A comma separated list of supported cluster upgrade settings. E.g., IgnoreKubernetesDeprecations.
+          long-summary: Allowed value is "IgnoreKubernetesDeprecations". If set as "", upgrade settings will be set to default and the existing overrides will no longer be effective.
+        - name: --upgrade-override-until
+          type: string
+          short-summary: Until when the cluster upgradeSettings overrides are effective. It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --upgrade-settings is set to IgnoreKubernetesDeprecations and --upgrade-override-until is not set, by default it will be set to 3 days from now.
         - name: --enable-managed-identity
           type: bool
           short-summary: Update current cluster to managed identity to manage cluster resource group.
@@ -763,6 +808,16 @@ helps['aks update'] = """
         - name: --enable-disk-driver
           type: bool
           short-summary: Enable AzureDisk CSI Driver.
+        - name: --pod-cidr
+          type: string
+          short-summary: A CIDR notation IP range from which to assign pod IPs when kubenet is used.
+          long-summary: This range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16.
+        - name: --network-plugin-mode
+          type: string
+          short-summary: The network plugin mode to use.
+          long-summary: |
+              Used to control the mode the network plugin should operate in. For example, "overlay" used with
+              --network-plugin=azure will use an overlay network (non-VNET IPs) for pods in the cluster.
         - name: --disk-driver-version
           type: string
           short-summary: Specify AzureDisk CSI Driver version.
@@ -912,7 +967,7 @@ helps['aks update'] = """
           short-summary: Enable Windows Recording Rules when enabling the Azure Monitor Metrics addon
         - name: --disable-azuremonitormetrics
           type: bool
-          short-summary: Disable Azure Monitor Metrics Profile
+          short-summary: Disable Azure Monitor Metrics Profile. This will delete all DCRA's associated with the cluster, any linked DCRs with the data stream = prometheus-stream and the recording rule groups created by the addon for this AKS cluster.
         - name: --enable-node-restriction
           type: bool
           short-summary: Enable node restriction option on cluster.
@@ -2394,4 +2449,50 @@ helps['aks draft update'] = """
         text: az aks draft update --destination=/projects/some_project
       - name: Update the application to be internet accessible with a host of the ingress resource and a Keyvault certificate in a specific project directory.
         text: az aks draft update --host=some_host --certificate=some_certificate --destination=/projects/some_project
+"""
+
+helps['aks mesh'] = """
+    type: group
+    short-summary: Commands to manage Azure Service Mesh.
+    long-summary: A group of commands to manage Azure Service Mesh in given cluster.
+"""
+
+helps['aks mesh enable'] = """
+    type: command
+    short-summary: Enable Azure Service Mesh.
+    long-summary: This command enables Azure Service Mesh in given cluster.
+"""
+
+helps['aks mesh disable'] = """
+    type: command
+    short-summary: Disable Azure Service Mesh.
+    long-summary: This command disables Azure Service Mesh in given cluster.
+"""
+
+helps['aks mesh enable-ingress-gateway'] = """
+    type: command
+    short-summary: Enable an Azure Service Mesh ingress gateway.
+    long-summary: This command enables an Azure Service Mesh ingress gateway in given cluster.
+    parameters:
+      - name: --ingress-gateway-type
+        type: string
+        short-summary: Specify the type of ingress gateway.
+        long-summary: Allowed values are "External" which is backed by a load balancer with an external IP address; "Internal" which is backed by a load balancer with an internal IP address.
+    examples:
+      - name: Enable an internal ingress gateway.
+        text: az aks mesh enable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
+"""
+
+helps['aks mesh disable-ingress-gateway'] = """
+    type: command
+    short-summary: Disable an Azure Service Mesh ingress gateway.
+    long-summary: This command disables an Azure Service Mesh ingress gateway in given cluster.
+    parameters:
+      - name: --ingress-gateway-type
+        type: string
+        short-summary: Specify the type of ingress gateway.
+        long-summary: Allowed values are "External" which is backed by a load balancer with an external IP address, "Internal" which is backed by a load balancer with an internal IP address.
+    examples:
+      - name: Disable an internal ingress gateway.
+        text: az aks mesh disable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
 """

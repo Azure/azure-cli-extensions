@@ -5,40 +5,44 @@
         ]
     },
     "exclude": {
-        "CBLMariner compatibility issue": [
-            "test_aks_nodepool_add_with_ossku",
-            "test_aks_create_with_ossku"
+        "crg, missing feature registration": [
+            "test_aks_create_with_crg_id"
         ],
-        "missing feature registration": [
+        "csi driver v2, missing feature registration": [
+            "test_aks_create_with_csi_driver_v2",
+            "test_aks_create_and_update_csi_driver_to_v2"
+        ],
+        "custom ca, missing feature registration": [
+            "test_aks_custom_ca_trust_flow"
+        ],
+        "gitops addon, missing feature registration": [
             "test_aks_create_with_gitops_addon",
             "test_aks_enable_addon_with_gitops",
-            "test_aks_disable_addon_gitops",
-            "test_aks_create_with_pod_identity_enabled",
-            "test_aks_create_using_azurecni_with_pod_identity_enabled",
-            "test_aks_pod_identity_usage",
-            "test_aks_nodepool_add_with_workload_runtime",
-            "test_aks_create_with_crg_id",
-            "test_aks_custom_ca_trust_flow",
-            "test_aks_create_with_csi_driver_v2",
-            "test_aks_create_and_update_csi_driver_to_v2",
-            "test_aks_nodepool_abort",
+            "test_aks_disable_addon_gitops"
+        ],
+        "gpu, no quota": [
+            "test_aks_nodepool_add_with_gpu_instance_profile"
+        ],
+        "overlay migration, missing toggle": [
+            "test_aks_azure_cni_overlay_migration"
+        ],
+        "service mesh, missing feature registration": [
+            "test_aks_azure_service_mesh_enable_disable",
+            "test_aks_azure_service_mesh_with_ingress_gateway"
+        ],
+        "slb to nat gateway": [
             "test_aks_update_outbound_from_slb_to_natgateway"
         ],
-        "missing namespace registration (AME)": [
-            "test_aks_update_with_azuremonitormetrics"
-        ],
-        "KMS (missing toggle)": [
-            "test_aks_create_with_azurekeyvaultkms_private_key_vault",
-            "test_aks_update_with_azurekeyvaultkms_private_key_vault",
-            "test_aks_create_with_azurekeyvaultkms_public_key_vault",
-            "test_aks_create_with_azurekeyvaultkms_private_cluster_v1_private_key_vault"
-        ],
-        "trusted access role (waiting GA)": [
+        "trusted access role, waiting GA": [
             "test_get_trustedaccess_roles",
             "test_aks_trustedaccess_rolebinding"
         ],
-        "no gpu quota": [
-            "test_aks_nodepool_add_with_gpu_instance_profile"
+        "v2 monitoring addon, missing namespace registration": [
+            "test_aks_create_with_azuremonitormetrics",
+            "test_aks_update_with_azuremonitormetrics"
+        ],
+        "workload runtime, missing feature registration": [
+            "test_aks_nodepool_add_with_workload_runtime"
         ]
     }
 }

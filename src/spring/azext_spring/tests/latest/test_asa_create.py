@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
-from ...vendored_sdks.appplatform.v2023_01_01_preview import models
+from ...vendored_sdks.appplatform.v2023_03_01_preview import models
 from ...spring_instance import (spring_create)
 from ..._utils import (_get_sku_name)
 try:
@@ -309,11 +309,11 @@ class TestSpringAppCreateWithIngressConfig(BasicTest):
 
 class TestSpringAppCreateWithLogStreamConfig(BasicTest):
     def test_asa_create_standard_with_log_stream_config(self):
-        self._execute('rg', 'asc', sku=self._get_sku('Standard'), enable_log_stream_public_endpoint=True, disable_app_insights=True)
+        self._execute('rg', 'asc', sku=self._get_sku('Standard'), enable_dataplane_public_endpoint=True, disable_app_insights=True)
         resource = self.created_resource
-        self.assertEqual(True, resource.properties.vnet_addons.log_stream_public_endpoint)
+        self.assertEqual(True, resource.properties.vnet_addons.data_plane_public_endpoint)
 
     def test_asa_create_enterprise_with_log_stream_config(self):
-        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), enable_log_stream_public_endpoint=True, disable_app_insights=True)
+        self._execute('rg', 'asc', sku=self._get_sku('Enterprise'), enable_dataplane_public_endpoint=True, disable_app_insights=True)
         resource = self.created_resource
-        self.assertEqual(True, resource.properties.vnet_addons.log_stream_public_endpoint)
+        self.assertEqual(True, resource.properties.vnet_addons.data_plane_public_endpoint)
