@@ -1924,13 +1924,12 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--dev-center "{devcenterName}" '
         )
 
-        # TODO: Restart not working, re-run test once fixed
-        # self.cmd(
-        #     "az devcenter dev dev-box restart "
-        #     '--name "{devBoxName}" '
-        #     '--project "{projectName}" '
-        #     '--dev-center "{devcenterName}" '
-        # )
+        self.cmd(
+            "az devcenter dev dev-box restart "
+            '--name "{devBoxName}" '
+            '--project "{projectName}" '
+            '--dev-center "{devcenterName}" '
+        )
 
         self.cmd(
             "az devcenter dev dev-box show "
@@ -2001,8 +2000,8 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
             '--action-name "{actionName}"',
             checks=[
                 self.check("name", "{actionName}"),
-                self.check("next.scheduledTime", "2023-05-13T04:00:00+00:00"),
-                self.check("suspendedUntil", "2023-05-13T04:00:00+00:00"),
+                self.check("next.scheduledTime", "2023-05-20T04:00:00+00:00"),
+                self.check("suspendedUntil", "2023-05-20T04:00:00+00:00"),
                 self.check(
                     "sourceId",
                     "/projects/{projectName}/pools/{poolName}/schedules/default",
@@ -2020,9 +2019,9 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                 self.check("[0].action.name", "{actionName}"),
                 self.check("[0].action.actionType", "Stop"),
                 self.check(
-                    "[0].action.next.scheduledTime", "2023-05-13T05:30:00+00:00"
+                    "[0].action.next.scheduledTime", "2023-05-20T05:30:00+00:00"
                 ),
-                self.check("[0].action.suspendedUntil", "2023-05-13T05:30:00+00:00"),
+                self.check("[0].action.suspendedUntil", "2023-05-20T05:30:00+00:00"),
                 self.check(
                     "[0].action.sourceId",
                     "/projects/{projectName}/pools/{poolName}/schedules/default",
@@ -2048,7 +2047,7 @@ class DevcenterDataPlaneScenarioTest(ScenarioTest):
                 self.check("length(@)", 1),
                 self.check("[0].name", "{actionName}"),
                 self.check("[0].actionType", "Stop"),
-                self.check("[0].next.scheduledTime", "2023-05-14T01:30:00+00:00"),
+                self.check("[0].next.scheduledTime", "2023-05-21T01:30:00+00:00"),
                 self.check(
                     "[0].sourceId",
                     "/projects/{projectName}/pools/{poolName}/schedules/default",
