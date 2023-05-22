@@ -21,7 +21,7 @@ from azure.cli.command_modules.acs._helpers import (
 from azure.cli.command_modules.acs._validators import (
     extract_comma_separated_string,
 )
-from azext_aks_preview.azuremonitorprofile import (
+from azext_aks_preview.azuremonitormetrics.azuremonitorprofile import (
     ensure_azure_monitor_profile_prerequisites
 )
 from azure.cli.command_modules.acs.managed_cluster_decorator import (
@@ -159,6 +159,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if self.__external_functions is None:
             external_functions = vars(super().external_functions)
             external_functions["get_cluster_snapshot_by_snapshot_id"] = get_cluster_snapshot_by_snapshot_id
+            external_functions[
+                "ensure_azure_monitor_profile_prerequisites"
+            ] = ensure_azure_monitor_profile_prerequisites
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
 
@@ -430,6 +433,91 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return load_balancer_managed_outbound_ip_count
 
+    def _get_pod_cidr_and_service_cidr_and_dns_service_ip_and_docker_bridge_address_and_network_policy(
+        self, enable_validation: bool = False
+    ) -> Tuple[
+        Union[str, None],
+        Union[str, None],
+        Union[str, None],
+        Union[str, None],
+        Union[str, None],
+    ]:
+        """Internal function to obtain the value of pod_cidr, service_cidr, dns_service_ip, docker_bridge_address and
+        network_policy.
+
+        Note: Overwritten in aks-preview to remove the deprecated property docker_bridge_cidr.
+
+        Note: SDK provides default value "10.244.0.0/16" and performs the following validation
+        {'pattern': r'^([0-9]{1,3}\\.){3}[0-9]{1,3}(\\/([0-9]|[1-2][0-9]|3[0-2]))?$'} for pod_cidr.
+        Note: SDK provides default value "10.0.0.0/16" and performs the following validation
+        {'pattern': r'^([0-9]{1,3}\\.){3}[0-9]{1,3}(\\/([0-9]|[1-2][0-9]|3[0-2]))?$'} for service_cidr.
+        Note: SDK provides default value "10.0.0.10" and performs the following validation
+        {'pattern': r'^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'}
+        for dns_service_ip.
+        Note: SDK provides default value "172.17.0.1/16" and performs the following validation
+        {'pattern': r'^([0-9]{1,3}\\.){3}[0-9]{1,3}(\\/([0-9]|[1-2][0-9]|3[0-2]))?$'} for docker_bridge_address.
+
+        This function supports the option of enable_validation. When enabled, if pod_cidr is assigned and the value of
+        network_plugin is azure, an InvalidArgumentValueError will be raised; otherwise, if any of pod_cidr,
+        service_cidr, dns_service_ip, docker_bridge_address or network_policy is assigned, a
+        RequiredArgumentMissingError will be raised.
+
+        :return: a tuple of five elements: pod_cidr of string type or None, service_cidr of string type or None,
+        dns_service_ip of string type or None, docker_bridge_address of string type or None, network_policy of
+        string type or None.
+        """
+        # get network profile from `mc`
+        network_profile = None
+        if self.mc:
+            network_profile = self.mc.network_profile
+
+        # pod_cidr
+        # read the original value passed by the command
+        pod_cidr = self.raw_param.get("pod_cidr")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        # pod_cidr is allowed to be updated so only read from mc object during creates
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if network_profile and network_profile.pod_cidr is not None:
+                pod_cidr = network_profile.pod_cidr
+
+        # service_cidr
+        # read the original value passed by the command
+        service_cidr = self.raw_param.get("service_cidr")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if network_profile and network_profile.service_cidr is not None:
+            service_cidr = network_profile.service_cidr
+
+        # dns_service_ip
+        # read the original value passed by the command
+        dns_service_ip = self.raw_param.get("dns_service_ip")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if network_profile and network_profile.dns_service_ip is not None:
+            dns_service_ip = network_profile.dns_service_ip
+
+        # network_policy
+        # read the original value passed by the command
+        network_policy = self.raw_param.get("network_policy")
+        # try to read the property value corresponding to the parameter from the `mc` object
+        if network_profile and network_profile.network_policy is not None:
+            network_policy = network_profile.network_policy
+
+        # these parameters do not need dynamic completion
+
+        # validation
+        if enable_validation:
+            network_plugin = self._get_network_plugin(enable_validation=False)
+            if not network_plugin:
+                if (
+                    pod_cidr or
+                    service_cidr or
+                    dns_service_ip or
+                    network_policy
+                ):
+                    raise RequiredArgumentMissingError(
+                        "Please explicitly specify the network plugin type"
+                    )
+        return pod_cidr, service_cidr, dns_service_ip, None, network_policy
+
     def _get_network_plugin(self, enable_validation: bool = False) -> Union[str, None]:
         """Internal function to obtain the value of network_plugin.
 
@@ -645,8 +733,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 )
 
         # try to read the property value corresponding to the parameter from the `mc` object
-        if self.mc and self.mc.network_profile and self.mc.network_profile.kube_proxy_config is not None:
-            kube_proxy_config = self.mc.network_profile.kube_proxy_config
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if self.mc and self.mc.network_profile and self.mc.network_profile.kube_proxy_config is not None:
+                kube_proxy_config = self.mc.network_profile.kube_proxy_config
 
         # this parameter does not need dynamic completion
         # this parameter does not need validation
@@ -2572,6 +2661,28 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc.node_resource_group_profile = node_resource_group_profile
         return mc
 
+    def set_up_azure_monitor_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Set up azure monitor profile for the ManagedCluster object.
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+        # read the original value passed by the command
+        ksm_metric_labels_allow_list = self.context.raw_param.get("ksm_metric_labels_allow_list")
+        ksm_metric_annotations_allow_list = self.context.raw_param.get("ksm_metric_annotations_allow_list")
+        if ksm_metric_labels_allow_list is None:
+            ksm_metric_labels_allow_list = ""
+        if ksm_metric_annotations_allow_list is None:
+            ksm_metric_annotations_allow_list = ""
+        if self.context.get_enable_azure_monitor_metrics():
+            if mc.azure_monitor_profile is None:
+                mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
+            mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=False)
+            mc.azure_monitor_profile.metrics.kube_state_metrics = self.models.ManagedClusterAzureMonitorProfileKubeStateMetrics(  # pylint:disable=line-too-long
+                metric_labels_allowlist=str(ksm_metric_labels_allow_list),
+                metric_annotations_allow_list=str(ksm_metric_annotations_allow_list))
+            self.context.set_intermediate("azuremonitormetrics_addon_enabled", True, overwrite_exists=True)
+        return mc
+
     def set_up_auto_upgrade_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up auto upgrade profile for the ManagedCluster object.
         :return: the ManagedCluster object
@@ -2674,10 +2785,164 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_guardrails_profile(mc)
         # set up azure service mesh profile
         mc = self.set_up_azure_service_mesh_profile(mc)
+        # set up azure monitor profile
+        mc = self.set_up_azure_monitor_profile(mc)
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
         return mc
+
+    def check_is_postprocessing_required(self, mc: ManagedCluster) -> bool:
+        """Helper function to check if postprocessing is required after sending a PUT request to create the cluster.
+
+        :return: bool
+        """
+        # some addons require post cluster creation role assigment
+        monitoring_addon_enabled = self.context.get_intermediate("monitoring_addon_enabled", default_value=False)
+        ingress_appgw_addon_enabled = self.context.get_intermediate("ingress_appgw_addon_enabled", default_value=False)
+        virtual_node_addon_enabled = self.context.get_intermediate("virtual_node_addon_enabled", default_value=False)
+        azuremonitormetrics_addon_enabled = self.context.get_intermediate(
+            "azuremonitormetrics_addon_enabled",
+            default_value=False
+        )
+        enable_managed_identity = self.context.get_enable_managed_identity()
+        attach_acr = self.context.get_attach_acr()
+        need_grant_vnet_permission_to_cluster_identity = self.context.get_intermediate(
+            "need_post_creation_vnet_permission_granting", default_value=False
+        )
+
+        if (
+            monitoring_addon_enabled or
+            ingress_appgw_addon_enabled or
+            virtual_node_addon_enabled or
+            azuremonitormetrics_addon_enabled or
+            (enable_managed_identity and attach_acr) or
+            need_grant_vnet_permission_to_cluster_identity
+        ):
+            return True
+        return False
+
+    # pylint: disable=unused-argument
+    def immediate_processing_after_request(self, mc: ManagedCluster) -> None:
+        """Immediate processing performed when the cluster has not finished creating after a PUT request to the cluster
+        has been sent.
+
+        :return: None
+        """
+        # vnet
+        need_grant_vnet_permission_to_cluster_identity = self.context.get_intermediate(
+            "need_post_creation_vnet_permission_granting", default_value=False
+        )
+        if need_grant_vnet_permission_to_cluster_identity:
+            # Grant vnet permission to system assigned identity RIGHT AFTER the cluster is put, this operation can
+            # reduce latency for the role assignment take effect
+            instant_cluster = self.client.get(self.context.get_resource_group_name(), self.context.get_name())
+            if not self.context.external_functions.add_role_assignment(
+                self.cmd,
+                "Network Contributor",
+                instant_cluster.identity.principal_id,
+                scope=self.context.get_vnet_subnet_id(),
+                is_service_principal=False,
+            ):
+                logger.warning(
+                    "Could not create a role assignment for subnet. Are you an Owner on this subscription?"
+                )
+
+    def postprocessing_after_mc_created(self, cluster: ManagedCluster) -> None:
+        """Postprocessing performed after the cluster is created.
+
+        :return: None
+        """
+        # monitoring addon
+        monitoring_addon_enabled = self.context.get_intermediate("monitoring_addon_enabled", default_value=False)
+        if monitoring_addon_enabled:
+            enable_msi_auth_for_monitoring = self.context.get_enable_msi_auth_for_monitoring()
+            if not enable_msi_auth_for_monitoring:
+                # add cluster spn/msi Monitoring Metrics Publisher role assignment to publish metrics to MDM
+                # mdm metrics is supported only in azure public cloud, so add the role assignment only in this cloud
+                cloud_name = self.cmd.cli_ctx.cloud.name
+                if cloud_name.lower() == "azurecloud":
+                    from msrestazure.tools import resource_id
+
+                    cluster_resource_id = resource_id(
+                        subscription=self.context.get_subscription_id(),
+                        resource_group=self.context.get_resource_group_name(),
+                        namespace="Microsoft.ContainerService",
+                        type="managedClusters",
+                        name=self.context.get_name(),
+                    )
+                    self.context.external_functions.add_monitoring_role_assignment(
+                        cluster, cluster_resource_id, self.cmd
+                    )
+            elif self.context.raw_param.get("enable_addons") is not None:
+                # Create the DCR Association here
+                addon_consts = self.context.get_addon_consts()
+                CONST_MONITORING_ADDON_NAME = addon_consts.get("CONST_MONITORING_ADDON_NAME")
+                self.context.external_functions.ensure_container_insights_for_monitoring(
+                    self.cmd,
+                    cluster.addon_profiles[CONST_MONITORING_ADDON_NAME],
+                    self.context.get_subscription_id(),
+                    self.context.get_resource_group_name(),
+                    self.context.get_name(),
+                    self.context.get_location(),
+                    remove_monitoring=False,
+                    aad_route=self.context.get_enable_msi_auth_for_monitoring(),
+                    create_dcr=False,
+                    create_dcra=True,
+                    enable_syslog=self.context.get_enable_syslog(),
+                )
+
+        # ingress appgw addon
+        ingress_appgw_addon_enabled = self.context.get_intermediate("ingress_appgw_addon_enabled", default_value=False)
+        if ingress_appgw_addon_enabled:
+            self.context.external_functions.add_ingress_appgw_addon_role_assignment(cluster, self.cmd)
+
+        # virtual node addon
+        virtual_node_addon_enabled = self.context.get_intermediate("virtual_node_addon_enabled", default_value=False)
+        if virtual_node_addon_enabled:
+            self.context.external_functions.add_virtual_node_role_assignment(
+                self.cmd, cluster, self.context.get_vnet_subnet_id()
+            )
+
+        # attach acr
+        enable_managed_identity = self.context.get_enable_managed_identity()
+        attach_acr = self.context.get_attach_acr()
+        if enable_managed_identity and attach_acr:
+            # Attach ACR to cluster enabled managed identity
+            if cluster.identity_profile is None or cluster.identity_profile["kubeletidentity"] is None:
+                logger.warning(
+                    "Your cluster is successfully created, but we failed to attach "
+                    "acr to it, you can manually grant permission to the identity "
+                    "named <ClUSTER_NAME>-agentpool in MC_ resource group to give "
+                    "it permission to pull from ACR."
+                )
+            else:
+                kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
+                self.context.external_functions.ensure_aks_acr(
+                    self.cmd,
+                    assignee=kubelet_identity_object_id,
+                    acr_name_or_id=attach_acr,
+                    subscription_id=self.context.get_subscription_id(),
+                    is_service_principal=False,
+                )
+
+        # azure monitor metrics addon (v2)
+        azuremonitormetrics_addon_enabled = self.context.get_intermediate(
+            "azuremonitormetrics_addon_enabled",
+            default_value=False
+        )
+        if azuremonitormetrics_addon_enabled:
+            # Create the DC* objects, AMW, recording rules and grafana link here
+            self.context.external_functions.ensure_azure_monitor_profile_prerequisites(
+                self.cmd,
+                self.context.get_subscription_id(),
+                self.context.get_resource_group_name(),
+                self.context.get_name(),
+                self.context.get_location(),
+                self.__raw_parameters,
+                self.context.get_disable_azure_monitor_metrics(),
+                True
+            )
 
 
 class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
@@ -2917,7 +3182,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 "Unexpectedly get an empty network profile in the process of updating kube-proxy config."
             )
 
-        mc.network_profile.kube_proxy_config = self.context.get_kube_proxy_config()
+        kube_proxy_config = self.context.get_kube_proxy_config()
+
+        if kube_proxy_config:
+            mc.network_profile.kube_proxy_config = kube_proxy_config
 
         return mc
 
@@ -3102,7 +3370,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if (self.context.raw_param.get("enable_azuremonitormetrics") or self.context.raw_param.get("disable_azuremonitormetrics")):
             ensure_azure_monitor_profile_prerequisites(
                 self.cmd,
-                self.client,
                 self.context.get_subscription_id(),
                 self.context.get_resource_group_name(),
                 self.context.get_name(),

@@ -648,6 +648,44 @@ class ContainerappDaprTests(ScenarioTest):
             ])
 
 
+class ContainerappServiceBindingTests(ScenarioTest):
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_dev_service_binding_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+        image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+        redis_ca_name = 'redis'
+        postgres_ca_name = 'postgres'
+
+        create_containerapp_env(self, env_name, resource_group)
+
+        self.cmd('containerapp service redis create -g {} -n {} --environment {}'.format(
+            resource_group, redis_ca_name, env_name))
+
+        self.cmd('containerapp service postgres create -g {} -n {} --environment {}'.format(
+            resource_group, postgres_ca_name, env_name))
+
+        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
+            resource_group, ca_name, env_name, image), checks=[
+            JMESPathCheck('properties.template.serviceBinds[0].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[1].name', "redis")
+        ])
+
+        self.cmd('containerapp update -g {} -n {} --unbind postgres_binding'.format(
+            resource_group, ca_name, image), checks=[
+            JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+        ])
+
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding'.format(
+            resource_group, ca_name, image), checks=[
+            JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+            JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding")
+        ])
+
+
 class ContainerappEnvStorageTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @live_only()  # Passes locally but fails in CI
@@ -1081,6 +1119,22 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
             JMESPathCheck("properties.template.scale.rules", None)
+        ])
+
+        # test update without environmentId
+        containerapp_yaml_text = f"""
+                            properties:
+                              template:
+                                revisionSuffix: myrevision3
+                            """
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+
+        self.cmd(f'containerapp update -n {app} -g {resource_group} --yaml {containerapp_file_name}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
+            JMESPathCheck("properties.template.revisionSuffix", "myrevision3")
         ])
         clean_up_test_file(containerapp_file_name)
 

@@ -1,5 +1,9 @@
 Release History
 ===============
+1.12.0 (WIP)
+---
+* Add new parameter `--workload-profile` for `az spring app create` and `az spring app update`.
+
 1.11.3
 ---
 * Fix `az spring create` command with `--container-registry-server`, `--container-registry-username` and `--container-registry-password`.

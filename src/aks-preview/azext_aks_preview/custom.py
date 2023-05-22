@@ -579,6 +579,13 @@ def aks_create(
     guardrails_excluded_ns=None,
     # azure service mesh
     enable_azure_service_mesh=None,
+    # azure monitor profile
+    enable_azuremonitormetrics=False,
+    azure_monitor_workspace_resource_id=None,
+    ksm_metric_labels_allow_list=None,
+    ksm_metric_annotations_allow_list=None,
+    grafana_resource_id=None,
+    enable_windows_recording_rules=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -612,6 +619,7 @@ def aks_create(
     except DecoratorEarlyExitException:
         # exit gracefully
         return None
+
     # send request to create a real managed cluster
     return aks_create_decorator.create_mc(mc)
 
