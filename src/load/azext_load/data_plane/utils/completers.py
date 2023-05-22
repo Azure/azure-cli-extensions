@@ -2,7 +2,9 @@ from azext_load.data_plane.utils.utils import (
     get_admin_data_plane_client,
     get_testrun_data_plane_client,
 )
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.parameters import Completer
+from azure.cli.core.profiles import ResourceType
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -42,8 +44,27 @@ def get_test_run_id_completion_list():
         client = get_testrun_data_plane_client(
             cmd, load_test_resource, resource_group_name
         )
-        test_run_ids = [test_run.get("testRunId") for test_run in client.list_test_runs(test_id=test_id) if "testRunId" in test_run]
+        test_run_ids = [
+            test_run.get("testRunId")
+            for test_run in client.list_test_runs(test_id=test_id)
+            if "testRunId" in test_run
+        ]
         logger.debug("Test Run IDs list in Test Run ID completer: %s", test_run_ids)
         return test_run_ids
+
+    return completer
+
+
+def get_subnet_resource_id_completion_list():
+    @Completer
+    def completer(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
+        client = get_mgmt_service_client(
+            cmd.cli_ctx, ResourceType.MGMT_NETWORK, api_version="2015-06-15"
+        )
+
+        vnets = client.virtual_networks.list_all()
+        subnet_ids = [subnet.id for vnet in vnets for subnet in vnet.subnets]
+        logger.debug("Subnet IDs list in Subnet ID completer: %s", subnet_ids)
+        return subnet_ids
 
     return completer

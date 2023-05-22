@@ -5,10 +5,10 @@ from azext_load.data_plane.utils.utils import (
     create_or_update_body,
     download_file,
     get_admin_data_plane_client,
-    upload_test_plan,
     upload_configuration_files,
+    upload_test_plan,
 )
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -30,7 +30,7 @@ def create_test(
     certificate=None,
     key_vault_reference_identity=None,
     subnet_id=None,
-    no_wait=False,
+    wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = {}
@@ -51,7 +51,7 @@ def create_test(
     for test in list_of_tests:
         if test_id == test.get("testId"):
             logger.debug("Test with given test ID : %s already exists.", test_id)
-            raise ValidationError(
+            raise InvalidArgumentValueError(
                 f"Test with given test ID : {test_id} already exists."
             )
     logger.info("Creating test with test ID: %s and body : %s", test_id, body)
@@ -66,11 +66,11 @@ def create_test(
     )
 
     if test_plan is not None:
-        upload_test_plan(client, test_id, test_plan, no_wait)
+        upload_test_plan(client, test_id, test_plan, wait)
 
     if configuration_files is not None:
         upload_configuration_files(client, test_id, configuration_files)
-                    
+
     return response_obj
 
 
@@ -90,7 +90,7 @@ def update_test(
     certificate=None,
     key_vault_reference_identity=None,
     subnet_id=None,
-    no_wait=False,
+    wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = client.get_test(test_id)
@@ -119,7 +119,7 @@ def update_test(
         "Updated test with test ID: %s and response obj is %s", test_id, response_obj
     )
     if test_plan is not None:
-        upload_test_plan(client, test_id, test_plan, no_wait)
+        upload_test_plan(client, test_id, test_plan, wait)
 
     if configuration_files is not None:
         upload_configuration_files(client, test_id, configuration_files)
@@ -164,8 +164,15 @@ def download_test_files(
         for file_detail in list_of_file_details:
             file_path = os.path.join(path, file_detail["fileName"])
             download_file(file_detail["url"], file_path)
-            logger.info("Downloaded '%s' file for test with test ID: %s at %s", file_detail["url"], test_id, file_path)
-        logger.warning("Downloaded files for test with test ID: %s at %s", test_id, path)
+            logger.info(
+                "Downloaded '%s' file for test with test ID: %s at %s",
+                file_detail["url"],
+                test_id,
+                file_path,
+            )
+        logger.warning(
+            "Downloaded files for test with test ID: %s at %s", test_id, path
+        )
         # return f"Files belonging to test {test_id} are downloaded in {path} location."
     else:
         logger.warning("No files found for test with test ID: %s", test_id)
@@ -286,6 +293,7 @@ def remove_test_server_metrics(
     logger.debug("Removing server metrics from the test... %s", body)
     return client.create_or_update_server_metrics_config(test_id=test_id, body=body)
 
+
 def upload_test_file(
     cmd,
     load_test_resource,
@@ -316,6 +324,7 @@ def upload_test_file(
                 logger.warning("Invalid status for Test plan validation")
             logger.debug("Upload result for file: %s", response)
 
+
 def list_test_file(
     cmd,
     load_test_resource,
@@ -325,6 +334,7 @@ def list_test_file(
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.debug("Listing files for the test...")
     return client.list_test_files(test_id)
+
 
 def download_test_file(
     cmd,
@@ -348,13 +358,21 @@ def download_test_file(
             if file_detail.get("fileName") == file_name:
                 file_path = os.path.join(path, file_detail.get("fileName"))
                 download_file(file_detail.get("url"), file_path)
-                logger.info("Downloaded '%s' file for test with test ID: %s at %s", file_detail.get("url"), test_id, file_path)
+                logger.info(
+                    "Downloaded '%s' file for test with test ID: %s at %s",
+                    file_detail.get("url"),
+                    test_id,
+                    file_path,
+                )
                 is_downloaded = True
                 break
-        logger.warning("Downloaded files for test with test ID: %s at %s", test_id, path)
+        logger.warning(
+            "Downloaded files for test with test ID: %s at %s", test_id, path
+        )
         # return f"Files belonging to test {test_id} are downloaded in {path} location."
     if not is_downloaded:
         logger.warning("No files found for test with test ID: %s", test_id)
+
 
 def delete_test_file(
     cmd,

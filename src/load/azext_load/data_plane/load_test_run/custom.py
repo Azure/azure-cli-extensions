@@ -1,13 +1,12 @@
+import os
+
+import requests
 from azext_load.data_plane.utils.utils import (
     create_or_update_test_run_body,
     download_file,
-    get_admin_data_plane_client,
-    get_test_run_id,
     get_testrun_data_plane_client,
 )
-from azure.cli.core.azclierror import ValidationError
 from knack.log import get_logger
-import os, requests
 
 logger = get_logger(__name__)
 
@@ -15,6 +14,7 @@ logger = get_logger(__name__)
 def create_test_run(
     cmd,
     load_test_resource,
+    test_run_id,
     test_id,
     display_name=None,
     existing_test_id=None,
@@ -23,7 +23,7 @@ def create_test_run(
     secrets=None,
     certificate=None,
     resource_group_name=None,
-    no_wait=False,
+    wait=False,
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     test_run_body = create_or_update_test_run_body(
@@ -36,12 +36,12 @@ def create_test_run(
     )
     logger.info("Creating test run with following request %s", test_run_body)
     poller = client.begin_test_run(
-        test_run_id=get_test_run_id(),
+        test_run_id=test_run_id,
         body=test_run_body,
         old_test_run_id=existing_test_id,
     )
-    response = poller.polling_method()._initial_response
-    if not no_wait:
+    response = poller.polling_method().resource()
+    if wait:
         response = poller.result()
     logger.info("Test run created with following response %s", response)
     return response
@@ -309,11 +309,13 @@ def list_test_run_metrics(
     cmd,
     load_test_resource,
     test_run_id,
-    metric_name,
     metric_namespace,
+    metric_name=None,
     start_time=None,
     end_time=None,
     interval=None,
+    aggregation=None,
+    dimension_filters=None,
     resource_group_name=None,
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
@@ -325,19 +327,79 @@ def list_test_run_metrics(
         if end_time is None:
             end_time = test_run_response["endDateTime"]
 
-    metrics = client.list_metrics(
-        test_run_id,
-        metric_name=metric_name,
-        metric_namespace=metric_namespace,
-        time_interval="{start}/{end}".format(
-            start=start_time,
-            end=end_time,
-        ),
-        interval=interval,
+    time_interval = "{start}/{end}".format(
+        start=start_time,
+        end=end_time,
     )
 
-    response = [metric for metric in metrics]
-    return response
+    if metric_name is not None:
+        if dimension_filters is None:
+            dimension_filters = []
+        elif any(
+            dimension_filter.get("name") == "*"
+            for dimension_filter in dimension_filters
+        ):
+            # Add all values for all dimensions if '*' present in dimension names
+            metric_definitions = client.get_metric_definitions(
+                test_run_id, metric_namespace=metric_namespace
+            )
+            for metric_definition in metric_definitions.get("value", []):
+                if metric_definition.get("name") == metric_name:
+                    dimension_filters = [
+                        {"name": metric_dimension.get("name"), "values": "*"}
+                        for metric_dimension in metric_definition.get("dimensions", [])
+                    ]
+                    break
+
+        for dimension_filter in dimension_filters:
+            # Add all values for given dimensions if '*' present in dimension values
+            if "*" in dimension_filter.get("values", []):
+                metric_dimensions = client.list_metric_dimension_values(
+                    test_run_id,
+                    name=dimension_filter["name"],
+                    metric_name=metric_name,
+                    metric_namespace=metric_namespace,
+                    interval=interval,
+                    time_interval=time_interval,
+                )
+                dimension_filter["values"] = [
+                    dimension for dimension in metric_dimensions
+                ]
+
+        metrics = client.list_metrics(
+            test_run_id,
+            metric_name=metric_name,
+            metric_namespace=metric_namespace,
+            time_interval=time_interval,
+            aggregation=aggregation,
+            interval=interval,
+            body={
+                "filters": dimension_filters,
+            },
+        )
+        response = [metric for metric in metrics]
+        return response
+
+    # metric_name is None, so list metrics for all metric names
+    metric_definitions = client.get_metric_definitions(
+        test_run_id, metric_namespace=metric_namespace
+    )
+    aggregated_metrics = {}
+    for metric_definition in metric_definitions.get("value", []):
+        metric_name = metric_definition.get("name")
+        if metric_name is None:
+            pass
+        metrics = client.list_metrics(
+            test_run_id,
+            metric_name=metric_name,
+            metric_namespace=metric_namespace,
+            time_interval=time_interval,
+            aggregation=aggregation,
+            interval=interval,
+        )
+        response = [metric for metric in metrics]
+        aggregated_metrics[metric_name] = response
+    return aggregated_metrics
 
 
 def get_test_run_metric_definitions(
