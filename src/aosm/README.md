@@ -53,6 +53,26 @@ For VNFs, you will need a single ARM template which would create the Azure resou
 for your VNF, for example a Virtual Machine, disks and NICs. You'll also need a VHD
 image that would be used for the VNF Virtual Machine.
 
+#### CNFs
+
+For CNFs, you must provide helm packages with an associated schema. When filling in the input.json file, you must list helm packages in the order they are to be deployed. For example, if A must be deployed before B, your input.json should look something like this:
+
+    "helm_packages": [
+        {
+            "name": "A",
+            "path_to_chart": "Path to package A",
+            "depends_on": [
+                "Names of the Helm packages this package depends on"
+            ]
+        },
+        {
+            "name": "B",
+            "path_to_chart": "Path to package B",
+            "depends_on": [
+                "Names of the Helm packages this package depends on"
+            ]
+        },
+
 ### Command examples
 
 Get help on command arguments
@@ -66,7 +86,7 @@ All these commands take a `--definition-type` argument of `vnf`, `cnf` or `nsd`
 
 Create an example config file for building a definition
 
-`az aosm definition generate-config --config-file input.json`
+`az aosm definition generate-config`
 
 This will output a file called `input.json` which must be filled in. 
 Once the config file has been filled in the following commands can be run.
@@ -90,3 +110,5 @@ Delete a published definition
 Delete a published definition and the publisher, artifact stores and NFD group
 
 `az aosm definition delete --config-file input.json --clean`
+
+
