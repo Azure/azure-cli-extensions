@@ -3,7 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import errno, uuid
+import errno
+import uuid
 
 import requests
 import yaml
@@ -16,7 +17,7 @@ from msrestazure.tools import is_valid_resource_id, parse_resource_id
 logger = get_logger(__name__)
 
 
-def upload_test_plan(client, test_id, test_plan, no_wait):
+def upload_test_plan(client, test_id, test_plan, wait):
     logger.info("Uploading test plan for the test")
     with open(test_plan, "r") as file:
         upload_poller = client.begin_upload_test_file(
@@ -24,7 +25,7 @@ def upload_test_plan(client, test_id, test_plan, no_wait):
             file_name=file.name.split("\\")[-1],
             body=file,
         )
-        if not no_wait:
+        if wait:
             response = upload_poller.result()
             if response.get("validationStatus") == "VALIDATION_SUCCESS":
                 logger.info("Uploaded test plan for the test")
@@ -283,11 +284,27 @@ def create_or_update_body(
                         name = list(items.keys())[0]
                         components = list(items.values())[0]
                         new_body["passFailCriteria"]["passFailMetrics"][id] = {}
-                        new_body["passFailCriteria"]["passFailMetrics"][id]["aggregate"] = components.split("(")[0].strip()
-                        new_body["passFailCriteria"]["passFailMetrics"][id]["clientMetric"] = components.split("(")[1].split(")")[0].strip()
-                        new_body["passFailCriteria"]["passFailMetrics"][id]["condition"] = components.split(")")[1].strip()[0]
-                        new_body["passFailCriteria"]["passFailMetrics"][id]["value"] = components.split(new_body["passFailCriteria"]["passFailMetrics"][id]["condition"])[1].strip()
-                        new_body["passFailCriteria"]["passFailMetrics"][id]["requestName"] = name
+                        new_body["passFailCriteria"]["passFailMetrics"][id][
+                            "aggregate"
+                        ] = components.split("(")[0].strip()
+                        new_body["passFailCriteria"]["passFailMetrics"][id][
+                            "clientMetric"
+                        ] = (components.split("(")[1].split(")")[0].strip())
+                        new_body["passFailCriteria"]["passFailMetrics"][id][
+                            "condition"
+                        ] = components.split(")")[1].strip()[0]
+                        new_body["passFailCriteria"]["passFailMetrics"][id][
+                            "value"
+                        ] = components.split(
+                            new_body["passFailCriteria"]["passFailMetrics"][id][
+                                "condition"
+                            ]
+                        )[
+                            1
+                        ].strip()
+                        new_body["passFailCriteria"]["passFailMetrics"][id][
+                            "requestName"
+                        ] = name
         except (IOError, OSError) as ex:
             if getattr(ex, "errno", 0) == errno.ENOENT:
                 raise ValidationError(f"{load_test_config_file} does not exist") from ex
@@ -360,9 +377,7 @@ def create_or_update_test_run_body(
     secrets=None,
     certificate=None,
 ):
-    new_body = {
-        "testId": test_id
-    }
+    new_body = {"testId": test_id}
     if display_name is not None:
         new_body["displayName"] = display_name
     if description is not None:

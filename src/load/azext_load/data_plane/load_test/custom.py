@@ -30,7 +30,7 @@ def create_test(
     certificate=None,
     key_vault_reference_identity=None,
     subnet_id=None,
-    no_wait=False,
+    wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = {}
@@ -66,7 +66,7 @@ def create_test(
     )
 
     if test_plan is not None:
-        upload_test_plan(client, test_id, test_plan, no_wait)
+        upload_test_plan(client, test_id, test_plan, wait)
 
     if configuration_files is not None:
         upload_configuration_files(client, test_id, configuration_files)
@@ -90,7 +90,7 @@ def update_test(
     certificate=None,
     key_vault_reference_identity=None,
     subnet_id=None,
-    no_wait=False,
+    wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = client.get_test(test_id)
@@ -119,7 +119,7 @@ def update_test(
         "Updated test with test ID: %s and response obj is %s", test_id, response_obj
     )
     if test_plan is not None:
-        upload_test_plan(client, test_id, test_plan, no_wait)
+        upload_test_plan(client, test_id, test_plan, wait)
 
     if configuration_files is not None:
         upload_configuration_files(client, test_id, configuration_files)

@@ -1,9 +1,9 @@
-from azext_load.data_plane.utils import validators, completers
+from azext_load.data_plane.utils import completers, validators
 from azure.cli.core.commands.parameters import (
+    get_generic_completion_list,
     get_resource_name_completion_list,
     quotes,
     resource_group_name_type,
-    get_generic_completion_list
 )
 from knack.arguments import CLIArgumentType
 
@@ -18,6 +18,13 @@ load_test_resource = CLIArgumentType(
     required=True,
     completer=get_resource_name_completion_list("Microsoft.LoadTestService/LoadTests"),
     help="Name or ARM resource ID of the load test resource.",
+)
+
+wait = CLIArgumentType(
+    options_list=["--wait"],
+    action="store_true",
+    default=False,
+    help="Wait for the Long-Running Operation to complete.",
 )
 #
 
@@ -103,6 +110,7 @@ test_plan = CLIArgumentType(
 
 env = CLIArgumentType(
     validator=validators.validate_env_vars,
+    options_list=["--env"],
     nargs="*",
     help="space-separated environment variables: key[=value] [key[=value] ...]. {}".format(
         quote_text.format("environment variables")
@@ -111,6 +119,7 @@ env = CLIArgumentType(
 
 secret = CLIArgumentType(
     validator=validators.validate_secrets,
+    options_list=["--secret"],
     nargs="*",
     help="space-separated secrets: key[=value] [key[=value] ...]. {}".format(
         quote_text.format("secrets")
@@ -119,6 +128,7 @@ secret = CLIArgumentType(
 
 certificate = CLIArgumentType(
     validator=validators.validate_certificate,
+    options_list=["--certificate"],
     nargs="?",
     help="a single certificate in 'key[=value]' format. {}".format(
         quote_text.format("certificate")
@@ -211,7 +221,10 @@ metric_name = CLIArgumentType(
 )
 
 metric_namespace = CLIArgumentType(
+    validator=validators.validate_metric_namespaces,
+    completer=get_generic_completion_list(validators.allowed_metric_namespaces),
     options_list=["--metric-namespace"],
+    required=True,
     type=str,
     help="Namespace of the metric.",
 )
@@ -242,4 +255,17 @@ interval = CLIArgumentType(
     options_list=["--interval"],
     type=str,
     help=f"ISO 8601 formatted interval. Allowed values: {', '.join(validators.allowed_intervals)}",
+)
+
+aggregation = CLIArgumentType(
+    options_list=["--aggregation"],
+    type=str,
+    help="Operation used to aggregate the metrics",
+)
+
+dimension_filters = CLIArgumentType(
+    validator=validators.validate_dimension_filters,
+    options_list=["--dimension-filters"],
+    nargs="*",
+    help="space and comma-separated dimension filters: key1[=value1,value2] [key2[=value3] ...]",
 )

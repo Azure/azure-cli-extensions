@@ -54,6 +54,7 @@ def get_test_run_id_completion_list():
 
     return completer
 
+
 def get_subnet_resource_id_completion_list():
     @Completer
     def completer(cmd, prefix, namespace, **kwargs):  # pylint: disable=unused-argument
@@ -61,11 +62,7 @@ def get_subnet_resource_id_completion_list():
             cmd.cli_ctx, ResourceType.MGMT_NETWORK, api_version="2015-06-15"
         )
 
-        rg = getattr(namespace, "resource_group_name", None)
-        if rg:
-            vnets = client.virtual_networks.list(rg)
-        else:
-            vnets = client.virtual_networks.list_all()
+        vnets = client.virtual_networks.list_all()
         subnet_ids = [subnet.id for vnet in vnets for subnet in vnet.subnets]
         logger.debug("Subnet IDs list in Subnet ID completer: %s", subnet_ids)
         return subnet_ids

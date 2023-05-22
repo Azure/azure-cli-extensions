@@ -1,17 +1,20 @@
 import os
 import re
+from collections import OrderedDict
 from datetime import datetime
 
-from msrestazure.tools import is_valid_resource_id
-from azure.cli.core.util import CLIError
 from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.util import CLIError
+from msrestazure.tools import is_valid_resource_id
 
 from . import utils
 
 
 def validate_test_id(namespace):
     if not isinstance(namespace.test_id, str):
-        raise InvalidArgumentValueError(f"Invalid test-id type: {type(namespace.test_id)}")
+        raise InvalidArgumentValueError(
+            f"Invalid test-id type: {type(namespace.test_id)}"
+        )
     if not re.match("^[a-z0-9_-]*$", namespace.test_id):
         raise InvalidArgumentValueError("Invalid test-id value")
 
@@ -20,7 +23,9 @@ def validate_test_run_id(namespace):
     if namespace.test_run_id is None:
         namespace.test_run_id = utils.get_random_uuid()
     if not isinstance(namespace.test_run_id, str):
-        raise InvalidArgumentValueError(f"Invalid test-run-id type: {type(namespace.test_run_id)}")
+        raise InvalidArgumentValueError(
+            f"Invalid test-run-id type: {type(namespace.test_run_id)}"
+        )
     if not re.match("^[a-z0-9_-]*$", namespace.test_run_id):
         raise InvalidArgumentValueError("Invalid test-run-id value")
 
@@ -100,7 +105,9 @@ def validate_subnet_id(namespace):
     if namespace.subnet_id is None:
         return
     if not is_valid_resource_id(namespace.subnet_id):
-        raise InvalidArgumentValueError(f"{namespace.subnet_id} is not a valid Azure resource ID.")
+        raise InvalidArgumentValueError(
+            f"{namespace.subnet_id} is not a valid Azure resource ID."
+        )
 
 
 def validate_app_component_id(namespace):
@@ -124,7 +131,9 @@ def validate_app_component_type(namespace):
 
 def validate_metric_id(namespace):
     if not isinstance(namespace.metric_id, str):
-        raise InvalidArgumentValueError(f"Invalid metric-id type: {type(namespace.metric_id)}")
+        raise InvalidArgumentValueError(
+            f"Invalid metric-id type: {type(namespace.metric_id)}"
+        )
     if not is_valid_resource_id(namespace.metric_id):
         raise InvalidArgumentValueError(
             f"metric-id is not a valid Azure Resource ID: {namespace.metric_id}"
@@ -139,11 +148,17 @@ def validate_path(namespace):
     if not isinstance(namespace.path, str):
         raise InvalidArgumentValueError(f"Invalid path type: {type(namespace.path)}")
     if not os.path.exists(namespace.path):
-        raise InvalidArgumentValueError(f"Provided path '{namespace.path}' does not exist")
+        raise InvalidArgumentValueError(
+            f"Provided path '{namespace.path}' does not exist"
+        )
     if not os.path.isdir(namespace.path):
-        raise InvalidArgumentValueError(f"Provided path '{namespace.path}' is not a directory")
+        raise InvalidArgumentValueError(
+            f"Provided path '{namespace.path}' is not a directory"
+        )
     if not os.access(namespace.path, os.W_OK | os.X_OK):
-        raise InvalidArgumentValueError(f"Provided path '{namespace.path}' is not writable")
+        raise InvalidArgumentValueError(
+            f"Provided path '{namespace.path}' is not writable"
+        )
 
 
 def validate_start_iso_time(namespace):
@@ -169,7 +184,9 @@ def _validate_iso_time(string):
         return
     except CLIError:
         pass
-    raise InvalidArgumentValueError(f"Invalid time format: '{string}'. Expected ISO 8601 format.")
+    raise InvalidArgumentValueError(
+        f"Invalid time format: '{string}'. Expected ISO 8601 format."
+    )
 
 
 allowed_intervals = ["PT10S", "PT1H", "PT1M", "PT5M", "PT5S"]
@@ -179,8 +196,50 @@ def validate_interval(namespace):
     if namespace.interval is None:
         return
     if not isinstance(namespace.interval, str):
-        raise InvalidArgumentValueError(f"Invalid interval type: {type(namespace.interval)}")
+        raise InvalidArgumentValueError(
+            f"Invalid interval type: {type(namespace.interval)}"
+        )
     if namespace.interval not in allowed_intervals:
         raise InvalidArgumentValueError(
             f"Invalid interval value: {namespace.interval}. Allowed values: {', '.join(allowed_intervals)}"
         )
+
+
+allowed_metric_namespaces = ["LoadTestRunMetrics", "EngineHealthMetrics"]
+
+
+def validate_metric_namespaces(namespace):
+    if not isinstance(namespace.metric_namespace, str):
+        raise InvalidArgumentValueError(
+            f"Invalid metric-namespace type: {type(namespace.metric_namespace)}"
+        )
+    if namespace.metric_namespace not in allowed_metric_namespaces:
+        raise InvalidArgumentValueError(
+            f"Invalid metric-namespace value: {namespace.metric_namespace}. Allowed values: {', '.join(allowed_metric_namespaces)}"
+        )
+
+
+def validate_dimension_filters(namespace):
+    """Extracts multiple space and comma-separated dimension filters in key1[=value1,value2] [key2[=value3, value4]] format"""
+    if isinstance(namespace.dimension_filters, list):
+        filters_dict = OrderedDict()
+        for item in namespace.dimension_filters:
+            filter = _validate_dimension_filter(item)
+            for key, value in filter.items():
+                if key in filters_dict:
+                    filters_dict[key].extend(value)
+                else:
+                    filters_dict[key] = value
+        filters_list = []
+        for key, value in filters_dict.items():
+            filters_list.append({"name": key, "values": value})
+        namespace.dimension_filters = filters_list
+
+
+def _validate_dimension_filter(string):
+    """Extracts a single comma-separated dimension filters in key1[=value1,value2] format"""
+    result = {}
+    if string:
+        comps = string.split("=", 1)
+        result = {comps[0]: comps[1].split(",")} if len(comps) > 1 else {string: ""}
+    return result

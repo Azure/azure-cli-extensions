@@ -16,6 +16,7 @@ def load_arguments(self, _):
             "key_vault_reference_identity", argtypes.key_vault_reference_identity
         )
         c.argument("engine_instances", argtypes.engine_instances)
+        c.argument("wait", argtypes.wait)
 
     with self.argument_context("load test update") as c:
         c.argument("display_name", argtypes.test_display_name)
@@ -30,10 +31,10 @@ def load_arguments(self, _):
             "key_vault_reference_identity", argtypes.key_vault_reference_identity
         )
         c.argument("engine_instances", argtypes.engine_instances)
+        c.argument("wait", argtypes.wait)
 
     with self.argument_context("load test download-files") as c:
         c.argument("path", argtypes.path)
-    #
 
     # Load Test App Components
     with self.argument_context("load test app-components") as c:
@@ -43,7 +44,6 @@ def load_arguments(self, _):
         c.argument("app_component_type", argtypes.app_component_type)
         c.argument("app_component_name", argtypes.app_component_name)
         c.argument("app_component_type", argtypes.app_component_type)
-    #
 
     # Load Test Server Metrics
     with self.argument_context("load test server-metrics") as c:
@@ -55,4 +55,3 @@ def load_arguments(self, _):
         c.argument("aggregation", argtypes.server_metric_aggregation)
         c.argument("app_component_id", argtypes.app_component_id)
         c.argument("app_component_type", argtypes.app_component_type)
-    #
