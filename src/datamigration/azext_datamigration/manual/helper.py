@@ -21,6 +21,7 @@ import urllib.request
 from zipfile import ZipFile
 import shutil
 import requests
+from knack.util import CLIError
 from azure.cli.core.azclierror import CLIInternalError
 from azure.cli.core.azclierror import FileOperationError
 from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -118,8 +119,7 @@ def tdeMigration_console_app_setup():
     # check and download console app
     console_app_version = check_and_download_tdeMigration_console_app(downloads_folder)
     if console_app_version is None:
-        print("Connection to NuGet.org required. Please check connection and try again.")
-        return None
+        raise CLIError("Connection to NuGet.org required. Please check connection and try again.")
 
     # Assigning base folder path\TdeConsoleApp\console
     console_app_location = os.path.join(downloads_folder, console_app_version)
