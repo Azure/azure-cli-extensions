@@ -78,8 +78,7 @@ class TestSubnetId(unittest.TestCase):
         err = ("--vnet-subnet-id is not a valid Azure resource ID.")
 
         with self.assertRaises(CLIError) as cm:
-            validators._validate_subnet_id(
-                invalid_vnet_subnet_id, "--vnet-subnet-id")
+            validators._validate_subnet_id(invalid_vnet_subnet_id, "--vnet-subnet-id")
         self.assertEqual(str(cm.exception), err)
 
     def test_valid_vnet_subnet_id(self):
@@ -115,12 +114,10 @@ class EnableCustomCATrustNamespace:
         self.os_type = os_type
         self.enable_custom_ca_trust = enable_custom_ca_trust
 
-
 class CustomCATrustCertificatesNamespace:
     def __init__(self, os_type, custom_ca_trust_certificates):
         self.os_type = os_type
         self.custom_ca_trust_certificates = custom_ca_trust_certificates
-
 
 class DisableWindowsOutboundNatNamespace:
     def __init__(self, os_type, disable_windows_outbound_nat):
@@ -137,8 +134,7 @@ class TestMaxSurge(unittest.TestCase):
     def test_throws_on_string(self):
         with self.assertRaises(CLIError) as cm:
             validators.validate_max_surge(MaxSurgeNamespace("foobar"))
-        self.assertTrue('int or percentage' in str(
-            cm.exception), msg=str(cm.exception))
+        self.assertTrue('int or percentage' in str(cm.exception), msg=str(cm.exception))
 
     def test_throws_on_negative(self):
         with self.assertRaises(CLIError) as cm:
@@ -155,111 +151,86 @@ class TestSpotMaxPrice(unittest.TestCase):
     def test_throws_if_more_than_5(self):
         with self.assertRaises(CLIError) as cm:
             validators.validate_spot_max_price(SpotMaxPriceNamespace(5.123456))
-        self.assertTrue('--spot_max_price can only include up to 5 decimal places' in str(
-            cm.exception), msg=str(cm.exception))
+        self.assertTrue('--spot_max_price can only include up to 5 decimal places' in str(cm.exception), msg=str(cm.exception))
 
     def test_throws_if_non_valid_negative(self):
         with self.assertRaises(CLIError) as cm:
             validators.validate_spot_max_price(SpotMaxPriceNamespace(-2))
-        self.assertTrue('--spot_max_price can only be any decimal value greater than zero, or -1 which indicates' in str(
-            cm.exception), msg=str(cm.exception))
+        self.assertTrue('--spot_max_price can only be any decimal value greater than zero, or -1 which indicates' in str(cm.exception), msg=str(cm.exception))
         with self.assertRaises(CLIError) as cm:
             validators.validate_spot_max_price(SpotMaxPriceNamespace(0))
-        self.assertTrue('--spot_max_price can only be any decimal value greater than zero, or -1 which indicates' in str(
-            cm.exception), msg=str(cm.exception))
+        self.assertTrue('--spot_max_price can only be any decimal value greater than zero, or -1 which indicates' in str(cm.exception), msg=str(cm.exception))
 
     def test_throws_if_input_max_price_for_regular(self):
         ns = SpotMaxPriceNamespace(2)
         ns.priority = "Regular"
         with self.assertRaises(CLIError) as cm:
             validators.validate_spot_max_price(ns)
-        self.assertTrue('--spot_max_price can only be set when --priority is Spot' in str(
-            cm.exception), msg=str(cm.exception))
+        self.assertTrue('--spot_max_price can only be set when --priority is Spot' in str(cm.exception), msg=str(cm.exception))
 
 
 class TestMessageOfTheday(unittest.TestCase):
     def test_valid_cases(self):
         valid = ["foo", ""]
         for v in valid:
-            validators.validate_message_of_the_day(
-                MessageOfTheDayNamespace(v, "Linux"))
+            validators.validate_message_of_the_day(MessageOfTheDayNamespace(v, "Linux"))
 
     def test_fail_if_os_type_windows(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_message_of_the_day(
-                MessageOfTheDayNamespace("foo", "Windows"))
-        self.assertTrue('--message-of-the-day can only be set for linux nodepools' in str(
-            cm.exception), msg=str(cm.exception))
+            validators.validate_message_of_the_day(MessageOfTheDayNamespace("foo", "Windows"))
+        self.assertTrue('--message-of-the-day can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
 
     def test_fail_if_os_type_invalid(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_message_of_the_day(
-                MessageOfTheDayNamespace("foo", "invalid"))
-        self.assertTrue('--message-of-the-day can only be set for linux nodepools' in str(
-            cm.exception), msg=str(cm.exception))
+            validators.validate_message_of_the_day(MessageOfTheDayNamespace("foo", "invalid"))
+        self.assertTrue('--message-of-the-day can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
 
 
 class TestEnableCustomCATrust(unittest.TestCase):
     def test_pass_if_os_type_linux(self):
-        validators.validate_enable_custom_ca_trust(
-            EnableCustomCATrustNamespace("Linux", True))
+        validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("Linux", True))
 
     def test_fail_if_os_type_windows(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_enable_custom_ca_trust(
-                EnableCustomCATrustNamespace("Windows", True))
-        self.assertTrue('--enable_custom_ca_trust can only be set for Linux nodepools' in str(
-            cm.exception), msg=str(cm.exception))
+            validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("Windows", True))
+        self.assertTrue('--enable_custom_ca_trust can only be set for Linux nodepools' in str(cm.exception), msg=str(cm.exception))
 
     def test_fail_if_os_type_invalid(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_enable_custom_ca_trust(
-                EnableCustomCATrustNamespace("invalid", True))
-        self.assertTrue('--enable_custom_ca_trust can only be set for Linux nodepools' in str(
-            cm.exception), msg=str(cm.exception))
+            validators.validate_enable_custom_ca_trust(EnableCustomCATrustNamespace("invalid", True))
+        self.assertTrue('--enable_custom_ca_trust can only be set for Linux nodepools' in str(cm.exception), msg=str(cm.exception))
 
 
 class TestCustomCATrustCertificates(unittest.TestCase):
     def test_valid_cases(self):
         valid = ["foo", ""]
         for v in valid:
-            validators.validate_custom_ca_trust_certificates(
-                CustomCATrustCertificatesNamespace("Linux", v))
+            validators.validate_custom_ca_trust_certificates(CustomCATrustCertificatesNamespace("Linux", v))
 
     def test_fail_if_os_type_windows(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_custom_ca_trust_certificates(
-                CustomCATrustCertificatesNamespace("Windows", "foo"))
-        self.assertTrue('--custom-ca-trust-certificates can only be set for linux nodepools' in str(
-            cm.exception), msg=str(cm.exception))
+            validators.validate_custom_ca_trust_certificates(CustomCATrustCertificatesNamespace("Windows", "foo"))
+        self.assertTrue('--custom-ca-trust-certificates can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
 
     def test_fail_if_os_type_invalid(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_custom_ca_trust_certificates(
-                CustomCATrustCertificatesNamespace("invalid", "foo"))
-        self.assertTrue('--custom-ca-trust-certificates can only be set for linux nodepools' in str(
-            cm.exception), msg=str(cm.exception))
+            validators.validate_custom_ca_trust_certificates(CustomCATrustCertificatesNamespace("invalid", "foo"))
+        self.assertTrue('--custom-ca-trust-certificates can only be set for linux nodepools' in str(cm.exception), msg=str(cm.exception))
 
 
 class TestDisableWindowsOutboundNAT(unittest.TestCase):
     def test_pass_if_os_type_windows(self):
-        validators.validate_disable_windows_outbound_nat(
-            DisableWindowsOutboundNatNamespace("Windows", True))
+        validators.validate_disable_windows_outbound_nat(DisableWindowsOutboundNatNamespace("Windows", True))
 
     def test_fail_if_os_type_linux(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_disable_windows_outbound_nat(
-                DisableWindowsOutboundNatNamespace("Linux", True))
-        self.assertTrue('--disable-windows-outbound-nat can only be set for Windows nodepools' in str(
-            cm.exception), msg=str(cm.exception))
+            validators.validate_disable_windows_outbound_nat(DisableWindowsOutboundNatNamespace("Linux", True))
+        self.assertTrue('--disable-windows-outbound-nat can only be set for Windows nodepools' in str(cm.exception), msg=str(cm.exception))
 
     def test_fail_if_os_type_invalid(self):
         with self.assertRaises(CLIError) as cm:
-            validators.validate_disable_windows_outbound_nat(
-                DisableWindowsOutboundNatNamespace("invalid", True))
-        self.assertTrue('--disable-windows-outbound-nat can only be set for Windows nodepools' in str(
-            cm.exception), msg=str(cm.exception))
-
+            validators.validate_disable_windows_outbound_nat(DisableWindowsOutboundNatNamespace("invalid", True))
+        self.assertTrue('--disable-windows-outbound-nat can only be set for Windows nodepools' in str(cm.exception), msg=str(cm.exception))
 
 class ValidateAddonsNamespace:
     def __init__(self, addons):
@@ -334,14 +305,12 @@ class PodIdentityNamespace:
 class TestValidatePodIdentityResourceName(unittest.TestCase):
 
     def test_valid_required_resource_name(self):
-        validator = validators.validate_pod_identity_resource_name(
-            'identity_name', required=True)
+        validator = validators.validate_pod_identity_resource_name('identity_name', required=True)
         namespace = PodIdentityNamespace('test-name')
         validator(namespace)
 
     def test_missing_required_resource_name(self):
-        validator = validators.validate_pod_identity_resource_name(
-            'identity_name', required=True)
+        validator = validators.validate_pod_identity_resource_name('identity_name', required=True)
         namespace = PodIdentityNamespace(None)
 
         with self.assertRaises(CLIError) as cm:
@@ -367,7 +336,6 @@ class TestValidatePodIdentityResourceNamespace(unittest.TestCase):
         with self.assertRaises(CLIError) as cm:
             validators.validate_pod_identity_resource_namespace(namespace)
         self.assertEqual(str(cm.exception), '--namespace is required')
-
 
 class TestValidateKubernetesVersion(unittest.TestCase):
 
@@ -408,12 +376,10 @@ class TestValidateKubernetesVersion(unittest.TestCase):
             validators.validate_k8s_version(namespace)
         self.assertEqual(str(cm.exception), err)
 
-
 class HostGroupIDNamespace:
 
     def __init__(self, host_group_id):
         self.host_group_id = host_group_id
-
 
 class TestValidateHostGroupID(unittest.TestCase):
     def test_invalid_host_group_id(self):
@@ -425,18 +391,15 @@ class TestValidateHostGroupID(unittest.TestCase):
             validators.validate_host_group_id(namespace)
         self.assertEqual(str(cm.exception), err)
 
-
 class AzureKeyVaultKmsKeyIdNamespace:
 
     def __init__(self, azure_keyvault_kms_key_id):
         self.azure_keyvault_kms_key_id = azure_keyvault_kms_key_id
 
-
 class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
     def test_invalid_azure_keyvault_kms_key_id_without_https(self):
         invalid_azure_keyvault_kms_key_id = "dummy key id"
-        namespace = AzureKeyVaultKmsKeyIdNamespace(
-            azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
+        namespace = AzureKeyVaultKmsKeyIdNamespace(azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
         err = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
               'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
 
@@ -446,8 +409,7 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
 
     def test_invalid_azure_keyvault_kms_key_id_without_key_version(self):
         invalid_azure_keyvault_kms_key_id = "https://fakekeyvault.vault.azure.net/keys/fakekeyname"
-        namespace = AzureKeyVaultKmsKeyIdNamespace(
-            azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
+        namespace = AzureKeyVaultKmsKeyIdNamespace(azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
         err = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
               'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
 
@@ -457,15 +419,13 @@ class TestValidateAzureKeyVaultKmsKeyId(unittest.TestCase):
 
     def test_invalid_azure_keyvault_kms_key_id_with_wrong_object_type(self):
         invalid_azure_keyvault_kms_key_id = "https://fakekeyvault.vault.azure.net/secrets/fakesecretname/fakesecretversion"
-        namespace = AzureKeyVaultKmsKeyIdNamespace(
-            azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
+        namespace = AzureKeyVaultKmsKeyIdNamespace(azure_keyvault_kms_key_id=invalid_azure_keyvault_kms_key_id)
         err = '--azure-keyvault-kms-key-id is not a valid Key Vault key ID. ' \
               'See https://docs.microsoft.com/en-us/azure/key-vault/general/about-keys-secrets-certificates#vault-name-and-object-name'
 
         with self.assertRaises(CLIError) as cm:
             validators.validate_azure_keyvault_kms_key_id(namespace)
         self.assertEqual(str(cm.exception), err)
-
 
 class ImageCleanerNamespace:
     def __init__(
@@ -478,7 +438,6 @@ class ImageCleanerNamespace:
         self.disable_image_cleaner = disable_image_cleaner
         self.image_cleaner_interval_hours = image_cleaner_interval_hours
 
-
 class TestValidateImageCleanerEnableDiasble(unittest.TestCase):
     def test_invalid_image_cleaner_enable_disable_not_existing_together(self):
         namespace = ImageCleanerNamespace(
@@ -488,10 +447,8 @@ class TestValidateImageCleanerEnableDiasble(unittest.TestCase):
         err = 'Cannot specify --enable-image-cleaner and --disable-image-cleaner at the same time.'
 
         with self.assertRaises(CLIError) as cm:
-            validators.validate_image_cleaner_enable_disable_mutually_exclusive(
-                namespace)
+            validators.validate_image_cleaner_enable_disable_mutually_exclusive(namespace)
         self.assertEqual(str(cm.exception), err)
-
 
 class AzureKeyVaultKmsKeyVaultResourceIdNamespace:
 
@@ -502,19 +459,16 @@ class AzureKeyVaultKmsKeyVaultResourceIdNamespace:
 class TestValidateAzureKeyVaultKmsKeyVaultResourceId(unittest.TestCase):
     def test_invalid_azure_keyvault_kms_key_vault_resource_id(self):
         invalid_azure_keyvault_kms_key_vault_resource_id = "invalid"
-        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
-            azure_keyvault_kms_key_vault_resource_id=invalid_azure_keyvault_kms_key_vault_resource_id)
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(azure_keyvault_kms_key_vault_resource_id=invalid_azure_keyvault_kms_key_vault_resource_id)
         err = '--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.'
 
         with self.assertRaises(InvalidArgumentValueError) as cm:
-            validators.validate_azure_keyvault_kms_key_vault_resource_id(
-                namespace)
+            validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
         self.assertEqual(str(cm.exception), err)
 
     def test_valid_azure_keyvault_kms_key_vault_resource_id(self):
         valid_azure_keyvault_kms_key_vault_resource_id = "/subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo"
-        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(
-            azure_keyvault_kms_key_vault_resource_id=valid_azure_keyvault_kms_key_vault_resource_id)
+        namespace = AzureKeyVaultKmsKeyVaultResourceIdNamespace(azure_keyvault_kms_key_vault_resource_id=valid_azure_keyvault_kms_key_vault_resource_id)
 
         validators.validate_azure_keyvault_kms_key_vault_resource_id(namespace)
 
@@ -644,13 +598,11 @@ class TestValidateApplicationSecurityGroups(unittest.TestCase):
             namespace
         )
 
-
 class MaintenanceWindowNameSpace:
     def __init__(self, utc_offset=None, start_date=None, start_time=None):
         self.utc_offset = utc_offset
         self.start_date = start_date
         self.start_time = start_time
-
 
 class TestValidateMaintenanceWindow(unittest.TestCase):
     def test_invalid_utc_offset(self):
@@ -659,30 +611,25 @@ class TestValidateMaintenanceWindow(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_utc_offset(namespace)
         self.assertEqual(str(cm.exception), err)
-
-    def test_valid_utc_offset(self):
+    def test_valid_utc_offset(self):        
         namespace = MaintenanceWindowNameSpace(utc_offset="+05:00")
         validators.validate_utc_offset(namespace)
-
-    def test_invalid_start_date(self):
+    def test_invalid_start_date(self):        
         namespace = MaintenanceWindowNameSpace(start_date="2023/01/01")
         err = '--start-date must be in format: "yyyy-MM-dd". For example, "2023-01-01".'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_start_date(namespace)
         self.assertEqual(str(cm.exception), err)
-
-    def test_valid_start_datet(self):
+    def test_valid_start_datet(self):        
         namespace = MaintenanceWindowNameSpace(start_date="2023-01-01")
         validators.validate_start_date(namespace)
-
-    def test_invalid_start_time(self):
+    def test_invalid_start_time(self):        
         namespace = MaintenanceWindowNameSpace(start_time="3am")
         err = '--start-time must be in format "HH:mm". For example, "09:30" and "17:00".'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_start_time(namespace)
         self.assertEqual(str(cm.exception), err)
-
-    def test_valid_start_time(self):
+    def test_valid_start_time(self):        
         namespace = MaintenanceWindowNameSpace(start_date="00:30")
         validators.validate_start_time(namespace)
 

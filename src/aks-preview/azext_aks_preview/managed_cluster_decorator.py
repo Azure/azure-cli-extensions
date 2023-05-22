@@ -239,8 +239,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # read the original value passed by the command
         service_cidrs = self.raw_param.get("service_cidrs")
         # normalize
-        service_cidrs = extract_comma_separated_string(
-            service_cidrs, keep_none=True, default_value=[])
+        service_cidrs = extract_comma_separated_string(service_cidrs, keep_none=True, default_value=[])
         # try to read the property value corresponding to the parameter from the `mc` object
         if self.mc and self.mc.network_profile and self.mc.network_profile.service_cidrs is not None:
             service_cidrs = self.mc.network_profile.service_cidrs
@@ -1571,8 +1570,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                         )
                     if (
                         safe_lower(self._get_private_dns_zone(enable_validation=False)) == CONST_PRIVATE_DNS_ZONE_NONE or
-                        safe_lower(
-                            self.mc.api_server_access_profile.private_dns_zone) == CONST_PRIVATE_DNS_ZONE_NONE
+                        safe_lower(self.mc.api_server_access_profile.private_dns_zone) == CONST_PRIVATE_DNS_ZONE_NONE
                     ):
                         raise InvalidArgumentValueError(
                             "--disable-public-fqdn cannot be applied for none mode private dns zone cluster"
