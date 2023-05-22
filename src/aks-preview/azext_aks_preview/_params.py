@@ -526,7 +526,7 @@ def load_arguments(self, _):
         c.argument('load_balancer_managed_outbound_ipv6_count', type=int)
         c.argument('outbound_type', arg_type=get_enum_type(outbound_types))
         c.argument('enable_pod_security_policy', action='store_true', deprecate_info=c.deprecate(target='--enable-pod-security-policy', hide=True))
-        c.argument('disable_pod_security_policy',action='store_true', is_preview=True)
+        c.argument('disable_pod_security_policy', action='store_true', is_preview=True)
         c.argument('enable_pod_identity', action='store_true')
         c.argument('enable_pod_identity_with_kubenet', action='store_true')
         c.argument('disable_pod_identity', action='store_true')
@@ -535,8 +535,7 @@ def load_arguments(self, _):
         c.argument('disable_image_cleaner', action='store_true', validator=validate_image_cleaner_enable_disable_mutually_exclusive, is_preview=True)
         c.argument('image_cleaner_interval_hours', type=int, is_preview=True)
         c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
-        c.argument('apiserver_subnet_id',
-                   validator=validate_apiserver_subnet_id, is_preview=True)
+        c.argument('apiserver_subnet_id', validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('enable_keda', action='store_true', is_preview=True)
         c.argument('disable_keda', action='store_true', is_preview=True)
         c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
@@ -556,8 +555,7 @@ def load_arguments(self, _):
         c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
         c.argument('custom_ca_trust_certificates', options_list=["--custom-ca-trust-certificates", "--ca-certs"], validator=validate_custom_ca_trust_certificates, is_preview=True, help="path to file containing list of new line separated CAs")
         c.argument('guardrails_level', arg_type=get_enum_type(guardrails_levels), is_preview=True)
-        c.argument('guardrails_version',
-                   help='The guardrails version', is_preview=True)
+        c.argument('guardrails_version', help='The guardrails version', is_preview=True)
         c.argument('guardrails_excluded_ns', is_preview=True)
 
     with self.argument_context('aks upgrade') as c:
