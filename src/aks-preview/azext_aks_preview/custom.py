@@ -1474,7 +1474,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
                      subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None,
                      appgw_subnet_id=None,
                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None,
-                     no_wait=False, enable_msi_auth_for_monitoring=True,
+                     no_wait=False, enable_msi_auth_for_monitoring=None,
                      dns_zone_resource_id=None, enable_syslog=False, data_collection_settings=None):
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles
@@ -1482,6 +1482,10 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
     if addon == "web_application_routing":
         if (instance.ingress_profile is None) or (instance.ingress_profile.web_app_routing is None) or not instance.ingress_profile.web_app_routing.enabled:
             raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
+    
+    if addon == "monitoring" and enable_msi_auth_for_monitoring is None:
+        enable_msi_auth_for_monitoring = True
+
     else:
         addon_key = ADDONS[addon]
         if not addon_profiles or addon_key not in addon_profiles or not addon_profiles[addon_key].enabled:
