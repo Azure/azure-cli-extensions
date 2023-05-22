@@ -465,6 +465,36 @@ helps['spring config-server git repo list'] = """
     short-summary: List all repositories of git property of Config Server.
 """
 
+helps['spring config-server enable'] = """
+    type: command
+    short-summary: (Support Standard consumption Tier) Enable Config Server.
+"""
+
+helps['spring config-server disable'] = """
+    type: command
+    short-summary: (Support Standard consumption Tier) Disable Config Server.
+"""
+
+helps['spring eureka-server'] = """
+    type: group
+    short-summary: (Support Standard consumption Tier) Commands to manage Eureka Server in Azure Spring Apps.
+"""
+
+helps['spring eureka-server enable'] = """
+    type: command
+    short-summary: (Support Standard consumption Tier) Enable Eureka Server.
+"""
+
+helps['spring eureka-server disable'] = """
+    type: command
+    short-summary: (Support Standard consumption Tier) Disable Eureka Server.
+"""
+
+helps['spring eureka-server show'] = """
+    type: command
+    short-summary: (Support Standard consumption Tier) Show Eureka Server.
+"""
+
 helps['spring app binding'] = """
     type: group
     short-summary: Commands to manage bindings with Azure Data Services, you need to manually restart app to make settings take effect.
