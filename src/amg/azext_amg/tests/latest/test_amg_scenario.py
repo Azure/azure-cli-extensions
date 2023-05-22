@@ -340,7 +340,7 @@ class AmgScenarioTest(ScenarioTest):
                 'dashboardTitle2': dashboard_title + '2',
                 'dashboardSlug': slug,
             })
-
+            self.kwargs['dashboardDefinition']['dashboard']['uid'] = 'mg2OAlTVa'  # control the uid to prevent auto generated uid with possible '-' that breaks the command
             # dashboard under own folder
             response_create = self.cmd('grafana dashboard create -g {rg} -n {name} --folder "{folderTitle}"  --definition "{dashboardDefinition}" --title "{dashboardTitle}"').get_output_in_json()
 
@@ -348,13 +348,15 @@ class AmgScenarioTest(ScenarioTest):
                 'dashboardUid': response_create["uid"],
             })
 
-            # dashboard under "General" 
+            # dashboard under "General"
+            self.kwargs['dashboardDefinition']['dashboard']['uid'] = 'mg2OAlTVb'
             response_create = self.cmd('grafana dashboard create -g {rg} -n {name}  --definition "{dashboardDefinition}" --title "{dashboardTitle}"').get_output_in_json()
             self.kwargs.update({
                 'dashboardUid2': response_create["uid"],
             })
 
-            # 2nd dashboard under own folder 
+            # 2nd dashboard under own folder
+            self.kwargs['dashboardDefinition']['dashboard']['uid'] = 'mg2OAlTVc'
             response_create = self.cmd('grafana dashboard create -g {rg} -n {name} --folder "{folderTitle}"  --definition "{dashboardDefinition}" --title "{dashboardTitle2}"').get_output_in_json()
 
             self.kwargs.update({
@@ -366,6 +368,7 @@ class AmgScenarioTest(ScenarioTest):
                 self.kwargs.update({
                     'tempDir': temp_dir
                 })
+                # test exclude scenarios
                 self.cmd('grafana backup -g {rg} -n {name} -d "{tempDir}" --folders-to-include "{folderTitle}" General --components datasources dashboards folders')
 
                 filenames = next(os.walk(temp_dir), (None, None, []))[2]
@@ -390,13 +393,41 @@ class AmgScenarioTest(ScenarioTest):
             self.cmd('grafana dashboard show -g {rg} -n {name} --dashboard "{dashboardUid2}"', checks=[
                 self.check("[dashboard.title]", "['{dashboardTitle}']"),
                 self.check("[meta.folderTitle]", "['General']")])
-            
+
+            with tempfile.TemporaryDirectory() as temp_dir:
+                self.kwargs.update({
+                    'tempDir': temp_dir
+                })
+                self.cmd('grafana backup -g {rg} -n {name} -d "{tempDir}" --folders-to-exclude General "Azure Monitor" Geneva --components dashboards folders')
+
+                filenames = next(os.walk(temp_dir), (None, None, []))[2]
+                self.assertTrue(len(filenames) == 1)
+                self.assertTrue(filenames[0].endswith('.tar.gz'))
+
+                self.kwargs.update({
+                    'archiveFile': os.path.join(temp_dir, filenames[0])
+                })
+
+                self.cmd('grafana dashboard delete -g {rg} -n {name} --dashboard "{dashboardUid2}"')
+                self.cmd('grafana restore -g {rg} -n {name} --archive-file "{archiveFile}"')
+
+            self.cmd('grafana dashboard list -g {rg} -n {name}', checks=[
+                self.check("length([?uid == '{dashboardUid2}'])", 0),
+                self.check("length([?uid == '{dashboardUid}'])", 1)])
+
+            self.kwargs['dashboardDefinition']['dashboard']['uid'] = 'mg2OAlTVd'
+            response_create = self.cmd('grafana dashboard create -g {rg} -n {name}  --definition "{dashboardDefinition}" --title "{dashboardTitle}"').get_output_in_json()
+            print(response_create)
+            self.kwargs.update({
+                'dashboardUid4': response_create["uid"],
+            })
+
             self.cmd('grafana dashboard sync --source {id} --destination {id2} --folders-to-include "{folderTitle}" general')
             self.cmd('grafana folder show -g {rg} -n {name2} --folder "{folderTitle}"')
             self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid}"', checks=[
                 self.check("[dashboard.title]", "['{dashboardTitle}']"),
                 self.check("[meta.folderTitle]", "['{folderTitle}']")])
-            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid2}"', checks=[
+            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid4}"', checks=[
                 self.check("[dashboard.title]", "['{dashboardTitle}']"),
                 self.check("[meta.folderTitle]", "['General']")])
 
