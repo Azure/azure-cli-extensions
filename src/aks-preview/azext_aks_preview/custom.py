@@ -1441,8 +1441,7 @@ def aks_addon_show(cmd, client, resource_group_name, name, addon):
     # web_application_routing is a special case, the configuration is stored in a separate profile
     if addon == "web_application_routing":
         if not mc.ingress_profile and not mc.ingress_profile.web_app_routing and not mc.ingress_profile.web_app_routing.enabled:
-            raise InvalidArgumentValueError(
-                f'Addon "{addon}" is not enabled in this cluster.')
+            raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
         return {
             "name": addon,
             "api_key": addon_key,
@@ -1451,8 +1450,7 @@ def aks_addon_show(cmd, client, resource_group_name, name, addon):
 
     # normal addons
     if not mc.addon_profiles or addon_key not in mc.addon_profiles or not mc.addon_profiles[addon_key].enabled:
-        raise InvalidArgumentValueError(
-            f'Addon "{addon}" is not enabled in this cluster.')
+        raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
     return {
         "name": addon,
         "api_key": addon_key,
