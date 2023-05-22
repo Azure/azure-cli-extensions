@@ -578,9 +578,10 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
-        if ('forbidden' in error_helm_install.decode("ascii") or 'timed out waiting for the condition' in error_helm_install.decode("ascii") or 'connection refused' in error_helm_install.decode("ascii")):
+        helm_install_error_message = error_helm_install.decode("ascii")
+        if any(message in helm_install_error_message for message in consts.Helm_Install_Release_Userfault_Messages):
             telemetry.set_user_fault()
-        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
+        telemetry.set_exception(exception=helm_install_error_message, fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
         logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
         raise CLIInternalError("Unable to install helm release: " + error_helm_install.decode("ascii"))
