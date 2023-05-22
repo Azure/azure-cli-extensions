@@ -209,18 +209,6 @@ def cleanup(test):
         # This is usually failing in the event of the trusted access already not existing, so we can skip it unless a new error shows.
         pass
 
-def call_scenario(test):
-    setup(test)
-    try:
-        setup_vault_and_policy(test)
-        configure_backup(test)
-        trigger_backup(test)
-        trigger_restore_original_location(test)
-    except Exception as e:
-        raise e
-    finally:
-        cleanup(test)
-
 # Test class for Scenario
 class DataprotectionScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
@@ -228,4 +216,29 @@ class DataprotectionScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     def test_dataprotection_aks(self):
-        call_scenario(self)
+        self.kwargs.update({
+            "akscluster1": "clitest-cluster1-donotdelete",
+            "akscluster2": "clitest-cluster1-donotdelete",
+            "policyname": "AKSPolicyCLI1",
+            "vaultname": "clitest-aks-bv",
+            "rgname": "oss-clitest-rg",
+            "friendlyname1": "friendly-cliclust1",
+            "friendlyname2": "friendly-cliclust2",
+            "policyrulename":  "BackupHourly",
+            "backup_instance_name": "clitest-cluster1-donotdelete-clitest-cluster1-donotdelete-faec6818-0720-11ec-bd1b-c8f750f92764",
+            "akscluster1_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.ContainerService/managedClusters/clitest-cluster1-donotdelete",
+            "akscluster2_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.ContainerService/managedClusters/clitest-cluster2-donotdelete",
+            "policy_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DataProtection/backupVaults/clitest-aks-bv/backupPolicies/AKSPolicyCLI1",
+            "vault_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DataProtection/backupVaults/clitest-aks-bv",
+            "rg_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg",
+            "backup_instance_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DataProtection/backupVaults/clitest-aks-bv/backupInstances/clitest-cluster1-donotdelete-clitest-cluster1-donotdelete-faec6818-0720-11ec-bd1b-c8f750f92764",
+        })
+        try:
+            setup_vault_and_policy(self)
+            configure_backup(self)
+            trigger_backup(self)
+            trigger_restore_original_location(self)
+        except Exception as e:
+            raise e
+        finally:
+            cleanup(self)
