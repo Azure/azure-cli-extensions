@@ -1021,7 +1021,7 @@ helps['aks update'] = """
           short-summary: The version of Guardrails to use. Default "v1.0.0" Use the ListGuardrailsVersions API to discover available versions
         - name: --guardrails-excluded-ns
           type: string
-          short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails. Use "[]" to clear a previously non-empty list
+          short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails. Use "" to clear a previously non-empty list
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1086,7 +1086,7 @@ helps['aks update'] = """
       - name: Update a kubernetes cluster with guardrails set to "Warning" and some namespaces excluded. Assumes azure policy addon is already enabled
         text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --guardrails-excluded-ns ns1,ns2
       - name: Update a kubernetes cluster to clear any namespaces excluded from guardrails. Assumes azure policy addon is already enabled
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-excluded-ns "[]"
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-excluded-ns ""
 """
 
 helps['aks kollect'] = """
