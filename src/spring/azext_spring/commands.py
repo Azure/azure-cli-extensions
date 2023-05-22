@@ -24,7 +24,8 @@ from ._transformers import (transform_spring_table_output,
                             transform_predefined_accelerator_output,
                             transform_customized_accelerator_output,
                             transform_build_output,
-                            transform_build_result_output)
+                            transform_build_result_output,
+                            transform_container_registry_output)
 from ._validators import validate_app_insights_command_not_supported_tier
 from ._marketplace import (transform_marketplace_plan_output)
 from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update, validate_dev_tool_portal, validate_customized_accelerator, validate_central_build_instance)
@@ -396,8 +397,11 @@ def load_command_table(self, _):
     with self.command_group('spring container-registry',
                             custom_command_type=build_service_cmd_group,
                             exception_handler=handle_asc_exception) as g:
-        g.custom_command('update', 'update_container_registry', supports_no_wait=True)
+        g.custom_command('create', 'create_or_update_container_registry', supports_no_wait=True)
+        g.custom_command('update', 'create_or_update_container_registry', supports_no_wait=True)
         g.custom_show_command('show', 'container_registry_show')
+        g.custom_show_command('list', 'container_registry_list', table_transformer=transform_container_registry_output)
+        g.custom_command('delete', 'container_registry_delete', supports_no_wait=True, confirmation=True)
 
     with self.command_group('spring build-service build',
                             custom_command_type=build_service_cmd_group,
@@ -414,8 +418,11 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'build_result_show')
         g.custom_show_command('list', 'build_result_list', table_transformer=transform_build_result_output)
 
-    with self.command_group('spring build-service', exception_handler=handle_asc_exception):
-        pass
+    with self.command_group('spring build-service',
+                            custom_command_type=build_service_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('update', 'update_build_service', supports_no_wait=True)
+        g.custom_show_command('show', 'build_service_show')
 
     with self.command_group('spring', exception_handler=handle_asc_exception):
         pass
