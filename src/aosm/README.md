@@ -22,6 +22,13 @@ https://github.com/jddarby/azure-cli-extensions/releases/download/aosm-extension
 To install, download this wheel and run:
 `az extension add --source path/to/aosm-0.1.0-py2.py3-none-any.whl`
 
+## Updating 
+
+We are currently not bumping versions, so if you would like the most up to date version of the CLI. You should run:
+'az extension remove --name aosm'
+
+And then re-add with the new wheel, as detailed in Installation above. 
+
 ## Bug Reporting
 
 Especially as this extension is still in development, you may encounter bugs or
