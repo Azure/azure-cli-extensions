@@ -389,8 +389,7 @@ def load_arguments(self, _):
         c.argument('kubelet_config')
         c.argument('linux_os_config')
         c.argument('host_group_id', validator=validate_host_group_id)
-        c.argument('gpu_instance_profile',
-                   arg_type=get_enum_type(gpu_instance_profiles))
+        c.argument('gpu_instance_profile', arg_type=get_enum_type(gpu_instance_profiles))
         # misc
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('aks_custom_headers')
@@ -535,8 +534,7 @@ def load_arguments(self, _):
         c.argument('enable_image_cleaner', action='store_true', is_preview=True)
         c.argument('disable_image_cleaner', action='store_true', validator=validate_image_cleaner_enable_disable_mutually_exclusive, is_preview=True)
         c.argument('image_cleaner_interval_hours', type=int, is_preview=True)
-        c.argument('enable_apiserver_vnet_integration',
-                   action='store_true', is_preview=True)
+        c.argument('enable_apiserver_vnet_integration', action='store_true', is_preview=True)
         c.argument('apiserver_subnet_id',
                    validator=validate_apiserver_subnet_id, is_preview=True)
         c.argument('enable_keda', action='store_true', is_preview=True)
@@ -748,8 +746,7 @@ def load_arguments(self, _):
         c.argument('workspace_resource_id')
         c.argument('enable_msi_auth_for_monitoring',
                    arg_type=get_three_state_flag(), is_preview=True)
-        c.argument('enable_syslog',
-                   arg_type=get_three_state_flag(), is_preview=True)
+        c.argument('enable_syslog', arg_type=get_three_state_flag(), is_preview=True)
         c.argument('data_collection_settings', is_preview=True)
         c.argument('dns-zone-resource-id')
 
@@ -762,8 +759,7 @@ def load_arguments(self, _):
         c.argument('enable_sgxquotehelper', action='store_true')
         c.argument('osm_mesh_name')
         c.argument('appgw_name', arg_group='Application Gateway')
-        c.argument('appgw_subnet_prefix', arg_group='Application Gateway',
-                   deprecate_info=c.deprecate(redirect='--appgw-subnet-cidr', hide=True))
+        c.argument('appgw_subnet_prefix', arg_group='Application Gateway', deprecate_info=c.deprecate(redirect='--appgw-subnet-cidr', hide=True))
         c.argument('appgw_subnet_cidr', arg_group='Application Gateway')
         c.argument('appgw_id', arg_group='Application Gateway')
         c.argument('appgw_subnet_id', arg_group='Application Gateway')
