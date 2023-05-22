@@ -12,20 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "devcenter admin network-connection list-health-detail",
-    is_preview=True,
+    "devcenter admin network-connection list-health-check",
 )
-class ListHealthDetail(AAZCommand):
+class ListHealthCheck(AAZCommand):
     """List health check status details
 
-    :example: List health detail
-        az devcenter admin network-connection run-health-check --name "uswest3network" --resource-group "rg1"
+    :example: List health check status details
+        az devcenter admin network-connection list-health-check --name "uswest3network" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}/healthchecks", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}/healthchecks", "2023-04-01"],
         ]
     }
 
@@ -45,8 +44,8 @@ class ListHealthDetail(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_connection_name = AAZStrArg(
-            options=["-n", "--network-connection-name"],
-            help="Name of the Network Connection that can be applied to a Pool.",
+            options=["-n", "--name", "--network-connection-name"],
+            help="Name of the network connection that can be applied to a pool.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -121,7 +120,7 @@ class ListHealthDetail(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -250,8 +249,8 @@ class ListHealthDetail(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListHealthDetailHelper:
-    """Helper class for ListHealthDetail"""
+class _ListHealthCheckHelper:
+    """Helper class for ListHealthCheck"""
 
 
-__all__ = ["ListHealthDetail"]
+__all__ = ["ListHealthCheck"]

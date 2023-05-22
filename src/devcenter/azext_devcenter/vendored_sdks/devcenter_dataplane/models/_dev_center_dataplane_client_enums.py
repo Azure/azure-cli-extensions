@@ -26,89 +26,95 @@ class _CaseInsensitiveEnumMeta(EnumMeta):
             raise AttributeError(name)
 
 
-class ActionType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The type of action.
+class DevBoxActionDelayResultStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The result of the delay operation on this action.
     """
 
-    CUSTOM_ACTION = "Custom"  #: A custom action defined in the catalog item.
-    DEPLOY_ACTION = "Deploy"  #: The action to deploy the environment resources.
-    DELETE_ACTION = "Delete"  #: The action to delete the environment resources.
+    SUCCEEDED = "Succeeded"  #: The delay operation succeeded.
+    FAILED = "Failed"  #: The delay operation failed.
 
-class EnableStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Enable or disable status. Indicates whether the property applied to is either enabled or
-    disabled.
+class DevBoxActionType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """The type of action which will take place on a Dev Box.
     """
 
-    ENABLED = "Enabled"
-    DISABLED = "Disabled"
+    STOP = "Stop"  #: The action will stop the Dev Box.
+
+class EnvironmentTypeEnableStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Indicates whether an environment type is enabled for use in a project.
+    """
+
+    ENABLED = "Enabled"  #: The environment type is enabled for use in the project.
+    DISABLED = "Disabled"  #: The environment type is not enabled for use in the project.
 
 class HibernateSupport(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """Indicates whether hibernate is supported and enabled or disabled. Unknown hibernate support is
-    represented as null.
+    """Indicates whether hibernate is supported and enabled, disabled, or unsupported by the operating
+    system. Unknown hibernate support is represented as null.
     """
 
-    DISABLED = "Disabled"
-    ENABLED = "Enabled"
+    ENABLED = "Enabled"  #: Hibernate is enabled.
+    DISABLED = "Disabled"  #: Hibernate is not enabled.
+    OS_UNSUPPORTED = "OsUnsupported"  #: Hibernate is not supported by the operating system.
 
 class LocalAdminStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Indicates whether owners of Dev Boxes in a pool are local administrators on the Dev Boxes.
+    """
 
-    ENABLED = "Enabled"
-    DISABLED = "Disabled"
+    ENABLED = "Enabled"  #: Owners of Dev Boxes in the pool are local administrators on the Dev Boxes.
+    DISABLED = "Disabled"  #: Owners of Dev Boxes in the pool are not local administrators on the Dev Boxes.
 
 class OsType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The operating system type.
     """
 
-    WINDOWS = "Windows"
+    WINDOWS = "Windows"  #: The Windows operating system.
 
 class ParameterType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The type of data a parameter accepts.
     """
 
-    ARRAY = "array"
-    BOOLEAN = "boolean"
-    INTEGER = "integer"
-    NULL = "null"
-    NUMBER = "number"
-    OBJECT = "object"
-    STRING = "string"
+    ARRAY = "array"  #: The parameter accepts an array of values.
+    BOOLEAN = "boolean"  #: The parameter accepts a boolean value.
+    INTEGER = "integer"  #: The parameter accepts an integer value.
+    NUMBER = "number"  #: The parameter accepts a number value.
+    OBJECT = "object"  #: The parameter accepts an object value.
+    STRING = "string"  #: The parameter accepts a string value.
+
+class PoolHealthStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Pool status indicating whether a pool is available to create Dev Boxes.
+    """
+
+    UNKNOWN = "Unknown"  #: The pool health status is not known.
+    PENDING = "Pending"  #: The pool health status waiting for health checks to run.
+    HEALTHY = "Healthy"  #: The pool health status is healthy.
+    WARNING = "Warning"  #: The pool health status has one or more warnings.
+    UNHEALTHY = "Unhealthy"  #: The pool health status is not healthy.
 
 class PowerState(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The power states of a Dev Box.
     """
 
-    UNKNOWN = "Unknown"
-    DEALLOCATED = "Deallocated"
-    POWERED_OFF = "PoweredOff"
-    RUNNING = "Running"
-    HIBERNATED = "Hibernated"
+    UNKNOWN = "Unknown"  #: The Dev Box power state is not known.
+    RUNNING = "Running"  #: The Dev Box is running.
+    DEALLOCATED = "Deallocated"  #: The Dev Box is deallocated.
+    POWERED_OFF = "PoweredOff"  #: The Dev Box is powered off.
+    HIBERNATED = "Hibernated"  #: The Dev Box is hibernated.
 
 class ScheduledFrequency(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The frequency of task execution.
     """
 
-    DAILY = "Daily"
-
-class ScheduledTaskType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The supported types for a scheduled task.
-    """
-
-    AUTO_EXPIRE_SCHEDULED_TASK = "AutoExpire"  #: The scheduled task to expire the environment after a set period.
+    DAILY = "Daily"  #: The scheduled task will run every day.
 
 class ScheduledType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
     """The supported types for a scheduled task.
     """
 
-    STOP_DEV_BOX = "StopDevBox"
+    STOP_DEV_BOX = "StopDevBox"  #: The scheduled task will stop impacted Dev Boxes.
 
-class UpcomingActionReason(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The reason for the upcoming action.
+class StopOnDisconnectEnableStatus(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
+    """Indicates whether the feature to stop the devbox on disconnect once the grace period has lapsed
+    is enabled.
     """
 
-    SCHEDULE = "Schedule"
-
-class UpcomingActionType(with_metaclass(_CaseInsensitiveEnumMeta, str, Enum)):
-    """The upcoming action types.
-    """
-
-    STOP = "Stop"
+    ENABLED = "Enabled"  #: Stop on disconnect is enabled on the Dev Box.
+    DISABLED = "Disabled"  #: Stop on disconnect is not enabled on the Dev Box.
