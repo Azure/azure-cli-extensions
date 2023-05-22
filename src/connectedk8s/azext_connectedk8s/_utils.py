@@ -236,7 +236,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
     try:
         if consts.Outbound_Connectivity_Check_Check_String not in outbound_connectivity_check_log:
             return consts.Diagnostic_Check_Incomplete, storage_space_available
-        
+
         Outbound_Connectivity_Log_For_Cluster_Connect = outbound_connectivity_check_log.split('  ')[0]
         # extracting the endpoints for cluster connect feature
         Cluster_Connect_Enpoint_Url = Outbound_Connectivity_Log_For_Cluster_Connect.split(" : ")[1]
@@ -258,7 +258,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
 
         Onboarding_Endpoint_outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
         Onboarding_Endpoint_outbound_connectivity_response = Onboarding_Endpoint_outbound_connectivity_response[::-1]
-        
+
         # Validating if outbound connectiivty is working or not and displaying proper result
         if(Onboarding_Endpoint_outbound_connectivity_response != "000"):
             if storage_space_available:
@@ -276,7 +276,6 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
                     outbound.write("Response code " + Onboarding_Endpoint_outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster required for onboarding.")
             telemetry.set_exception(exception='Outbound network connectivity check failed for onboarding', fault_type=consts.Outbound_Connectivity_Check_Failed_For_Onboarding, summary="Outbound network connectivity check for onboarding failed in the cluster")
             return consts.Diagnostic_Check_Failed, storage_space_available
-        
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
