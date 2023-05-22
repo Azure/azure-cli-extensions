@@ -15,25 +15,6 @@ from datetime import datetime
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
-# def setup(test):
-#     test.kwargs.update({
-#         "akscluster1": "clitest-cluster1-donotdelete",
-#         "akscluster2": "clitest-cluster1-donotdelete",
-#         "policyname": "AKSPolicyCLI1",
-#         "vaultname": "clitest-aks-bv",
-#         "rgname": "oss-clitest-rg",
-#         "friendlyname1": "friendly-cliclust1",
-#         "friendlyname2": "friendly-cliclust2",
-#         "policyrulename":  "BackupHourly",
-#         "backup_instance_name": "clitest-cluster1-donotdelete-clitest-cluster1-donotdelete-faec6818-0720-11ec-bd1b-c8f750f92764",
-#         "akscluster1_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.ContainerService/managedClusters/clitest-cluster1-donotdelete",
-#         "akscluster2_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.ContainerService/managedClusters/clitest-cluster2-donotdelete",
-#         "policy_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DataProtection/backupVaults/clitest-aks-bv/backupPolicies/AKSPolicyCLI1",
-#         "vault_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DataProtection/backupVaults/clitest-aks-bv",
-#         "rg_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg",
-#         "backup_instance_id": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DataProtection/backupVaults/clitest-aks-bv/backupInstances/clitest-cluster1-donotdelete-clitest-cluster1-donotdelete-faec6818-0720-11ec-bd1b-c8f750f92764",
-#     })
-
 def setup_vault_and_policy(test):
     test.cmd('az dataprotection backup-vault create '
              '--resource-group "{rgname}" '
