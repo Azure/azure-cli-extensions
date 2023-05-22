@@ -610,7 +610,7 @@ class TestValidateMaintenanceWindow(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_utc_offset(namespace)
         self.assertEqual(str(cm.exception), err)
-
+    
     def test_valid_utc_offset(self):        
         namespace = MaintenanceWindowNameSpace(utc_offset="+05:00")
         validators.validate_utc_offset(namespace)
@@ -621,18 +621,18 @@ class TestValidateMaintenanceWindow(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_start_date(namespace)
         self.assertEqual(str(cm.exception), err)
-
+    
     def test_valid_start_datet(self):        
         namespace = MaintenanceWindowNameSpace(start_date="2023-01-01")
         validators.validate_start_date(namespace)
-
+    
     def test_invalid_start_time(self):        
         namespace = MaintenanceWindowNameSpace(start_time="3am")
         err = '--start-time must be in format "HH:mm". For example, "09:30" and "17:00".'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_start_time(namespace)
         self.assertEqual(str(cm.exception), err)
-
+    
     def test_valid_start_time(self):        
         namespace = MaintenanceWindowNameSpace(start_date="00:30")
         validators.validate_start_time(namespace)
