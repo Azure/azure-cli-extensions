@@ -124,7 +124,6 @@ class DisableWindowsOutboundNatNamespace:
         self.os_type = os_type
         self.disable_windows_outbound_nat = disable_windows_outbound_nat
 
-
 class TestMaxSurge(unittest.TestCase):
     def test_valid_cases(self):
         valid = ["5", "33%", "1", "100%"]
@@ -434,9 +433,9 @@ class ImageCleanerNamespace:
         disable_image_cleaner=False,
         image_cleaner_interval_hours=None,
     ):
-        self.enable_image_cleaner = enable_image_cleaner
-        self.disable_image_cleaner = disable_image_cleaner
-        self.image_cleaner_interval_hours = image_cleaner_interval_hours
+        self.enable_image_cleaner = enable_image_cleaner 
+        self.disable_image_cleaner = disable_image_cleaner 
+        self.image_cleaner_interval_hours = image_cleaner_interval_hours 
 
 class TestValidateImageCleanerEnableDiasble(unittest.TestCase):
     def test_invalid_image_cleaner_enable_disable_not_existing_together(self):
@@ -605,33 +604,39 @@ class MaintenanceWindowNameSpace:
         self.start_time = start_time
 
 class TestValidateMaintenanceWindow(unittest.TestCase):
-    def test_invalid_utc_offset(self):
+    def test_invalid_utc_offset(self):        
         namespace = MaintenanceWindowNameSpace(utc_offset="5:00")
         err = '--utc-offset must be in format: "+/-HH:mm". For example, "+05:30" and "-12:00".'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_utc_offset(namespace)
         self.assertEqual(str(cm.exception), err)
+
     def test_valid_utc_offset(self):        
         namespace = MaintenanceWindowNameSpace(utc_offset="+05:00")
         validators.validate_utc_offset(namespace)
+
     def test_invalid_start_date(self):        
         namespace = MaintenanceWindowNameSpace(start_date="2023/01/01")
         err = '--start-date must be in format: "yyyy-MM-dd". For example, "2023-01-01".'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_start_date(namespace)
         self.assertEqual(str(cm.exception), err)
+
     def test_valid_start_datet(self):        
         namespace = MaintenanceWindowNameSpace(start_date="2023-01-01")
         validators.validate_start_date(namespace)
+
     def test_invalid_start_time(self):        
         namespace = MaintenanceWindowNameSpace(start_time="3am")
         err = '--start-time must be in format "HH:mm". For example, "09:30" and "17:00".'
         with self.assertRaises(InvalidArgumentValueError) as cm:
             validators.validate_start_time(namespace)
         self.assertEqual(str(cm.exception), err)
+
     def test_valid_start_time(self):        
         namespace = MaintenanceWindowNameSpace(start_date="00:30")
         validators.validate_start_time(namespace)
+
 
 if __name__ == "__main__":
     unittest.main()
