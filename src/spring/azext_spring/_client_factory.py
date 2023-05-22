@@ -32,6 +32,10 @@ def cf_bindings(cli_ctx, *_):
     return cf_spring(cli_ctx).bindings
 
 
+def cf_eureka_servers(cli_ctx, *_):
+    return cf_spring(cli_ctx).eureka_servers
+
+
 def cf_config_servers(cli_ctx, *_):
     return cf_spring(cli_ctx).config_servers
 

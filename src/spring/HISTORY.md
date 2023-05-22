@@ -1,5 +1,13 @@
 Release History
 ===============
+1.12.1
+---
+* Add new command -- `az spring eureka-server show` to show the Eureka server resource in consumption tier.
+* Add new command -- `az spring eureka-server enable` to enable the Eureka server resource in consumption tier.
+* Add new command -- `az spring eureka-server disable` to disable the Eureka server resource in consumption tier.
+* Add new command -- `az spring config-server enable` to enable the Config server resource in consumption tier.
+* Add new command -- `az spring config-server disable` to disable the Config server resource in consumption tier.
+
 1.12.0
 ---
 * Add new command `az spring container-registry create` to craete container registry resource.
