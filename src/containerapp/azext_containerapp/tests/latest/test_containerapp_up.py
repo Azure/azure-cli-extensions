@@ -37,4 +37,3 @@ class ContainerAppUpImageTest(ScenarioTest):
         self.assertTrue(resp.ok)
 
         self.cmd(f"containerapp up --image {image} --environment {env_name} -g {resource_group} -n {app_name} -l {TEST_LOCATION.upper()}")
-

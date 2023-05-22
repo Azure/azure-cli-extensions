@@ -72,9 +72,29 @@ class Update(AAZCommand):
                 min_length=3,
             ),
         )
+        _args_schema.enable_no_public_ip = AAZBoolArg(
+            options=["--enable-no-public-ip"],
+            help="Flag to enable the no public ip feature.",
+        )
         _args_schema.prepare_encryption = AAZBoolArg(
             options=["--prepare-encryption"],
             help="Flag to enable the Managed Identity for managed storage account to prepare for CMK encryption.",
+        )
+        _args_schema.storage_account_sku_name = AAZStrArg(
+            options=["--sa-sku-name", "--storage-account-sku-name"],
+            help="Storage account SKU name, ex: Standard_GRS, Standard_LRS. Refer https://aka.ms/storageskus for valid inputs.",
+        )
+        _args_schema.public_network_access = AAZStrArg(
+            options=["--public-network-access"],
+            help="The network access type for accessing workspace. Set value to disabled to access workspace only via private link.",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.required_nsg_rules = AAZStrArg(
+            options=["--required-nsg-rules"],
+            help="The type of Nsg rule for internal use only.  Allowed values: AllRules, NoAzureDatabricksRules, NoAzureServiceRules.",
+            nullable=True,
+            enum={"AllRules": "AllRules", "NoAzureDatabricksRules": "NoAzureDatabricksRules", "NoAzureServiceRules": "NoAzureServiceRules"},
         )
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
@@ -409,11 +429,19 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("parameters", AAZObjectType)
+                properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
+                properties.set_prop("requiredNsgRules", AAZStrType, ".required_nsg_rules")
 
             parameters = _builder.get(".properties.parameters")
             if parameters is not None:
+                parameters.set_prop("enableNoPublicIp", AAZObjectType)
                 parameters.set_prop("encryption", AAZObjectType)
                 parameters.set_prop("prepareEncryption", AAZObjectType)
+                parameters.set_prop("storageAccountSkuName", AAZObjectType)
+
+            enable_no_public_ip = _builder.get(".properties.parameters.enableNoPublicIp")
+            if enable_no_public_ip is not None:
+                enable_no_public_ip.set_prop("value", AAZBoolType, ".enable_no_public_ip", typ_kwargs={"flags": {"required": True}})
 
             encryption = _builder.get(".properties.parameters.encryption")
             if encryption is not None:
@@ -429,6 +457,10 @@ class Update(AAZCommand):
             prepare_encryption = _builder.get(".properties.parameters.prepareEncryption")
             if prepare_encryption is not None:
                 prepare_encryption.set_prop("value", AAZBoolType, ".prepare_encryption", typ_kwargs={"flags": {"required": True}})
+
+            storage_account_sku_name = _builder.get(".properties.parameters.storageAccountSkuName")
+            if storage_account_sku_name is not None:
+                storage_account_sku_name.set_prop("value", AAZStrType, ".storage_account_sku_name", typ_kwargs={"flags": {"required": True}})
 
             sku = _builder.get(".sku")
             if sku is not None:

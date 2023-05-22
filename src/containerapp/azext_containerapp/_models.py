@@ -133,6 +133,18 @@ Scale = {
     "rules": []  # list of ScaleRule
 }
 
+ServiceBinding = {
+    "serviceId": None,
+    "name": None
+}
+
+JobScale = {
+    "minExecutions": None,
+    "maxExecutions": None,
+    "pollingInterval": None,
+    "rules": []  # list of ScaleRule
+}
+
 TrafficWeight = {
     "revisionName": None,
     "weight": None,
@@ -172,7 +184,8 @@ Template = {
     "containers": None,  # [Container]
     "initContainers": None,  # [Container]
     "scale": Scale,
-    "volumes": None  # [Volume]
+    "volumes": None,  # [Volume]
+    "serviceBinds": None  # [ServiceBinding]
 }
 
 Configuration = {
@@ -181,6 +194,48 @@ Configuration = {
     "ingress": None,  # Ingress
     "dapr": Dapr,
     "registries": None  # [RegistryCredentials]
+}
+
+JobTemplate = {
+    "containers": None,  # [Container]
+    "initContainers": None,  # [Container]
+    "volumes": None  # [Volume]
+}
+
+# Added template for starting job executions
+JobExecutionTemplate = {
+    "template": {
+        "containers": None,  # [Container]
+        "initContainers": None  # [Container]
+    }
+}
+
+JobConfiguration = {
+    "secrets": None,  # [Secret]
+    "triggerType": None,  # 'manual' or 'schedule' or 'event'
+    "replicaTimeout": None,
+    "replicaRetryLimit": None,
+    "manualTriggerConfig": None,  # ManualTriggerConfig
+    "scheduleTriggerConfig": None,  # ScheduleTriggerConfig
+    "registries": None,  # [RegistryCredentials]
+    "dapr": None
+}
+
+ManualTriggerConfig = {
+    "replicaCompletionCount": None,
+    "parallelism": None
+}
+
+ScheduleTriggerConfig = {
+    "replicaCompletionCount": None,
+    "parallelism": None,
+    "cronExpression": None
+}
+
+EventTriggerConfig = {
+    "replicaCompletionCount": None,
+    "parallelism": None,
+    "scale": None,  # [JobScale]
 }
 
 UserAssignedIdentity = {
@@ -192,6 +247,23 @@ ManagedServiceIdentity = {
     "userAssignedIdentities": None  # {string: UserAssignedIdentity}
 }
 
+ServiceConnector = {
+    "properties": {
+        "targetService": {
+            "id": None,
+            "type": "AzureResource"
+        },
+        "authInfo": {
+            "authType": None,
+        },
+        "scope": None,
+    }
+}
+
+Service = {
+    "type": None
+}
+
 ContainerApp = {
     "location": None,
     "identity": None,  # ManagedServiceIdentity
@@ -200,6 +272,17 @@ ContainerApp = {
         "configuration": None,  # Configuration
         "template": None,  # Template
         "workloadProfileName": None
+    },
+    "tags": None
+}
+
+ContainerAppsJob = {
+    "location": None,
+    "identity": None,  # ManagedServiceIdentity
+    "properties": {
+        "environmentId": None,
+        "configuration": None,  # JobConfiguration
+        "template": None  # JobTemplate
     },
     "tags": None
 }
@@ -292,4 +375,32 @@ ManagedCertificateEnvelop = {
         "subjectName": None,  # str
         "validationMethod": None  # str
     }
+}
+
+# ContainerApp Patch
+ImageProperties = {
+    "imageName": None,
+    "targetContainerName": None,
+    "targetContainerAppName": None,
+    "revisionMode": None,
+}
+
+ImagePatchableCheck = {
+    "targetContainerAppName": None,
+    "targetContainerName": None,
+    "revisionMode": None,
+    "targetImageName": None,
+    "oldRunImage": None,
+    "newRunImage": None,
+    "id": None,
+    "reason": None,
+}
+
+OryxMarinerRunImgTagProperty = {
+    "fullTag": None,
+    "framework": None,
+    "version": None,
+    "marinerVersion": None,
+    "architectures": None,
+    "support": None,
 }

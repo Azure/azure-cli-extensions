@@ -7,7 +7,7 @@ import os
 from azure.cli.core.azclierror import ResourceNotFoundError
 from knack.util import CLIError
 from msrestazure.tools import resource_id
-from ...vendored_sdks.appplatform.v2023_03_01_preview import models
+from ...vendored_sdks.appplatform.v2023_05_01_preview import models
 from ..._utils import _get_sku_name
 from ...app import (app_create, app_update, app_deploy, deployment_create)
 from ...custom import (app_set_deployment, app_unset_deployment,
@@ -604,8 +604,12 @@ class TestAppUpdate(BasicTest):
    
         self._execute('rg', 'asc', 'app', enable_ingress_to_app_tls=False, deployment=deployment)
         resource = self.patch_app_resource
-        self.assertFalse(resource.properties.enable_end_to_end_tls)
+        self.assertFalse(resource.properties.enable_end_to_end_tls)    
 
+    def test_update_workload_profile(self):
+        self._execute('rg', 'asc', 'app', workload_profile='w2')
+        resource = self.patch_app_resource
+        self.assertEqual('w2', resource.properties.workload_profile_name)
 
 class TestAppCreate(BasicTest):
     def __init__(self, methodName: str = ...):
@@ -736,6 +740,10 @@ class TestAppCreate(BasicTest):
         resource = self.put_app_resource
         self.assertFalse(resource.properties.vnet_addons.public_endpoint)
 
+    def test_create_with_workload_profile(self):
+        self._execute('rg', 'asc', 'app', cpu='1', memory='1Gi', instance_count=1, workload_profile='w1')
+        resource = self.put_app_resource
+        self.assertEqual('w1', resource.properties.workload_profile_name)
 
 class TestDeploymentCreate(BasicTest):
     def __init__(self, methodName: str = ...):
