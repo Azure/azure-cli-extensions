@@ -1474,7 +1474,7 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
                      subnet_name=None, appgw_name=None, appgw_subnet_prefix=None, appgw_subnet_cidr=None, appgw_id=None,
                      appgw_subnet_id=None,
                      appgw_watch_namespace=None, enable_sgxquotehelper=False, enable_secret_rotation=False, rotation_poll_interval=None,
-                     no_wait=False, enable_msi_auth_for_monitoring=None,
+                     no_wait=False, enable_msi_auth_for_monitoring=True,
                      dns_zone_resource_id=None, enable_syslog=False, data_collection_settings=None):
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles
