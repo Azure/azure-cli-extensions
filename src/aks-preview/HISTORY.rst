@@ -13,6 +13,11 @@ Pending
 +++++++
 * Vendor new SDK and bump API version to 2023-03-02-preview.
 
+0.5.140
++++++++
+* Allow options for specifying guardrails profile arguments
+
+
 0.5.137
 +++++++
 * Fix role assignment failure caused by the breaking change of default API version bump of the auth SDK
@@ -42,10 +47,6 @@ Pending
 +++++++
 * Change the short name of option `--source-resource-id` in command `az aks trustedaccess rolebinding create` from `-s` to `-r`.
 * Add parameter to enable windows recording rules `--enable-windows-recording-rules` for the Azure Monitor Metrics addon
-
-0.5.132
-+++++++
-* Allow options for specifying guardrails profile arguments
 
 0.5.131
 +++++++

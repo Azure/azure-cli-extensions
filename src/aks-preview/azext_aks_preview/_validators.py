@@ -78,8 +78,7 @@ def validate_ssh_key_for_update(namespace):
         with open(string_or_file, 'r') as f:
             content = f.read()
     elif not keys.is_valid_ssh_rsa_public_key(content):
-        raise InvalidArgumentValueError(
-            'An RSA key file or key value must be supplied to SSH Key Value')
+        raise InvalidArgumentValueError('An RSA key file or key value must be supplied to SSH Key Value')
     namespace.ssh_key_value = content
 
 
@@ -166,11 +165,9 @@ def _validate_nodepool_name(nodepool_name):
     """Validates a nodepool name to be at most 12 characters, alphanumeric only."""
     if nodepool_name != "":
         if len(nodepool_name) > 12:
-            raise InvalidArgumentValueError(
-                '--nodepool-name can contain at most 12 characters')
+            raise InvalidArgumentValueError('--nodepool-name can contain at most 12 characters')
         if not nodepool_name.isalnum():
-            raise InvalidArgumentValueError(
-                '--nodepool-name should contain only alphanumeric characters')
+            raise InvalidArgumentValueError('--nodepool-name should contain only alphanumeric characters')
 
 
 def validate_nodepool_name(namespace):
@@ -658,8 +655,7 @@ def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
         return
     from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(key_vault_resource_id):
-        raise InvalidArgumentValueError(
-            "--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
+        raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
 
 
 def validate_image_cleaner_enable_disable_mutually_exclusive(namespace):
@@ -703,8 +699,7 @@ def validate_defender_config_parameter(namespace):
 
 def validate_defender_disable_and_enable_parameters(namespace):
     if namespace.disable_defender and namespace.enable_defender:
-        raise ArgumentUsageError(
-            'Providing both --disable-defender and --enable-defender flags is invalid')
+        raise ArgumentUsageError('Providing both --disable-defender and --enable-defender flags is invalid')
 
 
 def sanitize_resource_id(resource_id):
@@ -722,8 +717,7 @@ def validate_azuremonitorworkspaceresourceid(namespace):
         return
     resource_id = sanitize_resource_id(resource_id)
     if (bool(re.match(r'/subscriptions/.*/resourcegroups/.*/providers/microsoft.monitor/accounts/.*', resource_id))) is False:
-        raise ArgumentUsageError(
-            "--azure-monitor-workspace-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.monitor/accounts/<resourceName>`")
+        raise ArgumentUsageError("--azure-monitor-workspace-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.monitor/accounts/<resourceName>`")
 
 
 def validate_grafanaresourceid(namespace):
@@ -732,8 +726,7 @@ def validate_grafanaresourceid(namespace):
         return
     resource_id = sanitize_resource_id(resource_id)
     if (bool(re.match(r'/subscriptions/.*/resourcegroups/.*/providers/microsoft.dashboard/grafana/.*', resource_id))) is False:
-        raise ArgumentUsageError(
-            "--grafana-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.dashboard/grafana/<resourceName>`")
+        raise ArgumentUsageError("--grafana-resource-id not in the correct format. It should match `/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/microsoft.dashboard/grafana/<resourceName>`")
 
 
 def validate_ksm_parameter(ksmparam):
@@ -827,8 +820,7 @@ def validate_application_security_groups(namespace):
     from msrestazure.tools import is_valid_resource_id
     for asg in asg_ids.split(","):
         if not is_valid_resource_id(asg):
-            raise InvalidArgumentValueError(
-                asg + " is not a valid Azure resource ID.")
+            raise InvalidArgumentValueError(asg + " is not a valid Azure resource ID.")
 
 
 def validate_utc_offset(namespace):
@@ -838,8 +830,7 @@ def validate_utc_offset(namespace):
     utc_offset_regex = re.compile(r'^[+-]\d{2}:\d{2}$')
     found = utc_offset_regex.findall(namespace.utc_offset)
     if not found:
-        raise InvalidArgumentValueError(
-            '--utc-offset must be in format: "+/-HH:mm". For example, "+05:30" and "-12:00".')
+        raise InvalidArgumentValueError('--utc-offset must be in format: "+/-HH:mm". For example, "+05:30" and "-12:00".')
 
 
 def validate_start_date(namespace):
@@ -849,8 +840,7 @@ def validate_start_date(namespace):
     start_dt_regex = re.compile(r'^\d{4}-\d{2}-\d{2}$')
     found = start_dt_regex.findall(namespace.start_date)
     if not found:
-        raise InvalidArgumentValueError(
-            '--start-date must be in format: "yyyy-MM-dd". For example, "2023-01-01".')
+        raise InvalidArgumentValueError('--start-date must be in format: "yyyy-MM-dd". For example, "2023-01-01".')
 
 
 def validate_start_time(namespace):
