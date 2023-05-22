@@ -2675,11 +2675,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             )
         # replace values with provided values
         if excludedNamespaces is not None:
-             # split and trim the provided namespaces
-            exclNsList = excludedNamespaces.split(",")
-            for i in range(len(exclNsList)):
-                exclNsList[i] = exclNsList[i].strip()
-            mc.guardrails_profile.excluded_namespaces = exclNsList
+            mc.guardrails_profile.excluded_namespaces = extract_comma_separated_string(
+                    excludedNamespaces, enable_strip=True, keep_none=True, default_value=[])
         return mc
         
     def set_up_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -3491,11 +3488,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if excludedNamespaces == "":
                 mc.guardrails_profile.excluded_namespaces = list()
             else:
-                # split and trim the provided namespaces
-                exclNsList = excludedNamespaces.split(",")
-                for i in range(len(exclNsList)):
-                    exclNsList[i] = exclNsList[i].strip()
-                mc.guardrails_profile.excluded_namespaces = exclNsList
+                mc.guardrails_profile.excluded_namespaces = extract_comma_separated_string(
+                    excludedNamespaces, enable_strip=True, keep_none=True, default_value=[])
         return mc
 
     def update_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
