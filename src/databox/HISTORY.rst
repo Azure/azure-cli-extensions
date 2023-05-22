@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.1.3
+0.1.4
 ++++++
 * `az databox job create`: Add new parameter `--transfer-type` `--transfer-configuration-type` `--transfer-filter-details` `--data-box-customer-disk` to support managing import or export` jobs
 * `az databox job create/update`: Add new parameter `--kek-type` `--kek-identity` `--kek-url` `--kek-vault-resource-id` to support managing customer managed key

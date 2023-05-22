@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete a job.
 
     :example: Delete job
-        az databox job delete -n job-name -g rg -y
+        az databox job delete -n job-name -g rg
     """
 
     _aaz_info = {

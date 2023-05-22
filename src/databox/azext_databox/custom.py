@@ -115,7 +115,7 @@ class JobCreate(_JobCreate):
                     }
                     detail['transfer_configuration'] = transfer_configuration
                 if args.transfer_configuration_type == 'TransferUsingFilter':
-                    if not has_value(args.transfer_configuration_type):
+                    if not has_value(args.transfer_filter_details):
                         raise ArgumentUsageError('You must provide --transfer-filter-details when --transfer-configuration-type  is TransferUsingFilter.')
                     transfer_configuration = {
                         "transfer_configuration_type": args.transfer_configuration_type,

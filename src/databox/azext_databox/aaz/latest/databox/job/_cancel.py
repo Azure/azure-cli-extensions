@@ -19,7 +19,7 @@ class Cancel(AAZCommand):
     """CancelJob.
 
     :example: Cancel job
-        az databox job cancel -g rg --job-name name --reason reason -y
+        az databox job cancel -g rg --job-name name --reason reason
     """
 
     _aaz_info = {
