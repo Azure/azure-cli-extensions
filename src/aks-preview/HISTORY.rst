@@ -15,7 +15,7 @@ Pending
 
 0.5.139
 * `az aks create` and `az aks nodepool add`: Add warning message when specifying `--os-sku` to `Mariner` or `CBLMariner`.
-* `az aks create` and `az aks enable-addons`: Change the default value of `--enable-msi-auth-for-monitoring` to `true` and add check for airgap clouds
+* `az aks create` and `az aks enable-addons`: Change the default value of `--enable-msi-auth-for-monitoring` to `true` and add check for airgap clouds for monitoring addon
 
 0.5.138
 +++++++
