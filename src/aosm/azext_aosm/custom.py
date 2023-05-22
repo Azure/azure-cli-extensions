@@ -13,7 +13,7 @@ from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 from azext_aosm.generate_nfd.vnf_bicep_nfd_generator import VnfBicepNfdGenerator
 from azext_aosm.delete.delete import ResourceDeleter
 from azext_aosm.deploy.deploy_with_arm import DeployerViaArm
-from azext_aosm.util.constants import VNF, CNF  # , NSD
+from azext_aosm.util.constants import VNF, CNF, NSD
 from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
 from azext_aosm._client_factory import cf_resources
@@ -41,7 +41,7 @@ def build_definition(
     :param client:
     :type client: HybridNetworkManagementClient
     :param config_file: path to the file
-    :param definition_type: VNF, CNF or NSD
+    :param definition_type: VNF or CNF
     :param publish: _description_, defaults to False
     :type publish: bool, optional
     """
@@ -61,7 +61,7 @@ def build_definition(
             deployer = DeployerViaArm(api_clients, config=config)
             deployer.deploy_vnfd_from_bicep()
         else:
-            print("TODO - cannot publish CNF or NSD yet.")
+            print("Publishing CNF NFD is not yet implemented.")
 
 
 def generate_definition_config(definition_type: str, output_file: str = "input.json"):
@@ -72,13 +72,7 @@ def generate_definition_config(definition_type: str, output_file: str = "input.j
     :param output_file: path to output config file, defaults to "input.json"
     :type output_file: str, optional
     """
-    config = get_configuration(definition_type)
-    config_as_dict = json.dumps(asdict(config), indent=4)
-
-    with open(output_file, "w", encoding="utf-8") as f:
-        f.write(config_as_dict)
-        print(f"Empty definition configuration has been written to {output_file}")
-        logger.info(f"Empty definition configuration has been written to {output_file}")
+    _generate_config(definition_type, output_file)
 
 
 def _get_config_from_file(config_file: str, definition_type: str) -> NFConfiguration:
@@ -185,5 +179,90 @@ def delete_published_definition(
         delly.delete_vnf(clean=clean)
 
 
-def show_publisher():
+def generate_design_config(output_file: str = "input.json"):
+    """
+    Generate an example config file for building a NSD.
+
+    :param output_file: path to output config file, defaults to "input.json"
+    :type output_file: str, optional
+    """
+    _generate_config(NSD, output_file)
+
+
+def _generate_config(definition_type: str, output_file: str = "input.json"):
+    """
+    Generic generate config function for NFDs and NSDs
+
+    :param definition_type: CNF, VNF or NSD
+    :param output_file: path to output config file, defaults to "input.json"
+    :type output_file: str, optional
+    """
+    config = get_configuration(definition_type)
+    config_as_dict = json.dumps(asdict(config), indent=4)
+
+    with open(output_file, "w", encoding="utf-8") as f:
+        f.write(config_as_dict)
+        if definition_type == CNF or definition_type == VNF:
+            prtName = "definition"
+        else:
+            prtName = "design"
+        print(f"Empty {prtName} configuration has been written to {output_file}")
+        logger.info(f"Empty {prtName} configuration has been written to {output_file}")
+
+
+def build_design(
+    cmd,
+    client: HybridNetworkManagementClient,
+    config_file: str,
+    publish=False,
+):
+    """
+    Build and optionally publish a Network Service Design.
+
+    :param cmd:
+    :type cmd: _type_
+    :param client:
+    :type client: HybridNetworkManagementClient
+    :param config_file: path to the file
+    :param publish: _description_, defaults to False
+    :type publish: bool, optional
+    """
+    print("Build design is not yet implented for NSD")
+    pass
+
+
+def delete_published_design(
+    cmd,
+    client: HybridNetworkManagementClient,
+    config_file,
+    clean=False,
+):
+    """
+    Delete a published NSD
+
+    :param definition_type: CNF or VNF
+    :param config_file: Path to the config file
+    :param clean: if True, will delete the NFDG, artifact stores and publisher too.
+                  Defaults to False. Only works if no resources have those as a parent.
+                    Use with care.
+    """
+    print("Delete published design is not yet implented for NSD")
+    pass
+
+
+def publish_design(
+    cmd,
+    client: HybridNetworkManagementClient,
+    config_file,
+):
+    """
+    Publish a generated design.
+
+    :param cmd:
+    :param client:
+    :type client: HybridNetworkManagementClient
+    :param definition_type: VNF or CNF
+    :param config_file: Path to the config file for the NFDV
+    """
+    print("Publishing design is not yet implemented for NSD")
     pass

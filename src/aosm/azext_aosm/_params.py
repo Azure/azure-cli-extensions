@@ -17,11 +17,11 @@ def load_arguments(self: AzCommandsLoader, _):
         get_three_state_flag,
     )
 
-    definition_type = get_enum_type([VNF, CNF, NSD])
+    definition_type = get_enum_type([VNF, CNF])
 
     # Set the argument context so these options are only available when this specific command
     # is called.
-    with self.argument_context("aosm definition") as c:
+    with self.argument_context("aosm nfd") as c:
         c.argument(
             "definition_type", arg_type=definition_type, help="Type of AOSM definition."
         )
@@ -71,9 +71,28 @@ def load_arguments(self: AzCommandsLoader, _):
             help="Optional path to a parameters file for the manifest definition file. Use to override publish of the built definition and config with alternative parameters.",
         )
 
-    with self.argument_context("aosm generate-config") as c:
+    with self.argument_context("aosm nsd") as c:
         c.argument(
-            "definition_type",
-            arg_type=definition_type,
-            help="Type of AOSM definition config to generate.",
+            "config_file",
+            options_list=["--config-file", "-f"],
+            type=file_type,
+            completer=FilesCompleter(allowednames="*.json"),
+            help="The path to the configuration file.",
+        )
+        c.argument(
+            "publish",
+            arg_type=get_three_state_flag(),
+            help="Publishes generated AOSM definition.",
+        )
+        c.argument(
+            "clean",
+            arg_type=get_three_state_flag(),
+            help="Also delete artifact stores, NFD Group and Publisher. Use with care.",
+        )
+        c.argument(
+            "definition_file",
+            options_list=["--definition-file", "-b"],
+            type=file_type,
+            completer=FilesCompleter(allowednames="*.json"),
+            help="Optional path to a bicep file to publish. Use to override publish of the built definition with an alternative file.",
         )
