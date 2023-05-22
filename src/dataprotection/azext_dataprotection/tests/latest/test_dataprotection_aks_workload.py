@@ -225,9 +225,6 @@ def call_scenario(test):
 class DataprotectionScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(DataprotectionScenarioTest, self).__init__(*args, **kwargs)
-        self.kwargs.update({
-            'filler': 'test_passing',
-        })
 
     @AllowLargeResponse()
     def test_dataprotection_aks(self):

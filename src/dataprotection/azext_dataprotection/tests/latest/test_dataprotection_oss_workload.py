@@ -171,9 +171,6 @@ def call_scenario(test):
 class DataprotectionScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(DataprotectionScenarioTest, self).__init__(*args, **kwargs)
-        self.kwargs.update({
-            'filler': 'test_passing',
-        })
 
     def test_dataprotection_oss(self):
         call_scenario(self)
