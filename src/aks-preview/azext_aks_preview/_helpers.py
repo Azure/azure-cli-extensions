@@ -11,7 +11,7 @@ import tempfile
 import yaml
 from typing import Any, List, TypeVar
 from azure.cli.command_modules.acs._helpers import map_azure_error_to_cli_error
-from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError
+from azure.cli.core.azclierror import InvalidArgumentValueError, ResourceNotFoundError, FileOperationError
 from azure.core.exceptions import AzureError
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
@@ -126,7 +126,7 @@ def _merge_kubernetes_configurations(existing_file, addition_file, replace, cont
     current_context = addition.get('current-context', 'UNKNOWN')
     msg = 'Merged "{}" as current context in {}'.format(
         current_context, existing_file)
-    print(msg)
+    logger.warning(msg)
 
 
 def _load_kubernetes_configuration(filename):
@@ -136,19 +136,29 @@ def _load_kubernetes_configuration(filename):
     except (IOError, OSError) as ex:
         if getattr(ex, 'errno', 0) == errno.ENOENT:
             raise CLIError('{} does not exist'.format(filename))
+        raise
     except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
         raise CLIError('Error parsing {} ({})'.format(filename, str(ex)))
 
 
 def _handle_merge(existing, addition, key, replace):
-    if not addition[key]:
+    if not addition.get(key, False):
         return
-    if existing[key] is None:
+    if key not in existing:
+        raise FileOperationError(
+            "No such key '{}' in existing config, please confirm whether it is a valid config file. "
+            "May back up this config file, delete it and retry the command.".format(
+                key
+            )
+        )
+    if not existing.get(key):
         existing[key] = addition[key]
         return
 
     for i in addition[key]:
         for j in existing[key]:
+            if not i.get('name', False) or not j.get('name', False):
+                continue
             if i['name'] == j['name']:
                 if replace or i == j:
                     existing[key].remove(j)
