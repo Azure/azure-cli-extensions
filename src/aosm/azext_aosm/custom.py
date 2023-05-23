@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import json
+import os
 from dataclasses import asdict
 from typing import Optional
 from knack.log import get_logger
@@ -21,6 +22,7 @@ from azext_aosm._configuration import (
     get_configuration,
     NFConfiguration,
 )
+from azure.cli.core.azclierror import InvalidTemplateError, CLIInternalError
 
 
 logger = get_logger(__name__)
@@ -104,13 +106,15 @@ def _generate_nfd(definition_type, config):
     elif definition_type == CNF:
         nfd_generator = CnfNfdGenerator(config)
     else:
-        from azure.cli.core.azclierror import CLIInternalError
-
         raise CLIInternalError(
             "Generate NFD called for unrecognised definition_type. Only VNF and CNF have been implemented."
         )
-
-    nfd_generator.generate_nfd()
+    if nfd_generator.bicep_path:
+        raise InvalidTemplateError(
+                f"ERROR: Using the existing NFD bicep template {nfd_generator.bicep_path}.\nTo generate a new NFD, delete the folder {os.path.dirname(nfd_generator.bicep_path)} and re-run this command."
+            )
+    else: 
+        nfd_generator.generate_nfd()
 
 
 def publish_definition(
