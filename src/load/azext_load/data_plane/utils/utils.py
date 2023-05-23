@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import errno
+import os
 import uuid
 
 import requests
@@ -17,12 +18,17 @@ from msrestazure.tools import is_valid_resource_id, parse_resource_id
 logger = get_logger(__name__)
 
 
+class IdentityType:
+    SystemAssigned = "SystemAssigned"
+    UserAssigned = "UserAssigned"
+
+
 def upload_test_plan(client, test_id, test_plan, wait):
     logger.info("Uploading test plan for the test")
     with open(test_plan, "r") as file:
         upload_poller = client.begin_upload_test_file(
             test_id,
-            file_name=file.name.split("\\")[-1],
+            file_name=os.path.basename(file.name),
             body=file,
         )
         if wait:
@@ -42,7 +48,7 @@ def upload_configuration_files(client, test_id, configuration_files):
         with open(configuration_file, "r") as file:
             upload_poller = client.begin_upload_test_file(
                 test_id,
-                file_name=file.name.split("\\")[-1],
+                file_name=os.path.basename(file.name),
                 body=file,
             )
             response = upload_poller.result()
@@ -224,7 +230,6 @@ def create_or_update_body(
     key_vault_reference_identity=None,
     subnet_id=None,
 ):
-    IdentityType = {"SystemAssigned": "SystemAssigned", "UserAssigned": "UserAssigned"}
     new_body = {}
     if load_test_config_file is not None:
         if (
@@ -247,16 +252,14 @@ def create_or_update_body(
                 if "description" in data:
                     new_body["description"] = data["description"]
 
-                new_body["keyvaultReferenceIdentityType"] = IdentityType[
-                    "SystemAssigned"
-                ]
+                new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
                 if "keyvaultReferenceIdentityId" in data:
                     new_body["keyvaultReferenceIdentityId"] = data[
                         "keyvaultReferenceIdentityId"
                     ]
-                    new_body["keyvaultReferenceIdentityType"] = IdentityType[
-                        "UserAssigned"
-                    ]
+                    new_body[
+                        "keyvaultReferenceIdentityType"
+                    ] = IdentityType.UserAssigned
 
                 if "subnetId" in data:
                     new_body["subnetId"] = data["subnetId"]
@@ -335,16 +338,16 @@ def create_or_update_body(
         else:
             new_body["description"] = body.get("description")
 
-        new_body["keyvaultReferenceIdentityType"] = IdentityType["SystemAssigned"]
+        new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
         if key_vault_reference_identity is not None:
             new_body["keyvaultReferenceIdentityId"] = key_vault_reference_identity
-            new_body["keyvaultReferenceIdentityType"] = IdentityType["UserAssigned"]
+            new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
         elif body.get("keyvaultReferenceIdentityId") is not None:
             new_body["keyvaultReferenceIdentityId"] = body.get(
                 "keyvaultReferenceIdentityId"
             )
             new_body["keyvaultReferenceIdentityType"] = body.get(
-                "keyvaultReferenceIdentityType", IdentityType["UserAssigned"]
+                "keyvaultReferenceIdentityType", IdentityType.UserAssigned
             )
 
         if subnet_id is not None:
@@ -404,17 +407,3 @@ def create_or_update_test_run_body(
 
 def get_random_uuid():
     return str(uuid.uuid4())
-
-
-# def get_timespan(_, start_time=None, end_time=None, offset=None):
-#     if not start_time and not end_time:
-#         # if neither value provided, end_time is now
-#         end_time = datetime.utcnow().isoformat()
-#     if not start_time:
-#         # if no start_time, apply offset backwards from end_time
-#         start_time = (dateutil.parser.parse(end_time) - offset).isoformat()
-#     elif not end_time:
-#         # if no end_time, apply offset fowards from start_time
-#         end_time = (dateutil.parser.parse(start_time) + offset).isoformat()
-#     timespan = f"{start_time}/{end_time}"
-#     return timespan

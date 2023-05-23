@@ -166,8 +166,13 @@ def validate_download(namespace):
 
 
 def validate_load_test_config_file(namespace):
+    if namespace.load_test_config_file is None:
+        return
+    if not isinstance(namespace.load_test_config_file, str):
+        raise InvalidArgumentValueError(
+            f"Invalid load-test-config-file type: {type(namespace.load_test_config_file)}"
+        )
     namespace.path = _validate_path(namespace.load_test_config_file, is_dir=False)
-
     try:
         with open(namespace.path, "r") as file:
             yaml.safe_load(file)

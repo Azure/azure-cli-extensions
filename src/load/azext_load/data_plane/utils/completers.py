@@ -16,7 +16,7 @@ def get_test_id_completion_list():
         load_test_resource = getattr(namespace, "load_test_resource", None)
         resource_group_name = getattr(namespace, "resource_group_name", None)
 
-        if not load_test_resource or not resource_group_name:
+        if not load_test_resource:
             return []
 
         client = get_admin_data_plane_client(
@@ -38,7 +38,7 @@ def get_test_run_id_completion_list():
         resource_group_name = getattr(namespace, "resource_group_name", None)
         test_id = getattr(namespace, "test_id", None)
 
-        if not load_test_resource or not resource_group_name:
+        if not load_test_resource:
             return []
 
         client = get_testrun_data_plane_client(
