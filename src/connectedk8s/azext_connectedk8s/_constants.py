@@ -206,7 +206,7 @@ Cluster_Diagnostic_Checks_Release_Cleanup_Failed = "Error occured while cleaning
 Cluster_Diagnostic_Checks_Job_Not_Scheduled = 'Unable to schedule cluster-diagnostic-checks job'
 Cluster_Diagnostic_Checks_Job_Not_Complete = 'Unable to complete cluster-diagnostic-checks job after scheduling'
 Pre_Onboarding_Diagnostic_Checks_Execution_Failed = 'Exception occured while trying to execute pre-onboarding diagnostic checks'
-Outbound_Connectivity_Check_Failed_For_Onboarding = "Outbound network connectivity check for onboarding failed"
+Outbound_Connectivity_Check_Failed_For_Onboarding = "Outbound network connectivity check failed for onboarding"
 DNS_Check_Failed = "DNS Resolution failed"
 Cluster_Diagnostic_Prechecks_Failed = "Cluster diagnostic prechecks failed"
 Cluster_Diagnostic_Prechecks_Incomplete = "Cluster diagnostic prechecks failed to complete"
@@ -214,7 +214,7 @@ Cluster_Diagnostic_Checks_Pod_Description_Save_Failed = 'Failed to save cluster 
 Cluster_Diagnostic_Checks_Job_Log_Save_Failed = 'Failed to save cluster diagnostic checks job log'
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Check_String = "Outbound Network Connectivity Check"
-Outbound_Connectivity_Check_Failed_For_Cluster_Connect_Endpoint = "Outbound network connectivity check failed for Cluster Connect endpoint"
+Outbound_Connectivity_Check_Failed_For_Cluster_Connect = "Outbound network connectivity check failed for Cluster Connect"
 DNS_Check_Result_String = "DNS Result:"
 AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = '2.30.0'
 CLIENT_PROXY_VERSION = '1.3.022011'
