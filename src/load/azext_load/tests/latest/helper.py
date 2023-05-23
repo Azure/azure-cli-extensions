@@ -1,11 +1,20 @@
+from azure.cli.testsdk import (
+   JMESPathCheck,
+)
+
 def create_test(ScenarioTest, test_id, resource_group, load_test_resource, load_test_config_file, test_plan = None):
+    checks = [
+            JMESPathCheck("testId", test_id),
+        ]
     if test_plan:
         ScenarioTest.cmd("az load test create "
-            "--test-id {test_id} "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-            "--load-test-config-file {load_test_config_file} "
-            "--test-plan {test_plan}"
+            f"--test-id {test_id} "
+            f"--load-test-resource {load_test_resource} "
+            f"--resource-group {resource_group} "
+            f"--load-test-config-file {load_test_config_file} "
+            f"--test-plan {test_plan} "
+            "--wait",
+            checks = checks,
         )
     else:
         ScenarioTest.cmd("az load test create "
@@ -23,12 +32,14 @@ def create_test(ScenarioTest, test_id, resource_group, load_test_resource, load_
 
     assert ScenarioTest.kwargs["test_id"] in [test.get("testId") for test in list_of_tests]
 
-def create_test_run(ScenarioTest, test_id, resource_group, load_test_resource):
+def create_test_run(ScenarioTest, test_id, test_run_id, resource_group, load_test_resource):
     test_run = ScenarioTest.cmd(
         f"az load test-run create "
         f"--load-test-resource {load_test_resource} "
         f"--resource-group {resource_group} "
-        f"--test-id {test_id}"
+        f"--test-id {test_id} "
+        f"--test-run-id {test_run_id} "
+        f"--wait"
     ).get_output_in_json()
     
     assert test_run.get("testRunId") is not None
@@ -70,3 +81,5 @@ def delete_test(ScenarioTest, test_id, resource_group, load_test_resource):
     ).get_output_in_json()
 
     assert test_id not in [test.get("testId") for test in list_of_tests]
+
+

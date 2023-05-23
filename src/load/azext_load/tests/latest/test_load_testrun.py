@@ -10,7 +10,7 @@ from azext_load.tests.latest.helper import (
     delete_test,
 )
 
-import json
+import json, time
 
 
 class LoadTestRunScenario(ScenarioTest):
@@ -18,7 +18,8 @@ class LoadTestRunScenario(ScenarioTest):
     resource_group = "hbisht-rg"
     test_id = "sampletest1"
     test_id_long = "14fc47b6-fc59-4a1f-91d2-0678944ff121"
-    test_run_id = "4008685a-79ab-4007-b559-11cf9051c06f"
+    test_run_id_const = "4008685a-79ab-4007-b559-11cf9051c06f"
+    test_run_id = "1507-2608-"
     load_test_config_file = r"C:\\Users\\hbisht\\Desktop\\config.yaml"
     test_plan = r"C:\\Users\\hbisht\\Desktop\\LoadTest2.jmx"
     app_component_id = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss"
@@ -34,7 +35,7 @@ class LoadTestRunScenario(ScenarioTest):
                 "load_test_resource": LoadTestRunScenario.load_test_resource,
                 "resource_group": LoadTestRunScenario.resource_group,
                 "test_id": LoadTestRunScenario.test_id,
-                "test_run_id": LoadTestRunScenario.test_run_id,
+                "test_run_id": LoadTestRunScenario.test_run_id_const,
             }
         )
 
@@ -55,7 +56,7 @@ class LoadTestRunScenario(ScenarioTest):
                 "load_test_resource": LoadTestRunScenario.load_test_resource,
                 "resource_group": LoadTestRunScenario.resource_group,
                 "test_id": LoadTestRunScenario.test_id,
-                "test_run_id": LoadTestRunScenario.test_run_id,
+                "test_run_id": LoadTestRunScenario.test_run_id_const,
             }
         )
 
@@ -74,12 +75,13 @@ class LoadTestRunScenario(ScenarioTest):
                 "load_test_resource": LoadTestRunScenario.load_test_resource,
                 "resource_group": LoadTestRunScenario.resource_group,
                 "test_id": LoadTestRunScenario.test_id+"create_test_run",
+                "test_run_id": LoadTestRunScenario.test_run_id+"create_test_run",
                 "load_test_config_file": LoadTestRunScenario.load_test_config_file,
                 "test_plan": LoadTestRunScenario.test_plan,
             }
         )
         create_test(self, test_plan=self.kwargs["test_plan"] ,load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_id=self.kwargs["test_id"], load_test_config_file=self.kwargs["load_test_config_file"])
-        test_run_id = create_test_run(self, load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_id=self.kwargs["test_id"])
+        test_run_id = create_test_run(self, load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_id=self.kwargs["test_id"], test_run_id=self.kwargs["test_run_id"])
         delete_test_run(self, load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_run_id=test_run_id)
         delete_test(self, load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_id=self.kwargs["test_id"])
     
@@ -89,12 +91,13 @@ class LoadTestRunScenario(ScenarioTest):
                 "load_test_resource": LoadTestRunScenario.load_test_resource,
                 "resource_group": LoadTestRunScenario.resource_group,
                 "test_id": LoadTestRunScenario.test_id+"delete_test_run",
+                "test_run_id": LoadTestRunScenario.test_run_id+"delete_test_run",
                 "load_test_config_file": LoadTestRunScenario.load_test_config_file,
                 "test_plan": LoadTestRunScenario.test_plan,
             }
         )
         create_test(self, test_plan=self.kwargs["test_plan"] ,load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_id=self.kwargs["test_id"], load_test_config_file=self.kwargs["load_test_config_file"])
-        test_run_id = create_test_run(self, load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_id=self.kwargs["test_id"])
+        test_run_id = create_test_run(self, load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_id=self.kwargs["test_id"], test_run_id=self.kwargs["test_run_id"])
         delete_test_run(self, load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_run_id=test_run_id)
         delete_test(self, load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_id=self.kwargs["test_id"])
 
@@ -104,14 +107,15 @@ class LoadTestRunScenario(ScenarioTest):
                 "load_test_resource": LoadTestRunScenario.load_test_resource,
                 "resource_group": LoadTestRunScenario.resource_group,
                 "test_id": LoadTestRunScenario.test_id+"update_test_run",
+                "test_run_id": LoadTestRunScenario.test_run_id+"update_test_run",
                 "load_test_config_file": LoadTestRunScenario.load_test_config_file,
                 "test_plan": LoadTestRunScenario.test_plan,
             }
         )
 
         create_test(self, test_plan=self.kwargs["test_plan"] ,load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_id=self.kwargs["test_id"], load_test_config_file=self.kwargs["load_test_config_file"])
-        test_run_id = create_test_run(self, load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_id=self.kwargs["test_id"])
-        
+        test_run_id = create_test_run(self, load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_id=self.kwargs["test_id"], test_run_id=self.kwargs["test_run_id"])
+        time.sleep(10)
         test_run = self.cmd(
             "az load test-run update "
             "--load-test-resource {load_test_resource} "
@@ -147,7 +151,7 @@ class LoadTestRunScenario(ScenarioTest):
         )
 
         create_test(self, test_plan=self.kwargs["test_plan"] ,load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_id=self.kwargs["test_id"], load_test_config_file=self.kwargs["load_test_config_file"])
-        test_run_id = create_test_run(self, load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_id=self.kwargs["test_id"])
+        test_run_id = create_test_run(self, load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_id=self.kwargs["test_id"], test_run_id=self.kwargs["test_run_id"])
         
         self.cmd(
             "az load test-run download-files "
@@ -162,9 +166,8 @@ class LoadTestRunScenario(ScenarioTest):
         delete_test_run(self, load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_run_id=test_run_id)
         delete_test(self, load_test_resource=self.kwargs["load_test_resource"],resource_group= self.kwargs["resource_group"], test_id=self.kwargs["test_id"])
         
-
-    """
-        def testcase_load_test_run_stop(self):
+"""
+    def testcase_load_test_run_stop(self):
         self.kwargs.update(
             {
                 "load_test_resource": LoadTestRunScenario.load_test_resource,
