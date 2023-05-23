@@ -9,6 +9,8 @@ from msrestazure.tools import is_valid_resource_id
 
 from . import utils
 
+logger = utils.get_logger(__name__)
+
 
 def validate_test_id(namespace):
     if not isinstance(namespace.test_id, str):
@@ -144,12 +146,16 @@ def validate_metric_id(namespace):
         )
 
 
-def validate_download_files(namespace):
+def validate_download(namespace):
     if not isinstance(namespace.path, str):
         raise InvalidArgumentValueError(f"Invalid path type: {type(namespace.path)}")
 
+    namespace.path = os.path.normpath(os.path.expanduser(namespace.path))
+
     # Create the directories if they do not exist
     if namespace.force:
+        os.makedirs(namespace.path, exist_ok=True)
+        logger.debug("Directory does not exist. Created as --force is passed - %s", namespace.path)
         return
 
     validate_path(namespace)
@@ -158,6 +164,9 @@ def validate_download_files(namespace):
 def validate_path(namespace):
     if not isinstance(namespace.path, str):
         raise InvalidArgumentValueError(f"Invalid path type: {type(namespace.path)}")
+
+    namespace.path = os.path.normpath(os.path.expanduser(namespace.path))
+
     if not os.path.exists(namespace.path):
         raise InvalidArgumentValueError(
             f"Provided path '{namespace.path}' does not exist"
@@ -176,6 +185,8 @@ allowed_file_types = ["ADDITIONAL_ARTIFACTS", "JMX_FILE", "USER_PROPERTIES"]
 
 
 def validate_file_type(namespace):
+    if namespace.file_type is None:
+        return
     if not isinstance(namespace.file_type, str):
         raise InvalidArgumentValueError(
             f"Invalid file-type type: {type(namespace.file_type)}"
