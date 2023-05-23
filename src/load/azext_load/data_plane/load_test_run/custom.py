@@ -215,7 +215,7 @@ def add_test_run_app_components(
     }
     if app_component_kind:
         body["components"][app_component_id]["kind"] = app_component_kind
-    logger.debug("Adding app component to the test run... %s", body)
+    logger.debug("Adding app component to the test run: %s", body)
     return client.create_or_update_app_components(test_run_id=test_run_id, body=body)
 
 
@@ -226,7 +226,7 @@ def list_test_run_app_components(
     resource_group_name=None,
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
-    logger.debug("Listing app components for the given test run...")
+    logger.debug("Listing app components for the given test run")
     return client.get_app_components(test_run_id=test_run_id)
 
 
@@ -239,7 +239,7 @@ def remove_test_run_app_components(
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = {"testRunId": test_run_id, "components": {app_component_id: None}}
-    logger.debug("Removing app component from the test run... %s", body)
+    logger.debug("Removing app component from the test run: %s", body)
     return client.create_or_update_app_components(test_run_id=test_run_id, body=body)
 
 
@@ -271,7 +271,7 @@ def add_test_run_server_metrics(
             }
         },
     }
-    logger.debug("Adding server metrics to the test run... %s", body)
+    logger.debug("Adding server metrics to the test run: %s", body)
     return client.create_or_update_server_metrics_config(
         test_run_id=test_run_id, body=body
     )
@@ -284,7 +284,7 @@ def list_test_run_server_metrics(
     resource_group_name=None,
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
-    logger.debug("Listing server metrics...")
+    logger.debug("Listing server metrics")
     return client.get_server_metrics_config(test_run_id=test_run_id)
 
 
@@ -297,7 +297,7 @@ def remove_test_run_server_metrics(
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = {"testRunId": test_run_id, "metrics": {metric_id: None}}
-    logger.debug("Removing server metrics from the test run... %s", body)
+    logger.debug("Removing server metrics from the test run: %s", body)
     return client.create_or_update_server_metrics_config(
         test_run_id=test_run_id, body=body
     )
@@ -307,8 +307,8 @@ def get_test_run_metric_namespaces(
     cmd, load_test_resource, test_run_id, resource_group_name=None
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
-    namespaces = client.get_metric_namespaces(test_run_id)
-    return namespaces
+    logger.debug("Getting client metrics namespaces")
+    return client.get_metric_namespaces(test_run_id)
 
 
 def list_test_run_metrics(
@@ -325,6 +325,12 @@ def list_test_run_metrics(
     resource_group_name=None,
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+    logger.debug(
+        "Getting test run metric dimensions for test run %s for metric %s in namespace %s",
+        test_run_id,
+        metric_name,
+        metric_namespace,
+    )
 
     if start_time is None or end_time is None:
         test_run_response = client.get_test_run(test_run_id)
@@ -412,6 +418,9 @@ def get_test_run_metric_definitions(
     cmd, load_test_resource, test_run_id, metric_namespace, resource_group_name=None
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+    logger.debug(
+        "Getting test run metric definitions for namespace %s", metric_namespace
+    )
     metric_definitions = client.get_metric_definitions(
         test_run_id, metric_namespace=metric_namespace
     )
@@ -431,6 +440,12 @@ def get_test_run_metric_dimensions(
     resource_group_name=None,
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+    logger.debug(
+        "Getting test run metric dimensions for test run %s for metric %s in namespace %s",
+        test_run_id,
+        metric_name,
+        metric_namespace,
+    )
 
     if start_time is None or end_time is None:
         test_run_response = client.get_test_run(test_run_id)
@@ -453,6 +468,3 @@ def get_test_run_metric_dimensions(
 
     response = [dimension for dimension in dimensions]
     return response
-
-
-# TODO: Add log statements everywhere
