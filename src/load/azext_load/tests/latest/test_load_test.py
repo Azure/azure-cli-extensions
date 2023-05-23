@@ -1,10 +1,20 @@
-import json
+from azure.cli.testsdk import (
+    ScenarioTest,
+    JMESPathCheck,
+)
+
+from azext_load.tests.latest.helper import (
+    create_test,
+    delete_test,
+)
+
+import json, time
 
 from azext_load.tests.latest.helper import create_test, delete_test
 from azure.cli.testsdk import JMESPathCheck, ScenarioTest
 
 
-class LoadScenario(ScenarioTest):
+class LoadTestScenario(ScenarioTest):
     load_test_resource = "hbisht-cli-testing"
     resource_group = "hbisht-rg"
     test_id = "sampletest1"
@@ -17,13 +27,14 @@ class LoadScenario(ScenarioTest):
     metric_name = r"Percentage_CPU"
     metric_namespace = r"microsoft.compute/virtualmachinescalesets"
     aggregation = r"Average"
-
+    file_path = r"C:\\Users\\hbisht\\Desktop\\LoadTest2.jmx"
+    
     # test case for 'az load test list' command
     def testcase_load_test_list(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadScenario.load_test_resource,
-                "resource_group": LoadScenario.resource_group,
+                "load_test_resource": LoadTestScenario.load_test_resource,
+                "resource_group": LoadTestScenario.resource_group,
             }
         )
 
@@ -40,14 +51,14 @@ class LoadScenario(ScenarioTest):
     def testcase_load_test_show(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadScenario.load_test_resource,
-                "resource_group": LoadScenario.resource_group,
-                "test_id": LoadScenario.test_id,
+                "load_test_resource": LoadTestScenario.load_test_resource,
+                "resource_group": LoadTestScenario.resource_group,
+                "test_id": LoadTestScenario.test_id,
             }
         )
 
         checks = [
-            JMESPathCheck("testId", LoadScenario.test_id),
+            JMESPathCheck("testId", LoadTestScenario.test_id),
             JMESPathCheck("loadTestConfiguration.engineInstances", 1),
         ]
 
@@ -59,13 +70,13 @@ class LoadScenario(ScenarioTest):
             checks=checks,
         ).get_output_in_json()
 
-        assert test_details.get("testId", None) == LoadScenario.test_id
+        assert test_details.get("testId", None) == LoadTestScenario.test_id
 
     def testcase_load_test_delete(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadScenario.load_test_resource,
-                "resource_group": LoadScenario.resource_group,
+                "load_test_resource": LoadTestScenario.load_test_resource,
+                "resource_group": LoadTestScenario.resource_group,
                 "test_id": "delete-test-case-1507-2608",
                 "load_test_config_file": "C:\\\\Users\\\\hbisht\\\\Desktop\\\\config.yaml",
             }
@@ -104,12 +115,15 @@ class LoadScenario(ScenarioTest):
     def testcase_load_test_download_files(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadScenario.load_test_resource,
-                "resource_group": LoadScenario.resource_group,
+                "load_test_resource": LoadTestScenario.load_test_resource,
+                "resource_group": LoadTestScenario.resource_group,
                 "test_id": "download-test-case-1507-2608",
                 "path": ".",
-                "load_test_config_file": LoadScenario.load_test_config_file,
-                "test_plan": LoadScenario.test_plan,
+                "load_test_config_file": LoadTestScenario.load_test_config_file,
+                "test_plan": LoadTestScenario.test_plan,
+                "path": f".",
+                "load_test_config_file": LoadTestScenario.load_test_config_file,
+                "test_plan": LoadTestScenario.test_plan,
             }
         )
         create_test(
@@ -141,11 +155,11 @@ class LoadScenario(ScenarioTest):
     def testcase_load_test_create(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadScenario.load_test_resource,
-                "resource_group": LoadScenario.resource_group,
+                "load_test_resource": LoadTestScenario.load_test_resource,
+                "resource_group": LoadTestScenario.resource_group,
                 "test_id": "create-test-case-1507-2608",
-                "load_test_config_file": LoadScenario.load_test_config_file,
-                "test_plan": LoadScenario.test_plan,
+                "load_test_config_file": LoadTestScenario.load_test_config_file,
+                "test_plan": LoadTestScenario.test_plan,
                 "engine_instances": "49",
             }
         )
@@ -202,12 +216,12 @@ class LoadScenario(ScenarioTest):
     def test_load_test_create_with_args(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadScenario.load_test_resource,
-                "resource_group": LoadScenario.resource_group,
+                "load_test_resource": LoadTestScenario.load_test_resource,
+                "resource_group": LoadTestScenario.resource_group,
                 "test_id": "create-with-args-test-case-1507-2608",
                 "display_name": "My Load Test",
                 "test_description": "This is a load test created with arguments",
-                "test_plan": LoadScenario.test_plan,
+                "test_plan": LoadTestScenario.test_plan,
                 "engine_instances": "1",
                 "env": "a=2 b=3",
             }
@@ -266,11 +280,11 @@ class LoadScenario(ScenarioTest):
     def testcase_load_test_update(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadScenario.load_test_resource,
-                "resource_group": LoadScenario.resource_group,
+                "load_test_resource": LoadTestScenario.load_test_resource,
+                "resource_group": LoadTestScenario.resource_group,
                 "test_id": "update-test-case-1507-2608",
-                "load_test_config_file": LoadScenario.load_test_config_file,
-                "test_plan": LoadScenario.test_plan,
+                "load_test_config_file": LoadTestScenario.load_test_config_file,
+                "test_plan": LoadTestScenario.test_plan,
             }
         )
 
@@ -313,17 +327,17 @@ class LoadScenario(ScenarioTest):
             resource_group=self.kwargs["resource_group"],
         )
 
-    def testcase_load_app_components(self):
+    def testcase_load_test_app_components(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadScenario.load_test_resource,
-                "resource_group": LoadScenario.resource_group,
+                "load_test_resource": LoadTestScenario.load_test_resource,
+                "resource_group": LoadTestScenario.resource_group,
                 "test_id": "app-component-test-case-1507-2608",
-                "load_test_config_file": LoadScenario.load_test_config_file,
-                "test_plan": LoadScenario.test_plan,
-                "app_component_id": LoadScenario.app_component_id,
+                "load_test_config_file": LoadTestScenario.load_test_config_file,
+                "test_plan": LoadTestScenario.test_plan,
+                "app_component_id": LoadTestScenario.app_component_id,
                 "app_component_name": "my-app-component",
-                "app_component_type": LoadScenario.app_component_type,
+                "app_component_type": LoadTestScenario.app_component_type,
             }
         )
 
@@ -392,21 +406,21 @@ class LoadScenario(ScenarioTest):
             resource_group=self.kwargs["resource_group"],
         )
 
-    def testcase_load_server_metrics(self):
+    def testcase_load_test_server_metrics(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadScenario.load_test_resource,
-                "resource_group": LoadScenario.resource_group,
+                "load_test_resource": LoadTestScenario.load_test_resource,
+                "resource_group": LoadTestScenario.resource_group,
                 "test_id": "server-metrics-test-case-1507-2608",
-                "load_test_config_file": LoadScenario.load_test_config_file,
-                "test_plan": LoadScenario.test_plan,
-                "metric_id": LoadScenario.metric_id,
-                "metric_name": LoadScenario.metric_name,
-                "metric_namespace": LoadScenario.metric_namespace,
-                "aggregation": LoadScenario.aggregation,
-                "app_component_id": LoadScenario.app_component_id,
+                "load_test_config_file": LoadTestScenario.load_test_config_file,
+                "test_plan": LoadTestScenario.test_plan,
+                "metric_id": LoadTestScenario.metric_id,
+                "metric_name": LoadTestScenario.metric_name,
+                "metric_namespace": LoadTestScenario.metric_namespace,
+                "aggregation": LoadTestScenario.aggregation,
+                "app_component_id": LoadTestScenario.app_component_id,
                 "app_component_name": "my-app-component",
-                "app_component_type": LoadScenario.app_component_type,
+                "app_component_type": LoadTestScenario.app_component_type,
             }
         )
         checks = [
@@ -500,6 +514,77 @@ class LoadScenario(ScenarioTest):
             load_test_resource=self.kwargs["load_test_resource"],
             resource_group=self.kwargs["resource_group"],
         )
+
+
+    def testcase_load_test_file(self):
+        self.kwargs.update(
+        {
+            "load_test_resource": LoadTestScenario.load_test_resource,
+            "resource_group": LoadTestScenario.resource_group,
+            "test_id": "file-test-case-1507-2608",
+            "load_test_config_file": LoadTestScenario.load_test_config_file,
+            "test_plan": LoadTestScenario.test_plan,
+            "file_path": LoadTestScenario.file_path,
+            "download_path": ".",
+            "file_name": "LoadTest2.jmx",            
+        }
+        )
+
+        # Create a new load test
+        create_test(self, test_id=self.kwargs["test_id"], load_test_resource=self.kwargs["load_test_resource"], resource_group=self.kwargs["resource_group"], load_test_config_file=self.kwargs["load_test_config_file"], test_plan=self.kwargs["test_plan"])
+
+        #delete jmx file
+        self.cmd(
+            "az load test file delete "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--file-name {file_name} "
+            "--yes"
+        )
+
+        #list file and confirm
+        list_of_files = self.cmd(
+            "az load test file list "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+        ).get_output_in_json()
+
+        assert self.kwargs["file_name"] not in [file["fileName"] for file in list_of_files]
+
+        #assert not list_of_files.get("files",{}).get(self.kwargs["file_name"])
+
+        #upload new jmx file
+        self.cmd(
+            "az load test file upload "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--path {file_path} "
+        )
+
+        #list file and confirm
+        list_of_files = self.cmd(
+            "az load test file list "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+        ).get_output_in_json()
+
+        assert self.kwargs["file_name"] in [file["fileName"] for file in list_of_files]
+        
+        #download this file 
+        self.cmd(
+            "az load test file download "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--file-name {file_name} "
+            "--path {download_path} "
+        )
+        
+        delete_test(self, test_id=self.kwargs["test_id"], load_test_resource=self.kwargs["load_test_resource"], resource_group=self.kwargs["resource_group"])
 
 
 ##TO-DO update download-files/file command subgroup test case according to new changes
