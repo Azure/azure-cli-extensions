@@ -774,7 +774,9 @@ def get_container_group_name(
             if case_insensitive_dict_get(all_params, key):
                 all_params[key]["value"] = case_insensitive_dict_get(
                     case_insensitive_dict_get(input_parameter_values_json, key), "value"
-                ) or case_insensitive_dict_get(
+                ) if case_insensitive_dict_get(
+                    case_insensitive_dict_get(input_parameter_values_json, key), "value"
+                ) is not None else case_insensitive_dict_get(
                     case_insensitive_dict_get(input_parameter_values_json, key),
                     "secureValue",
                 )
@@ -788,8 +790,7 @@ def get_container_group_name(
         eprint(
             f'Field ["{config.ACI_FIELD_TEMPLATE_PARAMETERS}"] is empty or cannot be found in Parameter file'
         )
-    # TODO: replace this with doing param replacement as-needed
-    arm_json = parse_template(all_params, all_vars, arm_json)
+
     # find the image names and extract them from the template
     arm_resources = case_insensitive_dict_get(arm_json, config.ACI_FIELD_RESOURCES)
 
@@ -808,6 +809,7 @@ def get_container_group_name(
         )
 
     resource = aci_list[count]
+    resource = replace_params_and_vars(all_params, all_vars, resource)
     container_group_name = case_insensitive_dict_get(resource, config.ACI_FIELD_RESOURCES_NAME)
     return container_group_name
 
@@ -818,7 +820,8 @@ def print_existing_policy_from_arm_template(arm_template_path, parameter_data_pa
     input_arm_json = os_util.load_json_from_file(arm_template_path)
     parameter_data = None
     if parameter_data_path:
-        parameter_data = os_util.load_json_from_file(arm_template_path)
+        parameter_data = os_util.load_json_from_file(parameter_data_path)
+
     # find the image names and extract them from the template
     arm_resources = case_insensitive_dict_get(
         input_arm_json, config.ACI_FIELD_RESOURCES
