@@ -184,7 +184,6 @@ def load_arguments(self: AzCommandsLoader, _):
     with self.argument_context('scvmm vm delete-checkpoint') as c:
         c.argument(
             'checkpoint_id',
-            options_list=['--checkpoint-id'],
             help="Checkpoint UUID.",
         )
 
