@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT
 # License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------
-"""Contains a class for generating VNF NFDs and associated resources."""
+"""Contains a class for generating CNF NFDs and associated resources."""
 import json
 import os
 import re
@@ -10,6 +10,7 @@ import shutil
 import tarfile
 from typing import Dict, List, Any, Tuple, Optional, Iterator
 
+import tempfile
 import yaml
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 from jinja2 import Template, StrictUndefined
@@ -38,7 +39,7 @@ class CnfNfdGenerator(NFDGenerator):
     """
 
     def __init__(self, config: CNFConfiguration):
-        """Create a new VNF NFD Generator."""
+        """Create a new CNF NFD Generator."""
         super(NFDGenerator, self).__init__()
         self.config = config
         self.nfd_jinja2_template_path = os.path.join(
@@ -52,7 +53,6 @@ class CnfNfdGenerator(NFDGenerator):
             CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE,
         )
         self.output_folder_name = self.config.build_output_folder_name
-        self.tmp_folder_name = "tmp"
 
         self.artifacts = []
         self.nf_application_configurations = []
@@ -60,68 +60,64 @@ class CnfNfdGenerator(NFDGenerator):
             "$schema": "https://json-schema.org/draft-07/schema#",
             "title": "DeployParametersSchema",
             "type": "object",
-            "properties": {}}
+            "properties": {},
+        }
 
         self._bicep_path = os.path.join(
             self.output_folder_name, CNF_DEFINITION_BICEP_TEMPLATE
         )
 
     def generate_nfd(self) -> None:
-        """Generate a VNF NFD which comprises an group, an Artifact Manifest and a NFDV."""
-        # Create tmp folder.
-        os.mkdir(self.tmp_folder_name)
+        """Generate a CNF NFD which comprises a group, an Artifact Manifest and an NFDV."""
+    
+        # Create temporary folder.
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            self.tmp_folder_name = tmpdirname
+            try:
+                for helm_package in self.config.helm_packages:
 
-        if self.bicep_path:
-            shutil.rmtree(self.tmp_folder_name)
-            raise InvalidTemplateError(
-                f"ERROR: Using the existing NFD bicep template {self.bicep_path}.\nPlease fix this and run the command again."
-            )
-        else:
-            for helm_package in self.config.helm_packages:
-                # TO FIGURE OUT: Why are we having to do this???
-                helm_package = HelmPackageConfig(**helm_package)
-                # Unpack the chart into the tmp folder
-                self._extract_chart(helm_package.path_to_chart)
+                    helm_package = HelmPackageConfig(**helm_package)
+                    # Unpack the chart into the tmp folder
+                    self._extract_chart(helm_package.path_to_chart)
 
-                # TODO: Validate charts
+                    # TODO: Validate charts
 
-                # Get schema for each chart (extract mappings and take the schema bits we need from values.schema.json)
-                # + Add that schema to the big schema.
-                self.deployment_parameter_schema[
-                    "properties"
-                ].update(self.get_chart_mapping_schema(helm_package))
-                
-                # Get all image line matches for files in the chart.
-                # Do this here so we don't have to do it multiple times.
-                image_line_matches = self.find_pattern_matches_in_chart(
-                    helm_package, IMAGE_LINE_REGEX
-                )
-                
-                # Generate the NF application configuration for the chart
-                self.nf_application_configurations.append(
-                    self.generate_nf_application_config(
-                        helm_package,
-                        image_line_matches,
-                        self.find_pattern_matches_in_chart(
-                            helm_package, IMAGE_PULL_SECRET_LINE_REGEX
-                        ),
+                    # Get schema for each chart (extract mappings and take the schema bits we need from values.schema.json)
+                    # + Add that schema to the big schema.
+                    self.deployment_parameter_schema["properties"].update(
+                        self.get_chart_mapping_schema(helm_package)
                     )
-                )
-                # Workout the list of artifacts for the chart and
-                # update the list for the NFD with any unique artifacts.
-                chart_artifacts = self.get_artifact_list(
-                    helm_package, set(image_line_matches)
-                )
-                self.artifacts += [
-                    a for a in chart_artifacts if a not in self.artifacts
-                ]
 
-            self.write_nfd_bicep_file()
-            self.write_schema_to_file()
-            self.write_manifest_bicep_file()
-            self.copy_to_output_folder()
-        # Delete tmp folder
-        shutil.rmtree(self.tmp_folder_name)
+                    # Get all image line matches for files in the chart.
+                    # Do this here so we don't have to do it multiple times.
+                    image_line_matches = self.find_pattern_matches_in_chart(
+                        helm_package, IMAGE_LINE_REGEX
+                    )
+
+                    # Generate the NF application configuration for the chart
+                    self.nf_application_configurations.append(
+                        self.generate_nf_application_config(
+                            helm_package,
+                            image_line_matches,
+                            self.find_pattern_matches_in_chart(
+                                helm_package, IMAGE_PULL_SECRET_LINE_REGEX
+                            ),
+                        )
+                    )
+                    # Workout the list of artifacts for the chart and
+                    # update the list for the NFD with any unique artifacts.
+                    chart_artifacts = self.get_artifact_list(
+                        helm_package, set(image_line_matches)
+                    )
+                    self.artifacts += [
+                        a for a in chart_artifacts if a not in self.artifacts
+                    ]
+                self.write_nfd_bicep_file()
+                self.write_schema_to_file()
+                self.write_manifest_bicep_file()
+                self.copy_to_output_folder()
+            except InvalidTemplateError as e:
+                raise e
 
     @property
     def bicep_path(self) -> Optional[str]:
@@ -135,8 +131,8 @@ class CnfNfdGenerator(NFDGenerator):
         """
         Extract the chart into the tmp folder.
 
-        :param helm_package: The helm package to extract.
-        :type helm_package: HelmPackageConfig
+        :param fname: The path to helm package
+
         """
         if fname.endswith("tar.gz") or fname.endswith("tgz"):
             tar = tarfile.open(fname, "r:gz")
@@ -169,10 +165,8 @@ class CnfNfdGenerator(NFDGenerator):
         os.mkdir(self.output_folder_name)
 
     def write_manifest_bicep_file(self) -> None:
-        # This will write the bicep file for the Artifact Manifest.
-        with open(
-            self.manifest_jinja2_template_path, "r", encoding="UTF-8"
-        ) as f:
+        """Write the bicep file for the Artifact Manifest."""
+        with open(self.manifest_jinja2_template_path, "r", encoding="UTF-8") as f:
             template: Template = Template(
                 f.read(),
                 undefined=StrictUndefined,
@@ -187,7 +181,7 @@ class CnfNfdGenerator(NFDGenerator):
             f.write(bicep_contents)
 
     def write_nfd_bicep_file(self) -> None:
-        # This will write the bicep file for the NFD.
+        """Write the bicep file for the NFD."""
         with open(self.nfd_jinja2_template_path, "r", encoding="UTF-8") as f:
             template: Template = Template(
                 f.read(),
@@ -199,20 +193,18 @@ class CnfNfdGenerator(NFDGenerator):
             nf_application_configurations=self.nf_application_configurations,
         )
 
-        path = os.path.join(
-            self.tmp_folder_name, CNF_DEFINITION_BICEP_TEMPLATE
-        )
+        path = os.path.join(self.tmp_folder_name, CNF_DEFINITION_BICEP_TEMPLATE)
         with open(path, "w", encoding="utf-8") as f:
             f.write(bicep_contents)
 
     def write_schema_to_file(self) -> None:
-        full_schema = os.path.join(
-            self.tmp_folder_name, "deploymentParameters.json"
-        )
+        """Write the schema to file deploymentParameters.json."""
+        full_schema = os.path.join(self.tmp_folder_name, "deploymentParameters.json")
         with open(full_schema, "w", encoding="UTF-8") as f:
             json.dump(self.deployment_parameter_schema, f, indent=4)
-        
+
     def copy_to_output_folder(self) -> None:
+        """Copy the config mappings, schema and bicep templates (artifact manifest and NFDV) to the output folder."""
         if not os.path.exists(self.output_folder_name):
             os.mkdir(self.output_folder_name)
             os.mkdir(self.output_folder_name + "/schemas")
@@ -227,23 +219,17 @@ class CnfNfdGenerator(NFDGenerator):
         )
         shutil.copy(manifest_bicep_path, self.output_folder_name)
 
-        config_mappings_path = os.path.join(
-            self.tmp_folder_name, "configMappings"
-        )
+        config_mappings_path = os.path.join(self.tmp_folder_name, "configMappings")
         shutil.copytree(
             config_mappings_path,
             self.output_folder_name + "/configMappings",
             dirs_exist_ok=True,
         )
 
-        full_schema = os.path.join(
-            self.tmp_folder_name, "deploymentParameters.json"
-        )
+        full_schema = os.path.join(self.tmp_folder_name, "deploymentParameters.json")
         shutil.copy(
             full_schema,
-            self.output_folder_name
-            + "/schemas"
-            + "/deploymentParameters.json",
+            self.output_folder_name + "/schemas" + "/deploymentParameters.json",
         )
 
     def generate_nf_application_config(
@@ -255,7 +241,7 @@ class CnfNfdGenerator(NFDGenerator):
         (name, version) = self.get_chart_name_and_version(helm_package)
         registryValuesPaths = set([m[0] for m in image_line_matches])
         imagePullSecretsValuesPaths = set(image_pull_secret_line_matches)
-
+        """Generate NF application config"""
         return {
             "name": helm_package.name,
             "chartName": name,
@@ -267,6 +253,11 @@ class CnfNfdGenerator(NFDGenerator):
         }
 
     def _find_yaml_files(self, directory) -> Iterator[str]:
+        """
+        Find all yaml files in given directory.
+
+        :param directory: The directory to search.
+        """
         for root, dirs, files in os.walk(directory):
             for file in files:
                 if file.endswith(".yaml") or file.endswith(".yml"):
@@ -275,6 +266,11 @@ class CnfNfdGenerator(NFDGenerator):
     def find_pattern_matches_in_chart(
         self, helm_package: HelmPackageConfig, pattern: str
     ) -> List[Tuple[str, ...]]:
+        """ 
+        Find pattern matches in Helm chart, using provided REGEX pattern.
+        param helm_package: The helm package config.
+        param pattern: The regex pattern to match.
+        """
         chart_dir = os.path.join(self.tmp_folder_name, helm_package.name)
         matches = []
 
@@ -290,10 +286,13 @@ class CnfNfdGenerator(NFDGenerator):
         helm_package: HelmPackageConfig,
         image_line_matches: List[Tuple[str, ...]],
     ) -> List[Any]:
+        """
+        Get the list of artifacts for the chart.
+        param helm_package: The helm package config.
+        param image_line_matches: The list of image line matches.
+        """
         artifact_list = []
-        (chart_name, chart_version) = self.get_chart_name_and_version(
-            helm_package
-        )
+        (chart_name, chart_version) = self.get_chart_name_and_version(helm_package)
         helm_artifact = {
             "name": chart_name,
             "version": chart_version,
@@ -313,24 +312,38 @@ class CnfNfdGenerator(NFDGenerator):
     def get_chart_mapping_schema(
         self, helm_package: HelmPackageConfig
     ) -> Dict[Any, Any]:
+        """
+        Get the schema for the non default values (those with {deploymentParameter...}).
+         Based on user provided values.schema.json.
+
+        param helm_package: The helm package config.
+        """
         non_def_values = os.path.join(
             self.tmp_folder_name, helm_package.name, "values.mappings.yaml"
         )
         values_schema = os.path.join(
             self.tmp_folder_name, helm_package.name, "values.schema.json"
         )
-
-        with open(non_def_values, "r", encoding="utf-8") as stream:
-            values_data = yaml.load(stream, Loader=yaml.SafeLoader)
-
-        with open(values_schema, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            schema_data = data["properties"]
-
+        
         try:
-            final_schema = self.find_deploy_params(
-                values_data, schema_data, {}
+            with open(non_def_values, "r", encoding="utf-8") as stream:
+                values_data = yaml.load(stream, Loader=yaml.SafeLoader)
+        except:
+            raise InvalidTemplateError(
+                f"ERROR: There is no values.mappings.yaml file for the helm package '{helm_package.name}'. Please fix this and run the command again."
             )
+        
+        try:
+            with open(values_schema, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                schema_data = data["properties"]
+        except:
+            raise InvalidTemplateError(
+                f"ERROR: There is no values.schema.json file for the helm package '{helm_package.name}'. Please fix this and run the command again."
+            )
+        
+        try:
+            final_schema = self.find_deploy_params(values_data, schema_data, {})
         except KeyError as e:
             raise InvalidTemplateError(
                 f"ERROR: Your schema and values for the helm package '{helm_package.name}' do not match. Please fix this and run the command again."
@@ -341,17 +354,21 @@ class CnfNfdGenerator(NFDGenerator):
     def find_deploy_params(
         self, nested_dict, schema_nested_dict, final_schema
     ) -> Dict[Any, Any]:
+        """
+        Find the deploy parameters in the values.mappings.yaml file and add them to the schema.
+        """
         original_schema_nested_dict = schema_nested_dict
         for k, v in nested_dict.items():
             # if value is a string and contains deployParameters.
             if isinstance(v, str) and re.search(DEPLOYMENT_PARAMETER_MAPPING_REGEX, v):
-                
                 # only add the parameter name (e.g. from {deployParameter.zone} only param = zone)
                 param = v.split(".", 1)[1]
                 param = param.split("}", 1)[0]
 
                 # add the schema for k (from the big schema) to the (smaller) schema
-                final_schema.update({param: { "type" : schema_nested_dict["properties"][k]["type"]}})
+                final_schema.update(
+                    {param: {"type": schema_nested_dict["properties"][k]["type"]}}
+                )
 
             # else if value is a (non-empty) dictionary (i.e another layer of nesting)
             elif hasattr(v, "items") and v.items():
@@ -370,9 +387,8 @@ class CnfNfdGenerator(NFDGenerator):
     def get_chart_name_and_version(
         self, helm_package: HelmPackageConfig
     ) -> Tuple[str, str]:
-        chart = os.path.join(
-            self.tmp_folder_name, helm_package.name, "Chart.yaml"
-        )
+        """Get the name and version of the chart."""
+        chart = os.path.join(self.tmp_folder_name, helm_package.name, "Chart.yaml")
 
         with open(chart, "r", encoding="utf-8") as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
@@ -381,25 +397,19 @@ class CnfNfdGenerator(NFDGenerator):
 
         return (chart_name, chart_version)
 
-    def generate_parmeter_mappings(
-        self, helm_package: HelmPackageConfig
-    ) -> str:
-        # Basically copy the values.mappings.yaml file to the right place.
+    def generate_parmeter_mappings(self, helm_package: HelmPackageConfig) -> str:
+        """ Generate parameter mappings for the given helm package."""
         values = os.path.join(
             self.tmp_folder_name, helm_package.name, "values.mappings.yaml"
         )
 
-        mappings_folder_path = os.path.join(
-            self.tmp_folder_name, "configMappings"
-        )
+        mappings_folder_path = os.path.join(self.tmp_folder_name, "configMappings")
         mappings_filename = f"{helm_package.name}-mappings.json"
 
         if not os.path.exists(mappings_folder_path):
             os.mkdir(mappings_folder_path)
 
-        mapping_file_path = os.path.join(
-            mappings_folder_path, mappings_filename
-        )
+        mapping_file_path = os.path.join(mappings_folder_path, mappings_filename)
 
         with open(values, "r", encoding="utf-8") as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
