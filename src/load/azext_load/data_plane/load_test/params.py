@@ -40,6 +40,7 @@ def load_arguments(self, _):
 
     # Load Test File
     with self.argument_context("load test file download") as c:
+        c.argument("file_name", argtypes.file_name)
         c.argument("path", argtypes.dir_path)
         c.argument("force", argtypes.force)
 
