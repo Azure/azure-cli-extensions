@@ -855,11 +855,13 @@ def print_existing_policy_from_arm_template(arm_template_path, parameter_data_pa
 
 def process_seccomp_policy(policy2):
 
+    # helper function to add fields to a dictionary if they don't exist
     def defaults(obj, default):
         for key in default:
             obj.setdefault(key, default[key])
         return obj
 
+    # helper function to pick fields from a dictionary
     def pick(obj, *keys):
         result = {}
         for key in keys:
