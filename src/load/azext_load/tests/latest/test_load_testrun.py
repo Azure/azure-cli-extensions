@@ -482,8 +482,7 @@ class LoadTestRunScenario(ScenarioTest):
                 "load_test_resource": LoadTestRunScenario.load_test_resource,
                 "resource_group": LoadTestRunScenario.resource_group,
                 "test_id": LoadTestRunScenario.test_id + "metrics",
-                "test_run_id": LoadTestRunScenario.test_run_id
-                + "metrics-testrun",
+                "test_run_id": LoadTestRunScenario.test_run_id + "metrics-testrun",
                 "load_test_config_file": LoadTestRunScenario.load_test_config_file,
                 "test_plan": LoadTestRunScenario.test_plan,
                 "metric_name": LoadTestRunScenario.metric_name,
@@ -556,9 +555,17 @@ class LoadTestRunScenario(ScenarioTest):
         ).get_output_in_json()
 
         assert len(metrics_with_filters_all) > 0
-        dimensions_list = [dimension for metric in metrics_with_filters_all for dimension in metric["dimensionValues"]]
-        assert self.kwargs["metric_dimension_name"] in set([dimension["name"] for dimension in dimensions_list])
-        assert self.kwargs["metric_dimension_value"] in [dimension["value"] for dimension in dimensions_list]
+        dimensions_list = [
+            dimension
+            for metric in metrics_with_filters_all
+            for dimension in metric["dimensionValues"]
+        ]
+        assert self.kwargs["metric_dimension_name"] in set(
+            [dimension["name"] for dimension in dimensions_list]
+        )
+        assert self.kwargs["metric_dimension_value"] in [
+            dimension["value"] for dimension in dimensions_list
+        ]
 
         # Verify metrics for the test run with metric name and specific dimension and all values
 
@@ -573,9 +580,17 @@ class LoadTestRunScenario(ScenarioTest):
         ).get_output_in_json()
 
         assert len(metrics_with_filters_dimension_all) > 0
-        dimensions_list = [dimension for metric in metrics_with_filters_dimension_all for dimension in metric["dimensionValues"]]
-        assert self.kwargs["metric_dimension_name"] in set([dimension["name"] for dimension in dimensions_list])
-        assert self.kwargs["metric_dimension_value"] in [dimension["value"] for dimension in dimensions_list]
+        dimensions_list = [
+            dimension
+            for metric in metrics_with_filters_dimension_all
+            for dimension in metric["dimensionValues"]
+        ]
+        assert self.kwargs["metric_dimension_name"] in set(
+            [dimension["name"] for dimension in dimensions_list]
+        )
+        assert self.kwargs["metric_dimension_value"] in [
+            dimension["value"] for dimension in dimensions_list
+        ]
 
         # Verify metrics for the test run with metric name and specific dimension and values
 
@@ -590,9 +605,17 @@ class LoadTestRunScenario(ScenarioTest):
         ).get_output_in_json()
 
         assert len(metrics_with_filters_dimension_specific) > 0
-        dimensions_list = [dimension for metric in metrics_with_filters_dimension_specific for dimension in metric["dimensionValues"]]
-        assert self.kwargs["metric_dimension_name"] in set([dimension["name"] for dimension in dimensions_list])
-        assert self.kwargs["metric_dimension_value"] in [dimension["value"] for dimension in dimensions_list]
+        dimensions_list = [
+            dimension
+            for metric in metrics_with_filters_dimension_specific
+            for dimension in metric["dimensionValues"]
+        ]
+        assert self.kwargs["metric_dimension_name"] in set(
+            [dimension["name"] for dimension in dimensions_list]
+        )
+        assert self.kwargs["metric_dimension_value"] in [
+            dimension["value"] for dimension in dimensions_list
+        ]
 
         # Delete the load test
         delete_test(
