@@ -18,7 +18,6 @@ class LoadTestScenario(ScenarioTest):
     load_test_resource = "hbisht-cli-testing"
     resource_group = "hbisht-rg"
     test_id = "sampletest1"
-    #
     load_test_config_file = r"C:\\Users\\hbisht\\Desktop\\config.yaml"
     test_plan = r"C:\\Users\\hbisht\\Desktop\\LoadTest2.jmx"
     app_component_id = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss"
@@ -562,6 +561,7 @@ class LoadTestScenario(ScenarioTest):
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             "--path {file_path} "
+            "--wait"
         )
 
         #list file and confirm

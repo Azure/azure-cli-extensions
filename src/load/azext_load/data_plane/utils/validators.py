@@ -172,13 +172,13 @@ def validate_load_test_config_file(namespace):
         raise InvalidArgumentValueError(
             f"Invalid load-test-config-file type: {type(namespace.load_test_config_file)}"
         )
-    namespace.path = _validate_path(namespace.load_test_config_file, is_dir=False)
+    namespace.load_test_config_file = _validate_path(namespace.load_test_config_file, is_dir=False)
     try:
-        with open(namespace.path, "r") as file:
+        with open(namespace.load_test_config_file, "r") as file:
             yaml.safe_load(file)
     except yaml.YAMLError as e:
         raise InvalidArgumentValueError(
-            f"Invalid YAML file: {namespace.path}. Error: {e}"
+            f"Invalid YAML file: {namespace.load_test_config_file}. Error: {e}"
         )
 
 

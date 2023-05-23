@@ -490,7 +490,7 @@ class LoadTestRunScenario(ScenarioTest):
                 "metric_dimension_value": LoadTestRunScenario.metric_dimension_value,
                 "metric_filters_all": LoadTestRunScenario.metric_filters_all,
                 "metric_filters_dimension_all": LoadTestRunScenario.metric_filters_value_all,
-                "metric_filters_dimension_specific": LoadTestRunScenario.metric_filters_value,
+                "metric_filters_dimension_specific": LoadTestRunScenario.metric_filters_value_specific,
                 "aggregation": LoadTestRunScenario.aggregation,
             }
         )
@@ -521,7 +521,7 @@ class LoadTestRunScenario(ScenarioTest):
             "az load test-run metrics list "
             "--test-run-id {test_run_id} "
             "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} ",
+            "--resource-group {resource_group} "
             "--metric-namespace {metric_namespace} ",
         ).get_output_in_json()
 
@@ -534,8 +534,8 @@ class LoadTestRunScenario(ScenarioTest):
             "az load test-run metrics list "
             "--test-run-id {test_run_id} "
             "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} ",
-            "--metric-namespace {metric_namespace} ",
+            "--resource-group {resource_group} "
+            "--metric-namespace {metric_namespace} "
             "--metric-name {metric_name} ",
         ).get_output_in_json()
 
@@ -548,9 +548,9 @@ class LoadTestRunScenario(ScenarioTest):
             "az load test-run metrics list "
             "--test-run-id {test_run_id} "
             "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} ",
-            "--metric-namespace {metric_namespace} ",
-            "--metric-name {metric_name} ",
+            "--resource-group {resource_group} "
+            "--metric-namespace {metric_namespace} "
+            "--metric-name {metric_name} "
             "--dimension-filters {metric_filters_all} ",
         ).get_output_in_json()
 
@@ -573,9 +573,9 @@ class LoadTestRunScenario(ScenarioTest):
             "az load test-run metrics list "
             "--test-run-id {test_run_id} "
             "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} ",
-            "--metric-namespace {metric_namespace} ",
-            "--metric-name {metric_name} ",
+            "--resource-group {resource_group} "
+            "--metric-namespace {metric_namespace} "
+            "--metric-name {metric_name} "
             "--dimension-filters {metric_filters_dimension_all} ",
         ).get_output_in_json()
 
@@ -598,9 +598,9 @@ class LoadTestRunScenario(ScenarioTest):
             "az load test-run metrics list "
             "--test-run-id {test_run_id} "
             "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} ",
-            "--metric-namespace {metric_namespace} ",
-            "--metric-name {metric_name} ",
+            "--resource-group {resource_group} "
+            "--metric-namespace {metric_namespace} "
+            "--metric-name {metric_name} "
             "--dimension-filters {metric_filters_dimension_specific} ",
         ).get_output_in_json()
 
