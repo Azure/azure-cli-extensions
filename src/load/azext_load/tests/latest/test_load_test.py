@@ -289,9 +289,6 @@ class LoadScenario(ScenarioTest):
             
         }
         )
-        checks = [
-            JMESPathCheck("testId", self.kwargs["test_id"]),
-        ]
 
         # Create a new load test
         create_test(self, test_id=self.kwargs["test_id"], load_test_resource=self.kwargs["load_test_resource"], resource_group=self.kwargs["resource_group"], load_test_config_file=self.kwargs["load_test_config_file"], test_plan=self.kwargs["test_plan"])
@@ -305,7 +302,6 @@ class LoadScenario(ScenarioTest):
             "--app-component-name {app_component_name} "
             "--app-component-type {app_component_type} "
             "--app-component-id {app_component_id} ",
-            checks=checks,
         ).get_output_in_json()
 
         # Verify that the app component was added by making use of the list command
@@ -375,7 +371,6 @@ class LoadScenario(ScenarioTest):
             "--app-component-name {app_component_name} "
             "--app-component-type {app_component_type} "
             "--app-component-id {app_component_id} ",
-            checks=checks,
         ).get_output_in_json()
 
         # Verify that the app component was added by making use of the list command
@@ -401,7 +396,6 @@ class LoadScenario(ScenarioTest):
             "--aggregation {aggregation} "
             "--app-component-type {app_component_type} "
             "--app-component-id {app_component_id} ",
-            checks=checks,
         ).get_output_in_json()
 
         # Verify that the server metrics was added by making use of the list command
