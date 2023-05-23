@@ -5,6 +5,7 @@ Release History
 0.3.31
 ++++++
 * Fix issue when using 'az containerapp up' to create a container app from a local source with a Dockerfile
+* Fix issue for 'az containerapp job update' when updating a job with trigger confirgurations
 
 0.3.30
 ++++++
