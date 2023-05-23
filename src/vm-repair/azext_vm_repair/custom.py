@@ -677,13 +677,11 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     password_length = 30
     password_characters = string.ascii_lowercase + string.digits + string.ascii_uppercase
     repair_password = ''.join(secrets.choice(password_characters) for i in range(password_length))
-    logger.info('Repair password: %s', repair_password)
-
+    
     username_length = 13
     username_characters = string.ascii_lowercase + string.digits
     repair_username = ''.join(secrets.choice(username_characters) for i in range(username_length))
-    logger.info('Repair username: %s', repair_username)
-
+    
     timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
     repair_vm_name = ('repair-' + vm_name)[:14] + '_'
     copy_disk_name = vm_name + '-DiskCopy-' + timestamp
