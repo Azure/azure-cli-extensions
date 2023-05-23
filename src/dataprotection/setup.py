@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.7.0'
+VERSION = '0.8.0'
 try:
     from azext_dataprotection.manual.version import VERSION
 except ImportError:

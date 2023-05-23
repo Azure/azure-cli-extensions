@@ -1,7 +1,20 @@
 Release History
 ===============
-1.12.0 (WIP)
+1.12.1
 ---
+* Add new command -- `az spring eureka-server show` to show the Eureka server resource in consumption tier.
+* Add new command -- `az spring eureka-server enable` to enable the Eureka server resource in consumption tier.
+* Add new command -- `az spring eureka-server disable` to disable the Eureka server resource in consumption tier.
+* Add new command -- `az spring config-server enable` to enable the Config server resource in consumption tier.
+* Add new command -- `az spring config-server disable` to disable the Config server resource in consumption tier.
+
+1.12.0
+---
+* Add new command `az spring container-registry create` to craete container registry resource.
+* Add new command `az spring container-registry delete` to delete container registry resource.
+* Add new command `az spring container-registry list` to list all the container registry resources.
+* Add new command `az spring build-service update` to update build service.
+* Add new command `az spring build-service show` to show build service resource.
 * Add new parameter `--workload-profile` for `az spring app create` and `az spring app update`.
 
 1.11.3

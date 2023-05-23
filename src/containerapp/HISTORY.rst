@@ -2,8 +2,15 @@
 
 Release History
 ===============
-Upcoming
+0.3.31
 ++++++
+* Fix issue when using 'az containerapp up' to create a container app from a local source with a Dockerfile
+
+0.3.30
+++++++
+* Add 'az containerapp service' for binding a service to a container app
+* Add 'az containerapp patch' to enable the local source to cloud
+* Add 'az containerapp job' to manage Container Apps jobs
 * Split 'az containerapp env workload-profile set' into 'az containerapp env workload-profile add' and 'az containerapp env workload-profile update'
 * Add 'az containerapp env workload-profile add' to support creating a workload profile in an environment
 * Add 'az containerapp env workload-profile update' to support updating an existing workload profile in an environment

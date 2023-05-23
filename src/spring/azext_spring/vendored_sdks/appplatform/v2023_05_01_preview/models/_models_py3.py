@@ -3439,7 +3439,7 @@ class ConfigServerProperties(_serialization.Model):
         self,
         *,
         error: Optional["_models.Error"] = None,
-        enabled_state: Union[str, "_models.ConfigServerEnabledState"] = "Disabled",
+        enabled_state: Optional[Union[str, "_models.ConfigServerEnabledState"]] = None,
         config_server: Optional["_models.ConfigServerSettings"] = None,
         **kwargs: Any
     ) -> None:
@@ -5665,7 +5665,7 @@ class EurekaServerProperties(_serialization.Model):
     def __init__(
         self,
         *,
-        enabled_state: Union[str, "_models.EurekaServerEnabledState"] = "Disabled",
+        enabled_state: Optional[Union[str, "_models.EurekaServerEnabledState"]] = None,
         error: Optional["_models.Error"] = None,
         **kwargs: Any
     ) -> None:
