@@ -12,15 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "stack-hci extension wait",
+    "stack-hci arc-setting consent-and-install-default-extension",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class ConsentAndInstallDefaultExtension(AAZCommand):
+    """Add consent time for default extensions and initiate extensions installation
     """
 
     _aaz_info = {
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/arcsettings/{}/extensions/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/arcsettings/{}/consentandinstalldefaultextensions", "2023-03-01"],
         ]
     }
 
@@ -52,12 +53,6 @@ class Wait(AAZWaitCommand):
             required=True,
             id_part="name",
         )
-        _args_schema.extension_name = AAZStrArg(
-            options=["-n", "--name", "--extension-name"],
-            help="The name of the machine extension.",
-            required=True,
-            id_part="child_name_2",
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -65,7 +60,7 @@ class Wait(AAZWaitCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ExtensionsGet(ctx=self.ctx)()
+        self.ArcSettingsConsentAndInstallDefaultExtensions(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,10 +72,10 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ExtensionsGet(AAZHttpOperation):
+    class ArcSettingsConsentAndInstallDefaultExtensions(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -94,13 +89,13 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureStackHCI/clusters/{clusterName}/arcSettings/{arcSettingName}/extensions/{extensionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureStackHCI/clusters/{clusterName}/arcSettings/{arcSettingName}/consentAndInstallDefaultExtensions",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -115,10 +110,6 @@ class Wait(AAZWaitCommand):
                 ),
                 **self.serialize_url_param(
                     "clusterName", self.ctx.args.cluster_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "extensionName", self.ctx.args.extension_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -191,15 +182,30 @@ class Wait(AAZWaitCommand):
                 serialized_name="aggregateState",
                 flags={"read_only": True},
             )
-            properties.extension_parameters = AAZObjectType(
-                serialized_name="extensionParameters",
+            properties.arc_application_client_id = AAZStrType(
+                serialized_name="arcApplicationClientId",
             )
-            properties.managed_by = AAZStrType(
-                serialized_name="managedBy",
+            properties.arc_application_object_id = AAZStrType(
+                serialized_name="arcApplicationObjectId",
+            )
+            properties.arc_application_tenant_id = AAZStrType(
+                serialized_name="arcApplicationTenantId",
+            )
+            properties.arc_instance_resource_group = AAZStrType(
+                serialized_name="arcInstanceResourceGroup",
+            )
+            properties.arc_service_principal_object_id = AAZStrType(
+                serialized_name="arcServicePrincipalObjectId",
+            )
+            properties.connectivity_properties = AAZObjectType(
+                serialized_name="connectivityProperties",
+            )
+            properties.default_extensions = AAZListType(
+                serialized_name="defaultExtensions",
                 flags={"read_only": True},
             )
-            properties.per_node_extension_details = AAZListType(
-                serialized_name="perNodeExtensionDetails",
+            properties.per_node_details = AAZListType(
+                serialized_name="perNodeDetails",
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
@@ -207,46 +213,28 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
 
-            extension_parameters = cls._schema_on_200.properties.extension_parameters
-            extension_parameters.auto_upgrade_minor_version = AAZBoolType(
-                serialized_name="autoUpgradeMinorVersion",
-            )
-            extension_parameters.enable_automatic_upgrade = AAZBoolType(
-                serialized_name="enableAutomaticUpgrade",
-            )
-            extension_parameters.force_update_tag = AAZStrType(
-                serialized_name="forceUpdateTag",
-            )
-            extension_parameters.protected_settings = AAZObjectType(
-                serialized_name="protectedSettings",
-                flags={"secret": True},
-            )
-            extension_parameters.publisher = AAZStrType()
-            extension_parameters.settings = AAZObjectType()
-            extension_parameters.type = AAZStrType()
-            extension_parameters.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
-            )
+            connectivity_properties = cls._schema_on_200.properties.connectivity_properties
+            connectivity_properties.enabled = AAZBoolType()
 
-            protected_settings = cls._schema_on_200.properties.extension_parameters.protected_settings
-            protected_settings.workspace_key = AAZStrType(
-                serialized_name="workspaceKey",
-            )
+            default_extensions = cls._schema_on_200.properties.default_extensions
+            default_extensions.Element = AAZObjectType()
 
-            settings = cls._schema_on_200.properties.extension_parameters.settings
-            settings.workspace_id = AAZStrType(
-                serialized_name="workspaceId",
-            )
-
-            per_node_extension_details = cls._schema_on_200.properties.per_node_extension_details
-            per_node_extension_details.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.per_node_extension_details.Element
-            _element.extension = AAZStrType(
+            _element = cls._schema_on_200.properties.default_extensions.Element
+            _element.category = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.instance_view = AAZObjectType(
-                serialized_name="instanceView",
+            _element.consent_time = AAZStrType(
+                serialized_name="consentTime",
+                flags={"read_only": True},
+            )
+
+            per_node_details = cls._schema_on_200.properties.per_node_details
+            per_node_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.per_node_details.Element
+            _element.arc_instance = AAZStrType(
+                serialized_name="arcInstance",
+                flags={"read_only": True},
             )
             _element.name = AAZStrType(
                 flags={"read_only": True},
@@ -254,27 +242,6 @@ class Wait(AAZWaitCommand):
             _element.state = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
-                flags={"read_only": True},
-            )
-
-            instance_view = cls._schema_on_200.properties.per_node_extension_details.Element.instance_view
-            instance_view.name = AAZStrType()
-            instance_view.status = AAZObjectType()
-            instance_view.type = AAZStrType()
-            instance_view.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
-            )
-
-            status = cls._schema_on_200.properties.per_node_extension_details.Element.instance_view.status
-            status.code = AAZStrType()
-            status.display_status = AAZStrType(
-                serialized_name="displayStatus",
-            )
-            status.level = AAZStrType()
-            status.message = AAZStrType()
-            status.time = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -299,8 +266,8 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _ConsentAndInstallDefaultExtensionHelper:
+    """Helper class for ConsentAndInstallDefaultExtension"""
 
 
-__all__ = ["Wait"]
+__all__ = ["ConsentAndInstallDefaultExtension"]

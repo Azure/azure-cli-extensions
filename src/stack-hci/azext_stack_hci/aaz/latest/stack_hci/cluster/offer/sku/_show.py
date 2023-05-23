@@ -12,15 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "stack-hci extension wait",
+    "stack-hci cluster offer sku show",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class Show(AAZCommand):
+    """Get SKU resource details within a offer of HCI Cluster.
     """
 
     _aaz_info = {
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/arcsettings/{}/extensions/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/publishers/{}/offers/{}/skus/{}", "2023-03-01"],
         ]
     }
 
@@ -40,32 +41,42 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.arc_setting_name = AAZStrArg(
-            options=["--arc-setting-name"],
-            help="The name of the proxy resource holding details of HCI ArcSetting information.",
-            required=True,
-            id_part="child_name_1",
-        )
         _args_schema.cluster_name = AAZStrArg(
             options=["--cluster-name"],
             help="The name of the cluster.",
             required=True,
             id_part="name",
         )
-        _args_schema.extension_name = AAZStrArg(
-            options=["-n", "--name", "--extension-name"],
-            help="The name of the machine extension.",
+        _args_schema.offer_name = AAZStrArg(
+            options=["--offer-name"],
+            help="The name of the offer available within HCI cluster.",
             required=True,
             id_part="child_name_2",
         )
+        _args_schema.publisher_name = AAZStrArg(
+            options=["--publisher-name"],
+            help="The name of the publisher available within HCI cluster.",
+            required=True,
+            id_part="child_name_1",
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+        _args_schema.sku_name = AAZStrArg(
+            options=["-n", "--name", "--sku-name"],
+            help="The name of the SKU available within HCI cluster.",
+            required=True,
+            id_part="child_name_3",
+        )
+        _args_schema.expand = AAZStrArg(
+            options=["--expand"],
+            help="Specify $expand=content,contentVersion to populate additional fields related to the marketplace offer.",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ExtensionsGet(ctx=self.ctx)()
+        self.SkusGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,10 +88,10 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ExtensionsGet(AAZHttpOperation):
+    class SkusGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -94,7 +105,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureStackHCI/clusters/{clusterName}/arcSettings/{arcSettingName}/extensions/{extensionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureStackHCI/clusters/{clusterName}/publishers/{publisherName}/offers/{offerName}/skus/{skuName}",
                 **self.url_parameters
             )
 
@@ -110,19 +121,23 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "arcSettingName", self.ctx.args.arc_setting_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "clusterName", self.ctx.args.cluster_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "extensionName", self.ctx.args.extension_name,
+                    "offerName", self.ctx.args.offer_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "publisherName", self.ctx.args.publisher_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "skuName", self.ctx.args.sku_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -135,6 +150,9 @@ class Wait(AAZWaitCommand):
         @property
         def query_parameters(self):
             parameters = {
+                **self.serialize_query_param(
+                    "$expand", self.ctx.args.expand,
+                ),
                 **self.serialize_query_param(
                     "api-version", "2023-03-01",
                     required=True,
@@ -187,94 +205,40 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.aggregate_state = AAZStrType(
-                serialized_name="aggregateState",
-                flags={"read_only": True},
+            properties.content = AAZStrType()
+            properties.content_version = AAZStrType(
+                serialized_name="contentVersion",
             )
-            properties.extension_parameters = AAZObjectType(
-                serialized_name="extensionParameters",
-            )
-            properties.managed_by = AAZStrType(
-                serialized_name="managedBy",
-                flags={"read_only": True},
-            )
-            properties.per_node_extension_details = AAZListType(
-                serialized_name="perNodeExtensionDetails",
-                flags={"read_only": True},
+            properties.offer_id = AAZStrType(
+                serialized_name="offerId",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-
-            extension_parameters = cls._schema_on_200.properties.extension_parameters
-            extension_parameters.auto_upgrade_minor_version = AAZBoolType(
-                serialized_name="autoUpgradeMinorVersion",
+            properties.publisher_id = AAZStrType(
+                serialized_name="publisherId",
             )
-            extension_parameters.enable_automatic_upgrade = AAZBoolType(
-                serialized_name="enableAutomaticUpgrade",
-            )
-            extension_parameters.force_update_tag = AAZStrType(
-                serialized_name="forceUpdateTag",
-            )
-            extension_parameters.protected_settings = AAZObjectType(
-                serialized_name="protectedSettings",
-                flags={"secret": True},
-            )
-            extension_parameters.publisher = AAZStrType()
-            extension_parameters.settings = AAZObjectType()
-            extension_parameters.type = AAZStrType()
-            extension_parameters.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
+            properties.sku_mappings = AAZListType(
+                serialized_name="skuMappings",
             )
 
-            protected_settings = cls._schema_on_200.properties.extension_parameters.protected_settings
-            protected_settings.workspace_key = AAZStrType(
-                serialized_name="workspaceKey",
+            sku_mappings = cls._schema_on_200.properties.sku_mappings
+            sku_mappings.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.sku_mappings.Element
+            _element.catalog_plan_id = AAZStrType(
+                serialized_name="catalogPlanId",
+            )
+            _element.marketplace_sku_id = AAZStrType(
+                serialized_name="marketplaceSkuId",
+            )
+            _element.marketplace_sku_versions = AAZListType(
+                serialized_name="marketplaceSkuVersions",
             )
 
-            settings = cls._schema_on_200.properties.extension_parameters.settings
-            settings.workspace_id = AAZStrType(
-                serialized_name="workspaceId",
-            )
-
-            per_node_extension_details = cls._schema_on_200.properties.per_node_extension_details
-            per_node_extension_details.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.per_node_extension_details.Element
-            _element.extension = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.instance_view = AAZObjectType(
-                serialized_name="instanceView",
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.state = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
-                flags={"read_only": True},
-            )
-
-            instance_view = cls._schema_on_200.properties.per_node_extension_details.Element.instance_view
-            instance_view.name = AAZStrType()
-            instance_view.status = AAZObjectType()
-            instance_view.type = AAZStrType()
-            instance_view.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
-            )
-
-            status = cls._schema_on_200.properties.per_node_extension_details.Element.instance_view.status
-            status.code = AAZStrType()
-            status.display_status = AAZStrType(
-                serialized_name="displayStatus",
-            )
-            status.level = AAZStrType()
-            status.message = AAZStrType()
-            status.time = AAZStrType()
+            marketplace_sku_versions = cls._schema_on_200.properties.sku_mappings.Element.marketplace_sku_versions
+            marketplace_sku_versions.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -299,8 +263,8 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _ShowHelper:
+    """Helper class for Show"""
 
 
-__all__ = ["Wait"]
+__all__ = ["Show"]

@@ -3,6 +3,12 @@
 Release History
 ===============
 
+0.1.8
+++++++
+* Add new subgroup `cluster offer/publisher` `cluster-update` to support managing cluster subresource
+* Add new command `consent-and-install-default-extension` `initialize-disable-proces` for `az arc-setting`
+* Add new command `extend-software-assurance-benefit` `upload-certificate` for `az cluster`
+
 0.1.7
 ++++++
 * Upgrade api-version to 2023-03-01

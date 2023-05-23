@@ -12,15 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "stack-hci extension wait",
+    "stack-hci cluster-update update-run show",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class Show(AAZCommand):
+    """Get the Update run for a specified update
     """
 
     _aaz_info = {
+        "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/arcsettings/{}/extensions/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/updates/{}/updateruns/{}", "2023-03-01"],
         ]
     }
 
@@ -40,32 +41,32 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.arc_setting_name = AAZStrArg(
-            options=["--arc-setting-name"],
-            help="The name of the proxy resource holding details of HCI ArcSetting information.",
-            required=True,
-            id_part="child_name_1",
-        )
         _args_schema.cluster_name = AAZStrArg(
             options=["--cluster-name"],
             help="The name of the cluster.",
             required=True,
             id_part="name",
         )
-        _args_schema.extension_name = AAZStrArg(
-            options=["-n", "--name", "--extension-name"],
-            help="The name of the machine extension.",
-            required=True,
-            id_part="child_name_2",
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
+        )
+        _args_schema.update_name = AAZStrArg(
+            options=["--update-name"],
+            help="The name of the Update",
+            required=True,
+            id_part="child_name_1",
+        )
+        _args_schema.update_run_name = AAZStrArg(
+            options=["-n", "--name", "--update-run-name"],
+            help="The name of the Update Run",
+            required=True,
+            id_part="child_name_2",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ExtensionsGet(ctx=self.ctx)()
+        self.UpdateRunsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -77,10 +78,10 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ExtensionsGet(AAZHttpOperation):
+    class UpdateRunsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -94,7 +95,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureStackHCI/clusters/{clusterName}/arcSettings/{arcSettingName}/extensions/{extensionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureStackHCI/clusters/{clusterName}/updates/{updateName}/updateRuns/{updateRunName}",
                 **self.url_parameters
             )
 
@@ -110,15 +111,7 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "arcSettingName", self.ctx.args.arc_setting_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "clusterName", self.ctx.args.cluster_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "extensionName", self.ctx.args.extension_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -127,6 +120,14 @@ class Wait(AAZWaitCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "updateName", self.ctx.args.update_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "updateRunName", self.ctx.args.update_run_name,
                     required=True,
                 ),
             }
@@ -172,6 +173,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.location = AAZStrType()
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -187,94 +189,22 @@ class Wait(AAZWaitCommand):
             )
 
             properties = cls._schema_on_200.properties
-            properties.aggregate_state = AAZStrType(
-                serialized_name="aggregateState",
-                flags={"read_only": True},
+            properties.duration = AAZStrType()
+            properties.last_updated_time = AAZStrType(
+                serialized_name="lastUpdatedTime",
             )
-            properties.extension_parameters = AAZObjectType(
-                serialized_name="extensionParameters",
+            properties.progress = AAZObjectType(
+                flags={"client_flatten": True},
             )
-            properties.managed_by = AAZStrType(
-                serialized_name="managedBy",
-                flags={"read_only": True},
-            )
-            properties.per_node_extension_details = AAZListType(
-                serialized_name="perNodeExtensionDetails",
-                flags={"read_only": True},
-            )
+            _ShowHelper._build_schema_step_read(properties.progress)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-
-            extension_parameters = cls._schema_on_200.properties.extension_parameters
-            extension_parameters.auto_upgrade_minor_version = AAZBoolType(
-                serialized_name="autoUpgradeMinorVersion",
+            properties.state = AAZStrType()
+            properties.time_started = AAZStrType(
+                serialized_name="timeStarted",
             )
-            extension_parameters.enable_automatic_upgrade = AAZBoolType(
-                serialized_name="enableAutomaticUpgrade",
-            )
-            extension_parameters.force_update_tag = AAZStrType(
-                serialized_name="forceUpdateTag",
-            )
-            extension_parameters.protected_settings = AAZObjectType(
-                serialized_name="protectedSettings",
-                flags={"secret": True},
-            )
-            extension_parameters.publisher = AAZStrType()
-            extension_parameters.settings = AAZObjectType()
-            extension_parameters.type = AAZStrType()
-            extension_parameters.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
-            )
-
-            protected_settings = cls._schema_on_200.properties.extension_parameters.protected_settings
-            protected_settings.workspace_key = AAZStrType(
-                serialized_name="workspaceKey",
-            )
-
-            settings = cls._schema_on_200.properties.extension_parameters.settings
-            settings.workspace_id = AAZStrType(
-                serialized_name="workspaceId",
-            )
-
-            per_node_extension_details = cls._schema_on_200.properties.per_node_extension_details
-            per_node_extension_details.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.per_node_extension_details.Element
-            _element.extension = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.instance_view = AAZObjectType(
-                serialized_name="instanceView",
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.state = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
-                flags={"read_only": True},
-            )
-
-            instance_view = cls._schema_on_200.properties.per_node_extension_details.Element.instance_view
-            instance_view.name = AAZStrType()
-            instance_view.status = AAZObjectType()
-            instance_view.type = AAZStrType()
-            instance_view.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
-            )
-
-            status = cls._schema_on_200.properties.per_node_extension_details.Element.instance_view.status
-            status.code = AAZStrType()
-            status.display_status = AAZStrType(
-                serialized_name="displayStatus",
-            )
-            status.level = AAZStrType()
-            status.message = AAZStrType()
-            status.time = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -299,8 +229,56 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _ShowHelper:
+    """Helper class for Show"""
+
+    _schema_step_read = None
+
+    @classmethod
+    def _build_schema_step_read(cls, _schema):
+        if cls._schema_step_read is not None:
+            _schema.description = cls._schema_step_read.description
+            _schema.end_time_utc = cls._schema_step_read.end_time_utc
+            _schema.error_message = cls._schema_step_read.error_message
+            _schema.last_updated_time_utc = cls._schema_step_read.last_updated_time_utc
+            _schema.name = cls._schema_step_read.name
+            _schema.start_time_utc = cls._schema_step_read.start_time_utc
+            _schema.status = cls._schema_step_read.status
+            _schema.steps = cls._schema_step_read.steps
+            return
+
+        cls._schema_step_read = _schema_step_read = AAZObjectType()
+
+        step_read = _schema_step_read
+        step_read.description = AAZStrType()
+        step_read.end_time_utc = AAZStrType(
+            serialized_name="endTimeUtc",
+        )
+        step_read.error_message = AAZStrType(
+            serialized_name="errorMessage",
+        )
+        step_read.last_updated_time_utc = AAZStrType(
+            serialized_name="lastUpdatedTimeUtc",
+        )
+        step_read.name = AAZStrType()
+        step_read.start_time_utc = AAZStrType(
+            serialized_name="startTimeUtc",
+        )
+        step_read.status = AAZStrType()
+        step_read.steps = AAZListType()
+
+        steps = _schema_step_read.steps
+        steps.Element = AAZObjectType()
+        cls._build_schema_step_read(steps.Element)
+
+        _schema.description = cls._schema_step_read.description
+        _schema.end_time_utc = cls._schema_step_read.end_time_utc
+        _schema.error_message = cls._schema_step_read.error_message
+        _schema.last_updated_time_utc = cls._schema_step_read.last_updated_time_utc
+        _schema.name = cls._schema_step_read.name
+        _schema.start_time_utc = cls._schema_step_read.start_time_utc
+        _schema.status = cls._schema_step_read.status
+        _schema.steps = cls._schema_step_read.steps
 
 
-__all__ = ["Wait"]
+__all__ = ["Show"]

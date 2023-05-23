@@ -12,19 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "stack-hci extension list",
+    "stack-hci cluster publisher list",
 )
 class List(AAZCommand):
-    """List all extensions under arc setting resource.
-
-    :example: List extensions under arc setting resource
-        az stack-hci extension list --arc-setting-name "default" --cluster-name "myCluster" --resource-group "test-rg"
+    """List Publishers available for the HCI Cluster.
     """
 
     _aaz_info = {
         "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/arcsettings/{}/extensions", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/publishers", "2023-03-01"],
         ]
     }
 
@@ -43,11 +40,6 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.arc_setting_name = AAZStrArg(
-            options=["--arc-setting-name"],
-            help="The name of the proxy resource holding details of HCI ArcSetting information.",
-            required=True,
-        )
         _args_schema.cluster_name = AAZStrArg(
             options=["--cluster-name"],
             help="The name of the cluster.",
@@ -60,7 +52,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ExtensionsListByArcSetting(ctx=self.ctx)()
+        self.PublishersListByCluster(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +68,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class ExtensionsListByArcSetting(AAZHttpOperation):
+    class PublishersListByCluster(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -90,7 +82,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureStackHCI/clusters/{clusterName}/arcSettings/{arcSettingName}/extensions",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureStackHCI/clusters/{clusterName}/publishers",
                 **self.url_parameters
             )
 
@@ -105,10 +97,6 @@ class List(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "arcSettingName", self.ctx.args.arc_setting_name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "clusterName", self.ctx.args.cluster_name,
                     required=True,
@@ -191,94 +179,10 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.aggregate_state = AAZStrType(
-                serialized_name="aggregateState",
-                flags={"read_only": True},
-            )
-            properties.extension_parameters = AAZObjectType(
-                serialized_name="extensionParameters",
-            )
-            properties.managed_by = AAZStrType(
-                serialized_name="managedBy",
-                flags={"read_only": True},
-            )
-            properties.per_node_extension_details = AAZListType(
-                serialized_name="perNodeExtensionDetails",
-                flags={"read_only": True},
-            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-
-            extension_parameters = cls._schema_on_200.value.Element.properties.extension_parameters
-            extension_parameters.auto_upgrade_minor_version = AAZBoolType(
-                serialized_name="autoUpgradeMinorVersion",
-            )
-            extension_parameters.enable_automatic_upgrade = AAZBoolType(
-                serialized_name="enableAutomaticUpgrade",
-            )
-            extension_parameters.force_update_tag = AAZStrType(
-                serialized_name="forceUpdateTag",
-            )
-            extension_parameters.protected_settings = AAZObjectType(
-                serialized_name="protectedSettings",
-                flags={"secret": True},
-            )
-            extension_parameters.publisher = AAZStrType()
-            extension_parameters.settings = AAZObjectType()
-            extension_parameters.type = AAZStrType()
-            extension_parameters.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
-            )
-
-            protected_settings = cls._schema_on_200.value.Element.properties.extension_parameters.protected_settings
-            protected_settings.workspace_key = AAZStrType(
-                serialized_name="workspaceKey",
-            )
-
-            settings = cls._schema_on_200.value.Element.properties.extension_parameters.settings
-            settings.workspace_id = AAZStrType(
-                serialized_name="workspaceId",
-            )
-
-            per_node_extension_details = cls._schema_on_200.value.Element.properties.per_node_extension_details
-            per_node_extension_details.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.per_node_extension_details.Element
-            _element.extension = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.instance_view = AAZObjectType(
-                serialized_name="instanceView",
-            )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.state = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
-                flags={"read_only": True},
-            )
-
-            instance_view = cls._schema_on_200.value.Element.properties.per_node_extension_details.Element.instance_view
-            instance_view.name = AAZStrType()
-            instance_view.status = AAZObjectType()
-            instance_view.type = AAZStrType()
-            instance_view.type_handler_version = AAZStrType(
-                serialized_name="typeHandlerVersion",
-            )
-
-            status = cls._schema_on_200.value.Element.properties.per_node_extension_details.Element.instance_view.status
-            status.code = AAZStrType()
-            status.display_status = AAZStrType(
-                serialized_name="displayStatus",
-            )
-            status.level = AAZStrType()
-            status.message = AAZStrType()
-            status.time = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

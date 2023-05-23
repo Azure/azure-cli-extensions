@@ -107,3 +107,34 @@ class StackHciClientTest(ScenarioTest):
             self.check('type', 'microsoft.azurestackhci/clusters/arcsettings/extensions')
         ])
         self.cmd('stack-hci extension delete -n {type} -g {rg} --cluster-name {cluster_name} --arc-setting-name default --no-wait --yes')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_stack_hci_extension', location='eastus')
+    def test_stack_hci_extension_crud(self):
+        self.kwargs.update({
+            'cluster_name': self.create_random_name('cluster', 15),
+            'app_name': self.create_random_name('app', 15),
+            'type': 'MicrosoftMonitoringAgent',
+            'publisher': 'Microsoft.Compute'
+        })
+        self.kwargs['client_id'] = self.cmd('ad app create --display-name {app_name}').get_output_in_json()['appId']
+        self.kwargs['tenant_id'] = self.cmd('account show').get_output_in_json()['tenantId']
+        self.cmd(
+            'stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id}')
+        self.cmd('stack-hci arc-setting create -n default -g {rg} --cluster-name {cluster_name}')
+        self.cmd(
+            'stack-hci extension create -n {type} -g {rg} --cluster-name {cluster_name} --arc-setting-name default --settings {{workspaceId:xx}} --protected-settings {{workspaceKey:xx}} --publisher {publisher} --type {type} --type-handler-version 1.10',
+            checks=[
+                self.check('name', self.kwargs['type']),
+                self.check('type', 'microsoft.azurestackhci/clusters/arcsettings/extensions')
+            ])
+        self.cmd('stack-hci extension list -g {rg} --cluster-name {cluster_name} --arc-setting-name default', checks=[
+            self.check('length(@)', 1),
+            self.check('@[0].name', self.kwargs['type'])
+        ])
+        self.cmd('stack-hci extension show -n {type} -g {rg} --cluster-name {cluster_name} --arc-setting-name default',
+                 checks=[
+                     self.check('name', self.kwargs['type']),
+                     self.check('type', 'microsoft.azurestackhci/clusters/arcsettings/extensions')
+                 ])
+        self.cmd(
+            'stack-hci extension delete -n {type} -g {rg} --cluster-name {cluster_name} --arc-setting-name default --no-wait --yes')
