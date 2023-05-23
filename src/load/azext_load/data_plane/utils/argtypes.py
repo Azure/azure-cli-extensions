@@ -26,6 +26,13 @@ wait = CLIArgumentType(
     default=False,
     help="Wait for the Long-Running Operation to complete.",
 )
+
+force = CLIArgumentType(
+    options_list=["--force"],
+    action="store_true",
+    default=False,
+    help="Force run the command.",
+)
 #
 
 test_id = CLIArgumentType(
@@ -36,9 +43,23 @@ test_id = CLIArgumentType(
     help="Test ID of the load test",
 )
 
+test_id_no_completer = CLIArgumentType(
+    validator=validators.validate_test_id,
+    options_list=["--test-id", "-t"],
+    type=str,
+    help="Test ID of the load test",
+)
+
 test_run_id = CLIArgumentType(
     validator=validators.validate_test_run_id,
     completer=completers.get_test_run_id_completion_list(),
+    options_list=["--test-run-id", "-r"],
+    type=str,
+    help="Test run ID of the load test run",
+)
+
+test_run_id_no_completer = CLIArgumentType(
+    validator=validators.validate_test_run_id,
     options_list=["--test-run-id", "-r"],
     type=str,
     help="Test run ID of the load test run",
@@ -77,6 +98,7 @@ key_vault_reference_identity = CLIArgumentType(
 )
 
 load_test_config_file = CLIArgumentType(
+    validator=validators.validate_load_test_config_file,
     options_list=["--load-test-config-file"],
     type=str,
     help="Path to the load test config file.",
@@ -135,11 +157,26 @@ certificate = CLIArgumentType(
     ),
 )
 
-path = CLIArgumentType(
-    validator=validators.validate_path,
+dir_path = CLIArgumentType(
+    validator=validators.validate_dir_path,
     options_list=["--path"],
     type=str,
     help="Path to the directory to download files.",
+)
+
+file_path = CLIArgumentType(
+    validator=validators.validate_file_path,
+    options_list=["--path"],
+    type=str,
+    help="Path to the file to upload.",
+)
+
+file_type = CLIArgumentType(
+    validator=validators.validate_file_type,
+    completer=get_generic_completion_list(validators.allowed_file_types),
+    options_list=["--file-type"],
+    type=str,
+    help="Type of file.",
 )
 
 test_run_input = CLIArgumentType(

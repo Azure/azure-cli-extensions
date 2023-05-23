@@ -4,6 +4,7 @@ from azext_load.data_plane.utils import argtypes
 def load_arguments(self, _):
     # Load Test
     with self.argument_context("load test create") as c:
+        c.argument("test_id", argtypes.test_id_no_completer)
         c.argument("display_name", argtypes.test_display_name)
         c.argument("test_plan", argtypes.test_plan)
         c.argument("test_description", argtypes.test_description)
@@ -34,7 +35,18 @@ def load_arguments(self, _):
         c.argument("wait", argtypes.wait)
 
     with self.argument_context("load test download-files") as c:
-        c.argument("path", argtypes.path)
+        c.argument("path", argtypes.dir_path)
+        c.argument("force", argtypes.force)
+
+    # Load Test File
+    with self.argument_context("load test file download") as c:
+        c.argument("path", argtypes.dir_path)
+        c.argument("force", argtypes.force)
+
+    with self.argument_context("load test file upload") as c:
+        c.argument("path", argtypes.file_path)
+        c.argument("file_type", argtypes.file_type)
+        c.argument("wait", argtypes.wait)
 
     # Load Test App Components
     with self.argument_context("load test app-components") as c:

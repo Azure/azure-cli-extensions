@@ -10,7 +10,7 @@ import requests
 import yaml
 from azext_load.data_plane.utils import validators
 from azext_load.vendored_sdks.loadtesting_mgmt import LoadTestMgmtClient
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
@@ -82,7 +82,9 @@ def get_load_test_resource_endpoint(
             resource_group,
         )
         if resource_group is None:
-            return None
+            raise InvalidArgumentValueError(
+                "Resource group name must be specified when load-test-resource is a name"
+            )
         name = load_test_resource
 
     mgmt_client = LoadTestMgmtClient(credential=cred, subscription_id=subscription_id)
@@ -139,17 +141,22 @@ def get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name=N
 
 def download_file(url, file_path):
     response = None
-    count = 3
-    the_ex = None
-    while count > 0:
+    retries = 3
+    ex = None
+    while retries > 0:
         try:
             response = requests.get(url, stream=True, allow_redirects=True)
             break
-        except Exception as ex:
-            the_ex = ex
-            count -= 1
-    if count == 0:
-        msg = "Request for {} failed: {}".format(url, str(the_ex))
+        except Exception as e:
+            ex = e
+            retries -= 1
+            logger.debug(
+                "Exception occurred while downloading file: %s. Retrying the request. Retries remaining: %d",
+                str(ex),
+                retries,
+            )
+    if retries == 0:
+        msg = "Request for {} failed after all retries: {}".format(url, str(ex))
         logger.debug(msg)
         raise Exception(msg)
 
@@ -161,43 +168,47 @@ def download_file(url, file_path):
 
 
 def parse_cert(certificate):
-    comps = {}
     if len(certificate) != 1:
         raise ValueError("Only one certificate is supported")
     certificate = certificate[0]
-    comps = [certificate.get("name"), certificate.get("value")]
-    if not validators._validate_akv_url(comps[1], "certificates"):
-        raise ValueError(f"Invalid AKV Certificate URL: {comps[1]}")
+    name, value = certificate.get("name"), certificate.get("value")
+    if not validators._validate_akv_url(value, "certificates"):
+        raise ValueError(f"Invalid AKV Certificate URL: {value}")
     certificate = {
-        "name": comps[0],
+        "name": name,
         "type": "AKV_CERT_URI",
-        "value": comps[1],
+        "value": value,
     }
     return certificate
 
 
 def parse_secrets(secrets):
-    secrets_list = {}
+    secrets_dict = {}
     for secret in secrets:
-        if not validators._validate_akv_url(secret.get("value"), "secrets"):
-            url = secret.get("value")
-            raise ValueError(f"Invalid AKV Certificate URL: {url}")
-        secrets_list.update(
-            {
-                secret.get("name"): {
-                    "type": "AKV_SECRET_URI",
-                    "value": secret.get("value"),
-                }
+        name, value = secret.get("name"), secret.get("value")
+        if name is None or value is None:
+            raise ValueError("Both name and value are required for secret")
+        if not validators._validate_akv_url(value, "secrets"):
+            raise ValueError(f"Invalid AKV Certificate URL: {value}")
+        secrets_dict[name] = {
+            name: {
+                "type": "AKV_SECRET_URI",
+                "value": value,
             }
-        )
-    return secrets_list
+        }
+    return secrets_dict
 
 
-def parse_env(env):
-    env_list = {}
-    for item in env:
-        env_list.update({item.get("name"): item.get("value")})
-    return env_list
+def parse_env(envs):
+    env_dict = {}
+    for env in envs:
+        name, value = env.get("name"), env.get("value")
+        if name is None:
+            raise ValueError("Name is required for environment variable")
+        if value is None:
+            value = ""
+        env_dict[name] = value
+    return env_dict
 
 
 def create_or_update_body(
@@ -228,9 +239,8 @@ def create_or_update_body(
             logger.warning(
                 "Additional flags were passed along with --load-test-config-file. These flags will be ignored, and the configuration defined in the yaml will be used instead"
             )
-        # exception handling for incorrect filepath or name
         try:
-            with open(load_test_config_file) as file:
+            with open(load_test_config_file, "r") as file:
                 data = yaml.safe_load(file)
                 if "displayName" in data:
                     new_body["displayName"] = data["displayName"]
@@ -280,7 +290,7 @@ def create_or_update_body(
                     new_body["passFailCriteria"] = {}
                     new_body["passFailCriteria"]["passFailMetrics"] = {}
                     for index, items in enumerate(data["failureCriteria"]):
-                        id = get_test_run_id()
+                        id = get_random_uuid()
                         name = list(items.keys())[0]
                         components = list(items.values())[0]
                         new_body["passFailCriteria"]["passFailMetrics"][id] = {}
@@ -305,14 +315,14 @@ def create_or_update_body(
                         new_body["passFailCriteria"]["passFailMetrics"][id][
                             "requestName"
                         ] = name
-        except (IOError, OSError) as ex:
-            if getattr(ex, "errno", 0) == errno.ENOENT:
-                raise ValidationError(f"{load_test_config_file} does not exist") from ex
-            raise
-        except (yaml.parser.ParserError, UnicodeDecodeError) as ex:
-            raise ValidationError(
-                f"Error parsing {load_test_config_file} ({str(ex)})"
-            ) from ex
+        except Exception as e:
+            logger.debug(
+                "Exception occurred while parsing load test configuration file: %s",
+                str(e),
+            )
+            raise InvalidArgumentValueError(
+                "Invalid load test configuration file. Please check the file path and format"
+            )
 
     else:
         if display_name is not None:
