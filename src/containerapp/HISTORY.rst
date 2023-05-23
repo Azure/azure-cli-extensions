@@ -2,10 +2,13 @@
 
 Release History
 ===============
+0.3.32
+++++++
+* Fix for 'az containerapp job update' command when updating Container App job with a trigger configuration
+
 0.3.31
 ++++++
 * Fix issue when using 'az containerapp up' to create a container app from a local source with a Dockerfile
-* Fix issue for 'az containerapp job update' when updating a job with trigger configurations
 
 0.3.30
 ++++++
