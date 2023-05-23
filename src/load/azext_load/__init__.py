@@ -37,14 +37,14 @@ class LoadCommandsLoader(AzCommandsLoader):
 
     def load_arguments(self, command):
         from azext_load._params import load_arguments
-        from azext_load.data_plane.params import load_arguments as load_data_arguments 
-        from azext_load.data_plane.load_test.params import load_arguments as load_data_test_arguments
-        from azext_load.data_plane.load_test_run.params import load_arguments as load_data_test_run_arguments
+        from azext_load.data_plane.params import load_arguments as load_common_arguments 
+        from azext_load.data_plane.load_test.params import load_arguments as load_test_arguments
+        from azext_load.data_plane.load_test_run.params import load_arguments as load_test_run_arguments
 
         load_arguments(self, command)
-        load_data_arguments(self, command)
-        load_data_test_arguments(self, command)
-        load_data_test_run_arguments(self, command)
+        load_common_arguments(self, command)
+        load_test_arguments(self, command)
+        load_test_run_arguments(self, command)
 
 
 COMMAND_LOADER_CLS = LoadCommandsLoader

@@ -1,3 +1,4 @@
+from azext_load.data_plane.utils import validators
 from azure.cli.core.commands import CliCommandType
 
 admin_custom_sdk = CliCommandType(
@@ -14,7 +15,11 @@ def load_test_commands(self, _):
         g.custom_command("delete", "delete_test", confirmation=True)
         g.custom_command("list", "list_tests")
         g.custom_show_command("show", "get_test")
-        g.custom_command("download-files", "download_test_files")
+        g.custom_command(
+            "download-files",
+            "download_test_files",
+            validator=validators.validate_download_files,
+        )
 
     with self.command_group(
         "load test app-components",

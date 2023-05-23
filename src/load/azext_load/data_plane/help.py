@@ -4,7 +4,7 @@ helps[
     "load test"
 ] = """
 type: group
-short-summary: Command group with commands related to test.
+short-summary: Command group to manage load tests.
 long-summary: Command group with commands related to test such as create, update, delete, list, etc.
 parameters:
     - name: --load-test-resource, --name, -n

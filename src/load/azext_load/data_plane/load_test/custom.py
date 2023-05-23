@@ -301,18 +301,19 @@ def upload_test_file(
     path,
     file_type=None,
     resource_group_name=None,
-    no_wait=False,
+    wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Uploading file for the test")
     with open(path, "r") as file:
+        # get file name
         upload_poller = client.begin_upload_test_file(
             test_id,
-            file_name=file.name.split("\\")[-1],
+            file_name=os.path.basename(file.name),
             file_type=file_type,
             body=file,
         )
-        if not no_wait:
+        if wait:
             response = upload_poller.result()
             if response.get("validationStatus") == "VALIDATION_SUCCESS":
                 logger.info("Uploaded test plan for the test")

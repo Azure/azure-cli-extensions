@@ -144,6 +144,17 @@ def validate_metric_id(namespace):
         )
 
 
+def validate_download_files(namespace):
+    if not isinstance(namespace.path, str):
+        raise InvalidArgumentValueError(f"Invalid path type: {type(namespace.path)}")
+
+    # Create the directories if they do not exist
+    if namespace.force:
+        return
+
+    validate_path(namespace)
+
+
 def validate_path(namespace):
     if not isinstance(namespace.path, str):
         raise InvalidArgumentValueError(f"Invalid path type: {type(namespace.path)}")
@@ -158,6 +169,20 @@ def validate_path(namespace):
     if not os.access(namespace.path, os.W_OK | os.X_OK):
         raise InvalidArgumentValueError(
             f"Provided path '{namespace.path}' is not writable"
+        )
+
+
+allowed_file_types = ["ADDITIONAL_ARTIFACTS", "JMX_FILE", "USER_PROPERTIES"]
+
+
+def validate_file_type(namespace):
+    if not isinstance(namespace.file_type, str):
+        raise InvalidArgumentValueError(
+            f"Invalid file-type type: {type(namespace.file_type)}"
+        )
+    if namespace.file_type not in allowed_file_types:
+        raise InvalidArgumentValueError(
+            f"Invalid file-type value: {namespace.file_type}. Allowed values: {', '.join(allowed_file_types)}"
         )
 
 

@@ -139,17 +139,22 @@ def get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name=N
 
 def download_file(url, file_path):
     response = None
-    count = 3
-    the_ex = None
-    while count > 0:
+    retries = 3
+    ex = None
+    while retries > 0:
         try:
             response = requests.get(url, stream=True, allow_redirects=True)
             break
-        except Exception as ex:
-            the_ex = ex
-            count -= 1
-    if count == 0:
-        msg = "Request for {} failed: {}".format(url, str(the_ex))
+        except Exception as e:
+            ex = e
+            retries -= 1
+            logger.debug(
+                "Exception occurred while downloading file: %s. Retrying the request. Retries remaining: %d",
+                str(ex),
+                retries,
+            )
+    if retries == 0:
+        msg = "Request for {} failed after all retries: {}".format(url, str(ex))
         logger.debug(msg)
         raise Exception(msg)
 
@@ -280,7 +285,7 @@ def create_or_update_body(
                     new_body["passFailCriteria"] = {}
                     new_body["passFailCriteria"]["passFailMetrics"] = {}
                     for index, items in enumerate(data["failureCriteria"]):
-                        id = get_test_run_id()
+                        id = get_random_uuid()
                         name = list(items.keys())[0]
                         components = list(items.values())[0]
                         new_body["passFailCriteria"]["passFailMetrics"][id] = {}

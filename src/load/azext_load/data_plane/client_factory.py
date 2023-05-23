@@ -31,11 +31,3 @@ def testrun_data_plane_client(
     return LoadTestRunClient(
         endpoint=endpoint, credential=credential, user_agent_policy=user_agent_policy
     )
-
-
-def cf_admin(cli_ctx, *_, **kwargs):
-    return admin_data_plane_client(cli_ctx, **kwargs)
-
-
-def cf_testrun(cli_ctx, *_, **kwargs):
-    return testrun_data_plane_client(cli_ctx, **kwargs)
