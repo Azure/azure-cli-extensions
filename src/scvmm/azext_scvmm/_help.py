@@ -718,9 +718,9 @@ helps[
     'scvmm vm restore-checkpoint'
 ] = """
     type: command
-    short-summary: Restores to VM checkpoint
+    short-summary: Restore VM checkpoint
     examples:
-      - name: Restores VM checkpoint
+      - name: Restore VM checkpoint
         text: |-
                az scvmm vm restore-checkpoint --subscription contoso-sub \
 --resource-group contoso-rg --name contoso-vm --checkpoint-id checkpoint-guid
