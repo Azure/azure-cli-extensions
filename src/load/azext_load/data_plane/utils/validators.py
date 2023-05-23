@@ -6,6 +6,7 @@ from datetime import datetime
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import CLIError
 from msrestazure.tools import is_valid_resource_id
+import yaml
 
 from . import utils
 
@@ -155,30 +156,58 @@ def validate_download(namespace):
     # Create the directories if they do not exist
     if namespace.force:
         os.makedirs(namespace.path, exist_ok=True)
-        logger.debug("Directory does not exist. Created as --force is passed - %s", namespace.path)
+        logger.debug(
+            "Directory does not exist. Created as --force is passed - %s",
+            namespace.path,
+        )
         return
 
-    validate_path(namespace)
+    validate_dir_path(namespace)
 
 
-def validate_path(namespace):
-    if not isinstance(namespace.path, str):
-        raise InvalidArgumentValueError(f"Invalid path type: {type(namespace.path)}")
+def validate_load_test_config_file(namespace):
+    namespace.path = _validate_path(namespace.load_test_config_file, is_dir=False)
 
-    namespace.path = os.path.normpath(os.path.expanduser(namespace.path))
-
-    if not os.path.exists(namespace.path):
+    try:
+        with open(namespace.path, "r") as file:
+            yaml.safe_load(file)
+    except yaml.YAMLError as e:
         raise InvalidArgumentValueError(
-            f"Provided path '{namespace.path}' does not exist"
+            f"Invalid YAML file: {namespace.path}. Error: {e}"
         )
-    if not os.path.isdir(namespace.path):
-        raise InvalidArgumentValueError(
-            f"Provided path '{namespace.path}' is not a directory"
-        )
-    if not os.access(namespace.path, os.W_OK | os.X_OK):
-        raise InvalidArgumentValueError(
-            f"Provided path '{namespace.path}' is not writable"
-        )
+
+
+def validate_dir_path(namespace):
+    namespace.path = _validate_path(namespace.path, is_dir=True)
+
+
+def validate_file_path(namespace):
+    namespace.path = _validate_path(namespace.path, is_dir=False)
+
+
+def _validate_path(path, is_dir=False):
+    if not isinstance(path, str):
+        raise InvalidArgumentValueError(f"Invalid path type: {type(path)}")
+
+    path = os.path.normpath(os.path.expanduser(path))
+
+    if not os.path.exists(path):
+        raise InvalidArgumentValueError(f"Provided path '{path}' does not exist")
+    if is_dir:
+        if not os.path.isdir(path):
+            raise InvalidArgumentValueError(
+                f"Provided path '{path}' is not a directory"
+            )
+        if not os.access(path, os.W_OK | os.X_OK):
+            raise InvalidArgumentValueError(
+                f"Provided path '{path}' is not writable or executable"
+            )
+    else:
+        if not os.path.isfile(path):
+            raise InvalidArgumentValueError(f"Provided path '{path}' is not a file")
+        if not os.access(path, os.R_OK):
+            raise InvalidArgumentValueError(f"Provided path '{path}' is not readable")
+    return path
 
 
 allowed_file_types = ["ADDITIONAL_ARTIFACTS", "JMX_FILE", "USER_PROPERTIES"]

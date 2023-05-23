@@ -98,6 +98,7 @@ key_vault_reference_identity = CLIArgumentType(
 )
 
 load_test_config_file = CLIArgumentType(
+    validator=validators.validate_load_test_config_file,
     options_list=["--load-test-config-file"],
     type=str,
     help="Path to the load test config file.",
@@ -156,11 +157,18 @@ certificate = CLIArgumentType(
     ),
 )
 
-path = CLIArgumentType(
-    validator=validators.validate_path,
+dir_path = CLIArgumentType(
+    validator=validators.validate_dir_path,
     options_list=["--path"],
     type=str,
     help="Path to the directory to download files.",
+)
+
+file_path = CLIArgumentType(
+    validator=validators.validate_file_path,
+    options_list=["--path"],
+    type=str,
+    help="Path to the file to upload.",
 )
 
 file_type = CLIArgumentType(

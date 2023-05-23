@@ -19,7 +19,7 @@ def load_arguments(self, _):
         c.argument("description", argtypes.test_run_description)
 
     with self.argument_context("load test-run download-files") as c:
-        c.argument("path", argtypes.path)
+        c.argument("path", argtypes.dir_path)
         c.argument("test_run_input", argtypes.test_run_input)
         c.argument("test_run_log", argtypes.test_run_log)
         c.argument("test_run_results", argtypes.test_run_results)

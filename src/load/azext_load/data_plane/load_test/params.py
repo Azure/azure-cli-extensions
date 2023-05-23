@@ -35,15 +35,16 @@ def load_arguments(self, _):
         c.argument("wait", argtypes.wait)
 
     with self.argument_context("load test download-files") as c:
-        c.argument("path", argtypes.path)
+        c.argument("path", argtypes.dir_path)
         c.argument("force", argtypes.force)
 
     # Load Test File
     with self.argument_context("load test file download") as c:
-        c.argument("path", argtypes.path)
+        c.argument("path", argtypes.dir_path)
         c.argument("force", argtypes.force)
-    
+
     with self.argument_context("load test file upload") as c:
+        c.argument("path", argtypes.file_path)
         c.argument("file_type", argtypes.file_type)
         c.argument("wait", argtypes.wait)
 

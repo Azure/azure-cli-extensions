@@ -47,4 +47,6 @@ def load_test_commands(self, _):
         g.custom_command("upload", "upload_test_file")
         g.custom_command("list", "list_test_file")
         g.custom_command("delete", "delete_test_file", confirmation=True)
-        g.custom_command("download", "download_test_file", validator=validators.validate_download)
+        g.custom_command(
+            "download", "download_test_file", validator=validators.validate_download
+        )
