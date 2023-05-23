@@ -173,7 +173,6 @@ def load_arguments(self: AzCommandsLoader, _):
     with self.argument_context('scvmm vm create-checkpoint') as c:
         c.argument(
             'checkpoint_name',
-            options_list=['--checkpoint-name'],
             help="Name of the checkpoint to be created.",
         )
 
