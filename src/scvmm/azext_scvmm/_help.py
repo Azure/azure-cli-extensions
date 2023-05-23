@@ -706,7 +706,7 @@ helps[
     'scvmm vm delete-checkpoint'
 ] = """
     type: command
-    short-summary: Deletes the specified VM checkpoint
+    short-summary: Delete the specified VM checkpoint
     examples:
       - name: Delete VM checkpoint
         text: |-
