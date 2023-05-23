@@ -12,7 +12,6 @@ from hashlib import sha256
 import deepdiff
 import yaml
 import docker
-import pydash
 from azext_confcom.errors import (
     eprint,
 )
@@ -852,17 +851,30 @@ def print_existing_policy_from_arm_template(arm_template_path, parameter_data_pa
 
 
 def process_seccomp_policy(policy2):
+
+    def defaults(obj, default):
+        for key in default:
+            obj.setdefault(key, default[key])
+        return obj
+
+    def pick(obj, *keys):
+        result = {}
+        for key in keys:
+            if key in obj:
+                result[key] = obj[key]
+        return result
+
     policy = json.loads(policy2)
-    policy = pydash.defaults(policy, {'defaultAction': ""})
-    policy = pydash.pick(policy, 'defaultAction', 'defaultErrnoRet', 'architectures',
-                         'flags', 'listenerPath', 'listenerMetadata', 'syscalls')
+    policy = defaults(policy, {'defaultAction': ""})
+    policy = pick(policy, 'defaultAction', 'defaultErrnoRet', 'architectures',
+                  'flags', 'listenerPath', 'listenerMetadata', 'syscalls')
     if 'syscalls' in policy:
         syscalls = policy['syscalls']
         temp_syscalls = []
         for s in syscalls:
             syscall = s
-            syscall = pydash.defaults(syscall, {'names': [], 'action': ""})
-            syscall = pydash.pick(syscall, 'names', 'action', 'errnoRet', 'args')
+            syscall = defaults(syscall, {'names': [], 'action': ""})
+            syscall = pick(syscall, 'names', 'action', 'errnoRet', 'args')
 
             if 'args' in syscall:
                 temp_args = []
@@ -870,8 +882,8 @@ def process_seccomp_policy(policy2):
 
                 for j in args:
                     arg = j
-                    arg = pydash.defaults(arg, {'value': 0, 'op': "", 'index': 0})
-                    arg = pydash.pick(arg, 'index', 'value', 'valueTwo', 'op')
+                    arg = defaults(arg, {'value': 0, 'op': "", 'index': 0})
+                    arg = pick(arg, 'index', 'value', 'valueTwo', 'op')
                     temp_args.append(arg)
                 syscall['args'] = temp_args
             temp_syscalls.append(syscall)

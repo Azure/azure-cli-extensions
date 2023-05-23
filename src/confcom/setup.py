@@ -35,7 +35,7 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
 ]
 
-DEPENDENCIES = ["docker", "tqdm", "deepdiff", "pydash"]
+DEPENDENCIES = ["docker", "tqdm", "deepdiff"]
 
 SecurityPolicyProxy.download_binaries()
 
