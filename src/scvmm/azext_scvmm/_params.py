@@ -178,7 +178,6 @@ def load_arguments(self: AzCommandsLoader, _):
 
         c.argument(
             'checkpoint_description',
-            options_list=['--checkpoint-description'],
             help="Description of the checkpoint to be created.",
         )
 
