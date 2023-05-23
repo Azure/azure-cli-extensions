@@ -164,6 +164,12 @@ dir_path = CLIArgumentType(
     help="Path to the directory to download files.",
 )
 
+file_name = CLIArgumentType(
+    options_list=["--file-name"],
+    type=str,
+    help="Name of the file.",
+)
+
 file_path = CLIArgumentType(
     validator=validators.validate_file_path,
     options_list=["--path"],
