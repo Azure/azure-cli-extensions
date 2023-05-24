@@ -9,11 +9,11 @@ import shutil
 from dataclasses import asdict
 from typing import Optional
 from knack.log import get_logger
-from azure.cli.core.azclierror import CLIInternalError
+from azure.cli.core.azclierror import CLIInternalError, InvalidArgumentValueError
 
 from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
-from src.aosm.azext_aosm.generate_nfd.vnf_nfd_generator import VnfNfdGenerator
+from azext_aosm.generate_nfd.vnf_nfd_generator import VnfNfdGenerator
 from azext_aosm.delete.delete import ResourceDeleter
 from azext_aosm.deploy.deploy_with_arm import DeployerViaArm
 from azext_aosm.util.constants import VNF, CNF, NSD
@@ -66,6 +66,10 @@ def _get_config_from_file(config_file: str, definition_type: str) -> NFConfigura
     :param definition_type: VNF, CNF or NSD
     :rtype: Configuration
     """
+    
+    if not os.path.exists(config_file):
+        raise InvalidArgumentValueError(f"Config file {config_file} not found. Please specify a valid config file path.")
+    
     with open(config_file, "r", encoding="utf-8") as f:
         config_as_dict = json.loads(f.read())
 
@@ -155,7 +159,8 @@ def publish_definition(
         )
     else:
         raise NotImplementedError(
-            "Publishing of CNF definitions is not yet implemented."
+            "Publishing of CNF definitions is not yet implemented. \
+            You should manually deploy your bicep file and upload charts and images to your artifact store. "
         )
 
 

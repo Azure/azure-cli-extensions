@@ -34,7 +34,13 @@ logger = get_logger(__name__)
 
 class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attributes
     """
-    _summary_
+    CNF NFD Generator.
+
+    This takes a config file, and outputs:
+    - A bicep file for the NFDV
+    - Parameters files that are used by the NFDV bicep file, these are the
+      deployParameters and the mapping profiles of those deploy parameters
+    - A bicep file for the Artifact manifests
 
     :param NFDGenerator: _description_
     :type NFDGenerator: _type_
@@ -123,6 +129,10 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
                 print(
                     f"Generated NFD bicep template created in {self.output_folder_name}"
                 )
+                print(
+                    "Please review these templates."
+                    "If you are happy with them, you should manually deploy your bicep templates and upoad your charts and images to your artifact store."
+                )   
             except InvalidTemplateError as e:
                 raise e
 
