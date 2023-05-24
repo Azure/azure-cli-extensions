@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+
+  - package-ecosystem: pip
+    directory: /scripts/ci/avail-ext-doc
+    schedule:
+      interval: daily
+
+  - package-ecosystem: pip
+    directory: /src/confcom
+    schedule:
+      interval: daily
+
+  - package-ecosystem: nuget
+    directory: /src/quantum/azext_quantum/tests/latest/input_data
+    schedule:
+      interval: daily
