@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin schedule create",
-    is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a Schedule.
+    """Create a schedule.
 
     :example: Create
         az devcenter admin schedule create --state "Enabled" --time "17:30" --time-zone "America/Los_Angeles" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules/{}", "2023-04-01"],
         ]
     }
 
@@ -53,7 +52,7 @@ class Create(AAZCommand):
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -79,6 +78,7 @@ class Create(AAZCommand):
             options=["--frequency"],
             arg_group="Properties",
             help="The frequency of this scheduled task.",
+            default="Daily",
             enum={"Daily": "Daily"},
         )
         _args_schema.state = AAZStrArg(
@@ -101,6 +101,7 @@ class Create(AAZCommand):
             options=["--type"],
             arg_group="Properties",
             help="Supported type this scheduled task represents.",
+            default="StopDevBox",
             enum={"StopDevBox": "StopDevBox"},
         )
         return cls._args_schema
@@ -194,7 +195,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
