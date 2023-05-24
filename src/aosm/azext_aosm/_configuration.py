@@ -9,8 +9,9 @@ DESCRIPTION_MAP: Dict[str, str] = {
         "Resource group for the Publisher resource. Will be "
         "created if it does not exist."
     ),
-    "publisher_name": ("Name of the Publisher resource you want your definition "
-                       "published to. Will be created if it does not exist."
+    "publisher_name": (
+        "Name of the Publisher resource you want your definition "
+        "published to. Will be created if it does not exist."
     ),
     "nf_name": "Name of NF definition",
     "version": "Version of the NF definition",
@@ -114,7 +115,7 @@ class VNFConfiguration(NFConfiguration):
             raise ValidationError(
                 "Config validation error. VHD config must have either a local filepath or a blob SAS URL"
             )
-        
+
         if filepath_set:
             # Explicitly set the blob SAS URL to None to avoid other code having to
             # check if the value is the default description
@@ -126,6 +127,7 @@ class VNFConfiguration(NFConfiguration):
     def sa_manifest_name(self) -> str:
         """Return the Storage account manifest name from the NFD name."""
         return f"{self.nf_name}-sa-manifest-{self.version.replace('.', '-')}"
+
     @property
     def build_output_folder_name(self) -> str:
         """Return the local folder for generating the bicep template to."""
@@ -134,11 +136,19 @@ class VNFConfiguration(NFConfiguration):
             f"{VNF_DEFINITION_OUTPUT_BICEP_PREFIX}{Path(str(arm_template_path)).stem}"
         )
 
+
 @dataclass
 class HelmPackageConfig:
     name: str = "Name of the Helm package"
-    path_to_chart: str = "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz"
-    depends_on: List[str] = field(default_factory=lambda: ["Names of the Helm packages this package depends on. Leave as an empty string if no dependencies"])
+    path_to_chart: str = (
+        "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz"
+    )
+    depends_on: List[str] = field(
+        default_factory=lambda: [
+            "Names of the Helm packages this package depends on. Leave as an empty string if no dependencies"
+        ]
+    )
+
 
 @dataclass
 class CNFConfiguration(NFConfiguration):
@@ -147,7 +157,7 @@ class CNFConfiguration(NFConfiguration):
     def __post_init__(self):
         """
         Cope with deserializing subclasses from dicts to HelmPackageConfig.
-        
+
         Used when creating CNFConfiguration object from a loaded json config file.
         """
         for package in self.helm_packages:
@@ -157,9 +167,8 @@ class CNFConfiguration(NFConfiguration):
     @property
     def build_output_folder_name(self) -> str:
         """Return the local folder for generating the bicep template to."""
-        return (
-            f"{VNF_DEFINITION_OUTPUT_BICEP_PREFIX}{self.nf_name}"
-        )
+        return f"{VNF_DEFINITION_OUTPUT_BICEP_PREFIX}{self.nf_name}"
+
 
 def get_configuration(
     definition_type: str, config_as_dict: Optional[Dict[Any, Any]] = None
@@ -179,4 +188,3 @@ def get_configuration(
         )
 
     return config
-

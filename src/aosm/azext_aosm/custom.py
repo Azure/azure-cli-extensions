@@ -9,6 +9,7 @@ import shutil
 from dataclasses import asdict
 from typing import Optional
 from knack.log import get_logger
+from azure.cli.core.azclierror import CLIInternalError
 
 from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
@@ -23,7 +24,7 @@ from azext_aosm._configuration import (
     get_configuration,
     NFConfiguration,
 )
-from azure.cli.core.azclierror import InvalidTemplateError, CLIInternalError
+
 
 
 logger = get_logger(__name__)
@@ -39,9 +40,12 @@ def build_definition(
     """
     Build and optionally publish a definition.
 
-    :param cmd:
+    :param cmd: :type cmd: _type_ :param client: :type client:
+    HybridNetworkManagementClient :param config_
+    file:
+    :param cmd: 
     :type cmd: _type_
-    :param client:
+    :param client: 
     :type client: HybridNetworkManagementClient
     :param config_file: path to the file
     :param definition_type: VNF, CNF or NSD
@@ -71,6 +75,9 @@ def generate_definition_config(definition_type: str, output_file: str = "input.j
     """
     Generate an example config file for building a definition.
 
+    :param definition_type: CNF, VNF or NSD :param output_file: path to output config
+    file, defaults to "input.json" :type output_
+    file:
     :param definition_type: CNF, VNF or NSD
     :param output_file: path to output config file, defaults to "input.json"
     :type output_file: str, optional
@@ -81,7 +88,7 @@ def generate_definition_config(definition_type: str, output_file: str = "input.j
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(config_as_dict)
         print(f"Empty definition configuration has been written to {output_file}")
-        logger.info(f"Empty definition configuration has been written to {output_file}")
+        logger.info("Empty definition configuration has been written to %s", output_file)
 
 
 def _get_config_from_file(config_file: str, definition_type: str) -> NFConfiguration:
@@ -120,6 +127,7 @@ def _generate_nfd(definition_type, config):
         shutil.rmtree(os.path.dirname(nfd_generator.bicep_path))
     nfd_generator.generate_nfd()
 
+
 def publish_definition(
     cmd,
     client: HybridNetworkManagementClient,
@@ -133,22 +141,37 @@ def publish_definition(
     """
     Publish a generated definition.
 
-    :param cmd:
-    :param client:
+    :param cmd: :param client: :type client: HybridNetworkManagementClient :param
+    definition_type: VNF or CNF :param config_
+    file:
+    Path to the config file for the NFDV    :param definition_file: Optional path to a
+    bicep template to deploy, in case the user                       wants to edit the
+    built NFDV template. If omitted, the default                       built NFDV
+    template will be used.    :param parameters_json_
+    file:
+    Optional path to a parameters file for the bicep file,                      in case
+    the user wants to edit the built NFDV template. If                      omitted,
+    parameters from config will be turned into parameters                      for the
+    bicep file    :param manifest_
+    file:
+    Optional path to an override bicep template to deploy
+    manifests    :param manifest_parameters_json_
+    file:
+    :param cmd: 
+    :param client: 
     :type client: HybridNetworkManagementClient
     :param definition_type: VNF or CNF
     :param config_file: Path to the config file for the NFDV
-    :param definition_file: Optional path to a bicep template to deploy, in case the user
-                       wants to edit the built NFDV template. If omitted, the default
-                       built NFDV template will be used.
+    :param definition_file: Optional path to a bicep template to deploy, in case the
+        user        wants to edit the built NFDV template. If omitted, the default
+        built NFDV template will be used.
     :param parameters_json_file: Optional path to a parameters file for the bicep file,
-                      in case the user wants to edit the built NFDV template. If
-                      omitted, parameters from config will be turned into parameters
-                      for the bicep file
+        in case the user wants to edit the built NFDV template. If       omitted,
+        parameters from config will be turned into parameters       for the bicep file
     :param manifest_file: Optional path to an override bicep template to deploy
-                          manifests
+        manifests
     :param manifest_parameters_json_file: Optional path to an override bicep parameters
-                                          file for manifest parameters
+        file for manifest parameters
     """
     print("Publishing definition.")
     api_clients = ApiClients(
@@ -178,8 +201,8 @@ def delete_published_definition(
     :param definition_type: CNF or VNF
     :param config_file: Path to the config file
     :param clean: if True, will delete the NFDG, artifact stores and publisher too.
-                  Defaults to False. Only works if no resources have those as a parent.
-                    Use with care.
+        Defaults to False. Only works if no resources have those as a parent.     Use
+        with care.
     """
     config = _get_config_from_file(config_file, definition_type)
 

@@ -12,9 +12,11 @@ from typing import Dict, List, Any, Tuple, Optional, Iterator
 
 import tempfile
 import yaml
-from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 from jinja2 import Template, StrictUndefined
+from azure.cli.core.azclierror import InvalidTemplateError
 from knack.log import get_logger
+
+from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 from azext_aosm._configuration import CNFConfiguration, HelmPackageConfig
 from azext_aosm.util.constants import (
     CNF_DEFINITION_BICEP_TEMPLATE,
@@ -25,7 +27,7 @@ from azext_aosm.util.constants import (
     IMAGE_LINE_REGEX,
     IMAGE_PULL_SECRET_LINE_REGEX,
 )
-from azure.cli.core.azclierror import InvalidTemplateError
+
 
 logger = get_logger(__name__)
 
@@ -71,20 +73,20 @@ class CnfNfdGenerator(NFDGenerator):
         """Generate a CNF NFD which comprises a group, an Artifact Manifest and an NFDV."""
         # Create output folder
         self._create_nfd_folder()
-        
+
         # Create temporary folder.
         with tempfile.TemporaryDirectory() as tmpdirname:
             self.tmp_folder_name = tmpdirname
             try:
                 for helm_package in self.config.helm_packages:
-
                     helm_package = HelmPackageConfig(**helm_package)
                     # Unpack the chart into the tmp folder
                     self._extract_chart(helm_package.path_to_chart)
 
                     # TODO: Validate charts
 
-                    # Get schema for each chart (extract mappings and take the schema bits we need from values.schema.json)
+                    # Get schema for each chart
+                    # (extract mappings and take the schema bits we need from values.schema.json)
                     # + Add that schema to the big schema.
                     self.deployment_parameter_schema["properties"].update(
                         self.get_chart_mapping_schema(helm_package)
@@ -118,7 +120,9 @@ class CnfNfdGenerator(NFDGenerator):
                 self.write_schema_to_file()
                 self.write_manifest_bicep_file()
                 self.copy_to_output_folder()
-                print(f"Generated NFD bicep template created in {self.output_folder_name}")
+                print(
+                    f"Generated NFD bicep template created in {self.output_folder_name}"
+                )
             except InvalidTemplateError as e:
                 raise e
 
@@ -135,7 +139,6 @@ class CnfNfdGenerator(NFDGenerator):
         Extract the chart into the tmp folder.
 
         :param fname: The path to helm package
-
         """
         if fname.endswith("tar.gz") or fname.endswith("tgz"):
             tar = tarfile.open(fname, "r:gz")
@@ -146,7 +149,9 @@ class CnfNfdGenerator(NFDGenerator):
             tar.extractall(path=self.tmp_folder_name)
             tar.close()
         else:
-            raise InvalidTemplateError(f"ERROR: The helm package '{fname}' is not a .tgz, .tar or .tar.gz file. Please fix this and run the command again.")
+            raise InvalidTemplateError(
+                f"ERROR: The helm package '{fname}' is not a .tgz, .tar or .tar.gz file. Please fix this and run the command again."
+            )
 
     def _create_nfd_folder(self) -> None:
         """
@@ -239,10 +244,11 @@ class CnfNfdGenerator(NFDGenerator):
         image_line_matches: List[Tuple[str, ...]],
         image_pull_secret_line_matches: List[Tuple[str, ...]],
     ) -> Dict[str, Any]:
+        """Generate NF application config."""
         (name, version) = self.get_chart_name_and_version(helm_package)
         registryValuesPaths = set([m[0] for m in image_line_matches])
         imagePullSecretsValuesPaths = set(image_pull_secret_line_matches)
-        """Generate NF application config"""
+
         return {
             "name": helm_package.name,
             "chartName": name,
@@ -267,8 +273,9 @@ class CnfNfdGenerator(NFDGenerator):
     def find_pattern_matches_in_chart(
         self, helm_package: HelmPackageConfig, pattern: str
     ) -> List[Tuple[str, ...]]:
-        """ 
+        """
         Find pattern matches in Helm chart, using provided REGEX pattern.
+
         param helm_package: The helm package config.
         param pattern: The regex pattern to match.
         """
@@ -289,6 +296,7 @@ class CnfNfdGenerator(NFDGenerator):
     ) -> List[Any]:
         """
         Get the list of artifacts for the chart.
+
         param helm_package: The helm package config.
         param image_line_matches: The list of image line matches.
         """
@@ -325,19 +333,19 @@ class CnfNfdGenerator(NFDGenerator):
         values_schema = os.path.join(
             self.tmp_folder_name, helm_package.name, "values.schema.json"
         )
-        
+
         if not os.path.exists(non_def_values) or not os.path.exists(values_schema):
             raise InvalidTemplateError(
                 f"ERROR: The helm package '{helm_package.name}' is missing either values.mappings.yaml or values.schema.json. Please fix this and run the command again."
             )
-        else:
-            with open(non_def_values, "r", encoding="utf-8") as stream:
-                values_data = yaml.load(stream, Loader=yaml.SafeLoader)
 
-            with open(values_schema, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                schema_data = data["properties"]
-        
+        with open(non_def_values, "r", encoding="utf-8") as stream:
+            values_data = yaml.load(stream, Loader=yaml.SafeLoader)
+
+        with open(values_schema, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            schema_data = data["properties"]
+
         try:
             final_schema = self.find_deploy_params(values_data, schema_data, {})
         except KeyError as e:
@@ -350,9 +358,7 @@ class CnfNfdGenerator(NFDGenerator):
     def find_deploy_params(
         self, nested_dict, schema_nested_dict, final_schema
     ) -> Dict[Any, Any]:
-        """
-        Find the deploy parameters in the values.mappings.yaml file and add them to the schema.
-        """
+        """Find the deploy parameters in the values.mappings.yaml file and add them to the schema."""
         original_schema_nested_dict = schema_nested_dict
         for k, v in nested_dict.items():
             # if value is a string and contains deployParameters.
@@ -394,11 +400,11 @@ class CnfNfdGenerator(NFDGenerator):
         return (chart_name, chart_version)
 
     def generate_parameter_mappings(self, helm_package: HelmPackageConfig) -> str:
-        """ Generate parameter mappings for the given helm package."""
+        """Generate parameter mappings for the given helm package."""
         values = os.path.join(
             self.tmp_folder_name, helm_package.name, "values.mappings.yaml"
         )
-        
+
         mappings_folder_path = os.path.join(self.tmp_folder_name, "configMappings")
         mappings_filename = f"{helm_package.name}-mappings.json"
 
