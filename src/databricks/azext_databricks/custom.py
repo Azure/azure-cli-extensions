@@ -30,6 +30,8 @@ class DatabricksWorkspaceCreate(_DatabricksWorkspaceCreate):
         args_schema.vnet._fmt = AAZResourceIdArgFormat(
             template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{}"
         )
+        args_schema.disk_key_source._registered = False
+        args_schema.managed_services_key_source._registered = False
         return args_schema
 
     def pre_operations(self):
@@ -49,6 +51,11 @@ class DatabricksWorkspaceCreate(_DatabricksWorkspaceCreate):
             args.managed_resource_group = resource_id(
                 subscription=subscription_id,
                 resource_group=managed_resource_group)
+
+        if has_value(args.disk_key_name):
+            args.disk_key_source = 'Microsoft.Keyvault'
+        if has_value(args.managed_services_key_name):
+            args.managed_services_key_source = 'Microsoft.Keyvault'
 
 
 class WorkspaceVnetPeeringCreate(_WorkspaceVnetPeeringCreate):

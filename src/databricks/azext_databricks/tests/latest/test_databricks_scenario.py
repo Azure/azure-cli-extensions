@@ -427,6 +427,187 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '-y',
                  checks=[])
 
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_databricks_create_v1')
+    def test_databricks_create_v1(self):
+        self.kwargs.update({
+            'workspace_name': self.create_random_name(prefix='workspace', length=16),
+        })
+
+        self.cmd('az databricks workspace create '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--location "eastus" '
+                 '--sku premium '
+                 '--enable-no-public-ip '
+                 '--disk-key-auto-rotation True '
+                 '--disk-key-vault "https://test-vault-name.vault.azure.net/" '
+                 '--disk-key-name test-cmk-key '
+                 '--disk-key-version 00000000000000000000000000000000 ',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('sku.name', 'premium'),
+                         self.check('parameters.enableNoPublicIp.value', True)])
+        self.cmd('az databricks workspace delete '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '-y',
+                 checks=[])
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_databricks_create_v1')
+    def test_databricks_create_v2(self, resource_group, key_vault):
+        subscription_id = self.get_subscription_id()
+        self.kwargs.update({
+            'kv': key_vault,
+            'workspace_name': self.create_random_name(prefix='workspace', length=16),
+            'workspace_name2': self.create_random_name(prefix='workspace', length=16),
+            'custom_workspace_name': 'my-custom-workspace',
+            'managed_resource_group': 'custom-managed-rg'
+        })
+        # workspace = self.cmd('az databricks workspace create '
+        #                      '--resource-group {rg} '
+        #                      '--name {workspace_name2} '
+        #                      '--location "eastus" '
+        #                      '--sku premium '
+        #                      '--enable-no-public-ip '
+        #                      '--prepare-encryption',
+        #                      checks=[self.check('name', '{workspace_name}'),
+        #                              self.check('sku.name', 'premium'),
+        #                              self.check('parameters.enableNoPublicIp.value', True)]).get_output_in_json()
+        # self.cmd('az databricks workspace create '
+        #          '--resource-group {rg} '
+        #          '--name {workspace_name2} '
+        #          '--location "eastus" '
+        #          '--sku premium '
+        #          '--enable-no-public-ip '
+        #          '--managed-services-key-vault "https://test-vault-name.vault.azure.net/" '
+        #          '--managed-services-key-name test-cmk-key '
+        #          '--managed-services-key-version 00000000000000000000000000000000 '
+        #          '--managed-services-key-source Microsoft.Keyvault',
+        #          checks=[self.check('name', '{workspace_name}'),
+        #                  self.check('sku.name', 'premium'),
+        #                  self.check('parameters.enableNoPublicIp.value', True)])
+        workspace = self.cmd('az databricks workspace create '
+                             '--resource-group {rg} '
+                             '--name {workspace_name} '
+                             '--location "eastus" '
+                             '--sku premium '
+                             '--enable-no-public-ip '
+                             '--prepare-encryption',
+                             checks=[self.check('name', '{workspace_name}'),
+                                     self.check('sku.name', 'premium'),
+                                     self.check('parameters.enableNoPublicIp.value', True)]).get_output_in_json()
+        principalId = workspace['storageAccountIdentity']['principalId']
+
+        self.kwargs.update({'oid': principalId, 'key_name': 'testkey'})
+        keyvault = self.cmd('az keyvault show -n {kv} -g {rg}').get_output_in_json()
+        self.cmd('az keyvault set-policy -n {kv} --object-id {oid} -g {rg} '
+                 '--key-permissions get wrapKey unwrapKey ')
+
+        key = self.cmd('az keyvault key create -n {key_name} --vault-name {kv}').get_output_in_json()
+        key_version = key['key']['kid'].rsplit('/', 1)[1]
+
+        self.kwargs.update({'key_version': key_version,
+                            'key_vault': keyvault['properties']['vaultUri']})
+        self.cmd('az databricks workspace create '
+                 '--resource-group {rg} '
+                 '--name {workspace_name2} '
+                 '--location "eastus" '
+                 '--sku premium '
+                 '--enable-no-public-ip '
+                 '--managed-services-key-vault {key_vault} '
+                 '--managed-services-key-name {key_name} '
+                 '--managed-services-key-version {key_version} '
+                 '--managed-services-key-source Microsoft.Keyvault',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('sku.name', 'premium'),
+                         self.check('parameters.enableNoPublicIp.value', True)])
+
+        workspace = self.cmd('az databricks workspace update '
+                             '--resource-group {rg} '
+                             '--name {workspace_name} '
+                             '--tags type=test env=dev '
+                             '--prepare-encryption',
+                             checks=[self.check('tags.type', 'test'),
+                                     self.check('tags.env', 'dev'),
+                                     self.check('parameters.prepareEncryption.value', True),
+                                     self.exists('storageAccountIdentity.principalId')]).get_output_in_json()
+        principalId = workspace['storageAccountIdentity']['principalId']
+
+        self.kwargs.update({'oid': principalId, 'key_name': 'testkey'})
+
+        self.cmd('az keyvault set-policy -n {kv} --object-id {oid} -g {rg} '
+                 '--key-permissions get wrapKey unwrapKey recover')
+
+        self.cmd('az keyvault update -n {kv} -g {rg} --set properties.enableSoftDelete=true')
+
+        keyvault = self.cmd(
+            'az keyvault update -n {kv} -g {rg} --set properties.enablePurgeProtection=true').get_output_in_json()
+
+        key = self.cmd('az keyvault key create -n {key_name} -p software --vault-name {kv}').get_output_in_json()
+        key_version = key['key']['kid'].rsplit('/', 1)[1]
+
+        self.kwargs.update({'key_version': key_version,
+                            'key_vault': keyvault['properties']['vaultUri']})
+
+        self.cmd('az databricks workspace update '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--key-source Microsoft.KeyVault '
+                 '--key-name {key_name} '
+                 '--key-version {key_version} '
+                 '--key-vault {key_vault}',
+                 checks=[self.check('parameters.encryption.value.keySource', 'Microsoft.Keyvault'),
+                         self.check('parameters.encryption.value.KeyName', '{key_name}'),
+                         self.check('parameters.encryption.value.keyversion', '{key_version}'),
+                         self.check('parameters.encryption.value.keyvaulturi', '{key_vault}')])
+
+        self.cmd('az databricks workspace update '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--key-source Default',
+                 checks=[self.check('parameters.encryption.value.keySource', 'Default'),
+                         self.not_exists('parameters.encryption.value.KeyName')])
+
+        self.cmd('az databricks workspace delete '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '-y',
+                 checks=[])
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_databricks_update_v1')
+    @KeyVaultPreparer(location='eastus')
+    def test_databricks_update_v1(self):
+        self.kwargs.update({
+            'workspace_name': self.create_random_name(prefix='workspace', length=16),
+        })
+
+        self.cmd('az databricks workspace create '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--location "eastus" '
+                 '--sku premium '
+                 '--enable-no-public-ip '
+                 '--prepare-encryption',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('sku.name', 'premium'),
+                         self.check('parameters.enableNoPublicIp.value', True)])
+        self.cmd('az databricks workspace update '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--disk-key-auto-rotation True '
+                 '--disk-key-vault "https://test-vault-name.vault.azure.net/" '
+                 '--disk-key-name test-cmk-key '
+                 '--disk-key-version 00000000000000000000000000000000 '
+                 '--disk-key-source Microsoft.Keyvault',
+                 checks=[self.check('name', '{workspace_name}')])
+        self.cmd('az databricks workspace delete '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '-y',
+                 checks=[])
+
 
 class DatabricksVNetPeeringScenarioTest(ScenarioTest):
 
