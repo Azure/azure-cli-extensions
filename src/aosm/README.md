@@ -40,10 +40,22 @@ https://eng.ms/docs/strategic-missions-and-technologies/strategic-missions-and-t
 
 CLI issues should be tagged and triaged as UX bugs.
 
-## Definitions
+## nfd and nsd commands
 
 These commands help with the publishing of Network Function Definition and Network
 Service Design resources.
+
+## Overview of function
+A generic workflow of using the tool would be:
+- Find the pre-requisite items you require for your use-case
+- Run a `generate-config` command to output an example JSON config file for subsequent commands
+- Fill in the config file
+- Run a `build` command to output one or more bicep templates for your Network Function Definition or Network Service Design
+- Review the output of the build command, edit the output as necessary for your requirements
+- Run a `publish` command to:
+    * Create all pre-requisite resources such as Resource Group, Publisher, Artifact Stores, Groups
+    * Deploy those bicep templates
+    * Upload artifacts to the artifact stores
 
 ### Pre-requisites
 
