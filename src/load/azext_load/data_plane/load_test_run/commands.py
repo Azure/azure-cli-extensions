@@ -20,22 +20,22 @@ def load_test_run_commands(self, _):
         g.custom_command("stop", "stop_test_run", confirmation=True)
 
     with self.command_group(
-        "load test-run app-components",
+        "load test-run app-component",
         custom_command_type=testrun_custom_sdk,
         is_preview=True,
     ) as g:
-        g.custom_command("add", "add_test_run_app_components")
-        g.custom_command("list", "list_test_run_app_components")
-        g.custom_command("remove", "remove_test_run_app_components", confirmation=True)
+        g.custom_command("add", "add_test_run_app_component")
+        g.custom_command("list", "list_test_run_app_component")
+        g.custom_command("remove", "remove_test_run_app_component", confirmation=True)
 
     with self.command_group(
-        "load test-run server-metrics",
+        "load test-run server-metric",
         custom_command_type=testrun_custom_sdk,
         is_preview=True,
     ) as g:
-        g.custom_command("list", "list_test_run_server_metrics")
-        g.custom_command("add", "add_test_run_server_metrics")
-        g.custom_command("remove", "remove_test_run_server_metrics", confirmation=True)
+        g.custom_command("list", "list_test_run_server_metric")
+        g.custom_command("add", "add_test_run_server_metric")
+        g.custom_command("remove", "remove_test_run_server_metric", confirmation=True)
 
     with self.command_group(
         "load test-run metrics",

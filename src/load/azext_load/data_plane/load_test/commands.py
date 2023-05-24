@@ -22,22 +22,22 @@ def load_test_commands(self, _):
         )
 
     with self.command_group(
-        "load test app-components",
+        "load test app-component",
         custom_command_type=admin_custom_sdk,
         is_preview=True,
     ) as g:
-        g.custom_command("add", "add_test_app_components")
-        g.custom_command("list", "list_test_app_components")
-        g.custom_command("remove", "remove_test_app_components", confirmation=True)
+        g.custom_command("add", "add_test_app_component")
+        g.custom_command("list", "list_test_app_component")
+        g.custom_command("remove", "remove_test_app_component", confirmation=True)
 
     with self.command_group(
-        "load test server-metrics",
+        "load test server-metric",
         custom_command_type=admin_custom_sdk,
         is_preview=True,
     ) as g:
-        g.custom_command("list", "list_test_server_metrics")
-        g.custom_command("add", "add_test_server_metrics")
-        g.custom_command("remove", "remove_test_server_metrics", confirmation=True)
+        g.custom_command("list", "list_test_server_metric")
+        g.custom_command("add", "add_test_server_metric")
+        g.custom_command("remove", "remove_test_server_metric", confirmation=True)
 
     with self.command_group(
         "load test file",

@@ -192,7 +192,7 @@ def download_test_run_files(
 
 
 # app components
-def add_test_run_app_components(
+def add_test_run_app_component(
     cmd,
     load_test_resource,
     test_run_id,
@@ -219,7 +219,7 @@ def add_test_run_app_components(
     return client.create_or_update_app_components(test_run_id=test_run_id, body=body)
 
 
-def list_test_run_app_components(
+def list_test_run_app_component(
     cmd,
     load_test_resource,
     test_run_id,
@@ -230,7 +230,7 @@ def list_test_run_app_components(
     return client.get_app_components(test_run_id=test_run_id)
 
 
-def remove_test_run_app_components(
+def remove_test_run_app_component(
     cmd,
     load_test_resource,
     test_run_id,
@@ -246,7 +246,7 @@ def remove_test_run_app_components(
 # server metrics
 
 
-def add_test_run_server_metrics(
+def add_test_run_server_metric(
     cmd,
     load_test_resource,
     test_run_id,
@@ -277,7 +277,7 @@ def add_test_run_server_metrics(
     )
 
 
-def list_test_run_server_metrics(
+def list_test_run_server_metric(
     cmd,
     load_test_resource,
     test_run_id,
@@ -288,7 +288,7 @@ def list_test_run_server_metrics(
     return client.get_server_metrics_config(test_run_id=test_run_id)
 
 
-def remove_test_run_server_metrics(
+def remove_test_run_server_metric(
     cmd,
     load_test_resource,
     test_run_id,

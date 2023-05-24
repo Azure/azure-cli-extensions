@@ -20,7 +20,7 @@ parameters:
 """
 
 helps[
-    "load test app-components"
+    "load test app-component"
 ] = """
 type: group
 short-summary: Command group with commands related to test app-components.
@@ -39,7 +39,7 @@ parameters:
 """
 
 helps[
-    "load test server-metrics"
+    "load test server-metric"
 ] = """
 type: group
 short-summary: Command group with commands related to test server-metrics.
@@ -96,11 +96,11 @@ parameters:
 """
 
 helps[
-    "load test-run app-components"
+    "load test-run app-component"
 ] = """
 type: group
-short-summary: Command group with commands related to test-run app-components.
-long-summary: Command group with commands related to test-run app-components such as add, list and remove.
+short-summary: Command group with commands related to test-run app-component.
+long-summary: Command group with commands related to test-run app-component such as add, list and remove.
 parameters:
     - name: --load-test-resource, --name, -n
       type: string
@@ -115,7 +115,7 @@ parameters:
 """
 
 helps[
-    "load test-run server-metrics"
+    "load test-run server-metric"
 ] = """
 type: group
 short-summary: Command group with commands related to test-run server-metrics.

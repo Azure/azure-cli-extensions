@@ -65,7 +65,7 @@ long-summary: Download files of an existing load test run.
 """
 
 helps[
-    "load test-run app-components add"
+    "load test-run app-component add"
 ] = """
 type: command
 short-summary: Add app component to a test run.
@@ -73,7 +73,7 @@ long-summary: Add app component to an existing load test run.
 """
 
 helps[
-    "load test-run app-components list"
+    "load test-run app-component list"
 ] = """
 type: command
 short-summary: List all app component of a test run.
@@ -81,7 +81,7 @@ long-summary: List all app component of a test run.
 """
 
 helps[
-    "load test-run app-components remove"
+    "load test-run app-component remove"
 ] = """
 type: command
 short-summary: Remove an app component from a test run.
@@ -89,7 +89,7 @@ long-summary: Remove the given app component from the test run.
 """
 
 helps[
-    "load test-run server-metrics add"
+    "load test-run server-metric add"
 ] = """
 type: command
 short-summary: Add server-metrics to a test run.
@@ -97,7 +97,7 @@ long-summary: Add server-metrics to an existing load test run.
 """
 
 helps[
-    "load test-run server-metrics list"
+    "load test-run server-metric list"
 ] = """
 type: command
 short-summary: List all server-metrics of a test run.
@@ -105,7 +105,7 @@ long-summary: List all server-metrics of a test run.
 """
 
 helps[
-    "load test-run server-metrics remove"
+    "load test-run server-metric remove"
 ] = """
 type: command
 short-summary: Remove an server-metrics from a test run.

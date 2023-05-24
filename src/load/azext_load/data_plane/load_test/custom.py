@@ -186,7 +186,7 @@ def delete_test(
     return client.delete_test(test_id)
 
 
-def add_test_app_components(
+def add_test_app_component(
     cmd,
     load_test_resource,
     test_id,
@@ -213,7 +213,7 @@ def add_test_app_components(
     return client.create_or_update_app_components(test_id=test_id, body=body)
 
 
-def list_test_app_components(
+def list_test_app_component(
     cmd,
     load_test_resource,
     test_id,
@@ -224,7 +224,7 @@ def list_test_app_components(
     return client.get_app_components(test_id=test_id)
 
 
-def remove_test_app_components(
+def remove_test_app_component(
     cmd,
     load_test_resource,
     test_id,
@@ -237,7 +237,7 @@ def remove_test_app_components(
     return client.create_or_update_app_components(test_id=test_id, body=body)
 
 
-def add_test_server_metrics(
+def add_test_server_metric(
     cmd,
     load_test_resource,
     test_id,
@@ -266,7 +266,7 @@ def add_test_server_metrics(
     return client.create_or_update_server_metrics_config(test_id=test_id, body=body)
 
 
-def list_test_server_metrics(
+def list_test_server_metric(
     cmd,
     load_test_resource,
     test_id,
@@ -277,7 +277,7 @@ def list_test_server_metrics(
     return client.get_server_metrics_config(test_id=test_id)
 
 
-def remove_test_server_metrics(
+def remove_test_server_metric(
     cmd,
     load_test_resource,
     test_id,

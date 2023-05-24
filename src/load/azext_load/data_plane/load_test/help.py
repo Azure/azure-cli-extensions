@@ -49,7 +49,7 @@ long-summary: Download files of an existing load test.
 """
 
 helps[
-    "load test app-components add"
+    "load test app-component add"
 ] = """
 type: command
 short-summary: Add app component to a test.
@@ -57,7 +57,7 @@ long-summary: Add app component to an existing load test.
 """
 
 helps[
-    "load test app-components list"
+    "load test app-component list"
 ] = """
 type: command
 short-summary: List all app component of a test.
@@ -65,7 +65,7 @@ long-summary: List all app component of a test.
 """
 
 helps[
-    "load test app-components remove"
+    "load test app-component remove"
 ] = """
 type: command
 short-summary: Remove an app component from a test.
@@ -73,7 +73,7 @@ long-summary: Remove the given app component from the test.
 """
 
 helps[
-    "load test server-metrics add"
+    "load test server-metric add"
 ] = """
 type: command
 short-summary: Add server-metrics to a test.
@@ -81,7 +81,7 @@ long-summary: Add server-metrics to an existing load test.
 """
 
 helps[
-    "load test server-metrics list"
+    "load test server-metric list"
 ] = """
 type: command
 short-summary: List all server-metrics of a test.
@@ -89,7 +89,7 @@ long-summary: List all server-metrics of a test.
 """
 
 helps[
-    "load test server-metrics remove"
+    "load test server-metric remove"
 ] = """
 type: command
 short-summary: Remove an server-metrics from a test.
