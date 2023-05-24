@@ -52,7 +52,6 @@ class VnfBicepNfdGenerator(NFDGenerator):
     def generate_nfd(self) -> None:
         """Generate a VNF NFD which comprises an group, an Artifact Manifest and a NFDV."""
         logger.info(f"Generate NFD bicep template for {self.arm_template_path}")
-        print(f"Generate NFD bicep template for {self.arm_template_path}")
 
         self._create_nfd_folder()
         self.create_parameter_files()
@@ -76,20 +75,7 @@ class VnfBicepNfdGenerator(NFDGenerator):
         return None
 
     def _create_nfd_folder(self) -> None:
-        """
-        Create the folder for the NFD bicep files.
-
-        :raises RuntimeError: If the user aborts.
-        """
-        if os.path.exists(self.folder_name):
-            carry_on = input(
-                f"The folder {self.folder_name} already exists - delete it and continue? (y/n)"
-            )
-            if carry_on != "y":
-                raise RuntimeError("User aborted!")
-
-            shutil.rmtree(self.folder_name)
-
+        """Create the folder for the NFD bicep files."""
         logger.info("Create NFD bicep %s", self.folder_name)
         os.mkdir(self.folder_name)
 

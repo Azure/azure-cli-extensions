@@ -154,20 +154,7 @@ class CnfNfdGenerator(NFDGenerator):
             )
 
     def _create_nfd_folder(self) -> None:
-        """
-        Create the folder for the NFD bicep files.
-
-        :raises RuntimeError: If the user aborts.
-        """
-        # if os.path.exists(self.output_folder_name):
-        #     carry_on = input(
-        #         f"The folder {self.output_folder_name} already exists - delete it and continue? (y/n)"
-        #     )
-        #     if carry_on != "y":
-        #         raise RuntimeError("User aborted!")
-
-        #     shutil.rmtree(self.output_folder_name)
-
+        """Create the folder for the NFD bicep files."""
         logger.info("Create NFD bicep %s", self.output_folder_name)
         os.mkdir(self.output_folder_name)
 
