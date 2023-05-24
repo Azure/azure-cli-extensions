@@ -138,7 +138,7 @@ class VNFConfiguration(NFConfiguration):
 class HelmPackageConfig:
     name: str = "Name of the Helm package"
     path_to_chart: str = "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz"
-    depends_on: List[str] = field(default_factory=lambda: ["Names of the Helm packages this package depends on"])
+    depends_on: List[str] = field(default_factory=lambda: ["Names of the Helm packages this package depends on. Leave as an empty string if no dependencies"])
 
 @dataclass
 class CNFConfiguration(NFConfiguration):

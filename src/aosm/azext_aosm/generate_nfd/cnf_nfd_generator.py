@@ -71,6 +71,7 @@ class CnfNfdGenerator(NFDGenerator):
         """Generate a CNF NFD which comprises a group, an Artifact Manifest and an NFDV."""
         # Create output folder
         self._create_nfd_folder()
+        
         # Create temporary folder.
         with tempfile.TemporaryDirectory() as tmpdirname:
             self.tmp_folder_name = tmpdirname
@@ -153,14 +154,14 @@ class CnfNfdGenerator(NFDGenerator):
 
         :raises RuntimeError: If the user aborts.
         """
-        if os.path.exists(self.output_folder_name):
-            carry_on = input(
-                f"The folder {self.output_folder_name} already exists - delete it and continue? (y/n)"
-            )
-            if carry_on != "y":
-                raise RuntimeError("User aborted!")
+        # if os.path.exists(self.output_folder_name):
+        #     carry_on = input(
+        #         f"The folder {self.output_folder_name} already exists - delete it and continue? (y/n)"
+        #     )
+        #     if carry_on != "y":
+        #         raise RuntimeError("User aborted!")
 
-            shutil.rmtree(self.output_folder_name)
+        #     shutil.rmtree(self.output_folder_name)
 
         logger.info("Create NFD bicep %s", self.output_folder_name)
         os.mkdir(self.output_folder_name)
@@ -206,9 +207,8 @@ class CnfNfdGenerator(NFDGenerator):
 
     def copy_to_output_folder(self) -> None:
         """Copy the config mappings, schema and bicep templates (artifact manifest and NFDV) to the output folder."""
-        if not os.path.exists(self.output_folder_name):
-            os.mkdir(self.output_folder_name)
-            os.mkdir(self.output_folder_name + "/schemas")
+
+        os.mkdir(self.output_folder_name + "/schemas")
 
         nfd_bicep_path = os.path.join(
             self.tmp_folder_name, CNF_DEFINITION_BICEP_TEMPLATE
