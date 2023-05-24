@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import errno
 import os
 import uuid
 
@@ -15,50 +14,37 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
+from .models import IdentityType
+
 logger = get_logger(__name__)
 
 
-class IdentityType:
-    SystemAssigned = "SystemAssigned"
-    UserAssigned = "UserAssigned"
-
-
-def upload_test_plan(client, test_id, test_plan, wait):
-    logger.info("Uploading test plan for the test")
-    with open(test_plan, "r") as file:
+def upload_test_file(client, test_id, file_path, file_type=None, wait=False):
+    logger.debug(
+        "Uploading file %s for the test %s with 'wait' %s",
+        file_path,
+        test_id,
+        "enabled" if wait else "disabled",
+    )
+    file_path = validators._validate_path(file_path, is_dir=False)
+    with open(file_path, "rb") as file:
         upload_poller = client.begin_upload_test_file(
             test_id,
             file_name=os.path.basename(file.name),
+            file_type=file_type,
             body=file,
         )
-        if wait:
-            response = upload_poller.result()
-            if response.get("validationStatus") == "VALIDATION_SUCCESS":
-                logger.info("Uploaded test plan for the test")
-            elif response.get("validationStatus") == "VALIDATION_FAILED":
-                logger.warning("Test plan validation failed for the test")
-            else:
-                logger.warning("Invalid status for Test plan validation")
-            logger.debug("Upload result for test plan: %s", response)
-
-
-def upload_configuration_files(client, test_id, configuration_files):
-    logger.info("Uploading configuration files for the test")
-    for configuration_file in configuration_files:
-        with open(configuration_file, "r") as file:
-            upload_poller = client.begin_upload_test_file(
-                test_id,
-                file_name=os.path.basename(file.name),
-                body=file,
-            )
-            response = upload_poller.result()
-            if response.get("validationStatus") == "VALIDATION_NOT_REQUIRED":
-                logger.info("Uploaded configuration file %s", file.name)
-            else:
-                logger.warning("Invalid status for configuration file %s", file.name)
-            logger.debug(
-                "Upload result for configuration file %s is: %s", file.name, response
-            )
+        response = (
+            upload_poller.result()
+            if wait
+            else upload_poller.polling_method().resource()
+        )
+        logger.debug(
+            "Upload result for file with --wait%s passed: %s",
+            "" if wait else " not",
+            response,
+        )
+        return response
 
 
 def get_load_test_resource_endpoint(

@@ -4,9 +4,9 @@ from azext_load.data_plane.utils.utils import (
     create_or_update_body,
     download_file,
     get_admin_data_plane_client,
-    upload_configuration_files,
-    upload_test_plan,
+    upload_test_file,
 )
+from azext_load.data_plane.utils.validators import AllowedFileTypes
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
@@ -22,15 +22,12 @@ def create_test(
     resource_group_name=None,
     load_test_config_file=None,
     test_description=None,
-    test_plan=None,
-    configuration_files=None,
     engine_instances=None,
     env=None,
     secrets=None,
     certificate=None,
     key_vault_reference_identity=None,
     subnet_id=None,
-    wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = {}
@@ -55,23 +52,11 @@ def create_test(
                 f"Test with given test ID : {test_id} already exists."
             )
     logger.info("Creating test with test ID: %s and body : %s", test_id, body)
-    response_obj = client.create_or_update_test(test_id=test_id, body=body)
-    logger.debug(
-        "Response object for creating test with test ID: %s is %s",
-        test_id,
-        response_obj,
-    )
+    response = client.create_or_update_test(test_id=test_id, body=body)
     logger.info(
-        "Created test with test ID: %s and response obj is %s", test_id, response_obj
+        "Created test with test ID: %s and response obj is %s", test_id, response
     )
-
-    if test_plan is not None:
-        upload_test_plan(client, test_id, test_plan, wait)
-
-    if configuration_files is not None:
-        upload_configuration_files(client, test_id, configuration_files)
-
-    return response_obj
+    return response
 
 
 def update_test(
@@ -82,15 +67,12 @@ def update_test(
     resource_group_name=None,
     load_test_config_file=None,
     test_description=None,
-    test_plan=None,
-    configuration_files=None,
     engine_instances=None,
     env=None,
     secrets=None,
     certificate=None,
     key_vault_reference_identity=None,
     subnet_id=None,
-    wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     try:
@@ -114,21 +96,11 @@ def update_test(
         subnet_id=subnet_id,
     )
     logger.info("Updating test with test ID: %s and body : %s", test_id, body)
-    response_obj = client.create_or_update_test(test_id=test_id, body=body)
-    logger.debug(
-        "Response object for updating test with test ID: %s is %s",
-        test_id,
-        response_obj,
-    )
+    response = client.create_or_update_test(test_id=test_id, body=body)
     logger.info(
-        "Updated test with test ID: %s and response obj is %s", test_id, response_obj
+        "Updated test with test ID: %s and response obj is %s", test_id, response
     )
-    if test_plan is not None:
-        upload_test_plan(client, test_id, test_plan, wait)
-
-    if configuration_files is not None:
-        upload_configuration_files(client, test_id, configuration_files)
-    return response_obj
+    return response
 
 
 def list_tests(
@@ -301,24 +273,7 @@ def upload_test_file(
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Uploading file for the test")
-    with open(path, "rb") as file:
-        upload_poller = client.begin_upload_test_file(
-            test_id,
-            file_name=os.path.basename(file.name),
-            file_type=file_type,
-            body=file,
-        )
-        response = (
-            upload_poller.result()
-            if wait
-            else upload_poller.polling_method().resource()
-        )
-        logger.debug(
-            "Upload result for file with --wait%s passed: %s",
-            "" if wait else " not",
-            response,
-        )
-        return response
+    return upload_test_file(client, test_id, path, file_type=file_type, wait=wait)
 
 
 def list_test_file(

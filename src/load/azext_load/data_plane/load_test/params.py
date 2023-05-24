@@ -6,7 +6,6 @@ def load_arguments(self, _):
     with self.argument_context("load test create") as c:
         c.argument("test_id", argtypes.test_id_no_completer)
         c.argument("display_name", argtypes.test_display_name)
-        c.argument("test_plan", argtypes.test_plan)
         c.argument("test_description", argtypes.test_description)
         c.argument("env", argtypes.env)
         c.argument("secrets", argtypes.secret)
@@ -21,7 +20,6 @@ def load_arguments(self, _):
 
     with self.argument_context("load test update") as c:
         c.argument("display_name", argtypes.test_display_name)
-        c.argument("test_plan", argtypes.test_plan)
         c.argument("test_description", argtypes.test_description)
         c.argument("env", argtypes.env)
         c.argument("secrets", argtypes.secret)

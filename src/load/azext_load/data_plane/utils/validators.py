@@ -2,15 +2,23 @@ import os
 import re
 from collections import OrderedDict
 from datetime import datetime
+from enum import EnumMeta
 
+import yaml
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import CLIError
 from msrestazure.tools import is_valid_resource_id
-import yaml
 
 from . import utils
+from .models import AllowedFileTypes, AllowedIntervals, AllowedMetricNamespaces
 
 logger = utils.get_logger(__name__)
+
+
+def get_enum_values(enum):
+    if not isinstance(enum, EnumMeta):
+        raise InvalidArgumentValueError(f"Invalid enum type: {type(enum)}")
+    return [item.value for item in enum]
 
 
 def validate_test_id(namespace):
@@ -156,7 +164,7 @@ def validate_download(namespace):
     # Create the directories if they do not exist
     if namespace.force:
         os.makedirs(namespace.path, exist_ok=True)
-        logger.debug(
+        logger.warning(
             "Directory does not exist. Created as --force is passed - %s",
             namespace.path,
         )
@@ -172,7 +180,9 @@ def validate_load_test_config_file(namespace):
         raise InvalidArgumentValueError(
             f"Invalid load-test-config-file type: {type(namespace.load_test_config_file)}"
         )
-    namespace.load_test_config_file = _validate_path(namespace.load_test_config_file, is_dir=False)
+    namespace.load_test_config_file = _validate_path(
+        namespace.load_test_config_file, is_dir=False
+    )
     try:
         with open(namespace.load_test_config_file, "r") as file:
             yaml.safe_load(file)
@@ -215,9 +225,6 @@ def _validate_path(path, is_dir=False):
     return path
 
 
-allowed_file_types = ["ADDITIONAL_ARTIFACTS", "JMX_FILE", "USER_PROPERTIES"]
-
-
 def validate_file_type(namespace):
     if namespace.file_type is None:
         return
@@ -225,6 +232,7 @@ def validate_file_type(namespace):
         raise InvalidArgumentValueError(
             f"Invalid file-type type: {type(namespace.file_type)}"
         )
+    allowed_file_types = get_enum_values(AllowedFileTypes)
     if namespace.file_type not in allowed_file_types:
         raise InvalidArgumentValueError(
             f"Invalid file-type value: {namespace.file_type}. Allowed values: {', '.join(allowed_file_types)}"
@@ -259,9 +267,6 @@ def _validate_iso_time(string):
     )
 
 
-allowed_intervals = ["PT10S", "PT1H", "PT1M", "PT5M", "PT5S"]
-
-
 def validate_interval(namespace):
     if namespace.interval is None:
         return
@@ -269,13 +274,11 @@ def validate_interval(namespace):
         raise InvalidArgumentValueError(
             f"Invalid interval type: {type(namespace.interval)}"
         )
+    allowed_intervals = get_enum_values(AllowedIntervals)
     if namespace.interval not in allowed_intervals:
         raise InvalidArgumentValueError(
             f"Invalid interval value: {namespace.interval}. Allowed values: {', '.join(allowed_intervals)}"
         )
-
-
-allowed_metric_namespaces = ["LoadTestRunMetrics", "EngineHealthMetrics"]
 
 
 def validate_metric_namespaces(namespace):
@@ -283,6 +286,7 @@ def validate_metric_namespaces(namespace):
         raise InvalidArgumentValueError(
             f"Invalid metric-namespace type: {type(namespace.metric_namespace)}"
         )
+    allowed_metric_namespaces = get_enum_values(AllowedMetricNamespaces)
     if namespace.metric_namespace not in allowed_metric_namespaces:
         raise InvalidArgumentValueError(
             f"Invalid metric-namespace value: {namespace.metric_namespace}. Allowed values: {', '.join(allowed_metric_namespaces)}"

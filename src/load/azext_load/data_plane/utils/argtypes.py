@@ -1,4 +1,4 @@
-from azext_load.data_plane.utils import completers, validators
+from azext_load.data_plane.utils import completers, models, validators
 from azure.cli.core.commands.parameters import (
     get_generic_completion_list,
     get_resource_name_completion_list,
@@ -124,12 +124,6 @@ test_run_description = CLIArgumentType(
     help="Description of the load test run.",
 )
 
-test_plan = CLIArgumentType(
-    options_list=["--test-plan"],
-    type=str,
-    help="Path to the test plan file.",
-)
-
 env = CLIArgumentType(
     validator=validators.validate_env_vars,
     options_list=["--env"],
@@ -179,10 +173,12 @@ file_path = CLIArgumentType(
 
 file_type = CLIArgumentType(
     validator=validators.validate_file_type,
-    completer=get_generic_completion_list(validators.allowed_file_types),
+    completer=get_generic_completion_list(
+        validators.get_enum_values(models.AllowedFileTypes)
+    ),
     options_list=["--file-type"],
     type=str,
-    help="Type of file.",
+    help=f"Type of file to be uploaded. Allowed values: {', '.join(validators.get_enum_values(models.AllowedFileTypes))}",
 )
 
 test_run_input = CLIArgumentType(
@@ -265,11 +261,13 @@ metric_name = CLIArgumentType(
 
 metric_namespace = CLIArgumentType(
     validator=validators.validate_metric_namespaces,
-    completer=get_generic_completion_list(validators.allowed_metric_namespaces),
+    completer=get_generic_completion_list(
+        validators.get_enum_values(models.AllowedMetricNamespaces)
+    ),
     options_list=["--metric-namespace"],
     required=True,
     type=str,
-    help="Namespace of the metric.",
+    help=f"Namespace of the metric. Allowed values: {', '.join(validators.get_enum_values(models.AllowedMetricNamespaces))}",
 )
 
 metric_dimension = CLIArgumentType(
@@ -294,10 +292,12 @@ end_iso_time = CLIArgumentType(
 
 interval = CLIArgumentType(
     validator=validators.validate_interval,
-    completer=get_generic_completion_list(validators.allowed_intervals),
+    completer=get_generic_completion_list(
+        validators.get_enum_values(models.AllowedIntervals)
+    ),
     options_list=["--interval"],
     type=str,
-    help=f"ISO 8601 formatted interval. Allowed values: {', '.join(validators.allowed_intervals)}",
+    help=f"ISO 8601 formatted interval. Allowed values: {', '.join(validators.get_enum_values(models.AllowedIntervals))}",
 )
 
 aggregation = CLIArgumentType(
