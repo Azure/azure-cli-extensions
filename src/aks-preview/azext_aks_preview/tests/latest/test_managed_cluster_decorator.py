@@ -3631,7 +3631,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 enabled=True,
                 config={
                     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: "/test_workspace_resource_id",
-                    CONST_MONITORING_USING_AAD_MSI_AUTH: "True",
+                    CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
                 },
             ),
             CONST_INGRESS_APPGW_ADDON_NAME: self.models.ManagedClusterAddonProfile(

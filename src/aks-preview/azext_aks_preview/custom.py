@@ -1479,6 +1479,9 @@ def aks_addon_update(cmd, client, resource_group_name, name, addon, workspace_re
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles
 
+    if instance.service_principal_profile.client_id != "msi":
+        enable_msi_auth_for_monitoring = False
+
     if addon == "web_application_routing":
         if (instance.ingress_profile is None) or (instance.ingress_profile.web_app_routing is None) or not instance.ingress_profile.web_app_routing.enabled:
             raise InvalidArgumentValueError(f'Addon "{addon}" is not enabled in this cluster.')
@@ -1551,7 +1554,11 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
 
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
-    msi_auth = True if instance.service_principal_profile.client_id == "msi" else False
+    msi_auth = False 
+    if instance.service_principal_profile.client_id == "msi":
+        msi_auth = True
+    else:
+        enable_msi_auth_for_monitoring = False
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     instance = _update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
