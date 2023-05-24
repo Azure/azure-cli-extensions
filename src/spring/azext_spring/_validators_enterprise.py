@@ -13,6 +13,7 @@ from azure.core.exceptions import ResourceNotFoundError
 from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError)
+from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import ApmType
@@ -482,43 +483,41 @@ def validate_apm_not_exist(cmd, namespace):
         pass
 
 
-def validate_apm_exist(cmd, namespace):
-    client = get_client(cmd)
-    # If not exists exception will be raised
-    client.apms.get(namespace.resource_group, namespace.service, namespace.name)
-
-
 def validate_apm_reference(cmd, namespace):
-    apmIds = namespace.apm
+    apm_ids = namespace.apms
 
     result = []
-    if not apmIds:
+    if not apm_ids:
         return result
 
-    client = get_client(cmd)
-    for id in apmIds:
-        apm_resource = client.apms.get(namespace.resource_group, namespace.service, id.strip().lower())
-        apm_reference = ApmReference(resource_id=apm_resource.id)
+    service_resource_id = get_service_resource_id(cmd, namespace)
+
+    for apm_id in apm_ids:
+        resource_id = '{}/apms/{}'.format(service_resource_id, apm_id)
+        apm_reference = ApmReference(resource_id=resource_id)
         result.append(apm_reference)
 
-    namespace.apm=result
+    namespace.apms = result
 
 
+def get_service_resource_id(cmd, namespace):
+    subscription = get_subscription_id(cmd.cli_ctx)
+    service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(
+        subscription, namespace.resource_group, namespace.service)
+    return service_resource_id
 
 
 def validate_cert_reference(cmd, namespace):
-    certIds = namespace.cert
+    cert_ids = namespace.certificates
 
     result = []
-    if not certIds:
+    if not cert_ids:
         return result
 
-    client = get_client(cmd)
-    for id in certIds:
-        cert_resource = client.certificates.get(namespace.resource_group, namespace.service, id.strip().lower())
-        cert_reference = CertificateReference(resource_id=cert_resource.id)
+    service_resource_id = get_service_resource_id(cmd, namespace)
+    for cert_id in cert_ids:
+        resource_id = '{}/certificates/{}'.format(service_resource_id, cert_id)
+        cert_reference = CertificateReference(resource_id=resource_id)
         result.append(cert_reference)
 
-    namespace.cert = result
-
-
+    namespace.certificates = result

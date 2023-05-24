@@ -4,15 +4,16 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=wrong-import-order
-from .vendored_sdks.appplatform.v2023_05_01_preview import models
-from azure.cli.core.util import sdk_no_wait
-from ._utils import get_portal_uri
-from msrestazure.tools import parse_resource_id, is_valid_resource_id
-from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.util import sdk_no_wait
 from azure.core.exceptions import ResourceNotFoundError
+from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from knack.log import get_logger
+from msrestazure.tools import parse_resource_id, is_valid_resource_id
+
+from ._utils import get_portal_uri
+from .vendored_sdks.appplatform.v2023_05_01_preview import models
 
 logger = get_logger(__name__)
 DEFAULT_APM_NAME = "default"
@@ -26,7 +27,16 @@ def create_or_update_apm(cmd, client, resource_group, service,
 
 
 def apm_show(cmd, client, resource_group, service, name):
-    return client.apms.get(resource_group, service, name)
+    apm_resource = client.apms.get(resource_group, service, name)
+    secrets_keys = client.apms.list_secret_keys(resource_group, service, name)
+    if secrets_keys and secrets_keys.value:
+        secrets = {}
+        for key in secrets_keys.value:
+            secrets[key] = '*'
+
+        apm_resource.properties.secrets = secrets
+
+    return apm_resource
 
 
 def apm_list(cmd, client, resource_group, service):
@@ -44,13 +54,13 @@ def list_apms_enabled_globally(cmd, client, resource_group, service):
 def enable_apm_globally(cmd, client, resource_group, service, name):
     apm_resource = client.apms.get(resource_group, service, name)
     apm_reference = models.ApmReference(resource_id=apm_resource.id)
-    return client.services._enable_apm_globally_initial(resource_group, service, apm_reference)
+    return client.services.begin_enable_apm_globally(resource_group, service, apm_reference)
 
 
 def disable_apm_globally(cmd, client, resource_group, service, name):
     apm_resource = client.apms.get(resource_group, service, name)
     apm_reference = models.ApmReference(resource_id=apm_resource.id)
-    return client.services._disable_apm_globally_initial(resource_group, service, apm_reference)
+    return client.services.begin_disable_apm_globally(resource_group, service, apm_reference)
 
 
 def apm_delete(cmd, client, resource_group, service, name):
@@ -62,7 +72,8 @@ def create_default_apm_for_application_insights(cmd, client, resource_group, ser
                                                 app_insights_key, app_insights, sampling_rate):
     logger.warning("Start configure Application Insights")
     apm_resource = models.ApmResource()
-    apm_resource.properties = _get_apm_properties(cmd, resource_group, service_name, location, app_insights_key, app_insights,
+    apm_resource.properties = _get_apm_properties(cmd, resource_group, service_name, location, app_insights_key,
+                                                  app_insights,
                                                   sampling_rate)
 
     if apm_resource.properties:
