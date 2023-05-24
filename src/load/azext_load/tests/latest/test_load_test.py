@@ -77,7 +77,7 @@ class LoadTestScenario(ScenarioTest):
                 "load_test_resource": LoadTestScenario.load_test_resource,
                 "resource_group": LoadTestScenario.resource_group,
                 "test_id": "delete-test-case-1507-2608",
-                "load_test_config_file": "C:\\\\Users\\\\hbisht\\\\Desktop\\\\config.yaml",
+                "load_test_config_file": LoadTestScenario.load_test_config_file,
             }
         )
         create_test(
@@ -326,7 +326,7 @@ class LoadTestScenario(ScenarioTest):
             resource_group=self.kwargs["resource_group"],
         )
 
-    def testcase_load_test_app_components(self):
+    def testcase_load_test_app_component(self):
         self.kwargs.update(
             {
                 "load_test_resource": LoadTestScenario.load_test_resource,
@@ -352,7 +352,7 @@ class LoadTestScenario(ScenarioTest):
         # assuming the app component is already created
         # Adding an app component to the load test
         response = self.cmd(
-            "az load test app-components add "
+            "az load test app-component add "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
@@ -364,7 +364,7 @@ class LoadTestScenario(ScenarioTest):
         # Verify that the app component was added by making use of the list command
 
         list_of_app_components = self.cmd(
-            "az load test app-components list "
+            "az load test app-component list "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
@@ -378,7 +378,7 @@ class LoadTestScenario(ScenarioTest):
 
         # Remove app component
         self.cmd(
-            "az load test app-components remove "
+            "az load test app-component remove "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
@@ -387,7 +387,7 @@ class LoadTestScenario(ScenarioTest):
         )
 
         list_of_app_components = self.cmd(
-            "az load test app-components list "
+            "az load test app-component list "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
@@ -405,7 +405,7 @@ class LoadTestScenario(ScenarioTest):
             resource_group=self.kwargs["resource_group"],
         )
 
-    def testcase_load_test_server_metrics(self):
+    def testcase_load_test_server_metric(self):
         self.kwargs.update(
             {
                 "load_test_resource": LoadTestScenario.load_test_resource,
@@ -438,7 +438,7 @@ class LoadTestScenario(ScenarioTest):
 
         # assuming the app component is already created
         self.cmd(
-            "az load test app-components add "
+            "az load test app-component add "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
@@ -450,7 +450,7 @@ class LoadTestScenario(ScenarioTest):
         # Verify that the app component was added by making use of the list command
 
         list_of_app_components = self.cmd(
-            "az load test app-components list "
+            "az load test app-component list "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
@@ -462,7 +462,7 @@ class LoadTestScenario(ScenarioTest):
 
         # Adding an server metrics to the load test
         self.cmd(
-            "az load test server-metrics add "
+            "az load test server-metric add "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
@@ -477,7 +477,7 @@ class LoadTestScenario(ScenarioTest):
         # Verify that the server metrics was added by making use of the list command
 
         list_of_server_metrics = self.cmd(
-            "az load test server-metrics list "
+            "az load test server-metric list "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
@@ -487,7 +487,7 @@ class LoadTestScenario(ScenarioTest):
 
         # Remove server metrics
         self.cmd(
-            "az load test server-metrics remove "
+            "az load test server-metric remove "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
@@ -496,7 +496,7 @@ class LoadTestScenario(ScenarioTest):
         )
 
         list_of_server_metrics = self.cmd(
-            "az load test server-metrics list "
+            "az load test server-metric list "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "

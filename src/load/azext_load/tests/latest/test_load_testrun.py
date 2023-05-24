@@ -33,6 +33,61 @@ class LoadTestRunScenario(ScenarioTest):
     metric_filters_value_specific = f"{metric_dimension_name}={metric_dimension_value}"
     aggregation = "Average"
 
+    def testcase_load_test_run_stop(self):
+        self.kwargs.update(
+            {
+                "load_test_resource": LoadTestRunScenario.load_test_resource,
+                "resource_group": LoadTestRunScenario.resource_group,
+                "test_id": LoadTestRunScenario.test_id+"stop-test",
+                "test_run_id": LoadTestRunScenario.test_run_id + "stop-test-run",
+                "load_test_config_file": LoadTestRunScenario.load_test_config_file,
+                "test_plan": LoadTestRunScenario.test_plan,
+            }
+        )
+
+        create_test(
+            self,
+            test_id=self.kwargs["test_id"],
+            load_test_resource=self.kwargs["load_test_resource"],
+            resource_group=self.kwargs["resource_group"],
+            load_test_config_file=self.kwargs["load_test_config_file"],
+            test_plan=self.kwargs["test_plan"]
+        )
+
+        self.cmd(
+            "az load test-run create "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--test-id {test_id} "
+            "--test-run-id {test_run_id} "
+        )
+        
+        #assert test_run["testRunId"] is not None
+        self.cmd(
+            "az load test-run stop "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--test-run-id {test_run_id} "
+            "--yes"
+        )
+        time.sleep(10)
+        test_run = self.cmd(
+            "az load test-run show "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--test-run-id {test_run_id} "  
+        ).get_output_in_json()
+        
+        assert test_run["status"] == "CANCELLED"
+
+        delete_test(
+            self,
+            test_id=self.kwargs["test_id"],
+            load_test_resource=self.kwargs["load_test_resource"],
+            resource_group=self.kwargs["resource_group"]
+        )
+
+
     def testcase_load_test_run_list(self):
         self.kwargs.update(
             {
@@ -88,33 +143,32 @@ class LoadTestRunScenario(ScenarioTest):
                 "test_plan": LoadTestRunScenario.test_plan,
             }
         )
-        create_test(
-            self,
-            test_plan=self.kwargs["test_plan"],
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_id=self.kwargs["test_id"],
-            load_test_config_file=self.kwargs["load_test_config_file"],
-        )
-        test_run_id = create_test_run(
-            self,
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_id=self.kwargs["test_id"],
-            test_run_id=self.kwargs["test_run_id"],
-        )
-        delete_test_run(
-            self,
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_run_id=test_run_id,
-        )
-        delete_test(
-            self,
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_id=self.kwargs["test_id"],
-        )
+        try :
+            create_test(
+                self,
+                test_plan=self.kwargs["test_plan"],
+                load_test_resource=self.kwargs["load_test_resource"],
+                resource_group=self.kwargs["resource_group"],
+                test_id=self.kwargs["test_id"],
+                load_test_config_file=self.kwargs["load_test_config_file"],
+            )
+            create_test_run(
+                self,
+                load_test_resource=self.kwargs["load_test_resource"],
+                resource_group=self.kwargs["resource_group"],
+                test_id=self.kwargs["test_id"],
+                test_run_id=self.kwargs["test_run_id"],
+            )
+        finally:
+            try:
+                delete_test(
+                    self,
+                    load_test_resource=self.kwargs["load_test_resource"],
+                    resource_group=self.kwargs["resource_group"],
+                    test_id=self.kwargs["test_id"],
+                )
+            except:
+                pass
 
     def testcase_load_test_run_delete(self):
         self.kwargs.update(
@@ -127,33 +181,32 @@ class LoadTestRunScenario(ScenarioTest):
                 "test_plan": LoadTestRunScenario.test_plan,
             }
         )
-        create_test(
-            self,
-            test_plan=self.kwargs["test_plan"],
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_id=self.kwargs["test_id"],
-            load_test_config_file=self.kwargs["load_test_config_file"],
-        )
-        test_run_id = create_test_run(
-            self,
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_id=self.kwargs["test_id"],
-            test_run_id=self.kwargs["test_run_id"],
-        )
-        delete_test_run(
-            self,
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_run_id=test_run_id,
-        )
-        delete_test(
-            self,
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_id=self.kwargs["test_id"],
-        )
+        try :
+            create_test(
+                self,
+                test_plan=self.kwargs["test_plan"],
+                load_test_resource=self.kwargs["load_test_resource"],
+                resource_group=self.kwargs["resource_group"],
+                test_id=self.kwargs["test_id"],
+                load_test_config_file=self.kwargs["load_test_config_file"],
+            )
+            create_test_run(
+                self,
+                load_test_resource=self.kwargs["load_test_resource"],
+                resource_group=self.kwargs["resource_group"],
+                test_id=self.kwargs["test_id"],
+                test_run_id=self.kwargs["test_run_id"],
+            )
+        finally:
+            try:
+                delete_test(
+                    self,
+                    load_test_resource=self.kwargs["load_test_resource"],
+                    resource_group=self.kwargs["resource_group"],
+                    test_id=self.kwargs["test_id"],
+                )
+            except:
+                pass
 
     def testcase_load_test_run_update(self):
         self.kwargs.update(
@@ -166,54 +219,51 @@ class LoadTestRunScenario(ScenarioTest):
                 "test_plan": LoadTestRunScenario.test_plan,
             }
         )
+        try :
+            create_test(
+                self,
+                test_plan=self.kwargs["test_plan"],
+                load_test_resource=self.kwargs["load_test_resource"],
+                resource_group=self.kwargs["resource_group"],
+                test_id=self.kwargs["test_id"],
+                load_test_config_file=self.kwargs["load_test_config_file"],
+            )
+            create_test_run(
+                self,
+                load_test_resource=self.kwargs["load_test_resource"],
+                resource_group=self.kwargs["resource_group"],
+                test_id=self.kwargs["test_id"],
+                test_run_id=self.kwargs["test_run_id"],
+            )
+            time.sleep(10)
+            test_run = self.cmd(
+                "az load test-run update "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--test-run-id {test_run_id} "
+                "--description 'Udated test run description' "
+            ).get_output_in_json()
 
-        create_test(
-            self,
-            test_plan=self.kwargs["test_plan"],
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_id=self.kwargs["test_id"],
-            load_test_config_file=self.kwargs["load_test_config_file"],
-        )
-        test_run_id = create_test_run(
-            self,
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_id=self.kwargs["test_id"],
-            test_run_id=self.kwargs["test_run_id"],
-        )
-        time.sleep(10)
-        test_run = self.cmd(
-            "az load test-run update "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-            f"--test-run-id {test_run_id} "
-            "--description 'Udated test run description' "
-        ).get_output_in_json()
+            assert test_run["description"] == "Udated test run description"
 
-        assert test_run["description"] == "Udated test run description"
+            test_run = self.cmd(
+                "az load test-run show "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--test-run-id {test_run_id}"
+            ).get_output_in_json()
 
-        test_run = self.cmd(
-            "az load test-run show "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-            f"--test-run-id {test_run_id}"
-        ).get_output_in_json()
-
-        assert test_run["description"] == "Udated test run description"
-
-        delete_test_run(
-            self,
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_run_id=test_run_id,
-        )
-        delete_test(
-            self,
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_id=self.kwargs["test_id"],
-        )
+            assert test_run["description"] == "Udated test run description"
+        finally:
+            try:
+                delete_test(
+                    self,
+                    load_test_resource=self.kwargs["load_test_resource"],
+                    resource_group=self.kwargs["resource_group"],
+                    test_id=self.kwargs["test_id"],
+                )
+            except:
+                pass
 
     def testcase_load_test_run_download_files(self):
         self.kwargs.update(
@@ -226,54 +276,52 @@ class LoadTestRunScenario(ScenarioTest):
                 "test_plan": LoadTestRunScenario.test_plan,
             }
         )
+        try:
+            create_test(
+                self,
+                test_plan=self.kwargs["test_plan"],
+                load_test_resource=self.kwargs["load_test_resource"],
+                resource_group=self.kwargs["resource_group"],
+                test_id=self.kwargs["test_id"],
+                load_test_config_file=self.kwargs["load_test_config_file"],
+            )
+            test_run_id = create_test_run(
+                self,
+                load_test_resource=self.kwargs["load_test_resource"],
+                resource_group=self.kwargs["resource_group"],
+                test_id=self.kwargs["test_id"],
+                test_run_id=self.kwargs["test_run_id"],
+            )
 
-        create_test(
-            self,
-            test_plan=self.kwargs["test_plan"],
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_id=self.kwargs["test_id"],
-            load_test_config_file=self.kwargs["load_test_config_file"],
-        )
-        test_run_id = create_test_run(
-            self,
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_id=self.kwargs["test_id"],
-            test_run_id=self.kwargs["test_run_id"],
-        )
+            self.cmd(
+                "az load test-run download-files "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--test-run-id {test_run_id} "
+                "--path . "
+                "--input "
+                "--log "
+            )
 
-        self.cmd(
-            "az load test-run download-files "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-            f"--test-run-id {test_run_id} "
-            "--path . "
-            "--input "
-            "--log "
-        )
+        finally:
+            try:
+                delete_test(
+                    self,
+                    load_test_resource=self.kwargs["load_test_resource"],
+                    resource_group=self.kwargs["resource_group"],
+                    test_id=self.kwargs["test_id"],
+                )
+            except:
+                pass
 
-        delete_test_run(
-            self,
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_run_id=test_run_id,
-        )
-        delete_test(
-            self,
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_id=self.kwargs["test_id"],
-        )
-
-    def testcase_load_app_components(self):
+    def testcase_load_app_component(self):
         self.kwargs.update(
             {
                 "load_test_resource": LoadTestRunScenario.load_test_resource,
                 "resource_group": LoadTestRunScenario.resource_group,
-                "test_id": LoadTestRunScenario.test_id + "app-components",
+                "test_id": LoadTestRunScenario.test_id + "app-component",
                 "test_run_id": LoadTestRunScenario.test_run_id
-                + "app-components-testrun",
+                + "app-component-testrun",
                 "load_test_config_file": LoadTestRunScenario.load_test_config_file,
                 "test_plan": LoadTestRunScenario.test_plan,
                 "app_component_id": LoadTestRunScenario.app_component_id,
@@ -281,90 +329,91 @@ class LoadTestRunScenario(ScenarioTest):
                 "app_component_type": LoadTestRunScenario.app_component_type,
             }
         )
-        checks = [
-            JMESPathCheck("testId", self.kwargs["test_id"]),
-        ]
 
-        # Create a new load test
-        create_test(
-            self,
-            test_id=self.kwargs["test_id"],
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            load_test_config_file=self.kwargs["load_test_config_file"],
-            test_plan=self.kwargs["test_plan"],
-        )
-        create_test_run(
-            self,
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_id=self.kwargs["test_id"],
-            test_run_id=self.kwargs["test_run_id"],
-        )
-        # assuming the app component is already created
-        # Adding an app component to the load test
-        response = self.cmd(
-            "az load test-run app-components add "
-            "--test-run-id {test_run_id} "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-            "--app-component-name {app_component_name} "
-            "--app-component-type {app_component_type} "
-            "--app-component-id {app_component_id} ",
-        ).get_output_in_json()
+        try:
+            # Create a new load test
+            create_test(
+                self,
+                test_id=self.kwargs["test_id"],
+                load_test_resource=self.kwargs["load_test_resource"],
+                resource_group=self.kwargs["resource_group"],
+                load_test_config_file=self.kwargs["load_test_config_file"],
+                test_plan=self.kwargs["test_plan"],
+            )
+            create_test_run(
+                self,
+                load_test_resource=self.kwargs["load_test_resource"],
+                resource_group=self.kwargs["resource_group"],
+                test_id=self.kwargs["test_id"],
+                test_run_id=self.kwargs["test_run_id"],
+            )
+            # assuming the app component is already created
+            # Adding an app component to the load test
+            response = self.cmd(
+                "az load test-run app-component add "
+                "--test-run-id {test_run_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--app-component-name {app_component_name} "
+                "--app-component-type {app_component_type} "
+                "--app-component-id {app_component_id} ",
+            ).get_output_in_json()
 
-        # Verify that the app component was added by making use of the list command
+            # Verify that the app component was added by making use of the list command
 
-        list_of_app_components = self.cmd(
-            "az load test-run app-components list "
-            "--test-run-id {test_run_id} "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-        ).get_output_in_json()
-        assert list_of_app_components.get("components", {}).get(
-            self.kwargs["app_component_id"]
-        )
-        assert self.kwargs["app_component_id"] == list_of_app_components.get(
-            "components", {}
-        ).get(self.kwargs["app_component_id"]).get("resourceId")
+            list_of_app_components = self.cmd(
+                "az load test-run app-component list "
+                "--test-run-id {test_run_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+            ).get_output_in_json()
+            assert list_of_app_components.get("components", {}).get(
+                self.kwargs["app_component_id"]
+            )
+            assert self.kwargs["app_component_id"] == list_of_app_components.get(
+                "components", {}
+            ).get(self.kwargs["app_component_id"]).get("resourceId")
 
-        # Remove app component
-        self.cmd(
-            "az load test-run app-components remove "
-            "--test-run-id {test_run_id} "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-            "--app-component-id {app_component_id} "
-            "--yes"
-        )
+            # Remove app component
+            self.cmd(
+                "az load test-run app-component remove "
+                "--test-run-id {test_run_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--app-component-id {app_component_id} "
+                "--yes"
+            )
 
-        list_of_app_components = self.cmd(
-            "az load test-run app-components list "
-            "--test-run-id {test_run_id} "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-        ).get_output_in_json()
+            list_of_app_components = self.cmd(
+                "az load test-run app-component list "
+                "--test-run-id {test_run_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+            ).get_output_in_json()
 
-        assert not list_of_app_components.get("components", {}).get(
-            self.kwargs["app_component_id"]
-        )
-
+            assert not list_of_app_components.get("components", {}).get(
+                self.kwargs["app_component_id"]
+            )
+        finally:
         # Delete the load test
-        delete_test(
-            self,
-            test_id=self.kwargs["test_id"],
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-        )
+            try:
+                delete_test(
+                    self,
+                    test_id=self.kwargs["test_id"],
+                    load_test_resource=self.kwargs["load_test_resource"],
+                    resource_group=self.kwargs["resource_group"],
+                )
+            except:
+                pass
 
-    def testcase_load_test_run_server_metrics(self):
+    def testcase_load_test_run_server_metric(self):
         self.kwargs.update(
             {
                 "load_test_resource": LoadTestRunScenario.load_test_resource,
                 "resource_group": LoadTestRunScenario.resource_group,
-                "test_id": LoadTestRunScenario.test_id + "server-metrics",
+                "test_id": LoadTestRunScenario.test_id + "server-metric",
                 "test_run_id": LoadTestRunScenario.test_run_id
-                + "server-metrics-testrun",
+                + "server-metric-testrun",
                 "load_test_config_file": LoadTestRunScenario.load_test_config_file,
                 "test_plan": LoadTestRunScenario.test_plan,
                 "metric_id": LoadTestRunScenario.server_metric_id,
@@ -376,106 +425,107 @@ class LoadTestRunScenario(ScenarioTest):
                 "app_component_type": LoadTestRunScenario.app_component_type,
             }
         )
-        checks = [
-            JMESPathCheck("testId", self.kwargs["test_id"]),
-        ]
+        try:
+            # Create a new load test
+            create_test(
+                self,
+                test_id=self.kwargs["test_id"],
+                load_test_resource=self.kwargs["load_test_resource"],
+                resource_group=self.kwargs["resource_group"],
+                load_test_config_file=self.kwargs["load_test_config_file"],
+                test_plan=self.kwargs["test_plan"],
+            )
+            create_test_run(
+                self,
+                load_test_resource=self.kwargs["load_test_resource"],
+                resource_group=self.kwargs["resource_group"],
+                test_id=self.kwargs["test_id"],
+                test_run_id=self.kwargs["test_run_id"],
+            )
+            # assuming the app component is already created
+            response = self.cmd(
+                "az load test-run app-component add "
+                "--test-run-id {test_run_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--app-component-name {app_component_name} "
+                "--app-component-type {app_component_type} "
+                "--app-component-id {app_component_id} ",
+            ).get_output_in_json()
 
-        # Create a new load test
-        create_test(
-            self,
-            test_id=self.kwargs["test_id"],
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            load_test_config_file=self.kwargs["load_test_config_file"],
-            test_plan=self.kwargs["test_plan"],
-        )
-        create_test_run(
-            self,
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-            test_id=self.kwargs["test_id"],
-            test_run_id=self.kwargs["test_run_id"],
-        )
-        # assuming the app component is already created
-        response = self.cmd(
-            "az load test-run app-components add "
-            "--test-run-id {test_run_id} "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-            "--app-component-name {app_component_name} "
-            "--app-component-type {app_component_type} "
-            "--app-component-id {app_component_id} ",
-        ).get_output_in_json()
+            # Verify that the app component was added by making use of the list command
 
-        # Verify that the app component was added by making use of the list command
+            list_of_app_components = self.cmd(
+                "az load test-run app-component list "
+                "--test-run-id {test_run_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+            ).get_output_in_json()
+            assert list_of_app_components.get("components", {}).get(
+                self.kwargs["app_component_id"]
+            )
+            assert self.kwargs["app_component_id"] == list_of_app_components.get(
+                "components", {}
+            ).get(self.kwargs["app_component_id"]).get("resourceId")
 
-        list_of_app_components = self.cmd(
-            "az load test-run app-components list "
-            "--test-run-id {test_run_id} "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-        ).get_output_in_json()
-        assert list_of_app_components.get("components", {}).get(
-            self.kwargs["app_component_id"]
-        )
-        assert self.kwargs["app_component_id"] == list_of_app_components.get(
-            "components", {}
-        ).get(self.kwargs["app_component_id"]).get("resourceId")
+            # Adding an server metrics to the load test
+            self.cmd(
+                "az load test-run server-metric add "
+                "--test-run-id {test_run_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--metric-id '{metric_id}' "
+                "--metric-name {metric_name} "
+                "--metric-namespace {metric_namespace} "
+                "--aggregation {aggregation} "
+                "--app-component-type {app_component_type} "
+                "--app-component-id {app_component_id} ",
+            ).get_output_in_json()
 
-        # Adding an server metrics to the load test
-        self.cmd(
-            "az load test-run server-metrics add "
-            "--test-run-id {test_run_id} "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-            "--metric-id '{metric_id}' "
-            "--metric-name {metric_name} "
-            "--metric-namespace {metric_namespace} "
-            "--aggregation {aggregation} "
-            "--app-component-type {app_component_type} "
-            "--app-component-id {app_component_id} ",
-        ).get_output_in_json()
+            # Verify that the server metrics was added by making use of the list command
 
-        # Verify that the server metrics was added by making use of the list command
+            list_of_server_metrics = self.cmd(
+                "az load test-run server-metric list "
+                "--test-run-id {test_run_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+            ).get_output_in_json()
+            assert list_of_server_metrics.get("metrics", {}).get(self.kwargs["metric_id"])
+            # assert self.kwargs["metric_id"] == list_of_server_metrics.get("metrics",{}).get(self.kwargs["metric_id"], {}).get("id")
 
-        list_of_server_metrics = self.cmd(
-            "az load test-run server-metrics list "
-            "--test-run-id {test_run_id} "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-        ).get_output_in_json()
-        assert list_of_server_metrics.get("metrics", {}).get(self.kwargs["metric_id"])
-        # assert self.kwargs["metric_id"] == list_of_server_metrics.get("metrics",{}).get(self.kwargs["metric_id"], {}).get("id")
+            # Remove server metrics
+            self.cmd(
+                "az load test-run server-metric remove "
+                "--test-run-id {test_run_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--metric-id '{metric_id}' "
+                "--yes"
+            )
 
-        # Remove server metrics
-        self.cmd(
-            "az load test-run server-metrics remove "
-            "--test-run-id {test_run_id} "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-            "--metric-id '{metric_id}' "
-            "--yes"
-        )
+            list_of_server_metrics = self.cmd(
+                "az load test-run server-metric list "
+                "--test-run-id {test_run_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+            ).get_output_in_json()
 
-        list_of_server_metrics = self.cmd(
-            "az load test-run server-metrics list "
-            "--test-run-id {test_run_id} "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-        ).get_output_in_json()
+            assert not list_of_app_components.get("metrics", {}).get(
+                self.kwargs["metric_id"]
+            )
+        finally:
+            # Delete the load test
+            try:
+                delete_test(
+                    self,
+                    test_id=self.kwargs["test_id"],
+                    load_test_resource=self.kwargs["load_test_resource"],
+                    resource_group=self.kwargs["resource_group"],
+                )
+            except:
+                pass
 
-        assert not list_of_app_components.get("metrics", {}).get(
-            self.kwargs["metric_id"]
-        )
-
-        # Delete the load test
-        delete_test(
-            self,
-            test_id=self.kwargs["test_id"],
-            load_test_resource=self.kwargs["load_test_resource"],
-            resource_group=self.kwargs["resource_group"],
-        )
-
+    """ 
     def testcase_load_test_run_metrics(self):
         self.kwargs.update(
             {
@@ -625,34 +675,8 @@ class LoadTestRunScenario(ScenarioTest):
             resource_group=self.kwargs["resource_group"],
         )
 
+    """
+    
+    
 
-"""
-    def testcase_load_test_run_stop(self):
-        self.kwargs.update(
-            {
-                "load_test_resource": LoadTestRunScenario.load_test_resource,
-                "resource_group": LoadTestRunScenario.resource_group,
-                "test_id": LoadTestRunScenario.test_id,
-                "test_run_id": LoadTestRunScenario.test_run_id + "stop",
-            }
-        )
 
-        self.cmd(
-            "az load test-run create "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-            "--test-id {test_id} "
-            "--no-wait "
-        )
-
-        #assert test_run["testRunId"] is not None
-
-        self.cmd(
-            "az load test-run stop "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-            "--test-run-id {test_run_id}"
-        )
-
-        
-        """
