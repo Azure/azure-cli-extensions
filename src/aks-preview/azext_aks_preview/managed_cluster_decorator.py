@@ -2676,9 +2676,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # replace values with provided values
         if excludedNamespaces is not None:
             mc.guardrails_profile.excluded_namespaces = extract_comma_separated_string(
-                    excludedNamespaces, enable_strip=True, keep_none=True, default_value=[])
+                excludedNamespaces, enable_strip=True, keep_none=True, default_value=[])
         return mc
-        
+
     def set_up_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up azure service mesh for the ManagedCluster object.
 
