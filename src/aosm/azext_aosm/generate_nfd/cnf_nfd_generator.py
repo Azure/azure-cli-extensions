@@ -69,7 +69,8 @@ class CnfNfdGenerator(NFDGenerator):
 
     def generate_nfd(self) -> None:
         """Generate a CNF NFD which comprises a group, an Artifact Manifest and an NFDV."""
-    
+        # Create output folder
+        self._create_nfd_folder()
         # Create temporary folder.
         with tempfile.TemporaryDirectory() as tmpdirname:
             self.tmp_folder_name = tmpdirname
@@ -116,6 +117,7 @@ class CnfNfdGenerator(NFDGenerator):
                 self.write_schema_to_file()
                 self.write_manifest_bicep_file()
                 self.copy_to_output_folder()
+                print(f"Generated NFD bicep template created in {self.output_folder_name}")
             except InvalidTemplateError as e:
                 raise e
 
@@ -143,8 +145,7 @@ class CnfNfdGenerator(NFDGenerator):
             tar.extractall(path=self.tmp_folder_name)
             tar.close()
         else:
-            # Throw error here
-            shutil.copytree(fname, self.tmp_folder_name, dirs_exist_ok=True)
+            raise InvalidTemplateError(f"ERROR: The helm package '{fname}' is not a .tgz, .tar or .tar.gz file. Please fix this and run the command again.")
 
     def _create_nfd_folder(self) -> None:
         """
@@ -249,7 +250,7 @@ class CnfNfdGenerator(NFDGenerator):
             "dependsOnProfile": helm_package.depends_on,
             "registryValuesPaths": list(registryValuesPaths),
             "imagePullSecretsValuesPaths": list(imagePullSecretsValuesPaths),
-            "valueMappingsPath": self.generate_parmeter_mappings(helm_package),
+            "valueMappingsPath": self.generate_parameter_mappings(helm_package),
         }
 
     def _find_yaml_files(self, directory) -> Iterator[str]:
@@ -314,7 +315,7 @@ class CnfNfdGenerator(NFDGenerator):
     ) -> Dict[Any, Any]:
         """
         Get the schema for the non default values (those with {deploymentParameter...}).
-         Based on user provided values.schema.json.
+        Based on user provided values.schema.json.
 
         param helm_package: The helm package config.
         """
@@ -325,22 +326,17 @@ class CnfNfdGenerator(NFDGenerator):
             self.tmp_folder_name, helm_package.name, "values.schema.json"
         )
         
-        try:
+        if not os.path.exists(non_def_values) or not os.path.exists(values_schema):
+            raise InvalidTemplateError(
+                f"ERROR: The helm package '{helm_package.name}' is missing either values.mappings.yaml or values.schema.json. Please fix this and run the command again."
+            )
+        else:
             with open(non_def_values, "r", encoding="utf-8") as stream:
                 values_data = yaml.load(stream, Loader=yaml.SafeLoader)
-        except:
-            raise InvalidTemplateError(
-                f"ERROR: There is no values.mappings.yaml file for the helm package '{helm_package.name}'. Please fix this and run the command again."
-            )
-        
-        try:
+
             with open(values_schema, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 schema_data = data["properties"]
-        except:
-            raise InvalidTemplateError(
-                f"ERROR: There is no values.schema.json file for the helm package '{helm_package.name}'. Please fix this and run the command again."
-            )
         
         try:
             final_schema = self.find_deploy_params(values_data, schema_data, {})
@@ -397,12 +393,12 @@ class CnfNfdGenerator(NFDGenerator):
 
         return (chart_name, chart_version)
 
-    def generate_parmeter_mappings(self, helm_package: HelmPackageConfig) -> str:
+    def generate_parameter_mappings(self, helm_package: HelmPackageConfig) -> str:
         """ Generate parameter mappings for the given helm package."""
         values = os.path.join(
             self.tmp_folder_name, helm_package.name, "values.mappings.yaml"
         )
-
+        
         mappings_folder_path = os.path.join(self.tmp_folder_name, "configMappings")
         mappings_filename = f"{helm_package.name}-mappings.json"
 

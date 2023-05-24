@@ -5,6 +5,7 @@
 
 import json
 import os
+import shutil
 from dataclasses import asdict
 from typing import Optional
 from knack.log import get_logger
@@ -110,12 +111,18 @@ def _generate_nfd(definition_type, config):
             "Generate NFD called for unrecognised definition_type. Only VNF and CNF have been implemented."
         )
     if nfd_generator.bicep_path:
-        raise InvalidTemplateError(
-                f"ERROR: Using the existing NFD bicep template {nfd_generator.bicep_path}.\nTo generate a new NFD, delete the folder {os.path.dirname(nfd_generator.bicep_path)} and re-run this command."
-            )
-    else: 
-        nfd_generator.generate_nfd()
+        # raise InvalidTemplateError(
+        #         f"ERROR: Using the existing NFD bicep template {nfd_generator.bicep_path}.\nTo generate a new NFD, delete the folder {os.path.dirname(nfd_generator.bicep_path)} and re-run this command."
+        #     )
+        carry_on = input(
+            f"The folder {os.path.dirname(nfd_generator.bicep_path)} already exists - delete it and continue? (y/n)"
+        )
+        if carry_on != "y":
+            raise RuntimeError("User aborted!")
 
+        shutil.rmtree(os.path.dirname(nfd_generator.bicep_path))
+    
+    nfd_generator.generate_nfd()
 
 def publish_definition(
     cmd,

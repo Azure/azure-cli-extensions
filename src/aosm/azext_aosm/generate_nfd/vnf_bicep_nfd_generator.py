@@ -52,7 +52,6 @@ class VnfBicepNfdGenerator(NFDGenerator):
     def generate_nfd(self) -> None:
         """
         Generate a VNF NFD which comprises an group, an Artifact Manifest and a NFDV.
-        Create a bicep template for an NFD from the ARM template for the VNF.
         """
         logger.info(f"Generate NFD bicep template for {self.arm_template_path}")
         print(f"Generate NFD bicep template for {self.arm_template_path}")
