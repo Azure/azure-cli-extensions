@@ -3,14 +3,15 @@
 # License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------
 """Contains a class for generating VNF NFDs and associated resources."""
-from knack.log import get_logger
-import json
+
 import logging
+import json
 import os
 import shutil
 from functools import cached_property
 from pathlib import Path
 from typing import Any, Dict, Optional
+from knack.log import get_logger
 
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 
@@ -24,7 +25,7 @@ from azext_aosm.util.constants import (
 logger = get_logger(__name__)
 
 
-class VnfBicepNfdGenerator(NFDGenerator):
+class VnfNfdGenerator(NFDGenerator):
     """
     VNF NFD Generator.
 
@@ -53,6 +54,7 @@ class VnfBicepNfdGenerator(NFDGenerator):
         """Create a bicep template for an NFD from the ARM template for the VNF."""
         """
         Generate a VNF NFD which comprises an group, an Artifact Manifest and a NFDV.
+
         Create a bicep template for an NFD from the ARM template for the VNF.
         """
         logger.info(f"Generate NFD bicep template for {self.arm_template_path}")

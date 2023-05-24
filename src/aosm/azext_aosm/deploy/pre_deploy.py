@@ -52,9 +52,9 @@ class PreDeployerViaSDK:
         Copied from virtutils.
 
         :param resource_group_name: The name of the resource group          Raises a
-                NotFoundError exception if the resource group does not exist.
-                Raises a PermissionsError exception if we don't have permissions to
-                check resource group existence.
+                NotFoundError exception if the resource group does not exist. Raises a
+                PermissionsError exception if we don't have permissions to check
+                resource group existence.
         """
         if not self.api_clients.resource_client.resource_groups.check_existence(
             resource_group_name

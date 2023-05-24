@@ -13,7 +13,7 @@ from azure.cli.core.azclierror import CLIInternalError
 
 from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
-from azext_aosm.generate_nfd.vnf_bicep_nfd_generator import VnfBicepNfdGenerator
+from src.aosm.azext_aosm.generate_nfd.vnf_nfd_generator import VnfNfdGenerator
 from azext_aosm.delete.delete import ResourceDeleter
 from azext_aosm.deploy.deploy_with_arm import DeployerViaArm
 from azext_aosm.util.constants import VNF, CNF, NSD
@@ -26,7 +26,6 @@ from azext_aosm._configuration import (
 )
 
 
-
 logger = get_logger(__name__)
 
 
@@ -34,7 +33,7 @@ def build_definition(cmd, definition_type: str, config_file: str):
     """
     Build and optionally publish a definition.
 
-    :param cmd:
+    :param cmd: 
     :param config_file: path to the file
     :param definition_type: VNF or CNF
     """
@@ -78,7 +77,7 @@ def _generate_nfd(definition_type, config):
     """Generate a Network Function Definition for the given type and config."""
     nfd_generator: NFDGenerator
     if definition_type == VNF:
-        nfd_generator = VnfBicepNfdGenerator(config)
+        nfd_generator = VnfNfdGenerator(config)
     elif definition_type == CNF:
         nfd_generator = CnfNfdGenerator(config)
     else:
@@ -125,8 +124,8 @@ def publish_definition(
     Optional path to an override bicep template to deploy
     manifests    :param manifest_parameters_json_
     file:
-    :param cmd: 
-    :param client: 
+    :param cmd:
+    :param client:
     :type client: HybridNetworkManagementClient
     :param definition_type: VNF or CNF
     :param config_file: Path to the config file for the NFDV
@@ -195,6 +194,9 @@ def generate_design_config(output_file: str = "input.json"):
     """
     Generate an example config file for building a NSD.
 
+    :param output_file: path to output config file, defaults to "input.json" :type
+    output_
+    file:
     :param output_file: path to output config file, defaults to "input.json"
     :type output_file: str, optional
     """
@@ -205,6 +207,9 @@ def _generate_config(definition_type: str, output_file: str = "input.json"):
     """
     Generic generate config function for NFDs and NSDs.
 
+    :param definition_type: CNF, VNF or NSD :param output_file: path to output config
+    file, defaults to "input.json" :type output_
+    file:
     :param definition_type: CNF, VNF or NSD
     :param output_file: path to output config file, defaults to "input.json"
     :type output_file: str, optional
@@ -226,9 +231,12 @@ def build_design(cmd, client: HybridNetworkManagementClient, config_file: str):
     """
     Build and optionally publish a Network Service Design.
 
-    :param cmd:
+    :param cmd: :type cmd: _type_ :param client: :type client:
+    HybridNetworkManagementClient :param config_
+    file:
+    :param cmd: 
     :type cmd: _type_
-    :param client:
+    :param client: 
     :type client: HybridNetworkManagementClient
     :param config_file: path to the file
     """
@@ -247,8 +255,8 @@ def delete_published_design(
     :param definition_type: CNF or VNF
     :param config_file: Path to the config file
     :param clean: if True, will delete the NFDG, artifact stores and publisher too.
-                  Defaults to False. Only works if no resources have those as a parent.
-                    Use with care.
+        Defaults to False. Only works if no resources have those as a parent.     Use
+        with care.
     """
     raise NotImplementedError("Delete published design is not yet implented for NSD")
 
@@ -261,8 +269,11 @@ def publish_design(
     """
     Publish a generated design.
 
-    :param cmd:
-    :param client:
+    :param cmd: :param client: :type client: HybridNetworkManagementClient :param
+    definition_type: VNF or CNF :param config_
+    file:
+    :param cmd: 
+    :param client: 
     :type client: HybridNetworkManagementClient
     :param definition_type: VNF or CNF
     :param config_file: Path to the config file for the NFDV

@@ -32,7 +32,7 @@ from azext_aosm.util.constants import (
 logger = get_logger(__name__)
 
 
-class CnfNfdGenerator(NFDGenerator):
+class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attributes
     """
     _summary_
 
@@ -252,7 +252,7 @@ class CnfNfdGenerator(NFDGenerator):
 
         :param directory: The directory to search.
         """
-        for root, dirs, files in os.walk(directory):
+        for root, _, files in os.walk(directory):
             for file in files:
                 if file.endswith(".yaml") or file.endswith(".yml"):
                     yield os.path.join(root, file)
