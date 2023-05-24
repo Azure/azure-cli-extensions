@@ -2013,7 +2013,7 @@ def update_containerappsjob_logic(cmd,
                     scale_def["pollingInterval"] = polling_interval
                     scale_def["minExecutions"] = min_executions
                     scale_def["maxReplicas"] = max_executions
-                # # so we don't overwrite rules
+                # so we don't overwrite rules
                 if safe_get(new_containerappsjob, "properties", "template", "scale", "rules"):
                     new_containerappsjob["properties"]["template"]["scale"].pop(["rules"])
                 if scale_rule_name:
