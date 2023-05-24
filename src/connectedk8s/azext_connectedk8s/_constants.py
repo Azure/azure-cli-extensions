@@ -199,7 +199,7 @@ Outbound_Network_Connectivity_Check_for_onboarding = "outbound_network_connectiv
 Outbound_Network_Connectivity_Check_for_cluster_connect = "outbound_network_connectivity_check_for_cluster_connect.txt"
 Events_of_Incomplete_Diagnoser_Job = "diagnoser_failure_events.txt"
 # Connect Precheck Diagnoser constants
-Cluster_Diagnostic_Checks_Job_Registry_Path = "mcr.microsoft.com/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.1.1"
+Cluster_Diagnostic_Checks_Job_Registry_Path = "mcr.microsoft.com/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.1.2"
 Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type = "Error while installing cluster diagnostic checks helm release"
 Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type = "Error occured while executing cluster diagnostic checks"
 Cluster_Diagnostic_Checks_Release_Cleanup_Failed = "Error occured while cleaning up the cluster diagnostic checks helm release"
