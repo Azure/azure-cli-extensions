@@ -17,10 +17,10 @@ Eventually the extension will be published through the usual process and it will
 installed as usual, via `az extension add --name aosm`
 
 Until then, the latest development version can be found here:
-https://github.com/jddarby/azure-cli-extensions/releases/download/aosm-extension/aosm-0.1.0-py2.py3-none-any.whl
+https://github.com/jddarby/azure-cli-extensions/releases/download/aosm-extension/aosm-0.2.0-py2.py3-none-any.whl
 
 To install, download this wheel and run:
-`az extension add --source path/to/aosm-0.1.0-py2.py3-none-any.whl`
+`az extension add --source path/to/aosm-0.2.0-py2.py3-none-any.whl`
 
 ## Updating 
 
@@ -77,38 +77,40 @@ For CNFs, you must provide helm packages with an associated schema. When filling
 
 Get help on command arguments
 
-`az aosm -h`  
-`az aosm definition -h`  
-`az aosm definition build -h`  
+`az aosm -h`
+`az aosm nfd -h`
+`az aosm nfd build -h`
 etc...
 
-All these commands take a `--definition-type` argument of `vnf`, `cnf` or `nsd`
+All these commands take a `--definition-type` argument of `vnf` or `cnf`
 
 Create an example config file for building a definition
 
-`az aosm definition generate-config`
+`az aosm nfd generate-config`
 
 This will output a file called `input.json` which must be filled in. 
 Once the config file has been filled in the following commands can be run.
 
-Build a definition locally
+Build an nfd definition locally
 
-`az aosm definition build --config-file input.json`
+`az aosm nfd build --config-file input.json`
 
 Build and publish a definition
 
-`az aosm definition build --config-file input.json --publish`
+`az aosm nfd build --config-file input.json --publish`
 
 Publish a pre-built definition
 
-`az aosm definition publish --config-file input.json`
+`az aosm nfd publish --config-file input.json`
 
 Delete a published definition
 
-`az aosm definition delete --config-file input.json`
+`az aosm nfd delete --config-file input.json`
 
 Delete a published definition and the publisher, artifact stores and NFD group
 
-`az aosm definition delete --config-file input.json --clean`
+`az aosm nfd delete --config-file input.json --clean`
 
+Coming soon:
 
+`az aosm nsd build` and further nsd commands.
