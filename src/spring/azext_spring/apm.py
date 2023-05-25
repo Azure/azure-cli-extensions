@@ -104,8 +104,8 @@ def _get_apm_properties(cmd, resource_group, service_name, location,
 
 def _get_connection_string(cmd, resource_group, service_name, location, app_insights_key, app_insights):
     return app_insights_key or \
-           _get_connection_string_from_app_insights(cmd, resource_group, app_insights) or \
-           _create_app_insights_and_get_connection_string(cmd, resource_group, service_name, location)
+        _get_connection_string_from_app_insights(cmd, resource_group, app_insights) or \
+        _create_app_insights_and_get_connection_string(cmd, resource_group, service_name, location)
 
 
 def _create_app_insights_and_get_connection_string(cmd, resource_group, service_name, location):
