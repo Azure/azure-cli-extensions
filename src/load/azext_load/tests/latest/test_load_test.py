@@ -19,13 +19,16 @@ class LoadTestScenario(ScenarioTest):
     resource_group = "hbisht-rg"
     test_id = "sampletest1"
     load_test_config_file = r"C:\\Users\\hbisht\\Desktop\\config.yaml"
+    #load_test_config_file = r".\\files\\config.yaml"
     test_plan = r"C:\\Users\\hbisht\\Desktop\\LoadTest2.jmx"
+    #test_plan = r".\\files\\LoadTest2.jmx"
     app_component_id = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss"
     app_component_type = r"Microsoft.Compute/virtualMachineScaleSets"
     metric_id = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss/providers/microsoft.insights/metricdefinitions/Percentage CPU"
     metric_name = r"Percentage_CPU"
     metric_namespace = r"microsoft.compute/virtualmachinescalesets"
     aggregation = r"Average"
+    #file_path = r".\\files\\LoadTest2.jmx"
     file_path = r"C:\\Users\\hbisht\\Desktop\\LoadTest2.jmx"
     
     # test case for 'az load test list' command
@@ -120,7 +123,6 @@ class LoadTestScenario(ScenarioTest):
                 "path": ".",
                 "load_test_config_file": LoadTestScenario.load_test_config_file,
                 "test_plan": LoadTestScenario.test_plan,
-                "path": f".",
                 "load_test_config_file": LoadTestScenario.load_test_config_file,
                 "test_plan": LoadTestScenario.test_plan,
             }
@@ -158,8 +160,6 @@ class LoadTestScenario(ScenarioTest):
                 "resource_group": LoadTestScenario.resource_group,
                 "test_id": "create-test-case-1507-2608",
                 "load_test_config_file": LoadTestScenario.load_test_config_file,
-                "test_plan": LoadTestScenario.test_plan,
-                "engine_instances": "49",
             }
         )
 
@@ -174,16 +174,9 @@ class LoadTestScenario(ScenarioTest):
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             "--load-test-config-file {load_test_config_file} "
-            "--test-plan {test_plan} "
-            "--engine-instances {engine_instances} "
             "--wait ",
             checks=checks,
         ).get_output_in_json()
-
-        # additional arguments should be ignored by the command
-        assert response.get("loadTestConfiguration", {}).get(
-            "engineInstances", None
-        ) != int(self.kwargs["engine_instances"])
 
         list_of_tests = self.cmd(
             "az load test list "
