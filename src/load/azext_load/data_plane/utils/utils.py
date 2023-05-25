@@ -5,12 +5,13 @@
 
 import os
 import uuid
+from enum import EnumMeta
 
 import requests
 import yaml
 from azext_load.data_plane.utils import validators
 from azext_load.vendored_sdks.loadtesting_mgmt import LoadTestMgmtClient
-from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationError
+from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueError
 from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
@@ -101,6 +102,12 @@ def get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name=N
         endpoint=endpoint,
         credential=credential,
     )
+
+
+def get_enum_values(enum):
+    if not isinstance(enum, EnumMeta):
+        raise InvalidArgumentValueError(f"Invalid enum type: {type(enum)}")
+    return [item.value for item in enum]
 
 
 def download_file(url, file_path):
@@ -216,9 +223,11 @@ def load_yaml(file_path):
             str(e),
         )
         raise FileOperationError(
-            "Invalid load test configuration file : %s. Please check the file path and format. Exception: %s", file_path, str(e)
+            "Invalid load test configuration file : %s. Please check the file path and format. Exception: %s",
+            file_path,
+            str(e),
         )
-        
+
 
 def convert_yaml_to_test(data):
     new_body = {}
@@ -228,12 +237,8 @@ def convert_yaml_to_test(data):
         new_body["description"] = data["description"]
     new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
     if "keyvaultReferenceIdentityId" in data:
-        new_body["keyvaultReferenceIdentityId"] = data[
-            "keyvaultReferenceIdentityId"
-        ]
-        new_body[
-            "keyvaultReferenceIdentityType"
-        ] = IdentityType.UserAssigned
+        new_body["keyvaultReferenceIdentityId"] = data["keyvaultReferenceIdentityId"]
+        new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
 
     if "subnetId" in data:
         new_body["subnetId"] = data["subnetId"]
@@ -248,7 +253,7 @@ def convert_yaml_to_test(data):
         new_body["secrets"] = parse_secrets(data.get("secrets"))
     if data.get("env"):
         new_body["environmentVariables"] = parse_env(data.get("env"))
-    
+
     # quick test and split csv not supported currently in CLI
     new_body["loadTestConfiguration"]["quickStartTest"] = False
     if data.get("quickStartTest"):
@@ -269,24 +274,20 @@ def convert_yaml_to_test(data):
             new_body["passFailCriteria"]["passFailMetrics"][id][
                 "aggregate"
             ] = components.split("(")[0].strip()
-            new_body["passFailCriteria"]["passFailMetrics"][id][
-                "clientMetric"
-            ] = (components.split("(")[1].split(")")[0].strip())
+            new_body["passFailCriteria"]["passFailMetrics"][id]["clientMetric"] = (
+                components.split("(")[1].split(")")[0].strip()
+            )
             new_body["passFailCriteria"]["passFailMetrics"][id][
                 "condition"
             ] = components.split(")")[1].strip()[0]
             new_body["passFailCriteria"]["passFailMetrics"][id][
                 "value"
             ] = components.split(
-                new_body["passFailCriteria"]["passFailMetrics"][id][
-                    "condition"
-                ]
+                new_body["passFailCriteria"]["passFailMetrics"][id]["condition"]
             )[
                 1
             ].strip()
-            new_body["passFailCriteria"]["passFailMetrics"][id][
-                "requestName"
-            ] = name
+            new_body["passFailCriteria"]["passFailMetrics"][id]["requestName"] = name
 
 
 def create_or_update_body(
@@ -301,7 +302,7 @@ def create_or_update_body(
     certificate=None,
     key_vault_reference_identity=None,
     subnet_id=None,
-    split_csv=None ,
+    split_csv=None,
 ):
     new_body = {}
     if display_name is not None:

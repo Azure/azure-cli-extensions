@@ -1,24 +1,23 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 import os
 import re
 from collections import OrderedDict
 from datetime import datetime
-from enum import EnumMeta
 
 import yaml
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import CLIError
+from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id
 
 from . import utils
 from .models import AllowedFileTypes, AllowedIntervals, AllowedMetricNamespaces
 
-logger = utils.get_logger(__name__)
-
-
-def get_enum_values(enum):
-    if not isinstance(enum, EnumMeta):
-        raise InvalidArgumentValueError(f"Invalid enum type: {type(enum)}")
-    return [item.value for item in enum]
+logger = get_logger(__name__)
 
 
 def validate_test_id(namespace):
@@ -199,6 +198,7 @@ def validate_dir_path(namespace):
 def validate_file_path(namespace):
     namespace.path = _validate_path(namespace.path, is_dir=False)
 
+
 def validate_test_plan_path(namespace):
     namespace.test_plan = _validate_path(namespace.test_plan, is_dir=False)
 
@@ -207,6 +207,7 @@ def validate_test_plan_path(namespace):
         raise InvalidArgumentValueError(
             f"Invalid test plan file extension: {file_extension}. Expected: .jmx"
         )
+
 
 def _validate_path(path, is_dir=False):
     if not isinstance(path, str):
@@ -240,7 +241,7 @@ def validate_file_type(namespace):
         raise InvalidArgumentValueError(
             f"Invalid file-type type: {type(namespace.file_type)}"
         )
-    allowed_file_types = get_enum_values(AllowedFileTypes)
+    allowed_file_types = utils.get_enum_values(AllowedFileTypes)
     if namespace.file_type not in allowed_file_types:
         raise InvalidArgumentValueError(
             f"Invalid file-type value: {namespace.file_type}. Allowed values: {', '.join(allowed_file_types)}"
@@ -282,7 +283,7 @@ def validate_interval(namespace):
         raise InvalidArgumentValueError(
             f"Invalid interval type: {type(namespace.interval)}"
         )
-    allowed_intervals = get_enum_values(AllowedIntervals)
+    allowed_intervals = utils.get_enum_values(AllowedIntervals)
     if namespace.interval not in allowed_intervals:
         raise InvalidArgumentValueError(
             f"Invalid interval value: {namespace.interval}. Allowed values: {', '.join(allowed_intervals)}"
@@ -294,7 +295,7 @@ def validate_metric_namespaces(namespace):
         raise InvalidArgumentValueError(
             f"Invalid metric-namespace type: {type(namespace.metric_namespace)}"
         )
-    allowed_metric_namespaces = get_enum_values(AllowedMetricNamespaces)
+    allowed_metric_namespaces = utils.get_enum_values(AllowedMetricNamespaces)
     if namespace.metric_namespace not in allowed_metric_namespaces:
         raise InvalidArgumentValueError(
             f"Invalid metric-namespace value: {namespace.metric_namespace}. Allowed values: {', '.join(allowed_metric_namespaces)}"

@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 from azext_load.data_plane.utils import completers, models, validators
 from azure.cli.core.commands.parameters import (
     get_generic_completion_list,
@@ -80,6 +85,13 @@ test_plan = CLIArgumentType(
     help="Path to the test plan file.",
 )
 
+load_test_config_file = CLIArgumentType(
+    validator=validators.validate_load_test_config_file,
+    options_list=["--load-test-config-file"],
+    type=str,
+    help="Path to the load test config file.",
+)
+
 test_display_name = CLIArgumentType(
     options_list=["--display-name"],
     type=str,
@@ -104,12 +116,6 @@ key_vault_reference_identity = CLIArgumentType(
     help="The identity that will be used to access the key vault.",
 )
 
-load_test_config_file = CLIArgumentType(
-    validator=validators.validate_load_test_config_file,
-    options_list=["--load-test-config-file"],
-    type=str,
-    help="Path to the load test config file.",
-)
 
 split_csv = CLIArgumentType(
     options_list=["--split-csv"],

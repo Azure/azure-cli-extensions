@@ -1,11 +1,16 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 import os
 
 from azext_load.data_plane.utils.utils import (
+    convert_yaml_to_test,
     create_or_update_body,
     download_file,
     get_admin_data_plane_client,
     load_yaml,
-    convert_yaml_to_test,
     upload_file_to_test,
 )
 from azext_load.data_plane.utils.validators import AllowedFileTypes
@@ -70,14 +75,36 @@ def create_test(
     files = client.list_test_files(test_id)
     if yaml.get("userProperty") is not None:
         file_name = os.path.basename(yaml.get("userProperty"))
-        file_response = upload_file_to_test(client, test_id, yaml["userProperty"], file_type=AllowedFileTypes.USER_PROPERTIES, wait=wait)
-        logger.info("Uploaded file '%s' of type %s to test %s", file_name, AllowedFileTypes.USER_PROPERTIES, test_id)
+        file_response = upload_file_to_test(
+            client,
+            test_id,
+            yaml["userProperty"],
+            file_type=AllowedFileTypes.USER_PROPERTIES,
+            wait=wait,
+        )
+        logger.info(
+            "Uploaded file '%s' of type %s to test %s",
+            file_name,
+            AllowedFileTypes.USER_PROPERTIES,
+            test_id,
+        )
 
     if yaml.get("configurationFiles") is not None:
         for config_file in yaml["configurationFiles"]:
             file_name = os.path.basename(config_file)
-            upload_file_to_test(client, test_id, config_file, file_type=AllowedFileTypes.ADDITIONAL_ARTIFACTS, wait=wait)
-            logger.info("Uploaded file '%s' of type %s to test %s", file_name, AllowedFileTypes.ADDITIONAL_ARTIFACTS, test_id)
+            upload_file_to_test(
+                client,
+                test_id,
+                config_file,
+                file_type=AllowedFileTypes.ADDITIONAL_ARTIFACTS,
+                wait=wait,
+            )
+            logger.info(
+                "Uploaded file '%s' of type %s to test %s",
+                file_name,
+                AllowedFileTypes.ADDITIONAL_ARTIFACTS,
+                test_id,
+            )
 
     if yaml.get("testPlan") is not None or test_plan is not None:
         test_plan = test_plan if test_plan is not None else yaml["testPlan"]
@@ -85,9 +112,15 @@ def create_test(
         for file in files:
             if AllowedFileTypes.JMX_FILE.value == file["fileType"]:
                 client.delete_test_file(test_id, file["fileName"])
-                logger.info("File with name '%s' already exists in test %s. Deleting it!", file_name, test_id)
+                logger.info(
+                    "File with name '%s' already exists in test %s. Deleting it!",
+                    file_name,
+                    test_id,
+                )
                 break
-        file_response = upload_file_to_test(client, test_id, test_plan, file_type=AllowedFileTypes.JMX_FILE, wait=wait)
+        file_response = upload_file_to_test(
+            client, test_id, test_plan, file_type=AllowedFileTypes.JMX_FILE, wait=wait
+        )
         if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
             raise FileOperationError(
                 f"Test plan file {test_plan} is not valid. Please check the file and try again."
@@ -112,7 +145,7 @@ def update_test(
     key_vault_reference_identity=None,
     subnet_id=None,
     split_csv=None,
-    wait=False
+    wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     try:
@@ -122,10 +155,10 @@ def update_test(
         logger.debug(msg)
         raise InvalidArgumentValueError(msg)
     logger.debug("Retrieved test with test ID: %s and body : %s", test_id, body)
-    
+
     yaml = load_yaml(load_test_config_file)
     yaml_test_body = convert_yaml_to_test(yaml)
-    
+
     body = create_or_update_body(
         test_id,
         body,
@@ -152,19 +185,49 @@ def update_test(
         for file in files:
             if AllowedFileTypes.USER_PROPERTIES.value == file["fileType"]:
                 client.delete_test_file(test_id, file["fileName"])
-                logger.info("File of type '%s' already exists in test %s. Deleting it!", AllowedFileTypes.USER_PROPERTIES, test_id)
+                logger.info(
+                    "File of type '%s' already exists in test %s. Deleting it!",
+                    AllowedFileTypes.USER_PROPERTIES,
+                    test_id,
+                )
                 break
-        file_response = upload_file_to_test(client, test_id, yaml["userProperty"], file_type=AllowedFileTypes.USER_PROPERTIES, wait=wait)
-        logger.info("Uploaded file '%s' of type %s to test %s", file_name, AllowedFileTypes.USER_PROPERTIES, test_id)
+        file_response = upload_file_to_test(
+            client,
+            test_id,
+            yaml["userProperty"],
+            file_type=AllowedFileTypes.USER_PROPERTIES,
+            wait=wait,
+        )
+        logger.info(
+            "Uploaded file '%s' of type %s to test %s",
+            file_name,
+            AllowedFileTypes.USER_PROPERTIES,
+            test_id,
+        )
 
     if yaml.get("configurationFiles") is not None:
         for config_file in yaml["configurationFiles"]:
             file_name = os.path.basename(config_file)
             if file_name in [file["fileName"] for file in files]:
                 client.delete_test_file(test_id, file_name)
-                logger.info("File with name '%s' already exists in test %s. Deleting it!", file_name, test_id)
-            upload_file_to_test(client, test_id, config_file, file_type=AllowedFileTypes.ADDITIONAL_ARTIFACTS, wait=wait)
-            logger.info("Uploaded file '%s' of type %s to test %s", file_name, AllowedFileTypes.ADDITIONAL_ARTIFACTS, test_id)
+                logger.info(
+                    "File with name '%s' already exists in test %s. Deleting it!",
+                    file_name,
+                    test_id,
+                )
+            upload_file_to_test(
+                client,
+                test_id,
+                config_file,
+                file_type=AllowedFileTypes.ADDITIONAL_ARTIFACTS,
+                wait=wait,
+            )
+            logger.info(
+                "Uploaded file '%s' of type %s to test %s",
+                file_name,
+                AllowedFileTypes.ADDITIONAL_ARTIFACTS,
+                test_id,
+            )
 
     if yaml.get("testPlan") is not None or test_plan is not None:
         test_plan = test_plan if test_plan is not None else yaml["testPlan"]
@@ -172,9 +235,15 @@ def update_test(
         for file in files:
             if AllowedFileTypes.JMX_FILE.value == file["fileType"]:
                 client.delete_test_file(test_id, file["fileName"])
-                logger.info("File with name '%s' already exists in test %s. Deleting it!", file_name, test_id)
+                logger.info(
+                    "File with name '%s' already exists in test %s. Deleting it!",
+                    file_name,
+                    test_id,
+                )
                 break
-        file_response = upload_file_to_test(client, test_id, test_plan, file_type=AllowedFileTypes.JMX_FILE, wait=wait)
+        file_response = upload_file_to_test(
+            client, test_id, test_plan, file_type=AllowedFileTypes.JMX_FILE, wait=wait
+        )
         if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
             raise FileOperationError(
                 f"Test plan file {test_plan} is not valid. Please check the file and try again."
