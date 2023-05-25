@@ -26,6 +26,9 @@ from azext_aosm.util.constants import (
     DEPLOYMENT_PARAMETER_MAPPING_REGEX,
     IMAGE_LINE_REGEX,
     IMAGE_PULL_SECRET_LINE_REGEX,
+    CONFIG_MAPPINGS,
+    SCHEMAS,
+    SCHEMA_PREFIX
 )
 
 
@@ -64,12 +67,7 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
 
         self.artifacts = []
         self.nf_application_configurations = []
-        self.deployment_parameter_schema = {
-            "$schema": "https://json-schema.org/draft-07/schema#",
-            "title": "DeployParametersSchema",
-            "type": "object",
-            "properties": {},
-        }
+        self.deployment_parameter_schema = SCHEMA_PREFIX
 
         self._bicep_path = os.path.join(
             self.output_folder_name, CNF_DEFINITION_BICEP_TEMPLATE
@@ -77,8 +75,6 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
 
     def generate_nfd(self) -> None:
         """Generate a CNF NFD which comprises a group, an Artifact Manifest and an NFDV."""
-        # Create output folder
-        self._create_nfd_folder()
 
         # Create temporary folder.
         with tempfile.TemporaryDirectory() as tmpdirname:
@@ -105,6 +101,7 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
                     )
 
                     # Generate the NF application configuration for the chart
+                    # passed to jinja2 renderer to render bicep template
                     self.nf_application_configurations.append(
                         self.generate_nf_application_config(
                             helm_package,
@@ -144,29 +141,26 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
 
         return None
 
-    def _extract_chart(self, fname: str) -> None:
+    def _extract_chart(self, path: str) -> None:
         """
         Extract the chart into the tmp folder.
 
-        :param fname: The path to helm package
+        :param path: The path to helm package
         """
-        if fname.endswith("tar.gz") or fname.endswith("tgz"):
-            tar = tarfile.open(fname, "r:gz")
+        (_, ext) = os.path.splitext(path)
+        if ext == ".gz" or ext == ".tgz":
+            tar = tarfile.open(path, "r:gz")
             tar.extractall(path=self.tmp_folder_name)
             tar.close()
-        elif fname.endswith("tar"):
-            tar = tarfile.open(fname, "r:")
+        elif ext == ".tar":
+            tar = tarfile.open(path, "r:")
             tar.extractall(path=self.tmp_folder_name)
             tar.close()
         else:
             raise InvalidTemplateError(
-                f"ERROR: The helm package '{fname}' is not a .tgz, .tar or .tar.gz file. Please fix this and run the command again."
+                f"ERROR: The helm package '{path}' is not a .tgz, .tar or .tar.gz file.\
+                Please fix this and run the command again."
             )
-
-    def _create_nfd_folder(self) -> None:
-        """Create the folder for the NFD bicep files."""
-        logger.info("Create NFD bicep %s", self.output_folder_name)
-        os.mkdir(self.output_folder_name)
 
     def write_manifest_bicep_file(self) -> None:
         """Write the bicep file for the Artifact Manifest."""
@@ -209,8 +203,11 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
 
     def copy_to_output_folder(self) -> None:
         """Copy the config mappings, schema and bicep templates (artifact manifest and NFDV) to the output folder."""
-
-        os.mkdir(self.output_folder_name + "/schemas")
+        
+        logger.info("Create NFD bicep %s", self.output_folder_name)
+        os.mkdir(self.output_folder_name)
+        
+        os.mkdir(self.output_folder_name + "/" + SCHEMAS)
 
         nfd_bicep_path = os.path.join(
             self.tmp_folder_name, CNF_DEFINITION_BICEP_TEMPLATE
@@ -222,17 +219,17 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
         )
         shutil.copy(manifest_bicep_path, self.output_folder_name)
 
-        config_mappings_path = os.path.join(self.tmp_folder_name, "configMappings")
+        config_mappings_path = os.path.join(self.tmp_folder_name, CONFIG_MAPPINGS)
         shutil.copytree(
             config_mappings_path,
-            self.output_folder_name + "/configMappings",
+            self.output_folder_name + "/" + CONFIG_MAPPINGS,
             dirs_exist_ok=True,
         )
 
         full_schema = os.path.join(self.tmp_folder_name, "deploymentParameters.json")
         shutil.copy(
             full_schema,
-            self.output_folder_name + "/schemas" + "/deploymentParameters.json",
+            self.output_folder_name + "/" + SCHEMAS + "/deploymentParameters.json",
         )
 
     def generate_nf_application_config(
@@ -402,7 +399,7 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
             self.tmp_folder_name, helm_package.name, "values.mappings.yaml"
         )
 
-        mappings_folder_path = os.path.join(self.tmp_folder_name, "configMappings")
+        mappings_folder_path = os.path.join(self.tmp_folder_name, CONFIG_MAPPINGS)
         mappings_filename = f"{helm_package.name}-mappings.json"
 
         if not os.path.exists(mappings_folder_path):
@@ -416,4 +413,4 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
         with open(mapping_file_path, "w", encoding="utf-8") as file:
             json.dump(data, file, indent=4)
 
-        return os.path.join("configMappings", mappings_filename)
+        return os.path.join(CONFIG_MAPPINGS, mappings_filename)

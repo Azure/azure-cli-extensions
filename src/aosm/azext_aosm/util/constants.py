@@ -20,6 +20,18 @@ CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE = "cnfartifactmanifest.bicep.j2"
 CNF_DEFINITION_BICEP_TEMPLATE = "cnfdefinition.bicep"
 CNF_MANIFEST_BICEP_TEMPLATE = "cnfartifactmanifest.bicep"
 
+# Names of folder used in the repo
+CONFIG_MAPPINGS = "configMappings"
+SCHEMAS = "schemas"
+
+# Deployment Schema
+
+SCHEMA_PREFIX = {
+            "$schema": "https://json-schema.org/draft-07/schema#",
+            "title": "DeployParametersSchema",
+            "type": "object",
+            "properties": {},
+        }
 IMAGE_LINE_REGEX = (
     r"image: \{\{ .Values.(.+?) \}\}/(.+?):(\d+\.\d+\.\d+(-\w+)?(\.\d+)?)"
 )

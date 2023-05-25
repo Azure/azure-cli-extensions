@@ -21,6 +21,9 @@ from azext_aosm._configuration import VNFConfiguration
 from azext_aosm.util.constants import (
     VNF_DEFINITION_BICEP_TEMPLATE,
     VNF_MANIFEST_BICEP_TEMPLATE,
+    CONFIG_MAPPINGS,
+    SCHEMAS,
+    SCHEMA_PREFIX
 )
 
 
@@ -59,8 +62,7 @@ class VnfNfdGenerator(NFDGenerator):
 
         Create a bicep template for an NFD from the ARM template for the VNF.
         """
-        # Create output folder
-        self._create_nfd_folder()
+
         
         # Create temporary folder.
         with tempfile.TemporaryDirectory() as tmpdirname:
@@ -90,11 +92,6 @@ class VnfNfdGenerator(NFDGenerator):
 
         return None
 
-    def _create_nfd_folder(self) -> None:
-        """Create the folder for the NFD bicep files."""
-        logger.info("Create NFD bicep %s", self.output_folder_name)
-        os.mkdir(self.output_folder_name)
-
     @cached_property
     def vm_parameters(self) -> Dict[str, Any]:
         """The parameters from the VM ARM template."""
@@ -105,11 +102,11 @@ class VnfNfdGenerator(NFDGenerator):
 
     def create_parameter_files(self) -> None:
         """Create the Deployment and Template json parameter files."""
-        schemas_folder_path = os.path.join(self.tmp_folder_name, "schemas")
+        schemas_folder_path = os.path.join(self.tmp_folder_name, SCHEMAS)
         os.mkdir(schemas_folder_path)
         self.write_deployment_parameters(schemas_folder_path)
 
-        mappings_folder_path = os.path.join(self.tmp_folder_name, "configMappings")
+        mappings_folder_path = os.path.join(self.tmp_folder_name, CONFIG_MAPPINGS)
         os.mkdir(mappings_folder_path)
         self.write_template_parameters(mappings_folder_path)
         self.write_vhd_parameters(mappings_folder_path)
@@ -131,13 +128,9 @@ class VnfNfdGenerator(NFDGenerator):
         )
 
         # Heading for the deployParameters schema
-        deploy_parameters_full: Dict[str, Any] = {
-            "$schema": "https://json-schema.org/draft-07/schema#",
-            "title": "DeployParametersSchema",
-            "type": "object",
-            "properties": nfd_parameters,
-        }
-
+        deploy_parameters_full: Dict[str, Any] = SCHEMA_PREFIX
+        deploy_parameters_full["properties"].update(nfd_parameters)
+        
         with open(deployment_parameters_path, "w") as _file:
             _file.write(json.dumps(deploy_parameters_full, indent=4))
 
@@ -190,23 +183,26 @@ class VnfNfdGenerator(NFDGenerator):
     def copy_to_output_folder(self) -> None:
         """Copy the bicep templates, config mappings and schema into the build output folder."""
         code_dir = os.path.dirname(__file__)
-              
+        
+        logger.info("Create NFD bicep %s", self.output_folder_name)
+        os.mkdir(self.output_folder_name) 
+             
         bicep_path = os.path.join(code_dir, "templates", self.bicep_template_name)
         shutil.copy(bicep_path, self.output_folder_name)
         
         manifest_path = os.path.join(code_dir, "templates", self.manifest_template_name)
         shutil.copy(manifest_path, self.output_folder_name)
         
-        os.mkdir(self.output_folder_name + "/schemas")  
-        full_schema = os.path.join(self.tmp_folder_name, "schemas", "deploymentParameters.json")
+        os.mkdir(self.output_folder_name + "/" + SCHEMAS)  
+        full_schema = os.path.join(self.tmp_folder_name, SCHEMAS, "deploymentParameters.json")
         shutil.copy(
             full_schema,
-            self.output_folder_name + "/schemas" + "/deploymentParameters.json",
+            self.output_folder_name + "/" + SCHEMAS + "/deploymentParameters.json",
         )
         
-        config_mappings_path = os.path.join(self.tmp_folder_name, "configMappings")
+        config_mappings_path = os.path.join(self.tmp_folder_name, CONFIG_MAPPINGS)
         shutil.copytree(
             config_mappings_path,
-            self.output_folder_name + "/configMappings",
+            self.output_folder_name + "/" + CONFIG_MAPPINGS,
             dirs_exist_ok=True,
         )
