@@ -97,8 +97,13 @@ class VnfNfdGenerator(NFDGenerator):
     def vm_parameters(self) -> Dict[str, Any]:
         """The parameters from the VM ARM template."""
         with open(self.arm_template_path, "r") as _file:
-            parameters: Dict[str, Any] = json.load(_file)["parameters"]
-
+            data = json.load(_file)
+            if "parameters" in data:
+                parameters: Dict[str, Any] = data["parameters"]
+            else:
+                print("No parameters found in the template provided. Your schema will have no properties")
+                parameters = {}
+        
         return parameters
 
     def create_parameter_files(self) -> None:
@@ -209,3 +214,5 @@ class VnfNfdGenerator(NFDGenerator):
             output_config_mappings_path,
             dirs_exist_ok=True,
         )
+        
+        logger.info("Copied files to %s", self.output_folder_name)

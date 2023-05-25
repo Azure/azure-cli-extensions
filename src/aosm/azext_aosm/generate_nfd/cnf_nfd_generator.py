@@ -147,6 +147,9 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
 
         :param path: The path to helm package
         """
+        
+        logger.debug("Extracting helm package %s", path)
+        
         (_, ext) = os.path.splitext(path)
         if ext == ".gz" or ext == ".tgz":
             tar = tarfile.open(path, "r:gz")
@@ -177,6 +180,8 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
         path = os.path.join(self._tmp_folder_name, CNF_MANIFEST_BICEP_TEMPLATE)
         with open(path, "w", encoding="utf-8") as f:
             f.write(bicep_contents)
+            
+        logger.info("Created artifact manifest bicep template: %s", path)
 
     def write_nfd_bicep_file(self) -> None:
         """Write the bicep file for the NFD."""
@@ -194,19 +199,26 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
         path = os.path.join(self._tmp_folder_name, CNF_DEFINITION_BICEP_TEMPLATE)
         with open(path, "w", encoding="utf-8") as f:
             f.write(bicep_contents)
+        
+        logger.info("Created NFD bicep template: %s", path)
 
     def write_schema_to_file(self) -> None:
         """Write the schema to file deploymentParameters.json."""
+        
+        logger.debug("Create deploymentParameters.json")
+        
         full_schema = os.path.join(self._tmp_folder_name, DEPLOYMENT_PARAMETERS)
         with open(full_schema, "w", encoding="UTF-8") as f:
             json.dump(self.deployment_parameter_schema, f, indent=4)
+            
+        logger.debug(f"{full_schema} created")
 
     def copy_to_output_folder(self) -> None:
         """Copy the config mappings, schema and bicep templates (artifact manifest and NFDV) to the output folder."""
         
         logger.info("Create NFD bicep %s", self.output_folder_name)
-        os.mkdir(self.output_folder_name)
         
+        os.mkdir(self.output_folder_name)
         os.mkdir(os.path.join(self.output_folder_name, SCHEMAS))
 
         tmp_nfd_bicep_path = os.path.join(
@@ -233,6 +245,8 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
             tmp_schema_path,
             output_schema_path,
         )
+        
+        logger.info("Copied files to %s", self.output_folder_name)
 
     def generate_nf_application_config(
         self,
@@ -323,6 +337,9 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
 
         param helm_package: The helm package config.
         """
+        
+        logger.debug("Get chart mapping schema for %s", helm_package.name)
+        
         non_def_values = os.path.join(
             self._tmp_folder_name, helm_package.name, "values.mappings.yaml"
         )
@@ -349,6 +366,7 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
                 f"ERROR: Your schema and values for the helm package '{helm_package.name}' do not match. Please fix this and run the command again."
             ) from e
 
+        logger.debug("Generated chart mapping schema for %s", helm_package.name)
         return final_schema
 
     def find_deploy_params(
@@ -422,4 +440,5 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
         with open(mapping_file_path, "w", encoding="utf-8") as file:
             json.dump(data, file, indent=4)
 
+        logger.debug("Generated parameter mappings for %s", helm_package.name)
         return os.path.join(CONFIG_MAPPINGS, mappings_filename)
