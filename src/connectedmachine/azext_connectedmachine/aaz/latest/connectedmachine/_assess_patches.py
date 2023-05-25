@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class AssessPatches(AAZCommand):
     """The operation to assess patches on a hybrid machine identity in Azure.
+
+    :example: Example for assess-patches
+        az connectedmachine assess-patches -g MyResourceGroup -n MyVm
     """
 
     _aaz_info = {

@@ -18,6 +18,9 @@ class List(AAZCommand):
     """Extensions Metadata API
 
     This allows to query specific extension versions for regions and also list all possible extension versions for a given region.
+
+    :example: Sample command for extensionimage list
+        az connectedmachine extensionimage list --publisher Microsoft.AzureStack.Observability.Internal --extension-type EdgeRemoteSupport --location centraluseuap
     """
 
     _aaz_info = {
@@ -44,7 +47,7 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.extension_type = AAZStrArg(
-            options=["--extension-type"],
+            options=["--type", "--extension-type"],
             help="The extensionType of the Extension being received.",
             required=True,
         )
@@ -52,7 +55,7 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.publisher = AAZStrArg(
-            options=["--publisher"],
+            options=["-p", "--publisher"],
             help="The publisher of the Extension being received.",
             required=True,
         )

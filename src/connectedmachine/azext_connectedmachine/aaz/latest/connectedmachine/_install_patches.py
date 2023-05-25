@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class InstallPatches(AAZCommand):
     """The operation to install patches on a hybrid machine identity in Azure.
+
+    :example: Example for Install-Patches
+        az connectedmachine install-patches -g MyResourceGroup -n MyVm --maximum-duration PT4H --reboot-setting IfRequired --classifications-to-include-win Critical Security --exclude-kbs-requiring-reboot true
     """
 
     _aaz_info = {
