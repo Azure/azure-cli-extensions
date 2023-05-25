@@ -199,6 +199,8 @@ def validate_file_path(namespace):
 
 
 def validate_test_plan_path(namespace):
+    if namespace.test_plan is None:
+        return
     namespace.test_plan = _validate_path(namespace.test_plan, is_dir=False)
 
     _, file_extension = os.path.splitext(namespace.test_plan)

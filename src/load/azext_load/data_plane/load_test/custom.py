@@ -42,8 +42,10 @@ def create_test(
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = {}
 
-    yaml = load_yaml(load_test_config_file)
-    yaml_test_body = convert_yaml_to_test(yaml)
+    yaml, yaml_test_body = None, None
+    if load_test_config_file is not None:
+        yaml = load_yaml(load_test_config_file)
+        yaml_test_body = convert_yaml_to_test(yaml)
 
     body = create_or_update_body(
         test_id,
@@ -73,7 +75,7 @@ def create_test(
     )
 
     files = client.list_test_files(test_id)
-    if yaml.get("userProperty") is not None:
+    if yaml and yaml.get("userProperty") is not None:
         file_name = os.path.basename(yaml.get("userProperty"))
         file_response = upload_file_to_test(
             client,
@@ -89,7 +91,7 @@ def create_test(
             test_id,
         )
 
-    if yaml.get("configurationFiles") is not None:
+    if yaml and yaml.get("configurationFiles") is not None:
         for config_file in yaml["configurationFiles"]:
             file_name = os.path.basename(config_file)
             upload_file_to_test(
@@ -106,7 +108,7 @@ def create_test(
                 test_id,
             )
 
-    if yaml.get("testPlan") is not None or test_plan is not None:
+    if (yaml and yaml.get("testPlan") is not None) or test_plan is not None:
         test_plan = test_plan if test_plan is not None else yaml["testPlan"]
         file_name = os.path.basename(test_plan)
         for file in files:
@@ -155,9 +157,11 @@ def update_test(
         logger.debug(msg)
         raise InvalidArgumentValueError(msg)
     logger.debug("Retrieved test with test ID: %s and body : %s", test_id, body)
-
-    yaml = load_yaml(load_test_config_file)
-    yaml_test_body = convert_yaml_to_test(yaml)
+    
+    yaml, yaml_test_body = None, None
+    if load_test_config_file is not None:
+        yaml = load_yaml(load_test_config_file)
+        yaml_test_body = convert_yaml_to_test(yaml)
 
     body = create_or_update_body(
         test_id,
@@ -180,7 +184,7 @@ def update_test(
     )
 
     files = client.list_test_files(test_id)
-    if yaml.get("userProperty") is not None:
+    if yaml and yaml.get("userProperty") is not None:
         file_name = os.path.basename(yaml["userProperty"])
         for file in files:
             if AllowedFileTypes.USER_PROPERTIES.value == file["fileType"]:
@@ -205,7 +209,7 @@ def update_test(
             test_id,
         )
 
-    if yaml.get("configurationFiles") is not None:
+    if yaml and yaml.get("configurationFiles") is not None:
         for config_file in yaml["configurationFiles"]:
             file_name = os.path.basename(config_file)
             if file_name in [file["fileName"] for file in files]:
@@ -229,7 +233,7 @@ def update_test(
                 test_id,
             )
 
-    if yaml.get("testPlan") is not None or test_plan is not None:
+    if yaml and yaml.get("testPlan") is not None or test_plan is not None:
         test_plan = test_plan if test_plan is not None else yaml["testPlan"]
         file_name = os.path.basename(test_plan)
         for file in files:
