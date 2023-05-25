@@ -153,10 +153,6 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
-            _element.generate_api_key = AAZBoolType(
-                serialized_name="generateApiKey",
-                flags={"read_only": True},
-            )
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -192,6 +188,9 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.elastic_properties = AAZObjectType(
                 serialized_name="elasticProperties",
+            )
+            properties.generate_api_key = AAZBoolType(
+                serialized_name="generateApiKey",
             )
             properties.liftr_resource_category = AAZStrType(
                 serialized_name="liftrResourceCategory",
@@ -371,10 +370,6 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
-            _element.generate_api_key = AAZBoolType(
-                serialized_name="generateApiKey",
-                flags={"read_only": True},
-            )
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -410,6 +405,9 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.elastic_properties = AAZObjectType(
                 serialized_name="elasticProperties",
+            )
+            properties.generate_api_key = AAZBoolType(
+                serialized_name="generateApiKey",
             )
             properties.liftr_resource_category = AAZStrType(
                 serialized_name="liftrResourceCategory",

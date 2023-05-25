@@ -155,6 +155,7 @@ class VmIngestionDetail(AAZCommand):
             )
             _schema_on_200.ingestion_key = AAZStrType(
                 serialized_name="ingestionKey",
+                flags={"secret": True},
             )
 
             return cls._schema_on_200

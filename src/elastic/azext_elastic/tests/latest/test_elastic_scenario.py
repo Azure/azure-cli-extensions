@@ -14,28 +14,101 @@ from azure.cli.testsdk import *
 class ElasticScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_elastic_monitor', location='eastus')
     def test_elastic_monitor(self, resource_group):
+        email = self.cmd('account show').get_output_in_json()['user']['name']
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 20),
+            'email': email
         })
-        self.cmd('elastic monitor create -n {mobile_network} -g {rg} --user-info {{firstName:Alice,lastName:bob,companyName:Micosoft,emailAddress:alice@microsoft.com}} --sku {{name:ess-monthly-consumption_Monthly}}', checks=[
+        self.cmd('elastic monitor create -n {monitor} -g {rg} --user-info {{firstName:Alice,lastName:bob,companyName:Micosoft,emailAddress:{email}}} --sku {{name:ess-monthly-consumption_Monthly}}', checks=[
             self.check('name', '{monitor}'),
-            self.check('properties.sku.name', 'ess-monthly-consumption_Monthly'),
-            self.check('properties.elasticCloudUser.emailAddress', 'alice@microsoft.com'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('sku.name', 'ess-monthly-consumption_Monthly'),
+            self.check('properties.elasticProperties.elasticCloudUser.emailAddress', '{email}')
         ])
-        self.cmd('elastic monitor update -n {mobile_network} -g {rg} --tags {{tag:test,tag2:test2}}', checks=[
+        self.cmd('elastic monitor update -n {monitor} -g {rg} --tags {{tag:test,tag2:test2}}', checks=[
+            self.check('name', '{monitor}'),
+            self.check('resourceGroup', '{rg}'),
             self.check('tags.tag', 'test'),
             self.check('tags.tag2', 'test2')
         ])
         self.cmd('elastic monitor list -g {rg}', checks=[
-            self.check('[0].publicLandMobileNetworkIdentifier.mcc', '001'),
-            self.check('[0].publicLandMobileNetworkIdentifier.mnc', '01'),
-            self.check('[0].tags.tag', 'test'),
-            self.check('[0].tags.tag2', 'test2')
+            self.check('[0].name', '{monitor}'),
+            self.check('[0].resourceGroup', '{rg}'),
+            self.check('[0].sku.name', 'ess-monthly-consumption_Monthly'),
+            self.check('[0].properties.elasticProperties.elasticCloudUser.emailAddress', '{email}')
         ])
-        self.cmd('elastic monitor show -n {mobile_network} -g {rg}', checks=[
-            self.check('publicLandMobileNetworkIdentifier.mcc', '001'),
-            self.check('publicLandMobileNetworkIdentifier.mnc', '01'),
-            self.check('tags.tag', 'test'),
-            self.check('tags.tag2', 'test2')
+        self.cmd('elastic monitor show -n {monitor} -g {rg}', checks=[
+            self.check('name', '{monitor}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('sku.name', 'ess-monthly-consumption_Monthly'),
+            self.check('properties.elasticProperties.elasticCloudUser.emailAddress', '{email}')
         ])
-        self.cmd('elastic monitor delete -n {mobile_network} -g {rg} -y')
+        self.cmd("elastic monitor create-or-update-external-user --monitor-name {monitor} -g {rg} --user-name newuser --full-name fullname --password password --email-id email@outlook.com --roles [admin,other_role]", checks=[self.check('created', True)])
+        self.cmd('elastic monitor list-all-traffic-filter --monitor-name {monitor} -g {rg}', checks=[
+            self.check('length(@)', 1)
+        ])
+        self.cmd('elastic monitor list-associated-traffic-filter --monitor-name {monitor} -g {rg}', checks=[
+            self.check('length(@)', 1)
+        ])
+        self.cmd('elastic monitor list-deployment-info --monitor-name {monitor} -g {rg}', checks=[
+            self.check('status', 'Healthy')
+        ])
+        self.cmd('elastic monitor list-resource --monitor-name {monitor} -g {rg}')
+        self.cmd('elastic monitor list-upgradable-version --monitor-name {monitor} -g {rg}')
+        self.cmd('elastic monitor list-vm-host --monitor-name {monitor} -g {rg}')
+
+        self.cmd('elastic monitor delete -n {monitor} -g {rg} -y')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_elastic_monitor', location='eastus')
+    def test_elastic_monitor_tag_rule(self, resource_group):
+        email = self.cmd('account show').get_output_in_json()['user']['name']
+        self.kwargs.update({
+            'monitor': self.create_random_name('monitor', 20),
+            'email': email
+        })
+        self.cmd('elastic monitor create -n {monitor} -g {rg} --user-info {{firstName:Alice,lastName:bob,companyName:Micosoft,emailAddress:{email}}} --sku {{name:ess-monthly-consumption_Monthly}}', checks=[
+            self.check('name', '{monitor}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('sku.name', 'ess-monthly-consumption_Monthly'),
+            self.check('properties.elasticProperties.elasticCloudUser.emailAddress', '{email}')
+        ])
+        self.cmd('elastic monitor tag-rule create -n default -g {rg} --monitor-name {monitor} --log-rules {{filteringTags:[{{name:Environment,value:Prod,action:Include}}]}}', checks=[
+            self.check('name', 'default'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('properties.logRules.filteringTags[0].action', 'Include'),
+            self.check('properties.logRules.filteringTags[0].name', 'Environment'),
+            self.check('properties.logRules.filteringTags[0].value', 'Prod'),
+            self.check('properties.logRules.sendAadLogs', False),
+            self.check('properties.logRules.sendActivityLogs', False),
+            self.check('properties.logRules.sendSubscriptionLogs', False)
+        ])
+        self.cmd('elastic monitor tag-rule update -n default -g {rg} --monitor-name {monitor} --log-rules {{filteringTags:[{{name:Environment2,value:Prod,action:Include}}]}}', checks=[
+            self.check('name', 'default'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('properties.logRules.filteringTags[0].action', 'Include'),
+            self.check('properties.logRules.filteringTags[0].name', 'Environment2'),
+            self.check('properties.logRules.filteringTags[0].value', 'Prod'),
+            self.check('properties.logRules.sendAadLogs', False),
+            self.check('properties.logRules.sendActivityLogs', False),
+            self.check('properties.logRules.sendSubscriptionLogs', False)
+        ])
+        self.cmd('elastic monitor tag-rule list -g {rg} --monitor-name {monitor}', checks=[
+            self.check('[0].name', 'default'),
+            self.check('[0].resourceGroup', '{rg}'),
+            self.check('[0].properties.logRules.filteringTags[0].action', 'Include'),
+            self.check('[0].properties.logRules.filteringTags[0].name', 'Environment2'),
+            self.check('[0].properties.logRules.filteringTags[0].value', 'Prod'),
+            self.check('[0].properties.logRules.sendAadLogs', False),
+            self.check('[0].properties.logRules.sendActivityLogs', False),
+            self.check('[0].properties.logRules.sendSubscriptionLogs', False)
+        ])
+        self.cmd('elastic monitor tag-rule show -n default -g {rg} --monitor-name {monitor}', checks=[
+            self.check('name', 'default'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('properties.logRules.filteringTags[0].action', 'Include'),
+            self.check('properties.logRules.filteringTags[0].name', 'Environment2'),
+            self.check('properties.logRules.filteringTags[0].value', 'Prod'),
+            self.check('properties.logRules.sendAadLogs', False),
+            self.check('properties.logRules.sendActivityLogs', False),
+            self.check('properties.logRules.sendSubscriptionLogs', False)
+        ])

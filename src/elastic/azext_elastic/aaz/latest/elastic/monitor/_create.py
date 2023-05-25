@@ -97,6 +97,11 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.generate_api_key = AAZBoolArg(
+            options=["--generate-api-key"],
+            arg_group="Properties",
+            help="Flag to determine if User API Key has to be generated and shared.",
+        )
         _args_schema.monitoring_status = AAZStrArg(
             options=["--monitoring-status"],
             arg_group="Properties",
@@ -304,6 +309,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("generateApiKey", AAZBoolType, ".generate_api_key")
                 properties.set_prop("monitoringStatus", AAZStrType, ".monitoring_status")
                 properties.set_prop("userInfo", AAZObjectType, ".user_info")
                 properties.set_prop("version", AAZStrType, ".version")
@@ -352,10 +358,6 @@ class Create(AAZCommand):
             cls._schema_on_200_201 = AAZObjectType()
 
             _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.generate_api_key = AAZBoolType(
-                serialized_name="generateApiKey",
-                flags={"read_only": True},
-            )
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -391,6 +393,9 @@ class Create(AAZCommand):
             properties = cls._schema_on_200_201.properties
             properties.elastic_properties = AAZObjectType(
                 serialized_name="elasticProperties",
+            )
+            properties.generate_api_key = AAZBoolType(
+                serialized_name="generateApiKey",
             )
             properties.liftr_resource_category = AAZStrType(
                 serialized_name="liftrResourceCategory",

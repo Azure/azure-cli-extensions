@@ -176,7 +176,7 @@ class CreateOrUpdateExternalUser(AAZCommand):
             )
             _builder.set_prop("emailId", AAZStrType, ".email_id")
             _builder.set_prop("fullName", AAZStrType, ".full_name")
-            _builder.set_prop("password", AAZStrType, ".password")
+            _builder.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"secret": True}})
             _builder.set_prop("roles", AAZListType, ".roles")
             _builder.set_prop("userName", AAZStrType, ".user_name")
 

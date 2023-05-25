@@ -150,10 +150,6 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.generate_api_key = AAZBoolType(
-                serialized_name="generateApiKey",
-                flags={"read_only": True},
-            )
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -189,6 +185,9 @@ class Show(AAZCommand):
             properties = cls._schema_on_200.properties
             properties.elastic_properties = AAZObjectType(
                 serialized_name="elasticProperties",
+            )
+            properties.generate_api_key = AAZBoolType(
+                serialized_name="generateApiKey",
             )
             properties.liftr_resource_category = AAZStrType(
                 serialized_name="liftrResourceCategory",

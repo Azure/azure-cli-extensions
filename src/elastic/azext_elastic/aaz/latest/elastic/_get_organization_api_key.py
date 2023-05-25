@@ -15,13 +15,13 @@ from azure.cli.core.aaz import *
     "elastic get-organization-api-key",
 )
 class GetOrganizationApiKey(AAZCommand):
-    """Fetch User API Key from internal database
+    """Fetch User API Key from internal database, if it was generated and stored while creating the Elasticsearch Organization.
     """
 
     _aaz_info = {
         "version": "2023-02-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/getorganizationapikey", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elastic/getorganizationapikey", "2023-02-01-preview"],
         ]
     }
 
@@ -39,11 +39,6 @@ class GetOrganizationApiKey(AAZCommand):
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         # define Arg Group ""
-
-        _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
 
         # define Arg Group "Body"
 
@@ -86,7 +81,7 @@ class GetOrganizationApiKey(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Elastic/getOrganizationApiKey",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Elastic/getOrganizationApiKey",
                 **self.url_parameters
             )
 
@@ -101,10 +96,6 @@ class GetOrganizationApiKey(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
@@ -163,8 +154,12 @@ class GetOrganizationApiKey(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.api_key = AAZStrType(
+            _schema_on_200.properties = AAZObjectType()
+
+            properties = cls._schema_on_200.properties
+            properties.api_key = AAZStrType(
                 serialized_name="apiKey",
+                flags={"secret": True},
             )
 
             return cls._schema_on_200
