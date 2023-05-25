@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class DetachTrafficFilter(AAZCommand):
     """Detach traffic filter
+
+    :example: Detach traffic filter
+        az elastic monitor detach-traffic-filter --monitor-name name -g rg --ruleset-id
     """
 
     _aaz_info = {

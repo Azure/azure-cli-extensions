@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Upgrade(AAZCommand):
     """Upgrade elastic monitor
+
+    :example: Monitor upgrade
+        az elastic monitor upgrade -g rg --monitor-name monitor --version 8.0.0
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the tag rules for a given monitor resource.
+
+    :example: List monitor tag rule
+        az elastic monitor tag-rule list -g rg --monitor-name name
     """
 
     _aaz_info = {

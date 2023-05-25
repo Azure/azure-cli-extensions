@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all monitors under the specified resource group. And List all                                monitors under the specified subscription.
+
+    :example: List all monitors by resource group
+        az elastic monitor list -g rg
     """
 
     _aaz_info = {

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a tag rule set for a given monitor resource.
+
+    :example: Delete tag rule
+        az elastic monitor tag-rule delete --monitor-name name -n name -g rg
     """
 
     _aaz_info = {

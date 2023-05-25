@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class CreateAndAssociatePlFilter(AAZCommand):
     """Create and associate pl filter
+
+    :example: Create and associate pl filter
+        az elastic monitor create-and-associate-pl-filter --monitor-name monitor -g rg --name name
     """
 
     _aaz_info = {

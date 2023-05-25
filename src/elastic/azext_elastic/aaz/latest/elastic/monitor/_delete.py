@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a monitor resource.
+
+    :example: Delete monitor
+        az elastic monitor delete -n monitor -g rg
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class DeleteTrafficFilter(AAZCommand):
     """Delete traffic filter
+
+    :example: Delete traffic filter
+        az elastic monitor delete-traffic-filter --monitor-name name -g rg --ruleset-id id
     """
 
     _aaz_info = {

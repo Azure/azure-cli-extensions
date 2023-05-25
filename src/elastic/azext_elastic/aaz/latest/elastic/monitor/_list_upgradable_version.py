@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListUpgradableVersion(AAZCommand):
     """List upgradable version
+
+    :example: List upgradable version
+        az elastic monitor list-upgradable-version --monitor-name name -g rg
     """
 
     _aaz_info = {

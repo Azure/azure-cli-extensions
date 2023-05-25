@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a tag rule set for a given monitor resource.
+
+    :example: Show tag rule
+        az elastic monitor tag-rule show --monitor-name name -g rg -n name
     """
 
     _aaz_info = {

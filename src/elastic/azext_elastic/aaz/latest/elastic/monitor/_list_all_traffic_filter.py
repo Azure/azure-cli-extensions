@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListAllTrafficFilter(AAZCommand):
     """List all traffic filter
+
+    :example: List all traffic filter
+        az elastic monitor list-all-traffic-filter --monitor-name name -g rg
     """
 
     _aaz_info = {

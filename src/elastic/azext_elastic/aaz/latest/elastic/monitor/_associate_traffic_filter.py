@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class AssociateTrafficFilter(AAZCommand):
     """Associate traffic filter
+
+    :example: Monitor associate traffic filter
+        az elastic monitor associate-traffic-filter --monitor-name name -g rg --ruleset-id
     """
 
     _aaz_info = {

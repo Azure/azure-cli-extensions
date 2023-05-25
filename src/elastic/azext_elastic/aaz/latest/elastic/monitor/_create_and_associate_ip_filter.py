@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class CreateAndAssociateIpFilter(AAZCommand):
     """Create and associate ip filter
+
+    :example: Create and associate ip filter
+        az elastic monitor create-and-associate-ip-filter --monitor-name name -g rg --name name --ips  192.168.131.0, 192.168.132.6/22
     """
 
     _aaz_info = {

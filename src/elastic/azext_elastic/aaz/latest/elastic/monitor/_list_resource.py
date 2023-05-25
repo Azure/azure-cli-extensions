@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListResource(AAZCommand):
     """List the resources currently being monitored by the Elastic monitor                                resource.
+
+    :example: List resource
+        az elastic monitor list-resource --monitor-name -g rg
     """
 
     _aaz_info = {

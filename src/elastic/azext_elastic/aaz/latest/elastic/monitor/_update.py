@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a monitor resource.
+
+    :example: Update monitor
+        az elastic monitor update -n monitor -g rg --tags "{tag:test,tag1:test1}"
     """
 
     _aaz_info = {
