@@ -503,15 +503,15 @@ def validate_apm_not_exist(cmd, namespace):
 
 
 def validate_apm_reference(cmd, namespace):
-    apm_ids = namespace.apms
+    apm_names = namespace.apms
 
     result = []
-    if not apm_ids:
+    if not apm_names:
         return result
 
     service_resource_id = get_service_resource_id(cmd, namespace)
 
-    for apm_id in apm_ids:
+    for apm_id in apm_names:
         resource_id = '{}/apms/{}'.format(service_resource_id, apm_id)
         apm_reference = ApmReference(resource_id=resource_id)
         result.append(apm_reference)
@@ -527,14 +527,14 @@ def get_service_resource_id(cmd, namespace):
 
 
 def validate_cert_reference(cmd, namespace):
-    cert_ids = namespace.certificates
+    cert_names = namespace.certificates
 
     result = []
-    if not cert_ids:
+    if not cert_names:
         return result
 
     service_resource_id = get_service_resource_id(cmd, namespace)
-    for cert_id in cert_ids:
+    for cert_id in cert_names:
         resource_id = '{}/certificates/{}'.format(service_resource_id, cert_id)
         cert_reference = CertificateReference(resource_id=resource_id)
         result.append(cert_reference)

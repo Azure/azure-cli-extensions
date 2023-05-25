@@ -740,7 +740,7 @@ def load_arguments(self, _):
             c.argument('source_path', arg_type=source_path_type, validator=validate_source_path)
             c.argument('artifact_path', help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_artifact_path)
             c.argument('apms', apm_type)
-            c.argument('certificates', nargs='+', help='Space-separated certificate resource IDs.', validator=validate_cert_reference)
+            c.argument('certificates', nargs='*', help='Space-separated certificate names.', validator=validate_cert_reference)
             c.argument('disable_validation', arg_type=get_three_state_flag(), help='If true, disable jar validation.')
 
     with self.argument_context('spring build-service build create') as c:
