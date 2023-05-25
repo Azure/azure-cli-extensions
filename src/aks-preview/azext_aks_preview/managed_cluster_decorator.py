@@ -3468,7 +3468,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         level = self.context.get_guardrails_level()
 
         mc = setup_common_guardrails_profile(level, version, excludedNamespaces, mc, self.models)
-        
+
         if level is not None:
             mc.guardrails_profile.level = level
         if version is not None:
