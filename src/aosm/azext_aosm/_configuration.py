@@ -31,6 +31,14 @@ DESCRIPTION_MAP: Dict[str, str] = {
         "Version of the artifact. For VHDs this must be in format A-B-C. "
         "For ARM templates this must be in format A.B.C"
     ),
+    "helm_package_name": "Name of the Helm package",
+    "path_to_chart": (
+        "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz"
+    ),
+    "helm_depends_on": (
+        "Names of the Helm packages this package depends on. "
+        "Leave as an empty array if no dependencies"
+        )
 }
 
 
@@ -139,14 +147,10 @@ class VNFConfiguration(NFConfiguration):
 
 @dataclass
 class HelmPackageConfig:
-    name: str = "Name of the Helm package"
-    path_to_chart: str = (
-        "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz"
-    )
+    name: str = DESCRIPTION_MAP["helm_package_name"]
+    path_to_chart: str = DESCRIPTION_MAP["path_to_chart"]
     depends_on: List[str] = field(
-        default_factory=lambda: [
-            "Names of the Helm packages this package depends on. Leave as an empty string if no dependencies"
-        ]
+        default_factory=lambda: [DESCRIPTION_MAP["helm_depends_on"]]
     )
 
 
