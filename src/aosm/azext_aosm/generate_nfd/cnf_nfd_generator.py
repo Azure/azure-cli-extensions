@@ -13,7 +13,7 @@ from typing import Dict, List, Any, Tuple, Optional, Iterator
 import tempfile
 import yaml
 from jinja2 import Template, StrictUndefined
-from azure.cli.core.azclierror import InvalidTemplateError
+from azure.cli.core.azclierror import InvalidTemplateError, FileOperationError
 from knack.log import get_logger
 
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
@@ -387,11 +387,18 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
     ) -> Tuple[str, str]:
         """Get the name and version of the chart."""
         chart = os.path.join(self._tmp_folder_name, helm_package.name, "Chart.yaml")
-
+        
+        if not os.path.exists(chart):
+            raise InvalidTemplateError(f"There is no Chart.yaml file in the helm package '{helm_package.name}'. Please fix this and run the command again.")
+        
+        
         with open(chart, "r", encoding="utf-8") as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
-            chart_name = data["name"]
-            chart_version = data["version"]
+            if 'name' in data and 'version' in data:
+                chart_name = data["name"]
+                chart_version = data["version"]
+            else:
+                raise FileOperationError(f"A name or version is missing from Chart.yaml in the helm package '{helm_package.name}'. Please fix this and run the command again.")
 
         return (chart_name, chart_version)
 
