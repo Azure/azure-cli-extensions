@@ -11,6 +11,7 @@ Infrastructure_Enum_Values = ["generic", "azure", "aws", "gcp", "azure_stack_hci
 AHB_Enum_Values = ["True", "False", "NotApplicable"]
 Feature_Values = ["cluster-connect", "azure-rbac", "custom-locations"]
 CRD_FOR_FORCE_DELETE = ["arccertificates.clusterconfig.azure.com", "azureclusteridentityrequests.clusterconfig.azure.com", "azureextensionidentities.clusterconfig.azure.com", "connectedclusters.arc.azure.com", "customlocationsettings.clusterconfig.azure.com", "extensionconfigs.clusterconfig.azure.com", "gitconfigs.clusterconfig.azure.com"]
+Helm_Install_Release_Userfault_Messages = ['forbidden', 'timed out waiting for the condition', 'connection refused']
 Custom_Locations_Provider_Namespace = 'Microsoft.ExtendedLocation'
 Connected_Cluster_Provider_Namespace = 'Microsoft.Kubernetes'
 Kubernetes_Configuration_Provider_Namespace = 'Microsoft.KubernetesConfiguration'

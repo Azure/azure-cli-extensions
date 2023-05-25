@@ -236,10 +236,29 @@ def validate_artifact_path(namespace):
             "https://aka.ms/ascdependencies for more details")
 
 
-def validate_container_registry(cmd, namespace):
+def validate_container_registry_update(cmd, namespace):
+    validate_container_registry(namespace)
+    client = get_client(cmd)
+    try:
+        client.container_registries.get(namespace.resource_group, namespace.service, namespace.name)
+    except ResourceNotFoundError:
+        raise ClientRequestError('Container Registry {} does not exist.'.format(namespace.name))
+
+
+def validate_container_registry_create(cmd, namespace):
+    validate_container_registry(namespace)
+    client = get_client(cmd)
+    try:
+        container_registry = client.container_registries.get(namespace.resource_group, namespace.service, namespace.name)
+        if container_registry is not None:
+            raise ClientRequestError('Container Registry {} already exists.'.format(namespace.name))
+    except ResourceNotFoundError:
+        pass
+
+
+def validate_container_registry(namespace):
     if not namespace.name or not namespace.username or not namespace.password or not namespace.server:
         raise InvalidArgumentValueError('The --name, --server, --username and --password must be provided.')
-    validate_central_build_instance(cmd, namespace)
 
 
 def validate_cpu(namespace):

@@ -339,6 +339,7 @@ class WindowsSinglepassKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
 
+@pytest.mark.linuxencryption
 class LinuxSinglepassKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')

@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "devcenter admin network-connection",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage network connection with devcenter
+    """Manage network connections.
     """
     pass
 

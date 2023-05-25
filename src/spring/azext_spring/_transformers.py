@@ -327,6 +327,20 @@ def transform_build_result_output(result):
     return result if is_list else result[0]
 
 
+def transform_container_registry_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Name'] = item['name']
+        item['Server'] = item['properties']['server']
+        item['Username'] = item['properties']['username']
+
+    return result if is_list else result[0]
+
+
 def transform_apm_output(result):
     is_list = isinstance(result, list)
 

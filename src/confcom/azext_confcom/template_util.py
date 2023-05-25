@@ -12,7 +12,6 @@ from hashlib import sha256
 import deepdiff
 import yaml
 import docker
-import pydash
 from azext_confcom.errors import (
     eprint,
 )
@@ -775,7 +774,9 @@ def get_container_group_name(
             if case_insensitive_dict_get(all_params, key):
                 all_params[key]["value"] = case_insensitive_dict_get(
                     case_insensitive_dict_get(input_parameter_values_json, key), "value"
-                ) or case_insensitive_dict_get(
+                ) if case_insensitive_dict_get(
+                    case_insensitive_dict_get(input_parameter_values_json, key), "value"
+                ) is not None else case_insensitive_dict_get(
                     case_insensitive_dict_get(input_parameter_values_json, key),
                     "secureValue",
                 )
@@ -789,8 +790,7 @@ def get_container_group_name(
         eprint(
             f'Field ["{config.ACI_FIELD_TEMPLATE_PARAMETERS}"] is empty or cannot be found in Parameter file'
         )
-    # TODO: replace this with doing param replacement as-needed
-    arm_json = parse_template(all_params, all_vars, arm_json)
+
     # find the image names and extract them from the template
     arm_resources = case_insensitive_dict_get(arm_json, config.ACI_FIELD_RESOURCES)
 
@@ -809,6 +809,7 @@ def get_container_group_name(
         )
 
     resource = aci_list[count]
+    resource = replace_params_and_vars(all_params, all_vars, resource)
     container_group_name = case_insensitive_dict_get(resource, config.ACI_FIELD_RESOURCES_NAME)
     return container_group_name
 
@@ -819,7 +820,8 @@ def print_existing_policy_from_arm_template(arm_template_path, parameter_data_pa
     input_arm_json = os_util.load_json_from_file(arm_template_path)
     parameter_data = None
     if parameter_data_path:
-        parameter_data = os_util.load_json_from_file(arm_template_path)
+        parameter_data = os_util.load_json_from_file(parameter_data_path)
+
     # find the image names and extract them from the template
     arm_resources = case_insensitive_dict_get(
         input_arm_json, config.ACI_FIELD_RESOURCES
@@ -852,17 +854,32 @@ def print_existing_policy_from_arm_template(arm_template_path, parameter_data_pa
 
 
 def process_seccomp_policy(policy2):
+
+    # helper function to add fields to a dictionary if they don't exist
+    def defaults(obj, default):
+        for key in default:
+            obj.setdefault(key, default[key])
+        return obj
+
+    # helper function to pick fields from a dictionary
+    def pick(obj, *keys):
+        result = {}
+        for key in keys:
+            if key in obj:
+                result[key] = obj[key]
+        return result
+
     policy = json.loads(policy2)
-    policy = pydash.defaults(policy, {'defaultAction': ""})
-    policy = pydash.pick(policy, 'defaultAction', 'defaultErrnoRet', 'architectures',
-                         'flags', 'listenerPath', 'listenerMetadata', 'syscalls')
+    policy = defaults(policy, {'defaultAction': ""})
+    policy = pick(policy, 'defaultAction', 'defaultErrnoRet', 'architectures',
+                  'flags', 'listenerPath', 'listenerMetadata', 'syscalls')
     if 'syscalls' in policy:
         syscalls = policy['syscalls']
         temp_syscalls = []
         for s in syscalls:
             syscall = s
-            syscall = pydash.defaults(syscall, {'names': [], 'action': ""})
-            syscall = pydash.pick(syscall, 'names', 'action', 'errnoRet', 'args')
+            syscall = defaults(syscall, {'names': [], 'action': ""})
+            syscall = pick(syscall, 'names', 'action', 'errnoRet', 'args')
 
             if 'args' in syscall:
                 temp_args = []
@@ -870,8 +887,8 @@ def process_seccomp_policy(policy2):
 
                 for j in args:
                     arg = j
-                    arg = pydash.defaults(arg, {'value': 0, 'op': "", 'index': 0})
-                    arg = pydash.pick(arg, 'index', 'value', 'valueTwo', 'op')
+                    arg = defaults(arg, {'value': 0, 'op': "", 'index': 0})
+                    arg = pick(arg, 'index', 'value', 'valueTwo', 'op')
                     temp_args.append(arg)
                 syscall['args'] = temp_args
             temp_syscalls.append(syscall)

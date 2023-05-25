@@ -41,7 +41,7 @@ class EnvironmentTypeOperations:
         self._deserialize = deserializer
         self._config = config
 
-    def list_by_project(
+    def list(
         self,
         top: Optional[int] = None,
         **kwargs
@@ -60,7 +60,7 @@ class EnvironmentTypeOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -70,7 +70,7 @@ class EnvironmentTypeOperations:
 
             if not next_link:
                 # Construct URL
-                url = self.list_by_project.metadata['url']  # type: ignore
+                url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
                     'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
@@ -116,4 +116,4 @@ class EnvironmentTypeOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list_by_project.metadata = {'url': '/projects/{projectName}/environmentTypes'}  # type: ignore
+    list.metadata = {'url': '/projects/{projectName}/environmentTypes'}  # type: ignore
