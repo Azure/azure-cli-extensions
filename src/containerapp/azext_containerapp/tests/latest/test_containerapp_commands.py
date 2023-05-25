@@ -685,6 +685,16 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding")
         ])
 
+        self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(
+            resource_group, postgres_ca_name, env_name))
+
+        self.cmd('containerapp service redis delete -g {} -n {} --yes'.format(
+            resource_group, redis_ca_name, env_name))
+
+        self.cmd('containerapp service list -g {} --environment {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
 
 class ContainerappEnvStorageTests(ScenarioTest):
     @AllowLargeResponse(8192)
