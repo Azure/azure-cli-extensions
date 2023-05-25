@@ -10,7 +10,6 @@ from datetime import datetime
 
 import yaml
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from azure.cli.core.util import CLIError
 from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id
 
@@ -264,12 +263,12 @@ def _validate_iso_time(string):
     try:
         datetime.strptime(string, "%Y-%m-%dT%H:%M:%S.%fZ")
         return
-    except CLIError:
+    except Exception:
         pass
     try:
         datetime.strptime(string, "%Y-%m-%dT%H:%M:%SZ")
         return
-    except CLIError:
+    except Exception:
         pass
     raise InvalidArgumentValueError(
         f"Invalid time format: '{string}'. Expected ISO 8601 format."
