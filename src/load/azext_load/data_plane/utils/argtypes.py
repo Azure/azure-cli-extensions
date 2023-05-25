@@ -198,7 +198,7 @@ file_type = CLIArgumentType(
     ),
     options_list=["--file-type"],
     type=str,
-    help=f"Type of file to be uploaded. Allowed values: {', '.join(validators.get_enum_values(models.AllowedFileTypes))}",
+    help=f"Type of file to be uploaded. Allowed values: {', '.join(completers.get_enum_values(models.AllowedFileTypes))}",
 )
 
 test_run_input = CLIArgumentType(
@@ -282,12 +282,12 @@ metric_name = CLIArgumentType(
 metric_namespace = CLIArgumentType(
     validator=validators.validate_metric_namespaces,
     completer=get_generic_completion_list(
-        validators.get_enum_values(models.AllowedMetricNamespaces)
+        completers.get_enum_values(models.AllowedMetricNamespaces)
     ),
     options_list=["--metric-namespace"],
     required=True,
     type=str,
-    help=f"Namespace of the metric. Allowed values: {', '.join(validators.get_enum_values(models.AllowedMetricNamespaces))}",
+    help=f"Namespace of the metric. Allowed values: {', '.join(completers.get_enum_values(models.AllowedMetricNamespaces))}",
 )
 
 metric_dimension = CLIArgumentType(
@@ -313,11 +313,11 @@ end_iso_time = CLIArgumentType(
 interval = CLIArgumentType(
     validator=validators.validate_interval,
     completer=get_generic_completion_list(
-        validators.get_enum_values(models.AllowedIntervals)
+        completers.get_enum_values(models.AllowedIntervals)
     ),
     options_list=["--interval"],
     type=str,
-    help=f"ISO 8601 formatted interval. Allowed values: {', '.join(validators.get_enum_values(models.AllowedIntervals))}",
+    help=f"ISO 8601 formatted interval. Allowed values: {', '.join(completers.get_enum_values(models.AllowedIntervals))}",
 )
 
 aggregation = CLIArgumentType(
