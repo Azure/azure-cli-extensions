@@ -36,9 +36,8 @@ class ResourceDeleter:
         Delete the NFDV and manifests.  If they don't exist it still reports them as
         deleted.
 
-        :param clean: Delete the NFDG, artifact stores and publisher too.
-                    defaults to False
-                    Use with care.
+        :param clean: Delete the NFDG, artifact stores and publisher too.     defaults
+                to False     Use with care.
         """
         assert isinstance(self.config, VNFConfiguration)
         if clean:
@@ -99,8 +98,8 @@ class ResourceDeleter:
         _summary_
 
         :param store_type: "sa" or "acr"
-        :raises CLIInternalError: If called with any other store type
-        :raises Exception if delete throws an exception
+        :raises CLIInternalError: If called with any other store type         :raises
+                Exception if delete throws an exception
         """
         if store_type == "sa":
             assert isinstance(self.config, VNFConfiguration)
@@ -156,8 +155,7 @@ class ResourceDeleter:
         """Delete an artifact store
         :param store_type: "sa" or "acr"
         :raises CLIInternalError: If called with any other store type
-        :raises Exception if delete throws an exception
-        """
+        :raises Exception if delete throws an exception."""
         if store_type == "sa":
             assert isinstance(self.config, VNFConfiguration)
             store_name = self.config.blob_artifact_store_name
