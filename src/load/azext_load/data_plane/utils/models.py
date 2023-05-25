@@ -6,18 +6,18 @@
 from enum import Enum
 
 
-class IdentityType(Enum):
+class IdentityType(str, Enum):
     SystemAssigned = "SystemAssigned"
     UserAssigned = "UserAssigned"
 
 
-class AllowedFileTypes(Enum):
+class AllowedFileTypes(str, Enum):
     ADDITIONAL_ARTIFACTS = "ADDITIONAL_ARTIFACTS"
     JMX_FILE = "JMX_FILE"
     USER_PROPERTIES = "USER_PROPERTIES"
 
 
-class AllowedIntervals(Enum):
+class AllowedIntervals(str, Enum):
     PT10S = "PT10S"
     PT1H = "PT1H"
     PT1M = "PT1M"
@@ -25,6 +25,6 @@ class AllowedIntervals(Enum):
     PT5S = "PT5S"
 
 
-class AllowedMetricNamespaces(Enum):
+class AllowedMetricNamespaces(str, Enum):
     LoadTestRunMetrics = "LoadTestRunMetrics"
     EngineHealthMetrics = "EngineHealthMetrics"

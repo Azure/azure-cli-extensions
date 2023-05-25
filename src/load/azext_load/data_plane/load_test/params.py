@@ -5,12 +5,14 @@ def load_arguments(self, _):
     # Load Test
     with self.argument_context("load test create") as c:
         c.argument("test_id", argtypes.test_id_no_completer)
+        c.argument("test_plan", argtypes.test_plan)
         c.argument("display_name", argtypes.test_display_name)
         c.argument("test_description", argtypes.test_description)
         c.argument("env", argtypes.env)
         c.argument("secrets", argtypes.secret)
         c.argument("certificate", argtypes.certificate)
         c.argument("subnet_id", argtypes.subnet_id)
+        c.argument("split_csv", argtypes.split_csv)
         c.argument("load_test_config_file", argtypes.load_test_config_file)
         c.argument(
             "key_vault_reference_identity", argtypes.key_vault_reference_identity
@@ -19,17 +21,19 @@ def load_arguments(self, _):
         c.argument("wait", argtypes.wait)
 
     with self.argument_context("load test update") as c:
+        c.argument("load_test_config_file", argtypes.load_test_config_file)
+        c.argument("test_plan", argtypes.test_plan)
         c.argument("display_name", argtypes.test_display_name)
         c.argument("test_description", argtypes.test_description)
         c.argument("env", argtypes.env)
         c.argument("secrets", argtypes.secret)
         c.argument("certificate", argtypes.certificate)
-        c.argument("subnet_id", argtypes.subnet_id)
-        c.argument("load_test_config_file", argtypes.load_test_config_file)
         c.argument(
             "key_vault_reference_identity", argtypes.key_vault_reference_identity
         )
         c.argument("engine_instances", argtypes.engine_instances)
+        c.argument("subnet_id", argtypes.subnet_id)
+        c.argument("split_csv", argtypes.split_csv)
         c.argument("wait", argtypes.wait)
 
     with self.argument_context("load test download-files") as c:

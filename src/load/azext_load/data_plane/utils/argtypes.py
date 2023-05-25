@@ -73,6 +73,13 @@ existing_test_run_id = CLIArgumentType(
     help="Test run ID of an existing load test run",
 )
 
+test_plan = CLIArgumentType(
+    validator=validators.validate_test_plan_path,
+    options_list=["--test-plan"],
+    type=str,
+    help="Path to the test plan file.",
+)
+
 test_display_name = CLIArgumentType(
     options_list=["--display-name"],
     type=str,
@@ -102,6 +109,13 @@ load_test_config_file = CLIArgumentType(
     options_list=["--load-test-config-file"],
     type=str,
     help="Path to the load test config file.",
+)
+
+split_csv = CLIArgumentType(
+    options_list=["--split-csv"],
+    action="store_true",
+    default=False,
+    help="Split CSV additional files during test run.",
 )
 
 subnet_id = CLIArgumentType(

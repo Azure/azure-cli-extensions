@@ -10,41 +10,13 @@ import requests
 import yaml
 from azext_load.data_plane.utils import validators
 from azext_load.vendored_sdks.loadtesting_mgmt import LoadTestMgmtClient
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationError
 from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
 from .models import IdentityType
 
 logger = get_logger(__name__)
-
-
-def upload_test_file(client, test_id, file_path, file_type=None, wait=False):
-    logger.debug(
-        "Uploading file %s for the test %s with 'wait' %s",
-        file_path,
-        test_id,
-        "enabled" if wait else "disabled",
-    )
-    file_path = validators._validate_path(file_path, is_dir=False)
-    with open(file_path, "rb") as file:
-        upload_poller = client.begin_upload_test_file(
-            test_id,
-            file_name=os.path.basename(file.name),
-            file_type=file_type,
-            body=file,
-        )
-        response = (
-            upload_poller.result()
-            if wait
-            else upload_poller.polling_method().resource()
-        )
-        logger.debug(
-            "Upload result for file with --wait%s passed: %s",
-            "" if wait else " not",
-            response,
-        )
-        return response
 
 
 def get_load_test_resource_endpoint(
@@ -159,6 +131,34 @@ def download_file(url, file_path):
                     f.write(chunk)
 
 
+def upload_file_to_test(client, test_id, file_path, file_type=None, wait=False):
+    logger.debug(
+        "Uploading file %s for the test %s with 'wait' %s",
+        file_path,
+        test_id,
+        "enabled" if wait else "disabled",
+    )
+    file_path = validators._validate_path(file_path, is_dir=False)
+    with open(file_path, "rb") as file:
+        upload_poller = client.begin_upload_test_file(
+            test_id,
+            file_name=os.path.basename(file.name),
+            file_type=file_type,
+            body=file,
+        )
+        response = (
+            upload_poller.result()
+            if wait
+            else upload_poller.polling_method().resource()
+        )
+        logger.debug(
+            "Upload result for file with --wait%s passed: %s",
+            "" if wait else " not",
+            response,
+        )
+        return response
+
+
 def parse_cert(certificate):
     if len(certificate) != 1:
         raise ValueError("Only one certificate is supported")
@@ -203,10 +203,96 @@ def parse_env(envs):
     return env_dict
 
 
+def load_yaml(file_path):
+    try:
+        with open(file_path, "r") as file:
+            data = yaml.safe_load(file)
+            return data
+    except yaml.YAMLError as e:
+        raise ValueError(f"Error loading yaml file: {e}")
+    except Exception as e:
+        logger.debug(
+            "Exception occurred while parsing load test configuration file: %s",
+            str(e),
+        )
+        raise FileOperationError(
+            "Invalid load test configuration file : %s. Please check the file path and format. Exception: %s", file_path, str(e)
+        )
+        
+
+def convert_yaml_to_test(data):
+    new_body = {}
+    if "displayName" in data:
+        new_body["displayName"] = data["displayName"]
+    if "description" in data:
+        new_body["description"] = data["description"]
+    new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
+    if "keyvaultReferenceIdentityId" in data:
+        new_body["keyvaultReferenceIdentityId"] = data[
+            "keyvaultReferenceIdentityId"
+        ]
+        new_body[
+            "keyvaultReferenceIdentityType"
+        ] = IdentityType.UserAssigned
+
+    if "subnetId" in data:
+        new_body["subnetId"] = data["subnetId"]
+
+    new_body["loadTestConfiguration"] = {}
+    new_body["loadTestConfiguration"]["engineInstances"] = data.get(
+        "engineInstances", 1
+    )
+    if data.get("certificate"):
+        new_body["certificate"] = parse_cert(data.get("certificate"))
+    if data.get("secrets"):
+        new_body["secrets"] = parse_secrets(data.get("secrets"))
+    if data.get("env"):
+        new_body["environmentVariables"] = parse_env(data.get("env"))
+    
+    # quick test and split csv not supported currently in CLI
+    new_body["loadTestConfiguration"]["quickStartTest"] = False
+    if data.get("quickStartTest"):
+        logger.warning(
+            "Quick start test is not supported currently in CLI. Please use portal to run quick start test"
+        )
+    if data.get("splitAllCSVs"):
+        new_body["loadTestConfiguration"]["splitAllCSVs"] = data.get("splitAllCSVs")
+
+    if data.get("failureCriteria"):
+        new_body["passFailCriteria"] = {}
+        new_body["passFailCriteria"]["passFailMetrics"] = {}
+        for index, items in enumerate(data["failureCriteria"]):
+            id = get_random_uuid()
+            name = list(items.keys())[0]
+            components = list(items.values())[0]
+            new_body["passFailCriteria"]["passFailMetrics"][id] = {}
+            new_body["passFailCriteria"]["passFailMetrics"][id][
+                "aggregate"
+            ] = components.split("(")[0].strip()
+            new_body["passFailCriteria"]["passFailMetrics"][id][
+                "clientMetric"
+            ] = (components.split("(")[1].split(")")[0].strip())
+            new_body["passFailCriteria"]["passFailMetrics"][id][
+                "condition"
+            ] = components.split(")")[1].strip()[0]
+            new_body["passFailCriteria"]["passFailMetrics"][id][
+                "value"
+            ] = components.split(
+                new_body["passFailCriteria"]["passFailMetrics"][id][
+                    "condition"
+                ]
+            )[
+                1
+            ].strip()
+            new_body["passFailCriteria"]["passFailMetrics"][id][
+                "requestName"
+            ] = name
+
+
 def create_or_update_body(
     test_id,
     body,
-    load_test_config_file=None,
+    yaml_test_body=None,
     display_name=None,
     test_description=None,
     engine_instances=None,
@@ -215,156 +301,59 @@ def create_or_update_body(
     certificate=None,
     key_vault_reference_identity=None,
     subnet_id=None,
+    split_csv=None ,
 ):
     new_body = {}
-    if load_test_config_file is not None:
-        if (
-            test_description
-            or env
-            or secrets
-            or certificate
-            or key_vault_reference_identity
-            or subnet_id
-            or engine_instances
-        ):
-            logger.warning(
-                "Additional flags were passed along with --load-test-config-file. These flags will be ignored, and the configuration defined in the yaml will be used instead"
-            )
-        try:
-            with open(load_test_config_file, "r") as file:
-                data = yaml.safe_load(file)
-                if "displayName" in data:
-                    new_body["displayName"] = data["displayName"]
-                if "description" in data:
-                    new_body["description"] = data["description"]
-
-                new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
-                if "keyvaultReferenceIdentityId" in data:
-                    new_body["keyvaultReferenceIdentityId"] = data[
-                        "keyvaultReferenceIdentityId"
-                    ]
-                    new_body[
-                        "keyvaultReferenceIdentityType"
-                    ] = IdentityType.UserAssigned
-
-                if "subnetId" in data:
-                    new_body["subnetId"] = data["subnetId"]
-
-                new_body["loadTestConfiguration"] = body.get(
-                    "loadTestConfiguration", {}
-                )
-                new_body["loadTestConfiguration"]["engineInstances"] = data.get(
-                    "engineInstances", 1
-                )
-                if data.get("certificate"):
-                    new_body["certificate"] = parse_cert(data.get("certificate"))
-                if data.get("secrets"):
-                    new_body["secrets"] = parse_secrets(data.get("secrets"))
-                if data.get("env"):
-                    new_body["environmentVariables"] = parse_env(data.get("env"))
-                # quick test and split csv not supported currently in CLI
-                new_body["loadTestConfiguration"]["quickStartTest"] = False
-                if data.get("quickStartTest"):
-                    logger.warning(
-                        "Quick start test is not supported currently in CLI. Please use portal to run quick start test"
-                    )
-                new_body["loadTestConfiguration"]["splitAllCSVs"] = False
-                if data.get("splitAllCSVs"):
-                    logger.warning(
-                        "CSV splitting is not supported currently in CLI. Please use portal to split CSVs"
-                    )
-                # implementation of failure criteria is pending
-
-                if data.get("failureCriteria"):
-                    new_body["passFailCriteria"] = {}
-                    new_body["passFailCriteria"]["passFailMetrics"] = {}
-                    for index, items in enumerate(data["failureCriteria"]):
-                        id = get_random_uuid()
-                        name = list(items.keys())[0]
-                        components = list(items.values())[0]
-                        new_body["passFailCriteria"]["passFailMetrics"][id] = {}
-                        new_body["passFailCriteria"]["passFailMetrics"][id][
-                            "aggregate"
-                        ] = components.split("(")[0].strip()
-                        new_body["passFailCriteria"]["passFailMetrics"][id][
-                            "clientMetric"
-                        ] = (components.split("(")[1].split(")")[0].strip())
-                        new_body["passFailCriteria"]["passFailMetrics"][id][
-                            "condition"
-                        ] = components.split(")")[1].strip()[0]
-                        new_body["passFailCriteria"]["passFailMetrics"][id][
-                            "value"
-                        ] = components.split(
-                            new_body["passFailCriteria"]["passFailMetrics"][id][
-                                "condition"
-                            ]
-                        )[
-                            1
-                        ].strip()
-                        new_body["passFailCriteria"]["passFailMetrics"][id][
-                            "requestName"
-                        ] = name
-        except Exception as e:
-            logger.debug(
-                "Exception occurred while parsing load test configuration file: %s",
-                str(e),
-            )
-            raise InvalidArgumentValueError(
-                "Invalid load test configuration file. Please check the file path and format"
-            )
-
+    if display_name is not None:
+        new_body["displayName"] = display_name
     else:
-        if display_name is not None:
-            new_body["displayName"] = display_name
-        else:
-            new_body["displayName"] = body.get("displayName", test_id)
+        new_body["displayName"] = body.get("displayName", test_id)
 
-        if test_description is not None:
-            new_body["description"] = test_description
-        else:
-            new_body["description"] = body.get("description")
+    if test_description is not None:
+        new_body["description"] = test_description
+    else:
+        new_body["description"] = body.get("description")
 
-        new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
-        if key_vault_reference_identity is not None:
-            new_body["keyvaultReferenceIdentityId"] = key_vault_reference_identity
-            new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
-        elif body.get("keyvaultReferenceIdentityId") is not None:
-            new_body["keyvaultReferenceIdentityId"] = body.get(
-                "keyvaultReferenceIdentityId"
-            )
-            new_body["keyvaultReferenceIdentityType"] = body.get(
-                "keyvaultReferenceIdentityType", IdentityType.UserAssigned
-            )
+    new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
+    if key_vault_reference_identity is not None:
+        new_body["keyvaultReferenceIdentityId"] = key_vault_reference_identity
+        new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
+    elif body.get("keyvaultReferenceIdentityId") is not None:
+        new_body["keyvaultReferenceIdentityId"] = body.get(
+            "keyvaultReferenceIdentityId"
+        )
+        new_body["keyvaultReferenceIdentityType"] = body.get(
+            "keyvaultReferenceIdentityType", IdentityType.UserAssigned
+        )
 
-        if subnet_id is not None:
-            new_body["subnetId"] = subnet_id
-        elif body.get("subnetId"):
-            new_body["subnetId"] = body.get("subnetId")
+    if subnet_id is not None:
+        new_body["subnetId"] = subnet_id
+    elif body.get("subnetId"):
+        new_body["subnetId"] = body.get("subnetId")
 
-        if env is not None:
-            new_body["environmentVariables"] = body.get("environmentVariables", {})
-            new_body["environmentVariables"].update(env)
+    if env is not None:
+        new_body["environmentVariables"] = body.get("environmentVariables", {})
+        new_body["environmentVariables"].update(env)
 
-        if secrets is not None:
-            new_body["secrets"] = body.get("secrets", {})
-            new_body["secrets"].update(secrets)
+    if secrets is not None:
+        new_body["secrets"] = body.get("secrets", {})
+        new_body["secrets"].update(secrets)
 
-        if certificate is not None:
-            new_body["certificate"] = certificate
-        elif body.get("certificate"):
-            new_body["certificate"] = body.get("certificate")
+    if certificate is not None:
+        new_body["certificate"] = certificate
+    elif body.get("certificate"):
+        new_body["certificate"] = body.get("certificate")
 
-        new_body["loadTestConfiguration"] = body.get("loadTestConfiguration", {})
-        if engine_instances:
-            new_body["loadTestConfiguration"]["engineInstances"] = engine_instances
-        else:
-            new_body["loadTestConfiguration"]["engineInstances"] = body.get(
-                "loadTestConfiguration", {}
-            ).get("engineInstances", 1)
-        # quick test and split csv not supported currently
-        new_body["loadTestConfiguration"]["quickStartTest"] = False
-        new_body["loadTestConfiguration"]["splitAllCSVs"] = False
-
+    new_body["loadTestConfiguration"] = body.get("loadTestConfiguration", {})
+    if engine_instances:
+        new_body["loadTestConfiguration"]["engineInstances"] = engine_instances
+    else:
+        new_body["loadTestConfiguration"]["engineInstances"] = body.get(
+            "loadTestConfiguration", {}
+        ).get("engineInstances", 1)
+    # quick test and split csv not supported currently
+    new_body["loadTestConfiguration"]["quickStartTest"] = False
+    new_body["loadTestConfiguration"]["splitAllCSVs"] = True if split_csv else False
     return new_body
 
 

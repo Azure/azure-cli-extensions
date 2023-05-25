@@ -199,6 +199,14 @@ def validate_dir_path(namespace):
 def validate_file_path(namespace):
     namespace.path = _validate_path(namespace.path, is_dir=False)
 
+def validate_test_plan_path(namespace):
+    namespace.test_plan = _validate_path(namespace.test_plan, is_dir=False)
+
+    _, file_extension = os.path.splitext(namespace.test_plan)
+    if file_extension.casefold() != ".jmx":
+        raise InvalidArgumentValueError(
+            f"Invalid test plan file extension: {file_extension}. Expected: .jmx"
+        )
 
 def _validate_path(path, is_dir=False):
     if not isinstance(path, str):
