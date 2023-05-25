@@ -1554,7 +1554,7 @@ def aks_enable_addons(cmd, client, resource_group_name, name, addons, workspace_
 
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
-    msi_auth = False 
+    msi_auth = False
     if instance.service_principal_profile.client_id == "msi":
         msi_auth = True
     else:
