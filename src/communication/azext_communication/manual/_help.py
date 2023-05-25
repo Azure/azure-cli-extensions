@@ -463,7 +463,7 @@ helps['communication rooms delete'] = """
 
 helps['communication rooms list'] = """
     type: command
-    short-summary: "List all active rooms belonged to a current Communication Service resource."
+    short-summary: "List all active rooms belonging to a current Communication Service resource."
     examples:
       - name: List all active rooms
         text: |-
@@ -488,7 +488,7 @@ helps['communication rooms participant add-or-update'] = """
     type: command
     short-summary: "Add or update participants in a room"
     examples:
-      - name: Add a presenter participant to a room and update an attendee participants in a room
+      - name: Add a presenter participant to a room and update an attendee participant in a room
         text: |-
                az communication rooms participant add-or-update --room "12345678901234567" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
 """

@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.6
+++++++
+ * Update Rooms sdk version to 1.0.0b2
+
 1.5.2
 ++++++
  * Email service sdk version set to 1.0.0b1 to satisfy the current contract
