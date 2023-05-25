@@ -37,6 +37,6 @@ class ContainerAppMountSecretTest(ScenarioTest):
         
         self.cmd('containerapp show -g {} -n {}'.format(resource_group, app), checks=[
             JMESPathCheck('properties.template.volumes[0].storageType', 'Secret'), 
-            # --secret-volume-mount mounts all secrets, not specific secrets, therefore no secrets should be returned
+            # --secret-volume-mount mounts all secrets, not specific secrets, therefore no secrets should be returned.
             JMESPathCheck('properties.template.volumes[0].secrets', None)
         ])
