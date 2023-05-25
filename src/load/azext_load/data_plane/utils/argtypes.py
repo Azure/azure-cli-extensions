@@ -194,7 +194,7 @@ file_path = CLIArgumentType(
 file_type = CLIArgumentType(
     validator=validators.validate_file_type,
     completer=get_generic_completion_list(
-        validators.get_enum_values(models.AllowedFileTypes)
+        completers.get_enum_values(models.AllowedFileTypes)
     ),
     options_list=["--file-type"],
     type=str,

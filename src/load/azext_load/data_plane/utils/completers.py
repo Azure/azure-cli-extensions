@@ -73,3 +73,6 @@ def get_subnet_resource_id_completion_list():
         return subnet_ids
 
     return completer
+
+def get_enum_values(enum_class):
+    return [member.value for member in enum_class]
