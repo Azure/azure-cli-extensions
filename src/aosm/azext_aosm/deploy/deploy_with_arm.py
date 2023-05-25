@@ -18,8 +18,8 @@ from azure.mgmt.resource.resources.models import DeploymentExtended
 from azext_aosm.deploy.pre_deploy import PreDeployerViaSDK
 from azext_aosm._configuration import NFConfiguration, VNFConfiguration
 from azext_aosm.util.constants import (
-    VNF_DEFINITION_BICEP_SOURCE_TEMPLATE,
-    VNF_MANIFEST_BICEP_SOURCE_TEMPLATE,
+    VNF_DEFINITION_BICEP_TEMPLATE,
+    VNF_MANIFEST_BICEP_TEMPLATE,
 )
 
 
@@ -83,7 +83,7 @@ class DeployerViaArm:
             # one produced from building the NFDV using this CLI
             bicep_path = os.path.join(
                 self.config.build_output_folder_name,
-                VNF_DEFINITION_BICEP_SOURCE_TEMPLATE,
+                VNF_DEFINITION_BICEP_TEMPLATE,
             )
 
         if parameters_json_file:
@@ -110,7 +110,7 @@ class DeployerViaArm:
             if not manifest_bicep_path:
                 manifest_bicep_path = os.path.join(
                     self.config.build_output_folder_name,
-                    VNF_MANIFEST_BICEP_SOURCE_TEMPLATE,
+                    VNF_MANIFEST_BICEP_TEMPLATE,
                 )
             if not manifest_parameters_json_file:
                 manifest_params = self.construct_manifest_parameters()

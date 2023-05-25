@@ -9,7 +9,7 @@ import shutil
 from dataclasses import asdict
 from typing import Optional
 from knack.log import get_logger
-from azure.cli.core.azclierror import CLIInternalError, InvalidArgumentValueError
+from azure.cli.core.azclierror import CLIInternalError, InvalidArgumentValueError, UnclassifiedUserFault
 
 from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
@@ -93,7 +93,7 @@ def _generate_nfd(definition_type, config):
             f"The folder {os.path.dirname(nfd_generator.bicep_path)} already exists - delete it and continue? (y/n)"
         )
         if carry_on != "y":
-            raise RuntimeError("User aborted!")
+            raise UnclassifiedUserFault("User aborted! ")
 
         shutil.rmtree(os.path.dirname(nfd_generator.bicep_path))
     nfd_generator.generate_nfd()

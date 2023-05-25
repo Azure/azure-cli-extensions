@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Dict, Optional, Any, List
 from pathlib import Path
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError
-from azext_aosm.util.constants import VNF_DEFINITION_OUTPUT_BICEP_PREFIX, VNF, CNF, NSD
+from azext_aosm.util.constants import DEFINITION_OUTPUT_BICEP_PREFIX, VNF, CNF, NSD
 
 DESCRIPTION_MAP: Dict[str, str] = {
     "publisher_resource_group_name": (
@@ -133,7 +133,7 @@ class VNFConfiguration(NFConfiguration):
         """Return the local folder for generating the bicep template to."""
         arm_template_path = self.arm_template.file_path
         return (
-            f"{VNF_DEFINITION_OUTPUT_BICEP_PREFIX}{Path(str(arm_template_path)).stem}"
+            f"{DEFINITION_OUTPUT_BICEP_PREFIX}{Path(str(arm_template_path)).stem}"
         )
 
 
@@ -167,7 +167,7 @@ class CNFConfiguration(NFConfiguration):
     @property
     def build_output_folder_name(self) -> str:
         """Return the local folder for generating the bicep template to."""
-        return f"{VNF_DEFINITION_OUTPUT_BICEP_PREFIX}{self.nf_name}"
+        return f"{DEFINITION_OUTPUT_BICEP_PREFIX}{self.nf_name}"
 
 
 def get_configuration(
