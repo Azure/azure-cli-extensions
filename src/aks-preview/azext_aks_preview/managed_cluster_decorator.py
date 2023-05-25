@@ -67,6 +67,7 @@ from azext_aks_preview._helpers import (
     check_is_private_cluster,
     check_is_apiserver_vnet_integration_cluster,
     get_cluster_snapshot_by_snapshot_id,
+    setup_common_guardrails_profile
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
 from azext_aks_preview._loadbalancer import (
@@ -2668,15 +2669,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         version = self.context.get_guardrails_version()
         level = self.context.get_guardrails_level()
         # provided any value?
-        if (level is not None or version is not None or excludedNamespaces is not None) and mc.guardrails_profile is None:
-            mc.guardrails_profile = self.models.GuardrailsProfile(
-                level=level,
-                version=version
-            )
-        # replace values with provided values
-        if excludedNamespaces is not None:
-            mc.guardrails_profile.excluded_namespaces = extract_comma_separated_string(
-                excludedNamespaces, enable_strip=True, keep_none=True, default_value=[])
+        mc = setup_common_guardrails_profile(level, version, excludedNamespaces, mc, self.models)
         return mc
 
     def set_up_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -3473,23 +3466,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         excludedNamespaces = self.context.get_guardrails_excluded_namespaces()
         version = self.context.get_guardrails_version()
         level = self.context.get_guardrails_level()
-        # provided any value?
-        if (level is not None or version is not None or excludedNamespaces is not None) and mc.guardrails_profile is None:
-            mc.guardrails_profile = self.models.GuardrailsProfile(
-                level=level,
-                version=version
-            )
-        # replace values with provided values
+
+        mc = setup_common_guardrails_profile(level, version, excludedNamespaces, mc, self.models)
+        
         if level is not None:
             mc.guardrails_profile.level = level
         if version is not None:
             mc.guardrails_profile.version = version
-        if excludedNamespaces is not None:
-            if excludedNamespaces == "":
-                mc.guardrails_profile.excluded_namespaces = list()
-            else:
-                mc.guardrails_profile.excluded_namespaces = extract_comma_separated_string(
-                    excludedNamespaces, enable_strip=True, keep_none=True, default_value=[])
+
         return mc
 
     def update_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
