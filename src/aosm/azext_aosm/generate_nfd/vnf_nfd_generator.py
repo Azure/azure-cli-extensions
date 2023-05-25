@@ -23,7 +23,8 @@ from azext_aosm.util.constants import (
     VNF_MANIFEST_BICEP_TEMPLATE,
     CONFIG_MAPPINGS,
     SCHEMAS,
-    SCHEMA_PREFIX
+    SCHEMA_PREFIX,
+    DEPLOYMENT_PARAMETERS
 )
 
 
@@ -124,7 +125,7 @@ class VnfNfdGenerator(NFDGenerator):
         }
     
         deployment_parameters_path = os.path.join(
-            folder_path, "deploymentParameters.json"
+            folder_path, DEPLOYMENT_PARAMETERS
         )
 
         # Heading for the deployParameters schema
@@ -193,16 +194,18 @@ class VnfNfdGenerator(NFDGenerator):
         manifest_path = os.path.join(code_dir, "templates", self.manifest_template_name)
         shutil.copy(manifest_path, self.output_folder_name)
         
-        os.mkdir(self.output_folder_name + "/" + SCHEMAS)  
-        full_schema = os.path.join(self.tmp_folder_name, SCHEMAS, "deploymentParameters.json")
+        os.mkdir(os.path.join(self.output_folder_name, SCHEMAS))  
+        tmp_schema_path = os.path.join(self.tmp_folder_name, SCHEMAS, DEPLOYMENT_PARAMETERS)
+        output_schema_path = os.path.join(self.output_folder_name, SCHEMAS, DEPLOYMENT_PARAMETERS)
         shutil.copy(
-            full_schema,
-            self.output_folder_name + "/" + SCHEMAS + "/deploymentParameters.json",
+            tmp_schema_path,
+            output_schema_path,
         )
         
-        config_mappings_path = os.path.join(self.tmp_folder_name, CONFIG_MAPPINGS)
+        tmp_config_mappings_path = os.path.join(self.tmp_folder_name, CONFIG_MAPPINGS)
+        output_config_mappings_path = os.path.join(self.output_folder_name, CONFIG_MAPPINGS)
         shutil.copytree(
-            config_mappings_path,
-            self.output_folder_name + "/" + CONFIG_MAPPINGS,
+            tmp_config_mappings_path,
+            output_config_mappings_path,
             dirs_exist_ok=True,
         )

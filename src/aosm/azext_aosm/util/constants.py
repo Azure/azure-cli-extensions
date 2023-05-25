@@ -20,6 +20,7 @@ CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE = "cnfartifactmanifest.bicep.j2"
 CNF_DEFINITION_BICEP_TEMPLATE = "cnfdefinition.bicep"
 CNF_MANIFEST_BICEP_TEMPLATE = "cnfartifactmanifest.bicep"
 
+DEPLOYMENT_PARAMETERS = "deploymentParameters.json"
 # Names of folder used in the repo
 CONFIG_MAPPINGS = "configMappings"
 SCHEMAS = "schemas"

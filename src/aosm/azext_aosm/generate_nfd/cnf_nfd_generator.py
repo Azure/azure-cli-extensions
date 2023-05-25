@@ -28,7 +28,8 @@ from azext_aosm.util.constants import (
     IMAGE_PULL_SECRET_LINE_REGEX,
     CONFIG_MAPPINGS,
     SCHEMAS,
-    SCHEMA_PREFIX
+    SCHEMA_PREFIX,
+    DEPLOYMENT_PARAMETERS
 )
 
 
@@ -186,7 +187,7 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
             )
 
         bicep_contents: str = template.render(
-            deployParametersPath="schemas/deploymentParameters.json",
+            deployParametersPath = os.path.join(SCHEMAS,DEPLOYMENT_PARAMETERS),
             nf_application_configurations=self.nf_application_configurations,
         )
 
@@ -196,7 +197,7 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
 
     def write_schema_to_file(self) -> None:
         """Write the schema to file deploymentParameters.json."""
-        full_schema = os.path.join(self._tmp_folder_name, "deploymentParameters.json")
+        full_schema = os.path.join(self._tmp_folder_name, DEPLOYMENT_PARAMETERS)
         with open(full_schema, "w", encoding="UTF-8") as f:
             json.dump(self.deployment_parameter_schema, f, indent=4)
 
@@ -206,29 +207,31 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
         logger.info("Create NFD bicep %s", self.output_folder_name)
         os.mkdir(self.output_folder_name)
         
-        os.mkdir(self.output_folder_name + "/" + SCHEMAS)
+        os.mkdir(os.path.join(self.output_folder_name, SCHEMAS))
 
-        nfd_bicep_path = os.path.join(
+        tmp_nfd_bicep_path = os.path.join(
             self._tmp_folder_name, CNF_DEFINITION_BICEP_TEMPLATE
         )
-        shutil.copy(nfd_bicep_path, self.output_folder_name)
+        shutil.copy(tmp_nfd_bicep_path, self.output_folder_name)
 
-        manifest_bicep_path = os.path.join(
+        tmp_manifest_bicep_path = os.path.join(
             self._tmp_folder_name, CNF_MANIFEST_BICEP_TEMPLATE
         )
-        shutil.copy(manifest_bicep_path, self.output_folder_name)
+        shutil.copy(tmp_manifest_bicep_path, self.output_folder_name)
 
-        config_mappings_path = os.path.join(self._tmp_folder_name, CONFIG_MAPPINGS)
+        tmp_config_mappings_path = os.path.join(self._tmp_folder_name, CONFIG_MAPPINGS)
+        output_config_mappings_path = os.path.join(self.output_folder_name, CONFIG_MAPPINGS)
         shutil.copytree(
-            config_mappings_path,
-            self.output_folder_name + "/" + CONFIG_MAPPINGS,
+            tmp_config_mappings_path,
+            output_config_mappings_path,
             dirs_exist_ok=True,
         )
 
-        full_schema = os.path.join(self._tmp_folder_name, "deploymentParameters.json")
+        tmp_schema_path = os.path.join(self._tmp_folder_name, DEPLOYMENT_PARAMETERS)
+        output_schema_path = os.path.join(self.output_folder_name, SCHEMAS, DEPLOYMENT_PARAMETERS)
         shutil.copy(
-            full_schema,
-            self.output_folder_name + "/" + SCHEMAS + "/deploymentParameters.json",
+            tmp_schema_path,
+            output_schema_path,
         )
 
     def generate_nf_application_config(
