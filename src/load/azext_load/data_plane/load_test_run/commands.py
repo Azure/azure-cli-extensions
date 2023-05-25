@@ -9,7 +9,7 @@ testrun_custom_sdk = CliCommandType(
 
 def load_test_run_commands(self, _):
     with self.command_group(
-        "load test-run", custom_command_type=testrun_custom_sdk
+        "load test-run", custom_command_type=testrun_custom_sdk, is_preview=True
     ) as g:
         g.custom_command("create", "create_test_run")
         g.custom_command("update", "update_test_run")
