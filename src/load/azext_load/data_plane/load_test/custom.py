@@ -75,21 +75,24 @@ def create_test(
     )
 
     files = client.list_test_files(test_id)
-    if yaml and yaml.get("userProperty") is not None:
-        file_name = os.path.basename(yaml.get("userProperty"))
-        file_response = upload_file_to_test(
-            client,
-            test_id,
-            yaml["userProperty"],
-            file_type=AllowedFileTypes.USER_PROPERTIES,
-            wait=wait,
-        )
-        logger.info(
-            "Uploaded file '%s' of type %s to test %s",
-            file_name,
-            AllowedFileTypes.USER_PROPERTIES,
-            test_id,
-        )
+
+    if yaml:
+        user_prop_file = yaml.get("properties", {}).get("userPropertyFile")
+        if user_prop_file is not None:
+            file_name = os.path.basename(user_prop_file)
+            file_response = upload_file_to_test(
+                client,
+                test_id,
+                user_prop_file,
+                file_type=AllowedFileTypes.USER_PROPERTIES,
+                wait=wait,
+            )
+            logger.info(
+                "Uploaded file '%s' of type %s to test %s",
+                file_name,
+                AllowedFileTypes.USER_PROPERTIES,
+                test_id,
+            )
 
     if yaml and yaml.get("configurationFiles") is not None:
         for config_file in yaml["configurationFiles"]:
@@ -108,8 +111,9 @@ def create_test(
                 test_id,
             )
 
-    if (yaml and yaml.get("testPlan") is not None) or test_plan is not None:
-        test_plan = test_plan if test_plan is not None else yaml["testPlan"]
+    if test_plan is None and yaml is not None and yaml.get("testPlan"):
+        test_plan = yaml.get("testPlan")
+    if test_plan:
         file_name = os.path.basename(test_plan)
         for file in files:
             if AllowedFileTypes.JMX_FILE.value == file["fileType"]:

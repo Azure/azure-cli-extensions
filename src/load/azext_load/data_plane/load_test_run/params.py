@@ -31,19 +31,19 @@ def load_arguments(self, _):
         c.argument("force", argtypes.force)
 
     # Load Test Run App Components
-    with self.argument_context("load test-run app-components") as c:
+    with self.argument_context("load test-run app-component") as c:
         c.argument("app_component_id", argtypes.app_component_id)
 
-    with self.argument_context("load test-run app-components add") as c:
-        c.argument("app_component_type", argtypes.app_component_type)
+    with self.argument_context("load test-run app-component add") as c:
+        c.argument("app_component_id", argtypes.app_component_id)
         c.argument("app_component_name", argtypes.app_component_name)
         c.argument("app_component_type", argtypes.app_component_type)
 
     # Load Test Run Server Metrics
-    with self.argument_context("load test-run server-metrics") as c:
+    with self.argument_context("load test-run server-metric") as c:
         c.argument("metric_id", argtypes.server_metric_id)
 
-    with self.argument_context("load test-run server-metrics add") as c:
+    with self.argument_context("load test-run server-metric add") as c:
         c.argument("metric_name", argtypes.server_metric_name)
         c.argument("metric_namespace", argtypes.server_metric_namespace)
         c.argument("aggregation", argtypes.server_metric_aggregation)
