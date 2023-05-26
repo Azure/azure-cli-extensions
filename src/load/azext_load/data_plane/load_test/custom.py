@@ -113,6 +113,8 @@ def create_test(
 
     if test_plan is None and yaml is not None and yaml.get("testPlan"):
         test_plan = yaml.get("testPlan")
+        if not os.path.isabs(test_plan):
+            test_plan = os.path.join(os.getcwd(), test_plan)
     if test_plan:
         file_name = os.path.basename(test_plan)
         for file in files:

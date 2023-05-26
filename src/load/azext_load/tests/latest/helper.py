@@ -1,8 +1,5 @@
+from azext_load.tests.latest.constants import LoadConstants
 from azure.cli.testsdk import JMESPathCheck
-
-from azext_load.tests.latest.constants import (
-    LoadConstants,    
-)
 
 
 def create_test(
@@ -22,15 +19,15 @@ def create_test(
         if is_long:
             env = f"--env {LoadConstants.ENV_VAR_DURATION_NAME}={LoadConstants.ENV_VAR_DURATION_LONG}"
         ScenarioTest.cmd(
-                "az load test create "
-                f"--test-id {test_id} "
-                f"--load-test-resource {load_test_resource} "
-                f"--resource-group {resource_group} "
-                f"--load-test-config-file {load_test_config_file} "
-                f"--test-plan {test_plan} "
-                "--wait " + env,
-                checks=checks,
-            )
+            "az load test create "
+            f"--test-id {test_id} "
+            f"--load-test-resource {load_test_resource} "
+            f"--resource-group {resource_group} "
+            f"--load-test-config-file {load_test_config_file} "
+            f"--test-plan {test_plan} "
+            "--wait " + env,
+            checks=checks,
+        )
     else:
         ScenarioTest.cmd(
             "az load test create "
@@ -38,7 +35,7 @@ def create_test(
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             "--load-test-config-file {load_test_config_file} ",
-            checks=checks, 
+            checks=checks,
         )
 
     tests = ScenarioTest.cmd(
@@ -47,9 +44,7 @@ def create_test(
         "--resource-group {resource_group}"
     ).get_output_in_json()
 
-    assert ScenarioTest.kwargs["test_id"] in [
-        test.get("testId") for test in tests
-    ]
+    assert ScenarioTest.kwargs["test_id"] in [test.get("testId") for test in tests]
 
 
 def create_test_run(
@@ -74,11 +69,8 @@ def create_test_run(
     ).get_output_in_json()
 
     assert len(test_runs) > 0
-    assert test_run.get("testRunId") in [
-        test.get("testRunId") for test in test_runs
-    ]
+    assert test_run.get("testRunId") in [test.get("testRunId") for test in test_runs]
     return test_run.get("testRunId")
-    # assert self.kwargs["test_id"] in [test.get("testId") for test in list_of_tests]
 
 
 def delete_test_run(ScenarioTest, test_run_id, resource_group, load_test_resource):
@@ -100,10 +92,10 @@ def delete_test(ScenarioTest, test_id, resource_group, load_test_resource):
         f"--yes"
     )
 
-    list_of_tests = ScenarioTest.cmd(
+    tests = ScenarioTest.cmd(
         "az load test list "
         f"--load-test-resource {load_test_resource} "
         f"--resource-group {resource_group}"
     ).get_output_in_json()
 
-    assert test_id not in [test.get("testId") for test in list_of_tests]
+    assert test_id not in [test.get("testId") for test in tests]
