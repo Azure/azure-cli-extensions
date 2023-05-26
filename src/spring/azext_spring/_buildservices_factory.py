@@ -111,7 +111,7 @@ class BuildService:
 
         if result.properties.provisioning_state != "Succeeded":
             log_url = self._try_get_build_log_url(build_result_id)
-            if hasattr(result.properties, "error"):
+            if hasattr(result.properties, "error") and result.properties.error:
                 build_error = result.properties.error
                 error_msg = "Failed to build container image, error code: {}, message: {}, check the build logs {} for more details and retry.".format(build_error.code, build_error.message, log_url)
             else:
