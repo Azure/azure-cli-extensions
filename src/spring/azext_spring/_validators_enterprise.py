@@ -120,6 +120,11 @@ def validate_build_service(namespace):
                 and ((namespace.registry_server is None) or (namespace.registry_username is None) or (namespace.registry_password is None)):
             raise InvalidArgumentValueError(
                 "The'--registry-server', '--registry-username' and '--registry-password' should be specified together.")
+        if (namespace.registry_server or namespace.registry_username or namespace.registry_password is not None) \
+                and namespace.disable_build_service:
+            raise InvalidArgumentValueError(
+                "Conflict detected: '--registry-server', '--registry-username' and '--registry-password' "
+                "can not be set with '--disable-build-service'.")
     else:
         if namespace.disable_build_service or namespace.registry_server or namespace.registry_username or namespace.registry_password is not None:
             raise InvalidArgumentValueError("The build service is only supported with enterprise tier.")
