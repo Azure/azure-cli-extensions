@@ -61,6 +61,8 @@ def load_arguments(self, _):
 
     with self.argument_context("grafana restore") as c:
         c.argument("archive_file", options_list=["-a", "--archive-file"], help="archive to restore Grafana artifacts from")
+        c.argument("remap_data_sources", options_list=["-r", "--remap-data-sources"], arg_type=get_three_state_flag(),
+                   help="during restoration, update dashboards to reference data sources defined at the destination workspace through name matching")
 
     with self.argument_context("grafana dashboard") as c:
         c.argument("uid", options_list=["--dashboard"], help="dashboard uid")
@@ -84,6 +86,8 @@ def load_arguments(self, _):
         c.argument("destination", options_list=["--destination", "-d"], help="resource id of the destination workspace")
         c.argument("dry_run", arg_type=get_three_state_flag(), help="preview changes w/o committing")
         c.argument("folders", nargs="+", help="space separated folder list which sync command shall handle dashboards underneath")
+        c.argument("dashboards_to_include", nargs='+', help="Space separated titles of dashboards to include in sync. Pair with --folders-to-include for folders specific")
+        c.argument("dashboards_to_exclude", nargs='+', help="Space separated titles of dashboards to exclude in sync. Pair with --folders-to-exclude for folders specific")
 
     with self.argument_context("grafana") as c:
         c.argument("time_to_live", default="1d", help="The life duration. For example, 1d if your key is going to last fr one day. Supported units are: s,m,h,d,w,M,y")

@@ -13,20 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin pool delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a machine pool
+    """Delete a pool.
 
     :example: Delete
-        az devcenter admin pool delete --name "poolName" --project-name "{projectName}" --resource-group "rg1"
+        az devcenter admin pool delete --name "DevPool" --project-name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2023-04-01"],
         ]
     }
 
@@ -55,7 +54,7 @@ class Delete(AAZCommand):
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
             id_part="name",
         )
@@ -155,7 +154,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }

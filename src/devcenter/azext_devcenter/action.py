@@ -19,136 +19,6 @@ from collections import defaultdict
 from knack.util import CLIError
 
 
-class AddImageReference(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.image_reference = action
-
-    def get_action(self, values, option_string):
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split("=", 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError(
-                f"usage error: {option_string} [KEY=VALUE ...]"
-            ) from ValueError
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-
-            if kl == "id":
-                d["id"] = v[0]
-
-            elif kl == "publisher":
-                d["publisher"] = v[0]
-
-            elif kl == "offer":
-                d["offer"] = v[0]
-
-            elif kl == "sku":
-                d["sku"] = v[0]
-
-            else:
-                raise CLIError(
-                    f"Unsupported Key {k} is provided for parameter image-reference. All possible keys are: id,"
-                    " publisher, offer, sku"
-                )
-
-        return d
-
-
-class AddSku(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        namespace.sku = action
-
-    def get_action(self, values, option_string):
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split("=", 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError(
-                f"usage error: {option_string} [KEY=VALUE ...]"
-            ) from ValueError
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-
-            if kl == "name":
-                d["name"] = v[0]
-
-            elif kl == "tier":
-                d["tier"] = v[0]
-
-            elif kl == "size":
-                d["size"] = v[0]
-
-            elif kl == "family":
-                d["family"] = v[0]
-
-            elif kl == "capacity":
-                d["capacity"] = v[0]
-
-            else:
-                raise CLIError(
-                    f"Unsupported Key {k} is provided for parameter sku. All possible keys are: name,"
-                    " tier, size, family, capacity"
-                )
-
-        return d
-
-
-class AddRepo(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        action = self.get_action(values, option_string)
-        if option_string == "--ado-git":
-            namespace.ado_git = action
-        else:
-            namespace.git_hub = action
-
-    def get_action(self, values, option_string):
-        try:
-            properties = defaultdict(list)
-            for (k, v) in (x.split("=", 1) for x in values):
-                properties[k].append(v)
-            properties = dict(properties)
-        except ValueError:
-            raise CLIError(
-                f"usage error: {option_string} [KEY=VALUE ...]"
-            ) from ValueError
-        d = {}
-        for k in properties:
-            kl = k.lower()
-            v = properties[k]
-
-            if kl == "uri":
-                d["uri"] = v[0]
-
-            elif kl == "branch":
-                d["branch"] = v[0]
-
-            elif kl == "secret-identifier":
-                d["secret_identifier"] = v[0]
-
-            elif kl == "path":
-                d["path"] = v[0]
-
-            else:
-                repo = "git-hub" if option_string == "--git-hub" else "ado-git"
-                raise CLIError(
-                    f"Unsupported Key {k} is provided for parameter {repo}. All possible keys are: uri, branch,"
-                    f" secret-identifier, path"
-                )
-
-        return d
-
-
 class AddEmailNotification(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         action = self.get_action(values, option_string)
@@ -157,7 +27,7 @@ class AddEmailNotification(argparse.Action):
     def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
-            for (k, v) in (x.split("=", 1) for x in values):
+            for k, v in (x.split("=", 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:
@@ -195,7 +65,7 @@ class AddWebhookNotification(argparse.Action):
     def get_action(self, values, option_string):
         try:
             properties = defaultdict(list)
-            for (k, v) in (x.split("=", 1) for x in values):
+            for k, v in (x.split("=", 1) for x in values):
                 properties[k].append(v)
             properties = dict(properties)
         except ValueError:

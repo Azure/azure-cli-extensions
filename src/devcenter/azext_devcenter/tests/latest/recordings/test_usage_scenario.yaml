@@ -1,0 +1,54 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter admin usage list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/centraluseuap/usages?api-version=2023-04-01
+  response:
+    body:
+      string: '{"value":[{"currentValue":48,"limit":500,"unit":"Count","name":{"value":"devCenters"}},{"currentValue":19,"limit":500,"unit":"Count","name":{"value":"networkConnections"}},{"currentValue":49,"limit":500,"unit":"Count","name":{"value":"projects"}},{"currentValue":49,"limit":500,"unit":"Count","name":{"value":"pools"}},{"currentValue":75,"limit":200,"unit":"Count","name":{"value":"devBoxDefinitions"}},{"currentValue":152,"limit":500,"unit":"Count","name":{"value":"general_a_v1"}},{"currentValue":152,"limit":500,"unit":"Count","name":{"value":"general_i_v2"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '564'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 04 May 2023 21:04:48 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-rate-limit-limit:
+      - 1m
+      x-rate-limit-remaining:
+      - '299'
+      x-rate-limit-reset:
+      - '2023-05-04T21:05:48.3401905Z'
+    status:
+      code: 200
+      message: OK
+version: 1

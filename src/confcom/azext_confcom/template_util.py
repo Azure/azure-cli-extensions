@@ -8,6 +8,7 @@ import json
 import copy
 import tarfile
 from typing import Any, Tuple, Dict, List
+from hashlib import sha256
 import deepdiff
 import yaml
 import docker
@@ -326,7 +327,7 @@ def readable_diff(diff_dict) -> Dict[str, Any]:
     name_translation = {
         "values_changed": "values_changed",
         "iterable_item_removed": "values_removed",
-        "iterable_item_added": "values_added",
+        "iterable_item_added": "values_added"
     }
 
     human_readable_diff = {}
@@ -355,6 +356,7 @@ def compare_containers(container1, container2) -> Dict[str, Any]:
     diff = deepdiff.DeepDiff(
         container1,
         container2,
+        ignore_order=True,
     )
     # cast to json using built-in function in deepdiff so there's safe translation
     # e.g. a type will successfully cast to string
@@ -397,7 +399,10 @@ def replace_params_and_vars(params: dict, vars_dict: dict, attribute):
         full_param_name = next(param_name, None)
         if full_param_name:
             full_param_name = full_param_name.group(0)
-            out = attribute.replace(full_param_name, find_value_in_params_and_vars(params, vars_dict, attribute))
+            # cast to string
+            out = f"{out}"
+            out = attribute.replace(full_param_name, out)
+
     elif isinstance(attribute, list):
         out = []
         for item in attribute:
@@ -569,6 +574,10 @@ def pretty_print_func(x: dict) -> str:
     return json.dumps(x, indent=2, sort_keys=True)
 
 
+def str_to_sha256(x: str) -> str:
+    return sha256(x.encode('utf-8')).hexdigest()
+
+
 def is_sidecar(image_name: str) -> bool:
     return image_name.split(":")[0] in config.BASELINE_SIDECAR_CONTAINERS
 
@@ -657,7 +666,7 @@ def compare_env_vars(
 
 
 def inject_policy_into_template(
-    arm_template_path: str, parameter_data_path: str, policy: str, count: int
+    arm_template_path: str, parameter_data_path: str, policy: str, count: int, hashes: dict
 ) -> bool:
     write_flag = False
     parameter_data = None
@@ -720,6 +729,25 @@ def inject_policy_into_template(
                 config.ACI_FIELD_TEMPLATE_CCE_POLICY
             ] = policy
             write_flag = True
+    # get containers to inject the base64 encoding of seccom profile hash into template if exists
+    containers = case_insensitive_dict_get(
+        container_group_properties, config.ACI_FIELD_CONTAINERS
+    )
+    for c in containers:
+        container_image = case_insensitive_dict_get(c, config.ACI_FIELD_TEMPLATE_IMAGE)
+        container_properties = case_insensitive_dict_get(c, config.ACI_FIELD_TEMPLATE_PROPERTIES)
+        security_context = case_insensitive_dict_get(
+            container_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
+        )
+        if security_context:
+            seccomp_profile = case_insensitive_dict_get(
+                security_context, config.ACI_FIELD_CONTAINERS_SECCOMP_PROFILE
+            )
+            if seccomp_profile:
+                hash_base64 = os_util.str_to_base64(hashes.get(container_image, ""))
+                security_context[config.ACI_FIELD_CONTAINERS_SECCOMP_PROFILE] = hash_base64
+                write_flag = True
+    # write base64 encoding of seccomp profile hash to the template
     if write_flag:
         os_util.write_json_to_file(arm_template_path, input_arm_json)
         return True
@@ -746,7 +774,9 @@ def get_container_group_name(
             if case_insensitive_dict_get(all_params, key):
                 all_params[key]["value"] = case_insensitive_dict_get(
                     case_insensitive_dict_get(input_parameter_values_json, key), "value"
-                ) or case_insensitive_dict_get(
+                ) if case_insensitive_dict_get(
+                    case_insensitive_dict_get(input_parameter_values_json, key), "value"
+                ) is not None else case_insensitive_dict_get(
                     case_insensitive_dict_get(input_parameter_values_json, key),
                     "secureValue",
                 )
@@ -760,8 +790,7 @@ def get_container_group_name(
         eprint(
             f'Field ["{config.ACI_FIELD_TEMPLATE_PARAMETERS}"] is empty or cannot be found in Parameter file'
         )
-    # TODO: replace this with doing param replacement as-needed
-    arm_json = parse_template(all_params, all_vars, arm_json)
+
     # find the image names and extract them from the template
     arm_resources = case_insensitive_dict_get(arm_json, config.ACI_FIELD_RESOURCES)
 
@@ -780,15 +809,19 @@ def get_container_group_name(
         )
 
     resource = aci_list[count]
+    resource = replace_params_and_vars(all_params, all_vars, resource)
     container_group_name = case_insensitive_dict_get(resource, config.ACI_FIELD_RESOURCES_NAME)
     return container_group_name
 
 
 def print_existing_policy_from_arm_template(arm_template_path, parameter_data_path):
+    if not arm_template_path:
+        eprint("Can only print existing policy from ARM Template")
     input_arm_json = os_util.load_json_from_file(arm_template_path)
     parameter_data = None
     if parameter_data_path:
-        parameter_data = os_util.load_json_from_file(arm_template_path)
+        parameter_data = os_util.load_json_from_file(parameter_data_path)
+
     # find the image names and extract them from the template
     arm_resources = case_insensitive_dict_get(
         input_arm_json, config.ACI_FIELD_RESOURCES
@@ -818,3 +851,47 @@ def print_existing_policy_from_arm_template(arm_template_path, parameter_data_pa
             eprint("CCE Policy is either in an supported format or not present")
         print(f"CCE Policy for Container Group: {container_group_name}\n")
         print(pretty_print_func(containers))
+
+
+def process_seccomp_policy(policy2):
+
+    # helper function to add fields to a dictionary if they don't exist
+    def defaults(obj, default):
+        for key in default:
+            obj.setdefault(key, default[key])
+        return obj
+
+    # helper function to pick fields from a dictionary
+    def pick(obj, *keys):
+        result = {}
+        for key in keys:
+            if key in obj:
+                result[key] = obj[key]
+        return result
+
+    policy = json.loads(policy2)
+    policy = defaults(policy, {'defaultAction': ""})
+    policy = pick(policy, 'defaultAction', 'defaultErrnoRet', 'architectures',
+                  'flags', 'listenerPath', 'listenerMetadata', 'syscalls')
+    if 'syscalls' in policy:
+        syscalls = policy['syscalls']
+        temp_syscalls = []
+        for s in syscalls:
+            syscall = s
+            syscall = defaults(syscall, {'names': [], 'action': ""})
+            syscall = pick(syscall, 'names', 'action', 'errnoRet', 'args')
+
+            if 'args' in syscall:
+                temp_args = []
+                args = syscall['args']
+
+                for j in args:
+                    arg = j
+                    arg = defaults(arg, {'value': 0, 'op': "", 'index': 0})
+                    arg = pick(arg, 'index', 'value', 'valueTwo', 'op')
+                    temp_args.append(arg)
+                syscall['args'] = temp_args
+            temp_syscalls.append(syscall)
+        # put temp_syscalls back into policy
+        policy['syscalls'] = temp_syscalls
+    return policy

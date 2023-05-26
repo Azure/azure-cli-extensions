@@ -2,6 +2,14 @@
 
 Release History
 ===============
+0.7.2
+++++++
+* Remove commands supported in azure cli
+
+0.7.1
+++++++
+* `az storage blob copy start`: Fix auth issue
+
 0.7.0
 ++++++
 * `az storage blob upload/set-tier/copy start`: Support `Cold` for `--tier`

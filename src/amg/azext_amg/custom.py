@@ -240,6 +240,8 @@ def backup_grafana(cmd, grafana_name, components=None, directory=None, folders_t
     import os
     from pathlib import Path
     from .backup import backup
+    _health_endpoint_reachable(cmd, grafana_name, resource_group_name=resource_group_name)
+
     creds = _get_data_plane_creds(cmd, api_key_or_token=None, subscription=None)
     headers = {
         "content-type": "application/json",
@@ -255,20 +257,30 @@ def backup_grafana(cmd, grafana_name, components=None, directory=None, folders_t
            folders_to_exclude=folders_to_exclude)
 
 
-def restore_grafana(cmd, grafana_name, archive_file, components=None, resource_group_name=None):
+def restore_grafana(cmd, grafana_name, archive_file, components=None, remap_data_sources=None,
+                    resource_group_name=None):
+    _health_endpoint_reachable(cmd, grafana_name, resource_group_name=resource_group_name)
     creds = _get_data_plane_creds(cmd, api_key_or_token=None, subscription=None)
     headers = {
         "content-type": "application/json",
         "authorization": "Bearer " + creds[1]
     }
     from .restore import restore
+
+    data_sources = []
+    if remap_data_sources:
+        data_sources = list_data_sources(cmd, grafana_name, resource_group_name,
+                                         subscription=None)
+
     restore(grafana_url=_get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription=None),
             archive_file=archive_file,
             components=components,
-            http_headers=headers)
+            http_headers=headers,
+            destination_datasources=data_sources)
 
 
-def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to_exclude=None, dry_run=None):
+def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to_exclude=None,
+                   dashboards_to_include=None, dashboards_to_exclude=None, dry_run=None):
     # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     if not is_valid_resource_id(source):
         raise ArgumentUsageError(f"'{source}' isn't a valid resource id, please refer to example commands in help")
@@ -288,6 +300,11 @@ def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to
                                                                                    parsed_destination["resource_group"],
                                                                                    parsed_destination["subscription"])
 
+    _health_endpoint_reachable(cmd, source_workspace, resource_group_name=source_resource_group,
+                               subscription=source_subscription)
+    _health_endpoint_reachable(cmd, destination_workspace, resource_group_name=destination_resource_group,
+                               subscription=destination_subscription)
+
     # TODO: skip READ-ONLY destination dashboard (rare case)
     destination_folders = list_folders(cmd, destination_workspace, resource_group_name=destination_resource_group,
                                        subscription=destination_subscription)
@@ -297,15 +314,9 @@ def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to
                                                  subscription=destination_subscription)
     source_data_sources = list_data_sources(cmd, source_workspace, source_resource_group,
                                             subscription=source_subscription)
-    uid_mapping = {}
-    for s in source_data_sources:
-        s_type = s.get("type")
-        s_name = s.get("name")
-        matched_ds = next((x for x in destination_data_sources
-                           if s_type == x.get("type") and s_name == x.get("name")), None)
-        if not matched_ds:
-            continue
-        uid_mapping[s.get("uid")] = matched_ds.get("uid")
+
+    from .utils import create_datasource_mapping, remap_datasource_uids
+    uid_mapping = create_datasource_mapping(source_data_sources, destination_data_sources)
 
     source_dashboards = list_dashboards(cmd, source_workspace, resource_group_name=source_resource_group,
                                         subscription=source_subscription)
@@ -321,7 +332,8 @@ def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to
         source_dashboard = show_dashboard(cmd, source_workspace, uid, resource_group_name=source_resource_group,
                                           subscription=source_subscription)
         folder_title = source_dashboard["meta"]["folderTitle"]
-        dashboard_path = folder_title + "/" + source_dashboard["dashboard"]["title"]
+        dashboard_title = source_dashboard["dashboard"]["title"]
+        dashboard_path = folder_title + "/" + dashboard_title
 
         should_skip = False
         if source_dashboard["meta"].get("provisioned"):
@@ -331,13 +343,16 @@ def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to
                 should_skip = not next((f for f in folders_to_include if folder_title.lower() == f.lower()), None)
             if not should_skip and folders_to_exclude:
                 should_skip = next((f for f in folders_to_exclude if folder_title.lower() == f.lower()), None)
-
+            if dashboards_to_include:
+                should_skip = not next((p for p in dashboards_to_include if p.lower() == dashboard_title.lower()), None)
+            if dashboards_to_exclude:
+                should_skip = next((p for p in dashboards_to_exclude if p.lower() == dashboard_title.lower()), None)
         if should_skip:
             summary["dashboards_skipped"].append(dashboard_path)
             continue
 
         # Figure out whether we shall correct the data sources. It is possible the Uids are different
-        remap_uids(source_dashboard.get("dashboard"), uid_mapping, data_source_missed)
+        remap_datasource_uids(source_dashboard.get("dashboard"), uid_mapping, data_source_missed)
         if not dry_run:
             delete_dashboard(cmd, destination_workspace, uid, resource_group_name=destination_resource_group,
                              ignore_error=True, subscription=destination_subscription)
@@ -367,22 +382,6 @@ def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to
         logger.warning(("A few data sources used by dashboards are unavailable at destination: \"%s\""
                         ". Please configure them."), ", ".join(data_source_missed))
     return summary
-
-
-def remap_uids(indict, uid_mapping, data_source_missed):
-    if isinstance(indict, dict):
-        for key, value in indict.items():
-            if isinstance(value, dict):
-                if key == "datasource" and isinstance(value, dict) and ("uid" in value):
-                    if value["uid"] in uid_mapping:
-                        value["uid"] = uid_mapping[value["uid"]]
-                    elif value["uid"] not in ["-- Grafana --", "grafana"]:
-                        data_source_missed.add(value["uid"])
-                else:
-                    remap_uids(value, uid_mapping, data_source_missed)
-            elif isinstance(value, (list, tuple)):
-                for v in value:
-                    remap_uids(v, uid_mapping, data_source_missed)
 
 
 def show_dashboard(cmd, grafana_name, uid, resource_group_name=None, api_key_or_token=None, subscription=None):
@@ -486,6 +485,15 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/import",
                              payload, api_key_or_token=api_key_or_token)
     return json.loads(response.content)
+
+
+def _health_endpoint_reachable(cmd, grafana_name, resource_group_name=None, api_key_or_token=None, subscription=None):
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/health",
+                             api_key_or_token=api_key_or_token,
+                             raise_for_error_status=False, subscription=subscription)
+    if response.status_code == 401:
+        raise ArgumentUsageError(f"Access to \"{grafana_name}\" was denied")
+    response.raise_for_status()
 
 
 def _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition, api_key_or_token=None):
