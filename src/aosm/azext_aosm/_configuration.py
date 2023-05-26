@@ -15,9 +15,9 @@ DESCRIPTION_MAP: Dict[str, str] = {
     ),
     "nf_name": "Name of NF definition",
     "version": "Version of the NF definition",
-    "acr_artifact_store_name": "Name of the ACR Artifact Store resource",
+    "acr_artifact_store_name": "Name of the ACR Artifact Store resource. Will be created if it does not exist.",
     "location": "Azure location to use when creating resources",
-    "blob_artifact_store_name": "Name of the storage account Artifact Store resource",
+    "blob_artifact_store_name": "Name of the storage account Artifact Store resource. Will be created if it does not exist.",
     "artifact_name": "Name of the artifact",
     "file_path": (
         "Optional. File path of the artifact you wish to upload from your "

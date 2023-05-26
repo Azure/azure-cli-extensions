@@ -97,8 +97,13 @@ class VnfNfdGenerator(NFDGenerator):
     def vm_parameters(self) -> Dict[str, Any]:
         """The parameters from the VM ARM template."""
         with open(self.arm_template_path, "r") as _file:
-            parameters: Dict[str, Any] = json.load(_file)["parameters"]
-
+            data = json.load(_file)
+            if "parameters" in data:
+                parameters: Dict[str, Any] = data["parameters"]
+            else:
+                print("No parameters found in the template provided. Your schema will have no properties")
+                parameters = {}
+        
         return parameters
 
     def create_parameter_files(self) -> None:
@@ -120,9 +125,18 @@ class VnfNfdGenerator(NFDGenerator):
         """
         logger.debug("Create deploymentParameters.json")
 
-        nfd_parameters: Dict[str, Any] = {
-            key: {"type": self.vm_parameters[key]["type"]} for key in self.vm_parameters
-        }
+        nfd_parameters = {}
+
+        for key in self.vm_parameters:
+            # ARM templates allow int and secureString but we do not currently accept them in AOSM
+            # This may change, but for now we should change them to accepted types integer and string
+            if self.vm_parameters[key]["type"] == "int":
+                nfd_parameters[key] = {"type": "integer"}
+            elif self.vm_parameters[key]["type"] == "secureString":
+                nfd_parameters[key] = {"type": "string"}
+            else:   
+                nfd_parameters[key] = {"type": self.vm_parameters[key]["type"]}    
+
     
         deployment_parameters_path = os.path.join(
             folder_path, DEPLOYMENT_PARAMETERS
@@ -209,3 +223,5 @@ class VnfNfdGenerator(NFDGenerator):
             output_config_mappings_path,
             dirs_exist_ok=True,
         )
+        
+        logger.info("Copied files to %s", self.output_folder_name)
