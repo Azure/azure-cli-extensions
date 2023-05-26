@@ -5,7 +5,7 @@ Release History
 
 1.6
 ++++++
- * Update Rooms sdk version to 1.0.0b2
+ * Update Rooms sdk version to 1.0.0b3
 
 1.5.2
 ++++++
