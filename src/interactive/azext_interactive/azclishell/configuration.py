@@ -45,6 +45,8 @@ def help_text(values):
     """ reformats the help text """
     result = ""
     for key in values:
+        # ' '.join('' for x in range(GESTURE_LENGTH - len(key))) is used to make the help text aligned
+        # Example: If values = {'/ [keyword]': 'description1', '#[cmd]': 'description2'}, the result will be:'/ [keyword]: description1\n#[cmd]   : description2\n'
         result += key + ' '.join('' for x in range(GESTURE_LENGTH - len(key))) + ': ' + values[key] + '\n'
     return result
 
