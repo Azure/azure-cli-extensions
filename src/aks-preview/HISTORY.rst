@@ -13,6 +13,10 @@ Pending
 +++++++
 * Vendor new SDK and bump API version to 2023-04-02-preview.
 
+0.5.140
++++++++
+* Allow options for specifying guardrails profile arguments
+
 0.5.139
 * `az aks create` and `az aks nodepool add`: Add warning message when specifying `--os-sku` to `Mariner` or `CBLMariner`.
 
@@ -21,11 +25,6 @@ Pending
 * Vendor new SDK and bump API version to 2023-03-02-preview.
 * fix: don't use current kube_proxy_config on UPDATE
 * GA update for Azure Monitor Metrics Addon (managed prometheus metrics) for AKS
-
-0.5.140
-+++++++
-* Allow options for specifying guardrails profile arguments
-
 
 0.5.137
 +++++++

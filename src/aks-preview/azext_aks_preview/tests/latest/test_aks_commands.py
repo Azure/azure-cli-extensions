@@ -1388,7 +1388,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('powerState.code', 'Running')
         ])
 
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_guardrails(self, resource_group, resource_group_location):
@@ -1408,7 +1407,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('guardrailsProfile.version','v1.0.0')
         ])
     
-    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_with_guardrails(self, resource_group, resource_group_location):
