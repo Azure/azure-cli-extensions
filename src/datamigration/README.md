@@ -34,6 +34,11 @@ az datamigration get-sku-recommendation --output-folder "C:\\PerfCollectionOutpu
 az datamigration login-migration --src-sql-connection-str  "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --tgt-sql-connection-str  "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --csv-file-path "C:\\CSVFile" --list-of-login "loginname1" "loginname2" --output-folder "C:\\OutputFolder" --aad-domain-name "AADDomainName" --display-result --overwrite
 ```
 
+##### TDE-migration #####
+```
+az datamigration tde-migration --source-sql-connection-string "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --target-subscription-id "00000000-0000-0000-0000-000000000000" --target-resource-group-name "ResourceGroupName" --target-managed-instance-name "TargetManagedInstanceName" --network-share-path "\\NetworkShare\Folder" --network-share-domain "" --network-share-user-name "NetworkShareUserName" --network-share-password "" --database-name "TdeDb_0" "TdeDb_1" "TdeDb_2"
+```
+
 #### datamigration sql-managed-instance ####
 ##### Create (Backup source Fileshare) #####
 ```

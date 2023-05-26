@@ -12,6 +12,8 @@ This package provides commands to
 - Create/Delete a cosmosdb materialized views builder service resource
 - Provision and update database account with Continuous 7 days backup mode
 - Retrieve and redistribute throughput at physical partition level.
+- Create a new Azure Cosmos DB database account with burst capacity.
+- Update an Azure Cosmos DB database account to enable/disable burst capacity.
 
 ## How to use ##
 
@@ -261,6 +263,24 @@ az cosmosdb service delete \
     --resource-group "MyResourceGroup" \
     --account-name "MyAccount" 
     --name "MaterializedViewsBuilder" \
+```
+
+#### Create a new CosmosDB burst capacity enabled Account ####
+
+```sh
+az cosmosdb create \
+    --resource-group "my-rg" \
+    --name "my-db-account" \
+    --enable-burst-capacity true
+```
+
+#### Enable burst capacity on an existing CosmosDB Account ####
+
+```sh
+az cosmosdb update \
+    --resource-group "my-rg" \
+    --name "my-db-account" \
+    --enable-burst-capacity true
 ```
 
 #### Restore a deleted database within same account for a Sql database account ####

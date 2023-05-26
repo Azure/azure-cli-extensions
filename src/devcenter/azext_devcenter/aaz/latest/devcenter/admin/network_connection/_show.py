@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin network-connection show",
-    is_preview=True,
 )
 class Show(AAZCommand):
-    """Get a network connection resource
+    """Get a network connection.
 
-    :example: Show
-        az devcenter admin network-connection show --name "{networkConnectionName}" --resource-group "rg1"
+    :example: Get
+        az devcenter admin network-connection show --name "uswest3network" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2023-04-01"],
         ]
     }
 
@@ -47,7 +46,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.network_connection_name = AAZStrArg(
             options=["-n", "--name", "--network-connection-name"],
-            help="Name of the Network Connection that can be applied to a Pool.",
+            help="Name of the network connection that can be applied to a pool.",
             required=True,
             id_part="name",
         )
@@ -121,7 +120,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -185,6 +184,7 @@ class Show(AAZCommand):
             )
             properties.domain_password = AAZStrType(
                 serialized_name="domainPassword",
+                flags={"secret": True},
             )
             properties.domain_username = AAZStrType(
                 serialized_name="domainUsername",

@@ -3,8 +3,8 @@ package policy
 import future.keywords.every
 import future.keywords.in
 
-api_svn := "0.10.0"
-framework_svn := "0.1.0"
+api_version := %s
+framework_version := "0.2.3"
 
 fragments := %s
 
@@ -15,8 +15,7 @@ allow_dump_stacks := %s
 allow_runtime_logging := %s
 allow_environment_variable_dropping := %s
 allow_unencrypted_scratch := %s
-
-
+allow_capability_dropping := %s
 
 mount_device := data.framework.mount_device
 unmount_device := data.framework.unmount_device

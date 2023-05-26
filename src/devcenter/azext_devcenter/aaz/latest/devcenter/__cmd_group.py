@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "devcenter",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage resources with devcenter
+    """Manage resources with devcenter.
     """
     pass
 

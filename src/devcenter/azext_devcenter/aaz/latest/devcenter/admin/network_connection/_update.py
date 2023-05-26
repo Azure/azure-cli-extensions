@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "devcenter admin network-connection update",
 )
 class Update(AAZCommand):
-    """Update updates a Network Connection
+    """Update a network connection.
 
     :example: Update
         az devcenter admin network-connection update --domain-password "New Password value for user" --name "{networkConnectionName}" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2023-04-01"],
         ]
     }
 
@@ -47,11 +47,12 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.network_connection_name = AAZStrArg(
             options=["-n", "--name", "--network-connection-name"],
-            help="Name of the Network Connection that can be applied to a Pool.",
+            help="Name of the network connection that can be applied to a pool.",
             required=True,
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -73,12 +74,15 @@ class Update(AAZCommand):
         _args_schema.domain_name = AAZStrArg(
             options=["--domain-name"],
             arg_group="Properties",
-            help="Active Directory domain name",
+            help="Active Directory domain name.",
         )
         _args_schema.domain_password = AAZStrArg(
             options=["--domain-password"],
             arg_group="Properties",
-            help="The password for the account used to join domain",
+            help="The password for the account used to join domain.",
+            blank=AAZPromptInput(
+                msg="Domain password:",
+            ),
         )
         _args_schema.domain_username = AAZStrArg(
             options=["--domain-username"],
@@ -88,12 +92,12 @@ class Update(AAZCommand):
         _args_schema.organization_unit = AAZStrArg(
             options=["--organization-unit"],
             arg_group="Properties",
-            help="Active Directory domain Organization Unit (OU)",
+            help="Active Directory domain Organization Unit (OU).",
         )
         _args_schema.subnet_id = AAZStrArg(
             options=["--subnet-id"],
             arg_group="Properties",
-            help="The subnet to attach Virtual Machines to",
+            help="The subnet to attach dev boxes to.",
         )
         return cls._args_schema
 
@@ -178,7 +182,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -209,7 +213,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("domainName", AAZStrType, ".domain_name")
-                properties.set_prop("domainPassword", AAZStrType, ".domain_password")
+                properties.set_prop("domainPassword", AAZStrType, ".domain_password", typ_kwargs={"flags": {"secret": True}})
                 properties.set_prop("domainUsername", AAZStrType, ".domain_username")
                 properties.set_prop("organizationUnit", AAZStrType, ".organization_unit")
                 properties.set_prop("subnetId", AAZStrType, ".subnet_id")
@@ -269,6 +273,7 @@ class Update(AAZCommand):
             )
             properties.domain_password = AAZStrType(
                 serialized_name="domainPassword",
+                flags={"secret": True},
             )
             properties.domain_username = AAZStrType(
                 serialized_name="domainUsername",
