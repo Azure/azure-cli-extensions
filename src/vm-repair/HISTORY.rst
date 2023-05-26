@@ -1,6 +1,11 @@
 
 Release History
 ===============
+
+0.5.3
+++++++
+Removing check for EncryptionSettingsCollection.enabled is string 'false'.
+
 0.5.2
 ++++++
 Fix bug in _fetch_encryption_settings, add check for EncryptionSettingsCollection.enabled is false.
