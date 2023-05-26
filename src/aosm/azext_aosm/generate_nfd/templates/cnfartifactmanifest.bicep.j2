@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 
 // This file creates an Artifact Manifest for a CNF
-param location string = resourceGroup().location
+param location string
 @description('Name of an existing publisher, expected to be in the resource group where you deploy the template')
 param publisherName string 
 @description('Name of an existing ACR-backed Artifact Store, deployed under the publisher.')
