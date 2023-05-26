@@ -79,7 +79,10 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
             self._tmp_folder_name = tmpdirname
             try:
                 for helm_package in self.config.helm_packages:
+                    
+                    # Turn Any type into HelmPackageConfig, to access properties on the object
                     helm_package = HelmPackageConfig(**helm_package)
+                    
                     # Unpack the chart into the tmp folder
                     self._extract_chart(helm_package.path_to_chart)
 
