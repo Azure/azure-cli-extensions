@@ -167,7 +167,7 @@ The loading bar is a feature that we have implemented to provide users with a mo
 
 Additionally, the loading bar helps prevent user interface lagging or freezing due to insufficient memory. By preloading the necessary resources and data, users can avoid encountering these issues when inputting commands.
 
-The loading bar is an essential tool that improves the user experience by ensuring that all necessary components are loaded before usage, thereby reducing the risk of encountering errors and providing a smoother, more stable platform.
+The loading bar is an essential tool that improves the user experience by ensuring that all necessary components have been loaded before usage, thereby reducing the risk of encountering errors and providing a smoother, more stable platform.
 
 Please refer to the following gif to see the loading bar in action:
 
