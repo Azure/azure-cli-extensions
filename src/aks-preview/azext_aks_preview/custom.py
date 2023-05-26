@@ -800,18 +800,19 @@ def _remove_nulls(managed_clusters):
     return managed_clusters
 
 
-def aks_get_credentials(cmd,    # pylint: disable=unused-argument
-                        client,
-                        resource_group_name,
-                        name,
-                        admin=False,
-                        user='clusterUser',
-                        path=os.path.join(os.path.expanduser(
-                            '~'), '.kube', 'config'),
-                        overwrite_existing=False,
-                        context_name=None,
-                        public_fqdn=False,
-                        credential_format=None):
+def aks_get_credentials(
+    cmd,  # pylint: disable=unused-argument
+    client,
+    resource_group_name,
+    name,
+    admin=False,
+    user="clusterUser",
+    path=os.path.join(os.path.expanduser("~"), ".kube", "config"),
+    overwrite_existing=False,
+    context_name=None,
+    public_fqdn=False,
+    credential_format=None,
+):
     credentialResults = None
     serverType = None
     if public_fqdn:
@@ -831,10 +832,22 @@ def aks_get_credentials(cmd,    # pylint: disable=unused-argument
             credentialResults = client.list_cluster_monitoring_user_credentials(
                 resource_group_name, name, serverType)
         else:
-            raise CLIError("The user is invalid.")
+            raise InvalidArgumentValueError("The value of option --user is invalid.")
+
+    # Check if KUBECONFIG environmental variable is set
+    # If path is different than default then that means -f/--file is passed
+    # in which case we ignore the KUBECONFIG variable
+    # KUBECONFIG can be colon separated. If we find that condition, use the first entry
+    if "KUBECONFIG" in os.environ and path == os.path.join(os.path.expanduser('~'), '.kube', 'config'):
+        kubeconfig_path = os.environ["KUBECONFIG"].split(os.pathsep)[0]
+        if kubeconfig_path:
+            logger.info("The default path '%s' is replaced by '%s' defined in KUBECONFIG.", path, kubeconfig_path)
+            path = kubeconfig_path
+        else:
+            logger.warning("Invalid path '%s' defined in KUBECONFIG.", kubeconfig_path)
+
     if not credentialResults:
         raise CLIError("No Kubernetes credentials found.")
-
     try:
         kubeconfig = credentialResults.kubeconfigs[0].value.decode(
             encoding='UTF-8')

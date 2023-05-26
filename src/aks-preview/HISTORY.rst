@@ -11,7 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+0.5.140
++++++++
 * Vendor new SDK and bump API version to 2023-04-02-preview.
+* Fix `az aks get-credentials` not using the value set by environment variable `KUBECONFIG`, see issue `\#26444 <https://github.com/Azure/azure-cli-extensions/issues/26444>`_.
 
 0.5.140
 +++++++
