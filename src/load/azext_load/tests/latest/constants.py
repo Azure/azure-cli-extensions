@@ -10,13 +10,9 @@ class LoadConstants:
     TEST_ID = "sampletest1"
 
     # Test Plan constants
-    LOAD_TEST_CONFIG_FILE = '"{}"'.format(
-        os.path.join(TEST_RESOURCES_DIR, r"config.yaml")
-    )
-    TEST_PLAN = '"{}"'.format(os.path.join(TEST_RESOURCES_DIR, r"sample-JMX-file.jmx"))
-    ADDITIONAL_FILE = '"{}"'.format(
-        os.path.join(TEST_RESOURCES_DIR, r"additional_data.csv")
-    )
+    LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config.yaml")
+    TEST_PLAN = os.path.join(TEST_RESOURCES_DIR, r"sample-JMX-file.jmx")
+    ADDITIONAL_FILE = os.path.join(TEST_RESOURCES_DIR, r"additional_data.csv")
     FILE_NAME = "sample-JMX-file.jmx"
 
     ENV_VAR_DURATION_NAME = "duration_in_sec"
@@ -26,13 +22,13 @@ class LoadConstants:
     # App Component constants
     APP_COMPONENT_ID = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss"
     APP_COMPONENT_TYPE = r"Microsoft.Compute/virtualMachineScaleSets"
-    APP_COMPONENT_NAME = "temp-vmss"
+    APP_COMPONENT_NAME = r"temp-vmss"
 
     # Server Metric constants
-    SERVER_METRIC_ID = r'"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss/providers/microsoft.insights/metricdefinitions/Percentage CPU"'
-    SERVER_METRIC_NAME = r'"Percentage CPU"'
-    SERVER_METRIC_NAMESPACE = "microsoft.compute/virtualmachinescalesets"
-    AGGREGATION = r"Average"
+    SERVER_METRIC_ID = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss/providers/microsoft.insights/metricdefinitions/Percentage CPU"
+    SERVER_METRIC_NAME = r"Percentage CPU"
+    SERVER_METRIC_NAMESPACE = r"microsoft.compute/virtualmachinescalesets"
+    AGGREGATION = "Average"
 
 
 class LoadTestConstants(LoadConstants):

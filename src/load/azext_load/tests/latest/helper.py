@@ -1,42 +1,46 @@
+from collections import OrderedDict
+
 from azext_load.tests.latest.constants import LoadConstants
 from azure.cli.testsdk import JMESPathCheck
 
 
 def create_test(
     ScenarioTest,
-    test_id,
-    resource_group,
-    load_test_resource,
-    load_test_config_file,
+    load_test_resource=None,
+    resource_group=None,
+    test_id=None,
+    load_test_config_file=None,
     test_plan=None,
     is_long=False,
 ):
-    checks = [
-        JMESPathCheck("testId", test_id),
-    ]
+    if not load_test_resource:
+        load_test_resource = ScenarioTest.kwargs["load_test_resource"]
+    if not resource_group:
+        resource_group = ScenarioTest.kwargs["resource_group"]
+    if not test_id:
+        test_id = ScenarioTest.kwargs["test_id"]
+    if not load_test_config_file:
+        load_test_config_file = ScenarioTest.kwargs["load_test_config_file"]
+
+    template = (
+        "az load test create "
+        f"--load-test-resource {load_test_resource} "
+        f"--resource-group {resource_group} "
+        f"--test-id {test_id} "
+        f'--load-test-config-file "{load_test_config_file}"'
+    )
+
+    duration = LoadConstants.ENV_VAR_DURATION_SHORT
+    if is_long:
+        duration = LoadConstants.ENV_VAR_DURATION_LONG
+    template += f" --env {LoadConstants.ENV_VAR_DURATION_NAME}={duration}"
+
     if test_plan:
-        env = f"--env {LoadConstants.ENV_VAR_DURATION_NAME}={LoadConstants.ENV_VAR_DURATION_SHORT}"
-        if is_long:
-            env = f"--env {LoadConstants.ENV_VAR_DURATION_NAME}={LoadConstants.ENV_VAR_DURATION_LONG}"
-        ScenarioTest.cmd(
-            "az load test create "
-            f"--test-id {test_id} "
-            f"--load-test-resource {load_test_resource} "
-            f"--resource-group {resource_group} "
-            f"--load-test-config-file {load_test_config_file} "
-            f"--test-plan {test_plan} "
-            "--wait " + env,
-            checks=checks,
-        )
-    else:
-        ScenarioTest.cmd(
-            "az load test create "
-            "--test-id {test_id} "
-            "--load-test-resource {load_test_resource} "
-            "--resource-group {resource_group} "
-            "--load-test-config-file {load_test_config_file} ",
-            checks=checks,
-        )
+        template += f' --test-plan "{test_plan}"'
+
+    ScenarioTest.cmd(
+        template, checks=[JMESPathCheck("testId", ScenarioTest.kwargs["test_id"])]
+    )
 
     tests = ScenarioTest.cmd(
         "az load test list "
@@ -48,42 +52,83 @@ def create_test(
 
 
 def create_test_run(
-    ScenarioTest, test_id, test_run_id, resource_group, load_test_resource
+    ScenarioTest,
+    load_test_resource=None,
+    resource_group=None,
+    test_id=None,
+    test_run_id=None,
+    test_run_config_file=None,
 ):
+    if not load_test_resource:
+        load_test_resource = ScenarioTest.kwargs["load_test_resource"]
+    if not resource_group:
+        resource_group = ScenarioTest.kwargs["resource_group"]
+    if not test_id:
+        test_id = ScenarioTest.kwargs["test_id"]
+    if not test_run_id:
+        test_run_id = ScenarioTest.kwargs["test_run_id"]
+    if not test_run_config_file:
+        test_run_config_file = ScenarioTest.kwargs["test_run_config_file"]
+
     test_run = ScenarioTest.cmd(
-        f"az load test-run create "
+        "az load test-run create "
         f"--load-test-resource {load_test_resource} "
         f"--resource-group {resource_group} "
         f"--test-id {test_id} "
         f"--test-run-id {test_run_id} "
-        f"--wait"
+        "--wait",
+        checks=[JMESPathCheck("testRunId", ScenarioTest.kwargs["test_run_id"])],
     ).get_output_in_json()
 
-    assert test_run.get("testRunId") is not None
-
     test_runs = ScenarioTest.cmd(
-        f"az load test-run list "
+        "az load test-run list "
         f"--load-test-resource {load_test_resource} "
         f"--resource-group {resource_group} "
         f"--test-id {test_id}"
     ).get_output_in_json()
 
-    assert len(test_runs) > 0
-    assert test_run.get("testRunId") in [test.get("testRunId") for test in test_runs]
-    return test_run.get("testRunId")
+    assert test_run["testRunId"] in [run.get("testRunId") for run in test_runs]
 
 
-def delete_test_run(ScenarioTest, test_run_id, resource_group, load_test_resource):
-    ScenarioTest.cmd(
-        f"az load test-run delete "
+def delete_test_run(
+    ScenarioTest, load_test_resource=None, resource_group=None, test_run_id=None
+):
+    if not load_test_resource:
+        load_test_resource = ScenarioTest.kwargs["load_test_resource"]
+    if not resource_group:
+        resource_group = ScenarioTest.kwargs["resource_group"]
+    if not test_run_id:
+        test_run_id = ScenarioTest.kwargs["test_run_id"]
+
+    test_run = ScenarioTest.cmd(
+        "az load test-run delete "
         f"--load-test-resource {load_test_resource} "
         f"--resource-group {resource_group} "
         f"--test-run-id {test_run_id} "
         f"--yes"
     )
 
+    test_id = test_run.get("testId", "")
+    test_runs = ScenarioTest.cmd(
+        "az load test-run list "
+        f"--load-test-resource {load_test_resource} "
+        f"--resource-group {resource_group}"
+        f"--test-id {test_id} "
+    ).get_output_in_json()
 
-def delete_test(ScenarioTest, test_id, resource_group, load_test_resource):
+    assert test_run_id not in [run.get("testRunId") for run in test_runs]
+
+
+def delete_test(
+    ScenarioTest, load_test_resource=None, resource_group=None, test_id=None
+):
+    if not load_test_resource:
+        load_test_resource = ScenarioTest.kwargs["load_test_resource"]
+    if not resource_group:
+        resource_group = ScenarioTest.kwargs["resource_group"]
+    if not test_id:
+        test_id = ScenarioTest.kwargs["test_id"]
+
     ScenarioTest.cmd(
         "az load test delete "
         f"--test-id {test_id} "
