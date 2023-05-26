@@ -1400,7 +1400,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
                      '--guardrails-level Warning --guardrails-version "v1.0.0" ' \
-                     '--enable-addons azure-policy --ssh-key-value={ssh_key_value} '
+                     '--enable-addons azure-policy --ssh-key-value={ssh_key_value} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/GuardrailsPreview'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('guardrailsProfile.level', 'Warning'),
@@ -1425,7 +1426,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     
         update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
                      '--guardrails-level Warning --guardrails-version "v1.0.0" ' \
-                     '--guardrails-excluded-ns test-ns1'
+                     '--guardrails-excluded-ns test-ns1 ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/GuardrailsPreview'
         
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
