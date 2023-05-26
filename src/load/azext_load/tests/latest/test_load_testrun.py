@@ -1,4 +1,3 @@
-import json
 import time
 
 from azext_load.tests.latest.helper import (
@@ -7,41 +6,23 @@ from azext_load.tests.latest.helper import (
     delete_test,
     delete_test_run,
 )
+from azext_load.tests.latest.constants import (
+    LoadTestRunConstants,
+)
 from azure.cli.testsdk import JMESPathCheck, ScenarioTest
 
 
 class LoadTestRunScenario(ScenarioTest):
-    load_test_resource = "hbisht-cli-testing"
-    resource_group = "hbisht-rg"
-    test_id = "sampletest1"
-    test_id_long = "14fc47b6-fc59-4a1f-91d2-0678944ff121"
-    test_run_id_const = "4008685a-79ab-4007-b559-11cf9051c06f"
-    test_run_id = "1507-2608-"
-    load_test_config_file = r"C:\\Users\\hbisht\\Desktop\\config.yaml"
-    test_plan = r"C:\\Users\\hbisht\\Desktop\\LoadTest2.jmx"
-    app_component_id = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss"
-    app_component_type = "Microsoft.Compute/virtualMachineScaleSets"
-    server_metric_id = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss/providers/microsoft.insights/metricdefinitions/Percentage CPU"
-    server_metric_name = "Percentage_CPU"
-    server_metric_namespace = "microsoft.compute/virtualmachinescalesets"
-    metric_name = "VirtualUsers"
-    metric_namespace = "LoadTestRunMetrics"
-    metric_dimension_name = "RequestName"
-    metric_dimension_value = "Homepage"
-    metric_filters_all = "*"
-    metric_filters_value_all = f"{metric_dimension_name}=*"
-    metric_filters_value_specific = f"{metric_dimension_name}={metric_dimension_value}"
-    aggregation = "Average"
 
     def testcase_load_test_run_stop(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadTestRunScenario.load_test_resource,
-                "resource_group": LoadTestRunScenario.resource_group,
-                "test_id": LoadTestRunScenario.test_id+"stop-test",
-                "test_run_id": LoadTestRunScenario.test_run_id + "stop-test-run",
-                "load_test_config_file": LoadTestRunScenario.load_test_config_file,
-                "test_plan": LoadTestRunScenario.test_plan,
+                "load_test_resource": LoadTestRunConstants.LOAD_TEST_RESOURCE,
+                "resource_group": LoadTestRunConstants.RESOURCE_GROUP,
+                "test_id": LoadTestRunConstants.STOP_TEST_ID,
+                "test_run_id": LoadTestRunConstants.STOP_TEST_RUN_ID,
+                "load_test_config_file": LoadTestRunConstants.LOAD_TEST_CONFIG_FILE,
+                "test_plan": LoadTestRunConstants.TEST_PLAN,
             }
         )
 
@@ -51,26 +32,45 @@ class LoadTestRunScenario(ScenarioTest):
             load_test_resource=self.kwargs["load_test_resource"],
             resource_group=self.kwargs["resource_group"],
             load_test_config_file=self.kwargs["load_test_config_file"],
-            test_plan=self.kwargs["test_plan"]
+            test_plan=self.kwargs["test_plan"], is_long=True,
         )
 
-        self.cmd(
+        test_run = self.cmd(
             "az load test-run create "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             "--test-id {test_id} "
             "--test-run-id {test_run_id} "
-        )
+        ).get_output_in_json()
         
-        #assert test_run["testRunId"] is not None
-        self.cmd(
+        assert test_run["testRunId"] == self.kwargs["test_run_id"]
+
+        while test_run["status"] not in ["RUNNING", "DONE", "FAILED", "CANCELLED"]:
+            time.sleep(5)
+            test_run = self.cmd(
+                "az load test-run show "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--test-run-id {test_run_id} "  
+            ).get_output_in_json()
+
+        test_run = self.cmd(
             "az load test-run stop "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             "--test-run-id {test_run_id} "
             "--yes"
-        )
-        time.sleep(10)
+        ).get_output_in_json()
+
+        while test_run["status"] not in ["CANCELLED", "DONE", "FAILED"]:
+            time.sleep(5)
+            test_run = self.cmd(
+                "az load test-run show "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--test-run-id {test_run_id} "  
+            ).get_output_in_json()
+        
         test_run = self.cmd(
             "az load test-run show "
             "--load-test-resource {load_test_resource} "
@@ -91,11 +91,31 @@ class LoadTestRunScenario(ScenarioTest):
     def testcase_load_test_run_list(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadTestRunScenario.load_test_resource,
-                "resource_group": LoadTestRunScenario.resource_group,
-                "test_id": LoadTestRunScenario.test_id,
-                "test_run_id": LoadTestRunScenario.test_run_id_const,
+                "load_test_resource": LoadTestRunConstants.LOAD_TEST_RESOURCE,
+                "resource_group": LoadTestRunConstants.RESOURCE_GROUP,
+                "test_id": LoadTestRunConstants.LIST_TEST_ID,
+                "test_run_id": LoadTestRunConstants.LIST_TEST_RUN_ID,
+                "load_test_config_file": LoadTestRunConstants.LOAD_TEST_CONFIG_FILE,
+                "test_plan": LoadTestRunConstants.TEST_PLAN,
+
             }
+        )
+
+        create_test(
+            self,
+            test_id=self.kwargs["test_id"],
+            load_test_resource=self.kwargs["load_test_resource"],
+            resource_group=self.kwargs["resource_group"],
+            load_test_config_file=self.kwargs["load_test_config_file"],
+            test_plan=self.kwargs["test_plan"],
+        )
+
+        create_test_run(
+            self,
+            test_id=self.kwargs["test_id"],
+            load_test_resource=self.kwargs["load_test_resource"],
+            resource_group=self.kwargs["resource_group"],
+            test_run_id=self.kwargs["test_run_id"],
         )
 
         list_of_test_run = self.cmd(
@@ -113,14 +133,38 @@ class LoadTestRunScenario(ScenarioTest):
             test["testRunId"] for test in list_of_test_run
         ]
 
+        delete_test(
+            self,
+            test_id=self.kwargs["test_id"],
+            load_test_resource=self.kwargs["load_test_resource"],
+            resource_group=self.kwargs["resource_group"]
+        )
+
     def testcase_load_test_run_show(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadTestRunScenario.load_test_resource,
-                "resource_group": LoadTestRunScenario.resource_group,
-                "test_id": LoadTestRunScenario.test_id,
-                "test_run_id": LoadTestRunScenario.test_run_id_const,
+                "load_test_resource": LoadTestRunConstants.LOAD_TEST_RESOURCE,
+                "resource_group": LoadTestRunConstants.RESOURCE_GROUP,
+                "test_id": LoadTestRunConstants.SHOW_TEST_ID,
+                "test_run_id": LoadTestRunConstants.SHOW_TEST_RUN_ID,
+                "load_test_config_file": LoadTestRunConstants.LOAD_TEST_CONFIG_FILE,
+                "test_plan": LoadTestRunConstants.TEST_PLAN,
             }
+        )
+        create_test(
+            self,
+            test_id=self.kwargs["test_id"],
+            load_test_resource=self.kwargs["load_test_resource"],
+            resource_group=self.kwargs["resource_group"],
+            load_test_config_file=self.kwargs["load_test_config_file"],
+            test_plan=self.kwargs["test_plan"],
+        )
+        create_test_run(
+            self,
+            test_id=self.kwargs["test_id"],
+            load_test_resource=self.kwargs["load_test_resource"],
+            resource_group=self.kwargs["resource_group"],
+            test_run_id=self.kwargs["test_run_id"],
         )
 
         test_run = self.cmd(
@@ -131,16 +175,23 @@ class LoadTestRunScenario(ScenarioTest):
         ).get_output_in_json()
 
         assert test_run["testRunId"] == self.kwargs["test_run_id"]
+        
+        delete_test(
+            self,
+            test_id=self.kwargs["test_id"],
+            load_test_resource=self.kwargs["load_test_resource"],
+            resource_group=self.kwargs["resource_group"]
+        )
 
     def testcase_load_test_run_create(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadTestRunScenario.load_test_resource,
-                "resource_group": LoadTestRunScenario.resource_group,
-                "test_id": LoadTestRunScenario.test_id + "create_test_run",
-                "test_run_id": LoadTestRunScenario.test_run_id + "create_test_run",
-                "load_test_config_file": LoadTestRunScenario.load_test_config_file,
-                "test_plan": LoadTestRunScenario.test_plan,
+                "load_test_resource": LoadTestRunConstants.LOAD_TEST_RESOURCE,
+                "resource_group": LoadTestRunConstants.RESOURCE_GROUP,
+                "test_id": LoadTestRunConstants.CREATE_TEST_ID,
+                "test_run_id": LoadTestRunConstants.CREATE_TEST_RUN_ID,
+                "load_test_config_file": LoadTestRunConstants.LOAD_TEST_CONFIG_FILE,
+                "test_plan": LoadTestRunConstants.TEST_PLAN,
             }
         )
         try :
@@ -173,12 +224,12 @@ class LoadTestRunScenario(ScenarioTest):
     def testcase_load_test_run_delete(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadTestRunScenario.load_test_resource,
-                "resource_group": LoadTestRunScenario.resource_group,
-                "test_id": LoadTestRunScenario.test_id + "delete_test_run",
-                "test_run_id": LoadTestRunScenario.test_run_id + "delete_test_run",
-                "load_test_config_file": LoadTestRunScenario.load_test_config_file,
-                "test_plan": LoadTestRunScenario.test_plan,
+                "load_test_resource": LoadTestRunConstants.LOAD_TEST_RESOURCE,
+                "resource_group": LoadTestRunConstants.RESOURCE_GROUP,
+                "test_id": LoadTestRunConstants.DELETE_TEST_ID,
+                "test_run_id": LoadTestRunConstants.DELETE_TEST_RUN_ID,
+                "load_test_config_file": LoadTestRunConstants.LOAD_TEST_CONFIG_FILE,
+                "test_plan": LoadTestRunConstants.TEST_PLAN,
             }
         )
         try :
@@ -211,12 +262,12 @@ class LoadTestRunScenario(ScenarioTest):
     def testcase_load_test_run_update(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadTestRunScenario.load_test_resource,
-                "resource_group": LoadTestRunScenario.resource_group,
-                "test_id": LoadTestRunScenario.test_id + "update_test_run",
-                "test_run_id": LoadTestRunScenario.test_run_id + "update_test_run",
-                "load_test_config_file": LoadTestRunScenario.load_test_config_file,
-                "test_plan": LoadTestRunScenario.test_plan,
+                "load_test_resource": LoadTestRunConstants.LOAD_TEST_RESOURCE,
+                "resource_group": LoadTestRunConstants.RESOURCE_GROUP,
+                "test_id": LoadTestRunConstants.UPDATE_TEST_ID,
+                "test_run_id": LoadTestRunConstants.UPDATE_TEST_RUN_ID,
+                "load_test_config_file": LoadTestRunConstants.LOAD_TEST_CONFIG_FILE,
+                "test_plan": LoadTestRunConstants.TEST_PLAN,
             }
         )
         try :
@@ -268,12 +319,12 @@ class LoadTestRunScenario(ScenarioTest):
     def testcase_load_test_run_download_files(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadTestRunScenario.load_test_resource,
-                "resource_group": LoadTestRunScenario.resource_group,
-                "test_id": LoadTestRunScenario.test_id + "download_test_run_files",
-                "test_run_id": LoadTestRunScenario.test_run_id + "download_files",
-                "load_test_config_file": LoadTestRunScenario.load_test_config_file,
-                "test_plan": LoadTestRunScenario.test_plan,
+                "load_test_resource": LoadTestRunConstants.LOAD_TEST_RESOURCE,
+                "resource_group": LoadTestRunConstants.RESOURCE_GROUP,
+                "test_id": LoadTestRunConstants.DOWNLOAD_TEST_ID,
+                "test_run_id": LoadTestRunConstants.DOWNLOAD_TEST_RUN_ID,
+                "load_test_config_file": LoadTestRunConstants.LOAD_TEST_CONFIG_FILE,
+                "test_plan": LoadTestRunConstants.TEST_PLAN,
             }
         )
         try:
@@ -285,7 +336,7 @@ class LoadTestRunScenario(ScenarioTest):
                 test_id=self.kwargs["test_id"],
                 load_test_config_file=self.kwargs["load_test_config_file"],
             )
-            test_run_id = create_test_run(
+            create_test_run(
                 self,
                 load_test_resource=self.kwargs["load_test_resource"],
                 resource_group=self.kwargs["resource_group"],
@@ -317,16 +368,15 @@ class LoadTestRunScenario(ScenarioTest):
     def testcase_load_app_component(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadTestRunScenario.load_test_resource,
-                "resource_group": LoadTestRunScenario.resource_group,
-                "test_id": LoadTestRunScenario.test_id + "app-component",
-                "test_run_id": LoadTestRunScenario.test_run_id
-                + "app-component-testrun",
-                "load_test_config_file": LoadTestRunScenario.load_test_config_file,
-                "test_plan": LoadTestRunScenario.test_plan,
-                "app_component_id": LoadTestRunScenario.app_component_id,
-                "app_component_name": "my-app-component",
-                "app_component_type": LoadTestRunScenario.app_component_type,
+                "load_test_resource": LoadTestRunConstants.LOAD_TEST_RESOURCE,
+                "resource_group": LoadTestRunConstants.RESOURCE_GROUP,
+                "test_id": LoadTestRunConstants.APP_COMPONENT_TEST_ID,
+                "test_run_id": LoadTestRunConstants.APP_COMPONENT_TEST_RUN_ID,
+                "load_test_config_file": LoadTestRunConstants.LOAD_TEST_CONFIG_FILE,
+                "test_plan": LoadTestRunConstants.TEST_PLAN,
+                "app_component_id": LoadTestRunConstants.APP_COMPONENT_ID,
+                "app_component_name": LoadTestRunConstants.APP_COMPONENT_NAME,
+                "app_component_type": LoadTestRunConstants.APP_COMPONENT_TYPE,
             }
         )
 
@@ -409,20 +459,19 @@ class LoadTestRunScenario(ScenarioTest):
     def testcase_load_test_run_server_metric(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadTestRunScenario.load_test_resource,
-                "resource_group": LoadTestRunScenario.resource_group,
-                "test_id": LoadTestRunScenario.test_id + "server-metric",
-                "test_run_id": LoadTestRunScenario.test_run_id
-                + "server-metric-testrun",
-                "load_test_config_file": LoadTestRunScenario.load_test_config_file,
-                "test_plan": LoadTestRunScenario.test_plan,
-                "metric_id": LoadTestRunScenario.server_metric_id,
-                "metric_name": LoadTestRunScenario.server_metric_name,
-                "metric_namespace": LoadTestRunScenario.server_metric_namespace,
-                "aggregation": LoadTestRunScenario.aggregation,
-                "app_component_id": LoadTestRunScenario.app_component_id,
-                "app_component_name": "my-app-component",
-                "app_component_type": LoadTestRunScenario.app_component_type,
+                "load_test_resource": LoadTestRunConstants.LOAD_TEST_RESOURCE,
+                "resource_group": LoadTestRunConstants.RESOURCE_GROUP,
+                "test_id": LoadTestRunConstants.SERVER_METRIC_TEST_ID,
+                "test_run_id": LoadTestRunConstants.SERVER_METRIC_TEST_RUN_ID,
+                "load_test_config_file": LoadTestRunConstants.LOAD_TEST_CONFIG_FILE,
+                "test_plan": LoadTestRunConstants.TEST_PLAN,
+                "server_metric_id": LoadTestRunConstants.SERVER_METRIC_ID,
+                "server_metric_name": LoadTestRunConstants.SERVER_METRIC_NAME,
+                "server_metric_namespace": LoadTestRunConstants.SERVER_METRIC_NAMESPACE,
+                "aggregation": LoadTestRunConstants.AGGREGATION,
+                "app_component_id": LoadTestRunConstants.APP_COMPONENT_ID,
+                "app_component_name": LoadTestRunConstants.APP_COMPONENT_NAME,
+                "app_component_type": LoadTestRunConstants.APP_COMPONENT_TYPE,
             }
         )
         try:
@@ -474,9 +523,9 @@ class LoadTestRunScenario(ScenarioTest):
                 "--test-run-id {test_run_id} "
                 "--load-test-resource {load_test_resource} "
                 "--resource-group {resource_group} "
-                "--metric-id '{metric_id}' "
-                "--metric-name {metric_name} "
-                "--metric-namespace {metric_namespace} "
+                "--metric-id '{server_metric_id}' "
+                "--metric-name {server_metric_name} "
+                "--metric-namespace {server_metric_namespace} "
                 "--aggregation {aggregation} "
                 "--app-component-type {app_component_type} "
                 "--app-component-id {app_component_id} ",
@@ -524,29 +573,24 @@ class LoadTestRunScenario(ScenarioTest):
                 )
             except:
                 pass
-
-    """ 
+    """
     def testcase_load_test_run_metrics(self):
         self.kwargs.update(
             {
-                "load_test_resource": LoadTestRunScenario.load_test_resource,
-                "resource_group": LoadTestRunScenario.resource_group,
-                "test_id": LoadTestRunScenario.test_id + "metrics",
-                "test_run_id": LoadTestRunScenario.test_run_id + "metrics-testrun",
-                "load_test_config_file": LoadTestRunScenario.load_test_config_file,
-                "test_plan": LoadTestRunScenario.test_plan,
-                "metric_name": LoadTestRunScenario.metric_name,
-                "metric_namespace": LoadTestRunScenario.metric_namespace,
-                "metric_dimension_value": LoadTestRunScenario.metric_dimension_value,
-                "metric_filters_all": LoadTestRunScenario.metric_filters_all,
-                "metric_filters_dimension_all": LoadTestRunScenario.metric_filters_value_all,
-                "metric_filters_dimension_specific": LoadTestRunScenario.metric_filters_value_specific,
-                "aggregation": LoadTestRunScenario.aggregation,
+                "load_test_resource": LoadTestRunConstants.LOAD_TEST_RESOURCE,
+                "resource_group": LoadTestRunConstants.RESOURCE_GROUP,
+                "test_id": LoadTestRunConstants.METRIC_TEST_ID,
+                "test_run_id": LoadTestRunConstants.METRIC_TEST_RUN_ID,
+                "load_test_config_file": LoadTestRunConstants.LOAD_TEST_CONFIG_FILE,
+                "test_plan": LoadTestRunConstants.TEST_PLAN,
+                "metric_name": LoadTestRunConstants.METRIC_NAME,
+                "metric_namespace": LoadTestRunConstants.METRIC_NAMESPACE,
+                "metric_dimension_value": LoadTestRunConstants.METRIC_DIMENSION_VALUE,
+                "metric_filters_all": LoadTestRunConstants.METRIC_FILTERS_ALL,
+                "metric_filters_dimension_all": LoadTestRunConstants.METRIC_FILTERS_VALUE_ALL,
+                "metric_filters_dimension_specific": LoadTestRunConstants.METRIC_FILTERS_VALUE_SPECIFIC,
             }
         )
-        checks = [
-            JMESPathCheck("testId", self.kwargs["test_id"]),
-        ]
 
         # Create a new load test
         create_test(
@@ -674,9 +718,4 @@ class LoadTestRunScenario(ScenarioTest):
             load_test_resource=self.kwargs["load_test_resource"],
             resource_group=self.kwargs["resource_group"],
         )
-
     """
-    
-    
-
-
