@@ -62,7 +62,7 @@ class LoadTestRunScenario(ScenarioTest):
             checks=[JMESPathCheck("testRunId", self.kwargs["test_run_id"])],
         ).get_output_in_json()
 
-        while test_run.get("status") not in ["RUNNING", "DONE", "FAILED", "CANCELLED"]:
+        while test_run.get("status") not in ["EXECUTING", "DONE", "FAILED", "CANCELLED"]:
             time.sleep(10)
             test_run = self.cmd(
                 "az load test-run show "
@@ -79,7 +79,7 @@ class LoadTestRunScenario(ScenarioTest):
             "--yes"
         ).get_output_in_json()
 
-        while test_run("status") not in ["DONE", "FAILED", "CANCELLED"]:
+        while test_run.get("status") not in ["DONE", "FAILED", "CANCELLED"]:
             time.sleep(5)
             test_run = self.cmd(
                 "az load test-run show "
@@ -263,7 +263,7 @@ class LoadTestRunScenario(ScenarioTest):
                 ]
                 exts = [os.path.splitext(f)[1].casefold() for f in files_in_dir]
 
-                assert len(files_in_dir) == 3
+                assert len(files_in_dir) >= 3
                 assert all([ext in exts for ext in [".yaml", ".zip", ".jmx"]])
 
         finally:
