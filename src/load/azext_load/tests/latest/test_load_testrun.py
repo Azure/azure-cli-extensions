@@ -261,10 +261,10 @@ class LoadTestRunScenario(ScenarioTest):
                     for f in os.listdir(temp_dir)
                     if os.path.isfile(os.path.join(temp_dir, f))
                 ]
-                assert len(files_in_dir) >= 2
                 exts = [os.path.splitext(f)[1].casefold() for f in files_in_dir]
-                assert "zip" in exts
-                assert "log" in exts
+
+                assert len(files_in_dir) == 3
+                assert all([ext in exts for ext in [".yaml", ".zip", ".jmx"]])
 
         finally:
             delete_test(self)
@@ -445,6 +445,7 @@ class LoadTestRunScenario(ScenarioTest):
                 "test_plan": LoadTestRunConstants.TEST_PLAN,
                 "metric_name": LoadTestRunConstants.METRIC_NAME,
                 "metric_namespace": LoadTestRunConstants.METRIC_NAMESPACE,
+                "metric_dimension_name": LoadTestRunConstants.METRIC_DIMENSION_NAME,
                 "metric_dimension_value": LoadTestRunConstants.METRIC_DIMENSION_VALUE,
                 "metric_filters_all": LoadTestRunConstants.METRIC_FILTERS_ALL,
                 "metric_filters_dimension_all": LoadTestRunConstants.METRIC_FILTERS_VALUE_ALL,
@@ -537,7 +538,7 @@ class LoadTestRunScenario(ScenarioTest):
             "--resource-group {resource_group} "
             "--metric-namespace {metric_namespace} "
             "--metric-name {metric_name} "
-            "--dimension-filters {metric_filters_dimension_specific} ",
+            '--dimension-filters "{metric_filters_dimension_specific}" ',
         ).get_output_in_json()
 
         assert len(metrics_with_filters_dimension_specific) > 0
