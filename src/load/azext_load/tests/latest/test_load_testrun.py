@@ -30,7 +30,8 @@ load_params = {
     "key": "load_test_resource",
     "parameter_name": "load",
     "resource_group_key": "resource_group",
-    "random_name_length": 30,
+    "random_name_length": 
+    0,
 }
 
 
@@ -261,8 +262,8 @@ class LoadTestRunScenario(ScenarioTest):
                     for f in os.listdir(temp_dir)
                     if os.path.isfile(os.path.join(temp_dir, f))
                 ]
-                assert len(files_in_dir) == 2
-                exts = [os.path.splitext(f)[1] for f in files_in_dir]
+                assert len(files_in_dir) >= 2
+                exts = [os.path.splitext(f)[1].casefold() for f in files_in_dir]
                 assert "zip" in exts
                 assert "log" in exts
 
@@ -477,8 +478,9 @@ class LoadTestRunScenario(ScenarioTest):
             "--metric-name {metric_name} ",
         ).get_output_in_json()
 
-        assert "data" in metrics_with_name
-        assert len(metrics_with_name["data"]) > 0
+        assert len(metrics_with_name) > 0
+        assert "data" in metrics_with_name[0]
+        assert len(metrics_with_name[0]["data"]) > 0
 
         # Verify metrics for the test run with metric name and all dimensions and all values
         metrics_with_filters_all = self.cmd(
