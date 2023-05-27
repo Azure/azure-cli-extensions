@@ -30,8 +30,7 @@ load_params = {
     "key": "load_test_resource",
     "parameter_name": "load",
     "resource_group_key": "resource_group",
-    "random_name_length": 
-    0,
+    "random_name_length": 30,
 }
 
 
