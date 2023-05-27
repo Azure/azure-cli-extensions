@@ -164,7 +164,7 @@ def update_test(
         logger.debug(msg)
         raise InvalidArgumentValueError(msg)
     logger.debug("Retrieved test with test ID: %s and body : %s", test_id, body)
-    
+
     yaml, yaml_test_body = None, None
     if load_test_config_file is not None:
         yaml = load_yaml(load_test_config_file)

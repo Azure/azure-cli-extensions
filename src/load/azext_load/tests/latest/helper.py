@@ -12,6 +12,7 @@ def create_test(
     load_test_config_file=None,
     test_plan=None,
     is_long=False,
+    wait=False,
 ):
     if not load_test_resource:
         load_test_resource = ScenarioTest.kwargs["load_test_resource"]
@@ -38,6 +39,9 @@ def create_test(
     if test_plan:
         template += f' --test-plan "{test_plan}"'
 
+    if wait:
+        template += " --wait"
+
     ScenarioTest.cmd(
         template, checks=[JMESPathCheck("testId", ScenarioTest.kwargs["test_id"])]
     )
@@ -57,7 +61,6 @@ def create_test_run(
     resource_group=None,
     test_id=None,
     test_run_id=None,
-    test_run_config_file=None,
 ):
     if not load_test_resource:
         load_test_resource = ScenarioTest.kwargs["load_test_resource"]
@@ -67,8 +70,6 @@ def create_test_run(
         test_id = ScenarioTest.kwargs["test_id"]
     if not test_run_id:
         test_run_id = ScenarioTest.kwargs["test_run_id"]
-    if not test_run_config_file:
-        test_run_config_file = ScenarioTest.kwargs["test_run_config_file"]
 
     test_run = ScenarioTest.cmd(
         "az load test-run create "

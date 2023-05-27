@@ -118,7 +118,7 @@ class LoadTestScenario(ScenarioTest):
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
-    def testcase_load_test_delete(self, rg, load):
+    def test_load_test_delete(self, rg, load):
         self.kwargs.update(
             {
                 "test_id": LoadTestConstants.DELETE_TEST_ID,
