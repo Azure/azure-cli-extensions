@@ -24,14 +24,15 @@ from azure.cli.core.util import handle_exception
 
 # pylint: disable=import-error
 import jmespath
-from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from prompt_toolkit.application import Application
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory, ThreadedAutoSuggest
 from prompt_toolkit.buffer import Buffer
+from prompt_toolkit.completion import ThreadedCompleter
 from prompt_toolkit.document import Document
 from prompt_toolkit.enums import DEFAULT_BUFFER
 from prompt_toolkit.filters import Always
 from prompt_toolkit.history import FileHistory
-from prompt_toolkit.interface import Application, CommandLineInterface
-from prompt_toolkit.shortcuts import create_eventloop
+from prompt_toolkit.output import ColorDepth
 # pylint: enable=import-error
 
 from . import VERSION
@@ -104,7 +105,8 @@ class AzInteractiveShell(object):
             os.environ[_ENV_ADDITIONAL_USER_AGENT] = 'AZURECLISHELL/' + VERSION
 
         # OH WHAT FUN TO FIGURE OUT WHAT THESE ARE!
-        self._cli = None
+        self._application = None
+        self._buffers = None
         self.layout = None
         self.description_docs = u''
         self.param_docs = u''
@@ -149,11 +151,18 @@ class AzInteractiveShell(object):
         self.cli_ctx.data["az_interactive_active"] = False
 
     @property
-    def cli(self):
-        """ Makes the interface or refreshes it """
-        if self._cli is None:
-            self._cli = self.create_interface()
-        return self._cli
+    def application(self):
+        """ Makes the application and buffers or refreshes it """
+        if self._application is None:
+            self._application, self._buffers = self.create_application()
+        return self._application
+
+    @property
+    def buffers(self):
+        """ Makes the application and buffers or refreshes it """
+        if self._buffers is None:
+            self._application, self._buffers = self.create_application()
+        return self._buffers
 
     def handle_cd(self, cmd):
         """changes dir """
@@ -166,11 +175,11 @@ class AzInteractiveShell(object):
         except OSError as ex:
             print("cd: %s\n" % ex, file=self.output)
 
-    def on_input_timeout(self, cli):
+    def on_input_timeout(self, app):
         """
         brings up the metadata for the command if there is a valid command already typed
         """
-        document = cli.current_buffer.document
+        document = app.current_buffer.document
         text = document.text
 
         text = text.replace('az ', '')
@@ -184,17 +193,17 @@ class AzInteractiveShell(object):
 
         self._update_default_info()
 
-        cli.buffers['description'].reset(
-            initial_document=Document(self.description_docs, cursor_position=0))
-        cli.buffers['parameter'].reset(
-            initial_document=Document(self.param_docs))
-        cli.buffers['examples'].reset(
-            initial_document=Document(self.example_docs))
-        cli.buffers['default_values'].reset(
-            initial_document=Document(
+        self.buffers['description'].reset(
+            document=Document(self.description_docs, cursor_position=0))
+        self.buffers['parameter'].reset(
+            document=Document(self.param_docs))
+        self.buffers['examples'].reset(
+            document=Document(self.example_docs))
+        self.buffers['default_values'].reset(
+            document=Document(
                 u'{}'.format(self.config_default if self.config_default else 'No Default Values')))
         self._update_toolbar()
-        cli.request_redraw()
+        app.invalidate()
 
     def restart_completer(self):
         command_info = GatherCommands(self.config)
@@ -203,7 +212,8 @@ class AzInteractiveShell(object):
         self.completer.initialize_command_table_attributes()
         if not self.lexer:
             self.lexer = get_az_lexer(command_info)
-        self._cli = None
+        self._application = None
+        self._buffers = None
 
     def _space_examples(self, list_examples, rows, section_value):
         """ makes the example text """
@@ -237,7 +247,6 @@ class AzInteractiveShell(object):
         return example + page_number + ' CTRL+Y (^) CTRL+N (v)'
 
     def _update_toolbar(self):
-        cli = self.cli
         _, cols = get_window_dim()
         cols = int(cols)
 
@@ -257,8 +266,8 @@ class AzInteractiveShell(object):
             toolbar = self._toolbar_info()
 
         toolbar, empty_space = space_toolbar(toolbar, empty_space)
-        cli.buffers['bottom_toolbar'].reset(
-            initial_document=Document(u'{}{}{}'.format(NOTIFICATIONS, toolbar, empty_space)))
+        self.buffers['bottom_toolbar'].reset(
+            document=Document(u'{}{}{}'.format(NOTIFICATIONS, toolbar, empty_space)))
 
     def _toolbar_info(self):
         sub_name = ""
@@ -337,56 +346,49 @@ class AzInteractiveShell(object):
 
     def create_application(self, full_layout=True):
         """ makes the application object and the buffers """
-        layout_manager = LayoutManager(self)
+        writing_buffer = Buffer(
+            history=self.history,
+            auto_suggest=ThreadedAutoSuggest(AutoSuggestFromHistory()),
+            enable_history_search=True,
+            completer=ThreadedCompleter(self.completer),
+            complete_while_typing=Always()
+        )
+
+        buffers = {
+            DEFAULT_BUFFER: writing_buffer,
+            'description': Buffer(multiline=True, read_only=True),
+            'parameter': Buffer(multiline=True, read_only=True),
+            'examples': Buffer(multiline=True, read_only=True),
+            'bottom_toolbar': Buffer(multiline=True),
+            'example_line': Buffer(multiline=True),
+            'default_values': Buffer(),
+            'symbols': Buffer(),
+            'progress': Buffer(multiline=False)
+        }
+
+        layout_manager = LayoutManager(self, buffers)
         if full_layout:
             layout = layout_manager.create_layout(ExampleLexer, ToolbarLexer)
         else:
             layout = layout_manager.create_tutorial_layout()
 
-        buffers = {
-            DEFAULT_BUFFER: Buffer(is_multiline=True),
-            'description': Buffer(is_multiline=True, read_only=True),
-            'parameter': Buffer(is_multiline=True, read_only=True),
-            'examples': Buffer(is_multiline=True, read_only=True),
-            'bottom_toolbar': Buffer(is_multiline=True),
-            'example_line': Buffer(is_multiline=True),
-            'default_values': Buffer(),
-            'symbols': Buffer(),
-            'progress': Buffer(is_multiline=False)
-        }
-
-        writing_buffer = Buffer(
-            history=self.history,
-            auto_suggest=AutoSuggestFromHistory(),
-            enable_history_search=True,
-            completer=self.completer,
-            complete_while_typing=Always()
-        )
-
         return Application(
+            color_depth=ColorDepth.DEPTH_8_BIT,
             mouse_support=False,
             style=self.style,
-            buffer=writing_buffer,
-            on_input_timeout=self.on_input_timeout,
-            key_bindings_registry=InteractiveKeyBindings(self).registry,
+            before_render=self.on_input_timeout,
+            key_bindings=InteractiveKeyBindings(self).kb,
             layout=layout,
-            buffers=buffers,
-        )
-
-    def create_interface(self):
-        """ instantiates the interface """
-        return CommandLineInterface(
-            application=self.create_application(),
-            eventloop=create_eventloop())
+        ), buffers
 
     def set_prompt(self, prompt_command="", position=0):
         """ writes the prompt line """
         self.description_docs = u'{}'.format(prompt_command)
-        self.cli.current_buffer.reset(
-            initial_document=Document(
+        self.buffers[DEFAULT_BUFFER].reset(
+            document=Document(
                 self.description_docs,
                 cursor_position=position))
-        self.cli.request_redraw()
+        self.application.invalidate()
 
     def set_scope(self, value):
         """ narrows the scopes the commands """
@@ -437,23 +439,21 @@ class AzInteractiveShell(object):
         if start_index:
             start_index = start_index + 1
             cmd = ' '.join(text.split()[:start_index])
-            example_cli = CommandLineInterface(
-                application=self.create_application(
-                    full_layout=False),
-                eventloop=create_eventloop())
-            example_cli.buffers['example_line'].reset(
-                initial_document=Document(u'{}\n'.format(
+            application, buffers = self.create_application(
+                    full_layout=False)
+            buffers['example_line'].reset(
+                document=Document(u'{}\n'.format(
                     add_new_lines(example)))
             )
             while start_index < len(text.split()):
                 if self.default_command:
                     cmd = cmd.replace(self.default_command + ' ', '')
-                example_cli.buffers[DEFAULT_BUFFER].reset(
-                    initial_document=Document(
+                buffers[DEFAULT_BUFFER].reset(
+                    document=Document(
                         u'{}'.format(cmd),
                         cursor_position=len(cmd)))
-                example_cli.request_redraw()
-                answer = example_cli.run()
+                application.invalidate()
+                answer = application.run()
                 if not answer:
                     return "", True
                 answer = answer.text
@@ -464,8 +464,8 @@ class AzInteractiveShell(object):
                         start_index += 1
                         cmd += " " + answer.split()[-1] + " " +\
                                u' '.join(text.split()[start_index:start_index + 1])
-            example_cli.exit()
-            del example_cli
+            application.exit()
+            del application
         else:
             cmd = text
 
@@ -620,7 +620,7 @@ class AzInteractiveShell(object):
         history_file_path = os.path.join(self.config.get_config_dir(), self.config.get_history())
         os.remove(history_file_path)
         self.history = FileHistory(history_file_path)
-        self.cli.buffers[DEFAULT_BUFFER].history = self.history
+        self.buffers[DEFAULT_BUFFER].history = self.history
 
     def cli_execute(self, cmd):
         """ sends the command to the CLI to be executed """
@@ -693,15 +693,15 @@ class AzInteractiveShell(object):
         self.command_table_thread.start()
 
         from .configuration import SHELL_HELP
-        self.cli.buffers['symbols'].reset(
-            initial_document=Document(u'{}'.format(SHELL_HELP)))
+        self.buffers['symbols'].reset(
+            document=Document(u'{}'.format(SHELL_HELP)))
         # flush telemetry for new commands and send successful interactive mode entry event
         telemetry.set_success()
         telemetry.flush()
         while True:
             try:
-                document = self.cli.run(reset_current_buffer=True)
-                text = document.text
+                current_buffer = self.application.run()
+                text = current_buffer.document.text
                 if not text:
                     # not input
                     self.set_prompt()
@@ -714,10 +714,11 @@ class AzInteractiveShell(object):
                 break
             except (KeyboardInterrupt, ValueError):
                 # CTRL C
+                print('receive key interrupt')
                 self.set_prompt()
                 continue
             else:
-                self.history.append(text)
+                self.history.append_string(text)
                 b_flag, c_flag, outside, cmd = self._special_cases(cmd, outside)
 
                 if b_flag:

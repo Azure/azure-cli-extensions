@@ -4,34 +4,34 @@
 # --------------------------------------------------------------------------------------------
 import platform
 
-from pygments.token import Token  # pylint: disable=import-error
-from prompt_toolkit.styles import style_from_dict  # pylint: disable=import-error
+from prompt_toolkit.styles import Style
+from prompt_toolkit.styles.pygments import style_from_pygments_dict  # pylint: disable=import-error
 
 
 def color_mapping(curr_completion, completion, prompt, command, subcommand,
                   param, text, line, example, toolbar):
 
-    return style_from_dict({
+    return Style.from_dict({
         # Completion colors
-        Token.Menu.Completions.Completion.Current: curr_completion,
-        Token.Menu.Completions.Completion: completion,
-        Token.Menu.Completions.ProgressButton: 'bg:#b78991',
-        Token.Menu.Completions.ProgressBar: 'bg:#ffc0cb',
+        'pygments.menu.completions.completion.current': curr_completion,
+        'pygments.menu.completions.completion': completion,
+        'pygments.menu.completions.progress_button': 'bg:#b78991',
+        'pygments.menu.completions.progress_bar': 'bg:#ffc0cb',
 
-        Token.Az: prompt,
-        Token.Prompt.Arg: prompt,
+        'pygments.az': prompt,
+        'pygments.prompt.arg': prompt,
 
         # Pretty Words
-        Token.Keyword: command,
-        Token.Keyword.Declaration: subcommand,
-        Token.Name.Class: param,
-        Token.Text: text,
+        'pygments.keyword': command,
+        'pygments.keyword.declaration': subcommand,
+        'pygments.name.class': param,
+        'pygments.text': text,
 
-        Token.Line: line,
-        Token.Number: example,
+        'pygments.line': line,
+        'pygments.number': example,
         # toolbar
-        Token.Operator: toolbar,
-        Token.Toolbar: toolbar
+        'pygments.operator': toolbar,
+        'pygments.toolbar': toolbar
     })
 
 

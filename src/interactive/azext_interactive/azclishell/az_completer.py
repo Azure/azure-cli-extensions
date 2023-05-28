@@ -41,7 +41,7 @@ def sort_completions(completions_gen):
     def _get_weight(val):
         """ weights the completions with required things first the lexicographically"""
         priority = ''
-        if val.display_meta and val.display_meta.startswith(REQUIRED_TAG):
+        if val.display_meta and val.display_meta[0][1].startswith(REQUIRED_TAG):
             priority = ' '  # a space has the lowest ordinance
         return priority + val.text
 
