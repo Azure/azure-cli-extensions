@@ -19,7 +19,7 @@ def load_test_run_commands(self, _):
         g.custom_command("update", "update_test_run")
         g.custom_command("delete", "delete_test_run", confirmation=True)
         g.custom_command("list", "list_test_runs")
-        g.custom_command("show", "get_test_run")
+        g.custom_show_command("show", "get_test_run")
         g.custom_command(
             "download-files",
             "download_test_run_files",

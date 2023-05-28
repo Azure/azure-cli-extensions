@@ -12,7 +12,6 @@ from azext_load._help import helps  # pylint: disable=unused-import
 class LoadCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
-        from azure.cli.core.commands import CliCommandType
         super().__init__(cli_ctx=cli_ctx)
 
     def load_command_table(self, args):
@@ -37,7 +36,7 @@ class LoadCommandsLoader(AzCommandsLoader):
 
     def load_arguments(self, command):
         from azext_load._params import load_arguments
-        from azext_load.data_plane.params import load_arguments as load_common_arguments 
+        from azext_load.data_plane.params import load_arguments as load_common_arguments
         from azext_load.data_plane.load_test.params import load_arguments as load_test_arguments
         from azext_load.data_plane.load_test_run.params import load_arguments as load_test_run_arguments
 
@@ -45,6 +44,5 @@ class LoadCommandsLoader(AzCommandsLoader):
         load_common_arguments(self, command)
         load_test_arguments(self, command)
         load_test_run_arguments(self, command)
-
 
 COMMAND_LOADER_CLS = LoadCommandsLoader

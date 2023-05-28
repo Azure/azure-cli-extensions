@@ -10,7 +10,6 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    from azure.cli.core.commands import CliCommandType
     from .operations.create import LoadTestCreate
     self.command_table['load create'] = LoadTestCreate(loader=self)
 

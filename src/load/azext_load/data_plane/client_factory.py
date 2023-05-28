@@ -9,7 +9,6 @@ from azext_load.data_plane.utils.utils import get_login_credentials
 def admin_data_plane_client(cli_ctx, subscription=None, endpoint=None, credential=None):
     """Initialize Azure Load Testing data Administration client for use with CLI."""
     from azext_load.vendored_sdks.loadtesting import LoadTestAdministrationClient
-    from azure.cli.core._profile import Profile
     from azure.core.pipeline.policies import UserAgentPolicy
 
     if credential is None:
@@ -26,7 +25,6 @@ def testrun_data_plane_client(
 ):
     """Initialize Azure Load Testing data Test Run client for use with CLI."""
     from azext_load.vendored_sdks.loadtesting import LoadTestRunClient
-    from azure.cli.core._profile import Profile
     from azure.core.pipeline.policies import UserAgentPolicy
 
     if credential is None:

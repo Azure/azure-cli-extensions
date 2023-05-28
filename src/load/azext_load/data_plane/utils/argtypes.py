@@ -111,7 +111,7 @@ engine_instances = CLIArgumentType(
 )
 
 key_vault_reference_identity = CLIArgumentType(
-    options_list=["--key-vault-reference-identity"],
+    options_list=["--keyvault-id"],
     type=str,
     help="The identity that will be used to access the key vault.",
 )

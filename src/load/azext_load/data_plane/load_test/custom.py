@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=too-many-locals
+
 import os
 
 from azext_load.data_plane.utils.utils import (
@@ -95,7 +97,7 @@ def create_test(
             )
 
     if yaml and yaml.get("configurationFiles") is not None:
-        for config_file in yaml["configurationFiles"]:
+        for config_file in yaml.get("configurationFiles"):
             file_name = os.path.basename(config_file)
             upload_file_to_test(
                 client,
@@ -113,7 +115,7 @@ def create_test(
 
     if test_plan is None and yaml is not None and yaml.get("testPlan"):
         test_plan = yaml.get("testPlan")
-        if not os.path.isabs(test_plan):
+        if not os.path.isabs(test_plan) and load_test_config_file:
             yaml_dir = os.path.dirname(load_test_config_file)
             test_plan = os.path.join(yaml_dir, test_plan)
     if test_plan:
@@ -159,10 +161,10 @@ def update_test(
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     try:
         body = client.get_test(test_id)
-    except ResourceNotFoundError:
+    except ResourceNotFoundError as e:
         msg = f"Test with given test ID : {test_id} does not exist."
         logger.debug(msg)
-        raise InvalidArgumentValueError(msg)
+        raise InvalidArgumentValueError(msg) from e
     logger.debug("Retrieved test with test ID: %s and body : %s", test_id, body)
 
     yaml, yaml_test_body = None, None
@@ -192,7 +194,7 @@ def update_test(
 
     files = client.list_test_files(test_id)
     if yaml and yaml.get("userProperty") is not None:
-        file_name = os.path.basename(yaml["userProperty"])
+        file_name = os.path.basename(yaml.get("userProperty"))
         for file in files:
             if AllowedFileTypes.USER_PROPERTIES.value == file["fileType"]:
                 client.delete_test_file(test_id, file["fileName"])
@@ -205,7 +207,7 @@ def update_test(
         file_response = upload_file_to_test(
             client,
             test_id,
-            yaml["userProperty"],
+            yaml.get("userProperty"),
             file_type=AllowedFileTypes.USER_PROPERTIES,
             wait=wait,
         )
@@ -217,7 +219,7 @@ def update_test(
         )
 
     if yaml and yaml.get("configurationFiles") is not None:
-        for config_file in yaml["configurationFiles"]:
+        for config_file in yaml.get("configurationFiles"):
             file_name = os.path.basename(config_file)
             if file_name in [file["fileName"] for file in files]:
                 client.delete_test_file(test_id, file_name)
@@ -240,8 +242,12 @@ def update_test(
                 test_id,
             )
 
-    if yaml and yaml.get("testPlan") is not None or test_plan is not None:
-        test_plan = test_plan if test_plan is not None else yaml["testPlan"]
+    if test_plan is None and yaml is not None and yaml.get("testPlan"):
+        test_plan = yaml.get("testPlan")
+        if not os.path.isabs(test_plan) and load_test_config_file:
+            yaml_dir = os.path.dirname(load_test_config_file)
+            test_plan = os.path.join(yaml_dir, test_plan)
+    if test_plan:
         file_name = os.path.basename(test_plan)
         for file in files:
             if AllowedFileTypes.JMX_FILE.value == file["fileType"]:
@@ -259,7 +265,6 @@ def update_test(
             raise FileOperationError(
                 f"Test plan file {test_plan} is not valid. Please check the file and try again."
             )
-
     return response
 
 
@@ -285,7 +290,8 @@ def get_test(
 
 
 def download_test_files(
-    cmd, load_test_resource, test_id, path, resource_group_name=None, force=False
+    cmd, load_test_resource, test_id, path, resource_group_name=None,
+    force=False, #pylint: disable=unused-argument
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.debug("Downloading test files with test ID: %s", test_id)
@@ -454,7 +460,7 @@ def download_test_file(
     file_name,
     path,
     resource_group_name=None,
-    force=False,
+    force=False, #pylint: disable=unused-argument
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.debug("Downloading file for the test")

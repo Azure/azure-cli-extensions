@@ -3,6 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=too-many-lines
+# pylint: disable=too-many-statements
+
 from azext_load.data_plane.utils import argtypes
 
 
@@ -56,12 +59,15 @@ def load_arguments(self, _):
         c.argument("file_type", argtypes.file_type)
         c.argument("wait", argtypes.wait)
 
+    with self.argument_context("load test file delete") as c:
+        c.argument("file_name", argtypes.file_name)
+
     # Load Test App Components
     with self.argument_context("load test app-component") as c:
         c.argument("app_component_id", argtypes.app_component_id)
 
-    with self.argument_context("load test app-components create") as c:
-        c.argument("app_component_id", argtypes.app_component_id)
+    with self.argument_context("load test app-component add") as c:
+        c.argument("app_component_kind", argtypes.app_component_kind)
         c.argument("app_component_name", argtypes.app_component_name)
         c.argument("app_component_type", argtypes.app_component_type)
 

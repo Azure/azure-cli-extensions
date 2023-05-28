@@ -4,11 +4,11 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-
-import requests
-from azext_load.data_plane.utils.utils import (create_or_update_test_run_body,
-                                               download_file,
-                                               get_testrun_data_plane_client)
+from azext_load.data_plane.utils.utils import (
+    create_or_update_test_run_body,
+    download_file,
+    get_testrun_data_plane_client,
+)
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
@@ -22,7 +22,7 @@ def create_test_run(
     test_run_id,
     test_id,
     display_name=None,
-    existing_test_id=None,
+    existing_test_run_id=None,
     description=None,
     env=None,
     secrets=None,
@@ -43,7 +43,7 @@ def create_test_run(
     poller = client.begin_test_run(
         test_run_id=test_run_id,
         body=test_run_body,
-        old_test_run_id=existing_test_id,
+        old_test_run_id=existing_test_run_id,
     )
     response = poller.polling_method().resource()
     if wait:
@@ -68,14 +68,15 @@ def update_test_run(
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     try:
         test_run_body = client.get_test_run(test_run_id=test_run_id)
-    except ResourceNotFoundError:
+    except ResourceNotFoundError as e:
         msg = f"Test run with given test run ID : {test_run_id} does not exist."
         logger.debug(msg)
-        raise InvalidArgumentValueError(msg)
+        raise InvalidArgumentValueError(msg) from e
     test_run_body = create_or_update_test_run_body(
         test_run_body.get("testId"), description=description
     )
     logger.info("Updating test run %s", test_run_id)
+    # pylint: disable-next=protected-access
     return client._test_run_initial(test_run_id=test_run_id, body=test_run_body)
 
 
@@ -106,7 +107,7 @@ def download_test_run_files(
     test_run_log=False,
     test_run_results=False,
     resource_group_name=None,
-    force=False,
+    force=False, #pylint: disable=unused-argument
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     test_run_data = client.get_test_run(test_run_id=test_run_id)
@@ -117,10 +118,16 @@ def download_test_run_files(
         logger.info("Downloading input artifacts for test run %s", test_run_id)
         if test_run_data.get("testArtifacts", {}).get("inputArtifacts") is not None:
             input_artifacts = test_run_data.get("testArtifacts", {}).get(
-                "inputArtifacts"
+                "inputArtifacts", {}
             )
-            for artifact_type, artifact_data in input_artifacts.items():
-                if len(artifact_data) > 0 and artifact_data.get("url") is not None:
+            files_to_download = []
+            for item in input_artifacts.values():
+                if isinstance(item, list):
+                    files_to_download.extend(item)
+                else:
+                    files_to_download.append(item)
+            for artifact_data in files_to_download:
+                if artifact_data.get("url") is not None:
                     url = artifact_data.get("url")
                     file_name = artifact_data.get("fileName")
                     file_path = os.path.join(path, file_name)
@@ -342,10 +349,7 @@ def list_test_run_metrics(
         if end_time is None:
             end_time = test_run_response["endDateTime"]
 
-    time_interval = "{start}/{end}".format(
-        start=start_time,
-        end=end_time,
-    )
+    time_interval = f"{start_time}/{end_time}"
 
     if metric_name is not None:
         if dimension_filters is None:
@@ -377,9 +381,7 @@ def list_test_run_metrics(
                     interval=interval,
                     time_interval=time_interval,
                 )
-                dimension_filter["values"] = [
-                    dimension for dimension in metric_dimensions
-                ]
+                dimension_filter["values"] = list(metric_dimensions)
 
         metrics = client.list_metrics(
             test_run_id,
@@ -392,7 +394,7 @@ def list_test_run_metrics(
                 "filters": dimension_filters,
             },
         )
-        response = [metric for metric in metrics]
+        response = list(metrics)
         return response
 
     # metric_name is None, so list metrics for all metric names
@@ -412,7 +414,7 @@ def list_test_run_metrics(
             aggregation=aggregation,
             interval=interval,
         )
-        response = [metric for metric in metrics]
+        response = list(metrics)
         aggregated_metrics[metric_name] = response
     return aggregated_metrics
 
@@ -462,12 +464,9 @@ def get_test_run_metric_dimensions(
         dimension_name,
         metric_name=metric_name,
         metric_namespace=metric_namespace,
-        time_interval="{start}/{end}".format(
-            start=start_time,
-            end=end_time,
-        ),
+        time_interval=f"{start_time}/{end_time}",
         interval=interval,
     )
 
-    response = [dimension for dimension in dimensions]
+    response = list(dimensions)
     return response

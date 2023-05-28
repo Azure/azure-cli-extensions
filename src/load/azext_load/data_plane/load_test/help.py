@@ -107,75 +107,31 @@ long-summary: Remove the given server-metrics from the test.
 helps[
     "load test file delete"
 ] = """
-type: group
+type: command
 short-summary: Delete file of a test.
 long-summary: Delete a file of test by providing the file name and test id.
-parameters:
-    - name: --load-test-resource, --name, -n
-      type: string
-      short-summary: 'Name or ARM resource ID of the load test resource'
-      long-summary: |
-          Name or ARM resource ID of the load test resource
-    - name: --resource-group, -g
-      type: string
-      short-summary: 'Name of the resource group'
-      long-summary: |
-          Name of the resource group
 """
 
 helps[
     "load test file download"
 ] = """
-type: group
+type: command
 short-summary: Download file of a test.
 long-summary: Download a file of test by providing the file name, test id and path where to download to path.
-parameters:
-    - name: --load-test-resource, --name, -n
-      type: string
-      short-summary: 'Name or ARM resource ID of the load test resource'
-      long-summary: |
-          Name or ARM resource ID of the load test resource
-    - name: --resource-group, -g
-      type: string
-      short-summary: 'Name of the resource group'
-      long-summary: |
-          Name of the resource group
 """
 
 helps[
     "load test file list"
 ] = """
-type: group
+type: command
 short-summary: List details of files related to a test.
 long-summary: List details of all the files related to a test by providing the corresponding test id.
-parameters:
-    - name: --load-test-resource, --name, -n
-      type: string
-      short-summary: 'Name or ARM resource ID of the load test resource'
-      long-summary: |
-          Name or ARM resource ID of the load test resource
-    - name: --resource-group, -g
-      type: string
-      short-summary: 'Name of the resource group'
-      long-summary: |
-          Name of the resource group
 """
 
 helps[
     "load test file upload"
 ] = """
-type: group
+type: command
 short-summary: Upload file to a test.
 long-summary: Upload a file to a test by providing path to file and test id.
-parameters:
-    - name: --load-test-resource, --name, -n
-      type: string
-      short-summary: 'Name or ARM resource ID of the load test resource'
-      long-summary: |
-          Name or ARM resource ID of the load test resource
-    - name: --resource-group, -g
-      type: string
-      short-summary: 'Name of the resource group'
-      long-summary: |
-          Name of the resource group
 """
