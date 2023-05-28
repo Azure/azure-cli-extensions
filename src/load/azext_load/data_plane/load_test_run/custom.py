@@ -107,7 +107,7 @@ def download_test_run_files(
     test_run_log=False,
     test_run_results=False,
     resource_group_name=None,
-    force=False, #pylint: disable=unused-argument
+    force=False,  # pylint: disable=unused-argument
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     test_run_data = client.get_test_run(test_run_id=test_run_id)

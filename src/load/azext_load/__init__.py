@@ -45,4 +45,5 @@ class LoadCommandsLoader(AzCommandsLoader):
         load_test_arguments(self, command)
         load_test_run_arguments(self, command)
 
+
 COMMAND_LOADER_CLS = LoadCommandsLoader

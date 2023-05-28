@@ -290,8 +290,12 @@ def get_test(
 
 
 def download_test_files(
-    cmd, load_test_resource, test_id, path, resource_group_name=None,
-    force=False, #pylint: disable=unused-argument
+    cmd,
+    load_test_resource,
+    test_id,
+    path,
+    resource_group_name=None,
+    force=False,  # pylint: disable=unused-argument
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.debug("Downloading test files with test ID: %s", test_id)
@@ -460,7 +464,7 @@ def download_test_file(
     file_name,
     path,
     resource_group_name=None,
-    force=False, #pylint: disable=unused-argument
+    force=False,  # pylint: disable=unused-argument
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.debug("Downloading file for the test")
