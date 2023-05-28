@@ -283,7 +283,7 @@ class LoadTestRunScenario(ScenarioTest):
                 "test_run_id": LoadTestRunConstants.APP_COMPONENT_TEST_RUN_ID,
                 "load_test_config_file": LoadTestRunConstants.LOAD_TEST_CONFIG_FILE,
                 "test_plan": LoadTestRunConstants.TEST_PLAN,
-                "app_component_id": LoadTestRunConstants.APP_COMPONENT_ID,
+                "app_component_id": LoadTestRunConstants.APP_COMPONENT_ID.format(subscription_id=self.kwargs["subscription_id"]),
                 "app_component_name": LoadTestRunConstants.APP_COMPONENT_NAME,
                 "app_component_type": LoadTestRunConstants.APP_COMPONENT_TYPE,
             }
@@ -350,11 +350,11 @@ class LoadTestRunScenario(ScenarioTest):
                 "test_run_id": LoadTestRunConstants.SERVER_METRIC_TEST_RUN_ID,
                 "load_test_config_file": LoadTestRunConstants.LOAD_TEST_CONFIG_FILE,
                 "test_plan": LoadTestRunConstants.TEST_PLAN,
-                "server_metric_id": LoadTestRunConstants.SERVER_METRIC_ID,
+                "server_metric_id": LoadTestRunConstants.SERVER_METRIC_ID.format(subscription_id=self.kwargs["subscription_id"]),
                 "server_metric_name": LoadTestRunConstants.SERVER_METRIC_NAME,
                 "server_metric_namespace": LoadTestRunConstants.SERVER_METRIC_NAMESPACE,
                 "aggregation": LoadTestRunConstants.AGGREGATION,
-                "app_component_id": LoadTestRunConstants.APP_COMPONENT_ID,
+                "app_component_id": LoadTestRunConstants.APP_COMPONENT_ID.format(subscription_id=self.kwargs["subscription_id"]),
                 "app_component_name": LoadTestRunConstants.APP_COMPONENT_NAME,
                 "app_component_type": LoadTestRunConstants.APP_COMPONENT_TYPE,
             }

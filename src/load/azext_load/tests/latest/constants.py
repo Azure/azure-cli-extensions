@@ -20,12 +20,12 @@ class LoadConstants:
     ENV_VAR_DURATION_LONG = "60"
 
     # App Component constants
-    APP_COMPONENT_ID = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss"
+    APP_COMPONENT_ID = r"/subscriptions/{subscription_id}/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss"
     APP_COMPONENT_TYPE = r"Microsoft.Compute/virtualMachineScaleSets"
     APP_COMPONENT_NAME = r"temp-vmss"
 
     # Server Metric constants
-    SERVER_METRIC_ID = r"/subscriptions/7c71b563-0dc0-4bc0-bcf6-06f8f0516c7a/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss/providers/microsoft.insights/metricdefinitions/Percentage CPU"
+    SERVER_METRIC_ID = r"/subscriptions/{subscription_id}/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss/providers/microsoft.insights/metricdefinitions/Percentage CPU"
     SERVER_METRIC_NAME = r"Percentage CPU"
     SERVER_METRIC_NAMESPACE = r"microsoft.compute/virtualmachinescalesets"
     AGGREGATION = "Average"
