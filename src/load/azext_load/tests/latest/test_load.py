@@ -7,7 +7,6 @@
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, KeyVaultPreparer, JMESPathCheck
 
-'''
 class LoadScenario(ScenarioTest):
     location = 'westus2'
     identity_name1 = 'clitestid1'
@@ -197,5 +196,4 @@ class LoadScenario(ScenarioTest):
         
         self.cmd('az load delete --name {resource_name_cmk} '
                 '--resource-group {rg} --yes')
-
-        '''
+        
