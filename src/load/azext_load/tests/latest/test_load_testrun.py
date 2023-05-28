@@ -62,7 +62,12 @@ class LoadTestRunScenario(ScenarioTest):
             checks=[JMESPathCheck("testRunId", self.kwargs["test_run_id"])],
         ).get_output_in_json()
 
-        while test_run.get("status") not in ["EXECUTING", "DONE", "FAILED", "CANCELLED"]:
+        while test_run.get("status") not in [
+            "EXECUTING",
+            "DONE",
+            "FAILED",
+            "CANCELLED",
+        ]:
             time.sleep(10)
             test_run = self.cmd(
                 "az load test-run show "
