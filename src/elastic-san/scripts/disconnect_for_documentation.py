@@ -31,7 +31,7 @@ def check_azcli():
     
     # if not found/installed, exit
     if (package_manager == "apt" and "ii  azure-cli" not in out) or (package_manager == 'yum' and "azure-cli is not installed" in out) or (package_manager == 'zypper' and "azure-cli" not in out):
-        print("\033[93mWarning: Azure CLI is not installed or enabled. It is required for successful execution of this connect script. \n You need to install with `curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash`\n `az extension add elastic-san`\n `az login`\033[00m")
+        print("\033[93mWarning: Azure CLI is not installed or enabled. It is required for successful execution of this connect script. \n You need to install by following `https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux` and run:\n `az extension add elastic-san`\n `az login`\033[00m")
         sys.exit(1)
     
 # get iqn info from the ElasticSAN
