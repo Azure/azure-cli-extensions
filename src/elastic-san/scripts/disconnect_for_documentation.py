@@ -31,7 +31,7 @@ def check_azcli():
     
     # if not found/installed, exit
     if (package_manager == "apt" and "ii  azure-cli" not in out) or (package_manager == 'yum' and "azure-cli is not installed" in out) or (package_manager == 'zypper' and "azure-cli" not in out):
-        print("\033[93mWarning: Azure CLI is not installed or enabled. It is required for successful execution of this connect script. \n You need to install by following `https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux` and run:\n `az extension add elastic-san`\n `az login`\033[00m")
+        print("\033[93mWarning: Azure CLI is not installed or enabled. It is required for successful execution of this connect script. \n You need to install by following `https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux` and run:\n `az extension add -n elastic-san`\n `az login`\033[00m")
         sys.exit(1)
     
 # get iqn info from the ElasticSAN
@@ -41,7 +41,7 @@ def get_iqns(subscription, resource_group_name, elastic_san_name, volume_group_n
     command = "az elastic-san volume show -g {} -e {} -v {} -n {} --query storageTarget{}".format(resource_group_name, elastic_san_name, volume_group_name, volume_name, subscription).split(' ')
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
-    if "error" in err.lower():
+    if "error" in err.decode("utf-8").lower():
         raise Exception(err)
     out = out.decode("utf-8")
     storage_target = json.loads(out)
@@ -55,7 +55,7 @@ def check_connection(target_iqn, target_portal_hostname, target_portal_port):
     command = "sudo iscsiadm -m session".split(' ')
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
-    if "error" in err.lower():
+    if "error" in err.decode("utf-8").lower():
         raise Exception(err)
     out = out.decode("utf-8")
     return "No active sessions." not in out and "{}:{},-1 {}".format(target_portal_hostname, target_portal_port, target_iqn) in out
