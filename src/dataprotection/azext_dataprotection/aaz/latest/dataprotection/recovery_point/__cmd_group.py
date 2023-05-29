@@ -12,11 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "dataprotection",
+    "dataprotection recovery-point",
     is_experimental=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Data Protection.
+    """Manage recovery point with dataprotection.
     """
     pass
 

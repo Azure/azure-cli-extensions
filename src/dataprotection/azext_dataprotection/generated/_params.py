@@ -199,29 +199,6 @@ def load_arguments(self, _):
         c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
                    help='The name of the backup instance', id_part='child_name_1')
 
-    with self.argument_context('dataprotection recovery-point list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault.')
-        c.argument('backup_instance_name', type=str, help='The name of the backup instance')
-        c.argument('filter_', options_list=['--filter'], type=str, help='OData filter options.')
-        c.argument('skip_token', type=str, help='skipToken Filter.')
-
-    with self.argument_context('dataprotection recovery-point show') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
-        c.argument('backup_instance_name', type=str, help='The name of the backup instance', id_part='child_name_1')
-        c.argument('recovery_point_id', type=str, help='Id of the recovery point.', id_part='child_name_2')
-
-    with self.argument_context('dataprotection job list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault.')
-
-    with self.argument_context('dataprotection job show') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
-        c.argument('job_id', type=str, help='The Job ID. This is a GUID-formatted string (e.g. '
-                   '00000000-0000-0000-0000-000000000000).', id_part='child_name_1')
-
     with self.argument_context('dataprotection restorable-time-range find') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')

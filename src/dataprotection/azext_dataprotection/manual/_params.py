@@ -88,10 +88,6 @@ def load_arguments(self, _):
         c.argument('vault_name', type=str, help="Name of the vault.")
         c.argument('policy_id', type=str, help="specify the ID of the new policy with which backup instance will be associated with.")
 
-    with self.argument_context('dataprotection recovery-point list') as c:
-        c.argument('start_time', type=datetime_type, help="specify the start date in UTC (yyyy-mm-ddTHH:MM:SS)")
-        c.argument('end_time', type=datetime_type, help="specify the end date in UTC (yyyy-mm-ddTHH:MM:SS)")
-
     with self.argument_context('dataprotection backup-policy create') as c:
         c.argument('policy', type=validate_file_or_dict, help='Request body for operation Expected value: '
                    'json-string/@json-file.')
