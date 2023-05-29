@@ -368,3 +368,23 @@ def convert_dict_keys_snake_to_camel(dictionary):
 def convert_string_snake_to_camel(string):
     new_string = re.sub(r'_([a-z])', lambda m: m.group(1).upper(), string)
     return new_string
+
+
+def validate_recovery_point_datetime_format(aaz_str_arg):
+    """ Validates UTC datettime in accepted format. Examples: 31-12-2017, 31-12-2017-05:30:00.
+       Returns datetime in ISO format.
+    """
+    # accepted_date_formats = ['%Y-%m-%dT%H:%M:%S']
+    if aaz_str_arg:
+        date_str = str(aaz_str_arg)
+    else:
+        return None
+
+    import dateutil.parser
+    try:
+        # Parse input string for valid datetime.
+        dt_val = dateutil.parser.parse(date_str)
+        dt_iso = dt_val.strftime("%Y-%m-%dT%H:%M:%S.0000000Z")  # Format datetime string
+        return dt_iso
+    except ValueError:
+        raise CLIError(f"Input '{date_str}' not valid datetime. Valid example: 2017-12-31T05:30:00") from ValueError

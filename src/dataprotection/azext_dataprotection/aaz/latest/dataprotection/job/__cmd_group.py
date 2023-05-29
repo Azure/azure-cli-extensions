@@ -12,11 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "dataprotection",
+    "dataprotection job",
     is_experimental=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Data Protection.
+    """Manage job with dataprotection.
     """
     pass
 

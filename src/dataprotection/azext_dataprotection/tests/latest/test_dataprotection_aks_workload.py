@@ -78,17 +78,17 @@ def configure_backup(test):
     print(bvout)
 
     # uncomment when running live, run only in record mode - grant permission
-    # test.cmd('az dataprotection backup-instance update-msi-permissions '
-    #          '--datasource-type AzureKubernetesService '
-    #          '--operation Backup '
-    #          '--permissions-scope ResourceGroup '
-    #          '--vault-name "{vaultname}" '
-    #          '--resource-group "{rgname}" '
-    #          '--backup-instance "{backup_instance_json}" -y')
-    # time.sleep(60)
+    test.cmd('az dataprotection backup-instance update-msi-permissions '
+            '--datasource-type AzureKubernetesService '
+            '--operation Backup '
+            '--permissions-scope ResourceGroup '
+            '--vault-name "{vaultname}" '
+            '--resource-group "{rgname}" '
+            '--backup-instance "{backup_instance_json}" -y')
+    time.sleep(120)
 
     # Also uncomment when running live, only run in record mode - provide trusted access
-    # helper_trusted_access(test)
+    helper_trusted_access(test)
 
     test.cmd('az dataprotection backup-instance create -g "{rgname}" --vault-name "{vaultname}" --backup-instance "{backup_instance_json}"')
 
@@ -101,18 +101,19 @@ def configure_backup(test):
 
     time.sleep(30)
 
+@AllowLargeResponse
 def helper_trusted_access(test):
-    try:
-        test.cmd('az aks trustedaccess rolebinding create '
-                '--resource-group {rgname} '
-                '--cluster-name {akscluster1} '
-                '-n aksRoleBindingName '
-                '-s {vault_id} '
-                '--roles Microsoft.DataProtection/backupVaults/backup-operator') 
-        time.sleep(10)
-    except:
-        # This is usually failing in the event of the trusted access already existing, so we can skip it unless a new error shows.
-        pass
+    # try:
+    test.cmd('az aks trustedaccess rolebinding create '
+            '--resource-group {rgname} '
+            '--cluster-name {akscluster1} '
+            '-n aksRoleBindingName '
+            '-s {vault_id} '
+            '--roles Microsoft.DataProtection/backupVaults/backup-operator') 
+    time.sleep(10)
+    # except:
+    #     # This is usually failing in the event of the trusted access already existing, so we can skip it unless a new error shows.
+    #     pass
 
 def trigger_backup(test):
     response_json = test.cmd('az dataprotection backup-instance adhoc-backup '
@@ -148,18 +149,18 @@ def trigger_restore_original_location(test):
     test.kwargs.update({"restore_request": restore_json})
 
     # uncomment when running live, run only in record mode - grant permission
-    # test.cmd('az dataprotection backup-instance update-msi-permissions '
-    #          '--datasource-type AzureKubernetesService '
-    #          '--operation Restore '
-    #          '--permissions-scope Resource '
-    #          '--vault-name "{vaultname}" '
-    #          '--resource-group "{rgname}" '
-    #          '--restore-request-object "{restore_request}" '
-    #          '--snapshot-resource-group-id "{rg_id}" -y')
-    # time.sleep(60)
+    test.cmd('az dataprotection backup-instance update-msi-permissions '
+            '--datasource-type AzureKubernetesService '
+            '--operation Restore '
+            '--permissions-scope Resource '
+            '--vault-name "{vaultname}" '
+            '--resource-group "{rgname}" '
+            '--restore-request-object "{restore_request}" '
+            '--snapshot-resource-group-id "{rg_id}" -y')
+    time.sleep(60)
 
     # Also uncomment when running live, only run in record mode - provide trusted access
-    # helper_trusted_access(test)
+    helper_trusted_access(test)
 
     test.cmd('az dataprotection backup-instance validate-for-restore -g "{rgname}" --vault-name "{vaultname}" -n "{backup_instance_name}" --restore-request-object "{restore_request}"')
 
@@ -199,7 +200,7 @@ class DataprotectionScenarioTest(ScenarioTest):
     def test_dataprotection_aks(self):
         self.kwargs.update({
             "akscluster1": "clitest-cluster1-donotdelete",
-            "akscluster2": "clitest-cluster1-donotdelete",
+            "akscluster2": "clitest-cluster2-donotdelete",
             "policyname": "AKSPolicyCLI1",
             "vaultname": "clitest-aks-bv",
             "rgname": "oss-clitest-rg",

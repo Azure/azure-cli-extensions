@@ -97,16 +97,6 @@ def load_command_table(self, _):
         g.custom_wait_command('wait', 'dataprotection_backup_instance_show')
 
     with self.command_group(
-        'dataprotection recovery-point', dataprotection_recovery_point, client_factory=cf_recovery_point
-    ) as g:
-        g.custom_command('list', 'dataprotection_recovery_point_list')
-        g.custom_show_command('show', 'dataprotection_recovery_point_show')
-
-    with self.command_group('dataprotection job', dataprotection_job, client_factory=cf_job) as g:
-        g.custom_command('list', 'dataprotection_job_list')
-        g.custom_show_command('show', 'dataprotection_job_show')
-
-    with self.command_group(
         'dataprotection restorable-time-range',
         dataprotection_restorable_time_range,
         client_factory=cf_restorable_time_range,
