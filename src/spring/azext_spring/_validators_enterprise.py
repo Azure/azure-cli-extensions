@@ -17,7 +17,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import ApmType
-from .vendored_sdks.appplatform.v2023_05_01_preview.models._models_py3 import (ApmReference, CertificateReference)
+from .vendored_sdks.appplatform.v2023_05_01_preview import models
 
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
 from ._resource_quantity import \
@@ -516,9 +516,9 @@ def validate_apm_reference(cmd, namespace):
 
     service_resource_id = get_service_resource_id(cmd, namespace)
 
-    for apm_id in apm_names:
-        resource_id = '{}/apms/{}'.format(service_resource_id, apm_id)
-        apm_reference = ApmReference(resource_id=resource_id)
+    for apm_name in apm_names:
+        resource_id = '{}/apms/{}'.format(service_resource_id, apm_name)
+        apm_reference = models.ApmReference(resource_id=resource_id)
         result.append(apm_reference)
 
     namespace.apms = result
@@ -539,9 +539,9 @@ def validate_cert_reference(cmd, namespace):
         return result
 
     service_resource_id = get_service_resource_id(cmd, namespace)
-    for cert_id in cert_names:
-        resource_id = '{}/certificates/{}'.format(service_resource_id, cert_id)
-        cert_reference = CertificateReference(resource_id=resource_id)
+    for cert_name in cert_names:
+        resource_id = '{}/certificates/{}'.format(service_resource_id, cert_name)
+        cert_reference = models.CertificateReference(resource_id=resource_id)
         result.append(cert_reference)
 
     namespace.certificates = result

@@ -1419,11 +1419,9 @@ helps['spring apm create'] = """
     type: command
     short-summary: (Enterprise Tier Only) Create an APM.
     examples:
-        - name: Create an APM without properties or secrets.
-          text: az spring apm create --name first-apm --type ApplicationInsights --service MyCluster --resource-group MyResourceGroup
-        - name: Create an APM with only secrets.
+        - name: Create an APM with secrets only.
           text: az spring apm create --name first-apm --type ApplicationInsights --secrets k1=v1 k2=v2 --service MyCluster --resource-group MyResourceGroup
-        - name: Create an APM with only properties.
+        - name: Create an APM with properties only.
           text: az spring apm create --name first-apm --type ApplicationInsights --properties a=b c=d --service MyCluster --resource-group MyResourceGroup
         - name: Create an APM with properties and secrets.
           text: az spring apm create --name first-apm --type ApplicationInsights --properties a=b c=d --secrets k1=v1 k2=v2 --service MyCluster --resource-group MyResourceGroup
@@ -1449,7 +1447,7 @@ helps['spring apm list'] = """
     type: command
     short-summary: (Enterprise Tier Only) List all APMs in the Azure Spring Apps. The secrets will be omitted.
     examples:
-        - name: List all APM in the Azure Spring Apps.
+        - name: List all APMs in the Azure Spring Apps.
           text: az spring apm list --service MyCluster --resource-group MyResourceGroup
 """
 
