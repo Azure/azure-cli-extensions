@@ -101,19 +101,18 @@ def configure_backup(test):
 
     time.sleep(30)
 
-@AllowLargeResponse
 def helper_trusted_access(test):
-    # try:
-    test.cmd('az aks trustedaccess rolebinding create '
-            '--resource-group {rgname} '
-            '--cluster-name {akscluster1} '
-            '-n aksRoleBindingName '
-            '-s {vault_id} '
-            '--roles Microsoft.DataProtection/backupVaults/backup-operator') 
-    time.sleep(10)
-    # except:
-    #     # This is usually failing in the event of the trusted access already existing, so we can skip it unless a new error shows.
-    #     pass
+    try:
+        test.cmd('az aks trustedaccess rolebinding create '
+                '--resource-group {rgname} '
+                '--cluster-name {akscluster1} '
+                '-n aksRoleBindingName '
+                '-s {vault_id} '
+                '--roles Microsoft.DataProtection/backupVaults/backup-operator') 
+        time.sleep(10)
+    except:
+        # This is usually failing in the event of the trusted access already existing, so we can skip it unless a new error shows.
+        pass
 
 def trigger_backup(test):
     response_json = test.cmd('az dataprotection backup-instance adhoc-backup '
