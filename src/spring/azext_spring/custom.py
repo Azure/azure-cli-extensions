@@ -752,7 +752,7 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
     config_property['repositories'] = repositories
     git_property = client._deserialize('ConfigServerGitProperty', config_property)
     config_server_settings = models.ConfigServerSettings(git_property=git_property)
-    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
+    config_server_properties = models.ConfigServerProperties(enabled_state="Enabled", config_server=config_server_settings)
 
     logger.warning("[1/2] Validating config server settings")
     validate_config_server_settings(client, resource_group, name, config_server_settings)
@@ -805,7 +805,7 @@ def config_git_set(cmd, client, resource_group, name, uri,
     git_property.strict_host_key_checking = strict_host_key_checking
 
     config_server_settings = models.ConfigServerSettings(git_property=git_property)
-    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
+    config_server_properties = models.ConfigServerProperties(enabled_state="Enabled", config_server=config_server_settings)
 
     logger.warning("[1/2] Validating config server settings")
     validate_config_server_settings(client, resource_group, name, config_server_settings)

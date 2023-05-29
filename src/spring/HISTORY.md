@@ -1,5 +1,9 @@
 Release History
 ===============
+1.12.2
+---
+* Add default `enabled_state` for `az spring config-server set` in Standard Counsumption tier.
+
 1.12.1
 ---
 * Add new command -- `az spring eureka-server show` to show the Eureka server resource in consumption tier.
