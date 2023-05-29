@@ -12,6 +12,10 @@ Release History
 * Add new command -- `az spring apm list` to list all the APM resources.
 * Add new command -- `az spring apm list-enabled-globally` to list all the APMs enabled globally.
 
+1.12.2
+---
+* Add default `enabled_state` for `az spring config-server set` in Standard Counsumption tier.
+
 1.12.1
 ---
 * Add new command -- `az spring eureka-server show` to show the Eureka server resource in consumption tier.
