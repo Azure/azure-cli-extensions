@@ -1933,7 +1933,7 @@ def update_containerappsjob_logic(cmd,
 
     update_map = {}
     update_map['replicaConfigurations'] = replica_timeout or replica_retry_limit
-    update_map['triggerConfigurations'] = replica_completion_count or parallelism or cron_expression or scale_rule_name
+    update_map['triggerConfigurations'] = replica_completion_count or parallelism or cron_expression or scale_rule_name or scale_rule_type or scale_rule_auth or polling_interval or min_executions or max_executions
     update_map['container'] = image or container_name or set_env_vars is not None or remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None
     update_map['registry'] = registry_server or registry_user or registry_pass
 
@@ -1992,14 +1992,13 @@ def update_containerappsjob_logic(cmd,
         if containerappsjob_def["properties"]["configuration"]["triggerType"] == "Event":
             eventTriggerConfig_def = None
             eventTriggerConfig_def = containerappsjob_def["properties"]["configuration"]["eventTriggerConfig"]
-            if replica_completion_count is not None or parallelism is not None:
+            if replica_completion_count is not None or parallelism is not None or min_executions is not None or max_executions is not None or polling_interval is not None or scale_rule_name is not None:
                 if replica_completion_count:
                     eventTriggerConfig_def["replicaCompletionCount"] = replica_completion_count
                 if parallelism:
                     eventTriggerConfig_def["parallelism"] = parallelism
-
                 # Scale
-                if "scale" not in eventTriggerConfig_def["properties"]["template"]:
+                if "scale" in eventTriggerConfig_def["scale"]:
                     eventTriggerConfig_def["scale"] = {}
                 if min_executions is not None:
                     eventTriggerConfig_def["scale"]["minExecutions"] = min_executions
@@ -2015,11 +2014,9 @@ def update_containerappsjob_logic(cmd,
                     scale_def["minExecutions"] = min_executions
                     scale_def["maxReplicas"] = max_executions
                 # so we don't overwrite rules
-                if safe_get(eventTriggerConfig_def, "scale", "rules"):
-                    eventTriggerConfig_def["scale"].pop(["rules"])
+                if safe_get(new_containerappsjob, "properties", "template", "scale", "rules"):
+                    new_containerappsjob["properties"]["template"]["scale"].pop(["rules"])
                 if scale_rule_name:
-                    if not scale_rule_type:
-                        scale_rule_type = "http"
                     scale_rule_type = scale_rule_type.lower()
                     scale_rule_def = ScaleRuleModel
                     curr_metadata = {}

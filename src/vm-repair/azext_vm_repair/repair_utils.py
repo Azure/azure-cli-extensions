@@ -352,8 +352,6 @@ def _fetch_encryption_settings(source_vm):
         return Encryption.NONE, key_vault, kekurl, secreturl
     if not enabled:
         return Encryption.NONE, key_vault, kekurl, secreturl
-    if enabled.tolower() == 'false':
-        return Encryption.NONE, key_vault, kekurl, secreturl
     if kekurl == []:
         key_vault, secreturl = key_vault[0], secreturl[0]
         return Encryption.SINGLE_WITHOUT_KEK, key_vault, kekurl, secreturl
