@@ -29,7 +29,8 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
                                      validate_build_env, validate_target_module, validate_runtime_version,
                                      validate_acs_ssh_or_warn, validate_apm_properties, validate_apm_secrets,
-                                     validate_apm_not_exist, validate_apm_reference, validate_cert_reference)
+                                     validate_apm_not_exist, validate_apm_update, validate_apm_reference,
+                                     validate_cert_reference)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -930,12 +931,16 @@ def load_arguments(self, _):
 
     for scope in ['spring apm create']:
         with self.argument_context(scope) as c:
-            c.argument('name', name_type, help='Name for APM.', validator=validate_apm_not_exist)
+            c.argument('name', name_type, help='APM name.', validator=validate_apm_not_exist)
+
+    for scope in ['spring apm update']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='APM name.', validator=validate_apm_update)
 
     for scope in ['spring apm create',
                   'spring apm update']:
         with self.argument_context(scope) as c:
-            c.argument('type',
+            c.argument('type', type=str,
                        help='Required type for APM. Run "az spring apm list-support-types"'
                             'to get all the supported APM types.')
             c.argument('properties',
@@ -949,13 +954,12 @@ def load_arguments(self, _):
                        nargs='*',
                        validator=validate_apm_secrets)
 
-    for scope in ['spring apm update',
-                  'spring apm show',
+    for scope in ['spring apm show',
                   'spring apm enable-globally',
                   'spring apm disable-globally',
                   'spring apm delete']:
         with self.argument_context(scope) as c:
-            c.argument('name', name_type, help='Name for APM.')
+            c.argument('name', name_type, help='APM name.')
 
     for scope in ['spring apm create',
                   'spring apm update',

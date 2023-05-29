@@ -71,8 +71,8 @@ class BuildService:
             agent_pool='{}/buildservices/default/agentPools/default'.format(service_resource_id),
             relative_path=relative_path,
             env=build_env if build_env else None,
-            apms=apms if apms else None,
-            certificates=certificates if certificates else None,
+            apms=apms,
+            certificates=certificates,
             resource_requests=build_resource_requests)
         build = models.Build(properties=properties)
         if build_name is None:

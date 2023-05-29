@@ -507,6 +507,14 @@ def validate_apm_not_exist(cmd, namespace):
         pass
 
 
+def validate_apm_update(cmd, namespace):
+    client = get_client(cmd)
+    try:
+        client.apms.get(namespace.resource_group, namespace.service, namespace.name)
+    except ResourceNotFoundError:
+        raise ClientRequestError('APM {} does not exist.'.format(namespace.name))
+
+
 def validate_apm_reference(cmd, namespace):
     apm_names = namespace.apms
 
