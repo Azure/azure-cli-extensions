@@ -96,6 +96,7 @@ def delete_test_run(cmd, load_test_resource, test_run_id, resource_group_name=No
     logger.info("Delete test run completed")
     return response
 
+
 def list_test_runs(cmd, test_id, load_test_resource, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Listing test runs for test %s", test_id)
@@ -244,7 +245,9 @@ def add_test_run_app_component(
     if app_component_kind:
         body["components"][app_component_id]["kind"] = app_component_kind
     logger.debug("Adding app component to the test run: %s", body)
-    response = client.create_or_update_app_components(test_run_id=test_run_id, body=body)
+    response = client.create_or_update_app_components(
+        test_run_id=test_run_id, body=body
+    )
     logger.debug("App component added with following response %s", response)
     logger.info("App component completed")
     return response
@@ -259,7 +262,9 @@ def list_test_run_app_component(
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Listing app components for the given test run")
     response = client.get_app_components(test_run_id=test_run_id)
-    logger.debug("List of app components completed with following response %s", response)
+    logger.debug(
+        "List of app components completed with following response %s", response
+    )
     logger.info("App components completed")
     return response
 
@@ -274,12 +279,16 @@ def remove_test_run_app_component(
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = {"testRunId": test_run_id, "components": {app_component_id: None}}
     logger.info("Removing app component from the test run: %s", body)
-    response = client.create_or_update_app_components(test_run_id=test_run_id, body=body)
+    response = client.create_or_update_app_components(
+        test_run_id=test_run_id, body=body
+    )
     logger.debug("App component removed completed with following response %s", response)
     logger.info("App component completed")
     return response
 
+
 # server metrics
+
 
 def add_test_run_server_metric(
     cmd,
@@ -311,7 +320,9 @@ def add_test_run_server_metric(
     response = client.create_or_update_server_metrics_config(
         test_run_id=test_run_id, body=body
     )
-    logger.debug("Server metrics added completed with following response %s", test_run_id)
+    logger.debug(
+        "Server metrics added completed with following response %s", test_run_id
+    )
     logger.info("Server metrics completed")
     return response
 
@@ -325,7 +336,9 @@ def list_test_run_server_metric(
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Listing server metrics")
     response = client.get_server_metrics_config(test_run_id=test_run_id)
-    logger.debug("List of server metrics completed with following response %s", response)
+    logger.debug(
+        "List of server metrics completed with following response %s", response
+    )
     logger.info("Server metrics completed")
     return response
 
@@ -343,9 +356,12 @@ def remove_test_run_server_metric(
     response = client.create_or_update_server_metrics_config(
         test_run_id=test_run_id, body=body
     )
-    logger.debug("Server metrics removed completed with following response %s", response)
+    logger.debug(
+        "Server metrics removed completed with following response %s", response
+    )
     logger.info("Server metrics completed")
     return response
+
 
 def get_test_run_metric_namespaces(
     cmd, load_test_resource, test_run_id, resource_group_name=None
@@ -353,7 +369,10 @@ def get_test_run_metric_namespaces(
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Getting client metrics namespaces")
     response = client.get_metric_namespaces(test_run_id)
-    logger.debug("Getting client metrics namespaces completed with following response %s", response)
+    logger.debug(
+        "Getting client metrics namespaces completed with following response %s",
+        response,
+    )
     logger.info("Getting client metrics namespaces completed")
     return response
 
@@ -471,7 +490,10 @@ def get_test_run_metric_definitions(
     metric_definitions = client.get_metric_definitions(
         test_run_id, metric_namespace=metric_namespace
     )
-    logger.debug("Getting test run metric definitions completed with following response %s", metric_definitions)
+    logger.debug(
+        "Getting test run metric definitions completed with following response %s",
+        metric_definitions,
+    )
     logger.info("Getting test run metric definitions completed")
     return metric_definitions
 

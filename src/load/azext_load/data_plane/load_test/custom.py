@@ -131,7 +131,9 @@ def update_test(
     )
     logger.info("Updating test with test ID: %s", test_id)
     response = client.create_or_update_test(test_id=test_id, body=body)
-    logger.debug("Updated test with test ID: %s and response obj is %s", test_id, response)
+    logger.debug(
+        "Updated test with test ID: %s and response obj is %s", test_id, response
+    )
     logger.info("Uploading files to test %s", test_id)
     upload_files_helper(client, test_id, yaml, test_plan, load_test_config_file, wait)
     logger.info("Upload files to test %s has completed", test_id)
@@ -202,7 +204,6 @@ def delete_test(
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     client.delete_test(test_id)
     logger.info("Deleted test with test ID: %s", test_id)
-
 
 
 def add_test_app_component(
@@ -343,7 +344,9 @@ def upload_test_file(
     logger.info("Upload test file started")
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Uploading file for the test")
-    response = upload_file_to_test(client, test_id, path, file_type=file_type, wait=wait)
+    response = upload_file_to_test(
+        client, test_id, path, file_type=file_type, wait=wait
+    )
     logger.debug("Upload test file response: %s", response)
     logger.info("Upload test file completed")
     return response
@@ -361,6 +364,7 @@ def list_test_file(
     logger.debug("Retrieved files: %s", response)
     logger.info("Listing files for the test completed")
     return response
+
 
 def download_test_file(
     cmd,
@@ -393,7 +397,9 @@ def delete_test_file(
     file_name,
     resource_group_name=None,
 ):
-    logger.info("Deleting file with file name : %s for the test : %s", file_name, test_id)
+    logger.info(
+        "Deleting file with file name : %s for the test : %s", file_name, test_id
+    )
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     response = client.delete_test_file(test_id, file_name)
     logger.debug("Deleted file: %s", response)

@@ -139,6 +139,7 @@ def download_file(url, file_path):
                     f.write(chunk)
     logger.debug("Downloading file completed")
 
+
 def upload_file_to_test(client, test_id, file_path, file_type=None, wait=False):
     logger.debug(
         "Uploading file %s for the test %s with 'wait' %s",
@@ -407,7 +408,11 @@ def upload_files_helper(client, test_id, yaml, test_plan, load_test_config_file,
             for file in files:
                 if AllowedFileTypes.USER_PROPERTIES.value == file["fileType"]:
                     client.delete_test_file(test_id, file["fileName"])
-                    logger.info("File of type '%s' already exists in test %s. Deleting it!", AllowedFileTypes.USER_PROPERTIES, test_id)
+                    logger.info(
+                        "File of type '%s' already exists in test %s. Deleting it!",
+                        AllowedFileTypes.USER_PROPERTIES,
+                        test_id,
+                    )
                     break
             file_response = upload_file_to_test(
                 client,
@@ -466,12 +471,17 @@ def upload_files_helper(client, test_id, yaml, test_plan, load_test_config_file,
                 )
                 break
         file_response = upload_file_to_test(
-            client, test_id, test_plan, file_type=validators.AllowedFileTypes.JMX_FILE, wait=wait
+            client,
+            test_id,
+            test_plan,
+            file_type=validators.AllowedFileTypes.JMX_FILE,
+            wait=wait,
         )
         if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
             raise FileOperationError(
                 f"Test plan file {test_plan} is not valid. Please check the file and try again."
             )
+
 
 def get_random_uuid():
     return str(uuid.uuid4())
