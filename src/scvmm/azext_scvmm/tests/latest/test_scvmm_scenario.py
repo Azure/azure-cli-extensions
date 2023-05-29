@@ -156,16 +156,33 @@ class ScVmmScenarioTest(ScenarioTest):
         self.cmd(
             'az scvmm vm create-checkpoint -g {resource_group} --name {vm_name} --checkpoint-name {checkpoint_name} --checkpoint-description {checkpoint_description}',
         )
-        alias_sub = self.cmd('az scvmm vm show -g {resource_group} --name {vm_name}').get_output_in_json()
+        alias_sub = self.cmd('az scvmm vm show -g {resource_group} --name {vm_name}',
+                             checks=[
+                                 self.check('provisioningState', 'Succeeded'),
+                                 self.greater_than('checkpoints | length(@)', 0),                                
+                             ]).get_output_in_json()
         checkpoint_id = alias_sub['checkpoints'][0]['checkpointId']
         self.kwargs.update({'checkpoint_id': checkpoint_id})
 
         self.cmd(
             'az scvmm vm restore-checkpoint -g {resource_group} --name {vm_name} --checkpoint-id {checkpoint_id}',
         )
+        self.cmd(
+            'az scvmm vm show -g {resource_group} --name {vm_name}',
+            checks=[
+                self.check('provisioningState', 'Succeeded'),                           
+            ]
+        )
 
         self.cmd(
             'az scvmm vm delete-checkpoint -g {resource_group} --name {vm_name} --checkpoint-id {checkpoint_id}',
+        )
+        self.cmd(
+            'az scvmm vm show -g {resource_group} --name {vm_name}',
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+                self.check('checkpoints | length(@)', 0),                           
+            ]
         )
 
         self.cmd('az scvmm vm delete -g {resource_group} --name {vm_name} --deleteFromHost -y')
