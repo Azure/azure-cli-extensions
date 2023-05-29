@@ -272,7 +272,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("duration", AAZStrType, ".duration")
                 properties.set_prop("lastUpdatedTime", AAZStrType, ".last_updated_time")
-                _CreateHelper._build_schema_step_create(properties.set_prop("progress", AAZObjectType, ".progress", typ_kwargs={"flags": {"client_flatten": True}}))
+                _CreateHelper._build_schema_step_create(properties.set_prop("progress", AAZObjectType, ".progress"))
                 properties.set_prop("state", AAZStrType, ".state")
                 properties.set_prop("timeStarted", AAZStrType, ".time_started")
 
@@ -319,9 +319,7 @@ class Create(AAZCommand):
             properties.last_updated_time = AAZStrType(
                 serialized_name="lastUpdatedTime",
             )
-            properties.progress = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            properties.progress = AAZObjectType()
             _CreateHelper._build_schema_step_read(properties.progress)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",

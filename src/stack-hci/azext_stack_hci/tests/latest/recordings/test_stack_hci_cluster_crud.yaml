@@ -13,7 +13,7 @@ interactions:
       ParameterSetName:
       - --display-name
       User-Agent:
-      - python/3.10.9 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+      - python/3.10.9 (Windows-10-10.0.22621-SP0) AZURECLI/2.48.1
     method: GET
     uri: https://graph.microsoft.com/v1.0/applications?$filter=startswith%28displayName%2C%27app000003%27%29
   response:
@@ -27,11 +27,11 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Fri, 21 Apr 2023 02:51:06 GMT
+      - Mon, 29 May 2023 07:02:56 GMT
       odata-version:
       - '4.0'
       request-id:
-      - f960e155-49ac-4251-a46c-aa03c34321df
+      - f9b46c11-5291-4c4c-a6cc-2e43c2749711
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -39,7 +39,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"002","RoleInstance":"SG1PEPF00006138"}}'
+      - '{"ServerInfo":{"DataCenter":"Japan East","Slice":"E","Ring":"5","ScaleUnit":"003","RoleInstance":"TYO1EPF00001D75"}}'
       x-ms-resource-unit:
       - '2'
     status:
@@ -63,15 +63,15 @@ interactions:
       ParameterSetName:
       - --display-name
       User-Agent:
-      - python/3.10.9 (Windows-10-10.0.22621-SP0) AZURECLI/2.46.0
+      - python/3.10.9 (Windows-10-10.0.22621-SP0) AZURECLI/2.48.1
     method: POST
     uri: https://graph.microsoft.com/v1.0/applications
   response:
     body:
       string: '{"@odata.context": "https://graph.microsoft.com/v1.0/$metadata#applications/$entity",
-        "id": "1a38d6eb-f38f-47f1-b1d9-2c54dbce5fd3", "deletedDateTime": null, "appId":
-        "4919c731-eab5-43d4-9e9e-79a28651abd5", "applicationTemplateId": null, "disabledByMicrosoftStatus":
-        null, "createdDateTime": "2023-04-21T02:51:09.3109075Z", "displayName": "app000003",
+        "id": "4d2833d3-5a24-461b-9222-48ea78723b28", "deletedDateTime": null, "appId":
+        "07c19069-5608-4eec-9185-6fb2585bc6b9", "applicationTemplateId": null, "disabledByMicrosoftStatus":
+        null, "createdDateTime": "2023-05-29T07:02:57.5662053Z", "displayName": "app000003",
         "description": null, "groupMembershipClaims": null, "identifierUris": [],
         "isDeviceOnlyAuthSupported": null, "isFallbackPublicClient": null, "notes":
         null, "publisherDomain": "AzureSDKTeam.onmicrosoft.com", "serviceManagementReference":
@@ -97,13 +97,13 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Fri, 21 Apr 2023 02:51:12 GMT
+      - Mon, 29 May 2023 07:02:59 GMT
       location:
-      - https://graph.microsoft.com/v2/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a/directoryObjects/1a38d6eb-f38f-47f1-b1d9-2c54dbce5fd3/Microsoft.DirectoryServices.Application
+      - https://graph.microsoft.com/v2/54826b22-38d6-4fb2-bad9-b7b93a3e9c5a/directoryObjects/4d2833d3-5a24-461b-9222-48ea78723b28/Microsoft.DirectoryServices.Application
       odata-version:
       - '4.0'
       request-id:
-      - 5bfad259-411c-4ad2-8844-a0d9b4c66c6a
+      - 494db4fc-cdac-41b9-88d1-d444485af1da
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -111,7 +111,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"002","RoleInstance":"SG1PEPF00006141"}}'
+      - '{"ServerInfo":{"DataCenter":"Japan East","Slice":"E","Ring":"5","ScaleUnit":"003","RoleInstance":"TYO1EPF00002263"}}'
       x-ms-resource-unit:
       - '1'
     status:
@@ -129,23 +129,23 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --aad-client-id --aad-tenant-id --tags
+      - -n -g --aad-client-id --aad-tenant-id --tags --type
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.1 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_stack_hci_cluster000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001","name":"cli_test_stack_hci_cluster000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","date":"2023-04-21T02:50:57Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001","name":"cli_test_stack_hci_cluster000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_stack_hci_cluster_crud","date":"2023-05-29T07:02:53Z","module":"stack-hci"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '342'
+      - '400'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 02:51:11 GMT
+      - Mon, 29 May 2023 07:03:00 GMT
       expires:
       - '-1'
       pragma:
@@ -160,8 +160,9 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus", "properties": {"aadClientId": "4919c731-eab5-43d4-9e9e-79a28651abd5",
-      "aadTenantId": "54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"}, "tags": {"key0": "value0"}}'
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus", "properties":
+      {"aadClientId": "07c19069-5608-4eec-9185-6fb2585bc6b9", "aadTenantId": "54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"},
+      "tags": {"key0": "value0"}}'
     headers:
       Accept:
       - application/json
@@ -172,33 +173,33 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '176'
+      - '216'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -n -g --aad-client-id --aad-tenant-id --tags
+      - -n -g --aad-client-id --aad-tenant-id --tags --type
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","name":"cluster000002","type":"microsoft.azurestackhci/clusters","location":"eastus","tags":{"key0":"value0"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-04-21T02:51:16.4905658Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-21T02:51:16.4905658Z"},"properties":{"provisioningState":"Succeeded","status":"NotYetRegistered","cloudId":"3dce2c06-378b-4168-bdcb-ce05d99561fa","aadClientId":"4919c731-eab5-43d4-9e9e-79a28651abd5","aadTenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","softwareAssuranceProperties":{"softwareAssuranceStatus":"Disabled","softwareAssuranceIntent":"Disable"},"desiredProperties":{"windowsServerSubscription":"Disabled","diagnosticLevel":"Basic"},"trialDaysRemaining":60,"billingModel":"Trial","serviceEndpoint":"https://dp.stackhci.azure.com/eastus/","resourceProviderObjectId":"dce429e3-98f6-46ba-8959-be060dd15eec"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","name":"cluster000002","type":"microsoft.azurestackhci/clusters","location":"eastus","tags":{"key0":"value0"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-05-29T07:03:04.0753694Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-29T07:03:04.0753694Z"},"identity":{"principalId":"d5f79932-695b-464a-90f6-4be67acb6445","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","status":"NotYetRegistered","cloudId":"66e04c28-4afe-47a9-8e70-9510576e21e5","aadClientId":"07c19069-5608-4eec-9185-6fb2585bc6b9","aadTenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","softwareAssuranceProperties":{"softwareAssuranceStatus":"Disabled","softwareAssuranceIntent":"Disable"},"desiredProperties":{"windowsServerSubscription":"Disabled","diagnosticLevel":"Basic"},"trialDaysRemaining":60,"billingModel":"Trial","serviceEndpoint":"https://dp.stackhci.azure.com/eastus/","resourceProviderObjectId":"dce429e3-98f6-46ba-8959-be060dd15eec"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1112'
+      - '1252'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 02:51:18 GMT
+      - Mon, 29 May 2023 07:03:08 GMT
       etag:
-      - '"3c02724b-0000-0100-0000-6441fa250000"'
+      - '"11000b8b-0000-0100-0000-64744e2a0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 32678480-6f8e-4cd4-894e-77c361b9a11d
+      - e8513f97-388f-4dde-8af3-2a1978128afe
       pragma:
       - no-cache
       strict-transport-security:
@@ -212,7 +213,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1197'
     status:
       code: 200
       message: OK
@@ -232,7 +233,7 @@ interactions:
       ParameterSetName:
       - --cluster-name -g
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002/createClusterIdentity?api-version=2023-03-01
   response:
@@ -240,7 +241,7 @@ interactions:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/4f5ae332-6adb-4d13-9466-92ba6cfaa2c7*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053?api-version=2023-03-01
+      - https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/428f0c56-98c7-40a0-b59c-0897bff6ba81*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B?api-version=2023-03-01
       cache-control:
       - no-cache
       content-length:
@@ -248,13 +249,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 02:51:21 GMT
+      - Mon, 29 May 2023 07:03:09 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/4f5ae332-6adb-4d13-9466-92ba6cfaa2c7*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053?api-version=2023-03-01
+      - https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/428f0c56-98c7-40a0-b59c-0897bff6ba81*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B?api-version=2023-03-01
       mise-correlation-id:
-      - e9bb03aa-95ca-4175-b86c-6908a56a8aa9
+      - c85485d8-f53b-4f3b-91d8-4dd88c87fd4a
       pragma:
       - no-cache
       strict-transport-security:
@@ -264,7 +265,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 202
       message: Accepted
@@ -282,23 +283,65 @@ interactions:
       ParameterSetName:
       - --cluster-name -g
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/4f5ae332-6adb-4d13-9466-92ba6cfaa2c7*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053?api-version=2023-03-01
+    uri: https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/428f0c56-98c7-40a0-b59c-0897bff6ba81*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/4f5ae332-6adb-4d13-9466-92ba6cfaa2c7*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053","name":"4f5ae332-6adb-4d13-9466-92ba6cfaa2c7*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","status":"Succeeded","startTime":"2023-04-21T02:51:21.684164Z","endTime":"2023-04-21T02:51:24.6601109Z","properties":null}'
+      string: '{"id":"/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/428f0c56-98c7-40a0-b59c-0897bff6ba81*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B","name":"428f0c56-98c7-40a0-b59c-0897bff6ba81*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","status":"Accepted","startTime":"2023-05-29T07:03:10.1026471Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '585'
+      - '526'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 02:51:52 GMT
+      - Mon, 29 May 2023 07:03:10 GMT
       etag:
-      - '"c700d742-0000-0100-0000-6441fa2c0000"'
+      - '"3700c630-0000-0100-0000-64744e2e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stack-hci cluster create-identity
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name -g
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/428f0c56-98c7-40a0-b59c-0897bff6ba81*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/428f0c56-98c7-40a0-b59c-0897bff6ba81*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B","name":"428f0c56-98c7-40a0-b59c-0897bff6ba81*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","status":"Succeeded","startTime":"2023-05-29T07:03:10.1026471Z","endTime":"2023-05-29T07:03:14.9328506Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '586'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 29 May 2023 07:03:40 GMT
+      etag:
+      - '"3700ce30-0000-0100-0000-64744e320000"'
       expires:
       - '-1'
       pragma:
@@ -328,21 +371,21 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters?api-version=2023-03-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","name":"cluster000002","type":"microsoft.azurestackhci/clusters","location":"eastus","tags":{"key0":"value0"},"properties":{"provisioningState":"Succeeded","status":"NotYetRegistered","cloudId":"3dce2c06-378b-4168-bdcb-ce05d99561fa","aadClientId":"e5b24453-fef3-415a-abef-44c1fbd10984","aadTenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","aadServicePrincipalObjectId":"5e122920-7bb4-4ce0-9d2c-ab6d5a28dfa6","aadApplicationObjectId":"1e378590-fbf0-4078-8f96-e866314d8ae0","softwareAssuranceProperties":{"softwareAssuranceStatus":"Disabled","softwareAssuranceIntent":"Disable"},"desiredProperties":{"windowsServerSubscription":"Disabled","diagnosticLevel":"Basic"},"trialDaysRemaining":60,"billingModel":"Trial","serviceEndpoint":"https://dp.stackhci.azure.com/eastus/","resourceProviderObjectId":"dce429e3-98f6-46ba-8959-be060dd15eec"}}],"nextLink":"https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters?api-version=2023-03-01&%24skiptoken=HZBRb4IwFIX%2fS5%2bHBYQRTZaFuGUjUR%2bc76SU21oRWu9t0Wn878Ml5%2fHkO1%2fOnQ1w9WszdMSWd7b63O535braflQlW7KD946WnPdiEBp6GPxM3ALCTNqeU2hIonHe2IF43CTqNSuSKGlUHGVtKyIBch7JZpEWqYoX%2bSLmCGQDSvhCGxxxeTK1B%2fI1eSG7%2biBNLU%2bBPGDWpcWv689ezvF4gPzS52OOV90Gup1VdgzKOX1JtRpR5MaZlju0o2kBiW%2bMREtW%2bVn5dP15sr9X1bT2j6Z34Uw0Ts3J%2by2N03kUT0nY44UJ7EutEbTw0O5tB8N0QrnbsMcf"}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","name":"cluster000002","type":"microsoft.azurestackhci/clusters","location":"eastus","tags":{"key0":"value0"},"identity":{"principalId":"d5f79932-695b-464a-90f6-4be67acb6445","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","status":"NotYetRegistered","cloudId":"66e04c28-4afe-47a9-8e70-9510576e21e5","aadClientId":"7aabc763-f59b-44a1-92cf-05ea5b685da4","aadTenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","aadServicePrincipalObjectId":"70886df5-5ed3-4309-9770-b3962c0f1389","aadApplicationObjectId":"e8c8a1b5-b498-49b9-a4db-ade49d48415c","softwareAssuranceProperties":{"softwareAssuranceStatus":"Disabled","softwareAssuranceIntent":"Disable"},"desiredProperties":{"windowsServerSubscription":"Disabled","diagnosticLevel":"Basic"},"trialDaysRemaining":60,"billingModel":"Trial","serviceEndpoint":"https://dp.stackhci.azure.com/eastus/","resourceProviderObjectId":"dce429e3-98f6-46ba-8959-be060dd15eec"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1586'
+      - '1153'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 02:51:54 GMT
+      - Mon, 29 May 2023 07:03:43 GMT
       expires:
       - '-1'
       pragma:
@@ -354,16 +397,16 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 46a2aa1d-83f9-4732-93e4-3100ccba3762
-      - aa6df08d-f1be-443d-8ff3-2222250c277e
-      - bd623852-3905-4a3f-a1b2-e116b419816f
-      - 1c3b85c7-76b4-42aa-a9ff-3a96c92b0ae9
-      - fa9e0145-311d-4848-bd94-eb5a8b3cc482
-      - 2ce34135-d78d-4213-be56-235559a84d33
-      - 8eb1821c-89d8-4416-a91d-7eef3a69220e
-      - edbd4abd-49cb-45c5-b832-726bd300a9ff
-      - 23b5618b-6371-4e4c-a0a6-6d0378f2f659
-      - 5db47dcb-3a14-4dc0-ad2f-43fa39a353b3
+      - 7c9cc273-cb3c-421b-acba-d0cd0e918605
+      - 2d247ae0-abef-4cc2-830e-e5c4c6db4acf
+      - 8fe615a6-c2ef-4f3c-baf3-f7ae0bcb3eda
+      - e45ba602-496c-45a4-b900-05b614c81eba
+      - 7d464c15-4847-4989-918e-9cda51c5216f
+      - 0922a943-3fbc-4782-8516-22c93e1ea23d
+      - 74ab628f-4ab3-47e9-81a0-a71c633cad59
+      - 3d60e798-fa84-4ad9-aff0-0f652d9b1e11
+      - 2673fea8-1f65-4b86-a72f-d744a1a069bb
+      - 90fbd4e5-97d1-425d-84d7-c28988dc1f4e
     status:
       code: 200
       message: OK
@@ -381,27 +424,27 @@ interactions:
       ParameterSetName:
       - -n -g --tags
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","name":"cluster000002","type":"microsoft.azurestackhci/clusters","location":"eastus","tags":{"key0":"value0"},"properties":{"provisioningState":"Succeeded","status":"NotYetRegistered","cloudId":"3dce2c06-378b-4168-bdcb-ce05d99561fa","aadClientId":"e5b24453-fef3-415a-abef-44c1fbd10984","aadTenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","aadServicePrincipalObjectId":"5e122920-7bb4-4ce0-9d2c-ab6d5a28dfa6","aadApplicationObjectId":"1e378590-fbf0-4078-8f96-e866314d8ae0","softwareAssuranceProperties":{"softwareAssuranceStatus":"Disabled","softwareAssuranceIntent":"Disable"},"desiredProperties":{"windowsServerSubscription":"Disabled","diagnosticLevel":"Basic"},"trialDaysRemaining":60,"billingModel":"Trial","serviceEndpoint":"https://dp.stackhci.azure.com/eastus/","resourceProviderObjectId":"dce429e3-98f6-46ba-8959-be060dd15eec"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","name":"cluster000002","type":"microsoft.azurestackhci/clusters","location":"eastus","tags":{"key0":"value0"},"identity":{"principalId":"d5f79932-695b-464a-90f6-4be67acb6445","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","status":"NotYetRegistered","cloudId":"66e04c28-4afe-47a9-8e70-9510576e21e5","aadClientId":"7aabc763-f59b-44a1-92cf-05ea5b685da4","aadTenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","aadServicePrincipalObjectId":"70886df5-5ed3-4309-9770-b3962c0f1389","aadApplicationObjectId":"e8c8a1b5-b498-49b9-a4db-ade49d48415c","softwareAssuranceProperties":{"softwareAssuranceStatus":"Disabled","softwareAssuranceIntent":"Disable"},"desiredProperties":{"windowsServerSubscription":"Disabled","diagnosticLevel":"Basic"},"trialDaysRemaining":60,"billingModel":"Trial","serviceEndpoint":"https://dp.stackhci.azure.com/eastus/","resourceProviderObjectId":"dce429e3-98f6-46ba-8959-be060dd15eec"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1001'
+      - '1141'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 02:51:55 GMT
+      - Mon, 29 May 2023 07:03:44 GMT
       etag:
-      - '"3c02544e-0000-0100-0000-6441fa2c0000"'
+      - '"11000c8b-0000-0100-0000-64744e320000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - b0022c60-4686-4c9d-bb6e-1b0e58aecd68
+      - 19b1c92d-694b-4aa2-949a-0225c7ec1546
       pragma:
       - no-cache
       strict-transport-security:
@@ -418,12 +461,13 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus", "properties": {"aadApplicationObjectId": "1e378590-fbf0-4078-8f96-e866314d8ae0",
-      "aadClientId": "e5b24453-fef3-415a-abef-44c1fbd10984", "aadServicePrincipalObjectId":
-      "5e122920-7bb4-4ce0-9d2c-ab6d5a28dfa6", "aadTenantId": "54826b22-38d6-4fb2-bad9-b7b93a3e9c5a",
-      "desiredProperties": {"diagnosticLevel": "Basic", "windowsServerSubscription":
-      "Disabled"}, "softwareAssuranceProperties": {"softwareAssuranceIntent": "Disable",
-      "softwareAssuranceStatus": "Disabled"}}, "tags": {"key0": "value1"}}'
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus", "properties":
+      {"aadApplicationObjectId": "e8c8a1b5-b498-49b9-a4db-ade49d48415c", "aadClientId":
+      "7aabc763-f59b-44a1-92cf-05ea5b685da4", "aadServicePrincipalObjectId": "70886df5-5ed3-4309-9770-b3962c0f1389",
+      "aadTenantId": "54826b22-38d6-4fb2-bad9-b7b93a3e9c5a", "desiredProperties":
+      {"diagnosticLevel": "Basic", "windowsServerSubscription": "Disabled"}, "softwareAssuranceProperties":
+      {"softwareAssuranceIntent": "Disable", "softwareAssuranceStatus": "Disabled"}},
+      "tags": {"key0": "value1"}}'
     headers:
       Accept:
       - application/json
@@ -434,33 +478,33 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '515'
+      - '555'
       Content-Type:
       - application/json
       ParameterSetName:
       - -n -g --tags
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","name":"cluster000002","type":"microsoft.azurestackhci/clusters","location":"eastus","tags":{"key0":"value1"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-04-21T02:51:16.4905658Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-04-21T02:51:57.2255318Z"},"properties":{"provisioningState":"Succeeded","status":"NotYetRegistered","cloudId":"3dce2c06-378b-4168-bdcb-ce05d99561fa","aadClientId":"e5b24453-fef3-415a-abef-44c1fbd10984","aadTenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","aadServicePrincipalObjectId":"5e122920-7bb4-4ce0-9d2c-ab6d5a28dfa6","aadApplicationObjectId":"1e378590-fbf0-4078-8f96-e866314d8ae0","softwareAssuranceProperties":{"softwareAssuranceStatus":"Disabled","softwareAssuranceIntent":"Disable"},"desiredProperties":{"windowsServerSubscription":"Disabled","diagnosticLevel":"Basic"},"trialDaysRemaining":60,"billingModel":"Trial","serviceEndpoint":"https://dp.stackhci.azure.com/eastus/","resourceProviderObjectId":"dce429e3-98f6-46ba-8959-be060dd15eec"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","name":"cluster000002","type":"microsoft.azurestackhci/clusters","location":"eastus","tags":{"key0":"value1"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-05-29T07:03:04.0753694Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-29T07:03:45.531638Z"},"identity":{"principalId":"d5f79932-695b-464a-90f6-4be67acb6445","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","status":"NotYetRegistered","cloudId":"66e04c28-4afe-47a9-8e70-9510576e21e5","aadClientId":"7aabc763-f59b-44a1-92cf-05ea5b685da4","aadTenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","aadServicePrincipalObjectId":"70886df5-5ed3-4309-9770-b3962c0f1389","aadApplicationObjectId":"e8c8a1b5-b498-49b9-a4db-ade49d48415c","softwareAssuranceProperties":{"softwareAssuranceStatus":"Disabled","softwareAssuranceIntent":"Disable"},"desiredProperties":{"windowsServerSubscription":"Disabled","diagnosticLevel":"Basic"},"trialDaysRemaining":60,"billingModel":"Trial","serviceEndpoint":"https://dp.stackhci.azure.com/eastus/","resourceProviderObjectId":"dce429e3-98f6-46ba-8959-be060dd15eec"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1245'
+      - '1384'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 02:51:58 GMT
+      - Mon, 29 May 2023 07:03:48 GMT
       etag:
-      - '"3c029256-0000-0100-0000-6441fa4d0000"'
+      - '"1100168b-0000-0100-0000-64744e520000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 7bcefec6-4d0b-453d-8f65-724ee1ce6074
+      - 512ed25f-f157-4889-8ed0-5cf935226a1b
       pragma:
       - no-cache
       strict-transport-security:
@@ -492,27 +536,27 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","name":"cluster000002","type":"microsoft.azurestackhci/clusters","location":"eastus","tags":{"key0":"value1"},"properties":{"provisioningState":"Succeeded","status":"NotYetRegistered","cloudId":"3dce2c06-378b-4168-bdcb-ce05d99561fa","aadClientId":"e5b24453-fef3-415a-abef-44c1fbd10984","aadTenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","aadServicePrincipalObjectId":"5e122920-7bb4-4ce0-9d2c-ab6d5a28dfa6","aadApplicationObjectId":"1e378590-fbf0-4078-8f96-e866314d8ae0","softwareAssuranceProperties":{"softwareAssuranceStatus":"Disabled","softwareAssuranceIntent":"Disable"},"desiredProperties":{"windowsServerSubscription":"Disabled","diagnosticLevel":"Basic"},"trialDaysRemaining":60,"billingModel":"Trial","serviceEndpoint":"https://dp.stackhci.azure.com/eastus/","resourceProviderObjectId":"dce429e3-98f6-46ba-8959-be060dd15eec"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","name":"cluster000002","type":"microsoft.azurestackhci/clusters","location":"eastus","tags":{"key0":"value1"},"identity":{"principalId":"d5f79932-695b-464a-90f6-4be67acb6445","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","status":"NotYetRegistered","cloudId":"66e04c28-4afe-47a9-8e70-9510576e21e5","aadClientId":"7aabc763-f59b-44a1-92cf-05ea5b685da4","aadTenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","aadServicePrincipalObjectId":"70886df5-5ed3-4309-9770-b3962c0f1389","aadApplicationObjectId":"e8c8a1b5-b498-49b9-a4db-ade49d48415c","softwareAssuranceProperties":{"softwareAssuranceStatus":"Disabled","softwareAssuranceIntent":"Disable"},"desiredProperties":{"windowsServerSubscription":"Disabled","diagnosticLevel":"Basic"},"trialDaysRemaining":60,"billingModel":"Trial","serviceEndpoint":"https://dp.stackhci.azure.com/eastus/","resourceProviderObjectId":"dce429e3-98f6-46ba-8959-be060dd15eec"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1001'
+      - '1141'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 02:52:01 GMT
+      - Mon, 29 May 2023 07:03:50 GMT
       etag:
-      - '"3c029256-0000-0100-0000-6441fa4d0000"'
+      - '"1100168b-0000-0100-0000-64744e520000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - ba3e1182-1202-46ff-a348-9afb63737977
+      - da6bbe39-d570-4a04-a36c-988e31c81f54
       pragma:
       - no-cache
       strict-transport-security:
@@ -542,27 +586,27 @@ interactions:
       ParameterSetName:
       - --ids
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","name":"cluster000002","type":"microsoft.azurestackhci/clusters","location":"eastus","tags":{"key0":"value1"},"properties":{"provisioningState":"Succeeded","status":"NotYetRegistered","cloudId":"3dce2c06-378b-4168-bdcb-ce05d99561fa","aadClientId":"e5b24453-fef3-415a-abef-44c1fbd10984","aadTenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","aadServicePrincipalObjectId":"5e122920-7bb4-4ce0-9d2c-ab6d5a28dfa6","aadApplicationObjectId":"1e378590-fbf0-4078-8f96-e866314d8ae0","softwareAssuranceProperties":{"softwareAssuranceStatus":"Disabled","softwareAssuranceIntent":"Disable"},"desiredProperties":{"windowsServerSubscription":"Disabled","diagnosticLevel":"Basic"},"trialDaysRemaining":60,"billingModel":"Trial","serviceEndpoint":"https://dp.stackhci.azure.com/eastus/","resourceProviderObjectId":"dce429e3-98f6-46ba-8959-be060dd15eec"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","name":"cluster000002","type":"microsoft.azurestackhci/clusters","location":"eastus","tags":{"key0":"value1"},"identity":{"principalId":"d5f79932-695b-464a-90f6-4be67acb6445","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","type":"SystemAssigned"},"properties":{"provisioningState":"Succeeded","status":"NotYetRegistered","cloudId":"66e04c28-4afe-47a9-8e70-9510576e21e5","aadClientId":"7aabc763-f59b-44a1-92cf-05ea5b685da4","aadTenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a","aadServicePrincipalObjectId":"70886df5-5ed3-4309-9770-b3962c0f1389","aadApplicationObjectId":"e8c8a1b5-b498-49b9-a4db-ade49d48415c","softwareAssuranceProperties":{"softwareAssuranceStatus":"Disabled","softwareAssuranceIntent":"Disable"},"desiredProperties":{"windowsServerSubscription":"Disabled","diagnosticLevel":"Basic"},"trialDaysRemaining":60,"billingModel":"Trial","serviceEndpoint":"https://dp.stackhci.azure.com/eastus/","resourceProviderObjectId":"dce429e3-98f6-46ba-8959-be060dd15eec"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1001'
+      - '1141'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 02:52:01 GMT
+      - Mon, 29 May 2023 07:03:52 GMT
       etag:
-      - '"3c029256-0000-0100-0000-6441fa4d0000"'
+      - '"1100168b-0000-0100-0000-64744e520000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 0d1eae90-fb76-4fe4-ac87-23d635a3bfe7
+      - 02b922fc-474a-4e83-a0c9-302e85ccd269
       pragma:
       - no-cache
       strict-transport-security:
@@ -594,7 +638,7 @@ interactions:
       ParameterSetName:
       - -n -g --yes
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002?api-version=2023-03-01
   response:
@@ -602,7 +646,7 @@ interactions:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/f833e6bd-aade-4d71-b8bc-25d34280f195*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053?api-version=2023-03-01
+      - https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B?api-version=2023-03-01
       cache-control:
       - no-cache
       content-length:
@@ -610,13 +654,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 02:52:04 GMT
+      - Mon, 29 May 2023 07:03:52 GMT
       etag:
-      - '"3c024e58-0000-0100-0000-6441fa540000"'
+      - '"1100198b-0000-0100-0000-64744e590000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/f833e6bd-aade-4d71-b8bc-25d34280f195*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053?api-version=2023-03-01
+      - https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B?api-version=2023-03-01
       pragma:
       - no-cache
       strict-transport-security:
@@ -644,23 +688,23 @@ interactions:
       ParameterSetName:
       - -n -g --yes
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/f833e6bd-aade-4d71-b8bc-25d34280f195*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053?api-version=2023-03-01
+    uri: https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/f833e6bd-aade-4d71-b8bc-25d34280f195*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053","name":"f833e6bd-aade-4d71-b8bc-25d34280f195*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","status":"Deleting","startTime":"2023-04-21T02:52:04.0125955Z"}'
+      string: '{"id":"/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B","name":"7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","status":"Deleting","startTime":"2023-05-29T07:03:53.351649Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '526'
+      - '525'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 02:52:34 GMT
+      - Mon, 29 May 2023 07:03:53 GMT
       etag:
-      - '"c7001843-0000-0100-0000-6441fa540000"'
+      - '"3700ff30-0000-0100-0000-64744e590000"'
       expires:
       - '-1'
       pragma:
@@ -686,23 +730,23 @@ interactions:
       ParameterSetName:
       - -n -g --yes
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/f833e6bd-aade-4d71-b8bc-25d34280f195*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053?api-version=2023-03-01
+    uri: https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/f833e6bd-aade-4d71-b8bc-25d34280f195*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053","name":"f833e6bd-aade-4d71-b8bc-25d34280f195*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","status":"Deleting","startTime":"2023-04-21T02:52:04.0125955Z"}'
+      string: '{"id":"/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B","name":"7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","status":"Deleting","startTime":"2023-05-29T07:03:53.351649Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '526'
+      - '525'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 02:53:04 GMT
+      - Mon, 29 May 2023 07:04:24 GMT
       etag:
-      - '"c7001843-0000-0100-0000-6441fa540000"'
+      - '"3700ff30-0000-0100-0000-64744e590000"'
       expires:
       - '-1'
       pragma:
@@ -728,23 +772,23 @@ interactions:
       ParameterSetName:
       - -n -g --yes
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/f833e6bd-aade-4d71-b8bc-25d34280f195*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053?api-version=2023-03-01
+    uri: https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/f833e6bd-aade-4d71-b8bc-25d34280f195*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053","name":"f833e6bd-aade-4d71-b8bc-25d34280f195*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","status":"Deleting","startTime":"2023-04-21T02:52:04.0125955Z"}'
+      string: '{"id":"/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B","name":"7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","status":"Deleting","startTime":"2023-05-29T07:03:53.351649Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '526'
+      - '525'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 02:53:34 GMT
+      - Mon, 29 May 2023 07:04:54 GMT
       etag:
-      - '"c7001843-0000-0100-0000-6441fa540000"'
+      - '"3700ff30-0000-0100-0000-64744e590000"'
       expires:
       - '-1'
       pragma:
@@ -770,23 +814,65 @@ interactions:
       ParameterSetName:
       - -n -g --yes
       User-Agent:
-      - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/f833e6bd-aade-4d71-b8bc-25d34280f195*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053?api-version=2023-03-01
+    uri: https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B?api-version=2023-03-01
   response:
     body:
-      string: '{"id":"/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/f833e6bd-aade-4d71-b8bc-25d34280f195*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053","name":"f833e6bd-aade-4d71-b8bc-25d34280f195*963587157143F9BB5FA79099973274B820AFEBA060262D7786CE55E650F17053","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","status":"Succeeded","startTime":"2023-04-21T02:52:04.0125955Z","properties":null}'
+      string: '{"id":"/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B","name":"7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","status":"Deleting","startTime":"2023-05-29T07:03:53.351649Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '545'
+      - '525'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 21 Apr 2023 02:54:05 GMT
+      - Mon, 29 May 2023 07:05:24 GMT
       etag:
-      - '"c7004a43-0000-0100-0000-6441fab60000"'
+      - '"3700ff30-0000-0100-0000-64744e590000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - stack-hci cluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --yes
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B?api-version=2023-03-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.AzureStackHCI/locations/EASTUS/operationStatuses/7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B","name":"7fccbddc-c6cd-4eb3-9a23-fdcedb7b620e*31C62A7618BC215517E96282EF39146B90EBD7A5B81103BA9D0C785912DE1F9B","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_stack_hci_cluster000001/providers/Microsoft.AzureStackHCI/clusters/cluster000002","status":"Succeeded","startTime":"2023-05-29T07:03:53.351649Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '544'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 29 May 2023 07:05:55 GMT
+      etag:
+      - '"a8007a06-0000-0300-0000-64744ebc0000"'
       expires:
       - '-1'
       pragma:

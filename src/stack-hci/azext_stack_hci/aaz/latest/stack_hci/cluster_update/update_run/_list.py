@@ -191,9 +191,7 @@ class List(AAZCommand):
             properties.last_updated_time = AAZStrType(
                 serialized_name="lastUpdatedTime",
             )
-            properties.progress = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            properties.progress = AAZObjectType()
             _ListHelper._build_schema_step_read(properties.progress)
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
