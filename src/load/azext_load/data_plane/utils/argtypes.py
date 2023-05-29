@@ -12,7 +12,7 @@ from azure.cli.core.commands.parameters import (
 )
 from knack.arguments import CLIArgumentType
 
-quote_text = "Use {} to clear existing {{}}.".format(quotes)
+quote_text = f"Use {quotes} to clear existing {{}}."
 
 # Common arguments
 resource_group = resource_group_name_type
@@ -148,27 +148,24 @@ env = CLIArgumentType(
     validator=validators.validate_env_vars,
     options_list=["--env"],
     nargs="*",
-    help="space-separated environment variables: key[=value] [key[=value] ...]. {}".format(
-        quote_text.format("environment variables")
-    ),
+    help="space-separated environment variables: key[=value] [key[=value] ...]. "
+    + quote_text.format("environment variables"),
 )
 
 secret = CLIArgumentType(
     validator=validators.validate_secrets,
     options_list=["--secret"],
     nargs="*",
-    help="space-separated secrets: key[=value] [key[=value] ...]. {}".format(
-        quote_text.format("secrets")
-    ),
+    help="space-separated secrets: key[=value] [key[=value] ...]. "
+    + quote_text.format("secrets"),
 )
 
 certificate = CLIArgumentType(
     validator=validators.validate_certificate,
     options_list=["--certificate"],
     nargs="?",
-    help="a single certificate in 'key[=value]' format. {}".format(
-        quote_text.format("certificate")
-    ),
+    help="a single certificate in 'key[=value]' format. "
+    + quote_text.format("certificate"),
 )
 
 dir_path = CLIArgumentType(
@@ -330,5 +327,9 @@ dimension_filters = CLIArgumentType(
     validator=validators.validate_dimension_filters,
     options_list=["--dimension-filters"],
     nargs="*",
-    help="space and comma-separated dimension filters: key1[=value1,value2] [key2[=value3] ...]",
+    help=(
+        "space and comma-separated dimension filters: key1[=value1,value2] [key2[=value3] ...]. "
+        "* is supported as a wildcard for both key and value. "
+        "Example: `--dimension-filters key1=value1,key2=*`, `--dimension-filters *`"
+    ),
 )

@@ -119,7 +119,7 @@ def download_file(url, file_path):
         try:
             response = requests.get(url, stream=True, allow_redirects=True)
             break
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-except
             ex = e
             retries -= 1
             logger.debug(
@@ -128,7 +128,7 @@ def download_file(url, file_path):
                 retries,
             )
     if retries == 0:
-        msg = "Request for {} failed after all retries: {}".format(url, str(ex))
+        msg = f"Request for {url} failed after all retries: {str(ex)}"
         logger.debug(msg)
         raise Exception(msg)
 
@@ -147,6 +147,7 @@ def upload_file_to_test(client, test_id, file_path, file_type=None, wait=False):
         test_id,
         "enabled" if wait else "disabled",
     )
+    # pylint: disable-next=protected-access
     file_path = validators._validate_path(file_path, is_dir=False)
     with open(file_path, "rb") as file:
         upload_poller = client.begin_upload_test_file(
@@ -174,6 +175,7 @@ def parse_cert(certificate):
         raise ValueError("Only one certificate is supported")
     certificate = certificate[0]
     name, value = certificate.get("name"), certificate.get("value")
+    # pylint: disable-next=protected-access
     if not validators._validate_akv_url(value, "certificates"):
         raise ValueError(f"Invalid AKV Certificate URL: {value}")
     certificate = {
@@ -193,6 +195,7 @@ def parse_secrets(secrets):
         name, value = secret.get("name"), secret.get("value")
         if name is None or value is None:
             raise ValueError("Both name and value are required for secret")
+        # pylint: disable-next=protected-access
         if not validators._validate_akv_url(value, "secrets"):
             raise ValueError(f"Invalid AKV Certificate URL: {value}")
         secrets_dict[name] = {
@@ -224,22 +227,21 @@ def parse_env(envs):
 def load_yaml(file_path):
     logger.debug("Loading yaml file: %s", file_path)
     try:
-        with open(file_path, "r") as file:
+        with open(file_path, "r", encoding="UTF-8") as file:
             data = yaml.safe_load(file)
             logger.info("Yaml file loaded successfully")
             return data
     except yaml.YAMLError as e:
-        raise ValueError(f"Error loading yaml file: {e}")
+        raise ValueError(f"Error loading yaml file: {e}") from e
     except Exception as e:
         logger.debug(
             "Exception occurred while parsing load test configuration file: %s",
             str(e),
         )
         raise FileOperationError(
-            "Invalid load test configuration file : %s. Please check the file path and format. Exception: %s",
-            file_path,
-            str(e),
-        )
+            f"Invalid load test configuration file : {file_path}. "
+            f"Please check the file path and format. Exception: {str(e)}"
+        ) from e
 
 
 def convert_yaml_to_test(data):
@@ -279,28 +281,30 @@ def convert_yaml_to_test(data):
     if data.get("failureCriteria"):
         new_body["passFailCriteria"] = {}
         new_body["passFailCriteria"]["passFailMetrics"] = {}
-        for index, items in enumerate(data["failureCriteria"]):
-            id = get_random_uuid()
+        for items in data["failureCriteria"]:
+            metric_id = get_random_uuid()
             name = list(items.keys())[0]
             components = list(items.values())[0]
-            new_body["passFailCriteria"]["passFailMetrics"][id] = {}
-            new_body["passFailCriteria"]["passFailMetrics"][id][
+            new_body["passFailCriteria"]["passFailMetrics"][metric_id] = {}
+            new_body["passFailCriteria"]["passFailMetrics"][metric_id][
                 "aggregate"
             ] = components.split("(")[0].strip()
-            new_body["passFailCriteria"]["passFailMetrics"][id]["clientMetric"] = (
-                components.split("(")[1].split(")")[0].strip()
-            )
-            new_body["passFailCriteria"]["passFailMetrics"][id][
+            new_body["passFailCriteria"]["passFailMetrics"][metric_id][
+                "clientMetric"
+            ] = (components.split("(")[1].split(")")[0].strip())
+            new_body["passFailCriteria"]["passFailMetrics"][metric_id][
                 "condition"
             ] = components.split(")")[1].strip()[0]
-            new_body["passFailCriteria"]["passFailMetrics"][id][
+            new_body["passFailCriteria"]["passFailMetrics"][metric_id][
                 "value"
             ] = components.split(
-                new_body["passFailCriteria"]["passFailMetrics"][id]["condition"]
+                new_body["passFailCriteria"]["passFailMetrics"][metric_id]["condition"]
             )[
                 1
             ].strip()
-            new_body["passFailCriteria"]["passFailMetrics"][id]["requestName"] = name
+            new_body["passFailCriteria"]["passFailMetrics"][metric_id][
+                "requestName"
+            ] = name
     return new_body
 
 
@@ -369,7 +373,7 @@ def create_or_update_body(
         ).get("engineInstances", 1)
     # quick test and split csv not supported currently
     new_body["loadTestConfiguration"]["quickStartTest"] = False
-    new_body["loadTestConfiguration"]["splitAllCSVs"] = True if split_csv else False
+    new_body["loadTestConfiguration"]["splitAllCSVs"] = bool(split_csv)
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
 
@@ -398,10 +402,12 @@ def create_or_update_test_run_body(
     return new_body
 
 
-def upload_files_helper(client, test_id, yaml, test_plan, load_test_config_file, wait):
+def upload_files_helper(
+    client, test_id, yaml_data, test_plan, load_test_config_file, wait
+):
     files = client.list_test_files(test_id)
-    if yaml:
-        user_prop_file = yaml.get("properties", {}).get("userPropertyFile")
+    if yaml_data:
+        user_prop_file = yaml_data.get("properties", {}).get("userPropertyFile")
         if user_prop_file is not None:
             logger.info("Uploading user property file %s", user_prop_file)
             file_name = os.path.basename(user_prop_file)
@@ -428,9 +434,9 @@ def upload_files_helper(client, test_id, yaml, test_plan, load_test_config_file,
                 test_id,
             )
 
-    if yaml and yaml.get("configurationFiles") is not None:
+    if yaml_data and yaml_data.get("configurationFiles") is not None:
         logger.info("Uploading additional artifacts")
-        for config_file in yaml.get("configurationFiles"):
+        for config_file in yaml_data.get("configurationFiles"):
             file_name = os.path.basename(config_file)
             if file_name in [file["fileName"] for file in files]:
                 client.delete_test_file(test_id, file_name)
@@ -453,8 +459,8 @@ def upload_files_helper(client, test_id, yaml, test_plan, load_test_config_file,
                 test_id,
             )
 
-    if test_plan is None and yaml is not None and yaml.get("testPlan"):
-        test_plan = yaml.get("testPlan")
+    if test_plan is None and yaml_data is not None and yaml_data.get("testPlan"):
+        test_plan = yaml_data.get("testPlan")
         if not os.path.isabs(test_plan) and load_test_config_file:
             yaml_dir = os.path.dirname(load_test_config_file)
             test_plan = os.path.join(yaml_dir, test_plan)

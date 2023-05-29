@@ -8,62 +8,42 @@
 
 helps = {}
 
+_common_params = """parameters:
+    - name: --load-test-resource, --name, -n
+      type: string
+      short-summary: 'Name or ARM resource ID of the load test resource'
+      long-summary: |
+          Name or ARM resource ID of the load test resource
+    - name: --resource-group, -g
+      type: string
+      short-summary: 'Name of the resource group'
+      long-summary: |
+          Name of the resource group
+"""
+
 helps[
     "load test"
 ] = """
 type: group
 short-summary: Command group to manage load tests.
-long-summary: Command group with commands related to test such as create, update, delete, list, etc.
-parameters:
-    - name: --load-test-resource, --name, -n
-      type: string
-      short-summary: 'Name or ARM resource ID of the load test resource'
-      long-summary: |
-          Name or ARM resource ID of the load test resource
-    - name: --resource-group, -g
-      type: string
-      short-summary: 'Name of the resource group'
-      long-summary: |
-          Name of the resource group
-"""
+long-summary: Command group to manage load test with create, update, delete, list, etc.
+""" + _common_params
 
 helps[
     "load test app-component"
 ] = """
 type: group
-short-summary: Command group with commands related to test app-components.
-long-summary: Command group with commands related to test app-components such as add, list and remove.
-parameters:
-    - name: --load-test-resource, --name, -n
-      type: string
-      short-summary: 'Name or ARM resource ID of the load test resource'
-      long-summary: |
-          Name or ARM resource ID of the load test resource
-    - name: --resource-group, -g
-      type: string
-      short-summary: 'Name of the resource group'
-      long-summary: |
-          Name of the resource group
-"""
+short-summary: Command group to manage load test app-components.
+long-summary: Command group to manage load test app-components with add, list and remove.
+""" + _common_params
 
 helps[
     "load test server-metric"
 ] = """
 type: group
-short-summary: Command group with commands related to test server-metrics.
-long-summary: Command group with commands related to test server-metrics such as add, list and remove.
-parameters:
-    - name: --load-test-resource, --name, -n
-      type: string
-      short-summary: 'Name or ARM resource ID of the load test resource'
-      long-summary: |
-          Name or ARM resource ID of the load test resource
-    - name: --resource-group, -g
-      type: string
-      short-summary: 'Name of the resource group'
-      long-summary: |
-          Name of the resource group
-"""
+short-summary: Command group to manage load test server-metrics.
+long-summary: Command group to manage load test server-metrics with add, list and remove.
+""" + _common_params
 
 helps[
     "load test file"
@@ -71,91 +51,36 @@ helps[
 type: group
 short-summary: Command group with commands related to test file.
 long-summary: Command group with commands related to test file such as upload, delete, list and download.
-parameters:
-    - name: --load-test-resource, --name, -n
-      type: string
-      short-summary: 'Name or ARM resource ID of the load test resource'
-      long-summary: |
-          Name or ARM resource ID of the load test resource
-    - name: --resource-group, -g
-      type: string
-      short-summary: 'Name of the resource group'
-      long-summary: |
-          Name of the resource group
-"""
+""" + _common_params
 
 helps[
     "load test-run"
 ] = """
 type: group
-short-summary: Command group with commands related to test rund.
-long-summary: Command group with commands related to test such as create, update, delete, list, stop, etc.
-parameters:
-    - name: --load-test-resource, --name, -n
-      type: string
-      short-summary: 'Name or ARM resource ID of the load test resource'
-      long-summary: |
-          Name or ARM resource ID of the load test resource
-    - name: --resource-group, -g
-      type: string
-      short-summary: 'Name of the resource group'
-      long-summary: |
-          Name of the resource group
-"""
+short-summary: Command group to manage load test runs.
+long-summary: Command group to manage load test runs with create, update, delete, list, stop, etc.
+""" + _common_params
 
 helps[
     "load test-run app-component"
 ] = """
 type: group
-short-summary: Command group with commands related to test-run app-component.
-long-summary: Command group with commands related to test-run app-component such as add, list and remove.
-parameters:
-    - name: --load-test-resource, --name, -n
-      type: string
-      short-summary: 'Name or ARM resource ID of the load test resource'
-      long-summary: |
-          Name or ARM resource ID of the load test resource
-    - name: --resource-group, -g
-      type: string
-      short-summary: 'Name of the resource group'
-      long-summary: |
-          Name of the resource group
-"""
+short-summary: Command group to manage load test run app-component.
+long-summary: Command group to manage load test run app-component with add, list and remove.
+""" + _common_params
 
 helps[
     "load test-run server-metric"
 ] = """
 type: group
-short-summary: Command group with commands related to test-run server-metrics.
-long-summary: Command group with commands related to test-run server-metrics such as add, list and remove.
-parameters:
-    - name: --load-test-resource, --name, -n
-      type: string
-      short-summary: 'Name or ARM resource ID of the load test resource'
-      long-summary: |
-          Name or ARM resource ID of the load test resource
-    - name: --resource-group, -g
-      type: string
-      short-summary: 'Name of the resource group'
-      long-summary: |
-          Name of the resource group
-"""
+short-summary: Command group to manage load test run server-metrics.
+long-summary: Command group to manage load test run server-metrics with add, list and remove.
+""" + _common_params
 
 helps[
     "load test-run metrics"
 ] = """
 type: group
-short-summary: Command group with commands related to test-run metrics.
-long-summary: Command group with commands related to test-run metrics.
-parameters:
-    - name: --load-test-resource, --name, -n
-      type: string
-      short-summary: 'Name or ARM resource ID of the load test resource'
-      long-summary: |
-          Name or ARM resource ID of the load test resource
-    - name: --resource-group, -g
-      type: string
-      short-summary: 'Name of the resource group'
-      long-summary: |
-          Name of the resource group
-"""
+short-summary: Command group to retrieve load test run metrics.
+long-summary: Command group to retrieve load test run metrics with list, get-namespaces, get-definitions, get-dimension.
+""" + _common_params

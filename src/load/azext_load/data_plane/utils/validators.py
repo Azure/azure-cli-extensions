@@ -20,6 +20,7 @@ logger = get_logger(__name__)
 
 
 def validate_test_id(namespace):
+    """Validates test-id"""
     if not isinstance(namespace.test_id, str):
         raise InvalidArgumentValueError(
             f"Invalid test-id type: {type(namespace.test_id)}"
@@ -29,6 +30,7 @@ def validate_test_id(namespace):
 
 
 def validate_test_run_id(namespace):
+    """Validates test-run-id"""
     if namespace.test_run_id is None:
         namespace.test_run_id = utils.get_random_uuid()
     if not isinstance(namespace.test_run_id, str):
@@ -39,8 +41,10 @@ def validate_test_run_id(namespace):
         raise InvalidArgumentValueError("Invalid test-run-id value")
 
 
-def _validate_akv_url(string, type="secrets|certificates|keys|storage"):
-    regex = f"^https://[a-zA-Z0-9_-]+\\.(?:vault|vault-int)\\.(?:azure|azure-int|usgovcloudapi|microsoftazure)\\.(?:net|cn|de)/(?:{type})/[a-zA-Z0-9_-]+(?:/[a-zA-Z0-9_-]+|$)$"
+def _validate_akv_url(string, url_type="secrets|certificates|keys|storage"):
+    """Validates Azure Key Vault URL"""
+    # pylint: disable-next=line-too-long
+    regex = f"^https://[a-zA-Z0-9_-]+\\.(?:vault|vault-int)\\.(?:azure|azure-int|usgovcloudapi|microsoftazure)\\.(?:net|cn|de)/(?:{url_type})/[a-zA-Z0-9_-]+(?:/[a-zA-Z0-9_-]+|$)$"
     return re.match(regex, string, re.IGNORECASE)
 
 
@@ -134,7 +138,8 @@ def validate_app_component_type(namespace):
     provider_name = "/".join(namespace.app_component_id.split("/")[6:8]).casefold()
     if provider_name != namespace.app_component_type.casefold():
         raise InvalidArgumentValueError(
-            f"Type of app-component-id and app-component-type mismatch: {provider_name} vs {namespace.app_component_type}"
+            "Type of app-component-id and app-component-type mismatch: "
+            f"{provider_name} vs {namespace.app_component_type}"
         )
 
 
@@ -182,12 +187,12 @@ def validate_load_test_config_file(namespace):
         namespace.load_test_config_file, is_dir=False
     )
     try:
-        with open(namespace.load_test_config_file, "r") as file:
+        with open(namespace.load_test_config_file, "r", encoding="UTF-8") as file:
             yaml.safe_load(file)
     except yaml.YAMLError as e:
         raise InvalidArgumentValueError(
             f"Invalid YAML file: {namespace.load_test_config_file}. Error: {e}"
-        )
+        ) from e
 
 
 def validate_dir_path(namespace):
@@ -265,12 +270,12 @@ def _validate_iso_time(string):
     try:
         datetime.strptime(string, "%Y-%m-%dT%H:%M:%S.%fZ")
         return
-    except Exception:
+    except ValueError:
         pass
     try:
         datetime.strptime(string, "%Y-%m-%dT%H:%M:%SZ")
         return
-    except Exception:
+    except ValueError:
         pass
     raise InvalidArgumentValueError(
         f"Invalid time format: '{string}'. Expected ISO 8601 format."
@@ -299,17 +304,18 @@ def validate_metric_namespaces(namespace):
     allowed_metric_namespaces = utils.get_enum_values(AllowedMetricNamespaces)
     if namespace.metric_namespace not in allowed_metric_namespaces:
         raise InvalidArgumentValueError(
-            f"Invalid metric-namespace value: {namespace.metric_namespace}. Allowed values: {', '.join(allowed_metric_namespaces)}"
+            f"Invalid metric-namespace value: {namespace.metric_namespace}. "
+            f"Allowed values: {', '.join(allowed_metric_namespaces)}"
         )
 
 
 def validate_dimension_filters(namespace):
-    """Extracts multiple space and comma-separated dimension filters in key1[=value1,value2] [key2[=value3, value4]] format"""
+    """Extracts multiple space and comma-separated dimension filters in key1[=value1,value2] format"""
     if isinstance(namespace.dimension_filters, list):
         filters_dict = OrderedDict()
         for item in namespace.dimension_filters:
-            filter = _validate_dimension_filter(item)
-            for key, value in filter.items():
+            dimension_filter = _validate_dimension_filter(item)
+            for key, value in dimension_filter.items():
                 if key in filters_dict:
                     filters_dict[key].extend(value)
                 else:
