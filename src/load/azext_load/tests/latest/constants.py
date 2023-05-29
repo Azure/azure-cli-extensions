@@ -4,10 +4,6 @@ TEST_RESOURCES_DIR = os.path.join(os.path.dirname(__file__), r"resources")
 
 
 class LoadConstants:
-    # Resource constants
-    LOAD_TEST_RESOURCE = "hbisht-cli-testing"
-    RESOURCE_GROUP = "hbisht-rg"
-    TEST_ID = "sampletest1"
 
     # Test Plan constants
     LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config.yaml")
@@ -17,7 +13,7 @@ class LoadConstants:
 
     ENV_VAR_DURATION_NAME = "duration_in_sec"
     ENV_VAR_DURATION_SHORT = "1"
-    ENV_VAR_DURATION_LONG = "60"
+    ENV_VAR_DURATION_LONG = "240"
 
     # App Component constants
     APP_COMPONENT_ID = r"/subscriptions/{subscription_id}/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss"

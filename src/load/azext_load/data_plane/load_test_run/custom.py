@@ -30,6 +30,7 @@ def create_test_run(
     resource_group_name=None,
     wait=False,
 ):
+    logger.info("Create test run started")
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     test_run_body = create_or_update_test_run_body(
         test_id,
@@ -39,7 +40,7 @@ def create_test_run(
         secrets=secrets,
         certificate=certificate,
     )
-    logger.info("Creating test run with following request %s", test_run_body)
+    logger.debug("Creating test run with following request %s", test_run_body)
     poller = client.begin_test_run(
         test_run_id=test_run_id,
         body=test_run_body,
@@ -53,9 +54,12 @@ def create_test_run(
 
 
 def get_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None):
-    client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Getting test run %s", test_run_id)
-    return client.get_test_run(test_run_id=test_run_id)
+    client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+    response = client.get_test_run(test_run_id=test_run_id)
+    logger.debug("Test run %s", response)
+    logger.info("Getting test run completed")
+    return response
 
 
 def update_test_run(
@@ -65,6 +69,7 @@ def update_test_run(
     load_test_resource,
     resource_group_name=None,
 ):
+    logger.info("Update test run started")
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     try:
         test_run_body = client.get_test_run(test_run_id=test_run_id)
@@ -77,25 +82,36 @@ def update_test_run(
     )
     logger.info("Updating test run %s", test_run_id)
     # pylint: disable-next=protected-access
-    return client._test_run_initial(test_run_id=test_run_id, body=test_run_body)
+    response = client._test_run_initial(test_run_id=test_run_id, body=test_run_body)
+    logger.debug("Test run updated with following response %s", response)
+    logger.info("Update test run completed")
+    return response
 
 
 def delete_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Deleting test run %s", test_run_id)
-    return client.delete_test_run(test_run_id=test_run_id)
-
+    response = client.delete_test_run(test_run_id=test_run_id)
+    logger.debug("Test run deleted with following response %s", response)
+    logger.info("Delete test run completed")
+    return response
 
 def list_test_runs(cmd, test_id, load_test_resource, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Listing test runs for test %s", test_id)
-    return client.list_test_runs(test_id=test_id)
+    response = client.list_test_runs(test_id=test_id)
+    logger.debug("Test runs listed with following response %s", response)
+    logger.info("List test runs completed")
+    return response
 
 
 def stop_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Stopping test run %s", test_run_id)
-    return client.stop_test_run(test_run_id=test_run_id)
+    response = client.stop_test_run(test_run_id=test_run_id)
+    logger.debug("Test run stopped with following response %s", response)
+    logger.info("Stop test run completed")
+    return response
 
 
 def download_test_run_files(
@@ -109,6 +125,7 @@ def download_test_run_files(
     resource_group_name=None,
     force=False,  # pylint: disable=unused-argument
 ):
+    logger.info("Downloading test run files for test run %s", test_run_id)
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     test_run_data = client.get_test_run(test_run_id=test_run_id)
     if test_run_data.get("testArtifacts") is None:
@@ -163,7 +180,7 @@ def download_test_run_files(
             else:
                 logger.info("No log file found for test run %s", test_run_id)
         else:
-            logger.info(
+            logger.warning(
                 "No results file and output artifacts found for test run %s",
                 test_run_id,
             )
@@ -195,8 +212,8 @@ def download_test_run_files(
             else:
                 logger.info("No results file found for test run %s", test_run_id)
         else:
-            logger.info(
-                "No results file and output artifacts found for test run %s",
+            logger.warning(
+                "No results file found for test run %s",
                 test_run_id,
             )
 
@@ -212,6 +229,7 @@ def add_test_run_app_component(
     app_component_kind=None,
     resource_group_name=None,
 ):
+    logger.info("Adding app component to test run %s", test_run_id)
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = {
         "testRunId": test_run_id,
@@ -226,7 +244,10 @@ def add_test_run_app_component(
     if app_component_kind:
         body["components"][app_component_id]["kind"] = app_component_kind
     logger.debug("Adding app component to the test run: %s", body)
-    return client.create_or_update_app_components(test_run_id=test_run_id, body=body)
+    response = client.create_or_update_app_components(test_run_id=test_run_id, body=body)
+    logger.debug("App component added with following response %s", response)
+    logger.info("App component completed")
+    return response
 
 
 def list_test_run_app_component(
@@ -236,8 +257,11 @@ def list_test_run_app_component(
     resource_group_name=None,
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
-    logger.debug("Listing app components for the given test run")
-    return client.get_app_components(test_run_id=test_run_id)
+    logger.info("Listing app components for the given test run")
+    response = client.get_app_components(test_run_id=test_run_id)
+    logger.debug("List of app components completed with following response %s", response)
+    logger.info("App components completed")
+    return response
 
 
 def remove_test_run_app_component(
@@ -249,12 +273,13 @@ def remove_test_run_app_component(
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = {"testRunId": test_run_id, "components": {app_component_id: None}}
-    logger.debug("Removing app component from the test run: %s", body)
-    return client.create_or_update_app_components(test_run_id=test_run_id, body=body)
-
+    logger.info("Removing app component from the test run: %s", body)
+    response = client.create_or_update_app_components(test_run_id=test_run_id, body=body)
+    logger.debug("App component removed completed with following response %s", response)
+    logger.info("App component completed")
+    return response
 
 # server metrics
-
 
 def add_test_run_server_metric(
     cmd,
@@ -268,6 +293,7 @@ def add_test_run_server_metric(
     app_component_type,
     resource_group_name=None,
 ):
+    logger.info("Adding server metrics to test run %s", test_run_id)
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = {
         "testRunId": test_run_id,
@@ -282,9 +308,12 @@ def add_test_run_server_metric(
         },
     }
     logger.debug("Adding server metrics to the test run: %s", body)
-    return client.create_or_update_server_metrics_config(
+    response = client.create_or_update_server_metrics_config(
         test_run_id=test_run_id, body=body
     )
+    logger.debug("Server metrics added completed with following response %s", test_run_id)
+    logger.info("Server metrics completed")
+    return response
 
 
 def list_test_run_server_metric(
@@ -294,8 +323,11 @@ def list_test_run_server_metric(
     resource_group_name=None,
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
-    logger.debug("Listing server metrics")
-    return client.get_server_metrics_config(test_run_id=test_run_id)
+    logger.info("Listing server metrics")
+    response = client.get_server_metrics_config(test_run_id=test_run_id)
+    logger.debug("List of server metrics completed with following response %s", response)
+    logger.info("Server metrics completed")
+    return response
 
 
 def remove_test_run_server_metric(
@@ -307,18 +339,23 @@ def remove_test_run_server_metric(
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     body = {"testRunId": test_run_id, "metrics": {metric_id: None}}
-    logger.debug("Removing server metrics from the test run: %s", body)
-    return client.create_or_update_server_metrics_config(
+    logger.info("Removing server metrics from the test run: %s", body)
+    response = client.create_or_update_server_metrics_config(
         test_run_id=test_run_id, body=body
     )
-
+    logger.debug("Server metrics removed completed with following response %s", response)
+    logger.info("Server metrics completed")
+    return response
 
 def get_test_run_metric_namespaces(
     cmd, load_test_resource, test_run_id, resource_group_name=None
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
-    logger.debug("Getting client metrics namespaces")
-    return client.get_metric_namespaces(test_run_id)
+    logger.info("Getting client metrics namespaces")
+    response = client.get_metric_namespaces(test_run_id)
+    logger.debug("Getting client metrics namespaces completed with following response %s", response)
+    logger.info("Getting client metrics namespaces completed")
+    return response
 
 
 def list_test_run_metrics(
@@ -335,7 +372,7 @@ def list_test_run_metrics(
     resource_group_name=None,
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
-    logger.debug(
+    logger.info(
         "Getting test run metric dimensions for test run %s for metric %s in namespace %s",
         test_run_id,
         metric_name,
@@ -350,6 +387,7 @@ def list_test_run_metrics(
             end_time = test_run_response["endDateTime"]
 
     time_interval = f"{start_time}/{end_time}"
+    logger.debug("Time interval: %s", time_interval)
 
     if metric_name is not None:
         if dimension_filters is None:
@@ -369,7 +407,7 @@ def list_test_run_metrics(
                         for metric_dimension in metric_definition.get("dimensions", [])
                     ]
                     break
-
+        logger.debug("Dimension filters: %s", dimension_filters)
         for dimension_filter in dimension_filters:
             # Add all values for given dimensions if '*' present in dimension values
             if "*" in dimension_filter.get("values", []):
@@ -395,6 +433,8 @@ def list_test_run_metrics(
             },
         )
         response = list(metrics)
+        logger.debug("All metrics: %s", response)
+        logger.info("List metrics completed")
         return response
 
     # metric_name is None, so list metrics for all metric names
@@ -416,6 +456,8 @@ def list_test_run_metrics(
         )
         response = list(metrics)
         aggregated_metrics[metric_name] = response
+    logger.debug("Aggregated metrics: %s", aggregated_metrics)
+    logger.info("List metrics completed")
     return aggregated_metrics
 
 
@@ -423,12 +465,14 @@ def get_test_run_metric_definitions(
     cmd, load_test_resource, test_run_id, metric_namespace, resource_group_name=None
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
-    logger.debug(
+    logger.info(
         "Getting test run metric definitions for namespace %s", metric_namespace
     )
     metric_definitions = client.get_metric_definitions(
         test_run_id, metric_namespace=metric_namespace
     )
+    logger.debug("Getting test run metric definitions completed with following response %s", metric_definitions)
+    logger.info("Getting test run metric definitions completed")
     return metric_definitions
 
 
@@ -445,7 +489,7 @@ def get_test_run_metric_dimensions(
     resource_group_name=None,
 ):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
-    logger.debug(
+    logger.info(
         "Getting test run metric dimensions for test run %s for metric %s in namespace %s",
         test_run_id,
         metric_name,
@@ -467,6 +511,7 @@ def get_test_run_metric_dimensions(
         time_interval=f"{start_time}/{end_time}",
         interval=interval,
     )
-
     response = list(dimensions)
+    logger.debug("Dimensions: %s", response)
+    logger.info("List dimensions completed")
     return response

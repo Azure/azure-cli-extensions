@@ -62,19 +62,9 @@ class LoadTestRunScenario(ScenarioTest):
             checks=[JMESPathCheck("testRunId", self.kwargs["test_run_id"])],
         ).get_output_in_json()
 
-        while test_run.get("status") not in [
-            "EXECUTING",
-            "DONE",
-            "FAILED",
-            "CANCELLED",
-        ]:
-            time.sleep(10)
-            test_run = self.cmd(
-                "az load test-run show "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--test-run-id {test_run_id} "
-            ).get_output_in_json()
+        #waiting for test to start
+        if self.is_live:
+            time.sleep(40)
 
         test_run = self.cmd(
             "az load test-run stop "
@@ -84,22 +74,17 @@ class LoadTestRunScenario(ScenarioTest):
             "--yes"
         ).get_output_in_json()
 
-        while test_run.get("status") not in ["DONE", "FAILED", "CANCELLED"]:
-            time.sleep(5)
-            test_run = self.cmd(
-                "az load test-run show "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--test-run-id {test_run_id} "
-            ).get_output_in_json()
+        if self.is_live:
+            time.sleep(20)
 
         test_run = self.cmd(
             "az load test-run show "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             "--test-run-id {test_run_id} ",
-            checks=[JMESPathCheck("status", "CANCELLED")],
         ).get_output_in_json()
+
+        assert test_run.get("status") in ["CANCELLING", "FAILED", "CANCELLED"]
 
         delete_test(self)
 

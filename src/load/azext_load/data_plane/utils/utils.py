@@ -15,7 +15,7 @@ from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueEr
 from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
-from .models import IdentityType
+from .models import IdentityType, AllowedFileTypes
 
 logger = get_logger(__name__)
 
@@ -111,6 +111,7 @@ def get_enum_values(enum):
 
 
 def download_file(url, file_path):
+    logger.debug("Downloading file started")
     response = None
     retries = 3
     ex = None
@@ -136,7 +137,7 @@ def download_file(url, file_path):
             for chunk in response.iter_content(chunk_size=1024):
                 if chunk:  # ignore keep-alive new chunks
                     f.write(chunk)
-
+    logger.debug("Downloading file completed")
 
 def upload_file_to_test(client, test_id, file_path, file_type=None, wait=False):
     logger.debug(
@@ -167,6 +168,7 @@ def upload_file_to_test(client, test_id, file_path, file_type=None, wait=False):
 
 
 def parse_cert(certificate):
+    logger.debug("Parsing certificate")
     if len(certificate) != 1:
         raise ValueError("Only one certificate is supported")
     certificate = certificate[0]
@@ -178,10 +180,13 @@ def parse_cert(certificate):
         "type": "AKV_CERT_URI",
         "value": value,
     }
+    logger.debug("Parsed certificate: %s", certificate)
+    logger.debug("Certificate parsed successfully")
     return certificate
 
 
 def parse_secrets(secrets):
+    logger.debug("Parsing secrets")
     secrets_dict = {}
     for secret in secrets:
         name, value = secret.get("name"), secret.get("value")
@@ -195,10 +200,13 @@ def parse_secrets(secrets):
                 "value": value,
             }
         }
+    logger.debug("Parsed secrets: %s", secrets_dict)
+    logger.debug("Secrets parsed successfully")
     return secrets_dict
 
 
 def parse_env(envs):
+    logger.debug("Parsing environment variables")
     env_dict = {}
     for env in envs:
         name, value = env.get("name"), env.get("value")
@@ -207,13 +215,17 @@ def parse_env(envs):
         if value is None:
             value = ""
         env_dict[name] = value
+    logger.debug("Parsed environment variables: %s", env_dict)
+    logger.debug("Environment variables parsed successfully")
     return env_dict
 
 
 def load_yaml(file_path):
+    logger.debug("Loading yaml file: %s", file_path)
     try:
         with open(file_path, "r") as file:
             data = yaml.safe_load(file)
+            logger.info("Yaml file loaded successfully")
             return data
     except yaml.YAMLError as e:
         raise ValueError(f"Error loading yaml file: {e}")
@@ -305,6 +317,7 @@ def create_or_update_body(
     subnet_id=None,
     split_csv=None,
 ):
+    logger.info("Creating a request body for create or update test")
     new_body = {}
     if display_name is not None:
         new_body["displayName"] = display_name
@@ -356,6 +369,7 @@ def create_or_update_body(
     # quick test and split csv not supported currently
     new_body["loadTestConfiguration"]["quickStartTest"] = False
     new_body["loadTestConfiguration"]["splitAllCSVs"] = True if split_csv else False
+    logger.debug("Request body for create or update test: %s", new_body)
     return new_body
 
 
@@ -367,6 +381,7 @@ def create_or_update_test_run_body(
     secrets=None,
     certificate=None,
 ):
+    logger.info("Creating a request body for create test run")
     new_body = {"testId": test_id}
     if display_name is not None:
         new_body["displayName"] = display_name
@@ -378,9 +393,85 @@ def create_or_update_test_run_body(
         new_body["secrets"] = secrets
     if certificate is not None:
         new_body["certificate"] = certificate
-
+    logger.debug("Request body for create test run: %s", new_body)
     return new_body
 
+
+def upload_files_helper(client, test_id, yaml, test_plan, load_test_config_file, wait):
+    files = client.list_test_files(test_id)
+    if yaml:
+        user_prop_file = yaml.get("properties", {}).get("userPropertyFile")
+        if user_prop_file is not None:
+            logger.info("Uploading user property file %s", user_prop_file)
+            file_name = os.path.basename(user_prop_file)
+            for file in files:
+                if AllowedFileTypes.USER_PROPERTIES.value == file["fileType"]:
+                    client.delete_test_file(test_id, file["fileName"])
+                    logger.info("File of type '%s' already exists in test %s. Deleting it!", AllowedFileTypes.USER_PROPERTIES, test_id)
+                    break
+            file_response = upload_file_to_test(
+                client,
+                test_id,
+                user_prop_file,
+                file_type=AllowedFileTypes.USER_PROPERTIES,
+                wait=wait,
+            )
+            logger.info(
+                "Uploaded file '%s' of type %s to test %s",
+                file_name,
+                AllowedFileTypes.USER_PROPERTIES,
+                test_id,
+            )
+
+    if yaml and yaml.get("configurationFiles") is not None:
+        logger.info("Uploading additional artifacts")
+        for config_file in yaml.get("configurationFiles"):
+            file_name = os.path.basename(config_file)
+            if file_name in [file["fileName"] for file in files]:
+                client.delete_test_file(test_id, file_name)
+                logger.info(
+                    "File with name '%s' already exists in test %s. Deleting it!",
+                    file_name,
+                    test_id,
+                )
+            upload_file_to_test(
+                client,
+                test_id,
+                config_file,
+                file_type=AllowedFileTypes.ADDITIONAL_ARTIFACTS,
+                wait=wait,
+            )
+            logger.info(
+                "Uploaded file '%s' of type %s to test %s",
+                file_name,
+                AllowedFileTypes.ADDITIONAL_ARTIFACTS,
+                test_id,
+            )
+
+    if test_plan is None and yaml is not None and yaml.get("testPlan"):
+        test_plan = yaml.get("testPlan")
+        if not os.path.isabs(test_plan) and load_test_config_file:
+            yaml_dir = os.path.dirname(load_test_config_file)
+            test_plan = os.path.join(yaml_dir, test_plan)
+    if test_plan:
+        logger.info("Uploading test plan file %s", test_plan)
+        file_name = os.path.basename(test_plan)
+        for file in files:
+            if validators.AllowedFileTypes.JMX_FILE.value == file["fileType"]:
+                client.delete_test_file(test_id, file["fileName"])
+                logger.info(
+                    "File with name '%s' already exists in test %s. Deleting it!",
+                    file_name,
+                    test_id,
+                )
+                break
+        file_response = upload_file_to_test(
+            client, test_id, test_plan, file_type=validators.AllowedFileTypes.JMX_FILE, wait=wait
+        )
+        if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
+            raise FileOperationError(
+                f"Test plan file {test_plan} is not valid. Please check the file and try again."
+            )
 
 def get_random_uuid():
     return str(uuid.uuid4())
