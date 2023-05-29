@@ -2,6 +2,11 @@
 
 Release History
 
+1.3.19
+++++++
+
+* Adding outbound network connectivity check for Cluster Connect (OBO endpoint)
+
 1.3.18
 ++++++
 
