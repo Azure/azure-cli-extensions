@@ -1445,9 +1445,9 @@ helps['spring apm show'] = """
 
 helps['spring apm list'] = """
     type: command
-    short-summary: (Enterprise Tier Only) List all APMs in the Azure Spring Apps. The secrets will be omitted.
+    short-summary: (Enterprise Tier Only) List all the APMs in the Azure Spring Apps. The secrets will be omitted.
     examples:
-        - name: List all APMs in the Azure Spring Apps.
+        - name: List all the APMs in the Azure Spring Apps.
           text: az spring apm list --service MyCluster --resource-group MyResourceGroup
 """
 
@@ -1461,9 +1461,9 @@ helps['spring apm delete'] = """
 
 helps['spring apm list-enabled-globally'] = """
     type: command
-    short-summary: (Enterprise Tier Only) List all APMs enabled globally in the Azure Spring Apps.
+    short-summary: (Enterprise Tier Only) List all the APMs enabled globally in the Azure Spring Apps.
     examples:
-        - name: List all APMs enabled globally in the Azure Spring Apps.
+        - name: List all the APMs enabled globally in the Azure Spring Apps.
           text: az spring apm list-enabled-globally --service MyCluster --resource-group MyResourceGroup
 """
 
