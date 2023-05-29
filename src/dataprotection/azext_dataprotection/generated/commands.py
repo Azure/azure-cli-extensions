@@ -14,19 +14,10 @@
 
 from azure.cli.core.commands import CliCommandType
 from azext_dataprotection.generated._client_factory import (
-    cf_backup_vault,
     cf_backup_policy,
     cf_backup_instance,
-    cf_recovery_point,
-    cf_job,
     cf_restorable_time_range,
     cf_resource_guard,
-)
-
-
-dataprotection_backup_vault = CliCommandType(
-    operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._backup_vaults_operations#BackupVaultsOperations.{}',
-    client_factory=cf_backup_vault,
 )
 
 
