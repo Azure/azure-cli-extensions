@@ -42,18 +42,6 @@ dataprotection_backup_instance = CliCommandType(
 )
 
 
-dataprotection_recovery_point = CliCommandType(
-    operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._recovery_points_operations#RecoveryPointsOperations.{}',
-    client_factory=cf_recovery_point,
-)
-
-
-dataprotection_job = CliCommandType(
-    operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._jobs_operations#JobsOperations.{}',
-    client_factory=cf_job,
-)
-
-
 dataprotection_restorable_time_range = CliCommandType(
     operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._restorable_time_ranges_operations#RestorableTimeRangesOperations.{}',
     client_factory=cf_restorable_time_range,
