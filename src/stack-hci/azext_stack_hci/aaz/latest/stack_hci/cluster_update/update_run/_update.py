@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update Update runs for a specified update
+
+    :example: Update update run
+        az stack-hci cluster-update update-run update --cluster-name name -g rg  -n updates-run-name --update-name name --progress "{name:cli_update_test,description:update_test}"
     """
 
     _aaz_info = {

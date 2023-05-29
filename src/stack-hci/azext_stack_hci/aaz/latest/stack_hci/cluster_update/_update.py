@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update specified Update
+
+    :example: Update cluster update
+        az stack-hci cluster-update update -g {rg} --cluster-name name -n updates-name --description test --package-size-in-mb 10 --additional-properties test --availability-type local --version 1.0.0 --display-name test --publisher clitest
     """
 
     _aaz_info = {
@@ -151,6 +154,7 @@ class Update(AAZCommand):
         _args_schema.reboot_required = AAZStrArg(
             options=["--reboot-required"],
             arg_group="Properties",
+            help="Reboot required",
             nullable=True,
             enum={"False": "False", "True": "True", "Unknown": "Unknown"},
         )

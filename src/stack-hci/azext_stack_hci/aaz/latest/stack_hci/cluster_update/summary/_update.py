@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update Update summaries under the HCI cluster
+
+    :example: Update cluster update summary
+        az stack-hci cluster-update summary update --cluster-name name -g rg --current-version 1.0.0  --hardware-model PowerEdge --oem-family DellEMC --package-versions "[{packageType:OEM,version:2.2.2108.6},{packageType:Services,version:4.2203.2.32}]"
     """
 
     _aaz_info = {

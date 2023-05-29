@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create Update summaries under the HCI cluster
+
+    :example: Create cluster update summary
+        az stack-hci cluster-update summary create --cluster-name name -g rg
     """
 
     _aaz_info = {

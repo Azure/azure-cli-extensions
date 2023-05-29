@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all Update summaries under the HCI cluster
+
+    :example: List cluster update summary
+        az stack-hci cluster-update summary list --cluster-name name -g rg
     """
 
     _aaz_info = {

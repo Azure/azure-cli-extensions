@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create specified Update
+
+    :example: Create cluster update
+        az stack-hci cluster-update create -g rg --cluster-name name -n updates-name
     """
 
     _aaz_info = {
@@ -133,6 +136,7 @@ class Create(AAZCommand):
         _args_schema.reboot_required = AAZStrArg(
             options=["--reboot-required"],
             arg_group="Properties",
+            help="Reboot required",
             enum={"False": "False", "True": "True", "Unknown": "Unknown"},
         )
         _args_schema.release_link = AAZStrArg(

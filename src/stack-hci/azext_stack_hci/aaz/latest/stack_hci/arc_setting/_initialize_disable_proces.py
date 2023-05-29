@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class InitializeDisableProces(AAZCommand):
     """Initializes ARC Disable process on the cluster
+
+    :example: Initialize disable proces
+        az stack-hci arc-setting initialize-disable-proces -g rg --arc-setting-name default --cluster-name name
     """
 
     _aaz_info = {

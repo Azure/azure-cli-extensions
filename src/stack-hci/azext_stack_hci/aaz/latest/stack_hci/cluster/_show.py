@@ -308,62 +308,67 @@ class Show(AAZCommand):
             reported_properties.manufacturer = AAZStrType(
                 flags={"read_only": True},
             )
-            reported_properties.nodes = AAZObjectType()
+            reported_properties.nodes = AAZListType(
+                flags={"read_only": True},
+            )
             reported_properties.supported_capabilities = AAZListType(
                 serialized_name="supportedCapabilities",
                 flags={"read_only": True},
             )
 
             nodes = cls._schema_on_200.properties.reported_properties.nodes
-            nodes.core_count = AAZFloatType(
+            nodes.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.reported_properties.nodes.Element
+            _element.core_count = AAZFloatType(
                 serialized_name="coreCount",
                 flags={"read_only": True},
             )
-            nodes.ehc_resource_id = AAZStrType(
+            _element.ehc_resource_id = AAZStrType(
                 serialized_name="ehcResourceId",
                 flags={"read_only": True},
             )
-            nodes.id = AAZFloatType(
+            _element.id = AAZFloatType(
                 flags={"read_only": True},
             )
-            nodes.last_licensing_timestamp = AAZStrType(
+            _element.last_licensing_timestamp = AAZStrType(
                 serialized_name="lastLicensingTimestamp",
                 flags={"read_only": True},
             )
-            nodes.manufacturer = AAZStrType(
+            _element.manufacturer = AAZStrType(
                 flags={"read_only": True},
             )
-            nodes.memory_in_gi_b = AAZFloatType(
+            _element.memory_in_gi_b = AAZFloatType(
                 serialized_name="memoryInGiB",
                 flags={"read_only": True},
             )
-            nodes.model = AAZStrType(
+            _element.model = AAZStrType(
                 flags={"read_only": True},
             )
-            nodes.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            nodes.node_type = AAZStrType(
+            _element.node_type = AAZStrType(
                 serialized_name="nodeType",
                 flags={"read_only": True},
             )
-            nodes.os_display_version = AAZStrType(
+            _element.os_display_version = AAZStrType(
                 serialized_name="osDisplayVersion",
                 flags={"read_only": True},
             )
-            nodes.os_name = AAZStrType(
+            _element.os_name = AAZStrType(
                 serialized_name="osName",
                 flags={"read_only": True},
             )
-            nodes.os_version = AAZStrType(
+            _element.os_version = AAZStrType(
                 serialized_name="osVersion",
                 flags={"read_only": True},
             )
-            nodes.serial_number = AAZStrType(
+            _element.serial_number = AAZStrType(
                 serialized_name="serialNumber",
                 flags={"read_only": True},
             )
-            nodes.windows_server_subscription = AAZStrType(
+            _element.windows_server_subscription = AAZStrType(
                 serialized_name="windowsServerSubscription",
                 flags={"read_only": True},
             )

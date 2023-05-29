@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ConsentAndInstallDefaultExtension(AAZCommand):
     """Add consent time for default extensions and initiate extensions installation
+
+    :example: Consent and install default extension
+        az stack-hci arc-setting consent-and-install-default-extension -g rg --arc-setting-name default --cluster-name name
     """
 
     _aaz_info = {

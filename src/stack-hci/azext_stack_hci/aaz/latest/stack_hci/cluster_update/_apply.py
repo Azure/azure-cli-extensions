@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Apply(AAZCommand):
     """Apply Update
+
+    :example: Cluster update apply
+        az stack-hci cluster-update apply -g rg --cluster-name name --update-name name
     """
 
     _aaz_info = {

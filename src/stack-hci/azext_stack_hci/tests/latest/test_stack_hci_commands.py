@@ -128,8 +128,15 @@ class StackHciClientTest(ScenarioTest):
         self.kwargs['client_id'] = self.cmd('ad app create --display-name {app_name}').get_output_in_json()['appId']
         self.kwargs['tenant_id'] = self.cmd('account show').get_output_in_json()['tenantId']
         self.cmd('stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id}')
-        self.cmd('stack-hci cluster-update create -g {rg} --cluster-name {cluster_name} -n {updates_name}', checks=[
-            self.check('name', '{updates_name}')
+        self.cmd('stack-hci cluster-update create -g {rg} --cluster-name {cluster_name} -n {updates_name} --description test1 --package-size-in-mb 20 --additional-properties test1 --availability-type local --version 0.0.1 --display-name test1 --publisher clitest1', checks=[
+            self.check('name', '{updates_name}'),
+            self.check('additionalProperties', 'test1'),
+            self.check('availabilityType', 'Local'),
+            self.check('description', 'test1'),
+            self.check('displayName', 'test1'),
+            self.check('packageSizeInMb', 20.0),
+            self.check('publisher', 'clitest1'),
+            self.check('version', '0.0.1')
         ])
         self.cmd('stack-hci cluster-update update -g {rg} --cluster-name {cluster_name} -n {updates_name} --description test --package-size-in-mb 10 --additional-properties test --availability-type local --version 1.0.0 --display-name test --publisher clitest', checks=[
             self.check('name', '{updates_name}'),
@@ -138,7 +145,8 @@ class StackHciClientTest(ScenarioTest):
             self.check('description', 'test'),
             self.check('displayName', 'test'),
             self.check('packageSizeInMb', 10.0),
-            self.check('publisher', 'clitest')
+            self.check('publisher', 'clitest'),
+            self.check('version', '1.0.0')
         ])
         self.cmd('stack-hci cluster-update show -g {rg} --cluster-name {cluster_name} -n {updates_name}', checks=[
             self.check('name', '{updates_name}'),
@@ -147,7 +155,8 @@ class StackHciClientTest(ScenarioTest):
             self.check('description', 'test'),
             self.check('displayName', 'test'),
             self.check('packageSizeInMb', 10.0),
-            self.check('publisher', 'clitest')
+            self.check('publisher', 'clitest'),
+            self.check('version', '1.0.0')
         ])
         self.cmd('stack-hci cluster-update list -g {rg} --cluster-name {cluster_name}', checks=[
             self.check('[0].name', '{updates_name}'),
@@ -156,11 +165,20 @@ class StackHciClientTest(ScenarioTest):
             self.check('[0].description', 'test'),
             self.check('[0].displayName', 'test'),
             self.check('[0].packageSizeInMb', 10.0),
-            self.check('[0].publisher', 'clitest')
+            self.check('[0].publisher', 'clitest'),
+            self.check('[0].version', '1.0.0')
         ])
 
-        self.cmd('stack-hci cluster-update summary create --cluster-name {cluster_name} -g {rg}', checks=[
-            self.check('name', 'default')
+        self.cmd('stack-hci cluster-update summary create --cluster-name {cluster_name} -g {rg} --current-version 0.0.1  --hardware-model PowerEdge1 --oem-family DellEMC1 --package-versions [{{packageType:OEM,version:1.1.1.1}},{{packageType:Services,version:1.1.1.1}}]', checks=[
+            self.check('name', 'default'),
+            self.check('name', 'default'),
+            self.check('currentVersion', '0.0.1'),
+            self.check('hardwareModel', 'PowerEdge1'),
+            self.check('oemFamily', 'DellEMC1'),
+            self.check('packageVersions[0].packageType', 'OEM'),
+            self.check('packageVersions[0].version', '1.1.1.1'),
+            self.check('packageVersions[1].packageType', 'Services'),
+            self.check('packageVersions[1].version', '1.1.1.1')
         ])
         self.cmd('stack-hci cluster-update summary update --cluster-name {cluster_name} -g {rg} --current-version 1.0.0  --hardware-model PowerEdge --oem-family DellEMC --package-versions [{{packageType:OEM,version:2.2.2108.6}},{{packageType:Services,version:4.2203.2.32}}]', checks=[
             self.check('name', 'default'),
@@ -192,8 +210,10 @@ class StackHciClientTest(ScenarioTest):
             self.check('[0].packageVersions[1].packageType', 'Services'),
             self.check('[0].packageVersions[1].version', '4.2203.2.32')
         ])
-        self.cmd('stack-hci cluster-update update-run create --cluster-name {cluster_name} -g {rg}  -n {updates_run_name} --update-name {updates_name}', checks=[
-            self.check('name', '{updates_run_name}')
+        self.cmd('stack-hci cluster-update update-run create --cluster-name {cluster_name} -g {rg}  -n {updates_run_name} --update-name {updates_name} --progress {{name:cli_update_test1,description:update_test1}}', checks=[
+            self.check('name', '{updates_run_name}'),
+            self.check('progress.description', 'update_test1'),
+            self.check('progress.name', 'cli_update_test1')
         ])
         self.cmd('stack-hci cluster-update update-run update --cluster-name {cluster_name} -g {rg}  -n {updates_run_name} --update-name {updates_name} --progress {{name:cli_update_test,description:update_test}}', checks=[
             self.check('name', '{updates_run_name}'),

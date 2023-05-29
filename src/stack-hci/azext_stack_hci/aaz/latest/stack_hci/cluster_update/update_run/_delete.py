@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete specified Update Run
+
+    :example: Delete update run
+        az stack-hci cluster-update update-run delete --cluster-name name -g rg  -n updates-run-name --update-name updates-name
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the Update run for a specified update
+
+    :example: Show update run
+        az stack-hci cluster-update update-run show --cluster-name name -g rg  -n updates-run-name --update-name name
     """
 
     _aaz_info = {

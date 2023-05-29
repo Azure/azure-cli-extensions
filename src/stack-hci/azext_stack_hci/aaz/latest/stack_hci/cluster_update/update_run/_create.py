@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create Update runs for a specified update
+
+    :example: Create update run
+        az stack-hci cluster-update update-run create --cluster-name name -g rg  -n updates-run-name --update-name name
     """
 
     _aaz_info = {

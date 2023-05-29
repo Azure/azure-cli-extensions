@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class UploadCertificate(AAZCommand):
     """Upload certificate.
+
+    :example: Upload certificate
+        az stack-hci cluster upload-certificate --cluster-name name -g rg --certificates "[base64cert,base64cert]"
     """
 
     _aaz_info = {

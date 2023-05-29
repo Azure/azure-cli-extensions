@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get specified Update
+
+    :example: Show cluster update
+        az stack-hci cluster-update show -g rg --cluster-name name -n updates-name
     """
 
     _aaz_info = {
