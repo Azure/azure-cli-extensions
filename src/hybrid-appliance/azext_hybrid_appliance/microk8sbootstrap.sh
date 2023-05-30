@@ -59,7 +59,7 @@ else
 
   microk8s kubectl wait --for=condition=ready pod -l component=kms-localvault -n kube-system --timeout=600s
   if [ $? -ne 0 ]; then
-    printError "Failed to start the KMS plugin pod"
+    printError "Failed to enable secret encryption"
     exit 1
   fi
 

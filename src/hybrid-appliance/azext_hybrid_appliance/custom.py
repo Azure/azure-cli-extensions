@@ -36,21 +36,21 @@ def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connected
     if not psutil.LINUX:
         all_validations_passed = False
         telemetry.set_exception(exception="User's machine is not linux machine", fault_type=consts.Non_Linux_Machine, summary="User's machine is not linux machine")
-        logger.warning("This program can only run on a Linux machine")
+        logger.warning("The script execution is not supported on this server. Ensure that server is running the recommended Linux OS. ")
 
     # Check if the disk space is at least 20GB
     disk_usage = psutil.disk_usage('/')
     if disk_usage.total < consts.Disk_Threshold * 1024 * 1024 * 1024:
         all_validations_passed = False
         telemetry.set_exception(exception="Machine doesn't meet min {}GB disk space requirement".format(consts.Disk_Threshold), fault_type=consts.DiskSpace_Validation_Failed, summary="Machine doesn't meen min disk space threshold")
-        logger.warning("This program requires at least {}GB of disk space".format(consts.Disk_Threshold))
+        logger.warning("The appliance requires at least {} GB of disk space to perform its operations. ".format(consts.Disk_Threshold))
 
     # Check if the memory is at least 4GB
     memory = psutil.virtual_memory()
     if memory.total < consts.Memory_Threshold * 1024 * 1024 * 1024:
         all_validations_passed = False
-        telemetry.set_exception(exception="Machine doesn't meet min {}GB memory requirement".format(consts.Memory_Threshold), fault_type=consts.Memory_Validation_Failed, summary="Machine doesn't meet min memory threshold")
-        logger.warning("This program requires at least {}GB of memory".format(consts.Memory_Threshold))
+        telemetry.set_exception(exception="Machine doesn't meet min {} GB memory requirement".format(consts.Memory_Threshold), fault_type=consts.Memory_Validation_Failed, summary="Machine doesn't meet min memory threshold")
+        logger.warning("The appliance requires at least {} GB of memory to perform its operations. ".format(consts.Memory_Threshold))
     
     # Check if pre-req endpoints are reachable
     endpoints = ["{}/{}/{}".format(consts.Snap_Config_Storage_End_Point, consts.Snap_Config_Container_Name, consts.Snap_Config_File_Name), consts.Snap_Pull_Public_Api_Endpoint, consts.Snap_Pull_Public_Storage_Endpoint, consts.App_Insights_Endpoint, consts.MCR_Endpoint]
@@ -62,7 +62,7 @@ def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connected
         except requests.exceptions.RequestException:
             all_validations_passed = False
             endpoints_reachability_check = False
-            logger.warning("The endpoint {} is not reachable from your machine".format(endpoint))
+            logger.warning("Failed to check connectivity to the Azure endpoint: {}. Please check network connectivity from the server. If a proxy is blocking connectivity, please provide proxy server details. Learn more: <URL> ".format(endpoint))
     if endpoints_reachability_check is False:
         telemetry.set_exception(exception="Pre-requisite endpoints reachability validation failed", fault_type=consts.Endpoints_Reachability_Validation_Failed, summary="Pre-requisite endpoints reachability validation failed")
     # Install specific version of connectedk8s
@@ -74,13 +74,13 @@ def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connected
             process = subprocess.Popen(cmd_show_arc, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if process.wait() == 0:
                 telemetry.set_exception(exception="An appliance with same name already exists in the resource group", fault_type=consts.Resource_Already_Exists_Fault_Type, summary="Appliance resource with same name already exists")
-                logger.warning("The appliance name and resource group name passed already correspond to an existing connected cluster. Please try again with a different appliance name.")
+                logger.warning("The appliance name and resource group provided in the script already correspond to an existing connected cluster resource in Azure. Go to the portal and generate the script again with a different appliance name.")
                 all_validations_passed = False
             stdout = process.stdout.read().decode()
             stderr = process.stderr.read().decode()
             if "ResourceGroupNotFound" in stdout or "ResourceGroupNotFound" in stderr:
                 all_validations_passed = False
-                logger.warning("The specified resource group could not be found. Please make sure the resource group exists in the specified subscription")
+                logger.warning("The Resource Group provided in the script cannot be found. Find the details in the script and check if the Resource Group exists in the specified subscription.")
             if "AuthorizationFailed" in stdout or "AuthorizationFailed" in stderr:
                 all_validations_passed = False
                 logger.warning("The current user does not have the required Azure permissions to perform this action. Please assign the required roles.")
@@ -97,7 +97,7 @@ def validate_hybrid_appliance(cmd, resource_group_name, name, validate_connected
 
 def create_hybrid_appliance(cmd, resource_group_name, name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None, tags=None):
     if utils.check_microk8s(throw_on_subprocess_exception=False):
-        raise ValidationError("There is already a microk8s cluster running on this machine. Please remove the existing cluster before attempting to create a new one.")
+        raise ValidationError("A MicroK8s cluster is already running on this server. Run the script in “delete” mode to clean-up any existing components and execute the script again. Learn more: <URL>")
 
     kubeconfig_path = utils.get_kubeconfig_path()
     kubectl_client_location = utils.install_kubectl_client()
@@ -140,7 +140,7 @@ def create_hybrid_appliance(cmd, resource_group_name, name, correlation_id=None,
     
     if not utils.check_microk8s():
         telemetry.set_exception(exception="Microk8s cluster is not running", fault_type=consts.MicroK8s_Cluster_Not_Running, summary="Microk8s cluster is not running after the set up")
-        raise CLIInternalError("Microk8s cluster is not running after setting up the cluster. Please check the logs tarball at /var/snap/microk8s/current")
+        raise CLIInternalError("MicroK8s cluster is not running after installation. Please create a Microsoft support case and share logs from /var/snap/microk8s/current")
 
     # Onboard the cluster to arc
     cmd_onboard_arc= ['connectedk8s', 'connect', '-n', name, '-g', resource_group_name, '--kube-config', kubeconfig_path, '--output', 'none']
@@ -182,7 +182,7 @@ def upgrade_hybrid_appliance(resource_group_name, name):
     try:
         azure_clusterconfig_cm = utils.get_azure_clusterconfig_cm()
     except:
-        raise ValidationError("Failed to get config map from the cluster. Please make sure you are running this on the machine where the hybrid appliance is running and was successfully onboarded to arc.")
+        raise ValidationError("Failed to connect the cluster to Azure Arc. Run the script in “delete” mode to clean-up any existing components and execute the script again. Learn more: <URL>")
             
     try:
         if azure_clusterconfig_cm.data["AZURE_RESOURCE_GROUP"] != resource_group_name or azure_clusterconfig_cm.data["AZURE_RESOURCE_NAME"] != name:
@@ -203,7 +203,7 @@ def upgrade_hybrid_appliance(resource_group_name, name):
     try:
         utils.update_kms_version(latest_kms_image)
     except Exception as e:
-        raise CLIInternalError("Failed to update yaml for kms plugin: {}".format(str(e)))
+        raise CLIInternalError("Failed to upgrade a secret encryption component on the cluster due to error: {}".format(str(e)))
 
     if currentMajorVersion == latestMajorVersion and currentMinorVersion == latestMinorVersion:
         print("The kubernetes cluster is already at the latest available version.")
@@ -236,7 +236,7 @@ def upgrade_hybrid_appliance(resource_group_name, name):
 
             if not utils.check_microk8s():
                 telemetry.set_exception(exception="Microk8s not healthy after upgrade from {} to {}".format(currentMajorVersion, currentMinorVersion), fault_type=consts.MicroK8s_Unhealthy_Post_Upgrade, summary="MicroK8s cluster is unhealthy post upgradefrom {} to {}".format(currentMajorVersion, currentMinorVersion))
-                raise CLIInternalError("Cluster is not healthy after upgrading to {}.{}. Please find the logs at /var/snap/microk8s/current.".format(currentMajorVersion, currentMinorVersion))
+                raise CLIInternalError("The cluster installed on this server is not healthy after upgrading to version {}.{}. Please create a Microsoft support case and share logs from- /var/snap/microk8s/current.".format(currentMajorVersion, currentMinorVersion))
 
             print("Upgraded cluster to {}.{}".format(currentMajorVersion, currentMinorVersion))
 
@@ -245,7 +245,7 @@ def delete_hybrid_appliance(resource_group_name, name):
     kubeconfig_path = utils.get_kubeconfig_path()
     if not utils.check_if_microk8s_is_installed():
         telemetry.set_exception()
-        raise ValidationError("There is no microk8s cluster running on this machine. Please ensure you are running the command on the machine where the cluster is running.")
+        raise ValidationError("There is no microk8s cluster running on this server. Please ensure you are running the server on the machine where the cluster is running.")
     
     try:
         azure_clusterconfig_cm = utils.get_azure_clusterconfig_cm()
@@ -270,9 +270,9 @@ def delete_hybrid_appliance(resource_group_name, name):
         cmd_delete_arc= ['connectedk8s', 'delete', '-n', name, '-g', resource_group_name, '-y', '--kube-config', kubeconfig_path]
         delete_result = get_default_cli().invoke(cmd_delete_arc)
         if delete_result != 0:
-            logger.error("Failed to delete connected cluster resource. The kubernetes cluster will be deleted. To delete the connected cluster resource, please visit the resource group in the Azure portal and delete the corresponding Azure resource.")
+            logger.error("Deletion of the connected cluster resource in Azure may have been interrupted due to an intermittent network issue. Check your Azure Resource Group (same as Migrate Project) to see if the resource got delete. If not, you can manually clean it up. The Kubernetes cluster will be deleted.")
     else:
-        logger.warning("The connected cluster resource will not be deleted. The kubernetes cluster will be deleted. To check if the connected cluster resource has been deleted, please visit the resource group in the Azure portal and check if the resource is visible.")
+        logger.warning("Deletion of the connected cluster resource in Azure may have been interrupted due to an intermittent network issue. Check your Azure Resource Group (same as Migrate Project) to see if the resource got delete. If not, you can manually clean it up. The Kubernetes cluster will be deleted.")
 
     process = subprocess.Popen(['snap', 'remove', 'microk8s'])
     process.wait()
@@ -280,7 +280,7 @@ def delete_hybrid_appliance(resource_group_name, name):
         return_code = subprocess.Popen(['microk8s', 'inspect']).wait()
         if return_code == 0:
             logger.warning("Please share the logs generated at the above path, under /var/snap/microk8s/current")
-        raise CLIInternalError("Failed to remove microk8s cluster.")
+        raise CLIInternalError("Failed to remove the MicroK8s cluster. Please create a Microsoft support case and share logs from- /var/snap/microk8s/current ")
 
 def collect_logs(cmd, resource_group_name, name):
     try:
