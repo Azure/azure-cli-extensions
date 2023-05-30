@@ -189,6 +189,10 @@ Additionally, the loading bar helps prevent user interface lagging or freezing d
 
 The loading bar is an essential tool that improves the user experience by ensuring that all necessary components have been loaded before usage, thereby reducing the risk of encountering errors and providing a smoother, more stable platform.
 
+If you want to disable the loading bar, you can run the following command:
+```bash
+$ az config set enable_preloading=False
+```
 Please refer to the following gif to see the loading bar in action:
 
 <img src="docs/loading_bar.gif" width = "70%" alt="loading_bar" align=center>
