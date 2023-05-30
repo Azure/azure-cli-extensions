@@ -145,7 +145,7 @@ Scenario identification is another powerful feature that automatically recognize
 
 <img align=center src="docs/scenario_recommendation.gif" width = "70%" alt="scenario_recommendation">
 
-## Search for Scenarios
+## Search Scenario Knowledge
 
 We have added the ability to help users search for scenarios based on keywords. When the user enters some keywords or descriptions, we will recommend the scenarios that are most likely to be used based on the keywords and descriptions of the functions the user wants to implement.
 
