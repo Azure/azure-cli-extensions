@@ -20,10 +20,10 @@ DEFAULT_APM_NAME = "default"
 
 
 def create_or_update_apm(cmd, client, resource_group, service,
-                         name, type, properties=None, secrets=None):
+                         name, type, properties=None, secrets=None, no_wait=False):
     logger.warning('[1/1] Creating or updating APM, (this operation can take a while to complete).')
     apm_resource = _build_apm_resource(type, properties, secrets)
-    return sdk_no_wait(False, client.apms.begin_create_or_update, resource_group, service, name, apm_resource)
+    return sdk_no_wait(no_wait, client.apms.begin_create_or_update, resource_group, service, name, apm_resource)
 
 
 def apm_show(cmd, client, resource_group, service, name):
@@ -51,21 +51,21 @@ def list_apms_enabled_globally(cmd, client, resource_group, service):
     return client.services.list_globally_enabled_apms(resource_group, service)
 
 
-def enable_apm_globally(cmd, client, resource_group, service, name):
+def enable_apm_globally(cmd, client, resource_group, service, name, no_wait=False):
     apm_resource = client.apms.get(resource_group, service, name)
     apm_reference = models.ApmReference(resource_id=apm_resource.id)
-    return client.services.begin_enable_apm_globally(resource_group, service, apm_reference)
+    return sdk_no_wait(no_wait, client.services.begin_enable_apm_globally, resource_group, service, apm_reference)
 
 
-def disable_apm_globally(cmd, client, resource_group, service, name):
+def disable_apm_globally(cmd, client, resource_group, service, name, no_wait=False):
     apm_resource = client.apms.get(resource_group, service, name)
     apm_reference = models.ApmReference(resource_id=apm_resource.id)
-    return client.services.begin_disable_apm_globally(resource_group, service, apm_reference)
+    return sdk_no_wait(no_wait, client.services.begin_disable_apm_globally, resource_group, service, apm_reference)
 
 
-def apm_delete(cmd, client, resource_group, service, name):
+def apm_delete(cmd, client, resource_group, service, name, no_wait=False):
     logger.warning('[1/1] Deleting APM, (this operation can take a while to complete).')
-    return sdk_no_wait(False, client.apms.begin_delete, resource_group, service, name)
+    return sdk_no_wait(no_wait, client.apms.begin_delete, resource_group, service, name)
 
 
 def create_default_apm_for_application_insights(cmd, client, resource_group, service_name, location,

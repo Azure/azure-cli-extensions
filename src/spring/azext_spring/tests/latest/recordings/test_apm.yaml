@@ -678,6 +678,54 @@ interactions:
       code: 200
       message: OK
 - request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring apm create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --type --properties --secrets -g -s
+      User-Agent:
+      - AZURECLI/2.48.1 azsdk-python-mgmt-appplatform/6.1.0 Python/3.8.3 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apms/apm-test-0?api-version=2023-05-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","type":"NewRelic","properties":{"a":"b","b":"c"}},"type":"Microsoft.AppPlatform/Spring/apms","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/apms/apm-test-0","name":"apm-test-0","systemData":{"createdBy":"yili7@microsoft.com","createdByType":"User","createdAt":"2023-05-24T10:18:51.0683042Z","lastModifiedBy":"yili7@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-24T10:18:51.0683042Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '550'
+      content-type:
+      - application/json
+      date:
+      - Wed, 24 May 2023 10:19:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-rp-server-mvid:
+      - 5df1c244-bb69-491b-b05c-0762ee74e0ad
+    status:
+      code: 200
+      message: OK
+- request:
     body: '{"properties": {"type": "NewRelic", "properties": {"c": "d", "d": "e"},
       "secrets": {"o": "p", "p": "q"}}}'
     headers:
