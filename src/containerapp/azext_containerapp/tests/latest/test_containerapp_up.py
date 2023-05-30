@@ -7,6 +7,7 @@ import os
 from unittest import mock
 import time
 import requests
+import unittest
 
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -37,3 +38,65 @@ class ContainerAppUpImageTest(ScenarioTest):
         self.assertTrue(resp.ok)
 
         self.cmd(f"containerapp up --image {image} --environment {env_name} -g {resource_group} -n {app_name} -l {TEST_LOCATION.upper()}")
+
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_up_source_with_buildpack_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_buildpack"))
+        env_name = self.create_random_name(prefix='env', length=24)
+        self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
+        app_name = self.create_random_name(prefix='containerapp', length=24)
+        ingress = 'external'
+        target_port = '8080'
+        self.cmd('containerapp up --source "{}" --environment {} -g {} -n {} --ingress {} --target-port {}'.format(source_path, env_name, resource_group, app_name, ingress, target_port))
+
+        app = self.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
+        url = app["properties"]["configuration"]["ingress"]["fqdn"]
+        url = url if url.startswith("http") else f"http://{url}"
+        resp = requests.get(url)
+        self.assertTrue(resp.ok)
+
+        self.cmd('containerapp up --source "{}" --environment {} -g {} -n {} -l {} --ingress {} --target-port {}'.format(source_path, env_name, resource_group, app_name, TEST_LOCATION.upper(), ingress, target_port))
+
+
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_up_source_with_dockerfile_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_dockerfile"))
+        env_name = self.create_random_name(prefix='env', length=24)
+        self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
+        app_name = self.create_random_name(prefix='containerapp', length=24)
+        ingress = 'external'
+        target_port = '80'
+        self.cmd('containerapp up --source "{}" --environment {} -g {} -n {} --ingress {} --target-port {}'.format(source_path, env_name, resource_group, app_name, ingress, target_port))
+
+        app = self.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
+        url = app["properties"]["configuration"]["ingress"]["fqdn"]
+        url = url if url.startswith("http") else f"http://{url}"
+        resp = requests.get(url)
+        self.assertTrue(resp.ok)
+
+        self.cmd('containerapp up --source "{}" --environment {} -g {} -n {} -l {} --ingress {} --target-port {}'.format(source_path, env_name, resource_group, app_name, TEST_LOCATION.upper(), ingress, target_port))
+
+    @ResourceGroupPreparer(location="eastus2")
+    @unittest.skip("acr_task_run function from acr module uses outdated Storage SDK which does not work with testing.")
+    def test_containerapp_up_source_with_acr_task_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_acr_task"))
+        env_name = self.create_random_name(prefix='env', length=24)
+        self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
+        app_name = self.create_random_name(prefix='containerapp', length=24)
+        ingress = 'external'
+        target_port = '8080'
+        self.cmd('containerapp up --source "{}" --environment {} -g {} -n {} --ingress {} --target-port {}'.format(source_path, env_name, resource_group, app_name, ingress, target_port))
+
+        app = self.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
+        url = app["properties"]["configuration"]["ingress"]["fqdn"]
+        url = url if url.startswith("http") else f"http://{url}"
+        resp = requests.get(url)
+        self.assertTrue(resp.ok)
+
+        self.cmd('containerapp up --source "{}" --environment {} -g {} -n {} -l {} --ingress {} --target-port {}'.format(source_path, env_name, resource_group, app_name, TEST_LOCATION.upper(), ingress, target_port))
