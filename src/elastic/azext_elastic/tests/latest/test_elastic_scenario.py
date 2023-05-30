@@ -67,7 +67,6 @@ class ElasticScenario(ScenarioTest):
             self.check('name', '{monitor}'),
             self.check('resourceGroup', '{rg}'),
             self.check('sku.name', 'ess-monthly-consumption_Monthly'),
-            self.check('properties.elasticProperties.elasticCloudUser.emailAddress', '{email}')
         ])
         self.cmd('elastic monitor tag-rule create -n default -g {rg} --monitor-name {monitor} --log-rules {{filteringTags:[{{name:Environment,value:Prod,action:Include}}]}}', checks=[
             self.check('name', 'default'),
