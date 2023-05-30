@@ -153,28 +153,6 @@ You can use the natural language keywords with prefix "/" to search for the comm
 
 <img align=center src="docs/scenario_search.gif" width = "70%" alt="scenario_search">
 
-```
-$ az interactive // initialize the az interactive
-$ /connect a mongodb to web app // Search for scenario by starting with / and entering keywords
->>  output
-[1] Connect an app to MongoDB (Cosmos DB). (5 Commands)
-Connect an app to MongoDB (Cosmos DB).
-
-[2] Tutorial to create and connect Web App to Azure Database for MySQL Flexible Server in a virtual network (6 Commands)
-Tutorial to create and connect Web App to Azure Database for MySQL Flexible Server in a virtual network
-
-[3] Connect an app to SQL Database. (7 Commands)
-Connect an app to SQL Database.
-
-[4] Connect an app to a storage account. (5 Commands)
-Connect an app to a storage account.
-
-[5] Deploy an ASP.NET Core web app to Azure App Service and connect to an Azure SQL Database. (8 Commands)
-Deploy an ASP.NET Core web app to Azure App Service and connect to an Azure SQL Database.
-
- ? Please select your option (if none, enter 0):
- $ 1 // Select the scenario you want to use
-```
 
 ## Loading Bar
 
