@@ -13,6 +13,7 @@ from azext_interactive.azclishell.app import AzInteractiveShell
 
 from prompt_toolkit.document import Document
 
+from azext_interactive.azclishell.recommendation import Recommender
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -42,41 +43,42 @@ class CompletionTest(unittest.TestCase):
         self.assertFalse(expected_completions)
 
     def test_command_completion(self):
-        # initial completions
-        doc = Document(u' ')
-        gen = self.completer.get_completions(doc, None)
-        completions = set(['exit', 'quit', 'storage', 'vm', 'vmss'])
-        self.verify_completions(gen, completions, 0)
+        with mock.patch.object(Recommender, 'enabled', property(lambda _: False)):
+            # initial completions
+            doc = Document(u' ')
+            gen = self.completer.get_completions(doc, None)
+            completions = set(['exit', 'quit', 'storage', 'vm', 'vmss'])
+            self.verify_completions(gen, completions, 0)
 
-        # start command
-        doc = Document(u's')
-        gen = self.completer.get_completions(doc, None)
-        completions = set(['storage'])
-        self.verify_completions(gen, completions, -1)
+            # start command
+            doc = Document(u's')
+            gen = self.completer.get_completions(doc, None)
+            completions = set(['storage'])
+            self.verify_completions(gen, completions, -1)
 
-        # test spaces
-        doc = Document(u'  storage    a')
-        gen = self.completer.get_completions(doc, None)
-        completions = set(['account'])
-        self.verify_completions(gen, completions, -1)
+            # test spaces
+            doc = Document(u'  storage    a')
+            gen = self.completer.get_completions(doc, None)
+            completions = set(['account'])
+            self.verify_completions(gen, completions, -1)
 
-        # completer traverses command-tree
-        doc = Document(u'storage account ')
-        gen = self.completer.get_completions(doc, None)
-        completions = set(['create', 'check-name'])
-        self.verify_completions(gen, completions, 0)
+            # completer traverses command-tree
+            doc = Document(u'storage account ')
+            gen = self.completer.get_completions(doc, None)
+            completions = set(['create', 'check-name'])
+            self.verify_completions(gen, completions, 0)
 
-        # test completed command still shows completion
-        doc = Document(u'vm')
-        gen = self.completer.get_completions(doc, None)
-        completions = set(['vm', 'vmss'])
-        self.verify_completions(gen, completions, -2)
+            # test completed command still shows completion
+            doc = Document(u'vm')
+            gen = self.completer.get_completions(doc, None)
+            completions = set(['vm', 'vmss'])
+            self.verify_completions(gen, completions, -2)
 
-        # test unrecognized command does not complete
-        doc = Document(u'vm group ')
-        gen = self.completer.get_completions(doc, None)
-        completions = set()
-        self.verify_completions(gen, completions, 0)
+            # test unrecognized command does not complete
+            doc = Document(u'vm group ')
+            gen = self.completer.get_completions(doc, None)
+            completions = set()
+            self.verify_completions(gen, completions, 0)
 
     def test_param_completion(self):
         # 'az -h'

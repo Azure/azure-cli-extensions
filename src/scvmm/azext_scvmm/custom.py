@@ -43,6 +43,9 @@ from .vendored_sdks.models import (
     HardwareProfileUpdate,
     OsProfile,
     VirtualMachine,
+    VirtualMachineCreateCheckpoint,
+    VirtualMachineDeleteCheckpoint,
+    VirtualMachineRestoreCheckpoint,
     VirtualMachineUpdate,
     VirtualMachineUpdateProperties,
     VirtualMachineTemplate,
@@ -607,6 +610,7 @@ def delete_vm(
     resource_name,
     retain=None,
     force=None,
+    deleteFromHost=None,
     no_wait=False,
 ):
     return sdk_no_wait(
@@ -616,6 +620,7 @@ def delete_vm(
         resource_name,
         retain,
         force,
+        deleteFromHost,
     )
 
 
@@ -662,6 +667,49 @@ def restart_vm(
 ):
     return sdk_no_wait(
         no_wait, client.begin_restart, resource_group_name, resource_name
+    )
+
+
+def create_vm_checkpoint(
+    cmd,
+    client: VirtualMachinesOperations,
+    resource_group_name,
+    resource_name,
+    checkpoint_name,
+    checkpoint_description,
+    no_wait=False,
+):
+    body = VirtualMachineCreateCheckpoint(name=checkpoint_name, description=checkpoint_description)
+    return sdk_no_wait(
+        no_wait, client.begin_create_checkpoint, resource_group_name, resource_name, body
+    )
+
+
+def delete_vm_checkpoint(
+    cmd,
+    client: VirtualMachinesOperations,
+    resource_group_name,
+    resource_name,
+    checkpoint_id,
+    no_wait=False,
+):
+    body = VirtualMachineDeleteCheckpoint(id=checkpoint_id)
+    return sdk_no_wait(
+        no_wait, client.begin_delete_checkpoint, resource_group_name, resource_name, body
+    )
+
+
+def restore_vm_checkpoint(
+    cmd,
+    client: VirtualMachinesOperations,
+    resource_group_name,
+    resource_name,
+    checkpoint_id,
+    no_wait=False,
+):
+    body = VirtualMachineRestoreCheckpoint(id=checkpoint_id)
+    return sdk_no_wait(
+        no_wait, client.begin_restore_checkpoint, resource_group_name, resource_name, body
     )
 
 
