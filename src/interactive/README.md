@@ -123,6 +123,14 @@ We have integrated the cli recommendation to make the completion ability more in
 $ az config set interactive.enable_recommender=True # Default, try the new recommendation feature
 $ az config set interactive.enable_recommender=False # Disable the recommendation feature
 ```
+Here is a demo video demonstrating the main features of the new az interactive:
+
+<div class="video-container">
+    <video width="100%" controls autoplay fullscreen>
+        <source src="docs/intelligent_az_interactive.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
 
 ### Command Recommendation
 
@@ -130,13 +138,25 @@ Command recommendation uses an intelligent algorithm to suggest the most relevan
 
 The command recommendation feature can also be a good way to broaden users' knowledge boundaries and help them recognize and learn commands that are related to their common commands but never used before.
 
+When you don't know what to do next, you can enter Space, and it will recommend the next command which is most used in other similar sessions.
+
+<img align=center src="docs/command_recommendation.gif" width = "70%" alt="command_recommendation">
+
 ### Scenario Identification
 
 Scenario identification is another powerful feature that automatically recognizes the user's current scenario and recommends a set of commands that are most relevant to the user's needs. This feature is based on our extensive database of over 600+ business scenarios, which cover a wide range of use cases across various scenes. By analyzing the user's input history, Intelligent Az Interactive can identify the relevant scenario and suggest the most appropriate command set, helping new CLI users to quickly accomplish their tasks with confidence and ease.
 
+You can enter Space and select the scenario you want to use. It will automatically execute the commands in the scenario and help you complete the task.
+
+<img align=center src="docs/scenario_recommendation.gif" width = "70%" alt="scenario_recommendation">
+
 ## Search for Scenarios
 
 We have added the ability to help users search for scenarios based on keywords. When the user enters some keywords or descriptions, we will recommend the scenarios that are most likely to be used based on the keywords and descriptions of the functions the user wants to implement.
+
+You can use the natural language keywords with prefix "/" to search for the commands and usage scenarios you need, and smoothly create and execute corresponding CLI tasks.
+
+<img align=center src="docs/scenario_search.gif" width = "70%" alt="scenario_search">
 
 ```
 $ az interactive // initialize the az interactive
@@ -171,9 +191,7 @@ The loading bar is an essential tool that improves the user experience by ensuri
 
 Please refer to the following gif to see the loading bar in action:
 
-<div  align="center">    
-<img src="docs/loading_bar.gif" width = "400" height = "150" alt="loading_bar" align=center>
-</div>
+<img src="docs/loading_bar.gif" width = "70%" alt="loading_bar" align=center>
 
 
 ## Value Completion in Scenarios
