@@ -648,7 +648,7 @@ def create_containerapp(cmd,
         container_def["volumeMounts"] = [volume_mount_def]
         template_def["volumes"] = [volume_def]
 
-    if revision_suffix is not None:
+    if revision_suffix is not None and not is_registry_msi_system(registry_identity):
         template_def["revisionSuffix"] = revision_suffix
 
     containerapp_def = ContainerAppModel
@@ -680,6 +680,7 @@ def create_containerapp(cmd,
             system_sp = r["identity"]["principalId"]
             create_acrpull_role_assignment(cmd, registry_server, registry_identity=None, service_principal=system_sp)
             container_def["image"] = image
+            safe_set(containerapp_def, "properties", "template", "revisionSuffix", value=revision_suffix)
 
             registries_def = RegistryCredentialsModel
             registries_def["server"] = registry_server
