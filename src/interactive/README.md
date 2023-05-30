@@ -176,9 +176,3 @@ scenarios. In multiple commands of the same scenario, once the user enters a par
 the user based on the scenario sample value and some special global parameters, and automatically recommend the completion
 of these parameter values in subsequent commands.
 
-## Telemetry Feedback Optimization
-
-To collect data and facilitate the optimization and tuning of the cli recommendation model, we have optimized the
-telemetry feedback function. We have added `CLIRecommendation` to the `properties` of telemetry feedback. For details,
-please refer
-to [cli-recommendation](https://github.com/hackathon-cli-recommendation/cli-recommendation/blob/master/Docs/feedback_design.md).
