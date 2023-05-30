@@ -125,12 +125,7 @@ $ az config set interactive.enable_recommender=False # Disable the recommendatio
 ```
 Here is a demo video demonstrating the main features of the new az interactive:
 
-<div class="video-container">
-    <video width="100%" controls>
-        <source src="docs/intelligent_az_interactive.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-</div>
+[![intelligent_az_interactive](docs/intelligent_az_interactive.png)](https://raw.githubusercontent.com/wu5bocheng/cli-recommendation/add-chatgpt-service/Videos/intelligent_az_interactive.mp4 "intelligent_az_interactive")
 
 ### Command Recommendation
 
@@ -185,9 +180,7 @@ Deploy an ASP.NET Core web app to Azure App Service and connect to an Azure SQL 
 
 The loading bar is a feature that we have implemented to provide users with a more stable and predictable experience while using our platform. Its primary function is to prevent command parameter detection errors that may occur due to incomplete loading. By displaying the progress of initialization through the loading bar, users can be assured that the initialization process is ongoing and they can expect to see a fully loaded interface once the bar reaches 100%.
 
-Additionally, the loading bar helps prevent user interface lagging or freezing due to insufficient memory. By preloading the necessary resources and data, users can avoid encountering these issues when inputting commands.
-
-The loading bar is an essential tool that improves the user experience by ensuring that all necessary components have been loaded before usage, thereby reducing the risk of encountering errors and providing a smoother, more stable platform.
+Additionally, the loading bar helps prevent user interface lagging or freezing due to insufficient memory. By preloading the necessary resources and data, users can avoid encountering these issues when inputting commands. The loading bar is an essential tool that improves the user experience by ensuring that all necessary components have been loaded before usage, thereby reducing the risk of encountering errors and providing a smoother, more stable platform.
 
 If you want to disable the loading bar, you can run the following command:
 ```bash
