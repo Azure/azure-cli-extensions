@@ -1,4 +1,4 @@
-import subprocess, sys, os, argparse, json
+import subprocess, sys, os, argparse, json, time
 # for compatibility between python2 and python3 
 if hasattr(__builtins__, 'raw_input'):
       input = raw_input
@@ -40,7 +40,14 @@ def get_iqns(subscription, resource_group_name, elastic_san_name, volume_group_n
     subscription = " --subscription "+subscription if subscription is not None else ""
     command = "az elastic-san volume show -g {} -e {} -v {} -n {} --query storageTarget{}".format(resource_group_name, elastic_san_name, volume_group_name, volume_name, subscription).split(' ')
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate(timeout=10)
+    # timeout in case the extension is not installed and prompts the user to install
+    timeout = 10
+    while p.poll() is None and timeout > 0:
+     time.sleep(1)
+     timeout -= 1
+    if timeout<=0:
+        raise Exception('Command took longer than 10s')
+    out, err = p.communicate()
     if "error" in err.decode("utf-8").lower():
         raise Exception(err)
     out = out.decode("utf-8")
