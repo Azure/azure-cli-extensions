@@ -171,7 +171,7 @@ Please refer to the following gif to see the loading bar in action:
 
 ## Value Completion in Scenarios
 
-We added a completion mechanism for parameter values in scenarios to improve the completion ability of param value in
+We added a completion mechanism for parameter values in scenario execution *(corresponding to scenario identification or searching scenario knowledge)* to improve the completion ability of param value in
 scenarios. In multiple commands of the same scenario, once the user enters a parameter value, we store the value entered by
 the user based on the scenario sample value and some special global parameters, and automatically recommend the completion
 of these parameter values in subsequent commands.
