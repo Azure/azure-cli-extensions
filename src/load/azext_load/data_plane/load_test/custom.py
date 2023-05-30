@@ -38,7 +38,7 @@ def create_test(
     certificate=None,
     key_vault_reference_identity=None,
     subnet_id=None,
-    split_csv=None,
+    split_csv=False,
     wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)

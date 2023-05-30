@@ -117,7 +117,7 @@ def download_file(url, file_path):
     ex = None
     while retries > 0:
         try:
-            response = requests.get(url, stream=True, allow_redirects=True)
+            response = requests.get(url, stream=True, allow_redirects=True, timeout=60)
             break
         except Exception as e:  # pylint: disable=broad-except
             ex = e
@@ -130,7 +130,7 @@ def download_file(url, file_path):
     if retries == 0:
         msg = f"Request for {url} failed after all retries: {str(ex)}"
         logger.debug(msg)
-        raise Exception(msg)
+        raise FileOperationError(msg)
 
     if response:
         with open(file_path, "wb") as f:
@@ -307,7 +307,8 @@ def convert_yaml_to_test(data):
             ] = name
     return new_body
 
-
+# pylint: disable=too-many-branches
+# pylint: disable=too-many-statements
 def create_or_update_body(
     test_id,
     body,
@@ -322,21 +323,31 @@ def create_or_update_body(
     subnet_id=None,
     split_csv=None,
 ):
+    if yaml_test_body is None:
+        yaml_test_body = {}
     logger.info("Creating a request body for create or update test")
     new_body = {}
-    if display_name is not None:
+    display_name = (
+        display_name or yaml_test_body.get("displayName") or body.get("displayName")
+    )
+    if display_name:
         new_body["displayName"] = display_name
     else:
-        new_body["displayName"] = body.get("displayName", test_id)
-
-    if test_description is not None:
+        new_body["displayName"] = test_id
+    test_description = (
+        test_description or yaml_test_body.get("description") or body.get("description")
+    )
+    if test_description:
         new_body["description"] = test_description
-    else:
-        new_body["description"] = body.get("description")
 
     new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
     if key_vault_reference_identity is not None:
         new_body["keyvaultReferenceIdentityId"] = key_vault_reference_identity
+        new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
+    elif yaml_test_body.get("keyvaultReferenceIdentityId") is not None:
+        new_body["keyvaultReferenceIdentityId"] = yaml_test_body.get(
+            "keyVaultReferenceIdentity"
+        )
         new_body["keyvaultReferenceIdentityType"] = IdentityType.UserAssigned
     elif body.get("keyvaultReferenceIdentityId") is not None:
         new_body["keyvaultReferenceIdentityId"] = body.get(
@@ -346,37 +357,61 @@ def create_or_update_body(
             "keyvaultReferenceIdentityType", IdentityType.UserAssigned
         )
 
-    if subnet_id is not None:
+    subnet_id = subnet_id or yaml_test_body.get("subnetId") or body.get("subnetId")
+    if subnet_id:
         new_body["subnetId"] = subnet_id
-    elif body.get("subnetId"):
-        new_body["subnetId"] = body.get("subnetId")
 
-    if env is not None:
+    if body.get("environmentVariables") is not None:
         new_body["environmentVariables"] = body.get("environmentVariables", {})
+    else:
+        new_body["environmentVariables"] = {}
+    if yaml_test_body.get("environmentVariables") is not None:
+        new_body["environmentVariables"].update(
+            yaml_test_body.get("environmentVariables", {})
+        )
+    if env is not None:
         new_body["environmentVariables"].update(env)
-
-    if secrets is not None:
+    if body.get("secrets") is not None:
         new_body["secrets"] = body.get("secrets", {})
+    else:
+        new_body["secrets"] = {}
+    if yaml_test_body.get("secrets") is not None:
+        new_body["secrets"].update(yaml_test_body.get("secrets", {}))
+    if secrets is not None:
         new_body["secrets"].update(secrets)
-
     if certificate is not None:
         new_body["certificate"] = certificate
+    elif yaml_test_body.get("certificate") is not None:
+        new_body["certificate"] = yaml_test_body.get("certificate")
     elif body.get("certificate"):
         new_body["certificate"] = body.get("certificate")
 
     new_body["loadTestConfiguration"] = body.get("loadTestConfiguration", {})
     if engine_instances:
         new_body["loadTestConfiguration"]["engineInstances"] = engine_instances
+    elif (
+        yaml_test_body.get("loadTestConfiguration", {}).get("engineInstances")
+        is not None
+    ):
+        new_body["loadTestConfiguration"]["engineInstances"] = yaml_test_body[
+            "loadTestConfiguration"
+        ]["engineInstances"]
     else:
         new_body["loadTestConfiguration"]["engineInstances"] = body.get(
             "loadTestConfiguration", {}
         ).get("engineInstances", 1)
-    # quick test and split csv not supported currently
+    # quick test is not supported in CLI
     new_body["loadTestConfiguration"]["quickStartTest"] = False
-    new_body["loadTestConfiguration"]["splitAllCSVs"] = bool(split_csv)
+    new_body["loadTestConfiguration"]["splitCsv"] = (
+        split_csv
+        or yaml_test_body.get("loadTestConfiguration", {}).get("splitCsv")
+        or body.get("loadTestConfiguration", {}).get("splitCsv")
+    )
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
 
+# pylint: enable=too-many-branches
+# pylint: enable=too-many-statements
 
 def create_or_update_test_run_body(
     test_id,
