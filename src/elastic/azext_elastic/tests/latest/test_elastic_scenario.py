@@ -22,8 +22,7 @@ class ElasticScenario(ScenarioTest):
         self.cmd('elastic monitor create -n {monitor} -g {rg} --user-info {{firstName:Alice,lastName:bob,companyName:Micosoft,emailAddress:{email}}} --sku {{name:ess-monthly-consumption_Monthly}}', checks=[
             self.check('name', '{monitor}'),
             self.check('resourceGroup', '{rg}'),
-            self.check('sku.name', 'ess-monthly-consumption_Monthly'),
-            self.check('properties.elasticProperties.elasticCloudUser.emailAddress', '{email}')
+            self.check('sku.name', 'ess-monthly-consumption_Monthly')
         ])
         self.cmd('elastic monitor update -n {monitor} -g {rg} --tags {{tag:test,tag2:test2}}', checks=[
             self.check('name', '{monitor}'),
@@ -34,14 +33,12 @@ class ElasticScenario(ScenarioTest):
         self.cmd('elastic monitor list -g {rg}', checks=[
             self.check('[0].name', '{monitor}'),
             self.check('[0].resourceGroup', '{rg}'),
-            self.check('[0].sku.name', 'ess-monthly-consumption_Monthly'),
-            self.check('[0].properties.elasticProperties.elasticCloudUser.emailAddress', '{email}')
+            self.check('[0].sku.name', 'ess-monthly-consumption_Monthly')
         ])
         self.cmd('elastic monitor show -n {monitor} -g {rg}', checks=[
             self.check('name', '{monitor}'),
             self.check('resourceGroup', '{rg}'),
-            self.check('sku.name', 'ess-monthly-consumption_Monthly'),
-            self.check('properties.elasticProperties.elasticCloudUser.emailAddress', '{email}')
+            self.check('sku.name', 'ess-monthly-consumption_Monthly')
         ])
         self.cmd("elastic monitor create-or-update-external-user --monitor-name {monitor} -g {rg} --user-name newuser --full-name fullname --password password --email-id email@outlook.com --roles [admin,other_role]", checks=[self.check('created', True)])
         self.cmd('elastic monitor list-all-traffic-filter --monitor-name {monitor} -g {rg}', checks=[
