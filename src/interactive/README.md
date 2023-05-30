@@ -133,7 +133,7 @@ Command recommendation uses an intelligent algorithm to suggest the most relevan
 
 The command recommendation feature can also be a good way to broaden users' knowledge boundaries and help them recognize and learn commands that are related to their common commands but never used before.
 
-When you don't know what to do next, you can enter Space, and it will recommend the next command which is most used in other similar sessions.
+**Usage**: When you don't know what to do next, you can try entering only `Space` first, it will recommend the next command which is most used in other similar sessions.
 
 <img align=center src="docs/command_recommendation.gif" width = "70%" alt="command_recommendation">
 
