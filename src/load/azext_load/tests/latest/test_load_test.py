@@ -1,6 +1,10 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 import os
 import tempfile
-import time
 
 from azext_load.tests.latest.constants import LoadTestConstants
 from azext_load.tests.latest.helper import create_test, delete_test
@@ -43,16 +47,19 @@ class LoadTestScenario(ScenarioTest):
                 "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE,
             }
         )
-
-        self.cmd(
+        checks=[JMESPathCheck("testId", self.kwargs["test_id"]),
+                    JMESPathCheck("loadTestConfiguration.engineInstances", 1),
+                    JMESPathCheck("environmentVariables.rps", '10')]
+        response = self.cmd(
             "az load test create "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             '--load-test-config-file "{load_test_config_file}" '
+            "--env rps=10 "
             "--wait ",
-            checks=JMESPathCheck("testId", self.kwargs["test_id"]),
-        )
+            checks=checks,
+        ).get_output_in_json()
 
         tests = self.cmd(
             "az load test list "

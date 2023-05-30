@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 import os
 import tempfile
 import time
@@ -7,7 +12,6 @@ from azext_load.tests.latest.helper import (
     create_test,
     create_test_run,
     delete_test,
-    delete_test_run,
 )
 from azext_load.tests.latest.preparers import LoadTestResourcePreparer
 from azure.cli.testsdk import (
@@ -194,7 +198,8 @@ class LoadTestRunScenario(ScenarioTest):
         try:
             create_test(self, wait=True)
             create_test_run(self)
-
+            if self.is_live:
+                time.sleep(10)
             self.cmd(
                 "az load test-run update "
                 "--load-test-resource {load_test_resource} "

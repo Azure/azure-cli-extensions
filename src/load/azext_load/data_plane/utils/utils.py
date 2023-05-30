@@ -402,10 +402,10 @@ def create_or_update_body(
         ).get("engineInstances", 1)
     # quick test is not supported in CLI
     new_body["loadTestConfiguration"]["quickStartTest"] = False
-    new_body["loadTestConfiguration"]["splitCsv"] = (
+    new_body["loadTestConfiguration"]["splitAllCSVs"] = (
         split_csv
-        or yaml_test_body.get("loadTestConfiguration", {}).get("splitCsv")
-        or body.get("loadTestConfiguration", {}).get("splitCsv")
+        or yaml_test_body.get("loadTestConfiguration", {}).get("splitAllCSVs")
+        or body.get("loadTestConfiguration", {}).get("splitAllCSVs")
     )
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
