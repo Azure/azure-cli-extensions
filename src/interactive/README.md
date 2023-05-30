@@ -149,7 +149,7 @@ You can enter Space and select the scenario you want to use. It will automatical
 
 We have added the ability to help users search for scenarios based on keywords. When the user enters some keywords or descriptions, we will recommend the scenarios that are most likely to be used based on the keywords and descriptions of the functions the user wants to implement.
 
-You can use the natural language keywords with prefix "/" to search for the commands and usage scenarios you need, and smoothly create and execute corresponding CLI tasks.
+**Usage**: You can use the natural language keywords with prefix `/` to search for the commands and usage scenarios you need, and smoothly create and execute corresponding CLI tasks.
 
 <img align=center src="docs/scenario_search.gif" width = "70%" alt="scenario_search">
 
