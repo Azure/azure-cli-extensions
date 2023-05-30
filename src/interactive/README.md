@@ -139,7 +139,7 @@ The command recommendation feature can also be a good way to broaden users' know
 
 ### Scenario Identification
 
-Scenario identification is another powerful feature that automatically recognizes the user's current scenario and recommends a set of commands that are most relevant to the user's needs. This feature is based on our extensive database of over 600+ business scenarios, which cover a wide range of use cases across various scenes. By analyzing the user's input history, Intelligent Az Interactive can identify the relevant scenario and suggest the most appropriate command set, helping new CLI users to quickly accomplish their tasks with confidence and ease.
+Scenario identification is another powerful feature that automatically recognizes the user's current scenario and recommends a set of commands that are most relevant to the user's needs. This feature is based on our extensive knowledge base which cover a wide range of use cases across various scenes. By analyzing the user's input history, Intelligent Az Interactive can identify the relevant scenario and suggest the most appropriate command set, helping new CLI users to quickly accomplish their tasks with confidence and ease.
 
 You can enter Space and select the scenario you want to use. It will automatically execute the commands in the scenario and help you complete the task.
 
