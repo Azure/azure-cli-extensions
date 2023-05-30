@@ -125,7 +125,7 @@ $ az config set interactive.enable_recommender=False # Disable the recommendatio
 ```
 Here is a demo video demonstrating the main features of the new az interactive:
 
-[![intelligent_az_interactive](docs/intelligent_az_interactive.png)](https://raw.githubusercontent.com/wu5bocheng/cli-recommendation/add-chatgpt-service/Videos/intelligent_az_interactive.mp4 "intelligent_az_interactive")
+[![intelligent_az_interactive](docs/intelligent_az_interactive.png)](docs/intelligent_az_interactive.mp4 "intelligent_az_interactive")
 
 ### Command Recommendation
 
