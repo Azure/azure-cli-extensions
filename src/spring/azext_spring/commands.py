@@ -25,6 +25,8 @@ from ._transformers import (transform_spring_table_output,
                             transform_customized_accelerator_output,
                             transform_build_output,
                             transform_build_result_output,
+                            transform_apm_output,
+                            transform_apm_type_output,
                             transform_container_registry_output)
 from ._validators import validate_app_insights_command_not_supported_tier
 from ._marketplace import (transform_marketplace_plan_output)
@@ -62,6 +64,11 @@ def load_command_table(self, _):
 
     buildpack_binding_cmd_group = CliCommandType(
         operations_tmpl="azext_spring.buildpack_binding#{}",
+        client_factory=cf_spring
+    )
+
+    apm_cmd_group = CliCommandType(
+        operations_tmpl="azext_spring.apm#{}",
         client_factory=cf_spring
     )
 
@@ -383,6 +390,19 @@ def load_command_table(self, _):
         g.custom_command('update', 'customized_accelerator_upsert', supports_no_wait=True, validator=validate_customized_accelerator)
         g.custom_command('sync-cert', 'customized_accelerator_sync_cert', supports_no_wait=True, table_transformer=transform_customized_accelerator_output)
         g.custom_command('delete', 'customized_accelerator_delete', supports_no_wait=True)
+
+    with self.command_group('spring apm',
+                            custom_command_type=apm_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('create', 'create_or_update_apm', supports_no_wait=True)
+        g.custom_command('update', 'create_or_update_apm', supports_no_wait=True)
+        g.custom_show_command('show', 'apm_show')
+        g.custom_command('list', 'apm_list', table_transformer=transform_apm_output)
+        g.custom_command('delete', 'apm_delete', confirmation=True, supports_no_wait=True)
+        g.custom_command('list-support-types', 'list_support_apm_types', table_transformer=transform_apm_type_output)
+        g.custom_command('list-enabled-globally', 'list_apms_enabled_globally')
+        g.custom_command('enable-globally', 'enable_apm_globally', supports_no_wait=True)
+        g.custom_command('disable-globally', 'disable_apm_globally', supports_no_wait=True)
 
     with self.command_group('spring build-service builder',
                             custom_command_type=build_service_cmd_group,
