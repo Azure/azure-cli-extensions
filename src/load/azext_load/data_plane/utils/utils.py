@@ -307,6 +307,7 @@ def convert_yaml_to_test(data):
             ] = name
     return new_body
 
+
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-statements
 def create_or_update_body(
@@ -410,8 +411,10 @@ def create_or_update_body(
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
 
+
 # pylint: enable=too-many-branches
 # pylint: enable=too-many-statements
+
 
 def create_or_update_test_run_body(
     test_id,
