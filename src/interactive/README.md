@@ -126,7 +126,7 @@ $ az config set interactive.enable_recommender=False # Disable the recommendatio
 Here is a demo video demonstrating the main features of the new az interactive:
 
 <div class="video-container">
-    <video width="100%" controls autoplay fullscreen>
+    <video width="100%" controls>
         <source src="docs/intelligent_az_interactive.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
