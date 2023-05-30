@@ -40,7 +40,7 @@ def get_iqns(subscription, resource_group_name, elastic_san_name, volume_group_n
     subscription = " --subscription "+subscription if subscription is not None else ""
     command = "az elastic-san volume show -g {} -e {} -v {} -n {} --query storageTarget{}".format(resource_group_name, elastic_san_name, volume_group_name, volume_name, subscription).split(' ')
     p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate()
+    out, err = p.communicate(timeout=10)
     if "error" in err.decode("utf-8").lower():
         raise Exception(err)
     out = out.decode("utf-8")
