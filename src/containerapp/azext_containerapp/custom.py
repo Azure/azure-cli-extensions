@@ -100,7 +100,8 @@ from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, F
                          GOOGLE_SECRET_SETTING_NAME, TWITTER_SECRET_SETTING_NAME, APPLE_SECRET_SETTING_NAME, CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, HELLO_WORLD_IMAGE, LOG_TYPE_SYSTEM, LOG_TYPE_CONSOLE,
                          MANAGED_CERTIFICATE_RT, PRIVATE_CERTIFICATE_RT, PENDING_STATUS, SUCCEEDED_STATUS, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
-                         DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME)
+                         DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
+                         DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_SERVICE_LIST)
 
 logger = get_logger(__name__)
 
@@ -178,7 +179,7 @@ def list_all_services(cmd, environment_name, resource_group_name):
 
     for service in services:
         service_type = safe_get(service, "properties", "configuration", "service", "type", default="")
-        if service_type in ["redis", "postgres"]:
+        if service_type in DEV_SERVICE_LIST:
             dev_service_list.append(service)
 
     return dev_service_list
@@ -204,6 +205,17 @@ def create_postgres_service(cmd, service_name, environment_name, resource_group_
 
 def delete_postgres_service(cmd, service_name, resource_group_name, no_wait=False):
     return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_POSTGRES_SERVICE_TYPE)
+
+
+def create_kafka_service(cmd, service_name, environment_name, resource_group_name, no_wait=False,
+                         disable_warnings=True):
+    return DevServiceUtils.create_service(cmd, service_name, environment_name, resource_group_name, no_wait,
+                                          disable_warnings, DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE,
+                                          DEV_KAFKA_CONTAINER_NAME)
+
+
+def delete_kafka_service(cmd, service_name, resource_group_name, no_wait=False):
+    return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_KAFKA_SERVICE_TYPE)
 
 
 def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_revision=None, no_wait=False):
