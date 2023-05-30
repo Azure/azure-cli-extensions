@@ -2,6 +2,10 @@
 
 Release History
 ===============
+Upcoming
+++++++
+* 'az containerapp create': fix --registry-identity "system" with --revision-suffix
+
 0.3.32
 ++++++
 * Fix for 'az containerapp job update' command when updating Container App job with a trigger configuration
