@@ -2,6 +2,14 @@
 
 Release History
 ===============
+Upcoming
+++++++
+* 'az containerapp create': fix --registry-identity "system" with --revision-suffix
+
+0.3.32
+++++++
+* Fix for 'az containerapp job update' command when updating Container App job with a trigger configuration
+
 0.3.31
 ++++++
 * Fix issue when using 'az containerapp up' to create a container app from a local source with a Dockerfile

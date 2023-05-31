@@ -11,8 +11,8 @@ def setup(test):
     test.kwargs.update({
         "vaultName": "cli-test-new-vault1",
         "rg": "sarath-rg",
-        "diskname": "cli-test-disk-new1",
-        "restorediskname": "cli-test-disk-new1-restored",
+        "diskname": "cli-test-disk-new",
+        "restorediskname": "cli-test-disk-new-restored",
         "policyname": "diskpolicy",
         "storagepolicyname": "storagepolicy",
         "resourceGuardName": "cli-test-resource-guard",
@@ -145,7 +145,7 @@ def assign_permissions_and_validate(test):
     # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureBlob --operation Backup --permissions-scope Resource -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}" --yes').get_output_in_json()
     # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDatabaseForPostgreSQL --permissions-scope Resource -g "{serverrgname}" --vault-name "{servervaultname}" --operation Backup --backup-instance "{server_backup_instance_json}" --keyvault-id "{keyvaultid}" --yes')
     # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Restore Operator" --scope "{rgid}"')
-    time.sleep(120) # Wait for permissions to propagate
+    # time.sleep(120) # Wait for permissions to propagate
 
     test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"', checks=[
         test.check('objectType', 'OperationJobExtendedInfo')
@@ -254,7 +254,9 @@ def cleanup(test):
              ' -g "{rg}" --vault-name "{vaultName}" --yes')
     test.cmd('az disk delete --name "{diskname}" --resource-group "{rg}" --yes')
     test.cmd('az disk delete --name "{restorediskname}" --resource-group "{rg}" --yes')
-    test.cmd('az storage account delete --name "{storageaccountname}" --resource-group "{rg}" --yes')
+
+    # There is a scope lock on the storage account, specifying donotdelete.
+    # test.cmd('az storage account delete --name "{storageaccountname}" --resource-group "{rg}" --yes')
 
 
 @AllowLargeResponse()

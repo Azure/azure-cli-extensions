@@ -423,9 +423,6 @@ helps['communication rooms create'] = """
       - name: Create a room with valid-from and valid-until date/times
         text: |-
                az communication rooms create --valid-from "2022-07-14T10:21" --valid-until "2022-08-14T10:21"
-      - name: Create a room with InviteOnly join policy
-        text: |-
-               az communication rooms create --join-policy "InviteOnly"
       - name: Create a room with a list of participants with presenter role
         text: |-
                az communication rooms create --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
@@ -464,6 +461,15 @@ helps['communication rooms delete'] = """
                az communication rooms delete --room "12345678901234567"
 """
 
+helps['communication rooms list'] = """
+    type: command
+    short-summary: "List all active rooms belonging to a current Communication Service resource."
+    examples:
+      - name: List all active rooms
+        text: |-
+               az communication rooms list
+"""
+
 helps['communication rooms participant'] = """
     type: group
     short-summary: Commands to manage participants of an existing room.
@@ -478,22 +484,13 @@ helps['communication rooms participant get'] = """
                az communication rooms participant get --room "12345678901234567"
 """
 
-helps['communication rooms participant add'] = """
+helps['communication rooms participant add-or-update'] = """
     type: command
-    short-summary: "Add participants to a room."
+    short-summary: "Add or update participants in a room"
     examples:
-      - name: Add presenter and attendee participants to a room
+      - name: Add a presenter participant to a room and update an attendee participant in a room
         text: |-
-               az communication rooms participant add --room "12345678901234567" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
-"""
-
-helps['communication rooms participant update'] = """
-    type: command
-    short-summary: "Replace the participants of a room."
-    examples:
-      - name: Update room participants
-        text: |-
-               az communication rooms participant update --room "12345678901234567" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
+               az communication rooms participant add-or-update --room "12345678901234567" --presenter-participants "8:acs:xxxxxx" "8:acs:xxxxxx" --attendee-participants "8:acs:xxxxxx" "8:acs:xxxxxx"
 """
 
 helps['communication rooms participant remove'] = """

@@ -33,7 +33,7 @@ DEPENDENCIES = ['azure-core',
                 'azure-communication-phonenumbers',
                 'azure-communication-sms',
                 'azure-communication-chat',
-                'azure-communication-rooms',
+                'azure-communication-rooms >= 1.0.0b3',
                 'azure-communication-email == 1.0.0b1',
                 ]
 

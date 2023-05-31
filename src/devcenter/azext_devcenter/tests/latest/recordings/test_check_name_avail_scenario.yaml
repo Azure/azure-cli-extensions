@@ -17,9 +17,9 @@ interactions:
       ParameterSetName:
       - --name --type
       User-Agent:
-      - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/checkNameAvailability?api-version=2022-11-11-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/checkNameAvailability?api-version=2023-04-01
   response:
     body:
       string: '{"nameAvailable":true}'
@@ -31,7 +31,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Feb 2023 05:00:16 GMT
+      - Wed, 03 May 2023 05:56:08 GMT
       expires:
       - '-1'
       pragma:
@@ -53,12 +53,12 @@ interactions:
       x-rate-limit-remaining:
       - '299'
       x-rate-limit-reset:
-      - '2023-02-17T05:01:17.1552251Z'
+      - '2023-05-03T05:57:08.6544108Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "westus3", "tags": {"CostCode": "12345"}}'
+    body: '{"location": "centraluseuap", "tags": {"CostCode": "12345"}}'
     headers:
       Accept:
       - application/json
@@ -69,31 +69,31 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '54'
+      - '60'
       Content-Type:
       - application/json
       ParameterSetName:
       - --location --tags --name --resource-group
       User-Agent:
-      - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002?api-version=2022-11-11-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002?api-version=2023-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"westus3","tags":{"CostCode":"12345"},"systemData":{"createdBy":"user@domain.com","createdByType":"User","createdAt":"2023-02-17T05:00:18.8851776Z","lastModifiedBy":"user@domain.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-17T05:00:18.8851776Z"},"properties":{"provisioningState":"Accepted"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"centraluseuap","tags":{"CostCode":"12345"},"systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-05-03T05:56:09.9253964Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-03T05:56:09.9253964Z"},"properties":{"provisioningState":"Accepted"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/c07344ca-dd10-4db1-b4e2-23612943a8c2*0A109DDE557638C98536D997D1D8A00DE378CD8342D7773EC5ECFFADF02923FD?api-version=2022-11-11-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CENTRALUSEUAP/operationStatuses/e9b2820d-5954-435d-baaf-de1f6879a560*7564A65C810E5D99C0C1B4803E34CE6E4907602842D0EB52DB87F8D9F0C141AD?api-version=2023-04-01
       cache-control:
       - no-cache
       content-length:
-      - '524'
+      - '530'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Feb 2023 05:00:23 GMT
+      - Wed, 03 May 2023 05:56:11 GMT
       etag:
-      - '"90000b8f-0000-4d00-0000-63ef09e70000"'
+      - '"0000ac10-0000-3300-0000-6451f77b0000"'
       expires:
       - '-1'
       pragma:
@@ -105,7 +105,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-quota:
-      - '{"name":{"localizedValue":null,"value":"devCenters"},"limit":100,"currentUsed":23,"category":"Informational","scope":"subscription","target":"/subscriptions/3de261df-f2d8-4c00-a0ee-a0be30f1e48e/","region":"westus3"}'
+      - '{"name":{"localizedValue":null,"value":"devCenters"},"limit":500,"currentUsed":52,"category":"Informational","scope":"subscription","target":"/subscriptions/3de261df-f2d8-4c00-a0ee-a0be30f1e48e/","region":"centraluseuap"}'
       x-ms-ratelimit-remaining-subscription-writes:
       - '1198'
       x-rate-limit-limit:
@@ -113,7 +113,7 @@ interactions:
       x-rate-limit-remaining:
       - '297'
       x-rate-limit-reset:
-      - '2023-02-17T05:01:17.4470189Z'
+      - '2023-05-03T05:56:28.3150620Z'
     status:
       code: 201
       message: Created
@@ -131,23 +131,23 @@ interactions:
       ParameterSetName:
       - --location --tags --name --resource-group
       User-Agent:
-      - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/c07344ca-dd10-4db1-b4e2-23612943a8c2*0A109DDE557638C98536D997D1D8A00DE378CD8342D7773EC5ECFFADF02923FD?api-version=2022-11-11-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CENTRALUSEUAP/operationStatuses/e9b2820d-5954-435d-baaf-de1f6879a560*7564A65C810E5D99C0C1B4803E34CE6E4907602842D0EB52DB87F8D9F0C141AD?api-version=2023-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/c07344ca-dd10-4db1-b4e2-23612943a8c2*0A109DDE557638C98536D997D1D8A00DE378CD8342D7773EC5ECFFADF02923FD","name":"c07344ca-dd10-4db1-b4e2-23612943a8c2*0A109DDE557638C98536D997D1D8A00DE378CD8342D7773EC5ECFFADF02923FD","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","status":"Accepted","startTime":"2023-02-17T05:00:19.0858501Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CENTRALUSEUAP/operationStatuses/e9b2820d-5954-435d-baaf-de1f6879a560*7564A65C810E5D99C0C1B4803E34CE6E4907602842D0EB52DB87F8D9F0C141AD","name":"e9b2820d-5954-435d-baaf-de1f6879a560*7564A65C810E5D99C0C1B4803E34CE6E4907602842D0EB52DB87F8D9F0C141AD","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","status":"Accepted","startTime":"2023-05-03T05:56:10.1752522Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '549'
+      - '555'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Feb 2023 05:00:53 GMT
+      - Wed, 03 May 2023 05:56:41 GMT
       etag:
-      - '"12001173-0000-4d00-0000-63ef09e30000"'
+      - '"00005a00-0000-3300-0000-6451f77a0000"'
       expires:
       - '-1'
       pragma:
@@ -177,23 +177,23 @@ interactions:
       ParameterSetName:
       - --location --tags --name --resource-group
       User-Agent:
-      - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/c07344ca-dd10-4db1-b4e2-23612943a8c2*0A109DDE557638C98536D997D1D8A00DE378CD8342D7773EC5ECFFADF02923FD?api-version=2022-11-11-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CENTRALUSEUAP/operationStatuses/e9b2820d-5954-435d-baaf-de1f6879a560*7564A65C810E5D99C0C1B4803E34CE6E4907602842D0EB52DB87F8D9F0C141AD?api-version=2023-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/WESTUS3/operationStatuses/c07344ca-dd10-4db1-b4e2-23612943a8c2*0A109DDE557638C98536D997D1D8A00DE378CD8342D7773EC5ECFFADF02923FD","name":"c07344ca-dd10-4db1-b4e2-23612943a8c2*0A109DDE557638C98536D997D1D8A00DE378CD8342D7773EC5ECFFADF02923FD","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","status":"Succeeded","startTime":"2023-02-17T05:00:19.0858501Z","endTime":"2023-02-17T05:01:20.9515937Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CENTRALUSEUAP/operationStatuses/e9b2820d-5954-435d-baaf-de1f6879a560*7564A65C810E5D99C0C1B4803E34CE6E4907602842D0EB52DB87F8D9F0C141AD","name":"e9b2820d-5954-435d-baaf-de1f6879a560*7564A65C810E5D99C0C1B4803E34CE6E4907602842D0EB52DB87F8D9F0C141AD","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","status":"Accepted","startTime":"2023-05-03T05:56:10.1752522Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '609'
+      - '555'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Feb 2023 05:01:23 GMT
+      - Wed, 03 May 2023 05:57:11 GMT
       etag:
-      - '"1200ea73-0000-4d00-0000-63ef0a200000"'
+      - '"00005a00-0000-3300-0000-6451f77a0000"'
       expires:
       - '-1'
       pragma:
@@ -223,23 +223,115 @@ interactions:
       ParameterSetName:
       - --location --tags --name --resource-group
       User-Agent:
-      - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002?api-version=2022-11-11-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CENTRALUSEUAP/operationStatuses/e9b2820d-5954-435d-baaf-de1f6879a560*7564A65C810E5D99C0C1B4803E34CE6E4907602842D0EB52DB87F8D9F0C141AD?api-version=2023-04-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"westus3","tags":{"CostCode":"12345"},"systemData":{"createdBy":"user@domain.com","createdByType":"User","createdAt":"2023-02-17T05:00:18.8851776Z","lastModifiedBy":"user@domain.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-17T05:00:18.8851776Z"},"properties":{"provisioningState":"Succeeded","devCenterUri":"https://00000000-0000-0000-0000-000000000000-cli000002.westus3.devcenter.azure.com/"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CENTRALUSEUAP/operationStatuses/e9b2820d-5954-435d-baaf-de1f6879a560*7564A65C810E5D99C0C1B4803E34CE6E4907602842D0EB52DB87F8D9F0C141AD","name":"e9b2820d-5954-435d-baaf-de1f6879a560*7564A65C810E5D99C0C1B4803E34CE6E4907602842D0EB52DB87F8D9F0C141AD","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","status":"Accepted","startTime":"2023-05-03T05:56:10.1752522Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '626'
+      - '555'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Feb 2023 05:01:23 GMT
+      - Wed, 03 May 2023 05:57:42 GMT
       etag:
-      - '"9000188f-0000-4d00-0000-63ef0a210000"'
+      - '"00005a00-0000-3300-0000-6451f77a0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter admin devcenter create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CENTRALUSEUAP/operationStatuses/e9b2820d-5954-435d-baaf-de1f6879a560*7564A65C810E5D99C0C1B4803E34CE6E4907602842D0EB52DB87F8D9F0C141AD?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CENTRALUSEUAP/operationStatuses/e9b2820d-5954-435d-baaf-de1f6879a560*7564A65C810E5D99C0C1B4803E34CE6E4907602842D0EB52DB87F8D9F0C141AD","name":"e9b2820d-5954-435d-baaf-de1f6879a560*7564A65C810E5D99C0C1B4803E34CE6E4907602842D0EB52DB87F8D9F0C141AD","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","status":"Succeeded","startTime":"2023-05-03T05:56:10.1752522Z","endTime":"2023-05-03T05:57:52.4772256Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '615'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 03 May 2023 05:58:12 GMT
+      etag:
+      - '"00006300-0000-3300-0000-6451f7e00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - devcenter admin devcenter create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --location --tags --name --resource-group
+      User-Agent:
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002?api-version=2023-04-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"centraluseuap","tags":{"CostCode":"12345"},"systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-05-03T05:56:09.9253964Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-03T05:56:09.9253964Z"},"properties":{"provisioningState":"Succeeded","devCenterUri":"https://00000000-0000-0000-0000-000000000000-cli000002.centraluseuap.devcenter.azure.com/"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '638'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 03 May 2023 05:58:12 GMT
+      etag:
+      - '"0000b310-0000-3300-0000-6451f7e00000"'
       expires:
       - '-1'
       pragma:
@@ -275,9 +367,9 @@ interactions:
       ParameterSetName:
       - --name --type
       User-Agent:
-      - AZURECLI/2.45.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.47.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/checkNameAvailability?api-version=2022-11-11-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/checkNameAvailability?api-version=2023-04-01
   response:
     body:
       string: '{"nameAvailable":false,"reason":"AlreadyExists","message":"Failed to
@@ -291,7 +383,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 Feb 2023 05:01:25 GMT
+      - Wed, 03 May 2023 05:58:13 GMT
       expires:
       - '-1'
       pragma:
@@ -313,7 +405,7 @@ interactions:
       x-rate-limit-remaining:
       - '299'
       x-rate-limit-reset:
-      - '2023-02-17T05:02:25.3579759Z'
+      - '2023-05-03T05:59:13.7754813Z'
     status:
       code: 200
       message: OK
