@@ -12,8 +12,9 @@ from azure.cli.core.commands import CliCommandType
 def load_command_table(self, _):
 
     with self.command_group('databricks workspace'):
-        from azext_databricks.custom import DatabricksWorkspaceCreate
+        from azext_databricks.custom import DatabricksWorkspaceCreate, DatabricksWorkspaceUpdate
         self.command_table['databricks workspace create'] = DatabricksWorkspaceCreate(loader=self)
+        self.command_table['databricks workspace update'] = DatabricksWorkspaceUpdate(loader=self)
 
     with self.command_group('databricks workspace vnet-peering'):
         from azext_databricks.custom import WorkspaceVnetPeeringCreate

@@ -9,10 +9,8 @@
 # flake8: noqa
 
 from .__cmd_group import *
-from ._attach_volume import *
 from ._create import *
 from ._delete import *
-from ._detach_volume import *
 from ._list import *
 from ._power_off import *
 from ._reimage import *

@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{}'
+    body: '{"validFrom": null, "validUntil": null}'
     headers:
       Accept:
       - application/json
@@ -9,45 +9,48 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2'
+      - '39'
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - '2022-12-05T20:15:11.908904Z'
+      - Fri, 26 May 2023 04:10:48 GMT
       Repeatability-Request-ID:
-      - 85c0e196-74d9-11ed-b986-a864f13124e5
+      - 4ba99975-fb7b-11ed-a404-8cf8c5abc371
       User-Agent:
-      - azsdk-python-communication-rooms/1.0.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.6 azsdk-python-communication-rooms/1.0.0b3 Python/3.8.0 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
-      - RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=
+      - vBTkhrLFogng0nIWoP6/XqO3xl87GjFK9aShkzc8E3g=
       x-ms-date:
-      - Mon, 05 Dec 2022 20:15:11 GMT
+      - Fri, 26 May 2023 04:10:48 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/rooms?api-version=2022-02-01
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-03-31-preview
   response:
     body:
-      string: '{"id": "sanitized", "createdDateTime": "2022-12-05T20:15:13.0885871+00:00",
-        "validFrom": "2022-12-05T20:15:12.9743651+00:00", "validUntil": "2023-06-03T20:15:12.9743651+00:00",
-        "roomJoinPolicy": "InviteOnly", "participants": []}'
+      string: '{"id": "sanitized", "createdAt": "2023-05-26T04:10:49.2562808+00:00",
+        "validFrom": "2023-05-26T04:10:48.9875243+00:00", "validUntil": "2023-11-22T04:10:48.9875243+00:00"}'
     headers:
+      api-deprecated-versions:
+      - '2021-04-07'
       api-supported-versions:
-      - 2021-04-07, 2022-02-01
+      - 2022-02-01, 2023-03-31-preview
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:15:13 GMT
+      - Fri, 26 May 2023 04:10:48 GMT
       location:
-      - '99416503393125484'
+      - '99490744908276800'
       ms-cv:
-      - KQ8rzSbLPEafVHvADcEUIA.0
+      - HpCO4xscek+JtRZvP64I9w.0
       repeatability-result:
       - accepted
+      request-context:
+      - appId=
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0UFGOYwAAAAB1/mNeMETJRbR3rHRLWfaMWVZSMzExMDAwMTE1MDE5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 0SDFwZAAAAADuLUZr4FX0SYLnLxcxF5UfWVZSMzExMDAwMTE1MDExADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
     status:
@@ -63,71 +66,33 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - azsdk-python-communication-rooms/1.0.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.6 azsdk-python-communication-rooms/1.0.0b3 Python/3.8.0 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
       - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
       x-ms-date:
-      - Mon, 05 Dec 2022 20:15:12 GMT
+      - Fri, 26 May 2023 04:10:49 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: GET
-    uri: https://sanitized.communication.azure.com/rooms/sanitized/participants?api-version=2022-02-01
+    uri: https://sanitized.communication.azure.com/rooms/sanitized/participants?api-version=2023-03-31-preview
   response:
     body:
-      string: '{"participants": []}'
+      string: '{"value": []}'
     headers:
       api-supported-versions:
-      - '2022-02-01'
+      - 2022-02-01, 2023-03-31-preview
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:15:14 GMT
+      - Fri, 26 May 2023 04:10:49 GMT
       ms-cv:
-      - txC2V/tsKEqAgU6Nz3jCqw.0
+      - sc6tytlx606ZJV5jBiKsSQ.0
+      request-context:
+      - appId=
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0UVGOYwAAAABLjRMs72smSrhTpSg/6FGCWVZSMzExMDAwMTE1MDUzADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
-      x-cache:
-      - CONFIG_NOCACHE
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      Connection:
-      - keep-alive
-      User-Agent:
-      - azsdk-python-communication-rooms/1.0.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
-      x-ms-content-sha256:
-      - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
-      x-ms-date:
-      - Mon, 05 Dec 2022 20:15:13 GMT
-      x-ms-return-client-request-id:
-      - 'true'
-    method: GET
-    uri: https://sanitized.communication.azure.com/rooms/sanitized/participants?api-version=2022-02-01
-  response:
-    body:
-      string: '{"participants": []}'
-    headers:
-      api-supported-versions:
-      - '2022-02-01'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 05 Dec 2022 20:15:14 GMT
-      ms-cv:
-      - b4X/8fHONkqLoKMEZsWQmQ.0
-      transfer-encoding:
-      - chunked
-      x-azure-ref:
-      - 0UlGOYwAAAACC/5HVKJPKS7k+jLI9eXauWVZSMzBFREdFMDMxNQA5ZmM3YjUxOS1hOGNjLTRmODktOTM1ZS1jOTE0OGFlMDllODE=
+      - 0STFwZAAAAAD25v6SDKZdTYfkTh1VL7bVWVZSMzExMDAwMTE1MDE3ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
     status:

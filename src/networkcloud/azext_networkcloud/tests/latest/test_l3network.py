@@ -4,8 +4,6 @@
 #
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-few-public-methods,unnecessary-pass,unused-argument
-# flake8: noqa
-
 
 """
 L3Network tests scenarios
@@ -42,7 +40,7 @@ def call_scenario1(test):
 
 
 def step_create(test, checks=None):
-    '''l3network create operation'''
+    '''L3Network create operation'''
     if checks is None:
         checks = []
     test.cmd('az networkcloud l3network create --name {name} --extended-location '
@@ -56,7 +54,7 @@ def step_create(test, checks=None):
 
 
 def step_show(test, checks=None):
-    '''l3network show operation'''
+    '''L3Network show operation'''
     if checks is None:
         checks = []
     test.cmd(
@@ -64,7 +62,7 @@ def step_show(test, checks=None):
 
 
 def step_delete(test, checks=None):
-    '''l3network delete operation'''
+    '''L3Network delete operation'''
     if checks is None:
         checks = []
     test.cmd(
@@ -72,29 +70,29 @@ def step_delete(test, checks=None):
 
 
 def step_list_resource_group(test, checks=None):
-    '''l3network list by resource group operation'''
+    '''L3Network list by resource group operation'''
     if checks is None:
         checks = []
     test.cmd('az networkcloud l3network list --resource-group {rg}')
 
 
 def step_list_subscription(test, checks=None):
-    '''l3network list by subscription operation'''
+    '''L3Network list by subscription operation'''
     if checks is None:
         checks = []
     test.cmd('az networkcloud l3network list')
 
 
 def step_update(test, checks=None):
-    '''l3network update operation'''
+    '''L3Network update operation'''
     if checks is None:
         checks = []
     test.cmd(
         'az networkcloud l3network update --name {name} --tags {tagsUpdate} --resource-group {rg}')
 
 
-class L3NetworkScenarioTest1(ScenarioTest):
-    ''' L3NetworkScenario test'''
+class L3NetworkScenarioTest(ScenarioTest):
+    ''' L3Network scenario test'''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -103,7 +101,7 @@ class L3NetworkScenarioTest1(ScenarioTest):
             'location': CONFIG.get('L3_NETWORK', 'location'),
             'extendedLocation': CONFIG.get('L3_NETWORK', 'extended_location'),
             'tags': CONFIG.get('L3_NETWORK', 'tags'),
-            'tagsUpdate': CONFIG.get('L3_NETWORK', 'tagsUpdate'),
+            'tagsUpdate': CONFIG.get('L3_NETWORK', 'tags_update'),
             "type": CONFIG.get('L3_NETWORK', 'type'),
             'vlan': CONFIG.get('L3_NETWORK', 'vlan'),
             "ipAllocationType": CONFIG.get('L3_NETWORK', 'ip_allocation_type'),
@@ -116,5 +114,5 @@ class L3NetworkScenarioTest1(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='clitest_rg'[:7], key='rg', parameter_name='rg')
     def test_l3network_scenario1(self):
-        ''' test scenario for L3network CRUD operations'''
+        ''' test scenario for L3Network CRUD operations'''
         call_scenario1(self)
