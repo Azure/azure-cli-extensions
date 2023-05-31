@@ -5,18 +5,12 @@ Release History
 0.10.2
 +++++
 * az databricks workspace create/update: Add --disk-key-auto-rotation to enable the latest key version should be automatically.
-* az databricks workspace create: Add --disk-key-name to allow creating the name of KeyVault key.
-* az databricks workspace create: Add --disk-key-vault to allow creating the URI of KeyVault.
-* az databricks workspace create: Add --disk-key-version to allow creating the version of KeyVault key.
-* az databricks workspace create: Add --managed-services-key-name to allow creating the name of KeyVault key.
-* az databricks workspace create: Add --managed-services-key-vault to allow creating the Uri of KeyVault.
-* az databricks workspace create: Add --managed-services-key-version to allow creating the version of KeyVault key.
-* az databricks workspace update: Add --disk-key-name to allow updating the name of KeyVault key.
-* az databricks workspace update: Add --disk-key-vault to allow updating the URI of KeyVault.
-* az databricks workspace update: Add --disk-key-version to allow updating the version of KeyVault key.
-* az databricks workspace update: Add --managed-services-key-name to allow updating the name of KeyVault key.
-* az databricks workspace update: Add --managed-services-key-vault to allow updating the Uri of KeyVault.
-* az databricks workspace update: Add --managed-services-key-version to allow updating the version of KeyVault key.
+* az databricks workspace create/update: Add --disk-key-name to allow creating/updating the name of KeyVault key.
+* az databricks workspace create/update: Add --disk-key-vault to allow creating/updating the URI of KeyVault.
+* az databricks workspace create/update: Add --disk-key-version to allow creating/updating the version of KeyVault key.
+* az databricks workspace create/update: Add --managed-services-key-name to allow creating/updating the name of KeyVault key.
+* az databricks workspace create/update: Add --managed-services-key-vault to allow creating/updating the Uri of KeyVault.
+* az databricks workspace create/update: Add --managed-services-key-version to allow creating/updating the version of KeyVault key.
 
 0.10.1
 +++++
