@@ -233,6 +233,12 @@ sql mi-arc update:
     sync_secondary_to_commit:
       rule_exclusions:
       - option_length_too_long
+    tde_protector_private_key_file:
+      rule_exclusions:
+      - option_length_too_long
+    tde_protector_public_key_file:
+      rule_exclusions:
+      - option_length_too_long
 sql mi-arc create:
   parameters:
     sync_secondary_to_commit:
