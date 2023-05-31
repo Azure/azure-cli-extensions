@@ -15,65 +15,40 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
      cli-ext/v20221212preview/ext/src/networkcloud/azext_networkcloud/__init__.py
     '''
     # baremetalmachine
-    from .aaz.operations.baremetalmachine._run_command import RunCommand
+    from .operations.baremetalmachine._run_command import RunCommand
     self.command_table["networkcloud baremetalmachine run-command"] = RunCommand(
         loader=self)
-    from .aaz.operations.baremetalmachine._run_read_command import \
+    from .operations.baremetalmachine._run_read_command import \
         RunReadCommand
     self.command_table["networkcloud baremetalmachine run-read-command"] = RunReadCommand(
         loader=self)
-    from .aaz.operations.baremetalmachine._run_data_extract import \
+    from .operations.baremetalmachine._run_data_extract import \
         RunDataExtract
     self.command_table["networkcloud baremetalmachine run-data-extract"] = RunDataExtract(
         loader=self)
 
-    from .aaz.operations.storageappliance._run_read_command import \
-        RunReadCommand as RunReadStorage
-    self.command_table["networkcloud storageappliance run-read-command"] = RunReadStorage(
-        loader=self)
-
     # cluster
-    from .aaz.operations.cluster.metricsconfiguration._create import \
+    from .operations.cluster.metricsconfiguration._create import \
         ClusterMetricsConfigurationCreate
     self.command_table["networkcloud cluster metricsconfiguration create"] = \
         ClusterMetricsConfigurationCreate(loader=self)
 
-    from .aaz.operations.cluster.metricsconfiguration._update import \
+    from .operations.cluster.metricsconfiguration._update import \
         ClusterMetricsConfigurationUpdate
     self.command_table["networkcloud cluster metricsconfiguration update"] = \
         ClusterMetricsConfigurationUpdate(loader=self)
 
-    from .aaz.operations.cluster.metricsconfiguration._delete import \
+    from .operations.cluster.metricsconfiguration._delete import \
         ClusterMetricsConfigurationDelete
     self.command_table["networkcloud cluster metricsconfiguration delete"] = \
         ClusterMetricsConfigurationDelete(loader=self)
 
-    from .aaz.operations.cluster.metricsconfiguration._show import \
+    from .operations.cluster.metricsconfiguration._show import \
         ClusterMetricsConfigurationShow
     self.command_table["networkcloud cluster metricsconfiguration show"] = \
         ClusterMetricsConfigurationShow(loader=self)
 
     # virtualmachine
-    from .aaz.operations.virtualmachine._create import VirtualMachineCreate
+    from .operations.virtualmachine._create import VirtualMachineCreate
     self.command_table["networkcloud virtualmachine create"] = VirtualMachineCreate(
-        loader=self)
-
-    from .aaz.operations.virtualmachine.console._create import \
-        VirtualMachineConsoleCreate
-    self.command_table["networkcloud virtualmachine console create"] = VirtualMachineConsoleCreate(
-        loader=self)
-
-    from .aaz.operations.virtualmachine.console._update import \
-        VirtualMachineConsoleUpdate
-    self.command_table["networkcloud virtualmachine console update"] = VirtualMachineConsoleUpdate(
-        loader=self)
-
-    from .aaz.operations.virtualmachine.console._show import \
-        VirtualMachineConsoleShow
-    self.command_table["networkcloud virtualmachine console show"] = VirtualMachineConsoleShow(
-        loader=self)
-
-    from .aaz.operations.virtualmachine.console._delete import \
-        VirtualMachineConsoleDelete
-    self.command_table["networkcloud virtualmachine console delete"] = VirtualMachineConsoleDelete(
         loader=self)

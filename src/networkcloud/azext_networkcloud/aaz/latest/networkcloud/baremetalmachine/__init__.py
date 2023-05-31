@@ -13,7 +13,6 @@ from ._cordon import *
 from ._list import *
 from ._power_off import *
 from ._reimage import *
-from ._replace import *
 from ._restart import *
 from ._run_command import *
 from ._run_data_extract import *
@@ -22,5 +21,4 @@ from ._show import *
 from ._start import *
 from ._uncordon import *
 from ._update import *
-from ._validate_hardware import *
 from ._wait import *

@@ -2,6 +2,16 @@
 
 Release History
 ===============
+0.10.2
++++++
+* az databricks workspace create/update: Add --disk-key-auto-rotation to enable the latest key version should be automatically.
+* az databricks workspace create/update: Add --disk-key-name to allow creating/updating the name of KeyVault key.
+* az databricks workspace create/update: Add --disk-key-vault to allow creating/updating the URI of KeyVault.
+* az databricks workspace create/update: Add --disk-key-version to allow creating/updating the version of KeyVault key.
+* az databricks workspace create/update: Add --managed-services-key-name to allow creating/updating the name of KeyVault key.
+* az databricks workspace create/update: Add --managed-services-key-vault to allow creating/updating the Uri of KeyVault.
+* az databricks workspace create/update: Add --managed-services-key-version to allow creating/updating the version of KeyVault key.
+
 0.10.1
 +++++
 * az databricks workspace update: Add --public-network-access to allow updating the network access type for accessing workspace.

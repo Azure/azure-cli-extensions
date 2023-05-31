@@ -427,6 +427,160 @@ class DatabricksClientScenarioTest(ScenarioTest):
                  '-y',
                  checks=[])
 
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_databricks_create_v1')
+    def test_databricks_create_v1(self):
+        self.kwargs.update({
+            'workspace_name': self.create_random_name(prefix='workspace', length=16),
+            'key_vault': "https://test-vault-name.vault.azure.net/",
+            'key_name': "test-cmk-key",
+            'key_version': "00000000000000000000000000000000"
+        })
+
+        self.cmd('az databricks workspace create '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--location "eastus" '
+                 '--sku premium '
+                 '--enable-no-public-ip '
+                 '--disk-key-auto-rotation True '
+                 '--disk-key-vault {key_vault} '
+                 '--disk-key-name {key_name} '
+                 '--disk-key-version {key_version} ',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('sku.name', 'premium'),
+                         self.check('parameters.enableNoPublicIp.value', True),
+                         self.check('encryption.entities.managedDisk.keyVaultProperties.keyVaultUri', '{key_vault}'),
+                         self.check('encryption.entities.managedDisk.keyVaultProperties.keyName', '{key_name}'),
+                         self.check('encryption.entities.managedDisk.keyVaultProperties.keyVersion', '{key_version}'),
+                         self.check('encryption.entities.managedDisk.rotationToLatestKeyVersionEnabled', True)])
+        self.cmd('az databricks workspace delete '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '-y',
+                 checks=[])
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_databricks_create_v2')
+    @KeyVaultPreparer(location='eastus')
+    def test_databricks_create_v2(self, resource_group, key_vault):
+        self.kwargs.update({
+            'kv': key_vault,
+            'workspace_name': self.create_random_name(prefix='workspace', length=16),
+            'oid': "09e25313-21e0-4033-bd7c-179e9e990c73",
+            'key_name': 'testkey'
+        })
+        keyvault = self.cmd('az keyvault show -n {kv} -g {rg}').get_output_in_json()
+        self.cmd('az keyvault set-policy -n {kv} --object-id {oid} -g {rg} '
+                 '--key-permissions get wrapKey unwrapKey ')
+
+        key = self.cmd('az keyvault key create -n {key_name} --vault-name {kv}').get_output_in_json()
+        key_version = key['key']['kid'].rsplit('/', 1)[1]
+
+        self.kwargs.update({'key_version': key_version,
+                            'key_vault': keyvault['properties']['vaultUri']})
+        self.cmd('az databricks workspace create '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--location "eastus" '
+                 '--sku premium '
+                 '--enable-no-public-ip '
+                 '--managed-services-key-vault {key_vault} '
+                 '--managed-services-key-name {key_name} '
+                 '--managed-services-key-version {key_version}',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('sku.name', 'premium'),
+                         self.check('encryption.entities.managedServices.keyVaultProperties.keyName', '{key_name}'),
+                         self.check('encryption.entities.managedServices.keyVaultProperties.keyVaultUri', '{key_vault}'),
+                         self.check('encryption.entities.managedServices.keyVaultProperties.keyVersion', '{key_version}')])
+
+        self.cmd('az databricks workspace delete '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '-y',
+                 checks=[])
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_databricks_update_v1')
+    def test_databricks_update_v1(self):
+        self.kwargs.update({
+            'workspace_name': self.create_random_name(prefix='workspace', length=16),
+            'key_vault': "https://test-vault-name.vault.azure.net/",
+            'key_name': "test-cmk-key",
+            'key_version': "00000000000000000000000000000000",
+        })
+        self.cmd('az databricks workspace create '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--location "eastus" '
+                 '--sku premium '
+                 '--enable-no-public-ip '
+                 '--prepare-encryption',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('sku.name', 'premium'),
+                         self.check('parameters.enableNoPublicIp.value', True)])
+        self.cmd('az databricks workspace update '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--disk-key-auto-rotation True '
+                 '--disk-key-vault {key_vault} '
+                 '--disk-key-name {key_name} '
+                 '--disk-key-version {key_version}',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('encryption.entities.managedDisk.keyVaultProperties.keyVaultUri', '{key_vault}'),
+                         self.check('encryption.entities.managedDisk.keyVaultProperties.keyName', '{key_name}'),
+                         self.check('encryption.entities.managedDisk.keyVaultProperties.keyVersion', '{key_version}'),
+                         self.check('encryption.entities.managedDisk.rotationToLatestKeyVersionEnabled', True)])
+        self.cmd('az databricks workspace delete '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '-y',
+                 checks=[])
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_databricks_update_v2')
+    @KeyVaultPreparer(location='eastus')
+    def test_databricks_update_v2(self, resource_group, key_vault):
+        self.kwargs.update({
+            'kv': key_vault,
+            'workspace_name': self.create_random_name(prefix='workspace', length=16),
+            'oid': "09e25313-21e0-4033-bd7c-179e9e990c73",
+            'key_name': 'testkey'
+        })
+        self.cmd('az databricks workspace create '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--location eastus '
+                 '--prepare-encryption '
+                 '--sku premium '
+                 '--enable-no-public-ip')
+        keyvault = self.cmd('az keyvault show -n {kv} -g {rg}').get_output_in_json()
+        self.cmd('az keyvault set-policy -n {kv} --object-id {oid} -g {rg} '
+                 '--key-permissions get wrapKey unwrapKey ')
+
+        key = self.cmd('az keyvault key create -n {key_name} --vault-name {kv}').get_output_in_json()
+        key_version = key['key']['kid'].rsplit('/', 1)[1]
+
+        self.kwargs.update({'key_version': key_version,
+                            'key_vault': keyvault['properties']['vaultUri']})
+        self.cmd('az databricks workspace update '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '--managed-services-key-vault {key_vault} '
+                 '--managed-services-key-name {key_name} '
+                 '--managed-services-key-version {key_version}',
+                 checks=[self.check('name', '{workspace_name}'),
+                         self.check('sku.name', 'premium'),
+                         self.check('encryption.entities.managedServices.keyVaultProperties.keyName', '{key_name}'),
+                         self.check('encryption.entities.managedServices.keyVaultProperties.keyVaultUri', '{key_vault}'),
+                         self.check('encryption.entities.managedServices.keyVaultProperties.keyVersion', '{key_version}')])
+
+        self.cmd('az databricks workspace delete '
+                 '--resource-group {rg} '
+                 '--name {workspace_name} '
+                 '-y',
+                 checks=[])
+
 
 class DatabricksVNetPeeringScenarioTest(ScenarioTest):
 
