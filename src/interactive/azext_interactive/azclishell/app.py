@@ -859,7 +859,15 @@ class AzInteractiveShell(object):
                 self.threads.append(thread)
                 result = None
             else:
-                result = invocation.execute(args)
+                try:
+                    result = invocation.execute(args)
+                # Prevent users from exiting the entire az interactive by using Ctrl+C during command execution
+                except KeyboardInterrupt:
+                    result = None
+                    self.last_exit_code = 1
+                except Exception as e:
+                    # code to handle the exception
+                    print(type(e).__name__)
 
             self.last_exit_code = 0
             if result and result.result is not None:
