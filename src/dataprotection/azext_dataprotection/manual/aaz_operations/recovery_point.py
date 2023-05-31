@@ -5,7 +5,6 @@
 
 from azure.cli.core.aaz import AAZStrArg
 from azext_dataprotection.aaz.latest.dataprotection.recovery_point import List as _RecoveryPointList
-from knack.util import CLIError
 from ..helpers import validate_recovery_point_datetime_format
 
 
