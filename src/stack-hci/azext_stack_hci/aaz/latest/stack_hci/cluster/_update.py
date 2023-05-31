@@ -98,22 +98,10 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.aad_application_object_id = AAZStrArg(
-            options=["--aad-application-object-id"],
-            arg_group="Properties",
-            help="Object id of cluster AAD identity.",
-            nullable=True,
-        )
         _args_schema.aad_client_id = AAZStrArg(
             options=["--aad-client-id"],
             arg_group="Properties",
             help="App id of cluster AAD identity.",
-            nullable=True,
-        )
-        _args_schema.aad_service_principal_object_id = AAZStrArg(
-            options=["--aad-service-principal-object-id"],
-            arg_group="Properties",
-            help="Id of cluster identity service principal.",
             nullable=True,
         )
         _args_schema.aad_tenant_id = AAZStrArg(
@@ -384,9 +372,7 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("aadApplicationObjectId", AAZStrType, ".aad_application_object_id")
                 properties.set_prop("aadClientId", AAZStrType, ".aad_client_id")
-                properties.set_prop("aadServicePrincipalObjectId", AAZStrType, ".aad_service_principal_object_id")
                 properties.set_prop("aadTenantId", AAZStrType, ".aad_tenant_id")
                 properties.set_prop("cloudManagementEndpoint", AAZStrType, ".endpoint")
                 properties.set_prop("desiredProperties", AAZObjectType, ".desired_properties")
