@@ -43,6 +43,15 @@ def create_test(
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Create test has started for test ID : %s", test_id)
+    body = None
+    try:
+        body = client.get_test(test_id)
+    except ResourceNotFoundError:
+        pass
+    if body is not None:
+        msg = f"Test with given test ID : {test_id} already exist."
+        logger.debug(msg)
+        raise InvalidArgumentValueError(msg)
     body = {}
     yaml, yaml_test_body = None, None
     if load_test_config_file is not None:
@@ -63,13 +72,6 @@ def create_test(
         subnet_id=subnet_id,
         split_csv=split_csv,
     )
-    tests = client.list_tests()
-    for test in tests:
-        if test_id == test.get("testId"):
-            logger.debug("Test with given test ID : %s already exists.", test_id)
-            raise InvalidArgumentValueError(
-                f"Test with given test ID : {test_id} already exists."
-            )
     logger.debug("Creating test with test ID: %s and body : %s", test_id, body)
     response = client.create_or_update_test(test_id=test_id, body=body)
     logger.debug(

@@ -32,6 +32,16 @@ def create_test_run(
 ):
     logger.info("Create test run started")
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
+    test_run_body = None
+    try:
+        test_run_body = client.get_test_run(test_run_id=test_run_id)
+    except ResourceNotFoundError:
+        pass
+    if test_run_body:
+        msg = f"Test run with given test run ID : {test_run_id} already exist."
+        logger.debug(msg)
+        raise InvalidArgumentValueError(msg)
+
     test_run_body = create_or_update_test_run_body(
         test_id,
         display_name=display_name,
