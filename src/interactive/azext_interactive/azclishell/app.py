@@ -865,9 +865,11 @@ class AzInteractiveShell(object):
                 except KeyboardInterrupt:
                     result = None
                     self.last_exit_code = 1
-                except Exception as e:
-                    # code to handle the exception
-                    print(type(e).__name__)
+                except SystemExit as ex:
+                    # prevent errors caused by uncompleted command loading
+                    if ex.code == 2 and self.command_table_thread.is_alive():
+                        print_styled_text([(Style.ERROR, "Command loading is not complete, please wait...")])
+                    result = None
 
             self.last_exit_code = 0
             if result and result.result is not None:
