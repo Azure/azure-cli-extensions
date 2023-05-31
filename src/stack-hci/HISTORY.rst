@@ -5,9 +5,9 @@ Release History
 
 0.1.8
 ++++++
-* Add new subgroup `cluster offer/publisher` `cluster-update` to support managing cluster subresource
 * Add new command `consent-and-install-default-extension` `initialize-disable-proces` for `az arc-setting`
-* Add new command `extend-software-assurance-benefit` `upload-certificate` for `az cluster`
+* Add new command `extend-software-assurance-benefit` for `az cluster`
+* Fix the conflict key for `az stack-hci cluster list` and `az stack-hci cluster show`
 
 0.1.7
 ++++++
