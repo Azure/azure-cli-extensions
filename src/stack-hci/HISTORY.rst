@@ -5,8 +5,8 @@ Release History
 
 0.1.8
 ++++++
-* Add new command `consent-and-install-default-extension` `initialize-disable-proces` for `az arc-setting`
-* Add new command `extend-software-assurance-benefit` for `az cluster`
+* Add new command `consent-and-install-default-extension` `initialize-disable-proces` for `az stack-hci arc-setting`
+* Add new command `extend-software-assurance-benefit` for `az stack-hci cluster`
 * Fix the conflict key for `az stack-hci cluster list` and `az stack-hci cluster show`
 
 0.1.7
