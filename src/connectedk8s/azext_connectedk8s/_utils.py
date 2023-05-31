@@ -235,7 +235,7 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
 
     try:
         if outbound_connectivity_check_for == 'pre-onboarding-inspector':
-            if consts.Outbound_Connectivity_Check_Check_String not in outbound_connectivity_check_log:
+            if consts.Outbound_Connectivity_Check_Result_String not in outbound_connectivity_check_log:
                 return consts.Diagnostic_Check_Incomplete, storage_space_available
 
             Outbound_Connectivity_Log_For_Cluster_Connect = outbound_connectivity_check_log.split('  ')[0]

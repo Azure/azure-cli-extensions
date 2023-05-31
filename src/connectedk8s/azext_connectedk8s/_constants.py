@@ -215,8 +215,7 @@ Cluster_Diagnostic_Prechecks_Incomplete = "Cluster diagnostic prechecks failed t
 Cluster_Diagnostic_Checks_Pod_Description_Save_Failed = 'Failed to save cluster diagnostic checks pod description'
 Cluster_Diagnostic_Checks_Job_Log_Save_Failed = 'Failed to save cluster diagnostic checks job log'
 # Diagnostic Results Name
-Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity Result:"
-Outbound_Connectivity_Check_Check_String = "Outbound Network Connectivity Check"
+Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity"
 Outbound_Connectivity_Check_Failed_For_Cluster_Connect = "Outbound network connectivity check failed for Cluster Connect"
 DNS_Check_Result_String = "DNS Result:"
 AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = '2.30.0'
