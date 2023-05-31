@@ -140,59 +140,59 @@ class Update(AAZCommand):
             nullable=True,
         )
 
-        # define Arg Group "ManagedDisk"
+        # define Arg Group "Managed Disk"
 
         _args_schema = cls._args_schema
         _args_schema.disk_key_source = AAZStrArg(
             options=["--disk-key-source"],
-            arg_group="ManagedDisk",
+            arg_group="Managed Disk",
             help="The encryption keySource (provider). Possible values (case-insensitive):  Microsoft.Keyvault",
             enum={"Microsoft.Keyvault": "Microsoft.Keyvault"},
         )
         _args_schema.disk_key_name = AAZStrArg(
             options=["--disk-key-name"],
-            arg_group="ManagedDisk",
+            arg_group="Managed Disk",
             help="The name of KeyVault key.",
         )
         _args_schema.disk_key_vault = AAZStrArg(
             options=["--disk-key-vault"],
-            arg_group="ManagedDisk",
+            arg_group="Managed Disk",
             help="The URI of KeyVault.",
         )
         _args_schema.disk_key_version = AAZStrArg(
             options=["--disk-key-version"],
-            arg_group="ManagedDisk",
+            arg_group="Managed Disk",
             help="The version of KeyVault key.",
         )
         _args_schema.disk_key_auto_rotation = AAZBoolArg(
             options=["--disk-key-auto-rotation"],
-            arg_group="ManagedDisk",
+            arg_group="Managed Disk",
             help="Indicate whether the latest key version should be automatically used for Managed Disk Encryption.",
             nullable=True,
         )
 
-        # define Arg Group "ManagedServices"
+        # define Arg Group "Managed Services"
 
         _args_schema = cls._args_schema
         _args_schema.managed_services_key_source = AAZStrArg(
             options=["--managed-services-key-source"],
-            arg_group="ManagedServices",
+            arg_group="Managed Services",
             help="The encryption keySource (provider). Possible values (case-insensitive):  Microsoft.Keyvault",
             enum={"Microsoft.Keyvault": "Microsoft.Keyvault"},
         )
         _args_schema.managed_services_key_name = AAZStrArg(
-            options=["--managed-services-key-name"],
-            arg_group="ManagedServices",
+            options=["--ms-key-name", "--managed-services-key-name"],
+            arg_group="Managed Services",
             help="The name of KeyVault key.",
         )
         _args_schema.managed_services_key_vault = AAZStrArg(
-            options=["--managed-services-key-vault"],
-            arg_group="ManagedServices",
+            options=["--ms-key-vault", "--managed-services-key-vault"],
+            arg_group="Managed Services",
             help="The Uri of KeyVault.",
         )
         _args_schema.managed_services_key_version = AAZStrArg(
-            options=["--managed-services-key-version"],
-            arg_group="ManagedServices",
+            options=["--ms-key-version", "--managed-services-key-version"],
+            arg_group="Managed Services",
             help="The version of KeyVault key.",
         )
 

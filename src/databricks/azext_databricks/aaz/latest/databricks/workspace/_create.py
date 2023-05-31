@@ -161,17 +161,17 @@ class Create(AAZCommand):
             enum={"Microsoft.Keyvault": "Microsoft.Keyvault"},
         )
         _args_schema.managed_services_key_name = AAZStrArg(
-            options=["--managed-services-key-name"],
+            options=["--ms-key-name", "--managed-services-key-name"],
             arg_group="Encryption",
             help="The name of KeyVault key.",
         )
         _args_schema.managed_services_key_vault = AAZStrArg(
-            options=["--managed-services-key-vault"],
+            options=["--ms-key-vault", "--managed-services-key-vault"],
             arg_group="Encryption",
             help="The Uri of KeyVault.",
         )
         _args_schema.managed_services_key_version = AAZStrArg(
-            options=["--managed-services-key-version"],
+            options=["--ms-key-version", "--managed-services-key-version"],
             arg_group="Encryption",
             help="The version of KeyVault key.",
         )

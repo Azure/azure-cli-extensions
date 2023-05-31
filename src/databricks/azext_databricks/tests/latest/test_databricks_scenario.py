@@ -509,7 +509,6 @@ class DatabricksClientScenarioTest(ScenarioTest):
             'key_name': "test-cmk-key",
             'key_version': "00000000000000000000000000000000",
         })
-
         self.cmd('az databricks workspace create '
                  '--resource-group {rg} '
                  '--name {workspace_name} '
@@ -551,7 +550,7 @@ class DatabricksClientScenarioTest(ScenarioTest):
         self.cmd('az databricks workspace create '
                  '--resource-group {rg} '
                  '--name {workspace_name} '
-                 '--location westus '
+                 '--location eastus '
                  '--prepare-encryption '
                  '--sku premium '
                  '--enable-no-public-ip')
@@ -567,8 +566,6 @@ class DatabricksClientScenarioTest(ScenarioTest):
         self.cmd('az databricks workspace update '
                  '--resource-group {rg} '
                  '--name {workspace_name} '
-                 '--sku premium '
-                 '--enable-no-public-ip '
                  '--managed-services-key-vault {key_vault} '
                  '--managed-services-key-name {key_name} '
                  '--managed-services-key-version {key_version}',
