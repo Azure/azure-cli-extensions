@@ -1577,7 +1577,7 @@ def create_containerappsjob(cmd,
             registry_user or registry_pass or secrets or env_vars or\
                 startup_command or args or tags:
             not disable_warnings and logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
-        return create_containerappsjob_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
+        return create_containerappsjobv2_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
 
     if replica_timeout is None:
         raise RequiredArgumentMissingError('Usage error: --replica-timeout is required')
@@ -2213,27 +2213,29 @@ def update_containerappsjob_logic(cmd,
 def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
     yaml_containerappsjob = process_loaded_yaml(load_yaml_file(file_name))
     if type(yaml_containerappsjob) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
 
     if not yaml_containerappsjob.get('name'):
         yaml_containerappsjob['name'] = name
     elif yaml_containerappsjob.get('name').lower() != name.lower():
-        logger.warning('The app name provided in the --yaml file "{}" does not match the one provided in the --name flag "{}". The one provided in the --yaml file will be used.'.format(
+        logger.warning('The job name provided in the --yaml file "{}" does not match the one provided in the --name flag "{}". The one provided in the --yaml file will be used.'.format(
             yaml_containerappsjob.get('name'), name))
     name = yaml_containerappsjob.get('name')
 
     if not yaml_containerappsjob.get('type'):
         yaml_containerappsjob['type'] = 'Microsoft.App/jobs'
     elif yaml_containerappsjob.get('type').lower() != "microsoft.app/jobs":
-        raise ValidationError('Containerapp type must be \"Microsoft.App/jobs\"')
+        raise ValidationError('Containerapp job type must be \"Microsoft.App/jobs\"')
 
-    # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
+    # Deserialize the yaml into a ContainerAppsJob object. Need this since we're not using SDK
     containerappsjob_def = None
     try:
         deserializer = create_deserializer()
+
         containerappsjob_def = deserializer('ContainerAppsJob', yaml_containerappsjob)
     except DeserializationError as ex:
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps job YAML spec.') from ex
+        print("exception deserializing yaml", ex)
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.') from ex
 
     # Remove tags before converting from snake case to camel case, then re-add tags. We don't want to change the case of the tags. Need this since we're not using SDK
     tags = None
@@ -2244,31 +2246,6 @@ def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_w
     containerappsjob_def = _convert_object_from_snake_to_camel_case(_object_to_dict(containerappsjob_def))
     containerappsjob_def['tags'] = tags
 
-    # Validate managed environment
-    if not yaml_containerappsjob["properties"].get('environmentId'):
-        raise RequiredArgumentMissingError('environmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
-
-    containerappsjob_def["managedEnvironmentId"] = yaml_containerappsjob["properties"]['environmentId']
-    env_id = containerappsjob_def["managedEnvironmentId"]
-
-    # update configuration
-    config_def = JobConfigurationModel
-    config_def["secrets"] = yaml_containerappsjob.get('properties')['configuration']['secrets']
-    config_def["triggerType"] = yaml_containerappsjob.get('properties')['configuration']['triggerType']
-    config_def["replicaTimeout"] = yaml_containerappsjob.get('properties')['configuration']['replicaTimeout']
-    config_def["replicaRetryLimit"] = yaml_containerappsjob.get('properties')['configuration']['replicaRetryLimit']
-    config_def["manualTriggerConfig"] = yaml_containerappsjob.get('properties')['configuration']['manualTriggerConfig']
-    config_def["scheduleTriggerConfig"] = yaml_containerappsjob.get('properties')['configuration']['scheduleTriggerConfig']
-    config_def["registries"] = yaml_containerappsjob.get('properties')['configuration']['registries']
-    containerappsjob_def['configuration'] = config_def
-
-    # update template
-    template_def = JobTemplateModel
-    template_def["containers"] = yaml_containerappsjob.get('properties')['template']['containers']
-    template_def["initContainers"] = yaml_containerappsjob.get('properties')['template']['initContainers']
-    template_def["volumes"] = yaml_containerappsjob.get('properties')['template']['volumes']
-    containerappsjob_def['template'] = template_def
-
     # After deserializing, some properties may need to be moved under the "properties" attribute. Need this since we're not using SDK
     containerappsjob_def = process_loaded_yaml(containerappsjob_def)
 
@@ -2276,6 +2253,15 @@ def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_w
     _remove_additional_attributes(containerappsjob_def)
     _remove_readonly_attributes(containerappsjob_def)
 
+    # Remove extra workloadProfileName introduced in deserialization
+    if "workloadProfileName" in containerappsjob_def:
+        del containerappsjob_def["workloadProfileName"]
+
+    # Validate managed environment
+    if not containerappsjob_def["properties"].get('environmentId'):
+        raise RequiredArgumentMissingError('environmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+
+    env_id = containerappsjob_def["properties"]['environmentId']
     env_name = None
     env_rg = None
     env_info = None
@@ -2285,7 +2271,7 @@ def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_w
         env_name = parsed_managed_env['name']
         env_rg = parsed_managed_env['resource_group']
     else:
-        raise ValidationError('Invalid managedEnvironmentId specified. Environment not found')
+        raise ValidationError('Invalid environmentId specified. Environment not found')
 
     try:
         env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=env_rg, name=env_name)
@@ -2300,6 +2286,7 @@ def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_w
         containerappsjob_def['location'] = env_info['location']
 
     try:
+        print("JSON definition: {}".format(json.dumps(containerappsjob_def, indent=2)))
         r = ContainerAppsJobClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappsjob_def, no_wait=no_wait)
 

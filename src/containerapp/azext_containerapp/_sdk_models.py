@@ -5006,7 +5006,8 @@ class ContainerAppsJob(TrackedResource):
         'type': {'readonly': True},
         'system_data': {'readonly': True},
         'location': {'required': True},
-        'provisioning_state': {'readonly': True}
+        'provisioning_state': {'readonly': True},
+        "event_stream_endpoint": {"readonly": True}
     }
 
     _attribute_map = {
@@ -5019,18 +5020,58 @@ class ContainerAppsJob(TrackedResource):
         'identity': {'key': 'identity', 'type': 'ManagedServiceIdentity'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
         'managed_environment_id': {'key': 'properties.managedEnvironmentId', 'type': 'str'},
-        'configuration': {'key': 'properties.jobConfiguration', 'type': 'JobConfiguration'},
-        'template': {'key': 'properties.jobTemplate', 'type': 'JobTemplate'},
+        "environment_id": {"key": "properties.environmentId", "type": "str"},
+        "workload_profile_name": {"key": "properties.workloadProfileName", "type": "str"},
+        'configuration': {'key': 'properties.configuration', 'type': 'JobConfiguration'},
+        'template': {'key': 'properties.template', 'type': 'JobTemplate'},
+        "event_stream_endpoint": {"key": "properties.eventStreamEndpoint", "type": "str"},
     }
 
-    def __init__(self, **kwargs):
-        super(ContainerAppsJob, self).__init__(**kwargs)
-        self.identity = kwargs.get('identity', None)
+    def __init__(
+        self,
+        *,
+        location: str,
+        tags: Optional[Dict[str, str]] = None,
+        extended_location: Optional["_models.ExtendedLocation"] = None,
+        identity: Optional["_models.ManagedServiceIdentity"] = None,
+        managed_by: Optional[str] = None,
+        managed_environment_id: Optional[str] = None,
+        environment_id: Optional[str] = None,
+        workload_profile_name: Optional[str] = None,
+        configuration: Optional["_models.JobConfiguration"] = None,
+        template: Optional["_models.JobTemplate"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword tags: Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword location: The geo-location where the resource lives. Required.
+        :paramtype location: str
+        :keyword identity: managed identities for the Container Apps Job to interact with other Azure
+         services without maintaining any secrets or credentials in code.
+        :paramtype identity: ~commondefinitions.models.ManagedServiceIdentity
+        :keyword managed_environment_id: Deprecated. Resource ID of the Container Apps Job's environment.
+        :paramtype managed_environment_id: str
+        :keyword environment_id: Resource ID of environment.
+        :paramtype environment_id: str
+        :keyword workload_profile_name: Workload profile name to pin for container app execution.
+        :paramtype workload_profile_name: str
+        :param jobConfiguration: Non versioned Container Apps job configuration
+            properties.
+        :type jobConfiguration: ~commondefinitions.models.JobConfiguration
+        :param jobTemplate: Container App versioned application definition.
+        :type template: ~commondefinitions.models.JobTemplate
+        """
+        super().__init__(tags=tags, location=location, **kwargs)
+        self.identity = identity
+        self.managed_by = managed_by
         self.provisioning_state = None
-        self.managed_environment_id = kwargs.get('managed_environment_id', None)
-        self.configuration = kwargs.get('configuration', None)
-        self.template = kwargs.get('template', None)
-        self.outbound_ip_addresses = None
+        self.managed_environment_id = managed_environment_id
+        self.environment_id = environment_id
+        self.workload_profile_name = workload_profile_name
+        self.configuration = configuration
+        self.template = template
+        self.event_stream_endpoint = None
 
 
 class Job(TrackedResource):  # pylint: disable=too-many-instance-attributes
@@ -5165,6 +5206,10 @@ class JobConfiguration(_serialization.Model):
      cronjobs. Properties completions and parallelism would be set to 1 by default.
     :vartype schedule_trigger_config:
      ~azure.mgmt.appcontainers.models.JobConfigurationScheduleTriggerConfig
+    :ivar event_trigger_config: Event trigger configuration for a single execution job with scale rules.
+     Properties replicaCompletionCount and parallelism would be set to 1 by default.
+    :vartype event_trigger_config:
+     ~azure.mgmt.appcontainers.models.JobConfigurationEventTriggerConfig
     :ivar registries: Collection of private container registry credentials used by a Container apps
      job.
     :vartype registries: list[~azure.mgmt.appcontainers.models.RegistryCredentials]
@@ -5182,6 +5227,7 @@ class JobConfiguration(_serialization.Model):
         "replica_retry_limit": {"key": "replicaRetryLimit", "type": "int"},
         "manual_trigger_config": {"key": "manualTriggerConfig", "type": "JobConfigurationManualTriggerConfig"},
         "schedule_trigger_config": {"key": "scheduleTriggerConfig", "type": "JobConfigurationScheduleTriggerConfig"},
+        "event_trigger_config": {"key": "eventTriggerConfig", "type": "JobConfigurationEventTriggerConfig"},
         "registries": {"key": "registries", "type": "[RegistryCredentials]"},
     }
 
@@ -5194,6 +5240,7 @@ class JobConfiguration(_serialization.Model):
         replica_retry_limit: Optional[int] = None,
         manual_trigger_config: Optional["_models.JobConfigurationManualTriggerConfig"] = None,
         schedule_trigger_config: Optional["_models.JobConfigurationScheduleTriggerConfig"] = None,
+        event_trigger_config: Optional["_models.JobConfigurationEventTriggerConfig"] = None,
         registries: Optional[List["_models.RegistryCredentials"]] = None,
         **kwargs: Any
     ) -> None:
@@ -5215,6 +5262,10 @@ class JobConfiguration(_serialization.Model):
          cronjobs. Properties completions and parallelism would be set to 1 by default.
         :paramtype schedule_trigger_config:
          ~azure.mgmt.appcontainers.models.JobConfigurationScheduleTriggerConfig
+        :ivar event_trigger_config: Event trigger configuration for a single execution job with scale rules.
+         Properties replicaCompletionCount and parallelism would be set to 1 by default.
+        :vartype event_trigger_config:
+         ~azure.mgmt.appcontainers.models.JobConfigurationEventTriggerConfig
         :keyword registries: Collection of private container registry credentials used by a Container
          apps job.
         :paramtype registries: list[~azure.mgmt.appcontainers.models.RegistryCredentials]
@@ -5226,6 +5277,7 @@ class JobConfiguration(_serialization.Model):
         self.replica_retry_limit = replica_retry_limit
         self.manual_trigger_config = manual_trigger_config
         self.schedule_trigger_config = schedule_trigger_config
+        self.event_trigger_config = event_trigger_config
         self.registries = registries
 
 
@@ -5307,6 +5359,56 @@ class JobConfigurationScheduleTriggerConfig(_serialization.Model):
         super().__init__(**kwargs)
         self.replica_completion_count = replica_completion_count
         self.cron_expression = cron_expression
+        self.parallelism = parallelism
+
+
+class JobConfigurationEventTriggerConfig(_serialization.Model):
+    """Event trigger configuration for a single execution job with scale rules. Properties 
+    replicaCompletionCount and parallelism would be set to 1 by default.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar replica_completion_count: Minimum number of successful replica completions before overall
+     job completion.
+    :vartype replica_completion_count: int
+    :ivar parallelism: Number of parallel replicas of a job that can run at a given time.
+    :vartype parallelism: int
+    :ivar scale: Scale defination of an event triggered job.
+     Required.
+    :vartype scale: JobScale
+    """
+
+    _validation = {
+        "scale": {"required": True},
+    }
+
+    _attribute_map = {
+        "replica_completion_count": {"key": "replicaCompletionCount", "type": "int"},
+        "parallelism": {"key": "parallelism", "type": "int"},
+        "scale": {"key": "scale", "type": "JobScale"},
+    }
+
+    def __init__(
+        self,
+        *,
+        scale: Optional["_models.JobScale"] = None,
+        replica_completion_count: Optional[int] = None,
+        parallelism: Optional[int] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword replica_completion_count: Minimum number of successful replica completions before
+         overall job completion.
+        :paramtype replica_completion_count: int
+        :keyword cron_expression: Cron formatted repeating schedule ("\\ * * * * *") of a Cron Job.
+         Required.
+        :paramtype cron_expression: str
+        :keyword parallelism: Number of parallel replicas of a job that can run at a given time.
+        :paramtype parallelism: int
+        """
+        super().__init__(**kwargs)
+        self.replica_completion_count = replica_completion_count
+        self.scale = scale
         self.parallelism = parallelism
 
 
@@ -7172,6 +7274,50 @@ class Scale(_serialization.Model):
         super().__init__(**kwargs)
         self.min_replicas = min_replicas
         self.max_replicas = max_replicas
+        self.rules = rules
+
+class JobScale(_serialization.Model):
+    """Container Apps Job scaling configurations.
+
+    :ivar min_replicas: Optional. Minimum number of container replicas.
+    :vartype min_replicas: int
+    :ivar max_replicas: Optional. Maximum number of container replicas. Defaults to 10 if not set.
+    :vartype max_replicas: int
+    :ivar pollingInterval: Optional. Time between poll requests.
+    :vartype pollingInterval: int
+    :ivar rules: Scaling rules.
+    :vartype rules: list[~azure.mgmt.appcontainers.models.ScaleRule]
+    """
+
+    _attribute_map = {
+        "min_replicas": {"key": "minReplicas", "type": "int"},
+        "max_replicas": {"key": "maxReplicas", "type": "int"},
+        "polling_Interval": {"key": "pollingInterval", "type": "int"},
+        "rules": {"key": "rules", "type": "[ScaleRule]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        min_replicas: Optional[int] = None,
+        max_replicas: int = 10,
+        polling_Interval: Optional[int] = None,
+        rules: Optional[List["_models.ScaleRule"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword min_replicas: Optional. Minimum number of container replicas.
+        :paramtype min_replicas: int
+        :keyword max_replicas: Optional. Maximum number of container replicas. Defaults to 10 if not
+         set.
+        :paramtype max_replicas: int
+        :keyword rules: Scaling rules.
+        :paramtype rules: list[~azure.mgmt.appcontainers.models.ScaleRule]
+        """
+        super().__init__(**kwargs)
+        self.min_replicas = min_replicas
+        self.max_replicas = max_replicas
+        self.polling_Interval = polling_Interval
         self.rules = rules
 
 
