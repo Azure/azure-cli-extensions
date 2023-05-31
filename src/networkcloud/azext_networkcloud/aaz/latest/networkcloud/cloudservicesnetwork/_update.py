@@ -19,7 +19,7 @@ class Update(AAZCommand):
     """Update properties of the provided cloud services network, or update the tags associated with it. Properties and tag updates can be done independently.
 
     :example: Patch cloud services network
-        az networkcloud cloudservicesnetwork update --name "cloudServicesNetworkName"  --additional-egress-endpoints "[{\\"category\\":\\"azure-resource-management\\",\\"endpoints\\":[{\\"domainName\\":\\"https://storageaccountex.blob.core.windows.net\\",\\"port\\":443}]}]" --enable-default-egress-endpoints "False" --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName"
+        az networkcloud cloudservicesnetwork update --name "cloudServicesNetworkName" --additional-egress-endpoints "[{category:'azure-resource-management',endpoints:[{domainName:'https://storageaccountex.blob.core.windows.net',port:443}]}]" --enable-default-egress-endpoints "False" --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName"
     """
 
     _aaz_info = {

@@ -19,7 +19,7 @@ class RunDataExtract(AAZCommand):
     """Run one or more data extractions on the provided bare metal machine. The URL to storage account with the command execution results and the command exit code can be retrieved from the operation status API once available.
 
     :example: Run data extraction on bare metal machine
-        az networkcloud baremetalmachine run-data-extract --bare-metal-machine-name "bareMetalMachineName" --limit-time-seconds 60 --commands '[{"arguments":["SysInfo", "TTYLog"],"command":"hardware-support-data-collection"}]' --resource-group "resourceGroupName"
+        az networkcloud baremetalmachine run-data-extract --bare-metal-machine-name "bareMetalMachineName" --limit-time-seconds 360 --commands "[{arguments:['SysInfo','TTYLog'],command:'hardware-support-data-collection'}]" --resource-group "resourceGroupName"
     """
 
     _aaz_info = {

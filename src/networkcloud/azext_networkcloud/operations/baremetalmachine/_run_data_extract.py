@@ -28,20 +28,14 @@ from ..custom_properties import CustomActionProperties
 class RunDataExtract(_RunDataExtract):
     '''Custom class for baremetalmachine run data extract command '''
 
-    _args_schema = None
-
-    # NOTE: There is currently an aaz bug that prevents these operations from being completed
-    # in the correct place, post_operations().
-    # This is a temporary workaround until the next AAZ release.
+    # Handle custom properties returned by the actions
+    # when run data extract command is executed.
+    # The properties object is defined as an interface in the Azure common spec.
     def _output(self, *args, **kwargs):
         return CustomActionProperties._output(self, args, kwargs)
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        if cls._args_schema is not None:
-            return cls._args_schema
-        cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
-
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.output = AAZStrArg(
             options=["--output-directory"],
@@ -53,8 +47,7 @@ class RunDataExtract(_RunDataExtract):
                 pattern="^(.+)([^\/]*)$"
             )
         )
-
-        return cls._args_schema
+        return args_schema
 
     def _execute_operations(self):
         self.pre_operations()
@@ -70,7 +63,6 @@ class RunDataExtract(_RunDataExtract):
                     parents=True, exist_ok=True)
             except OSError as ex:
                 raise FileOperationError(ex) from ex
-        return super().pre_operations()
 
     class BareMetalMachinesRunDataExtract(_RunDataExtract.BareMetalMachinesRunDataExtracts):
         '''Custom class for baremetalmachine run data extract command '''
@@ -86,5 +78,3 @@ class RunDataExtract(_RunDataExtract):
 
             return cls._schema_on_200
 
-        def on_204(self, session):
-            pass

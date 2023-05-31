@@ -19,7 +19,7 @@ class Update(AAZCommand):
     """Update properties of bare metal machine key set for the provided cluster, or update the tags associated with it. Properties and tag updates can be done independently.
 
     :example: Patch bare metal machine key set of cluster
-        az networkcloud cluster baremetalmachinekeyset update --name "bareMetalMachineKeySetName" --expiration "2022-12-31T23:59:59.008Z" --jump-hosts-allowed "192.0.2.1" "192.0.2.5"--user-list '[{"description":"UserDesc","azureUserName":"userABC","sshPublicKey":{"keyData":"ssh-rsa AAtsE3njSONzDYRIZv/WLjVuMfrUSByHp+/ojNZfpB3af/YDzwQCZzXnblrv9d3q4c2tWmm/SyFqthaqd0= admin@vm"}}]' --tags key1="myvalue1" key2="myvalue2" --cluster-name "clusterName" --resource-group "resourceGroupName"
+        az networkcloud cluster baremetalmachinekeyset update --name "bareMetalMachineKeySetName" --expiration "2022-12-31T23:59:59.008Z" --jump-hosts-allowed "192.0.2.1" "192.0.2.5" --user-list "[{description:'User description',azureUserName:userABC,sshPublicKey:{keyData:'ssh-rsa AAtsE3njSONzDYRIZv/WLjVuMfrUSByHp+/ojNZfpB3af/YDzwQCZzXnblrv9d3q4c2tWmm/SyFqthaqd0= admin@vm'}}]" --tags key1="myvalue1" key2="myvalue2" --cluster-name "clusterName" --resource-group "resourceGroupName"
     """
 
     _aaz_info = {

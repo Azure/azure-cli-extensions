@@ -19,7 +19,7 @@ class Update(AAZCommand):
     """Update properties of baseboard management controller key set for the provided cluster, or update the tags associated with it. Properties and tag updates can be done independently.
 
     :example: Patch baseboard management controller key set of cluster
-        az networkcloud cluster bmckeyset update --name "bmcKeySetName" --expiration "2022-12-31T23:59:59.008Z" --user-list '[{"description":"UserDesc","azureUserName":"userABC","sshPublicKey":{"keyData":"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWtG2RiEGfXs+RK19HU/G8EdEnbTlkl8Kkb5xv6nm+ttTb9FrW/dc9RQvai24VEFJmG4Fmi6Ow/yjxq+jTDuWOSs+LovQpOKm9D8p05JcIOpdCPGA5S+dWIVL+a9jsQmzBbWYxh6oZy5IaEgnWhHotzdCL6apiz6/3SAUUrErjnYYUmovAJiIVUbT6YaYc/t5SjWU= admin@vm"}}]'  --tags key1="myvalue1" key2="myvalue2" --cluster-name "clusterName" --resource-group "resourceGroupName"
+        az networkcloud cluster bmckeyset update --name "bmcKeySetName" --expiration "2022-12-31T23:59:59.008Z" --user-list "[{description:'User description',azureUserName:userABC,sshPublicKey:{keyData:'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWtG2RiEGfXs+RK19HU/G8EdEnbTlkl8Kkb5xv6nm+ttTb9FrW/dc9RQvai24VEFJmG4Fmi6Ow/yjxq+jTDuWOSs+LovQpOKm9D8p05JcIOpdCPGA5S+dWIVL+a9jsQmzBbWYx= admin@vm'}}]" --tags key1="myvalue1" key2="myvalue2" --cluster-name "clusterName" --resource-group "resourceGroupName"
     """
 
     _aaz_info = {

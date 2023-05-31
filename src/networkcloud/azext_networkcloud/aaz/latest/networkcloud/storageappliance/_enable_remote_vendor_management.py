@@ -60,16 +60,6 @@ class EnableRemoteVendorManagement(AAZCommand):
         )
 
         # define Arg Group "StorageApplianceEnableRemoteVendorManagementParameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.support_endpoints = AAZListArg(
-            options=["--support-endpoints"],
-            arg_group="StorageApplianceEnableRemoteVendorManagementParameters",
-            help="Field Deprecated. This field is not used and will be rejected if provided. The list of IPv4 subnets (in CIDR format), IPv6 subnets (in CIDR format), or hostnames that the storage appliance needs accessible in order to turn on the remote vendor management.",
-        )
-
-        support_endpoints = cls._args_schema.support_endpoints
-        support_endpoints.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -187,11 +177,6 @@ class EnableRemoteVendorManagement(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("supportEndpoints", AAZListType, ".support_endpoints")
-
-            support_endpoints = _builder.get(".supportEndpoints")
-            if support_endpoints is not None:
-                support_endpoints.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 

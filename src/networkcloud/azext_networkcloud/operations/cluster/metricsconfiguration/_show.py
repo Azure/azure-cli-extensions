@@ -30,4 +30,4 @@ class ClusterMetricsConfigurationShow(Show):
 
     @register_callback
     def pre_operations(self):
-        return ClusterMetricsConfiguration.pre_operations(self.ctx.args)
+        ClusterMetricsConfiguration.pre_operations(self.ctx.args)

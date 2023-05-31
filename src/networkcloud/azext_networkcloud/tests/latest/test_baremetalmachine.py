@@ -95,34 +95,6 @@ def call_scenario5(test):
     cleanup_scenario5(test)
 
 
-def setup_scenario6(test):
-    pass
-
-
-def cleanup_scenario6(test):
-    pass
-
-
-def call_scenario6(test):
-    setup_scenario6(test)
-    step_replace(test, checks=[])
-    cleanup_scenario6(test)
-
-
-def setup_scenario7(test):
-    pass
-
-
-def cleanup_scenario7(test):
-    pass
-
-
-def call_scenario7(test):
-    setup_scenario7(test)
-    step_validate_hardware(test, checks=[])
-    cleanup_scenario7(test)
-
-
 def step_show(test, checks=None):
     '''BareMetalMachine show operation'''
     if checks is None:
@@ -272,14 +244,8 @@ class BareMetalMachineScenarioTest1(ScenarioTest):
             'rgPower': CONFIG.get('BAREMETALMACHINE', 'resource_group_power'),
             'skipShutdown': CONFIG.get('BAREMETALMACHINE', 'skip_shutdown'),
             'nameReimage': CONFIG.get('BAREMETALMACHINE', 'name_reimage'),
-            'nameReplace': CONFIG.get('BAREMETALMACHINE', 'name_replace'),
             'nameValidate': CONFIG.get('BAREMETALMACHINE', 'name_validate'),
             'rgValidate': CONFIG.get('BAREMETALMACHINE', 'resource_group_validate'),
-            'bmcCreds': CONFIG.get('BAREMETALMACHINE', 'bmc_creds'),
-            'bmcMacAddress': CONFIG.get('BAREMETALMACHINE', 'bmc_mac_address'),
-            'bootMacAddress': CONFIG.get('BAREMETALMACHINE', 'boot_mac_address'),
-            'serialNumber': CONFIG.get('BAREMETALMACHINE', 'serial_number'),
-            'newBmmName': CONFIG.get('BAREMETALMACHINE', 'new_bmm_name'),
             'validationCategory': CONFIG.get('BAREMETALMACHINE', 'validation_category'),
         })
 
@@ -305,8 +271,3 @@ class BareMetalMachineScenarioTest1(ScenarioTest):
     def test_bmm_reimage_scenario1(self):
         ''' test scenario for BareMetalMachine reimage operation'''
         call_scenario5(self)
-
-    def test_bmm_replace_scenario1(self):
-        ''' test scenario for BareMetalMachine replace operation'''
-        # commenting this out temporarily  - bug discussion ongoing
-        # call_scenario6(self)

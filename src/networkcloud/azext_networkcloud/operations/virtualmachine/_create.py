@@ -14,11 +14,13 @@ import os
 
 from azure.cli.core import keys
 from azure.cli.core.aaz import *
-from knack.util import CLIError
+from knack.log import get_logger
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 from ...aaz.latest.networkcloud.virtualmachine import \
     Create as _VirtualMachineCreate
 
+logger = get_logger(__name__)
 
 class VirtualMachineCreate(_VirtualMachineCreate):
     '''
@@ -77,7 +79,7 @@ class VirtualMachineCreate(_VirtualMachineCreate):
         if list(args.ssh_key_values):
             ssh_keys += add_ssh_key_action(list(args.ssh_key_values))
         if len(ssh_keys) == 0:
-            print('No keys are selected for insertion into the vm. The image will need to have keys or credentials setup in order to access.')
+            logger.warning('No keys are selected for insertion into the vm. The image will need to have keys or credentials setup in order to access.')
         args.ssh_public_keys = ssh_keys
 
         return args
@@ -90,7 +92,7 @@ def generate_ssh_keys():
     private_key_path = os.path.join(os.path.expanduser('~'), '.ssh', key_name)
     public_key_path = os.path.join(
         os.path.expanduser('~'), '.ssh', f"{key_name}.pub")
-    print(f"Attempted to find or generate SSH key files {key_name} and {key_name}.pub under ~/.ssh to allow SSH access "
+    logger.warning(f"Attempted to find or generate SSH key files {key_name} and {key_name}.pub under ~/.ssh to allow SSH access "
           "to the vm. If using machines without permanent storage, back up your keys to a safe location.")
     return [{'keyData': keys.generate_ssh_keys(private_key_path, public_key_path)}]
 
@@ -112,10 +114,10 @@ def get_ssh_keys_from_path(values):
                         if keys.is_valid_ssh_rsa_public_key(content):
                             key_list.append({'keyData': content})
                     except Exception as exception:
-                        raise CLIError(
+                        raise InvalidArgumentValueError(
                             f'Unsupported Key {key} is provided.\nContent:\n{content}.') from exception
             if len(key_list) == 0:
-                raise CLIError(
+                raise InvalidArgumentValueError(
                     f'No public keys found in the path: {path}')
         elif os.path.isfile(path):
             with open(path, 'r', encoding="utf-8") as k:
@@ -124,10 +126,10 @@ def get_ssh_keys_from_path(values):
                 if keys.is_valid_ssh_rsa_public_key(content):
                     key_list.append({'keyData': content})
             except Exception as excep:
-                raise CLIError(
+                raise InvalidArgumentValueError(
                     f'Unsupported Key {path} is provided.\nContent:\n{content}') from excep
         else:
-            raise CLIError(f'An invalid directory or key was provided: {path}')
+            raise InvalidArgumentValueError(f'An invalid directory or key was provided: {path}')
     return key_list
 
 

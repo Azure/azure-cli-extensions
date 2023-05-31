@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create a new cloud services network or update the properties of the existing cloud services network.
 
     :example: Create or update cloud services network
-        az networkcloud cloudservicesnetwork create --name "cloudServicesNetworkName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --additional-egress-endpoints "[{\\"category\\":\\"azure-resource-management\\",\\"endpoints\\":[{\\"domainName\\":\\"https://storageaccountex.blob.core.windows.net\\",\\"port\\":443}]}]" --enable-default-egress-endpoints "False" --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName"
+        az networkcloud cloudservicesnetwork create --name "cloudServicesNetworkName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --additional-egress-endpoints "[{category:'azure-resource-management',endpoints:[{domainName:'https://storageaccountex.blob.core.windows.net',port:443}]}]" --enable-default-egress-endpoints "False" --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName"
     """
 
     _aaz_info = {

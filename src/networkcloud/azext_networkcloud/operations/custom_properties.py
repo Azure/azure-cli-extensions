@@ -17,6 +17,7 @@ import urllib
 
 from azure.cli.core.aaz import *
 from knack.log import get_logger
+from azure.cli.core.azclierror import AzureInternalError
 
 logger = get_logger(__name__)
 
@@ -163,36 +164,37 @@ class CustomActionProperties:
         _schema.start_time = cls._schema_operation_status_result_read.start_time
         _schema.status = cls._schema_operation_status_result_read.status
 
-    # Custom handling of response will print out the output head and the result URL
+    # Custom handling of response will display the output head and the result URL
     # it will also save files into output directory if provided
+    @staticmethod
     def _output(self, *args, **kwargs):
         args = self.ctx.args
         properties = self.ctx.vars.instance.properties
 
-        # Print the output head to the console
+        # Display the output head to the console
         if has_value(properties.outputHead):
-            print(properties.outputHead.to_serialized_data())
-            print("\n================================")
+            logger.warning(properties.outputHead.to_serialized_data())
+            logger.warning("\n================================")
 
-        # Print out the result URL
+        # Display the result URL
         if has_value(properties.resultUrl):
             result_url = properties.resultUrl.to_serialized_data()
-            print(
+            logger.warning(
                 "Script execution result can be found in storage account:\n" + result_url + "\n")
+
+            # extract result to the provided directory
+            if has_value(args.output):
+                output_directory = args.output.to_serialized_data()
+
+                try:
+                    with urllib.request.urlopen(result_url) as result:
+                        with tarfile.open(fileobj=result, mode="r:gz") as tar:
+                            tar.extractall(path=output_directory)
+                            logger.warning(
+                                "Extracted results are available in directory: " + output_directory)
+                except Exception as excep:
+                    raise AzureInternalError(
+                        f"failed to retrieve output, error {excep}") from excep
         else:
-            # continue returning the API response back
-            return super()._output(self, args, kwargs)
-
-        # extract result to the provided directory
-        if has_value(args.output):
-            output_directory = args.output.to_serialized_data()
-
-            try:
-                with urllib.request.urlopen(result_url) as result:
-                    with tarfile.open(fileobj=result, mode="r:gz") as tar:
-                        tar.extractall(path=output_directory)
-                        print(
-                            "Extracted results are available in directory: " + output_directory)
-            except Exception as excep:
-                raise RuntimeError(
-                    f"failed to retrieve output, error {excep}") from excep
+          result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+          return result

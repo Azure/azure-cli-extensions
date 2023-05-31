@@ -12,7 +12,7 @@ from azure.cli.core.mock import DummyCli
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 
-from knack.util import CLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 
 from azext_networkcloud import NetworkcloudCommandsLoader
 from azext_networkcloud.aaz.operations.virtualmachine._create import add_ssh_key_action, generate_ssh_keys, get_ssh_keys_from_path
@@ -62,7 +62,7 @@ class TestVirtualMachineCreate(unittest.TestCase):
         # Test that a path that is not a dir nor a file raises exception
         mock_isdir.return_value = False
         mock_isfile.return_value = False
-        with self.assertRaises(CLIError):
+        with self.assertRaises(InvalidArgumentValueError):
             get_ssh_keys_from_path(paths)
 
         # Test that a valid file path to a valid key results in a list of keys
@@ -73,7 +73,7 @@ class TestVirtualMachineCreate(unittest.TestCase):
 
         # Test that a valid file path to a invalid key raises exception
         with mock.patch('builtins.open', mock.mock_open(None, invalid_key)):
-            with self.assertRaises(CLIError):
+            with self.assertRaises(InvalidArgumentValueError):
                 get_ssh_keys_from_path(paths)
 
         # Test that a valid dir path to valid keys results in a list of keys
@@ -86,17 +86,17 @@ class TestVirtualMachineCreate(unittest.TestCase):
 
         # Test that a valid dir path to invalid keys raises exception
         with mock.patch('builtins.open', mock.mock_open(None, invalid_key)):
-            with self.assertRaises(CLIError):
+            with self.assertRaises(InvalidArgumentValueError):
                 get_ssh_keys_from_path(paths)
 
         # Test that a valid dir path with no keys raises exception
         mock_listdir.return_value = []
-        with self.assertRaises(CLIError):
+        with self.assertRaises(InvalidArgumentValueError):
             get_ssh_keys_from_path(paths)
 
         # Test that a valid dir path with no .pub files raises exception
         mock_listdir.return_value = ['/home/user/.ssh/id_rsa']
-        with self.assertRaises(CLIError):
+        with self.assertRaises(InvalidArgumentValueError):
             get_ssh_keys_from_path(paths)
 
     def test_add_key_action(self):
@@ -120,5 +120,5 @@ class TestVirtualMachineCreate(unittest.TestCase):
 
         # Change a key to an invalid type and validate it raises exception
         keys[1] = '==== ssh-rsa invalid-key'
-        with self.assertRaises(CLIError):
+        with self.assertRaises(InvalidArgumentValueError):
             add_ssh_key_action(keys)
