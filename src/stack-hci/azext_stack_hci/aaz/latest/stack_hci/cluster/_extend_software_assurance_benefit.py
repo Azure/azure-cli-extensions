@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "stack-hci cluster extend-software-assurance-benefit",
 )
 class ExtendSoftwareAssuranceBenefit(AAZCommand):
-    """Extends Software Assurance Benefit to a cluster
+    """Extend Software Assurance Benefit to a cluster
 
     :example: Extend software assurance benefit
         az stack-hci cluster extend-software-assurance-benefit --cluster-name name -g rg --software-assurance-intent enable

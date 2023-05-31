@@ -24,7 +24,7 @@ class StackHciClientTest(ScenarioTest):
         self.kwargs['client_id'] = self.cmd('ad app create --display-name {app_name}').get_output_in_json()['appId']
         self.kwargs['tenant_id'] = self.cmd('account show').get_output_in_json()['tenantId']
 
-        cluster = self.cmd('stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id} --tags key0=value0 --type SystemAssigned', checks=[
+        cluster = self.cmd('stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id} --tags key0=value0 --identity {{type:SystemAssigned}}', checks=[
             self.check('name', '{cluster_name}'),
             self.check('tags', {'key0': 'value0'}),
             self.check('type', 'microsoft.azurestackhci/clusters'),
