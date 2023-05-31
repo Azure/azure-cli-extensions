@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 import os
 
 TEST_RESOURCES_DIR = os.path.join(os.path.dirname(__file__), r"resources")
