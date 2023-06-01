@@ -9,7 +9,6 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-branches
 import uuid
-import copy
 import re
 import time
 from knack.util import CLIError
@@ -18,6 +17,7 @@ from azure.cli.core.util import sdk_no_wait
 from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
 from azext_dataprotection.manual import backupcenter_helper, helpers as helper
+# from azext_dataprotection.aaz.latest.data_protection.resource_guard import Show as ResourceGuardShow
 
 logger = get_logger(__name__)
 
@@ -639,21 +639,6 @@ def dataprotection_job_list_from_resourcegraph(client, datasource_type, resource
     request = QueryRequest(query=query, subscriptions=subscriptions, options=request_options)
     response = client.resources(request)
     return response.data
-
-
-def dataprotection_recovery_point_list(client, vault_name, resource_group_name, backup_instance_name,
-                                       start_time=None, end_time=None):
-    rp_filter = ""
-    if start_time is not None:
-        rp_filter += "startDate eq '" + start_time + "'"
-    if end_time is not None:
-        if start_time is not None:
-            rp_filter += " and "
-        rp_filter += "endDate eq '" + end_time + "'"
-    return client.list(vault_name=vault_name,
-                       resource_group_name=resource_group_name,
-                       backup_instance_name=backup_instance_name,
-                       filter=rp_filter)
 
 
 def dataprotection_backup_policy_create(client, vault_name, resource_group_name, policy, backup_policy_name):
