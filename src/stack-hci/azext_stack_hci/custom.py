@@ -6,9 +6,10 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=too-many-lines
-# pylint: disable=too-many-statements
-
+# pylint: disable=too-many-statements, protected-access
 from azext_stack_hci.aaz.latest.stack_hci.cluster import List as _ClusterList
+from azext_stack_hci.aaz.latest.stack_hci.cluster import Create as _ClusterCreate
+from azext_stack_hci.aaz.latest.stack_hci.cluster import Update as _ClusterUpdate
 
 
 class ClusterList(_ClusterList):
@@ -16,3 +17,73 @@ class ClusterList(_ClusterList):
         # next_link cannot be accessed
         if self.ctx.vars.instance.next_link.to_serialized_data():
             self.ctx.vars.instance.next_link = None
+
+
+class ClusterCreate(_ClusterCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat, AAZBoolArg, AAZListArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.mi_system_assigned = AAZBoolArg(
+            options=["--mi-system-assigned"],
+            help="Enable system assigned identity"
+        )
+        args_schema.mi_user_assigned = AAZListArg(
+            options=["--mi-user-assigned"],
+            help="Space separated resource IDs to add user-assigned identities.",
+        )
+        args_schema.mi_user_assigned.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
+                                                "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
+        )
+        args_schema.identity._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        from azure.cli.core.aaz import has_value
+        args = self.ctx.args
+        if has_value(args.mi_system_assigned):
+            args.identity.type = "SystemAssigned"
+        if has_value(self.ctx.args.mi_user_assigned):
+            args.identity.type = "UserAssigned"
+            user_assigned_identities = {}
+            for identity in args.mi_user_assigned:
+                user_assigned_identities.update({
+                    identity.to_serialized_data(): {}
+                })
+            args.identity.user_assigned_identities = user_assigned_identities
+
+
+class ClusterUpdate(_ClusterUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZResourceIdArg, AAZResourceIdArgFormat, AAZBoolArg, AAZListArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.mi_system_assigned = AAZBoolArg(
+            options=["--mi-system-assigned"],
+            help="Enable system assigned identity"
+        )
+        args_schema.mi_user_assigned = AAZListArg(
+            options=["--mi-user-assigned"],
+            help="Space separated resource IDs to add user-assigned identities.",
+        )
+        args_schema.mi_user_assigned.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
+                                                "/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{}")
+        )
+        args_schema.identity._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        from azure.cli.core.aaz import has_value
+        args = self.ctx.args
+        if has_value(args.mi_system_assigned):
+            args.identity.type = "SystemAssigned"
+        if has_value(self.ctx.args.mi_user_assigned):
+            args.identity.type = "UserAssigned"
+            user_assigned_identities = {}
+            for identity in args.mi_user_assigned:
+                user_assigned_identities.update({
+                    identity.to_serialized_data(): {}
+                })
+            args.identity.user_assigned_identities = user_assigned_identities

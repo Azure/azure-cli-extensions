@@ -24,7 +24,7 @@ class StackHciClientTest(ScenarioTest):
         self.kwargs['client_id'] = self.cmd('ad app create --display-name {app_name}').get_output_in_json()['appId']
         self.kwargs['tenant_id'] = self.cmd('account show').get_output_in_json()['tenantId']
 
-        cluster = self.cmd('stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id} --tags key0=value0 --identity {{type:SystemAssigned}}', checks=[
+        cluster = self.cmd('stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id} --tags key0=value0 --mi-system-assigned', checks=[
             self.check('name', '{cluster_name}'),
             self.check('tags', {'key0': 'value0'}),
             self.check('type', 'microsoft.azurestackhci/clusters'),
@@ -116,3 +116,27 @@ class StackHciClientTest(ScenarioTest):
             self.check('type', 'microsoft.azurestackhci/clusters/arcsettings/extensions')
         ])
         self.cmd('stack-hci extension delete -n {type} -g {rg} --cluster-name {cluster_name} --arc-setting-name default --no-wait --yes')
+
+    @ResourceGroupPreparer(name_prefix='cli_test_stack_hci_cluster', location='eastus')
+    def test_stack_hci_cluster_identity(self):
+        self.kwargs.update({
+            'cluster_name': self.create_random_name('cluster', 15),
+            'cluster_name1': self.create_random_name('cluster', 15),
+            'app_name': self.create_random_name('app', 15)
+        })
+        self.kwargs['client_id'] = self.cmd('ad app create --display-name {app_name}').get_output_in_json()['appId']
+        self.kwargs['tenant_id'] = self.cmd('account show').get_output_in_json()['tenantId']
+
+        self.cmd('stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id} --tags key0=value0 --mi-system-assigned', checks=[
+            self.check('identity.type', 'SystemAssigned')
+        ])
+
+        try:
+            self.cmd('stack-hci cluster update -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id} --tags key0=value0 --mi-user-assigned id1')
+        except Exception as ex:
+            self.assertTrue("Resource type 'Microsoft.AzureStackHCI/clusters' does not support creation of 'UserAssigned' resource identity." in str(ex))
+
+        self.cmd('stack-hci cluster create -n {cluster_name1} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id}')
+        self.cmd('stack-hci cluster update -n {cluster_name1} -g {rg} --mi-system-assigned', checks=[
+            self.check('identity.type', 'SystemAssigned')
+        ])
