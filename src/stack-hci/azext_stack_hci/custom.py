@@ -117,12 +117,13 @@ class IdentityRemove(_IdentityRemove):
         from azure.cli.core.aaz import has_value
         args = self.ctx.args
         if has_value(args.user_assigned):
+            user_assigned_identities = instance.user_assigned_identities
             for identity in args.user_assigned:
-                instance.user_assigned_identities.pop(identity.to_serialized_data(), None)
-        if not instance.user_assigned_identities:
+                user_assigned_identities.pop(identity.to_serialized_data(), None)
+            args.user_assigned_identities = user_assigned_identities
+        if not args.user_assigned_identities:
             args.type = 'SystemAssigned'
-        if args.system_assigned and instance.user_assigned_identities:
-            instance.type = 'UserAssigned'
-        if not instance.user_assigned_identities and args.system_assigned:
-            instance.type = 'None'
-
+        if args.system_assigned and args.user_assigned_identities:
+            args.type = 'UserAssigned'
+        if not args.user_assigned_identities and args.system_assigned:
+            args.type = 'None'
