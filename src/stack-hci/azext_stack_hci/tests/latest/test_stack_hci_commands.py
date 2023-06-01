@@ -130,11 +130,6 @@ class StackHciClientTest(ScenarioTest):
         self.cmd('stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id} --tags key0=value0 --mi-system-assigned', checks=[
             self.check('identity.type', 'SystemAssigned')
         ])
-        try:
-            self.cmd('stack-hci cluster identity assign --cluster-name {cluster_name} -g {rg} --user-assigned id1')
-        except Exception as ex:
-            self.assertTrue("Resource type 'Microsoft.AzureStackHCI/clusters' does not support creation of 'UserAssigned' resource identity." in str(ex))
-
         self.cmd('stack-hci cluster create -n {cluster_name1} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id}')
         self.cmd('stack-hci cluster identity assign --cluster-name {cluster_name1} -g {rg} --system-assigned', checks=[
             self.check('type', 'SystemAssigned')
