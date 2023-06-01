@@ -8,7 +8,13 @@ import threading
 import sys
 import time
 from urllib.parse import urlparse
+import json
+import re
+import subprocess
+from concurrent.futures import ThreadPoolExecutor
 import requests
+
+from azure.cli.core import telemetry as telemetry_core
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -28,8 +34,10 @@ from knack.prompting import prompt_y_n, prompt as prompt_str
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
+
 from ._client_factory import handle_raw_exception, handle_non_404_exception
-from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient, WorkloadProfileClient
+from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient, WorkloadProfileClient, ContainerAppsJobClient
+from ._dev_service_utils import DevServiceUtils
 from ._github_oauth import get_github_access_token
 from ._models import (
     ManagedEnvironment as ManagedEnvironmentModel,
@@ -38,12 +46,21 @@ from ._models import (
     LogAnalyticsConfiguration as LogAnalyticsConfigurationModel,
     Ingress as IngressModel,
     Configuration as ConfigurationModel,
+    JobConfiguration as JobConfigurationModel,
+    ManualTriggerConfig as ManualTriggerModel,
+    ScheduleTriggerConfig as ScheduleTriggerModel,
+    EventTriggerConfig as EventTriggerModel,
     Template as TemplateModel,
+    JobTemplate as JobTemplateModel,
+    JobExecutionTemplate as JobExecutionTemplateModel,
     RegistryCredentials as RegistryCredentialsModel,
     ContainerApp as ContainerAppModel,
+    ContainerAppsJob as ContainerAppsJobModel,
     Dapr as DaprModel,
     ContainerResources as ContainerResourcesModel,
     Scale as ScaleModel,
+    Service as ServiceModel,
+    JobScale as JobScaleModel,
     Container as ContainerModel,
     GitHubActionConfiguration,
     RegistryInfo as RegistryInfoModel,
@@ -56,7 +73,7 @@ from ._models import (
     CustomDomainConfiguration as CustomDomainConfigurationModel,
     ScaleRule as ScaleRuleModel,
     Volume as VolumeModel,
-    VolumeMount as VolumeMountModel,)
+    VolumeMount as VolumeMountModel)
 
 from ._utils import (_validate_subscription_registered, _ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
@@ -73,14 +90,17 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      validate_environment_location, safe_set, parse_metadata_flags, parse_auth_flags, _azure_monitor_quickstart,
                      set_ip_restrictions, certificate_location_matches, certificate_matches, generate_randomized_managed_cert_name,
                      check_managed_cert_name_availability, prepare_managed_certificate_envelop,
-                     get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported, _generate_secret_volume_name)
+                     get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported, _generate_secret_volume_name,
+                     parse_service_bindings, get_linker_client, check_unique_bindings,
+                     get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, AppType)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
 from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, FACEBOOK_SECRET_SETTING_NAME, GITHUB_SECRET_SETTING_NAME,
                          GOOGLE_SECRET_SETTING_NAME, TWITTER_SECRET_SETTING_NAME, APPLE_SECRET_SETTING_NAME, CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, HELLO_WORLD_IMAGE, LOG_TYPE_SYSTEM, LOG_TYPE_CONSOLE,
-                         MANAGED_CERTIFICATE_RT, PRIVATE_CERTIFICATE_RT, PENDING_STATUS, SUCCEEDED_STATUS)
+                         MANAGED_CERTIFICATE_RT, PRIVATE_CERTIFICATE_RT, PENDING_STATUS, SUCCEEDED_STATUS, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
+                         DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME)
 
 logger = get_logger(__name__)
 
@@ -152,6 +172,40 @@ def create_deserializer():
     return Deserializer(deserializer)
 
 
+def list_all_services(cmd, environment_name, resource_group_name):
+    services = list_containerapp(cmd, resource_group_name=resource_group_name, managed_env=environment_name)
+    dev_service_list = []
+
+    for service in services:
+        service_type = safe_get(service, "properties", "configuration", "service", "type", default="")
+        if service_type in ["redis", "postgres"]:
+            dev_service_list.append(service)
+
+    return dev_service_list
+
+
+def create_redis_service(cmd, service_name, environment_name, resource_group_name, no_wait=False,
+                         disable_warnings=True):
+    return DevServiceUtils.create_service(cmd, service_name, environment_name, resource_group_name, no_wait,
+                                          disable_warnings, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE,
+                                          DEV_REDIS_CONTAINER_NAME)
+
+
+def delete_redis_service(cmd, service_name, resource_group_name, no_wait=False):
+    return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_REDIS_SERVICE_TYPE)
+
+
+def create_postgres_service(cmd, service_name, environment_name, resource_group_name, no_wait=False,
+                            disable_warnings=True):
+    return DevServiceUtils.create_service(cmd, service_name, environment_name, resource_group_name, no_wait,
+                                          disable_warnings, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
+                                          DEV_POSTGRES_CONTAINER_NAME)
+
+
+def delete_postgres_service(cmd, service_name, resource_group_name, no_wait=False):
+    return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_POSTGRES_SERVICE_TYPE)
+
+
 def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_revision=None, no_wait=False):
     yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
     if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
@@ -160,8 +214,7 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
     if not yaml_containerapp.get('name'):
         yaml_containerapp['name'] = name
     elif yaml_containerapp.get('name').lower() != name.lower():
-        logger.warning('The app name provided in the --yaml file "{}" does not match the one provided in the --name flag "{}". The one provided in the --yaml file will be used.'.format(
-            yaml_containerapp.get('name'), name))
+        logger.warning('The app name provided in the --yaml file "{}" does not match the one provided in the --name flag "{}". The one provided in the --yaml file will be used.'.format(yaml_containerapp.get('name'), name))
     name = yaml_containerapp.get('name')
 
     if not yaml_containerapp.get('type'):
@@ -179,7 +232,7 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
 
     if not containerapp_def:
         raise ValidationError("The containerapp '{}' does not exist".format(name))
-
+    existed_environment_id = containerapp_def['properties']['environmentId']
     containerapp_def = None
 
     # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
@@ -224,6 +277,10 @@ def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_rev
         if "template" not in containerapp_def["properties"]:
             containerapp_def["properties"]["template"] = {}
         containerapp_def["properties"]["template"]["revisionSuffix"] = None
+
+    # Remove the environmentId in the PATCH payload if it has not been changed
+    if safe_get(containerapp_def, "properties", "environmentId") and safe_get(containerapp_def, "properties", "environmentId").lower() == existed_environment_id.lower():
+        del containerapp_def["properties"]['environmentId']
 
     try:
         r = ContainerAppClient.update(
@@ -366,6 +423,8 @@ def create_containerapp(cmd,
                         dapr_http_max_request_size=None,
                         dapr_log_level=None,
                         dapr_enable_api_logging=False,
+                        service_type=None,
+                        service_bindings=None,
                         revision_suffix=None,
                         startup_command=None,
                         args=None,
@@ -378,7 +437,7 @@ def create_containerapp(cmd,
                         workload_profile_name=None,
                         secret_volume_mount=None):
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
-    validate_container_app_name(name)
+    validate_container_app_name(name, AppType.ContainerApp.name)
     validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
     validate_revision_suffix(revision_suffix)
 
@@ -388,8 +447,8 @@ def create_containerapp(cmd,
 
     if yaml:
         if image or managed_env or min_replicas or max_replicas or target_port or ingress or\
-            revisions_mode or secrets or env_vars or cpu or memory or registry_server or\
-            registry_user or registry_pass or dapr_enabled or dapr_app_port or dapr_app_id or\
+                revisions_mode or secrets or env_vars or cpu or memory or registry_server or\
+                registry_user or registry_pass or dapr_enabled or dapr_app_port or dapr_app_id or\
                 startup_command or args or tags:
             not disable_warnings and logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         return create_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
@@ -469,12 +528,18 @@ def create_containerapp(cmd,
         dapr_def["logLevel"] = dapr_log_level
         dapr_def["enableApiLogging"] = dapr_enable_api_logging
 
+    service_def = None
+    if service_type:
+        service_def = ServiceModel
+        service_def["type"] = service_type
+
     config_def = ConfigurationModel
     config_def["secrets"] = secrets_def
     config_def["activeRevisionsMode"] = revisions_mode
     config_def["ingress"] = ingress_def
     config_def["registries"] = [registries_def] if registries_def is not None else None
     config_def["dapr"] = dapr_def
+    config_def["service"] = service_def if service_def is not None else None
 
     # Identity actions
     identity_def = ManagedServiceIdentityModel
@@ -554,8 +619,21 @@ def create_containerapp(cmd,
         container_def["resources"] = resources_def
 
     template_def = TemplateModel
+
+    service_bindings_def_list = None
+    service_connectors_def_list = None
+
+    if service_bindings is not None:
+        service_connectors_def_list, service_bindings_def_list = parse_service_bindings(cmd, service_bindings,
+                                                                                        resource_group_name, name)
+        unique_bindings = check_unique_bindings(cmd, service_connectors_def_list, service_bindings_def_list,
+                                                resource_group_name, name)
+        if not unique_bindings:
+            raise ValidationError("Binding names across managed and dev services should be unique.")
+
     template_def["containers"] = [container_def]
     template_def["scale"] = scale_def
+    template_def["serviceBinds"] = service_bindings_def_list
 
     if secret_volume_mount is not None:
         volume_def = VolumeModel
@@ -570,7 +648,7 @@ def create_containerapp(cmd,
         container_def["volumeMounts"] = [volume_mount_def]
         template_def["volumes"] = [volume_def]
 
-    if revision_suffix is not None:
+    if revision_suffix is not None and not is_registry_msi_system(registry_identity):
         template_def["revisionSuffix"] = revision_suffix
 
     containerapp_def = ContainerAppModel
@@ -602,6 +680,7 @@ def create_containerapp(cmd,
             system_sp = r["identity"]["principalId"]
             create_acrpull_role_assignment(cmd, registry_server, registry_identity=None, service_principal=system_sp)
             container_def["image"] = image
+            safe_set(containerapp_def, "properties", "template", "revisionSuffix", value=revision_suffix)
 
             registries_def = RegistryCredentialsModel
             registries_def["server"] = registry_server
@@ -621,6 +700,17 @@ def create_containerapp(cmd,
                                                     "az containerapp ingress enable -n %s -g %s --type external --target-port %s"
                                                     " --transport auto\n", name, resource_group_name, target_port)
 
+        if service_connectors_def_list is not None:
+            linker_client = get_linker_client(cmd)
+
+            for item in service_connectors_def_list:
+                while r["properties"]["provisioningState"].lower() == "inprogress":
+                    r = ContainerAppClient.show(cmd, resource_group_name, name)
+                    time.sleep(1)
+                linker_client.linker.begin_create_or_update(resource_uri=r["id"],
+                                                            parameters=item["parameters"],
+                                                            linker_name=item["linker_name"]).result()
+
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -639,6 +729,8 @@ def update_containerapp_logic(cmd,
                               scale_rule_http_concurrency=None,
                               scale_rule_metadata=None,
                               scale_rule_auth=None,
+                              service_bindings=None,
+                              unbind_service_bindings=None,
                               set_env_vars=None,
                               remove_env_vars=None,
                               replace_env_vars=None,
@@ -668,8 +760,8 @@ def update_containerapp_logic(cmd,
 
     if yaml:
         if image or min_replicas or max_replicas or\
-           set_env_vars or remove_env_vars or replace_env_vars or remove_all_env_vars or cpu or memory or\
-           startup_command or args or tags:
+            set_env_vars or remove_env_vars or replace_env_vars or remove_all_env_vars or cpu or memory or\
+                startup_command or args or tags:
             logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait, from_revision=from_revision)
 
@@ -707,6 +799,63 @@ def update_containerapp_logic(cmd,
     update_map['container'] = image or container_name or set_env_vars is not None or remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None or secret_volume_mount is not None
     update_map['ingress'] = ingress or target_port
     update_map['registry'] = registry_server or registry_user or registry_pass
+
+    linker_client = get_linker_client(cmd)
+    service_connectors_def_list = []
+
+    if service_bindings is not None:
+        service_connectors_def_list, service_bindings_def_list = parse_service_bindings(
+            cmd, service_bindings, resource_group_name, name)
+
+        service_bindings_used_map = {update_item["name"]: False for update_item in service_bindings_def_list}
+
+        safe_set(new_containerapp, "properties", "template", "serviceBinds", value=containerapp_def["properties"]["template"]["serviceBinds"])
+
+        if new_containerapp["properties"]["template"]["serviceBinds"] is None:
+            new_containerapp["properties"]["template"]["serviceBinds"] = []
+
+        for item in new_containerapp["properties"]["template"]["serviceBinds"]:
+            for update_item in service_bindings_def_list:
+                if update_item["name"] in item.values():
+                    item["serviceId"] = update_item["serviceId"]
+                    service_bindings_used_map[update_item["name"]] = True
+
+        for update_item in service_bindings_def_list:
+            if service_bindings_used_map[update_item["name"]] is False:
+                # Check if it doesn't exist in existing service linkers
+                managed_bindings = linker_client.linker.list(resource_uri=containerapp_def["id"])
+                if managed_bindings:
+                    managed_bindings_list = [item.name for item in managed_bindings]
+                    if update_item["name"] in managed_bindings_list:
+                        raise ValidationError("Binding names across managed and dev services should be unique.")
+
+                new_containerapp["properties"]["template"]["serviceBinds"].append(update_item)
+
+        if service_connectors_def_list is not None:
+            for item in service_connectors_def_list:
+                # Check if it doesn't exist in existing service bindings
+                service_bindings_list = []
+                for binds in new_containerapp["properties"]["template"]["serviceBinds"]:
+                    service_bindings_list.append(binds["name"])
+                    if item["linker_name"] in service_bindings_list:
+                        raise ValidationError("Binding names across managed and dev services should be unique.")
+
+    if unbind_service_bindings:
+        new_template = new_containerapp.setdefault("properties", {}).setdefault("template", {})
+        existing_template = containerapp_def["properties"]["template"]
+
+        if not service_bindings:
+            new_template["serviceBinds"] = existing_template.get("serviceBinds", [])
+
+        service_bindings_dict = {}
+        if new_template["serviceBinds"]:
+            service_bindings_dict = {service_binding["name"]: index for index, service_binding in
+                                     enumerate(new_template.get("serviceBinds", []))}
+
+        for item in unbind_service_bindings:
+            if item in service_bindings_dict:
+                new_template["serviceBinds"] = [binding for binding in new_template["serviceBinds"] if
+                                                binding["name"] != item]
 
     if tags:
         _add_or_update_tags(new_containerapp, tags)
@@ -1005,6 +1154,24 @@ def update_containerapp_logic(cmd,
         if not no_wait and "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting":
             logger.warning('Containerapp update in progress. Please monitor the update using `az containerapp show -n {} -g {}`'.format(name, resource_group_name))
 
+        # Delete managed bindings
+        if unbind_service_bindings:
+            for item in unbind_service_bindings:
+                while r["properties"]["provisioningState"].lower() == "inprogress":
+                    r = ContainerAppClient.show(cmd, resource_group_name, name)
+                    time.sleep(1)
+                linker_client.linker.begin_delete(resource_uri=r["id"], linker_name=item).result()
+
+        # Update managed bindings
+        if service_connectors_def_list is not None:
+            for item in service_connectors_def_list:
+                while r["properties"]["provisioningState"].lower() == "inprogress":
+                    r = ContainerAppClient.show(cmd, resource_group_name, name)
+                    time.sleep(1)
+                linker_client.linker.begin_create_or_update(resource_uri=r["id"],
+                                                            parameters=item["parameters"],
+                                                            linker_name=item["linker_name"]).result()
+
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -1023,6 +1190,8 @@ def update_containerapp(cmd,
                         scale_rule_http_concurrency=None,
                         scale_rule_metadata=None,
                         scale_rule_auth=None,
+                        unbind_service_bindings=None,
+                        service_bindings=None,
                         set_env_vars=None,
                         remove_env_vars=None,
                         replace_env_vars=None,
@@ -1051,6 +1220,8 @@ def update_containerapp(cmd,
                                      scale_rule_http_concurrency=scale_rule_http_concurrency,
                                      scale_rule_metadata=scale_rule_metadata,
                                      scale_rule_auth=scale_rule_auth,
+                                     service_bindings=service_bindings,
+                                     unbind_service_bindings=unbind_service_bindings,
                                      set_env_vars=set_env_vars,
                                      remove_env_vars=remove_env_vars,
                                      replace_env_vars=replace_env_vars,
@@ -1356,6 +1527,960 @@ def delete_managed_environment(cmd, name, resource_group_name, no_wait=False):
         handle_raw_exception(e)
 
 
+def create_containerappsjob(cmd,
+                            name,
+                            resource_group_name,
+                            yaml=None,
+                            image=None,
+                            container_name=None,
+                            managed_env=None,
+                            trigger_type=None,
+                            replica_timeout=None,
+                            replica_retry_limit=None,
+                            replica_completion_count=None,
+                            parallelism=None,
+                            cron_expression=None,
+                            secrets=None,
+                            env_vars=None,
+                            cpu=None,
+                            memory=None,
+                            registry_server=None,
+                            registry_user=None,
+                            registry_pass=None,
+                            startup_command=None,
+                            args=None,
+                            scale_rule_metadata=None,
+                            scale_rule_name=None,
+                            scale_rule_type=None,
+                            scale_rule_auth=None,
+                            polling_interval=None,
+                            min_executions=None,
+                            max_executions=None,
+                            tags=None,
+                            no_wait=False,
+                            system_assigned=False,
+                            disable_warnings=False,
+                            user_assigned=None,
+                            registry_identity=None,
+                            workload_profile_name=None):
+    register_provider_if_needed(cmd, CONTAINER_APPS_RP)
+    validate_container_app_name(name, AppType.ContainerAppJob.name)
+    validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
+
+    if registry_identity and not is_registry_msi_system(registry_identity):
+        logger.info("Creating an acrpull role assignment for the registry identity")
+        create_acrpull_role_assignment(cmd, registry_server, registry_identity, skip_error=True)
+
+    if yaml:
+        if image or managed_env or trigger_type or replica_timeout or replica_retry_limit or\
+            replica_completion_count or parallelism or cron_expression or cpu or memory or registry_server or\
+            registry_user or registry_pass or secrets or env_vars or\
+                startup_command or args or tags:
+            not disable_warnings and logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
+        return create_containerappsjob_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
+
+    if replica_timeout is None:
+        raise RequiredArgumentMissingError('Usage error: --replica-timeout is required')
+
+    if replica_retry_limit is None:
+        raise RequiredArgumentMissingError('Usage error: --replica-retry-limit is required')
+
+    if not image:
+        image = HELLO_WORLD_IMAGE
+
+    if managed_env is None:
+        raise RequiredArgumentMissingError('Usage error: --environment is required if not using --yaml')
+
+    # Validate managed environment
+    parsed_managed_env = parse_resource_id(managed_env)
+    managed_env_name = parsed_managed_env['name']
+    managed_env_rg = parsed_managed_env['resource_group']
+    managed_env_info = None
+
+    try:
+        managed_env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=managed_env_rg, name=managed_env_name)
+    except:
+        pass
+
+    if not managed_env_info:
+        raise ValidationError("The environment '{}' does not exist. Specify a valid environment".format(managed_env))
+
+    location = managed_env_info["location"]
+    _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "jobs")
+
+    if not workload_profile_name and "workloadProfiles" in managed_env_info:
+        workload_profile_name = get_default_workload_profile_name_from_env(cmd, managed_env_info, managed_env_rg)
+
+    manualTriggerConfig_def = None
+    if trigger_type is not None and trigger_type.lower() == "manual":
+        manualTriggerConfig_def = ManualTriggerModel
+        manualTriggerConfig_def["replicaCompletionCount"] = 0 if replica_completion_count is None else replica_completion_count
+        manualTriggerConfig_def["parallelism"] = 0 if parallelism is None else parallelism
+
+    scheduleTriggerConfig_def = None
+    if trigger_type is not None and trigger_type.lower() == "schedule":
+        scheduleTriggerConfig_def = ScheduleTriggerModel
+        scheduleTriggerConfig_def["replicaCompletionCount"] = 0 if replica_completion_count is None else replica_completion_count
+        scheduleTriggerConfig_def["parallelism"] = 0 if parallelism is None else parallelism
+        scheduleTriggerConfig_def["cronExpression"] = cron_expression
+
+    eventTriggerConfig_def = None
+    if trigger_type is not None and trigger_type.lower() == "event":
+        scale_def = None
+        if min_executions is not None or max_executions is not None or polling_interval is not None:
+            scale_def = JobScaleModel
+            scale_def["pollingInterval"] = polling_interval
+            scale_def["minExecutions"] = min_executions
+            scale_def["maxExecutions"] = max_executions
+
+        if scale_rule_name:
+            scale_rule_type = scale_rule_type.lower()
+            scale_rule_def = ScaleRuleModel
+            curr_metadata = {}
+            metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
+            auth_def = parse_auth_flags(scale_rule_auth)
+            scale_rule_def["name"] = scale_rule_name
+            scale_rule_def["type"] = scale_rule_type
+            scale_rule_def["metadata"] = metadata_def
+            scale_rule_def["auth"] = auth_def
+
+            if not scale_def:
+                scale_def = JobScaleModel
+            scale_def["rules"] = [scale_rule_def]
+
+        eventTriggerConfig_def = EventTriggerModel
+        eventTriggerConfig_def["replicaCompletionCount"] = replica_completion_count
+        eventTriggerConfig_def["parallelism"] = parallelism
+        eventTriggerConfig_def["scale"] = scale_def
+
+    secrets_def = None
+    if secrets is not None:
+        secrets_def = parse_secret_flags(secrets)
+
+    registries_def = None
+    if registry_server is not None and not is_registry_msi_system(registry_identity):
+        registries_def = RegistryCredentialsModel
+        registries_def["server"] = registry_server
+
+        # Infer credentials if not supplied and its azurecr
+        if (registry_user is None or registry_pass is None) and registry_identity is None:
+            registry_user, registry_pass = _infer_acr_credentials(cmd, registry_server, disable_warnings)
+
+        if not registry_identity:
+            registries_def["username"] = registry_user
+
+            if secrets_def is None:
+                secrets_def = []
+            registries_def["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def, registry_user, registry_server, registry_pass, disable_warnings=disable_warnings)
+        else:
+            registries_def["identity"] = registry_identity
+
+    config_def = JobConfigurationModel
+    config_def["secrets"] = secrets_def
+    config_def["triggerType"] = trigger_type
+    config_def["replicaTimeout"] = replica_timeout
+    config_def["replicaRetryLimit"] = replica_retry_limit
+    config_def["manualTriggerConfig"] = manualTriggerConfig_def if manualTriggerConfig_def is not None else None
+    config_def["scheduleTriggerConfig"] = scheduleTriggerConfig_def if scheduleTriggerConfig_def is not None else None
+    config_def["eventTriggerConfig"] = eventTriggerConfig_def if eventTriggerConfig_def is not None else None
+    config_def["registries"] = [registries_def] if registries_def is not None else None
+
+    # Identity actions
+    identity_def = ManagedServiceIdentityModel
+    identity_def["type"] = "None"
+
+    assign_system_identity = system_assigned
+    if user_assigned:
+        assign_user_identities = [x.lower() for x in user_assigned]
+    else:
+        assign_user_identities = []
+
+    if assign_system_identity and assign_user_identities:
+        identity_def["type"] = "SystemAssigned, UserAssigned"
+    elif assign_system_identity:
+        identity_def["type"] = "SystemAssigned"
+    elif assign_user_identities:
+        identity_def["type"] = "UserAssigned"
+
+    if assign_user_identities:
+        identity_def["userAssignedIdentities"] = {}
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+
+        for r in assign_user_identities:
+            r = _ensure_identity_resource_id(subscription_id, resource_group_name, r)
+            identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
+
+    resources_def = None
+    if cpu is not None or memory is not None:
+        resources_def = ContainerResourcesModel
+        resources_def["cpu"] = cpu
+        resources_def["memory"] = memory
+
+    container_def = ContainerModel
+    container_def["name"] = container_name if container_name else name
+    container_def["image"] = image if not is_registry_msi_system(registry_identity) else HELLO_WORLD_IMAGE
+    if env_vars is not None:
+        container_def["env"] = parse_env_var_flags(env_vars)
+    if startup_command is not None:
+        container_def["command"] = startup_command
+    if args is not None:
+        container_def["args"] = args
+    if resources_def is not None:
+        container_def["resources"] = resources_def
+
+    template_def = JobTemplateModel
+    template_def["containers"] = [container_def]
+
+    containerappjob_def = ContainerAppsJobModel
+    containerappjob_def["location"] = location
+    containerappjob_def["identity"] = identity_def
+    containerappjob_def["properties"]["environmentId"] = managed_env
+    containerappjob_def["properties"]["configuration"] = config_def
+    containerappjob_def["properties"]["template"] = template_def
+    containerappjob_def["tags"] = tags
+
+    if workload_profile_name:
+        containerappjob_def["properties"]["workloadProfileName"] = workload_profile_name
+        ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile_name, managed_env_info)
+
+    if registry_identity:
+        if is_registry_msi_system(registry_identity):
+            set_managed_identity(cmd, resource_group_name, containerappjob_def, system_assigned=True)
+        else:
+            set_managed_identity(cmd, resource_group_name, containerappjob_def, user_assigned=[registry_identity])
+    try:
+        r = ContainerAppsJobClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappjob_def, no_wait=no_wait)
+
+        if is_registry_msi_system(registry_identity):
+            while r["properties"]["provisioningState"] == "InProgress":
+                r = ContainerAppClient.show(cmd, resource_group_name, name)
+                time.sleep(10)
+            logger.info("Creating an acrpull role assignment for the system identity")
+            system_sp = r["identity"]["principalId"]
+            create_acrpull_role_assignment(cmd, registry_server, registry_identity=None, service_principal=system_sp)
+            container_def["image"] = image
+
+            registries_def = RegistryCredentialsModel
+            registries_def["server"] = registry_server
+            registries_def["identity"] = registry_identity
+            config_def["registries"] = [registries_def]
+
+            r = ContainerAppsJobClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappjob_def, no_wait=no_wait)
+
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+            not disable_warnings and logger.warning('Containerapp job creation in progress. Please monitor the creation using `az containerapp job show -n {} -g {}`'.format(name, resource_group_name))
+
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_containerappsjob(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        return ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def list_containerappsjob(cmd, resource_group_name=None):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        containerappsjobs = []
+        if resource_group_name is None:
+            containerappsjobs = ContainerAppsJobClient.list_by_subscription(cmd=cmd)
+        else:
+            containerappsjobs = ContainerAppsJobClient.list_by_resource_group(cmd=cmd, resource_group_name=resource_group_name)
+
+        return containerappsjobs
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def delete_containerappsjob(cmd, name, resource_group_name, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        return ContainerAppsJobClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def update_containerappsjob(cmd,
+                            name,
+                            resource_group_name,
+                            yaml=None,
+                            image=None,
+                            container_name=None,
+                            replica_timeout=None,
+                            replica_retry_limit=None,
+                            replica_completion_count=None,
+                            parallelism=None,
+                            cron_expression=None,
+                            set_env_vars=None,
+                            remove_env_vars=None,
+                            replace_env_vars=None,
+                            remove_all_env_vars=False,
+                            cpu=None,
+                            memory=None,
+                            startup_command=None,
+                            args=None,
+                            scale_rule_metadata=None,
+                            scale_rule_name=None,
+                            scale_rule_type=None,
+                            scale_rule_auth=None,
+                            polling_interval=None,
+                            min_executions=None,
+                            max_executions=None,
+                            tags=None,
+                            workload_profile_name=None,
+                            no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    return update_containerappsjob_logic(cmd=cmd,
+                                         name=name,
+                                         resource_group_name=resource_group_name,
+                                         yaml=yaml,
+                                         image=image,
+                                         container_name=container_name,
+                                         replica_timeout=replica_timeout,
+                                         replica_retry_limit=replica_retry_limit,
+                                         replica_completion_count=replica_completion_count,
+                                         parallelism=parallelism,
+                                         cron_expression=cron_expression,
+                                         set_env_vars=set_env_vars,
+                                         remove_env_vars=remove_env_vars,
+                                         replace_env_vars=replace_env_vars,
+                                         remove_all_env_vars=remove_all_env_vars,
+                                         cpu=cpu,
+                                         memory=memory,
+                                         startup_command=startup_command,
+                                         args=args,
+                                         tags=tags,
+                                         workload_profile_name=workload_profile_name,
+                                         scale_rule_metadata=scale_rule_metadata,
+                                         scale_rule_name=scale_rule_name,
+                                         scale_rule_type=scale_rule_type,
+                                         scale_rule_auth=scale_rule_auth,
+                                         polling_interval=polling_interval,
+                                         min_executions=min_executions,
+                                         max_executions=max_executions,
+                                         no_wait=no_wait)
+
+
+def update_containerappsjob_logic(cmd,
+                                  name,
+                                  resource_group_name,
+                                  yaml=None,
+                                  image=None,
+                                  container_name=None,
+                                  replica_timeout=None,
+                                  replica_retry_limit=None,
+                                  replica_completion_count=None,
+                                  parallelism=None,
+                                  cron_expression=None,
+                                  set_env_vars=None,
+                                  remove_env_vars=None,
+                                  replace_env_vars=None,
+                                  remove_all_env_vars=False,
+                                  cpu=None,
+                                  memory=None,
+                                  startup_command=None,
+                                  args=None,
+                                  tags=None,
+                                  workload_profile_name=None,
+                                  scale_rule_metadata=None,
+                                  scale_rule_name=None,
+                                  scale_rule_type=None,
+                                  scale_rule_auth=None,
+                                  polling_interval=None,
+                                  min_executions=None,
+                                  max_executions=None,
+                                  no_wait=False,
+                                  registry_server=None,
+                                  registry_user=None,
+                                  registry_pass=None):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if yaml:
+        if image or replica_timeout or replica_retry_limit or\
+           set_env_vars or remove_env_vars or replace_env_vars or remove_all_env_vars or cpu or memory or\
+           startup_command or args or tags:
+            logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
+        return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
+
+    containerappsjob_def = None
+    try:
+        containerappsjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerappsjob_def:
+        raise ResourceNotFoundError("The containerapps job '{}' does not exist".format(name))
+
+    new_containerappsjob = {}
+    new_containerappsjob["properties"] = {}
+
+    # Doing this while API has bug. If env var is an empty string, API doesn't return "value" even though the "value" should be an empty string
+    if "properties" in containerappsjob_def and "template" in containerappsjob_def["properties"] and "containers" in containerappsjob_def["properties"]["template"]:
+        for container in containerappsjob_def["properties"]["template"]["containers"]:
+            if "env" in container:
+                for e in container["env"]:
+                    if "value" not in e:
+                        e["value"] = ""
+
+    update_map = {}
+    update_map['replicaConfigurations'] = replica_timeout or replica_retry_limit
+    update_map['triggerConfigurations'] = replica_completion_count or parallelism or cron_expression or scale_rule_name or scale_rule_type or scale_rule_auth or polling_interval or min_executions or max_executions
+    update_map['container'] = image or container_name or set_env_vars is not None or remove_env_vars is not None or replace_env_vars is not None or remove_all_env_vars or cpu or memory or startup_command is not None or args is not None
+    update_map['registry'] = registry_server or registry_user or registry_pass
+
+    if tags:
+        _add_or_update_tags(new_containerappsjob, tags)
+
+    if workload_profile_name:
+        new_containerappsjob["properties"]["workloadProfileName"] = workload_profile_name
+
+        parsed_managed_env = parse_resource_id(containerappsjob_def["properties"]["environmentId"])
+        managed_env_name = parsed_managed_env['name']
+        managed_env_rg = parsed_managed_env['resource_group']
+        managed_env_info = None
+        try:
+            managed_env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=managed_env_rg, name=managed_env_name)
+        except:
+            pass
+
+        if not managed_env_info:
+            raise ValidationError("Error parsing the managed environment '{}' from the specified containerappjob".format(managed_env_name))
+
+        ensure_workload_profile_supported(cmd, managed_env_name, managed_env_rg, workload_profile_name, managed_env_info)
+
+    # replicaConfiguration
+    if update_map["replicaConfigurations"]:
+        new_containerappsjob["properties"]["configuration"] = {} if "configuration" not in new_containerappsjob["properties"] else new_containerappsjob["properties"]["configuration"]
+        if replica_timeout is not None or replica_retry_limit is not None:
+            if replica_timeout:
+                new_containerappsjob["properties"]["configuration"]["replicaTimeout"] = replica_timeout
+            if replica_retry_limit:
+                new_containerappsjob["properties"]["configuration"]["replicaRetryLimit"] = replica_retry_limit
+
+    # triggerConfiguration
+    if update_map["triggerConfigurations"]:
+        new_containerappsjob["properties"]["configuration"] = {} if "configuration" not in new_containerappsjob["properties"] else new_containerappsjob["properties"]["configuration"]
+        if containerappsjob_def["properties"]["configuration"]["triggerType"] == "Manual":
+            manualTriggerConfig_def = None
+            manualTriggerConfig_def = containerappsjob_def["properties"]["configuration"]["manualTriggerConfig"]
+            if replica_completion_count is not None or parallelism is not None:
+                if replica_completion_count:
+                    manualTriggerConfig_def["replicaCompletionCount"] = replica_completion_count
+                if parallelism:
+                    manualTriggerConfig_def["parallelism"] = parallelism
+            new_containerappsjob["properties"]["configuration"]["manualTriggerConfig"] = manualTriggerConfig_def
+        if containerappsjob_def["properties"]["configuration"]["triggerType"] == "Schedule":
+            scheduleTriggerConfig_def = None
+            scheduleTriggerConfig_def = containerappsjob_def["properties"]["configuration"]["scheduleTriggerConfig"]
+            if replica_completion_count is not None or parallelism is not None or cron_expression is not None:
+                if replica_completion_count:
+                    scheduleTriggerConfig_def["replicaCompletionCount"] = replica_completion_count
+                if parallelism:
+                    scheduleTriggerConfig_def["parallelism"] = parallelism
+                if cron_expression:
+                    scheduleTriggerConfig_def["cronExpression"] = cron_expression
+            new_containerappsjob["properties"]["configuration"]["scheduleTriggerConfig"] = scheduleTriggerConfig_def
+        if containerappsjob_def["properties"]["configuration"]["triggerType"] == "Event":
+            eventTriggerConfig_def = None
+            eventTriggerConfig_def = containerappsjob_def["properties"]["configuration"]["eventTriggerConfig"]
+            if replica_completion_count is not None or parallelism is not None or min_executions is not None or max_executions is not None or polling_interval is not None or scale_rule_name is not None:
+                if replica_completion_count:
+                    eventTriggerConfig_def["replicaCompletionCount"] = replica_completion_count
+                if parallelism:
+                    eventTriggerConfig_def["parallelism"] = parallelism
+                # Scale
+                if "scale" in eventTriggerConfig_def["scale"]:
+                    eventTriggerConfig_def["scale"] = {}
+                if min_executions is not None:
+                    eventTriggerConfig_def["scale"]["minExecutions"] = min_executions
+                if max_executions is not None:
+                    eventTriggerConfig_def["scale"]["maxExecutions"] = max_executions
+                if polling_interval is not None:
+                    eventTriggerConfig_def["scale"]["pollingInterval"] = polling_interval
+
+                scale_def = None
+                if min_executions is not None or max_executions is not None or polling_interval is not None:
+                    scale_def = JobScaleModel
+                    scale_def["pollingInterval"] = polling_interval
+                    scale_def["minExecutions"] = min_executions
+                    scale_def["maxReplicas"] = max_executions
+                # so we don't overwrite rules
+                if safe_get(new_containerappsjob, "properties", "template", "scale", "rules"):
+                    new_containerappsjob["properties"]["template"]["scale"].pop(["rules"])
+                if scale_rule_name:
+                    scale_rule_type = scale_rule_type.lower()
+                    scale_rule_def = ScaleRuleModel
+                    curr_metadata = {}
+                    metadata_def = parse_metadata_flags(scale_rule_metadata, curr_metadata)
+                    auth_def = parse_auth_flags(scale_rule_auth)
+                    scale_rule_def["name"] = scale_rule_name
+                    scale_rule_def["type"] = scale_rule_type
+                    scale_rule_def["metadata"] = metadata_def
+                    scale_rule_def["auth"] = auth_def
+                    if not scale_def:
+                        scale_def = JobScaleModel
+                    scale_def["rules"] = [scale_rule_def]
+                    eventTriggerConfig_def["scale"]["rules"] = scale_def["rules"]
+
+            new_containerappsjob["properties"]["configuration"]["eventTriggerConfig"] = eventTriggerConfig_def
+
+    # Containers
+    if update_map["container"]:
+        new_containerappsjob["properties"]["template"] = {} if "template" not in new_containerappsjob["properties"] else new_containerappsjob["properties"]["template"]
+        new_containerappsjob["properties"]["template"]["containers"] = containerappsjob_def["properties"]["template"]["containers"]
+        if not container_name:
+            if len(new_containerappsjob["properties"]["template"]["containers"]) == 1:
+                container_name = new_containerappsjob["properties"]["template"]["containers"][0]["name"]
+            else:
+                raise ValidationError("Usage error: --container-name is required when adding or updating a container")
+
+        # Check if updating existing container
+        updating_existing_container = False
+        for c in new_containerappsjob["properties"]["template"]["containers"]:
+            if c["name"].lower() == container_name.lower():
+                updating_existing_container = True
+
+                if image is not None:
+                    c["image"] = image
+
+                if set_env_vars is not None:
+                    if "env" not in c or not c["env"]:
+                        c["env"] = []
+                    # env vars
+                    _add_or_update_env_vars(c["env"], parse_env_var_flags(set_env_vars))
+
+                if replace_env_vars is not None:
+                    # Remove other existing env_vars, then add them
+                    c["env"] = []
+                    _add_or_update_env_vars(c["env"], parse_env_var_flags(replace_env_vars))
+
+                if remove_env_vars is not None:
+                    if "env" not in c or not c["env"]:
+                        c["env"] = []
+                    # env vars
+                    _remove_env_vars(c["env"], remove_env_vars)
+
+                if remove_all_env_vars:
+                    c["env"] = []
+
+                if startup_command is not None:
+                    if isinstance(startup_command, list) and not startup_command:
+                        c["command"] = None
+                    else:
+                        c["command"] = startup_command
+                if args is not None:
+                    if isinstance(args, list) and not args:
+                        c["args"] = None
+                    else:
+                        c["args"] = args
+                if cpu is not None or memory is not None:
+                    if "resources" in c and c["resources"]:
+                        if cpu is not None:
+                            c["resources"]["cpu"] = cpu
+                        if memory is not None:
+                            c["resources"]["memory"] = memory
+                    else:
+                        c["resources"] = {
+                            "cpu": cpu,
+                            "memory": memory
+                        }
+
+        # If not updating existing container, add as new container
+        if not updating_existing_container:
+            if image is None:
+                raise ValidationError("Usage error: --image is required when adding a new container")
+
+            resources_def = None
+            if cpu is not None or memory is not None:
+                resources_def = ContainerResourcesModel
+                resources_def["cpu"] = cpu
+                resources_def["memory"] = memory
+
+            container_def = ContainerModel
+            container_def["name"] = container_name
+            container_def["image"] = image
+            container_def["env"] = []
+
+            if set_env_vars is not None:
+                # env vars
+                _add_or_update_env_vars(container_def["env"], parse_env_var_flags(set_env_vars))
+
+            if replace_env_vars is not None:
+                # env vars
+                _add_or_update_env_vars(container_def["env"], parse_env_var_flags(replace_env_vars))
+
+            if remove_env_vars is not None:
+                # env vars
+                _remove_env_vars(container_def["env"], remove_env_vars)
+
+            if remove_all_env_vars:
+                container_def["env"] = []
+
+            if startup_command is not None:
+                if isinstance(startup_command, list) and not startup_command:
+                    container_def["command"] = None
+                else:
+                    container_def["command"] = startup_command
+            if args is not None:
+                if isinstance(args, list) and not args:
+                    container_def["args"] = None
+                else:
+                    container_def["args"] = args
+            if resources_def is not None:
+                container_def["resources"] = resources_def
+
+            new_containerappsjob["properties"]["template"]["containers"].append(container_def)
+
+        new_containerappsjob["properties"]["configuration"] = {} if "configuration" not in new_containerappsjob["properties"] else new_containerappsjob["properties"]["configuration"]
+
+    # Registry
+    if update_map["registry"]:
+        new_containerappsjob["properties"]["configuration"] = {} if "configuration" not in new_containerappsjob["properties"] else new_containerappsjob["properties"]["configuration"]
+        if "registries" in containerappsjob_def["properties"]["configuration"]:
+            new_containerappsjob["properties"]["configuration"]["registries"] = containerappsjob_def["properties"]["configuration"]["registries"]
+        if "registries" not in containerappsjob_def["properties"]["configuration"] or containerappsjob_def["properties"]["configuration"]["registries"] is None:
+            new_containerappsjob["properties"]["configuration"]["registries"] = []
+
+        registries_def = new_containerappsjob["properties"]["configuration"]["registries"]
+
+        _get_existing_secrets(cmd, resource_group_name, name, containerappsjob_def)
+        if "secrets" in containerappsjob_def["properties"]["configuration"] and containerappsjob_def["properties"]["configuration"]["secrets"]:
+            new_containerappsjob["properties"]["configuration"]["secrets"] = containerappsjob_def["properties"]["configuration"]["secrets"]
+        else:
+            new_containerappsjob["properties"]["configuration"]["secrets"] = []
+
+        if registry_server:
+            if not registry_pass or not registry_user:
+                if ACR_IMAGE_SUFFIX not in registry_server:
+                    raise RequiredArgumentMissingError('Registry url is required if using Azure Container Registry, otherwise Registry username and password are required if using Dockerhub')
+                logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
+                parsed = urlparse(registry_server)
+                registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
+                registry_user, registry_pass, _ = _get_acr_cred(cmd.cli_ctx, registry_name)
+            # Check if updating existing registry
+            updating_existing_registry = False
+            for r in registries_def:
+                if r['server'].lower() == registry_server.lower():
+                    updating_existing_registry = True
+                    if registry_user:
+                        r["username"] = registry_user
+                    if registry_pass:
+                        r["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
+                            new_containerappsjob["properties"]["configuration"]["secrets"],
+                            r["username"],
+                            r["server"],
+                            registry_pass,
+                            update_existing_secret=True,
+                            disable_warnings=True)
+
+            # If not updating existing registry, add as new registry
+            if not updating_existing_registry:
+                registry = RegistryCredentialsModel
+                registry["server"] = registry_server
+                registry["username"] = registry_user
+                registry["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
+                    new_containerappsjob["properties"]["configuration"]["secrets"],
+                    registry_user,
+                    registry_server,
+                    registry_pass,
+                    update_existing_secret=True,
+                    disable_warnings=True)
+
+                registries_def.append(registry)
+
+    try:
+        r = ContainerAppsJobClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=new_containerappsjob, no_wait=no_wait)
+
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+            logger.warning('Containerapps job update in progress. Please monitor the update using `az containerapp job show -n {} -g {}`'.format(name, resource_group_name))
+
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
+    yaml_containerappsjob = process_loaded_yaml(load_yaml_file(file_name))
+    if type(yaml_containerappsjob) != dict:  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+
+    if not yaml_containerappsjob.get('name'):
+        yaml_containerappsjob['name'] = name
+    elif yaml_containerappsjob.get('name').lower() != name.lower():
+        logger.warning('The app name provided in the --yaml file "{}" does not match the one provided in the --name flag "{}". The one provided in the --yaml file will be used.'.format(
+            yaml_containerappsjob.get('name'), name))
+    name = yaml_containerappsjob.get('name')
+
+    if not yaml_containerappsjob.get('type'):
+        yaml_containerappsjob['type'] = 'Microsoft.App/jobs'
+    elif yaml_containerappsjob.get('type').lower() != "microsoft.app/jobs":
+        raise ValidationError('Containerapp type must be \"Microsoft.App/jobs\"')
+
+    # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
+    containerappsjob_def = None
+    try:
+        deserializer = create_deserializer()
+        containerappsjob_def = deserializer('ContainerAppsJob', yaml_containerappsjob)
+    except DeserializationError as ex:
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps job YAML spec.') from ex
+
+    # Remove tags before converting from snake case to camel case, then re-add tags. We don't want to change the case of the tags. Need this since we're not using SDK
+    tags = None
+    if yaml_containerappsjob.get('tags'):
+        tags = yaml_containerappsjob.get('tags')
+        del yaml_containerappsjob['tags']
+
+    containerappsjob_def = _convert_object_from_snake_to_camel_case(_object_to_dict(containerappsjob_def))
+    containerappsjob_def['tags'] = tags
+
+    # Validate managed environment
+    if not yaml_containerappsjob["properties"].get('environmentId'):
+        raise RequiredArgumentMissingError('environmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+
+    containerappsjob_def["managedEnvironmentId"] = yaml_containerappsjob["properties"]['environmentId']
+    env_id = containerappsjob_def["managedEnvironmentId"]
+
+    # update configuration
+    config_def = JobConfigurationModel
+    config_def["secrets"] = yaml_containerappsjob.get('properties')['configuration']['secrets']
+    config_def["triggerType"] = yaml_containerappsjob.get('properties')['configuration']['triggerType']
+    config_def["replicaTimeout"] = yaml_containerappsjob.get('properties')['configuration']['replicaTimeout']
+    config_def["replicaRetryLimit"] = yaml_containerappsjob.get('properties')['configuration']['replicaRetryLimit']
+    config_def["manualTriggerConfig"] = yaml_containerappsjob.get('properties')['configuration']['manualTriggerConfig']
+    config_def["scheduleTriggerConfig"] = yaml_containerappsjob.get('properties')['configuration']['scheduleTriggerConfig']
+    config_def["registries"] = yaml_containerappsjob.get('properties')['configuration']['registries']
+    containerappsjob_def['configuration'] = config_def
+
+    # update template
+    template_def = JobTemplateModel
+    template_def["containers"] = yaml_containerappsjob.get('properties')['template']['containers']
+    template_def["initContainers"] = yaml_containerappsjob.get('properties')['template']['initContainers']
+    template_def["volumes"] = yaml_containerappsjob.get('properties')['template']['volumes']
+    containerappsjob_def['template'] = template_def
+
+    # After deserializing, some properties may need to be moved under the "properties" attribute. Need this since we're not using SDK
+    containerappsjob_def = process_loaded_yaml(containerappsjob_def)
+
+    # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
+    _remove_additional_attributes(containerappsjob_def)
+    _remove_readonly_attributes(containerappsjob_def)
+
+    env_name = None
+    env_rg = None
+    env_info = None
+
+    if is_valid_resource_id(env_id):
+        parsed_managed_env = parse_resource_id(env_id)
+        env_name = parsed_managed_env['name']
+        env_rg = parsed_managed_env['resource_group']
+    else:
+        raise ValidationError('Invalid managedEnvironmentId specified. Environment not found')
+
+    try:
+        env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=env_rg, name=env_name)
+    except:
+        pass
+
+    if not env_info:
+        raise ValidationError("The environment '{}' in resource group '{}' was not found".format(env_name, env_rg))
+
+    # Validate location
+    if not containerappsjob_def.get('location'):
+        containerappsjob_def['location'] = env_info['location']
+
+    try:
+        r = ContainerAppsJobClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappsjob_def, no_wait=no_wait)
+
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+            logger.warning('Containerapps job creation in progress. Please monitor the creation using `az containerapp job show -n {} -g {}`'.format(
+                name, resource_group_name
+            ))
+
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def update_containerappjob_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
+    yaml_containerappsjob = process_loaded_yaml(load_yaml_file(file_name))
+    if type(yaml_containerappsjob) != dict:  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+
+    if not yaml_containerappsjob.get('name'):
+        yaml_containerappsjob['name'] = name
+    elif yaml_containerappsjob.get('name').lower() != name.lower():
+        logger.warning('The app name provided in the --yaml file "{}" does not match the one provided in the --name flag "{}". The one provided in the --yaml file will be used.'.format(
+            yaml_containerappsjob.get('name'), name))
+    name = yaml_containerappsjob.get('name')
+
+    if not yaml_containerappsjob.get('type'):
+        yaml_containerappsjob['type'] = 'Microsoft.App/jobs'
+    elif yaml_containerappsjob.get('type').lower() != "microsoft.app/jobs":
+        raise ValidationError('Containerapp type must be \"Microsoft.App/jobs\"')
+
+    # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
+    containerappsjob_def = None
+    try:
+        deserializer = create_deserializer()
+        containerappsjob_def = deserializer('ContainerAppsJob', yaml_containerappsjob)
+    except DeserializationError as ex:
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps job YAML spec.') from ex
+
+    # Remove tags before converting from snake case to camel case, then re-add tags. We don't want to change the case of the tags. Need this since we're not using SDK
+    tags = None
+    if yaml_containerappsjob.get('tags'):
+        tags = yaml_containerappsjob.get('tags')
+        del yaml_containerappsjob['tags']
+
+    containerappsjob_def = _convert_object_from_snake_to_camel_case(_object_to_dict(containerappsjob_def))
+    containerappsjob_def['tags'] = tags
+
+    # update configuration
+    config_def = JobConfigurationModel
+    config_def["secrets"] = yaml_containerappsjob.get('properties')['configuration']['secrets']
+    config_def["triggerType"] = yaml_containerappsjob.get('properties')['configuration']['triggerType']
+    config_def["replicaTimeout"] = yaml_containerappsjob.get('properties')['configuration']['replicaTimeout']
+    config_def["replicaRetryLimit"] = yaml_containerappsjob.get('properties')['configuration']['replicaRetryLimit']
+    config_def["manualTriggerConfig"] = yaml_containerappsjob.get('properties')['configuration']['manualTriggerConfig']
+    config_def["scheduleTriggerConfig"] = yaml_containerappsjob.get('properties')['configuration']['scheduleTriggerConfig']
+    config_def["registries"] = yaml_containerappsjob.get('properties')['configuration']['registries']
+    containerappsjob_def['configuration'] = config_def
+
+    # update template
+    template_def = JobTemplateModel
+    template_def["containers"] = yaml_containerappsjob.get('properties')['template']['containers']
+    template_def["initContainers"] = yaml_containerappsjob.get('properties')['template']['initContainers']
+    template_def["volumes"] = yaml_containerappsjob.get('properties')['template']['volumes']
+    containerappsjob_def['template'] = template_def
+
+    # After deserializing, some properties may need to be moved under the "properties" attribute. Need this since we're not using SDK
+    containerappsjob_def = process_loaded_yaml(containerappsjob_def)
+
+    # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
+    _remove_additional_attributes(containerappsjob_def)
+    _remove_readonly_attributes(containerappsjob_def)
+
+    # Validate managed environment
+    if not containerappsjob_def["properties"].get('environmentId'):
+        raise RequiredArgumentMissingError('managedEnvironmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+
+    env_id = containerappsjob_def["properties"]['environmentId']
+    env_name = None
+    env_rg = None
+    env_info = None
+
+    if is_valid_resource_id(env_id):
+        parsed_managed_env = parse_resource_id(env_id)
+        env_name = parsed_managed_env['name']
+        env_rg = parsed_managed_env['resource_group']
+    else:
+        raise ValidationError('Invalid managedEnvironmentId specified. Environment not found')
+
+    try:
+        env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=env_rg, name=env_name)
+    except:
+        pass
+
+    if not env_info:
+        raise ValidationError("The environment '{}' in resource group '{}' was not found".format(env_name, env_rg))
+
+    # Validate location
+    if not containerappsjob_def.get('location'):
+        containerappsjob_def['location'] = env_info['location']
+
+    try:
+        r = ContainerAppsJobClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappsjob_def, no_wait=no_wait)
+
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
+            logger.warning('Containerapps job creation in progress. Please monitor the creation using `az containerapp job show -n {} -g {}`'.format(
+                name, resource_group_name
+            ))
+
+        return r
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def start_containerappsjob(cmd,
+                           resource_group_name,
+                           name,
+                           image=None,
+                           container_name=None,
+                           env_vars=None,
+                           startup_command=None,
+                           args=None,
+                           cpu=None,
+                           memory=None,
+                           registry_identity=None):
+    template_def = None
+
+    if image is not None:
+        template_def = JobExecutionTemplateModel
+        container_def = ContainerModel
+        resources_def = None
+        if cpu is not None or memory is not None:
+            resources_def = ContainerResourcesModel
+            resources_def["cpu"] = cpu
+            resources_def["memory"] = memory
+
+        container_def["name"] = container_name if container_name else name
+        container_def["image"] = image if not is_registry_msi_system(registry_identity) else HELLO_WORLD_IMAGE
+        if env_vars is not None:
+            container_def["env"] = parse_env_var_flags(env_vars)
+        if startup_command is not None:
+            container_def["command"] = startup_command
+        if args is not None:
+            container_def["args"] = args
+        if resources_def is not None:
+            container_def["resources"] = resources_def
+
+        template_def["template"]["containers"] = [container_def]
+
+    try:
+        return ContainerAppsJobClient.start_job(cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_start_envelope=template_def)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def stop_containerappsjob(cmd, resource_group_name, name, job_execution_name=None, execution_name_list=None):
+    try:
+        if execution_name_list is not None:
+            execution_name_list = execution_name_list.split(",")
+            execution_name_list = json.dumps({'jobExecutionName': execution_name_list})
+        return ContainerAppsJobClient.stop_job(cmd=cmd, resource_group_name=resource_group_name, name=name, job_execution_name=job_execution_name, job_execution_names=execution_name_list)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def listexecution_containerappsjob(cmd, resource_group_name, name):
+    try:
+        executions = ContainerAppsJobClient.get_executions(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        return executions['value']
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def getSingleExecution_containerappsjob(cmd, resource_group_name, name, job_execution_name):
+    try:
+        execution = ContainerAppsJobClient.get_single_execution(cmd=cmd, resource_group_name=resource_group_name, name=name, job_execution_name=job_execution_name)
+        return execution
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
 def assign_managed_identity(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     containerapp_def = None
@@ -1373,7 +2498,8 @@ def assign_managed_identity(cmd, name, resource_group_name, system_assigned=Fals
     set_managed_identity(cmd, resource_group_name, containerapp_def, system_assigned, user_assigned)
 
     try:
-        r = ContainerAppClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+        r = ContainerAppClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
         # If identity is not returned, do nothing
         return r["identity"]
 
@@ -1500,8 +2626,8 @@ def _validate_github(repo, branch, token):
                 raise CLIInternalError(error_msg) from e
             logger.warning('Verified GitHub repo and branch')
         except BadCredentialsException as e:
-            raise ValidationError("Could not authenticate to the repository. Please create a Personal Access Token and use "
-                                  "the --token argument. Run 'az webapp deployment github-actions add --help' "
+            raise ValidationError("Could not authenticate to the repository. Please create a Personal Access Token "
+                                  "and use the --token argument. Run 'az webapp deployment github-actions add --help' "
                                   "for more information.") from e
         except GithubException as e:
             error_msg = "Encountered GitHub error when accessing {} repo".format(repo)
@@ -1644,9 +2770,9 @@ def delete_github_action(cmd, name, resource_group_name, token=None, login_with_
                 if not github_repo.permissions.push or not github_repo.permissions.maintain:
                     raise ValidationError("The token does not have appropriate access rights to repository {}.".format(repo))
             except BadCredentialsException as e:
-                raise CLIInternalError("Could not authenticate to the repository. Please create a Personal Access Token and use "
-                                       "the --token argument. Run 'az webapp deployment github-actions add --help' "
-                                       "for more information.") from e
+                raise CLIInternalError("Could not authenticate to the repository. Please create a Personal Access "
+                                       "Token and use the --token argument. Run 'az webapp deployment github-actions "
+                                       "add --help' for more information.") from e
             except GithubException as e:
                 error_msg = "Encountered GitHub error when accessing {} repo".format(repo)
                 if e.data and e.data['message']:
@@ -2038,8 +3164,7 @@ def disable_ingress(cmd, name, resource_group_name, no_wait=False):
     _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
 
     try:
-        ContainerAppClient.create_or_update(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+        ContainerAppClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
         logger.warning("Ingress has been disabled successfully.")
         return
     except Exception as e:
@@ -2929,7 +4054,7 @@ def containerapp_up(cmd,
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     _validate_up_args(cmd, source, image, repo, registry_server)
-    validate_container_app_name(name)
+    validate_container_app_name(name, AppType.ContainerApp.name)
     check_env_name_on_rg(cmd, managed_env, resource_group_name, location)
 
     image = _reformat_image(source, repo, image)
@@ -2993,7 +4118,8 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
         pass
 
     if containerapp_def:
-        return update_containerapp_logic(cmd=cmd, name=name, resource_group_name=resource_group_name, image=image, replace_env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name)
+        return update_containerapp_logic(cmd=cmd, name=name, resource_group_name=resource_group_name, image=image, replace_env_vars=env_vars, ingress=ingress, target_port=target_port,
+                                         registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name)
     return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name)
 
 
@@ -3358,7 +4484,6 @@ def update_aad_settings(cmd, resource_group_name, name,
                         client_secret_certificate_san=None,
                         client_secret_certificate_issuer=None,
                         yes=False, tenant_id=None):
-
     try:
         show_ingress(cmd, name, resource_group_name)
     except Exception as e:
@@ -4108,8 +5233,7 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
     if excluded_paths is not None:
         if "globalValidation" not in existing_auth:
             existing_auth["globalValidation"] = {}
-        excluded_paths_list_string = excluded_paths[1:-1]
-        existing_auth["globalValidation"]["excludedPaths"] = excluded_paths_list_string.split(",")
+        existing_auth["globalValidation"]["excludedPaths"] = excluded_paths.split(",")
 
     existing_auth = update_http_settings_in_auth_settings(existing_auth, require_https,
                                                           proxy_convention, proxy_custom_host_header,
@@ -4128,9 +5252,8 @@ def show_auth_config(cmd, resource_group_name, name):
         pass
     return auth_settings
 
+
 # Compose
-
-
 def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       resource_group_name,
                                       managed_env,
@@ -4141,7 +5264,6 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       transport_mapping=None,
                                       location=None,
                                       tags=None):
-
     from pycomposefile import ComposeFile
 
     from ._compose_utils import (create_containerapps_compose_environment,
@@ -4163,7 +5285,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
     parsed_managed_env = parse_resource_id(managed_env)
     managed_env_name = parsed_managed_env['name']
 
-    logger.info(   # pylint: disable=W1203
+    logger.info(  # pylint: disable=W1203
         f"Creating the Container Apps managed environment {managed_env_name} under {resource_group_name} in {location}.")
 
     try:
@@ -4249,7 +5371,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                 env_vars=environment,
                                 secrets=secret_vars,
                                 min_replicas=replicas,
-                                max_replicas=replicas,)
+                                max_replicas=replicas, )
         )
     return containerapps_from_compose
 
@@ -4271,6 +5393,38 @@ def show_workload_profile(cmd, resource_group_name, env_name, workload_profile_n
 
 
 def set_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):
+    return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
+
+
+def add_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):
+    try:
+        r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=env_name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    workload_profiles = r["properties"]["workloadProfiles"]
+
+    workload_profiles_lower = [p["name"].lower() for p in workload_profiles]
+
+    if workload_profile_name.lower() in workload_profiles_lower:
+        raise ValidationError(f"Cannot add workload profile with name {workload_profile_name} because it already exists in this environment")
+
+    return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
+
+
+def update_workload_profile(cmd, resource_group_name, env_name, workload_profile_name, workload_profile_type=None, min_nodes=None, max_nodes=None):
+    try:
+        r = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name, name=env_name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    workload_profiles = r["properties"]["workloadProfiles"]
+
+    workload_profiles_lower = [p["name"].lower() for p in workload_profiles]
+
+    if workload_profile_name.lower() not in workload_profiles_lower:
+        raise ValidationError(f"Workload profile with name {workload_profile_name} does not exist in this environment. The workload profiles available in this environment are {','.join([p['name'] for p in workload_profiles])}")
+
     return update_managed_environment(cmd, env_name, resource_group_name, workload_profile_type=workload_profile_type, workload_profile_name=workload_profile_name, min_nodes=min_nodes, max_nodes=max_nodes)
 
 
@@ -4297,3 +5451,258 @@ def delete_workload_profile(cmd, resource_group_name, env_name, workload_profile
         return r
     except Exception as e:
         handle_raw_exception(e)
+
+
+def patch_list(cmd, resource_group_name=None, managed_env=None, show_all=False):
+    if is_docker_running() is False:
+        logger.error("Please install or start Docker and try again.")
+        return
+    pack_exec_path = get_pack_exec_path()
+    if pack_exec_path is None:
+        return
+    logger.warning("Listing container apps...")
+    ca_list = list_containerapp(cmd, resource_group_name, managed_env)
+    imgs = []
+    if ca_list:
+        for ca in ca_list:
+            id_parts = parse_resource_id(ca["id"])
+            resource_group_name = id_parts.get('resource_group')
+            container_app_name = id_parts.get('name')
+            managed_env_id_parts = parse_resource_id(ca["properties"]["managedEnvironmentId"])
+            managed_env_name = managed_env_id_parts.get('name')
+            containers = safe_get(ca, "properties", "template", "containers")
+            for container in containers:
+                result = dict(
+                    imageName=container["image"],
+                    targetContainerName=container["name"],
+                    targetContainerAppName=container_app_name,
+                    targetContainerAppEnvironmentName=managed_env_name,
+                    targetResourceGroup=resource_group_name)
+                imgs.append(result)
+    # Inspect the images
+    results = []
+    inspect_results = []
+    # Multi-worker
+    logger.warning("Inspecting container apps images...")
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        [executor.submit(patch_get_image_inspection, pack_exec_path, img, inspect_results) for img in imgs]
+
+    # Get the current tags of Dotnet Mariners
+    oryx_run_img_tags = get_current_mariner_tags()
+    failed_reason = "Failed to inspect the image. Please make sure that you are authenticated to the container registry and that the image exists."
+    not_based_mariner_reason = "Image not based on Mariner"
+    mcr_check_reason = "Image not from mcr.microsoft.com/oryx/builder"
+    results = []
+    # Start checking if the images are based on Mariner
+    logger.warning("Checking for patches...")
+    for inspect_result in inspect_results:
+        if inspect_result["remote_info"] == 401:
+            results.append(dict(
+                targetContainerName=inspect_result["targetContainerName"],
+                targetContainerAppName=inspect_result["targetContainerAppName"],
+                targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
+                targetResourceGroup=inspect_result["targetResourceGroup"],
+                targetImageName=inspect_result["image_name"],
+                oldRunImage=None,
+                newRunImage=None,
+                id=None,
+                reason=failed_reason))
+        else:
+            # Divide run-images into different parts by "/"
+            run_images_props = inspect_result["remote_info"]["run_images"]
+            if run_images_props is None:
+                results.append(dict(
+                    targetContainerName=inspect_result["targetContainerName"],
+                    targetContainerAppName=inspect_result["targetContainerAppName"],
+                    targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
+                    targetResourceGroup=inspect_result["targetResourceGroup"],
+                    targetImageName=inspect_result["image_name"],
+                    oldRunImage=None,
+                    newRunImage=None,
+                    id=None,
+                    reason=not_based_mariner_reason))
+            else:
+                for run_images_prop in run_images_props:
+                    if run_images_prop["name"].find("mcr.microsoft.com/oryx/builder") != -1:
+                        run_images_prop = run_images_prop["name"].split(":")
+                        run_images_tag = run_images_prop[1]
+                        # Based on Mariners
+                        if run_images_tag.find('mariner') != -1:
+                            check_result = patchable_check(run_images_tag, oryx_run_img_tags, inspect_result=inspect_result)
+                            results.append(check_result)
+                        else:
+                            results.append(dict(
+                                targetContainerName=inspect_result["targetContainerName"],
+                                targetContainerAppName=inspect_result["targetContainerAppName"],
+                                targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
+                                targetResourceGroup=inspect_result["targetResourceGroup"],
+                                targetImageName=inspect_result["image_name"],
+                                oldRunImage=run_images_tag,
+                                newRunImage=None,
+                                id=None,
+                                reason=failed_reason))
+                    else:
+                        # Not based on image from mcr.microsoft.com/oryx/builder
+                        results.append(dict(
+                            targetContainerAppName=inspect_result["targetContainerAppName"],
+                            targetContainerAppEnvironmentName=inspect_result["targetContainerAppEnvironmentName"],
+                            targetResourceGroup=inspect_result["targetResourceGroup"],
+                            oldRunImage=inspect_result["remote_info"]["run_images"],
+                            newRunImage=None,
+                            id=None,
+                            reason=mcr_check_reason))
+    if show_all is False:
+        results = [result for result in results if result["id"] is not None]
+    if not results:
+        logger.warning("No container apps available to patch at this time. Use --show-all to show the container apps that cannot be patched.")
+        return
+    return results
+
+
+def patch_get_image_inspection(pack_exec_path, img, info_list):
+    if (img["imageName"].find("run-dotnet") != -1) and (img["imageName"].find("cbl-mariner") != -1):
+        inspect_result = {
+            "remote_info":
+            {
+                "run_images":
+                [{
+                    "name": "mcr.microsoft.com/oryx/builder:" + img["imageName"].split(":")[-1]
+                }]
+            },
+            "image_name": img["imageName"],
+            "targetContainerName": img["targetContainerName"],
+            "targetContainerAppName": img["targetContainerAppName"],
+            "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"],
+            "targetResourceGroup": img["targetResourceGroup"]
+        }
+    else:
+        with subprocess.Popen(pack_exec_path + " inspect-image " + img["imageName"] + " --output json", shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE) as img_info:
+            img_info_out, img_info_err = img_info.communicate()
+            if img_info_err.find(b"status code 401 Unauthorized") != -1 or img_info_err.find(b"unable to find image") != -1:
+                inspect_result = dict(remote_info=401, image_name=img["imageName"])
+            else:
+                inspect_result = json.loads(img_info_out)
+            inspect_result.update({
+                "targetContainerName": img["targetContainerName"],
+                "targetContainerAppName": img["targetContainerAppName"],
+                "targetContainerAppEnvironmentName": img["targetContainerAppEnvironmentName"],
+                "targetResourceGroup": img["targetResourceGroup"]
+            })
+    info_list.append(inspect_result)
+
+
+def patch_interactive(cmd, resource_group_name=None, managed_env=None, show_all=False):
+    if is_docker_running() is False:
+        logger.error("Please install or start Docker and try again.")
+        return
+    patchable_check_results = patch_list(cmd, resource_group_name, managed_env, show_all=show_all)
+    pack_exec_path = get_pack_exec_path()
+    if pack_exec_path is None:
+        return
+    if patchable_check_results is None:
+        return
+    patchable_check_results_json = json.dumps(patchable_check_results, indent=2)
+    without_unpatchable_results = []
+    without_unpatchable_results = [result for result in patchable_check_results if result["id"] is not None]
+    if without_unpatchable_results == [] and (patchable_check_results is None or show_all is False):
+        return
+    logger.warning(patchable_check_results_json)
+    if without_unpatchable_results == []:
+        return
+    user_input = input("Do you want to apply all the patches or specify by id? (y/n/id)\n")
+    patch_apply_handle_input(cmd, patchable_check_results, user_input, pack_exec_path)
+
+
+def patch_apply(cmd, resource_group_name=None, managed_env=None, show_all=False):
+    if is_docker_running() is False:
+        logger.error("Please install or start Docker and try again.")
+        return
+    patchable_check_results = patch_list(cmd, resource_group_name, managed_env, show_all=show_all)
+    pack_exec_path = get_pack_exec_path()
+    if pack_exec_path is None:
+        return
+    if patchable_check_results is None:
+        return
+    patchable_check_results_json = json.dumps(patchable_check_results, indent=2)
+    without_unpatchable_results = []
+    without_unpatchable_results = [result for result in patchable_check_results if result["id"] is not None]
+    if without_unpatchable_results == [] and (patchable_check_results is None or show_all is False):
+        return
+    logger.warning(patchable_check_results_json)
+    if without_unpatchable_results == []:
+        return
+    patch_apply_handle_input(cmd, patchable_check_results, "y", pack_exec_path)
+
+
+def patch_apply_handle_input(cmd, patch_check_list, method, pack_exec_path):
+    input_method = method.strip().lower()
+    # Track number of times patches were applied successfully.
+    patch_apply_count = 0
+    if input_method == "y":
+        telemetry_record_method = "y"
+        for patch_check in patch_check_list:
+            if patch_check["id"] and patch_check["newRunImage"]:
+                patch_cli_call(cmd,
+                               patch_check["targetResourceGroup"],
+                               patch_check["targetContainerAppName"],
+                               patch_check["targetContainerName"],
+                               patch_check["targetImageName"],
+                               patch_check["newRunImage"],
+                               pack_exec_path)
+                # Increment patch_apply_count with every successful patch.
+                patch_apply_count += 1
+    elif input_method == "n":
+        telemetry_record_method = "n"
+        logger.warning("No patch applied.")
+        return
+    else:
+        # Check if method is an existing id in the list
+        for patch_check in patch_check_list:
+            if patch_check["id"] == input_method:
+                patch_cli_call(cmd,
+                               patch_check["targetResourceGroup"],
+                               patch_check["targetContainerAppName"],
+                               patch_check["targetContainerName"],
+                               patch_check["targetImageName"],
+                               patch_check["newRunImage"],
+                               pack_exec_path)
+                patch_apply_count += 1
+                telemetry_record_method = input_method
+                break
+        else:
+            telemetry_record_method = "invalid"
+            logger.error("Invalid patch method or id.")
+    patch_apply_properties = {
+        'Context.Default.AzureCLI.PatchUserResponse': telemetry_record_method,
+        'Context.Default.AzureCLI.PatchApplyCount': patch_apply_count
+    }
+    telemetry_core.add_extension_event('containerapp', patch_apply_properties)
+    return
+
+
+def patch_cli_call(cmd, resource_group, container_app_name, container_name, target_image_name, new_run_image, pack_exec_path):
+    try:
+        logger.warning("Applying patch for container app: " + container_app_name + " container: " + container_name)
+        subprocess.run(f"{pack_exec_path} rebase -q {target_image_name} --run-image {new_run_image}", shell=True, check=True)
+        new_target_image_name = target_image_name.split(":")[0] + ":" + new_run_image.split(":")[1]
+        subprocess.run(f"docker tag {target_image_name} {new_target_image_name}", shell=True, check=True)
+        logger.debug(f"Publishing {new_target_image_name} to registry...")
+        subprocess.run(f"docker push -q {new_target_image_name}", shell=True, check=True)
+        logger.warning("Patch applied and published successfully.\nNew image: " + new_target_image_name)
+    except Exception:
+        logger.error("Error: Failed to apply patch and publish. Check if registry is logged in and has write access.")
+        raise
+    try:
+        logger.warning("Patching container app: " + container_app_name + " container: " + container_name)
+        logger.info("Creating new revision with image: " + new_target_image_name)
+        update_info_json = update_containerapp(cmd,
+                                               name=container_app_name,
+                                               resource_group_name=resource_group,
+                                               container_name=container_name,
+                                               image=new_target_image_name)
+        logger.warning(json.dumps(update_info_json, indent=2))
+        logger.warning("Container app revision created successfully from the patched image.")
+        return
+    except Exception:
+        logger.error("Error: Failed to create new revision with the container app.")
+        raise

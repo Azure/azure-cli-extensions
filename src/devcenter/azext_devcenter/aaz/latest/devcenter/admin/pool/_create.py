@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin pool create",
-    is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a machine pool
+    """Create a pool.
 
     :example: Create
-        az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --network-connection-name "Network1-westus2" --pool-name "{poolName}" --project-name "{projectName}" --resource-group "rg1" --local-administrator Enabled
+        az devcenter admin pool create --location "eastus" --devbox-definition-name "WebDevBox" --network-connection-name "Network1-westus2" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1" --local-administrator "Enabled"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2023-04-01"],
         ]
     }
 
@@ -53,7 +52,7 @@ class Create(AAZCommand):
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -66,7 +65,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Body",
-            help="Location. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
+            help="The geo-location where the resource lives. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
             required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
@@ -87,25 +86,25 @@ class Create(AAZCommand):
         _args_schema.dev_box_definition_name = AAZStrArg(
             options=["-d", "--dev-box-definition-name"],
             arg_group="Properties",
-            help="Name of a Dev Box definition in parent Project of this Pool",
+            help="Name of a dev box definition in parent project of this pool.",
         )
         _args_schema.license_type = AAZStrArg(
             options=["--license-type"],
             arg_group="Properties",
-            help="Specifies the license type indicating the caller has already acquired licenses for the Dev Boxes that will be created.",
+            help="Specifies the license type indicating the caller has already acquired licenses for the dev boxes that will be created.",
             default="Windows_Client",
             enum={"Windows_Client": "Windows_Client"},
         )
         _args_schema.local_administrator = AAZStrArg(
             options=["--local-administrator"],
             arg_group="Properties",
-            help="Indicates whether owners of Dev Boxes in this pool are added as local administrators on the Dev Box.",
+            help="Indicates whether owners of dev boxes in this pool are added as local administrators on the dev box.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.network_connection_name = AAZStrArg(
             options=["-c", "--network-connection-name"],
             arg_group="Properties",
-            help="Name of a Network Connection in parent Project of this Pool",
+            help="Name of a network connection in parent project of this pool.",
         )
         return cls._args_schema
 
@@ -194,7 +193,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -280,6 +279,13 @@ class Create(AAZCommand):
                 serialized_name="devBoxDefinitionName",
                 flags={"required": True},
             )
+            properties.health_status = AAZStrType(
+                serialized_name="healthStatus",
+            )
+            properties.health_status_details = AAZListType(
+                serialized_name="healthStatusDetails",
+                flags={"read_only": True},
+            )
             properties.license_type = AAZStrType(
                 serialized_name="licenseType",
                 flags={"required": True},
@@ -296,6 +302,26 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.stop_on_disconnect = AAZObjectType(
+                serialized_name="stopOnDisconnect",
+            )
+
+            health_status_details = cls._schema_on_200_201.properties.health_status_details
+            health_status_details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.health_status_details.Element
+            _element.code = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.message = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            stop_on_disconnect = cls._schema_on_200_201.properties.stop_on_disconnect
+            stop_on_disconnect.grace_period_minutes = AAZIntType(
+                serialized_name="gracePeriodMinutes",
+            )
+            stop_on_disconnect.status = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

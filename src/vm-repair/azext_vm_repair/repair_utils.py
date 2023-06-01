@@ -345,10 +345,12 @@ def _fetch_encryption_settings(source_vm):
         return Encryption.NONE, key_vault, kekurl, secreturl
 
     disk_id = source_vm.storage_profile.os_disk.managed_disk.id
-    show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.secretUrl] -o json' \
+    show_disk_command = 'az disk show --id {i} --query [encryptionSettingsCollection,encryptionSettingsCollection.enabled,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.sourceVault.id,encryptionSettingsCollection.encryptionSettings[].keyEncryptionKey.keyUrl,encryptionSettingsCollection.encryptionSettings[].diskEncryptionKey.secretUrl] -o json' \
                         .format(i=disk_id)
-    encryption_type, key_vault, kekurl, secreturl = loads(_call_az_command(show_disk_command))
+    encryption_type, enabled, key_vault, kekurl, secreturl = loads(_call_az_command(show_disk_command))
     if [encryption_type, key_vault, kekurl] == [None, None, None]:
+        return Encryption.NONE, key_vault, kekurl, secreturl
+    if not enabled:
         return Encryption.NONE, key_vault, kekurl, secreturl
     if kekurl == []:
         key_vault, secreturl = key_vault[0], secreturl[0]

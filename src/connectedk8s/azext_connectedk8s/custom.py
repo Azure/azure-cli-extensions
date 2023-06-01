@@ -29,6 +29,7 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.prompting import NoTTYException
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core._profile import Profile
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core import telemetry
@@ -98,6 +99,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     else:
         account = Profile().get_subscription(subscription_id)
         onboarding_tenant_id = account['homeTenantId']
+
+    resource_id = f'/subscriptions/{subscription_id}/resourcegroups/{resource_group_name}/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}/location/{location}'
+    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.resourceid': resource_id})
 
     # Send cloud information to telemetry
     azure_cloud = send_cloud_telemetry(cmd)
@@ -210,6 +214,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             telemetry.set_exception(exception='Cluster Diagnostic Prechecks Failed', fault_type=consts.Cluster_Diagnostic_Prechecks_Failed, summary="Cluster Diagnostic Prechecks Failed in the cluster")
             raise ValidationError("One or more pre-onboarding diagnostic checks failed and hence not proceeding with cluster onboarding. Please resolve them and try onboarding again.")
 
+    print("The required pre-checks for onboarding have succeeded.")
+
     if not required_node_exists:
         telemetry.set_user_fault()
         telemetry.set_exception(exception="Couldn't find any node on the kubernetes cluster with the OS 'linux'", fault_type=consts.Linux_Node_Not_Exists,
@@ -239,9 +245,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         'Context.Default.AzureCLI.KubernetesInfra': kubernetes_infra
     }
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
-
-    resource_id = f'/subscriptions/{subscription_id}/resourcegroups/{resource_group_name}/providers/Microsoft.Kubernetes/connectedClusters/{cluster_name}/location/{location}'
-    telemetry.add_extension_event('connectedk8s', {'Context.Default.AzureCLI.resourceid': resource_id})
 
     # Checking if it is an AKS cluster
     is_aks_cluster = check_aks_cluster(kube_config, kube_context)
@@ -301,7 +304,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                 except Exception as e:  # pylint: disable=broad-except
                     utils.arm_exception_handler(e, consts.Get_ConnectedCluster_Fault_Type, 'Failed to check if connected cluster resource already exists.')
                 cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit)
-                cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
+                cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
+                cc_response = LongRunningOperation(cmd.cli_ctx)(cc_response)
                 # Disabling cluster-connect if private link is getting enabled
                 if enable_private_link is True:
                     disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config, kube_context, values_file, values_file_provided, dp_endpoint_dogfood, release_train_dogfood, release_namespace, helm_client_location)
@@ -327,6 +331,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                      "in the resource group {} ".format(resource_group_name) +
                                      "and corresponds to a different Kubernetes cluster.", recommendation="To onboard this Kubernetes cluster " +
                                      "to Azure, specify different resource name or resource group name.")
+        else:
+            # cleanup of stuck CRD if release namespace is not present/deleted
+            crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
 
     # Resource group Creation
     if resource_group_exists(cmd.cli_ctx, resource_group_name, subscription_id) is False:
@@ -377,12 +384,15 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Generate request payload
     cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit)
 
+    print("Azure resource provisioning has begun.")
     # Create connected cluster resource
-    put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait).result()
-
+    put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
+    put_cc_response = LongRunningOperation(cmd.cli_ctx)(put_cc_response)
+    print("Azure resource provisioning has finished.")
     # Checking if custom locations rp is registered and fetching oid if it is registered
     enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
 
+    print("Starting to install Azure arc agents on the Kubernetes cluster.")
     # Install azure-arc agents
     utils.helm_install_release(chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem, kube_config,
@@ -502,12 +512,20 @@ def install_helm_client():
 
         # Downloading compressed helm client executable
         logger.warning("Downloading helm client for first time. This can take few minutes...")
-        try:
-            response = urllib.request.urlopen(requestUri)
-        except Exception as e:
-            telemetry.set_exception(exception=e, fault_type=consts.Download_Helm_Fault_Type,
-                                    summary='Unable to download helm client.')
-            raise CLIInternalError("Failed to download helm client.", recommendation="Please check your internet connection." + str(e))
+        retry_count = 3
+        retry_delay = 5
+        for i in range(retry_count):
+            try:
+                response = urllib.request.urlopen(requestUri)
+                break
+            except Exception as e:
+                if i == retry_count - 1:
+                    if "Connection reset by peer" in str(e):
+                        telemetry.set_user_fault()
+                    telemetry.set_exception(exception=e, fault_type=consts.Download_Helm_Fault_Type,
+                                            summary='Unable to download helm client.')
+                    raise CLIInternalError("Failed to download helm client.", recommendation="Please check your internet connection." + str(e))
+                time.sleep(retry_delay)
 
         responseContent = response.read()
         response.close()

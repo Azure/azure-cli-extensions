@@ -80,7 +80,8 @@ def app_create(cmd, client, resource_group, service, name,
                scale_rule_http_concurrency=None,
                scale_rule_metadata=None,
                scale_rule_auth=None,
-               secrets=None):
+               secrets=None,
+               workload_profile=None):
     '''app_create
     Create app with an active deployment, deployment should be deployed with default banner
     1. Create app
@@ -126,7 +127,8 @@ def app_create(cmd, client, resource_group, service, name,
         'session_max_age': session_max_age,
         'backend_protocol': backend_protocol,
         'client_auth_certs': client_auth_certs,
-        'secrets': secrets
+        'secrets': secrets,
+        'workload_profile_name': workload_profile
     }
     create_deployment_kwargs = {
         'cpu': cpu,
@@ -196,6 +198,7 @@ def app_update(cmd, client, resource_group, service, name,
                session_max_age=None,
                backend_protocol=None,
                client_auth_certs=None,
+               workload_profile=None,
                # deployment.source
                runtime_version=None,
                jvm_options=None,
@@ -263,6 +266,7 @@ def app_update(cmd, client, resource_group, service, name,
         'backend_protocol': backend_protocol,
         'client_auth_certs': client_auth_certs,
         'secrets': secrets,
+        'workload_profile_name': workload_profile
     }
     if deployment is None:
         updated_deployment_kwargs = {k: v for k, v in deployment_kwargs.items() if v}
@@ -318,6 +322,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                build_memory=None,
                # deployment.settings
                env=None,
+               apms=None,
                disable_probe=None,
                config_file_patterns=None,
                enable_liveness_probe=None,
@@ -353,6 +358,7 @@ def app_deploy(cmd, client, resource_group, service, name,
         'disable_probe': disable_probe,
         'config_file_patterns': config_file_patterns,
         'env': env,
+        'apms': apms,
         'runtime_version': runtime_version,
         'jvm_options': jvm_options,
         'main_entry': main_entry,
@@ -532,6 +538,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       memory=None,
                       instance_count=None,
                       env=None,
+                      apms=None,
                       disable_probe=None,
                       config_file_patterns=None,
                       enable_liveness_probe=None,
@@ -573,6 +580,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         'disable_probe': disable_probe,
         'config_file_patterns': config_file_patterns,
         'env': env,
+        'apms': apms,
         'runtime_version': runtime_version,
         'jvm_options': jvm_options,
         'main_entry': main_entry,

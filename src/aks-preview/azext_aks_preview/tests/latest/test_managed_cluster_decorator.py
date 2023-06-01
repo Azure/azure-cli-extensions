@@ -269,6 +269,43 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             ctx_3.get_kube_proxy_config()
 
+        # custom value
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"kube_proxy_config": get_test_data_file_path("kubeproxyconfig.json")}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid file path
+        config_4 = ctx_4.get_kube_proxy_config()
+
+        self.assertIsInstance(config_4, dict)
+        self.assertEqual(config_4["mode"], "IPTABLES")
+
+        # update case
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"kube_proxy_config": get_test_data_file_path("kubeproxyconfig_update.json")}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+
+        # existing cluster
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(kube_proxy_config=self.models.ContainerServiceNetworkProfileKubeProxyConfig(
+            enabled=True,
+            mode="IPTABLES",
+            ipvs_config=self.models.ContainerServiceNetworkProfileKubeProxyConfigIpvsConfig(
+                scheduler="RoundRobin",
+            ))),
+        )
+        ctx_5.attach_mc(mc_5)
+        config_5 = ctx_5.get_kube_proxy_config()
+        self.assertIsInstance(config_5, dict)
+        self.assertEqual(config_5["mode"], "IPVS")
+        self.assertEqual(config_5["ipvsConfig"]["scheduler"], "LeastConnection")
+
     def test_get_pod_cidrs(self):
         # default
         ctx_1 = AKSPreviewManagedClusterContext(
