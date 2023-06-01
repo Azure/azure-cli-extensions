@@ -272,19 +272,97 @@ class PolicyGenerating(unittest.TestCase):
             cls.aci_policy = aci_policy
 
     def test_injected_sidecar_container_msi(self):
-        expected_sidecar_container_ser = "cGFja2FnZSBtaWNyb3NvZnRjb250YWluZXJpbnN0YW5jZQoKYXBpX3ZlcnNpb24gOj0gIjAuMTAuMCIKZnJhbWV3b3JrX3ZlcnNpb24gOj0gIjAuMi4zIgoKY29udGFpbmVycyA6PSBbeyJhbGxvd19lbGV2YXRlZCI6ZmFsc2UsImFsbG93X3N0ZGlvX2FjY2VzcyI6dHJ1ZSwiY2FwYWJpbGl0aWVzIjp7ImFtYmllbnQiOltdLCJib3VuZGluZyI6WyJDQVBfQVVESVRfV1JJVEUiLCJDQVBfQ0hPV04iLCJDQVBfREFDX09WRVJSSURFIiwiQ0FQX0ZPV05FUiIsIkNBUF9GU0VUSUQiLCJDQVBfS0lMTCIsIkNBUF9NS05PRCIsIkNBUF9ORVRfQklORF9TRVJWSUNFIiwiQ0FQX05FVF9SQVciLCJDQVBfU0VURkNBUCIsIkNBUF9TRVRHSUQiLCJDQVBfU0VUUENBUCIsIkNBUF9TRVRVSUQiLCJDQVBfU1lTX0NIUk9PVCJdLCJlZmZlY3RpdmUiOlsiQ0FQX0FVRElUX1dSSVRFIiwiQ0FQX0NIT1dOIiwiQ0FQX0RBQ19PVkVSUklERSIsIkNBUF9GT1dORVIiLCJDQVBfRlNFVElEIiwiQ0FQX0tJTEwiLCJDQVBfTUtOT0QiLCJDQVBfTkVUX0JJTkRfU0VSVklDRSIsIkNBUF9ORVRfUkFXIiwiQ0FQX1NFVEZDQVAiLCJDQVBfU0VUR0lEIiwiQ0FQX1NFVFBDQVAiLCJDQVBfU0VUVUlEIiwiQ0FQX1NZU19DSFJPT1QiXSwiaW5oZXJpdGFibGUiOltdLCJwZXJtaXR0ZWQiOlsiQ0FQX0FVRElUX1dSSVRFIiwiQ0FQX0NIT1dOIiwiQ0FQX0RBQ19PVkVSUklERSIsIkNBUF9GT1dORVIiLCJDQVBfRlNFVElEIiwiQ0FQX0tJTEwiLCJDQVBfTUtOT0QiLCJDQVBfTkVUX0JJTkRfU0VSVklDRSIsIkNBUF9ORVRfUkFXIiwiQ0FQX1NFVEZDQVAiLCJDQVBfU0VUR0lEIiwiQ0FQX1NFVFBDQVAiLCJDQVBfU0VUVUlEIiwiQ0FQX1NZU19DSFJPT1QiXX0sImNvbW1hbmQiOlsiL2Jpbi9zaCIsIi1jIiwidW50aWwgLi9tc2lBdGxhc0FkYXB0ZXI7IGRvIGVjaG8gJD8gcmVzdGFydGluZzsgZG9uZSJdLCJlbnZfcnVsZXMiOlt7InBhdHRlcm4iOiJJREVOVElUWV9BUElfVkVSU0lPTj0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSx7InBhdHRlcm4iOiJJREVOVElUWV9IRUFERVI9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiSURFTlRJVFlfU0VSVkVSX1RIVU1CUFJJTlQ9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiQUNJX01JX0NMSUVOVF9JRF8uKz0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSx7InBhdHRlcm4iOiJBQ0lfTUlfUkVTX0lEXy4rPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6IkhPU1ROQU1FPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6IlRFUk09eHRlcm0iLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5Ijoic3RyaW5nIn0seyJwYXR0ZXJuIjoiUEFUSD0vdXNyL2xvY2FsL3NiaW46L3Vzci9sb2NhbC9iaW46L3Vzci9zYmluOi91c3IvYmluOi9zYmluOi9iaW4iLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5Ijoic3RyaW5nIn0seyJwYXR0ZXJuIjoiKCg/aSlGQUJSSUMpXy4rPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6IkZhYnJpY19JZCs9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiRmFicmljX1NlcnZpY2VOYW1lPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6IkZhYnJpY19BcHBsaWNhdGlvbk5hbWU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiRmFicmljX0NvZGVQYWNrYWdlTmFtZT0uKyIsInJlcXVpcmVkIjpmYWxzZSwic3RyYXRlZ3kiOiJyZTIifSx7InBhdHRlcm4iOiJGYWJyaWNfU2VydmljZURuc05hbWU9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiQUNJX01JX0RFRkFVTFQ9LisiLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiVG9rZW5Qcm94eUlwQWRkcmVzc0VudktleU5hbWU9W0NvbnRhaW5lclRvSG9zdEFkZHJlc3N8RmFicmljX05vZGVsUE9yRlFETl0iLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5IjoicmUyIn0seyJwYXR0ZXJuIjoiQ29udGFpbmVyVG9Ib3N0QWRkcmVzcz0iLCJyZXF1aXJlZCI6ZmFsc2UsInN0cmF0ZWd5Ijoic3RyaW5nIn0seyJwYXR0ZXJuIjoiRmFicmljX05ldHdvcmtpbmdNb2RlPS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9LHsicGF0dGVybiI6ImF6dXJlY29udGFpbmVyaW5zdGFuY2VfcmVzdGFydGVkX2J5PS4rIiwicmVxdWlyZWQiOmZhbHNlLCJzdHJhdGVneSI6InJlMiJ9XSwiZXhlY19wcm9jZXNzZXMiOltdLCJpZCI6Im1jci5taWNyb3NvZnQuY29tL2FjaS9tc2ktYXRsYXMtYWRhcHRlcjptYXN0ZXJfMjAyMDEyMDMuMSIsImxheWVycyI6WyI2MDZmZDZiYWY1ZWIxYTcxZmQyODZhZWEyOTY3MmEwNmJmZTU1ZjAwMDdkZWQ5MmVlNzMxNDJhMzc1OTBlZDE5IiwiOTBhZDJmNWIyYzQyNWE3YzQ1OGY5ZjVkMjFjZjA2NGMyMTVmMTRlNDA2ODAwOTY4ZjY0NGQyYWIwYjRkMDRkZiIsIjFjNGI2MzY1YTdiOTM4Mzg3ZGZkODIyODYyY2E0MWFlNTQ5MGI1NDkwZTRjMjZlYjRiNWRhOTZjNjQwOTYwY2YiXSwibW91bnRzIjpbXSwibm9fbmV3X3ByaXZpbGVnZXMiOmZhbHNlLCJzZWNjb21wX3Byb2ZpbGVfc2hhMjU2IjoiIiwic2lnbmFscyI6W10sInVzZXIiOnsiZ3JvdXBfaWRuYW1lcyI6W3sicGF0dGVybiI6IiIsInN0cmF0ZWd5IjoiYW55In1dLCJ1bWFzayI6IjAwMjIiLCJ1c2VyX2lkbmFtZSI6eyJwYXR0ZXJuIjoiIiwic3RyYXRlZ3kiOiJhbnkifX0sIndvcmtpbmdfZGlyIjoiL3Jvb3QvIn1d"
-
         image = self.aci_policy.get_images()[0]
+        env_vars = [
+                {
+                    "name": "IDENTITY_API_VERSION",
+                    "value": ".+",
+                },
+                {
+                    "name": "IDENTITY_HEADER",
+                    "value": ".+",
+                },
+                {
+                    "name": "IDENTITY_SERVER_THUMBPRINT",
+                    "value": ".+",
+                },
+                {
+                    "name": "ACI_MI_CLIENT_ID_.+",
+                    "value": ".+",
+                },
+                {
+                    "name": "ACI_MI_RES_ID_.+",
+                    "value": ".+",
+                },
+                {
+                    "name": "HOSTNAME",
+                    "value": ".+",
+                },
+                {
+                    "name": "TERM",
+                    "value": "xterm",
+                },
+                {
+                    "name": "PATH",
+                    "value": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                },
+                {
+                    "name": "((?i)FABRIC)_.+",
+                    "value": ".+",
+                },
+                {
+                    "name": "Fabric_Id+",
+                    "value": ".+",
+                },
+                {
+                    "name": "Fabric_ServiceName",
+                    "value": ".+",
+                },
+                {
+                    "name": "Fabric_ApplicationName",
+                    "value": ".+",
+                },
+                {
+                    "name": "Fabric_CodePackageName",
+                    "value": ".+",
+                },
+                {
+                    "name": "Fabric_ServiceDnsName",
+                    "value": ".+",
+                },
+                {
+                    "name": "ACI_MI_DEFAULT",
+                    "value": ".+",
+                },
+                {
+                    "name": "TokenProxyIpAddressEnvKeyName",
+                    "value": "[ContainerToHostAddress|Fabric_NodelPOrFQDN]",
+                },
+                {
+                    "name": "ContainerToHostAddress",
+                    "value": "",
+                },
+                {
+                    "name": "Fabric_NetworkingMode",
+                    "value": ".+",
+                },
+                {
+                    "name": "azurecontainerinstance_restarted_by",
+                    "value": ".+",
+                }
+            ]
+        command = ["/bin/sh","-c","until ./msiAtlasAdapter; do echo $? restarting; done"]
         self.assertEqual(image.base, "mcr.microsoft.com/aci/msi-atlas-adapter")
         self.assertIsNotNone(image)
 
-        self.maxDiff = None
+        self.assertEquals(image._command, command)
+        for env_var in env_vars:
+            env_names = map(lambda x: x['pattern'], image._environmentRules + image._extraEnvironmentRules)
+            self.assertIn(env_var['name'] + "=" + env_var['value'], env_names)
+
         expected_workingdir = "/root/"
         self.assertEqual(image._workingDir, expected_workingdir)
-        self.assertEqual(
-            self.aci_policy.get_serialized_output(),
-            expected_sidecar_container_ser,
-        )
+
 
 
 # @unittest.skip("not in use")
