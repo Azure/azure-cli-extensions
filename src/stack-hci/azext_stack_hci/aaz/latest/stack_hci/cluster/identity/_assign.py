@@ -12,26 +12,22 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "stack-hci cluster update",
+    "stack-hci cluster identity assign",
 )
-class Update(AAZCommand):
-    """Update an HCI cluster.
-
-    :example: Update cluster
-        az stack-hci cluster update --endpoint "https://98294836-31be-4668-aeae-698667faf99b.waconazure.com" --desired-properties "{diagnosticLevel:Basic,windowsServerSubscription:Enabled}" --tags "tag:"value" --name "myCluster" --resource-group "test-rg"
+class Assign(AAZCommand):
+    """Assign identities
     """
 
     _aaz_info = {
         "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}", "2023-03-01", "identity"],
         ]
     }
 
-    AZ_SUPPORT_GENERIC_UPDATE = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
+        self.SubresourceSelector(ctx=self.ctx, name="subresource")
         self._execute_operations()
         return self._output()
 
@@ -47,80 +43,42 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
-            options=["-n", "--name", "--cluster-name"],
+            options=["--cluster-name"],
             help="The name of the cluster.",
             required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
 
-        # define Arg Group "Cluster"
+        # define Arg Group "Cluster.identity"
 
         _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Cluster",
-            help="Resource tags.",
-            nullable=True,
+        _args_schema.type = AAZStrArg(
+            options=["--type"],
+            arg_group="Cluster.identity",
+            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
+            required=True,
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned, UserAssigned": "SystemAssigned, UserAssigned", "UserAssigned": "UserAssigned"},
+        )
+        _args_schema.user_assigned_identities = AAZDictArg(
+            options=["--user-assigned-identities"],
+            arg_group="Cluster.identity",
+            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
         )
 
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.aad_client_id = AAZStrArg(
-            options=["--aad-client-id"],
-            arg_group="Properties",
-            help="App id of cluster AAD identity.",
-            nullable=True,
-        )
-        _args_schema.aad_tenant_id = AAZStrArg(
-            options=["--aad-tenant-id"],
-            arg_group="Properties",
-            help="Tenant id of cluster AAD identity.",
-            nullable=True,
-        )
-        _args_schema.endpoint = AAZStrArg(
-            options=["--endpoint"],
-            arg_group="Properties",
-            help="Endpoint configured for management from the Azure portal.",
-            nullable=True,
-        )
-        _args_schema.desired_properties = AAZObjectArg(
-            options=["--desired-properties"],
-            arg_group="Properties",
-            help="Desired properties of the cluster.",
-            nullable=True,
-        )
-
-        desired_properties = cls._args_schema.desired_properties
-        desired_properties.diagnostic_level = AAZStrArg(
-            options=["diagnostic-level"],
-            help="Desired level of diagnostic data emitted by the cluster.",
-            nullable=True,
-            enum={"Basic": "Basic", "Enhanced": "Enhanced", "Off": "Off"},
-        )
-        desired_properties.windows_server_subscription = AAZStrArg(
-            options=["windows-server-subscription"],
-            help="Desired state of Windows Server Subscription.",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        user_assigned_identities = cls._args_schema.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            blank={},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
         self.ClustersGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
+        self.pre_instance_create()
+        self.InstanceCreateByJson(ctx=self.ctx)()
+        self.post_instance_create(self.ctx.selectors.subresource.required())
         self.ClustersCreate(ctx=self.ctx)()
         self.post_operations()
 
@@ -133,16 +91,27 @@ class Update(AAZCommand):
         pass
 
     @register_callback
-    def pre_instance_update(self, instance):
+    def pre_instance_create(self):
         pass
 
     @register_callback
-    def post_instance_update(self, instance):
+    def post_instance_create(self, instance):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
         return result
+
+    class SubresourceSelector(AAZJsonSelector):
+
+        def _get(self):
+            result = self.ctx.vars.instance
+            return result.identity
+
+        def _set(self, value):
+            result = self.ctx.vars.instance
+            result.identity = value
+            return
 
     class ClustersGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
@@ -223,7 +192,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_cluster_read(cls._schema_on_200)
+            _AssignHelper._build_schema_cluster_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -318,53 +287,32 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_cluster_read(cls._schema_on_200)
+            _AssignHelper._build_schema_cluster_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
+    class InstanceCreateByJson(AAZJsonInstanceCreateOperation):
 
         def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
+            self.ctx.selectors.subresource.set(self._create_instance())
 
-        def _update_instance(self, instance):
+        def _create_instance(self):
             _instance_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
+            _builder.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
 
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("aadClientId", AAZStrType, ".aad_client_id")
-                properties.set_prop("aadTenantId", AAZStrType, ".aad_tenant_id")
-                properties.set_prop("cloudManagementEndpoint", AAZStrType, ".endpoint")
-                properties.set_prop("desiredProperties", AAZObjectType, ".desired_properties")
-
-            desired_properties = _builder.get(".properties.desiredProperties")
-            if desired_properties is not None:
-                desired_properties.set_prop("diagnosticLevel", AAZStrType, ".diagnostic_level")
-                desired_properties.set_prop("windowsServerSubscription", AAZStrType, ".windows_server_subscription")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
+            user_assigned_identities = _builder.get(".userAssignedIdentities")
+            if user_assigned_identities is not None:
+                user_assigned_identities.set_elements(AAZObjectType, ".")
 
             return _instance_value
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
 
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
-            )
-
-
-class _UpdateHelper:
-    """Helper class for Update"""
+class _AssignHelper:
+    """Helper class for Assign"""
 
     _schema_cluster_read = None
 
@@ -654,4 +602,4 @@ class _UpdateHelper:
         _schema.type = cls._schema_cluster_read.type
 
 
-__all__ = ["Update"]
+__all__ = ["Assign"]
