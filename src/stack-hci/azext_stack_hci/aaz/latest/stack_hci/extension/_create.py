@@ -92,6 +92,11 @@ class Create(AAZCommand):
             arg_group="ExtensionParameters",
             help="Json formatted public settings for the extension.",
         )
+        _args_schema.type = AAZStrArg(
+            options=["--type"],
+            arg_group="ExtensionParameters",
+            help="Specifies the type of the extension; an example is \"CustomScriptExtension\".",
+        )
         _args_schema.type_handler_version = AAZStrArg(
             options=["--type-handler-version"],
             arg_group="ExtensionParameters",
@@ -238,6 +243,7 @@ class Create(AAZCommand):
                 extension_parameters.set_prop("protectedSettings", AAZObjectType, ".protected_settings", typ_kwargs={"flags": {"secret": True}})
                 extension_parameters.set_prop("publisher", AAZStrType, ".publisher")
                 extension_parameters.set_prop("settings", AAZObjectType, ".settings")
+                extension_parameters.set_prop("type", AAZStrType, ".type")
                 extension_parameters.set_prop("typeHandlerVersion", AAZStrType, ".type_handler_version")
 
             protected_settings = _builder.get(".properties.extensionParameters.protectedSettings")
