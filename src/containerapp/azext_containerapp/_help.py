@@ -719,6 +719,51 @@ helps['containerapp job stop'] = """
       text: az containerapp job stop -n MyContainerAppJob -g MyResourceGroup --execution-name-list MyContainerAppJob-66v9xh0,MyContainerAppJob-66v9xh1
 """
 
+# Container App Job Secret Commands
+helps['containerapp job secret'] = """
+    type: group
+    short-summary: Commands to manage secrets.
+"""
+
+helps['containerapp job secret show'] = """
+    type: command
+    short-summary: Show details of a secret.
+    examples:
+    - name: Show the details of a secret.
+      text: |
+          az containerapp job secret show -n MyContainerappjob -g MyResourceGroup --secret-name MySecret
+"""
+
+helps['containerapp job secret list'] = """
+    type: command
+    short-summary: List the secrets of a container app job.
+    examples:
+    - name: List the secrets of a container app job.
+      text: |
+          az containerapp job secret list -n MyContainerappjob -g MyResourceGroup
+"""
+
+helps['containerapp job secret remove'] = """
+    type: command
+    short-summary: Remove secrets from a container app job.
+    examples:
+    - name: Remove secrets from a container app job.
+      text: |
+          az containerapp job secret remove -n MyContainerappjob -g MyResourceGroup --secret-names MySecret MySecret2
+"""
+
+helps['containerapp job secret set'] = """
+    type: command
+    short-summary: Create/update secrets.
+    examples:
+    - name: Add secrets to a container app job.
+      text: |
+          az containerapp job secret set -n MyContainerappjob -g MyResourceGroup --secrets MySecretName1=MySecretValue1 MySecretName2=keyvaultref:https://example.vault.azure.net/secrets/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
+    - name: Update a secret.
+      text: |
+          az containerapp job secret set -n MyContainerappjob -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue MyExistingSecretName2=keyvaultref:https://example.vault.azure.net/secrets/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
+"""
+
 # Container App Job execution commands
 helps['containerapp job execution'] = """
     type: group

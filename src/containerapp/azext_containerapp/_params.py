@@ -479,3 +479,11 @@ def load_arguments(self, _):
     with self.argument_context('containerapp job execution') as c:
         c.argument('name', id_part=None)
         c.argument('job_execution_name', help='name of the specific job execution.')
+
+    with self.argument_context('containerapp job secret') as c:
+        c.argument('secrets', nargs='+', options_list=['--secrets', '-s'], help="A list of secret(s) for the container app job. Space-separated values in 'key=value' or 'key=keyvaultref:keyvaulturl,identityref:identity' format (where 'key' cannot be longer than 20 characters).")
+        c.argument('name', id_part=None, help="The name of the container app job for which the secret needs to be retrieved.")
+        c.argument('secret_name', id_part=None, help="The name of the secret to show.")
+        c.argument('secret_names', id_part=None, nargs='+', help="A list of secret(s) for the container app job. Space-separated secret values names.")
+        c.argument('show_values', help='Show the secret values.')
+        c.ignore('disable_max_length')

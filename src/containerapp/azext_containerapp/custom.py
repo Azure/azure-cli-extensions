@@ -1577,7 +1577,7 @@ def create_containerappsjob(cmd,
             registry_user or registry_pass or secrets or env_vars or\
                 startup_command or args or tags:
             not disable_warnings and logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
-        return create_containerappsjobv2_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
+        return create_containerappsjob_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
 
     if replica_timeout is None:
         raise RequiredArgumentMissingError('Usage error: --replica-timeout is required')
@@ -1910,7 +1910,7 @@ def update_containerappsjob_logic(cmd,
            set_env_vars or remove_env_vars or replace_env_vars or remove_all_env_vars or cpu or memory or\
            startup_command or args or tags:
             logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
-        return update_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
+        return update_containerappjob_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
 
     containerappsjob_def = None
     try:
@@ -2234,7 +2234,6 @@ def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_w
 
         containerappsjob_def = deserializer('ContainerAppsJob', yaml_containerappsjob)
     except DeserializationError as ex:
-        print("exception deserializing yaml", ex)
         raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.') from ex
 
     # Remove tags before converting from snake case to camel case, then re-add tags. We don't want to change the case of the tags. Need this since we're not using SDK
@@ -2286,7 +2285,6 @@ def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_w
         containerappsjob_def['location'] = env_info['location']
 
     try:
-        print("JSON definition: {}".format(json.dumps(containerappsjob_def, indent=2)))
         r = ContainerAppsJobClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappsjob_def, no_wait=no_wait)
 
@@ -2300,30 +2298,41 @@ def create_containerappsjob_yaml(cmd, name, resource_group_name, file_name, no_w
         handle_raw_exception(e)
 
 
-def update_containerappjob_yaml(cmd, name, resource_group_name, file_name, no_wait=False):
+def update_containerappjob_yaml(cmd, name, resource_group_name, file_name, from_revision=None, no_wait=False):
     yaml_containerappsjob = process_loaded_yaml(load_yaml_file(file_name))
     if type(yaml_containerappsjob) != dict:  # pylint: disable=unidiomatic-typecheck
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.')
 
     if not yaml_containerappsjob.get('name'):
         yaml_containerappsjob['name'] = name
     elif yaml_containerappsjob.get('name').lower() != name.lower():
-        logger.warning('The app name provided in the --yaml file "{}" does not match the one provided in the --name flag "{}". The one provided in the --yaml file will be used.'.format(
-            yaml_containerappsjob.get('name'), name))
+        logger.warning('The job name provided in the --yaml file "{}" does not match the one provided in the --name flag "{}". The one provided in the --yaml file will be used.'.format(yaml_containerappsjob.get('name'), name))
     name = yaml_containerappsjob.get('name')
 
     if not yaml_containerappsjob.get('type'):
         yaml_containerappsjob['type'] = 'Microsoft.App/jobs'
     elif yaml_containerappsjob.get('type').lower() != "microsoft.app/jobs":
-        raise ValidationError('Containerapp type must be \"Microsoft.App/jobs\"')
+        raise ValidationError('Container App Job type must be \"Microsoft.App/jobs\"')
 
-    # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
     containerappsjob_def = None
+
+    # Check if containerapp job exists
+    try:
+        containerappsjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except Exception:
+        pass
+
+    if not containerappsjob_def:
+        raise ValidationError("The containerapp job '{}' does not exist".format(name))
+    existed_environment_id = containerappsjob_def['properties']['environmentId']
+    containerappsjob_def = None
+
+    # Deserialize the yaml into a ContainerApp job object. Need this since we're not using SDK
     try:
         deserializer = create_deserializer()
         containerappsjob_def = deserializer('ContainerAppsJob', yaml_containerappsjob)
     except DeserializationError as ex:
-        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps job YAML spec.') from ex
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid YAML spec.') from ex
 
     # Remove tags before converting from snake case to camel case, then re-add tags. We don't want to change the case of the tags. Need this since we're not using SDK
     tags = None
@@ -2334,24 +2343,6 @@ def update_containerappjob_yaml(cmd, name, resource_group_name, file_name, no_wa
     containerappsjob_def = _convert_object_from_snake_to_camel_case(_object_to_dict(containerappsjob_def))
     containerappsjob_def['tags'] = tags
 
-    # update configuration
-    config_def = JobConfigurationModel
-    config_def["secrets"] = yaml_containerappsjob.get('properties')['configuration']['secrets']
-    config_def["triggerType"] = yaml_containerappsjob.get('properties')['configuration']['triggerType']
-    config_def["replicaTimeout"] = yaml_containerappsjob.get('properties')['configuration']['replicaTimeout']
-    config_def["replicaRetryLimit"] = yaml_containerappsjob.get('properties')['configuration']['replicaRetryLimit']
-    config_def["manualTriggerConfig"] = yaml_containerappsjob.get('properties')['configuration']['manualTriggerConfig']
-    config_def["scheduleTriggerConfig"] = yaml_containerappsjob.get('properties')['configuration']['scheduleTriggerConfig']
-    config_def["registries"] = yaml_containerappsjob.get('properties')['configuration']['registries']
-    containerappsjob_def['configuration'] = config_def
-
-    # update template
-    template_def = JobTemplateModel
-    template_def["containers"] = yaml_containerappsjob.get('properties')['template']['containers']
-    template_def["initContainers"] = yaml_containerappsjob.get('properties')['template']['initContainers']
-    template_def["volumes"] = yaml_containerappsjob.get('properties')['template']['volumes']
-    containerappsjob_def['template'] = template_def
-
     # After deserializing, some properties may need to be moved under the "properties" attribute. Need this since we're not using SDK
     containerappsjob_def = process_loaded_yaml(containerappsjob_def)
 
@@ -2359,40 +2350,29 @@ def update_containerappjob_yaml(cmd, name, resource_group_name, file_name, no_wa
     _remove_additional_attributes(containerappsjob_def)
     _remove_readonly_attributes(containerappsjob_def)
 
-    # Validate managed environment
-    if not containerappsjob_def["properties"].get('environmentId'):
-        raise RequiredArgumentMissingError('managedEnvironmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+    secret_values = list_secrets_job(cmd=cmd, name=name, resource_group_name=resource_group_name, show_values=True)
+    _populate_secret_values(containerappsjob_def, secret_values)
 
-    env_id = containerappsjob_def["properties"]['environmentId']
-    env_name = None
-    env_rg = None
-    env_info = None
+    # Clean null values since this is an update
+    containerappsjob_def = clean_null_values(containerappsjob_def)
+    
+    # If job to be updated is of triggerType 'event' then update scale
+    if safe_get(containerappsjob_def, "properties", "configuration", "triggerType") and containerappsjob_def["properties"]["configuration"]["triggerType"].lower() == "event":
+        if safe_get(yaml_containerappsjob, "properties", "configuration", "eventTriggerConfig", "scale"):
+            print("scale is present")
+            containerappsjob_def["properties"]["configuration"]["eventTriggerConfig"]["scale"] = yaml_containerappsjob["properties"]["configuration"]["eventTriggerConfig"]["scale"]
+    
 
-    if is_valid_resource_id(env_id):
-        parsed_managed_env = parse_resource_id(env_id)
-        env_name = parsed_managed_env['name']
-        env_rg = parsed_managed_env['resource_group']
-    else:
-        raise ValidationError('Invalid managedEnvironmentId specified. Environment not found')
-
-    try:
-        env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=env_rg, name=env_name)
-    except:
-        pass
-
-    if not env_info:
-        raise ValidationError("The environment '{}' in resource group '{}' was not found".format(env_name, env_rg))
-
-    # Validate location
-    if not containerappsjob_def.get('location'):
-        containerappsjob_def['location'] = env_info['location']
+    # Remove the environmentId in the PATCH payload if it has not been changed
+    if safe_get(containerappsjob_def, "properties", "environmentId") and safe_get(containerappsjob_def, "properties", "environmentId").lower() == existed_environment_id.lower():
+        del containerappsjob_def["properties"]['environmentId']
 
     try:
-        r = ContainerAppsJobClient.create_or_update(
+        r = ContainerAppsJobClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappsjob_def, no_wait=no_wait)
 
-        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not no_wait:
-            logger.warning('Containerapps job creation in progress. Please monitor the creation using `az containerapp job show -n {} -g {}`'.format(
+        if not no_wait and "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting":
+            logger.warning('Containerapp job creation in progress. Please monitor the creation using `az containerapp job show -n {} -g {}`'.format(
                 name, resource_group_name
             ))
 
@@ -3609,6 +3589,30 @@ def list_secrets(cmd, name, resource_group_name, show_values=False):
         # raise ValidationError("The containerapp {} has no assigned secrets.".format(name)) from e
 
 
+def list_secrets_job(cmd, name, resource_group_name, show_values=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerappjob_def = None
+    try:
+        r = containerappjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerappjob_def:
+        raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
+
+    if not show_values:
+        try:
+            return r["properties"]["configuration"]["secrets"]
+        except:
+            return []
+    try:
+        return ContainerAppsJobClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)["value"]
+    except Exception:
+        return []
+        # raise ValidationError("The containerapp job {} has no assigned secrets.".format(name)) from e
+
+
 def show_secret(cmd, name, resource_group_name, secret_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
@@ -3626,6 +3630,25 @@ def show_secret(cmd, name, resource_group_name, secret_name):
         if secret["name"].lower() == secret_name.lower():
             return secret
     raise ValidationError("The containerapp {} does not have a secret assigned with name {}.".format(name, secret_name))
+
+
+def show_secret_job(cmd, name, resource_group_name, secret_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerappjob_def = None
+    try:
+        containerappjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerappjob_def:
+        raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
+
+    r = ContainerAppsJobClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    for secret in r["value"]:
+        if secret["name"].lower() == secret_name.lower():
+            return secret
+    raise ValidationError("The containerapp job {} does not have a secret assigned with name {}.".format(name, secret_name))
 
 
 def remove_secrets(cmd, name, resource_group_name, secret_names, no_wait=False):
@@ -3654,6 +3677,42 @@ def remove_secrets(cmd, name, resource_group_name, secret_names, no_wait=False):
     try:
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+        logger.warning("Secret(s) successfully removed.")
+        try:
+            return r["properties"]["configuration"]["secrets"]
+        # No secrets to return
+        except:
+            pass
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def remove_secrets_job(cmd, name, resource_group_name, secret_names, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerappjob_def = None
+    try:
+        containerappjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerappjob_def:
+        raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerappjob_def)
+
+    for secret_name in secret_names:
+        wasRemoved = False
+        for secret in containerappjob_def["properties"]["configuration"]["secrets"]:
+            if secret["name"].lower() == secret_name.lower():
+                _remove_secret(containerappjob_def, secret_name=secret["name"])
+                wasRemoved = True
+                break
+        if not wasRemoved:
+            raise ValidationError("The containerapp job {} does not have a secret assigned with name {}.".format(name, secret_name))
+    try:
+        r = ContainerAppsJobClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappjob_def, no_wait=no_wait)
         logger.warning("Secret(s) successfully removed.")
         try:
             return r["properties"]["configuration"]["secrets"]
@@ -3709,6 +3768,41 @@ def set_secrets(cmd, name, resource_group_name, secrets,
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
         logger.warning("Containerapp '{}' must be restarted in order for secret changes to take effect.".format(name))
+        return r["properties"]["configuration"]["secrets"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def set_secrets_job(cmd, name, resource_group_name, secrets,
+                # yaml=None,
+                disable_max_length=False,
+                no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    for s in secrets:
+        if s:
+            parsed = s.split("=")
+            if parsed:
+                if len(parsed[0]) > MAXIMUM_SECRET_LENGTH and not disable_max_length:
+                    raise ValidationError(f"Secret names cannot be longer than {MAXIMUM_SECRET_LENGTH}. "
+                                          f"Please shorten {parsed[0]}")
+
+    containerappjob_def = None
+    try:
+        containerappjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerappjob_def:
+        raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerappjob_def)
+    _add_or_update_secrets(containerappjob_def, parse_secret_flags(secrets))
+
+    try:
+        r = ContainerAppsJobClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappjob_def, no_wait=no_wait)
+        logger.warning("Containerapp job '{}' must be restarted in order for secret changes to take effect.".format(name))
         return r["properties"]["configuration"]["secrets"]
     except Exception as e:
         handle_raw_exception(e)

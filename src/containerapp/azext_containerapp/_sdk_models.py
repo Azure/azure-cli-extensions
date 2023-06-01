@@ -3034,6 +3034,52 @@ class CustomScaleRule(_serialization.Model):
         self.auth = auth
 
 
+class JobScaleRule(_serialization.Model):
+    """Event triggered Container App Job's scaling rule.
+
+    :ivar name: Name for job scale rule.
+    :vartype name: str
+    :ivar type: Type of the custom scale rule
+     eg: azure-servicebus, redis etc.
+    :vartype type: str
+    :ivar metadata: Metadata properties to describe custom scale rule.
+    :vartype metadata: dict[str, str]
+    :ivar auth: Authentication secrets for the custom scale rule.
+    :vartype auth: list[~azure.mgmt.appcontainers.models.ScaleRuleAuth]
+    """
+
+    _attribute_map = {
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "metadata": {"key": "metadata", "type": "{str}"},
+        "auth": {"key": "auth", "type": "[ScaleRuleAuth]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        name: Optional[str] = None,
+        type: Optional[str] = None,
+        metadata: Optional[Dict[str, str]] = None,
+        auth: Optional[List["_models.ScaleRuleAuth"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword type: Type of the custom scale rule
+         eg: azure-servicebus, redis etc.
+        :paramtype type: str
+        :keyword metadata: Metadata properties to describe custom scale rule.
+        :paramtype metadata: dict[str, str]
+        :keyword auth: Authentication secrets for the custom scale rule.
+        :paramtype auth: list[~azure.mgmt.appcontainers.models.ScaleRuleAuth]
+        """
+        super().__init__(**kwargs)
+        self.name = name
+        self.type = type
+        self.metadata = metadata
+        self.auth = auth
+
+
 class Dapr(_serialization.Model):
     """Container App Dapr configuration.
 
@@ -7276,6 +7322,7 @@ class Scale(_serialization.Model):
         self.max_replicas = max_replicas
         self.rules = rules
 
+
 class JobScale(_serialization.Model):
     """Container Apps Job scaling configurations.
 
@@ -7286,14 +7333,14 @@ class JobScale(_serialization.Model):
     :ivar pollingInterval: Optional. Time between poll requests.
     :vartype pollingInterval: int
     :ivar rules: Scaling rules.
-    :vartype rules: list[~azure.mgmt.appcontainers.models.ScaleRule]
+    :vartype rules: list[~azure.mgmt.appcontainers.models.JobScaleRule]
     """
 
     _attribute_map = {
         "min_replicas": {"key": "minReplicas", "type": "int"},
         "max_replicas": {"key": "maxReplicas", "type": "int"},
         "polling_Interval": {"key": "pollingInterval", "type": "int"},
-        "rules": {"key": "rules", "type": "[ScaleRule]"},
+        "rules": {"key": "rules", "type": "[JobScaleRule]"},
     }
 
     def __init__(
@@ -7302,7 +7349,7 @@ class JobScale(_serialization.Model):
         min_replicas: Optional[int] = None,
         max_replicas: int = 10,
         polling_Interval: Optional[int] = None,
-        rules: Optional[List["_models.ScaleRule"]] = None,
+        rules: Optional[List["_models.JobScaleRule"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -7312,7 +7359,7 @@ class JobScale(_serialization.Model):
          set.
         :paramtype max_replicas: int
         :keyword rules: Scaling rules.
-        :paramtype rules: list[~azure.mgmt.appcontainers.models.ScaleRule]
+        :paramtype rules: list[~azure.mgmt.appcontainers.models.JobScaleRule]
         """
         super().__init__(**kwargs)
         self.min_replicas = min_replicas
