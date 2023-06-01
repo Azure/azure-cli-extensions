@@ -42,7 +42,7 @@ class ClusterCreate(_ClusterCreate):
     def pre_operations(self):
         from azure.cli.core.aaz import has_value
         args = self.ctx.args
-        if has_value(args.mi_system_assigned):
+        if args.mi_system_assigned:
             args.identity.type = "SystemAssigned"
         if has_value(self.ctx.args.mi_user_assigned):
             args.identity.type = "UserAssigned"
@@ -77,7 +77,7 @@ class ClusterUpdate(_ClusterUpdate):
     def pre_operations(self):
         from azure.cli.core.aaz import has_value
         args = self.ctx.args
-        if has_value(args.mi_system_assigned):
+        if args.mi_system_assigned:
             args.identity.type = "SystemAssigned"
         if has_value(self.ctx.args.mi_user_assigned):
             args.identity.type = "UserAssigned"
