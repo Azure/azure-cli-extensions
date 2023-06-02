@@ -2,7 +2,7 @@ Release History
 ===============
 1.13.2
 ---
-* Add arguments `--build-certificates` in `az spring app deploy`.
+* Add argument `--build-certificates` in `az spring app deploy`.
 
 1.13.1
 ---
