@@ -5409,7 +5409,7 @@ class JobConfigurationScheduleTriggerConfig(_serialization.Model):
 
 
 class JobConfigurationEventTriggerConfig(_serialization.Model):
-    """Event trigger configuration for a single execution job with scale rules. Properties 
+    """Event trigger configuration for a single execution job with scale rules. Properties
     replicaCompletionCount and parallelism would be set to 1 by default.
 
     All required parameters must be populated in order to send to Azure.

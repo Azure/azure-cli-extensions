@@ -2355,13 +2355,12 @@ def update_containerappjob_yaml(cmd, name, resource_group_name, file_name, from_
 
     # Clean null values since this is an update
     containerappsjob_def = clean_null_values(containerappsjob_def)
-    
+
     # If job to be updated is of triggerType 'event' then update scale
     if safe_get(containerappsjob_def, "properties", "configuration", "triggerType") and containerappsjob_def["properties"]["configuration"]["triggerType"].lower() == "event":
         if safe_get(yaml_containerappsjob, "properties", "configuration", "eventTriggerConfig", "scale"):
             print("scale is present")
             containerappsjob_def["properties"]["configuration"]["eventTriggerConfig"]["scale"] = yaml_containerappsjob["properties"]["configuration"]["eventTriggerConfig"]["scale"]
-    
 
     # Remove the environmentId in the PATCH payload if it has not been changed
     if safe_get(containerappsjob_def, "properties", "environmentId") and safe_get(containerappsjob_def, "properties", "environmentId").lower() == existed_environment_id.lower():
@@ -3699,7 +3698,7 @@ def remove_secrets_job(cmd, name, resource_group_name, secret_names, no_wait=Fal
     if not containerappjob_def:
         raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
 
-    _get_existing_secrets(cmd, resource_group_name, name, containerappjob_def)
+    _get_existing_secrets(cmd, resource_group_name, name, containerappjob_def, AppType.ContainerAppJob)
 
     for secret_name in secret_names:
         wasRemoved = False
@@ -3774,9 +3773,9 @@ def set_secrets(cmd, name, resource_group_name, secrets,
 
 
 def set_secrets_job(cmd, name, resource_group_name, secrets,
-                # yaml=None,
-                disable_max_length=False,
-                no_wait=False):
+                    # yaml=None, 
+                    disable_max_length=False, 
+                    no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     for s in secrets:
@@ -3796,13 +3795,13 @@ def set_secrets_job(cmd, name, resource_group_name, secrets,
     if not containerappjob_def:
         raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
 
-    _get_existing_secrets(cmd, resource_group_name, name, containerappjob_def)
+    _get_existing_secrets(cmd, resource_group_name, name, containerappjob_def, AppType.ContainerAppJob)
     _add_or_update_secrets(containerappjob_def, parse_secret_flags(secrets))
 
     try:
         r = ContainerAppsJobClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappjob_def, no_wait=no_wait)
-        logger.warning("Containerapp job '{}' must be restarted in order for secret changes to take effect.".format(name))
+        logger.warning("Containerapp job '{}' executions triggered now will have the added/updated secret.".format(name))
         return r["properties"]["configuration"]["secrets"]
     except Exception as e:
         handle_raw_exception(e)

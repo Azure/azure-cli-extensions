@@ -869,13 +869,16 @@ def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, loc
     return logs_customer_id, logs_key
 
 
-def _get_existing_secrets(cmd, resource_group_name, name, containerapp_def):
+def _get_existing_secrets(cmd, resource_group_name, name, containerapp_def, appType=AppType.ContainerApp):
     if "secrets" not in containerapp_def["properties"]["configuration"]:
         containerapp_def["properties"]["configuration"]["secrets"] = []
     else:
         secrets = []
         try:
-            secrets = ContainerAppClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)
+            if(appType == AppType.ContainerApp):
+                secrets = ContainerAppClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)
+            if(appType == AppType.ContainerAppJob):
+                secrets = ContainerAppsJobClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)
         except Exception as e:  # pylint: disable=broad-except
             handle_raw_exception(e)
 
