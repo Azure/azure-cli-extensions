@@ -73,6 +73,7 @@ For CNFs, you must provide helm packages with an associated schema. When filling
         {
             "name": "A",
             "path_to_chart": "Path to package A",
+            "path_to_mappings": "Path to package A mappings",
             "depends_on": [
                 "Names of the Helm packages this package depends on"
             ]
@@ -80,6 +81,7 @@ For CNFs, you must provide helm packages with an associated schema. When filling
         {
             "name": "B",
             "path_to_chart": "Path to package B",
+            "path_to_mappings": "Path to package B mappings",
             "depends_on": [
                 "Names of the Helm packages this package depends on"
             ]

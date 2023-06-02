@@ -35,6 +35,9 @@ DESCRIPTION_MAP: Dict[str, str] = {
     "path_to_chart": (
         "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz"
     ),
+    "path_to_mappings": (
+        "File path of value mappings on local disk. Accepts .yaml or .yml"
+    ),
     "helm_depends_on": (
         "Names of the Helm packages this package depends on. "
         "Leave as an empty array if no dependencies"
@@ -149,6 +152,7 @@ class VNFConfiguration(NFConfiguration):
 class HelmPackageConfig:
     name: str = DESCRIPTION_MAP["helm_package_name"]
     path_to_chart: str = DESCRIPTION_MAP["path_to_chart"]
+    path_to_mappings: str = DESCRIPTION_MAP["path_to_mappings"]
     depends_on: List[str] = field(
         default_factory=lambda: [DESCRIPTION_MAP["helm_depends_on"]]
     )
