@@ -532,7 +532,7 @@ def validate_apm_reference(cmd, namespace):
     namespace.apms = result
 
 
-def validate_apm_reference_and_enterprise_tie(cmd, namespace):
+def validate_apm_reference_and_enterprise_tier(cmd, namespace):
     if namespace.apms is not None and namespace.resource_group and namespace.service and not is_enterprise_tier(
             cmd, namespace.resource_group, namespace.service):
         raise ArgumentUsageError("'--apms' only supports for Enterprise tier Spring instance.")

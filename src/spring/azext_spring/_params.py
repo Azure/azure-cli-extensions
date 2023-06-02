@@ -30,7 +30,7 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_build_env, validate_target_module, validate_runtime_version,
                                      validate_acs_ssh_or_warn, validate_apm_properties, validate_apm_secrets,
                                      validate_apm_not_exist, validate_apm_update, validate_apm_reference,
-                                     validate_apm_reference_and_enterprise_tie, validate_cert_reference,
+                                     validate_apm_reference_and_enterprise_tier, validate_cert_reference,
                                      validate_build_cert_reference)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
@@ -519,7 +519,7 @@ def load_arguments(self, _):
             c.argument(
                 'build_memory', arg_type=build_memory_type, default="2Gi")
             c.argument('apms', nargs='*', help='(Enterprise Tier Only) Space-separated APM names.',
-                       validator=validate_apm_reference_and_enterprise_tie)
+                       validator=validate_apm_reference_and_enterprise_tier)
             c.argument('build_certificates', nargs='*',
                        help='(Enterprise Tier Only) Space-separated certificate names, the certificates are used during build time.',
                        validator=validate_build_cert_reference)
