@@ -343,19 +343,21 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
         
         logger.debug("Get chart mapping schema for %s", helm_package.name)
         
-        non_def_values = os.path.join(
-            self._tmp_folder_name, helm_package.name, "values.mappings.yaml"
-        )
+        mappings_path = helm_package.path_to_mappings
         values_schema = os.path.join(
             self._tmp_folder_name, helm_package.name, "values.schema.json"
         )
 
-        if not os.path.exists(non_def_values) or not os.path.exists(values_schema):
+        if not os.path.exists(mappings_path):
             raise InvalidTemplateError(
-                f"ERROR: The helm package '{helm_package.name}' is missing either values.mappings.yaml or values.schema.json. Please fix this and run the command again."
+                f"ERROR: The helm package '{helm_package.name}' does not have a valid values mappings file. The file at '{helm_package.path_to_mappings}' does not exist.\nPlease fix this and run the command again."
+            )    
+        if not os.path.exists(values_schema):
+            raise InvalidTemplateError(
+                f"ERROR: The helm package '{helm_package.name}' is missing values.schema.json. Please fix this and run the command again."
             )
 
-        with open(non_def_values, "r", encoding="utf-8") as stream:
+        with open(mappings_path, "r", encoding="utf-8") as stream:
             values_data = yaml.load(stream, Loader=yaml.SafeLoader)
 
         with open(values_schema, "r", encoding="utf-8") as f:
