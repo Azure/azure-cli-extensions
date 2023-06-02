@@ -1691,6 +1691,8 @@ def create_containerappsjob(cmd,
 
     assign_system_identity = system_assigned
     if user_assigned:
+        # split entries in user_assigned and store as a list
+        user_assigned = user_assigned.split()
         assign_user_identities = [x.lower() for x in user_assigned]
     else:
         assign_user_identities = []
@@ -3773,8 +3775,8 @@ def set_secrets(cmd, name, resource_group_name, secrets,
 
 
 def set_secrets_job(cmd, name, resource_group_name, secrets,
-                    # yaml=None, 
-                    disable_max_length=False, 
+                    # yaml=None,
+                    disable_max_length=False,
                     no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
