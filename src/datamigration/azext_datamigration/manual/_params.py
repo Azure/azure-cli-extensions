@@ -74,6 +74,14 @@ def load_arguments(self, _):
         c.argument('network_share_password', options_list=["--network-share-password", "--networkpw"], type=str, help='Network share password.')
         c.argument('database_name', nargs='+', options_list=["--database-name", "--dbname"], help='Source database name.')
 
+    with self.argument_context('datamigration sql-server-schema') as c:
+        c.argument('action', type=str, help='Select one schema migration action. The valid values are: MigrateSchema, GenerateScript, DeploySchema. MigrateSchema is to migrate the database objects to Azure SQL Database target. GenerateScript is to generate an editable TSQL schema script that can be used to run on the target to deploy the objects. DeploySchema is to run the TSQL script generated from -GenerateScript action on the target to deploy the objects.')
+        c.argument('src_sql_connection_str', type=str, help='Connection string for the source SQL instance, using the formal connection string format.')
+        c.argument('tgt_sql_connection_str', type=str, help='Connection string for the target SQL instance, using the formal connection string format.')
+        c.argument('input_script_file_path', type=file_type, completer=FilesCompleter(), help='Location of an editable TSQL schema script. Use this parameter only with DeploySchema Action.')
+        c.argument('output_folder', type=str, help='Default: %LocalAppData%/Microsoft/SqlSchemaMigration) Folder where logs will be written and the generated TSQL schema script by GenerateScript Action.')
+        c.argument('config_file_path', type=file_type, completer=FilesCompleter(), help='Path of the ConfigFile. Accepted parameter names in configfile.json is Action, sourceConnectionString, targetConnectionString, inputScriptFilePath and outputFolder.')
+
     with self.argument_context('datamigration register-integration-runtime') as c:
         c.argument('auth_key', type=str, help='AuthKey of SQL Migration Service')
         c.argument('ir_path', type=str, help='Path of Integration Runtime MSI')
