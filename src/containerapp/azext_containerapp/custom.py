@@ -2155,7 +2155,7 @@ def update_containerappsjob_logic(cmd,
 
         registries_def = new_containerappsjob["properties"]["configuration"]["registries"]
 
-        _get_existing_secrets(cmd, resource_group_name, name, containerappsjob_def)
+        _get_existing_secrets(cmd, resource_group_name, name, containerappsjob_def, AppType.ContainerAppJob)
         if "secrets" in containerappsjob_def["properties"]["configuration"] and containerappsjob_def["properties"]["configuration"]["secrets"]:
             new_containerappsjob["properties"]["configuration"]["secrets"] = containerappsjob_def["properties"]["configuration"]["secrets"]
         else:
