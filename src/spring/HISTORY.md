@@ -1,5 +1,9 @@
 Release History
 ===============
+1.13.2
+---
+* GA `az spring dev-tool`, `az spring application-live-view` and `az spring application-accelerator`
+
 1.13.1
 ---
 * Fix the parameter `--no-wait` of the command -- `az spring build-service update`.
