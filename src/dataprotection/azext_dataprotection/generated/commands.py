@@ -14,19 +14,10 @@
 
 from azure.cli.core.commands import CliCommandType
 from azext_dataprotection.generated._client_factory import (
-    cf_backup_vault,
     cf_backup_policy,
     cf_backup_instance,
-    cf_recovery_point,
-    cf_job,
     cf_restorable_time_range,
     cf_resource_guard,
-)
-
-
-dataprotection_backup_vault = CliCommandType(
-    operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._backup_vaults_operations#BackupVaultsOperations.{}',
-    client_factory=cf_backup_vault,
 )
 
 
@@ -39,18 +30,6 @@ dataprotection_backup_policy = CliCommandType(
 dataprotection_backup_instance = CliCommandType(
     operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._backup_instances_operations#BackupInstancesOperations.{}',
     client_factory=cf_backup_instance,
-)
-
-
-dataprotection_recovery_point = CliCommandType(
-    operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._recovery_points_operations#RecoveryPointsOperations.{}',
-    client_factory=cf_recovery_point,
-)
-
-
-dataprotection_job = CliCommandType(
-    operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._jobs_operations#JobsOperations.{}',
-    client_factory=cf_job,
 )
 
 
@@ -80,31 +59,21 @@ def load_command_table(self, _):
         'dataprotection backup-instance', dataprotection_backup_instance, client_factory=cf_backup_instance
     ) as g:
         g.custom_command('list', 'dataprotection_backup_instance_list')
-        g.custom_show_command('show', 'dataprotection_backup_instance_show')
-        g.custom_command('create', 'dataprotection_backup_instance_create', supports_no_wait=True)
-        g.custom_command('delete', 'dataprotection_backup_instance_delete', supports_no_wait=True, confirmation=True)
+        # g.custom_show_command('show', 'dataprotection_backup_instance_show')
+        # g.custom_command('create', 'dataprotection_backup_instance_create', supports_no_wait=True)
+        # g.custom_command('delete', 'dataprotection_backup_instance_delete', supports_no_wait=True, confirmation=True)
         g.custom_command('adhoc-backup', 'dataprotection_backup_instance_adhoc_backup', supports_no_wait=True)
-        g.custom_command('restore trigger', 'dataprotection_backup_instance_restore_trigger', supports_no_wait=True)
+        # g.custom_command('restore trigger', 'dataprotection_backup_instance_restore_trigger', supports_no_wait=True)
         g.custom_command('resume-protection', 'dataprotection_backup_instance_resume_protection', supports_no_wait=True)
         g.custom_command('stop-protection', 'dataprotection_backup_instance_stop_protection', supports_no_wait=True)
         g.custom_command('suspend-backup', 'dataprotection_backup_instance_suspend_backup', supports_no_wait=True)
-        g.custom_command(
-            'validate-for-backup', 'dataprotection_backup_instance_validate_for_backup', supports_no_wait=True
-        )
-        g.custom_command(
-            'validate-for-restore', 'dataprotection_backup_instance_validate_for_restore', supports_no_wait=True
-        )
+        # g.custom_command(
+        #     'validate-for-backup', 'dataprotection_backup_instance_validate_for_backup', supports_no_wait=True
+        # )
+        # g.custom_command(
+        #     'validate-for-restore', 'dataprotection_backup_instance_validate_for_restore', supports_no_wait=True
+        # )
         g.custom_wait_command('wait', 'dataprotection_backup_instance_show')
-
-    with self.command_group(
-        'dataprotection recovery-point', dataprotection_recovery_point, client_factory=cf_recovery_point
-    ) as g:
-        g.custom_command('list', 'dataprotection_recovery_point_list')
-        g.custom_show_command('show', 'dataprotection_recovery_point_show')
-
-    with self.command_group('dataprotection job', dataprotection_job, client_factory=cf_job) as g:
-        g.custom_command('list', 'dataprotection_job_list')
-        g.custom_show_command('show', 'dataprotection_job_show')
 
     with self.command_group(
         'dataprotection restorable-time-range',

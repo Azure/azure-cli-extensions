@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "devcenter admin schedule",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage schedule with devcenter
+    """Manage schedules.
     """
     pass
 

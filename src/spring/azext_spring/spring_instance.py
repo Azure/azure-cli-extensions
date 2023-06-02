@@ -6,10 +6,11 @@
 # pylint: disable=wrong-import-order
 # pylint: disable=unused-argument, logging-format-interpolation, protected-access, wrong-import-order, too-many-lines
 from ._utils import (wait_till_end, _get_rg_location)
-from .vendored_sdks.appplatform.v2023_03_01_preview import models
+from .vendored_sdks.appplatform.v2023_05_01_preview import models
 from .custom import (_warn_enable_java_agent, _update_application_insights_asc_create)
 from ._build_service import _update_default_build_agent_pool, create_build_service
 from .buildpack_binding import create_default_buildpack_binding_for_application_insights
+from .apm import create_default_apm_for_application_insights
 from ._tanzu_component import (create_application_configuration_service,
                                create_application_live_view,
                                create_dev_tool_portal,
@@ -241,13 +242,18 @@ def spring_create(cmd, client, resource_group, name,
 
 
 def _enable_app_insights(cmd, client, resource_group, name, location, app_insights_key, app_insights,
-                         sampling_rate, disable_app_insights, **_):
+                         sampling_rate, disable_app_insights, **kwargs):
     if disable_app_insights:
         return
 
-    return create_default_buildpack_binding_for_application_insights(cmd, client, resource_group, name,
-                                                                     location, app_insights_key, app_insights,
-                                                                     sampling_rate)
+    if kwargs['disable_build_service'] or kwargs['registry_server']:
+        return create_default_apm_for_application_insights(cmd, client, resource_group, name,
+                                                           location, app_insights_key, app_insights,
+                                                           sampling_rate)
+    else:
+        return create_default_buildpack_binding_for_application_insights(cmd, client, resource_group, name,
+                                                                         location, app_insights_key, app_insights,
+                                                                         sampling_rate)
 
 
 def spring_list_marketplace_plan(cmd, client):

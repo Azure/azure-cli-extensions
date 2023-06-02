@@ -70,6 +70,19 @@ def load_command_table(self, _):
         g.custom_command('delete', 'delete_managed_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
 
+    with self.command_group('containerapp job', is_preview=True) as g:
+        g.custom_show_command('show', 'show_containerappsjob')
+        g.custom_command('list', 'list_containerappsjob')
+        g.custom_command('create', 'create_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('delete', 'delete_containerappsjob', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
+        g.custom_command('update', 'update_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('start', 'start_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('stop', 'stop_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
+
+    with self.command_group('containerapp job execution') as g:
+        g.custom_show_command('list', 'listexecution_containerappsjob')
+        g.custom_show_command('show', 'getSingleExecution_containerappsjob')
+
     with self.command_group('containerapp env dapr-component') as g:
         g.custom_command('list', 'list_dapr_components')
         g.custom_show_command('show', 'show_dapr_component')
@@ -212,3 +225,8 @@ def load_command_table(self, _):
         g.custom_command('add', 'add_workload_profile')
         g.custom_command('update', 'update_workload_profile')
         g.custom_command('delete', 'delete_workload_profile')
+
+    with self.command_group('containerapp patch', is_preview=True) as g:
+        g.custom_command('list', 'patch_list')
+        g.custom_command('apply', 'patch_apply')
+        g.custom_command('interactive', 'patch_interactive')

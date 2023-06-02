@@ -13,20 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin project delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a project resource.
+    """Delete a project.
 
     :example: Delete
-        az devcenter admin project delete --name "{projectName}" --resource-group "rg1"
+        az devcenter admin project delete --name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2023-04-01"],
         ]
     }
 
@@ -145,7 +144,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }

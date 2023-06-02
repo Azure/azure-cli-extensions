@@ -1,7 +1,40 @@
 Release History
 ===============
-1.12.0 (WIP)
+1.13.1
 ---
+* Fix the parameter `--no-wait` of the command -- `az spring build-service update`.
+
+1.13.0
+---
+* Add new command -- `az spring apm show` to show the APM resource.
+* Add new command -- `az spring apm create` to create APM resource.
+* Add new command -- `az spring apm update` to update APM resource.
+* Add new command -- `az spring apm delete` to delete APM resource.
+* Add new command -- `az spring apm enable-globally` to enable an APM globally.
+* Add new command -- `az spring apm disable-globally` to disable an APM globally.
+* Add new command -- `az spring apm list-support-types` to list all the supported APM types.
+* Add new command -- `az spring apm list` to list all the APM resources.
+* Add new command -- `az spring apm list-enabled-globally` to list all the APMs enabled globally.
+
+1.12.2
+---
+* Add default `enabled_state` for `az spring config-server set` in Standard Counsumption tier.
+
+1.12.1
+---
+* Add new command -- `az spring eureka-server show` to show the Eureka server resource in consumption tier.
+* Add new command -- `az spring eureka-server enable` to enable the Eureka server resource in consumption tier.
+* Add new command -- `az spring eureka-server disable` to disable the Eureka server resource in consumption tier.
+* Add new command -- `az spring config-server enable` to enable the Config server resource in consumption tier.
+* Add new command -- `az spring config-server disable` to disable the Config server resource in consumption tier.
+
+1.12.0
+---
+* Add new command `az spring container-registry create` to craete container registry resource.
+* Add new command `az spring container-registry delete` to delete container registry resource.
+* Add new command `az spring container-registry list` to list all the container registry resources.
+* Add new command `az spring build-service update` to update build service.
+* Add new command `az spring build-service show` to show build service resource.
 * Add new parameter `--workload-profile` for `az spring app create` and `az spring app update`.
 
 1.11.3

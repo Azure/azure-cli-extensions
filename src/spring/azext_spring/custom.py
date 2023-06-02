@@ -21,7 +21,7 @@ from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
 from ._utils import (get_portal_uri, get_spring_sku, get_proxy_api_endpoint, BearerAuth)
 from knack.util import CLIError
-from .vendored_sdks.appplatform.v2023_03_01_preview import models, AppPlatformManagementClient
+from .vendored_sdks.appplatform.v2023_05_01_preview import models, AppPlatformManagementClient
 from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
@@ -673,7 +673,47 @@ def validate_config_server_settings(client, resource_group, name, config_server_
         raise CLIError("Config Server settings contain error.")
 
 
+def eureka_get(cmd, client, resource_group, name):
+    return client.get(resource_group, name)
+
+
+def eureka_enable(cmd, client, resource_group, name):
+    eureka_server_properties = models.EurekaServerProperties(enabled_state="Enabled")
+    eureka_server_resource = models.EurekaServerResource(properties=eureka_server_properties)
+    return cached_put(cmd, client.begin_update_patch, eureka_server_resource, resource_group, name).result()
+
+
+def eureka_disable(cmd, client, resource_group, name):
+    eureka_server_properties = models.EurekaServerProperties(enabled_state="Disabled")
+    eureka_server_resource = models.EurekaServerResource(properties=eureka_server_properties)
+    return cached_put(cmd, client.begin_update_patch, eureka_server_resource, resource_group, name).result()
+
+
+def config_enable(cmd, client, resource_group, name):
+    config_server_resource = client.get(resource_group, name)
+    if not config_server_resource.properties.enabled_state:
+        raise CLIError("Only supported Standard consumption Tier.")
+
+    config_server_properties = models.ConfigServerProperties(enabled_state="Enabled")
+    config_server_resource = models.ConfigServerResource(properties=config_server_properties)
+    return cached_put(cmd, client.begin_update_patch, config_server_resource, resource_group, name).result()
+
+
+def config_disable(cmd, client, resource_group, name):
+    config_server_resource = client.get(resource_group, name)
+    if not config_server_resource.properties.enabled_state:
+        raise CLIError("Only supported Standard consumption Tier.")
+
+    config_server_properties = models.ConfigServerProperties(enabled_state="Disabled")
+    config_server_resource = models.ConfigServerResource(properties=config_server_properties)
+    return cached_put(cmd, client.begin_update_patch, config_server_resource, resource_group, name).result()
+
+
 def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
+    config_server_resource = client.get(resource_group, name)
+    if config_server_resource.properties.enabled_state and config_server_resource.properties.enabled_state == "Disabled":
+        raise CLIError("Config server is disabled.")
+
     def standardization(dic):
         new_dic = {}
         for k, v in dic.items():
@@ -712,7 +752,7 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
     config_property['repositories'] = repositories
     git_property = client._deserialize('ConfigServerGitProperty', config_property)
     config_server_settings = models.ConfigServerSettings(git_property=git_property)
-    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
+    config_server_properties = models.ConfigServerProperties(enabled_state="Enabled", config_server=config_server_settings)
 
     logger.warning("[1/2] Validating config server settings")
     validate_config_server_settings(client, resource_group, name, config_server_settings)
@@ -725,13 +765,14 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
 def config_get(cmd, client, resource_group, name):
     config_server_resource = client.get(resource_group, name)
 
-    if not config_server_resource.properties.config_server:
+    if not config_server_resource.properties.enabled_state and not config_server_resource.properties.config_server:
         raise CLIError("Config server not set.")
     return config_server_resource
 
 
 def config_delete(cmd, client, resource_group, name):
-    config_server_properties = models.ConfigServerProperties()
+    config_server_resource = client.get(resource_group, name)
+    config_server_properties = models.ConfigServerProperties(enabled_state=config_server_resource.properties.enabled_state)
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
     return client.begin_update_put(resource_group, name, config_server_resource)
 
@@ -745,6 +786,10 @@ def config_git_set(cmd, client, resource_group, name, uri,
                    host_key_algorithm=None,
                    private_key=None,
                    strict_host_key_checking=None):
+    config_server_resource = client.get(resource_group, name)
+    if config_server_resource.properties.enabled_state and config_server_resource.properties.enabled_state == "Disabled":
+        raise CLIError("Config server is disabled.")
+
     git_property = models.ConfigServerGitProperty(uri=uri)
 
     if search_paths:
@@ -760,7 +805,7 @@ def config_git_set(cmd, client, resource_group, name, uri,
     git_property.strict_host_key_checking = strict_host_key_checking
 
     config_server_settings = models.ConfigServerSettings(git_property=git_property)
-    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
+    config_server_properties = models.ConfigServerProperties(enabled_state="Enabled", config_server=config_server_settings)
 
     logger.warning("[1/2] Validating config server settings")
     validate_config_server_settings(client, resource_group, name, config_server_settings)

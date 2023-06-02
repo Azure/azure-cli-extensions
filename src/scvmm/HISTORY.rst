@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.1.8
+++++++
+* Added support for checkpoint operations to create, delete and restore checkpoints
+* Added deleteFromHost flag to delete VM from on-prem
 
 0.1.7
 ++++++

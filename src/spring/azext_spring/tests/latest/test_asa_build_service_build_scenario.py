@@ -48,3 +48,17 @@ class BuildServiceBuildTest(ScenarioTest):
             self.check('properties.credentials.server', '{server}'),
             self.check('properties.credentials.username', '{username}'),
         ])
+
+        self.cmd('spring container-registry delete -n {name} -g {rg} --service {serviceName} -y')
+
+    def test_build_service(self):
+        self.kwargs.update({
+            'serviceName': 'cli-unittest-e',
+            'rg': 'cli',
+            'registry': 'my-acr',
+        })
+
+        self.cmd('spring build-service show -g {rg} --service {serviceName}', checks=[
+            self.check('name', 'default'),
+            self.check('properties.provisioningState', 'Succeeded'),
+        ])

@@ -8,7 +8,7 @@ az extension add --name devcenter
 ```
 
 ### Usage ###
-See [Microsoft Dev Box Preview Azure CLI reference](https://learn.microsoft.com/azure/dev-box/cli-reference-subset) and [Azure Deployment Environments Azure CLI reference](https://learn.microsoft.com/azure/deployment-environments/how-to-configure-use-cli).
+See [Microsoft Dev Box and Azure Deployment Environments Azure CLI reference](https://learn.microsoft.com/cli/azure/devcenter?view=azure-cli-latest)
  
 #### devcenter admin ####
 Manage admin resources with devcenter

@@ -40,6 +40,9 @@ def handle_raw_exception(e):
     if "Unknown properties Name in Microsoft.ContainerApps.WebApi.Views.Version20221101Preview.WorkloadProfile are not supported" in stringErr:
         raise CLIInternalError("Bad Request: Workload profile name is not yet supported in this region.")
 
+    if "Error starting job" in stringErr:
+        raise CLIInternalError("There was an error starting the job execution. Please check input parameters and try again.")
+
     if "{" in stringErr and "}" in stringErr:
         jsonError = stringErr[stringErr.index("{"):stringErr.rindex("}") + 1]
         jsonError = json.loads(jsonError)

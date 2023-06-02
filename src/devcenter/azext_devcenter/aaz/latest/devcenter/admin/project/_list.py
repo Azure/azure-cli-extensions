@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin project list",
-    is_preview=True,
 )
 class List(AAZCommand):
-    """List all projects in the subscription.
+    """List projects.
 
     :example: List by resource group
         az devcenter admin project list --resource-group "rg1"
@@ -26,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/projects", "2022-11-11-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/projects", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects", "2023-04-01"],
         ]
     }
 
@@ -120,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -194,6 +193,9 @@ class List(AAZCommand):
             properties.dev_center_uri = AAZStrType(
                 serialized_name="devCenterUri",
                 flags={"read_only": True},
+            )
+            properties.max_dev_boxes_per_user = AAZIntType(
+                serialized_name="maxDevBoxesPerUser",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -265,7 +267,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -339,6 +341,9 @@ class List(AAZCommand):
             properties.dev_center_uri = AAZStrType(
                 serialized_name="devCenterUri",
                 flags={"read_only": True},
+            )
+            properties.max_dev_boxes_per_user = AAZIntType(
+                serialized_name="maxDevBoxesPerUser",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
