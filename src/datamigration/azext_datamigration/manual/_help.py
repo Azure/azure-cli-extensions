@@ -69,6 +69,24 @@ helps['datamigration login-migration'] = """
                az datamigration login-migration --config-file-path "C:\\Users\\user\\document\\config.json"
 """
 
+helps['datamigration sql-server-schema'] = """
+    type: command
+    short-summary: Migrate schema from the source Sql Servers to the target Azure Sql Servers.
+    examples:
+      - name: Run Migrate database objects from the source SQL Server to the target Azure SQL Database using Parameters.
+        text: |-
+               az datamigration sql-server-schema --action "MigrateSchema" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="
+      - name: Run Generate TSQL schema script from the source SQL Server using Parameters.
+        text: |-
+               az datamigration sql-server-schema --action "GenerateScript" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="  --output-folder "C:\OutputFolder"
+      - name: Run Deploy TSQL script to the target Azure SQL Database using Parameters.
+        text: |-
+               az datamigration sql-server-schema --action "GenerateScript" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="  --input-script-file-path "C:\OutputFolder\script.sql"
+      - name: Run Migrate database objects from the source SQL Server to the target Azure SQL Database using ConfigFile.
+        text: |-
+               az datamigration sql-server-schema --config-file-path "C:\configfile.json" configfile.json example: { "Action": "GenerateScript", "sourceConnectionString": "Server=;Initial Catalog=;User ID=;Password=", "targetConnectionString": "Server=;Initial Catalog=;User ID=;Password=", "targetConnectionString": "Server=;Initial Catalog=;User ID=;Password=", "inputScriptFilePath": "C:\OutputFolder\script.sql", "outputFolder": "C:\OutputFolder\script.sql"}             
+"""
+
 helps['datamigration register-integration-runtime'] = """
     type: command
     short-summary: Register Database Migration Service on Integration Runtime

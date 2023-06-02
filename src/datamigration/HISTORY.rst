@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.0
+++++++
+* [NEW COMMAND] `az datamigration sql-server-schema` : Migrate database schema objects to the target Azure Sql Servers.
+
 0.4.1
 ++++++
 * Bug fix for list-logins parameter in command "az datamigration login-migration".

@@ -34,6 +34,11 @@ az datamigration get-sku-recommendation --output-folder "C:\\PerfCollectionOutpu
 az datamigration login-migration --src-sql-connection-str  "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --tgt-sql-connection-str  "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --csv-file-path "C:\\CSVFile" --list-of-login "loginname1" "loginname2" --output-folder "C:\\OutputFolder" --aad-domain-name "AADDomainName" --display-result --overwrite
 ```
 
+##### Sql-server-schema #####
+```
+az datamigration sql-server-schema --action "MigrateSchema" --src-sql-connection-str  "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str  "Server=;Initial Catalog=;User ID=;Password=" --input-script-file-path "C:\inputFile" --output-folder "C:\OutputFolder" --display-result --overwrite
+```
+
 #### datamigration sql-managed-instance ####
 ##### Create (Backup source Fileshare) #####
 ```
