@@ -48,14 +48,15 @@ def run_cli_cmd(cmd, retry=0, interval=0, should_retry_func=None):
     try:
         return run_cli_cmd_base(cmd, retry, interval, should_retry_func)
     except CLIInternalError as e:
-        telemetry.set_exception(e, "Cli-Command-Fail" + cmd)
+        telemetry.set_exception(
+            e, "Cli-Command-Fail-" + cmd.split(" -")[0].strip())
         raise e
 
-# pylint: disable=line-too-long, consider-using-f-string
+
+# pylint: disable=line-too-long, consider-using-f-string, too-many-statements
 # For db(mysqlFlex/psql/psqlFlex/sql) linker with auth type=systemAssignedIdentity, enable AAD auth and create db user on data plane
 # For other linker, ignore the steps
 def get_enable_mi_for_db_linker_func(yes=False):
-
     def enable_mi_for_db_linker(cmd, source_id, target_id, auth_info, client_type, connection_name):
         # return if connection is not for db mi
         if auth_info['auth_type'] not in [AUTHTYPES[AUTH_TYPE.SystemIdentity],
@@ -101,7 +102,6 @@ def get_enable_mi_for_db_linker_func(yes=False):
                 if 'AADSTS530003' in e.error_msg:
                     logger.warning(
                         'Please ask your IT department for help to join this device to Azure Active Directory.')
-                telemetry.set_exception(e, "Aad-Access-Fail")
                 raise e
         elif auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserIdentity]:
             mi_client_id = auth_info.get('client_id')
@@ -135,7 +135,6 @@ def get_enable_mi_for_db_linker_func(yes=False):
                 if 'AADSTS530003' in e.error_msg:
                     logger.warning(
                         'Please ask your IT department for help to join this device to Azure Active Directory.')
-                telemetry.set_exception(e, "Aad-Access-Fail")
                 raise e
 
         # enable target aad authentication and set login user as db aad admin
@@ -476,6 +475,7 @@ class SqlHandler(TargetHandler):
             self.create_aad_user_in_sql(connection_args, query_list)
         except AzureConnectionError as e:
             if not self.ip:
+                telemetry.set_exception(e, "Connect-Db-Fail")
                 raise e
             logger.warning(e)
             # allow local access
@@ -621,8 +621,8 @@ class PostgresFlexHandler(TargetHandler):
         if is_admin:
             return
         logger.warning('Set current user as DB Server AAD Administrators.')
-        run_cli_cmd('az postgres flexible-server ad-admin create -u {} -i {} -g {} -s {} --subscription {}'.format(
-            self.login_username, user_object_id, self.resource_group, self.db_server, self.subscription))
+        run_cli_cmd('az postgres flexible-server ad-admin create -u {} -i {} -g {} -s {} --subscription {} -t {}'.format(
+            self.login_username, user_object_id, self.resource_group, self.db_server, self.subscription, self.login_usertype))
 
     def create_aad_user(self):
         query_list = self.get_create_query()
