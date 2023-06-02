@@ -1962,7 +1962,7 @@ def update_containerappsjob_logic(cmd,
 
     # replicaConfiguration
     if update_map["replicaConfigurations"]:
-        new_containerappsjob["properties"]["configuration"] = {} if "configuration" not in safe_get(new_containerappsjob, "properties") else safe_get(new_containerappsjob, "properties", "configuration")
+        new_containerappsjob["properties"]["configuration"] = {} if "configuration" not in new_containerappsjob["properties"] else new_containerappsjob["properties"]["configuration"]
         if replica_timeout is not None or replica_retry_limit is not None:
             if replica_timeout:
                 new_containerappsjob["properties"]["configuration"]["replicaTimeout"] = replica_timeout
@@ -2156,7 +2156,7 @@ def update_containerappsjob_logic(cmd,
         registries_def = new_containerappsjob["properties"]["configuration"]["registries"]
 
         _get_existing_secrets(cmd, resource_group_name, name, containerappsjob_def)
-        if "secrets" in safe_get(containerappsjob_def, "properties", "configuration") and safe_get(containerappsjob_def, "properties", "configuration", "secrets"):
+        if "secrets" in containerappsjob_def["properties"]["configuration"] and containerappsjob_def["properties"]["configuration"]["secrets"]:
             new_containerappsjob["properties"]["configuration"]["secrets"] = containerappsjob_def["properties"]["configuration"]["secrets"]
         else:
             new_containerappsjob["properties"]["configuration"]["secrets"] = []
