@@ -9,7 +9,7 @@ from azure.cli.core.azclierror import AzCLIError
 from azext_aosm.deploy.artifact import Artifact
 from azure.storage.blob import BlobClient
 from oras.client import OrasClient
-from azext_aosm._configuration import NFConfiguration
+from azext_aosm._configuration import NFConfiguration, NSConfiguration
 from azext_aosm.vendored_sdks.models import (
     ArtifactManifest,
     ManifestArtifactFormat,
@@ -27,7 +27,7 @@ class ArtifactManifestOperator:
 
     def __init__(
         self,
-        config: NFConfiguration,
+        config: NFConfiguration or NSConfiguration,
         api_clients: ApiClients,
         store_name: str,
         manifest_name: str,

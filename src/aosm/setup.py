@@ -56,5 +56,11 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={"azext_aosm": ["azext_metadata.json", "generate_nfd/templates/*"]},
+    package_data={
+        "azext_aosm": [
+            "azext_metadata.json",
+            "generate_nfd/templates/*",
+            "generate_nsd/templates/*",
+        ]
+    },
 )

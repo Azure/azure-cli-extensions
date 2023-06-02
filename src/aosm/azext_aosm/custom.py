@@ -9,10 +9,15 @@ import shutil
 from dataclasses import asdict
 from typing import Optional
 from knack.log import get_logger
-from azure.cli.core.azclierror import CLIInternalError, InvalidArgumentValueError, UnclassifiedUserFault
+from azure.cli.core.azclierror import (
+    CLIInternalError,
+    InvalidArgumentValueError,
+    UnclassifiedUserFault,
+)
 
 from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
+from azext_aosm.generate_nsd.nsd_generator import NSDGenerator
 from azext_aosm.generate_nfd.vnf_nfd_generator import VnfNfdGenerator
 from azext_aosm.delete.delete import ResourceDeleter
 from azext_aosm.deploy.deploy_with_arm import DeployerViaArm
@@ -23,22 +28,30 @@ from azext_aosm._client_factory import cf_resources
 from azext_aosm._configuration import (
     get_configuration,
     NFConfiguration,
+    NSConfiguration,
 )
 
 
 logger = get_logger(__name__)
 
 
-def build_definition(cmd, definition_type: str, config_file: str):
+def build_definition(
+    definition_type: str,
+    config_file: str,
+):
     """
-    Build and optionally publish a definition.
+    Build a definition.
 
-    :param cmd: 
+    :param cmd:
+    :type cmd: _type_
     :param config_file: path to the file
-    :param definition_type: VNF or CNF
+    :param definition_type: VNF, CNF
     """
+
     # Read the config from the given file
-    config = _get_config_from_file(config_file, definition_type)
+    config = _get_config_from_file(
+        config_file=config_file, configuration_type=definition_type
+    )
 
     # Generate the NFD and the artifact manifest.
     _generate_nfd(definition_type=definition_type, config=config)
@@ -48,17 +61,16 @@ def generate_definition_config(definition_type: str, output_file: str = "input.j
     """
     Generate an example config file for building a definition.
 
-    :param definition_type: CNF, VNF or NSD :param output_file: path to output config
-    file, defaults to "input.json" :type output_
-    file:
-    :param definition_type: CNF, VNF or NSD
+    :param definition_type: CNF, VNF
     :param output_file: path to output config file, defaults to "input.json"
     :type output_file: str, optional
     """
-    _generate_config(definition_type, output_file)
+    _generate_config(configuration_type=definition_type, output_file=output_file)
 
 
-def _get_config_from_file(config_file: str, definition_type: str) -> NFConfiguration:
+def _get_config_from_file(
+    config_file: str, configuration_type: str
+) -> NFConfiguration or NSConfiguration:
     """
     Read input config file JSON and turn it into a Configuration object.
 
@@ -66,14 +78,15 @@ def _get_config_from_file(config_file: str, definition_type: str) -> NFConfigura
     :param definition_type: VNF, CNF or NSD
     :rtype: Configuration
     """
-    
+
     if not os.path.exists(config_file):
-        raise InvalidArgumentValueError(f"Config file {config_file} not found. Please specify a valid config file path.")
-    
+        raise InvalidArgumentValueError(
+            f"Config file {config_file} not found. Please specify a valid config file path."
+        )
+
     with open(config_file, "r", encoding="utf-8") as f:
         config_as_dict = json.loads(f.read())
-
-    config = get_configuration(definition_type, config_as_dict)
+    config = get_configuration(configuration_type, config_as_dict)
     return config
 
 
@@ -148,7 +161,9 @@ def publish_definition(
     api_clients = ApiClients(
         aosm_client=client, resource_client=cf_resources(cmd.cli_ctx)
     )
-    config = _get_config_from_file(config_file, definition_type)
+    config = _get_config_from_file(
+        config_file=config_file, configuration_type=definition_type
+    )
     if definition_type == VNF:
         deployer = DeployerViaArm(api_clients, config=config)
         deployer.deploy_vnfd_from_bicep(
@@ -180,7 +195,9 @@ def delete_published_definition(
         Defaults to False. Only works if no resources have those as a parent.     Use
         with care.
     """
-    config = _get_config_from_file(config_file, definition_type)
+    config = _get_config_from_file(
+        config_file=config_file, configuration_type=definition_type
+    )
 
     api_clients = ApiClients(
         aosm_client=client, resource_client=cf_resources(cmd.cli_ctx)
@@ -198,40 +215,32 @@ def delete_published_definition(
 def generate_design_config(output_file: str = "input.json"):
     """
     Generate an example config file for building a NSD.
-
-    :param output_file: path to output config file, defaults to "input.json" :type
-    output_
-    file:
     :param output_file: path to output config file, defaults to "input.json"
     :type output_file: str, optional
     """
     _generate_config(NSD, output_file)
 
 
-def _generate_config(definition_type: str, output_file: str = "input.json"):
+def _generate_config(configuration_type: str, output_file: str = "input.json"):
     """
     Generic generate config function for NFDs and NSDs.
-
-    :param definition_type: CNF, VNF or NSD :param output_file: path to output config
-    file, defaults to "input.json" :type output_
-    file:
-    :param definition_type: CNF, VNF or NSD
+    :param configuration_type: CNF, VNF or NSD
     :param output_file: path to output config file, defaults to "input.json"
     :type output_file: str, optional
     """
-    config = get_configuration(definition_type)
+    config = get_configuration(configuration_type)
     config_as_dict = json.dumps(asdict(config), indent=4)
-    
+
     if os.path.exists(output_file):
         carry_on = input(
             f"The file {output_file} already exists - do you want to overwrite it? (y/n)"
         )
         if carry_on != "y":
             raise UnclassifiedUserFault("User aborted!")
-        
+
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(config_as_dict)
-        if definition_type == CNF or definition_type == VNF:
+        if configuration_type == CNF or configuration_type == VNF:
             prtName = "definition"
         else:
             prtName = "design"
@@ -241,53 +250,127 @@ def _generate_config(definition_type: str, output_file: str = "input.json"):
 
 def build_design(cmd, client: HybridNetworkManagementClient, config_file: str):
     """
-    Build and optionally publish a Network Service Design.
-
-    :param cmd: :type cmd: _type_ :param client: :type client:
-    HybridNetworkManagementClient :param config_
-    file:
-    :param cmd: 
+    Build a Network Service Design.
+    :param cmd:
     :type cmd: _type_
-    :param client: 
+    :param client:
     :type client: HybridNetworkManagementClient
     :param config_file: path to the file
     """
-    raise NotImplementedError("Build design is not yet implented for NSD")
+
+    api_clients = ApiClients(
+        aosm_client=client, resource_client=cf_resources(cmd.cli_ctx)
+    )
+
+    # Read the config from the given file
+    config = _get_config_from_file(config_file=config_file, configuration_type=NSD)
+
+    config.validate()
+
+    # Generate the NSD and the artifact manifest.
+    # This function should not be taking deploy parameters
+    _generate_nsd(
+        config=config,
+        api_clients=api_clients,
+    )
 
 
 def delete_published_design(
     cmd,
     client: HybridNetworkManagementClient,
     config_file,
-    clean=False,
 ):
     """
     Delete a published NSD.
-
-    :param definition_type: CNF or VNF
     :param config_file: Path to the config file
-    :param clean: if True, will delete the NFDG, artifact stores and publisher too.
-        Defaults to False. Only works if no resources have those as a parent.     Use
-        with care.
+    :param clean: if True, will delete the NSDG, artifact stores and publisher too.
+                  Defaults to False. Only works if no resources have those as a parent.
+                    Use with care.
     """
-    raise NotImplementedError("Delete published design is not yet implented for NSD")
+    config = _get_config_from_file(config_file=config_file, configuration_type=NSD)
+
+    api_clients = ApiClients(
+        aosm_client=client, resource_client=cf_resources(cmd.cli_ctx)
+    )
+
+    destroyer = ResourceDeleter(api_clients, config)
+    destroyer.delete_nsd()
 
 
 def publish_design(
     cmd,
     client: HybridNetworkManagementClient,
     config_file,
+    design_file: Optional[str] = None,
+    parameters_json_file: Optional[str] = None,
+    manifest_file: Optional[str] = None,
+    manifest_parameters_json_file: Optional[str] = None,
 ):
     """
     Publish a generated design.
-
-    :param cmd: :param client: :type client: HybridNetworkManagementClient :param
-    definition_type: VNF or CNF :param config_
-    file:
-    :param cmd: 
-    :param client: 
+    :param cmd:
+    :param client:
     :type client: HybridNetworkManagementClient
-    :param definition_type: VNF or CNF
-    :param config_file: Path to the config file for the NFDV
+    :param config_file: Path to the config file for the NSDV
+    :param design_file: Optional path to an override bicep template to deploy the NSDV.
+    :param parameters_json_file: Optional path to a parameters file for the bicep file,
+                      in case the user wants to edit the built NSDV template. If
+                      omitted, parameters from config will be turned into parameters
+                      for the bicep file
+    :param manifest_file: Optional path to an override bicep template to deploy
+                        manifests
+    :param manifest_parameters_json_file: Optional path to an override bicep parameters
+                        file for manifest parameters
     """
-    raise NotImplementedError("Publishing design is not yet implemented for NSD")
+
+    print("Publishing design.")
+    api_clients = ApiClients(
+        aosm_client=client, resource_client=cf_resources(cmd.cli_ctx)
+    )
+
+    config = _get_config_from_file(config_file=config_file, configuration_type=NSD)
+
+    config.validate()
+
+    deployer = DeployerViaArm(api_clients, config=config)
+
+    deployer.deploy_nsd_from_bicep(
+        bicep_path=design_file,
+        parameters_json_file=parameters_json_file,
+        manifest_bicep_path=manifest_file,
+        manifest_parameters_json_file=manifest_parameters_json_file,
+    )
+
+
+def _generate_nsd(config: NSDGenerator, api_clients):
+    """Generate a Network Service Design for the given type and config."""
+    if config:
+        nsd_generator = NSDGenerator(config)
+    else:
+        from azure.cli.core.azclierror import CLIInternalError
+
+        raise CLIInternalError("Generate NSD called without a config file")
+    deploy_parameters = _get_nfdv_deployment_parameters(config, api_clients)
+
+    if os.path.exists(config.build_output_folder_name):
+        carry_on = input(
+            f"The folder {config.build_output_folder_name} already exists - delete it and continue? (y/n)"
+        )
+        if carry_on != "y":
+            raise UnclassifiedUserFault("User aborted! ")
+
+        shutil.rmtree(config.build_output_folder_name)
+
+    nsd_generator.generate_nsd(deploy_parameters)
+
+
+def _get_nfdv_deployment_parameters(config: NSConfiguration, api_clients):
+    """Get the properties of the existing NFDV."""
+    NFDV_object = api_clients.aosm_client.network_function_definition_versions.get(
+        resource_group_name=config.publisher_resource_group_name,
+        publisher_name=config.publisher_name,
+        network_function_definition_group_name=config.network_function_definition_group_name,
+        network_function_definition_version_name=config.network_function_definition_version_name,
+    )
+
+    return NFDV_object.deploy_parameters

@@ -19,7 +19,7 @@ from azext_aosm.vendored_sdks.models import (
     Publisher,
     ProvisioningState,
 )
-from azext_aosm._configuration import NFConfiguration, VNFConfiguration
+from azext_aosm._configuration import NFConfiguration, VNFConfiguration, NSConfiguration
 
 logger = get_logger(__name__)
 
@@ -34,7 +34,7 @@ class PreDeployerViaSDK:
     def __init__(
         self,
         api_clients: ApiClients,
-        config: NFConfiguration,
+        config: NFConfiguration or NSConfiguration,
     ) -> None:
         """
         Initializes a new instance of the Deployer class.
@@ -59,6 +59,10 @@ class PreDeployerViaSDK:
         if not self.api_clients.resource_client.resource_groups.check_existence(
             resource_group_name
         ):
+            if isinstance(self.config, NSConfiguration):
+                raise AzCLIError(
+                    f"Resource Group {resource_group_name} does not exist. Please create it before running this command."
+                )
             logger.info(f"RG {resource_group_name} not found. Create it.")
             print(f"Creating resource group {resource_group_name}.")
             rg_params: ResourceGroup = ResourceGroup(location=self.config.location)
@@ -71,7 +75,7 @@ class PreDeployerViaSDK:
 
     def ensure_config_resource_group_exists(self) -> None:
         """
-        Ensures that the publisher exists in the resource group.
+        Ensures that the resource group exists.
 
         Finds the parameters from self.config
         """
@@ -90,16 +94,21 @@ class PreDeployerViaSDK:
         :param location: The location of the publisher.
         :type location: str
         """
-        logger.info("Creating publisher %s if it does not exist", publisher_name)
+
         try:
-            pubby = self.api_clients.aosm_client.publishers.get(
+            publisher = self.api_clients.aosm_client.publishers.get(
                 resource_group_name, publisher_name
             )
             print(
-                f"Publisher {pubby.name} exists in resource group {resource_group_name}"
+                f"Publisher {publisher.name} exists in resource group {resource_group_name}"
             )
         except azure_exceptions.ResourceNotFoundError:
+            if isinstance(self.config, NSConfiguration):
+                raise AzCLIError(
+                    f"Publisher {publisher_name} does not exist. Please create it before running this command."
+                )
             # Create the publisher
+            logger.info("Creating publisher %s if it does not exist", publisher_name)
             print(
                 f"Creating publisher {publisher_name} in resource group {resource_group_name}"
             )
@@ -269,6 +278,21 @@ class PreDeployerViaSDK:
             self.config.location,
         )
 
+    def ensure_config_nsdg_exists(
+        self,
+    ):
+        """
+        Ensures that the Network Function Definition Group exists.
+
+        Finds the parameters from self.config
+        """
+        self.ensure_nsdg_exists(
+            self.config.publisher_resource_group_name,
+            self.config.publisher_name,
+            self.config.nsdg_name,
+            self.config.location,
+        )
+
     def does_artifact_manifest_exist(
         self, rg_name: str, publisher_name: str, store_name: str, manifest_name: str
     ) -> bool:
@@ -307,7 +331,7 @@ class PreDeployerViaSDK:
                 return True
             elif acr_manny_exists or sa_manny_exists:
                 raise AzCLIError(
-                    "Only one artifact manifest exists. Cannot proceed. Please delete the NFDV using `az aosm definition delete` and start the publish again from scratch."
+                    "Only one artifact manifest exists. Cannot proceed. Please delete the NFDV using `az aosm nfd delete` and start the publish again from scratch."
                 )
             else:
                 return False

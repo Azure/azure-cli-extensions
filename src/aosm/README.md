@@ -87,7 +87,13 @@ For CNFs, you must provide helm packages with an associated schema. When filling
             ]
         },
 
+#### NSDs
+For NSDs, you will need to have a Resource Group with a deployed Publisher, Artifact Store, Network Function Definition and Network Function Definition Version. You can use the `az aosm nfd` commands to create all of these resources.
+
+
 ### Command examples
+
+#### NFDs
 
 Get help on command arguments
 
@@ -109,10 +115,6 @@ Build an nfd definition locally
 
 `az aosm nfd build --config-file input.json`
 
-Build and publish a definition
-
-`az aosm nfd build --config-file input.json --publish`
-
 Publish a pre-built definition
 
 `az aosm nfd publish --config-file input.json`
@@ -125,6 +127,34 @@ Delete a published definition and the publisher, artifact stores and NFD group
 
 `az aosm nfd delete --config-file input.json --clean`
 
-Coming soon:
+#### NSDs
 
-`az aosm nsd build` and further nsd commands.
+Get help on command arguments
+
+`az aosm -h`
+`az aosm nsd -h`
+`az aosm nsd build -h`
+etc...
+
+Create an example config file for building a definition
+
+`az aosm nsd generate-config`
+
+This will output a file called `input.json` which must be filled in. 
+Once the config file has been filled in the following commands can be run.
+
+Build an nsd locally
+
+`az aosm nsd build --config-file input.json`
+
+Publish a pre-built design
+
+`az aosm nsd publish --config-file input.json`
+
+Delete a published design
+
+`az aosm nsd delete --config-file input.json`
+
+Delete a published design and the publisher, artifact stores and NSD group
+
+`az aosm nsd delete --config-file input.json --clean`

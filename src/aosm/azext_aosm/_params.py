@@ -21,6 +21,7 @@ def load_arguments(self: AzCommandsLoader, _):
 
     # Set the argument context so these options are only available when this specific command
     # is called.
+
     with self.argument_context("aosm nfd") as c:
         c.argument(
             "definition_type", arg_type=definition_type, help="Type of AOSM definition."
@@ -43,6 +44,13 @@ def load_arguments(self: AzCommandsLoader, _):
             type=file_type,
             completer=FilesCompleter(allowednames="*.json"),
             help="Optional path to a bicep file to publish. Use to override publish of the built definition with an alternative file.",
+        )
+        c.argument(
+            "design_file",
+            options_list=["--design-file", "-b"],
+            type=file_type,
+            completer=FilesCompleter(allowednames="*.bicep"),
+            help="Optional path to a bicep file to publish. Use to override publish of the built design with an alternative file.",
         )
         c.argument(
             "parameters_json_file",
@@ -73,9 +81,4 @@ def load_arguments(self: AzCommandsLoader, _):
             type=file_type,
             completer=FilesCompleter(allowednames="*.json"),
             help="The path to the configuration file.",
-        )
-        c.argument(
-            "clean",
-            arg_type=get_three_state_flag(),
-            help="Also delete artifact stores, NFD Group and Publisher. Use with care.",
         )

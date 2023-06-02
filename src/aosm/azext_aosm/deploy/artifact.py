@@ -43,11 +43,12 @@ class Artifact:
 
         # If not included in config, the file path value will be the description of
         # the field.
+
         if artifact_config.file_path:
             target = f"{self.artifact_client.remote.hostname.replace('https://', '')}/{self.artifact_name}:{self.artifact_version}"
             logger.debug(f"Uploading {artifact_config.file_path} to {target}")
             self.artifact_client.push(
-                file=artifact_config.file_path,
+                files=[artifact_config.file_path],
                 target=target,
             )
         else:

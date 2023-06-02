@@ -6,7 +6,7 @@
 from knack.log import get_logger
 
 from azext_aosm.util.management_clients import ApiClients
-from azext_aosm._configuration import NFConfiguration, VNFConfiguration
+from azext_aosm._configuration import NFConfiguration, VNFConfiguration, NSConfiguration
 from azext_aosm.util.utils import input_ack
 
 
@@ -17,7 +17,7 @@ class ResourceDeleter:
     def __init__(
         self,
         api_clients: ApiClients,
-        config: NFConfiguration,
+        config: NFConfiguration or NSConfiguration,
     ) -> None:
         """
         Initializes a new instance of the Deployer class.
@@ -74,6 +74,25 @@ class ResourceDeleter:
             self.delete_artifact_store("sa")
             self.delete_publisher()
 
+    def delete_nsd(self):
+        """
+        Delete the NSDV and manifests. If they don't exist it still reports them as
+        deleted.
+        """
+        assert isinstance(self.config, NSConfiguration)
+
+        print(
+            f"Are you sure you want to delete the NSD Version {self.config.nsd_version}, the associated manifest {self.config.acr_manifest_name} and configuration group schema {self.config.cg_schema_name}?"
+        )
+        print("There is no undo. Type 'delete' to confirm")
+        if not input_ack("delete", "Confirm delete:"):
+            print("Not proceeding with delete")
+            return
+
+        self.delete_nsdv()
+        self.delete_artifact_manifest("acr")
+        self.delete_config_group_schema()
+
     def delete_nfdv(self):
         message = f"Delete NFDV {self.config.version} from group {self.config.nfdg_name} and publisher {self.config.publisher_name}"
         logger.debug(message)
@@ -90,6 +109,26 @@ class ResourceDeleter:
         except Exception:
             logger.error(
                 f"Failed to delete NFDV {self.config.version} from group {self.config.nfdg_name}"
+            )
+            raise
+
+    def delete_nsdv(self):
+        assert isinstance(self.config, NSConfiguration)
+        message = f"Delete NSDV {self.config.nsd_version} from group {self.config.nsdg_name} and publisher {self.config.publisher_name}"
+        logger.debug(message)
+        print(message)
+        try:
+            poller = self.api_clients.aosm_client.network_service_design_versions.begin_delete(
+                resource_group_name=self.config.publisher_resource_group_name,
+                publisher_name=self.config.publisher_name,
+                network_service_design_group_name=self.config.nsdg_name,
+                network_service_design_version_name=self.config.nsd_version,
+            )
+            poller.result()
+            print("Deleted NSDV.")
+        except Exception:
+            logger.error(
+                f"Failed to delete NSDV {self.config.nsd_version} from group {self.config.nsdg_name}"
             )
             raise
 
@@ -132,6 +171,25 @@ class ResourceDeleter:
             logger.error(
                 f"Failed to delete Artifact manifest {manifest_name} from artifact store {store_name}"
             )
+            raise
+
+    def delete_nsdg(self) -> None:
+        """Delete the NSDG."""
+        message = f"Delete NSD Group {self.config.nsdg_name}"
+        logger.debug(message)
+        print(message)
+        try:
+            poller = (
+                self.api_clients.aosm_client.network_service_design_groups.begin_delete(
+                    resource_group_name=self.config.publisher_resource_group_name,
+                    publisher_name=self.config.publisher_name,
+                    network_service_design_group_name=self.config.nsdg_name,
+                )
+            )
+            poller.result()
+            print("Deleted NSD Group")
+        except Exception:
+            logger.error("Failed to delete NFDG.")
             raise
 
     def delete_nfdg(self) -> None:
@@ -200,4 +258,25 @@ class ResourceDeleter:
             print("Deleted Publisher")
         except Exception:
             logger.error("Failed to delete publisher")
+            raise
+
+    def delete_config_group_schema(self) -> None:
+        """
+        Delete the Configuration Group Schema.
+        """
+        message = f"Delete Configuration Group Schema {self.config.cg_schema_name}"
+        logger.debug(message)
+        print(message)
+        try:
+            poller = (
+                self.api_clients.aosm_client.configuration_group_schemas.begin_delete(
+                    resource_group_name=self.config.publisher_resource_group_name,
+                    publisher_name=self.config.publisher_name,
+                    configuration_group_schema_name=self.config.cg_schema_name,
+                )
+            )
+            poller.result()
+            print("Deleted Configuration Group Schema")
+        except Exception:
+            logger.error("Failed to delete the Configuration Group Schema")
             raise
