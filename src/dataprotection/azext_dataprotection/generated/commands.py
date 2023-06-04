@@ -16,7 +16,6 @@ from azure.cli.core.commands import CliCommandType
 from azext_dataprotection.generated._client_factory import (
     cf_backup_policy,
     cf_backup_instance,
-    cf_resource_guard,
 )
 
 
@@ -29,12 +28,6 @@ dataprotection_backup_policy = CliCommandType(
 dataprotection_backup_instance = CliCommandType(
     operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._backup_instances_operations#BackupInstancesOperations.{}',
     client_factory=cf_backup_instance,
-)
-
-
-dataprotection_resource_guard = CliCommandType(
-    operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._resource_guards_operations#ResourceGuardsOperations.{}',
-    client_factory=cf_resource_guard,
 )
 
 
@@ -67,13 +60,6 @@ def load_command_table(self, _):
         #     'validate-for-restore', 'dataprotection_backup_instance_validate_for_restore', supports_no_wait=True
         # )
         g.custom_wait_command('wait', 'dataprotection_backup_instance_show')
-
-    with self.command_group(
-        'dataprotection resource-guard', dataprotection_resource_guard, client_factory=cf_resource_guard
-    ) as g:
-        g.custom_show_command('show', 'dataprotection_resource_guard_show')
-        g.custom_command('create', 'dataprotection_resource_guard_create')
-        g.custom_command('delete', 'dataprotection_resource_guard_delete', confirmation=True)
 
     with self.command_group('dataprotection', is_experimental=True):
         pass

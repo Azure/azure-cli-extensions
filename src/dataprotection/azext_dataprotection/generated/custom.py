@@ -248,38 +248,3 @@ def dataprotection_backup_instance_validate_for_restore(client,
                        vault_name=vault_name,
                        backup_instance_name=backup_instance_name,
                        parameters=parameters)
-
-
-def dataprotection_resource_guard_show(client,
-                                       resource_group_name,
-                                       resource_guards_name):
-    return client.get(resource_group_name=resource_group_name,
-                      resource_guards_name=resource_guards_name)
-
-
-def dataprotection_resource_guard_create(client,
-                                         resource_group_name,
-                                         resource_guards_name,
-                                         e_tag=None,
-                                         location=None,
-                                         tags=None,
-                                         type_=None,
-                                         vault_critical_operation_exclusion_list=None):
-    parameters = {}
-    parameters['e_tag'] = e_tag
-    parameters['location'] = location
-    parameters['tags'] = tags
-    parameters['identity'] = {}
-    parameters['identity']['type'] = type_
-    parameters['properties'] = {}
-    parameters['properties']['vault_critical_operation_exclusion_list'] = vault_critical_operation_exclusion_list
-    return client.put(resource_group_name=resource_group_name,
-                      resource_guards_name=resource_guards_name,
-                      parameters=parameters)
-
-
-def dataprotection_resource_guard_delete(client,
-                                         resource_group_name,
-                                         resource_guards_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         resource_guards_name=resource_guards_name)
