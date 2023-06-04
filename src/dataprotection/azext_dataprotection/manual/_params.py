@@ -39,7 +39,6 @@ from azext_dataprotection.manual.enums import (
     get_backup_operation_values,
     get_permission_scope_values,
     get_resource_type_values,
-    get_critical_operation_values,
     get_persistent_volume_restore_mode_values,
     get_conflict_policy_values
 )
