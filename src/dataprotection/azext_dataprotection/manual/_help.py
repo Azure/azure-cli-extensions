@@ -199,14 +199,6 @@ helps['dataprotection backup-instance validate-for-backup'] = """
         text: az dataprotection backup-instance validate-for-backup -g sarath-rg --vault-name sarath-vault --backup-instance backup_instance.json
 """
 
-helps['dataprotection backup-policy create'] = """
-    type: command
-    short-summary:  Create a backup policy belonging to a backup vault.
-    examples:
-      - name: Create backup policy
-        text: az dataprotection backup-policy create -g sarath-rg --vault-name sarath-vault -n mypolicy --policy policy.json
-"""
-
 helps['dataprotection backup-vault list'] = """
     type: command
     short-summary:  Gets list of backup vault in a subscription or in a resource group.

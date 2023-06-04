@@ -14,14 +14,7 @@
 
 from azure.cli.core.commands import CliCommandType
 from azext_dataprotection.generated._client_factory import (
-    cf_backup_policy,
     cf_backup_instance,
-)
-
-
-dataprotection_backup_policy = CliCommandType(
-    operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._backup_policies_operations#BackupPoliciesOperations.{}',
-    client_factory=cf_backup_policy,
 )
 
 
@@ -32,14 +25,6 @@ dataprotection_backup_instance = CliCommandType(
 
 
 def load_command_table(self, _):
-
-    with self.command_group(
-        'dataprotection backup-policy', dataprotection_backup_policy, client_factory=cf_backup_policy
-    ) as g:
-        g.custom_command('list', 'dataprotection_backup_policy_list')
-        g.custom_show_command('show', 'dataprotection_backup_policy_show')
-        g.custom_command('create', 'dataprotection_backup_policy_create')
-        g.custom_command('delete', 'dataprotection_backup_policy_delete', confirmation=True)
 
     with self.command_group(
         'dataprotection backup-instance', dataprotection_backup_instance, client_factory=cf_backup_instance

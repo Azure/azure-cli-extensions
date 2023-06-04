@@ -8,7 +8,7 @@
 # pylint: disable=line-too-long
 
 from azext_dataprotection.generated._client_factory import (
-    cf_backup_instance, cf_backup_policy, cf_resource_guard
+    cf_backup_instance
 )
 
 from azext_dataprotection.manual._client_factory import cf_resource_graph_client
@@ -40,7 +40,6 @@ def load_command_table(self, _):
 
     with self.command_group('dataprotection backup-policy', exception_handler=exception_handler) as g:
         g.custom_command('get-default-policy-template', "dataprotection_backup_policy_get_default_policy_template")
-        g.custom_command('create', 'dataprotection_backup_policy_create', client_factory=cf_backup_policy)
 
     with self.command_group('dataprotection backup-policy trigger') as g:
         g.custom_command('create-schedule', "dataprotection_backup_policy_trigger_create_schedule")
@@ -70,4 +69,5 @@ def load_command_table(self, _):
     from .aaz_operations.recovery_point import RecoveryPointList
     self.command_table['dataprotection recovery-point list'] = RecoveryPointList(loader=self)
 
-    
+    from .aaz_operations.backup_policy import Create as BackupPolicyCreate
+    self.command_table['dataprotection backup-policy create'] = BackupPolicyCreate(loader=self)

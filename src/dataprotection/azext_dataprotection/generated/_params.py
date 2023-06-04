@@ -70,30 +70,6 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
 
-    with self.argument_context('dataprotection backup-policy list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault.')
-
-    with self.argument_context('dataprotection backup-policy show') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
-        c.argument('backup_policy_name', options_list=['--name', '-n', '--backup-policy-name'], type=str, help='Name '
-                   'of the policy', id_part='child_name_1')
-
-    with self.argument_context('dataprotection backup-policy create') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault.')
-        c.argument('backup_policy_name', options_list=['--name', '-n', '--backup-policy-name'], type=str, help='Name '
-                   'of the policy')
-        c.argument('backup_policy', action=AddBackupPolicy, nargs='+', help='Rule based backup policy',
-                   arg_group='Properties')
-
-    with self.argument_context('dataprotection backup-policy delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
-        c.argument('backup_policy_name', options_list=['--name', '-n', '--backup-policy-name'], type=str, help='Name '
-                   'of the policy', id_part='child_name_1')
-
     with self.argument_context('dataprotection backup-instance list') as c:
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('vault_name', type=str, help='The name of the backup vault.')
@@ -198,26 +174,3 @@ def load_arguments(self, _):
         c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
         c.argument('backup_instance_name', options_list=['--name', '-n', '--backup-instance-name'], type=str,
                    help='The name of the backup instance', id_part='child_name_1')
-
-    with self.argument_context('dataprotection resource-guard show') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('resource_guards_name', options_list=['--resource-guard-name', '--name', '-n'], type=str, help='The '
-                   'name of ResourceGuard', id_part='name')
-
-    with self.argument_context('dataprotection resource-guard create') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('resource_guards_name', options_list=['--resource-guard-name', '--name', '-n'], type=str, help='The '
-                   'name of ResourceGuard')
-        c.argument('e_tag', type=str, help='Optional ETag.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
-                   validator=get_default_location_from_resource_group)
-        c.argument('tags', tags_type)
-        c.argument('type_', options_list=['--type'], type=str, help='The identityType which can be either '
-                   'SystemAssigned or None', arg_group='Identity')
-        c.argument('vault_critical_operation_exclusion_list', nargs='+', help='List of critical operations which are '
-                   'not protected by this resourceGuard')
-
-    with self.argument_context('dataprotection resource-guard delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('resource_guards_name', options_list=['--resource-guard-name', '--name', '-n'], type=str, help='The '
-                   'name of ResourceGuard', id_part='name')
