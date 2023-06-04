@@ -383,22 +383,6 @@ deleted.
 --vault-name "PratikPrivatePreviewVault1" --deleted
 """
 
-helps['dataprotection restorable-time-range'] = """
-    type: group
-    short-summary: Manage restorable time range with dataprotection
-"""
-
-helps['dataprotection restorable-time-range find'] = """
-    type: command
-    short-summary: "."
-    examples:
-      - name: Find Restorable Time Ranges
-        text: |-
-               az dataprotection restorable-time-range find --backup-instance-name "zblobbackuptestsa58" --end-time \
-"2021-02-24T00:35:17.6829685Z" --source-data-store-type "OperationalStore" --start-time "2020-10-17T23:28:17.6829685Z" \
---resource-group "Blob-Backup" --vault-name "ZBlobBackupVaultBVTD3"
-"""
-
 helps['dataprotection resource-guard'] = """
     type: group
     short-summary: Manage resource guard with dataprotection
