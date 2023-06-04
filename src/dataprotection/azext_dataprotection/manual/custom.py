@@ -17,71 +17,25 @@ from azure.cli.core.util import sdk_no_wait
 from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
 from azext_dataprotection.manual import backupcenter_helper, helpers as helper
-# from azext_dataprotection.aaz.latest.data_protection.resource_guard import Show as ResourceGuardShow
+from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Show as ResourceGuardShow
 
 logger = get_logger(__name__)
 
 
-def dataprotection_resource_guard_list(client, resource_group_name=None):
-    if resource_group_name is not None:
-        return client.get_resources_in_resource_group(resource_group_name=resource_group_name)
-    return client.get_resources_in_subscription()
-
-
-def resource_guard_list_protected_operations(client, resource_group_name, resource_guards_name, resource_type):
-    resource_guard_object = client.get(resource_group_name, resource_guards_name)
-    protected_operations = resource_guard_object.properties.resource_guard_operations
+def resource_guard_list_protected_operations(cmd, resource_group_name, resource_guard_name, resource_type):
+    resource_guard_object = ResourceGuardShow(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "resource_guard_name": resource_guard_name,
+    })
+    if resource_guard_object.get('properties'):
+        protected_operations = resource_guard_object.get('properties').get('resourceGuardOperations')
+    else:
+        raise CLIError("Error: Could not fetch resource guard.")
     resource_type_protected_operation = []
     for protected_operation in protected_operations:
-        if resource_type in protected_operation.vault_critical_operation:
+        if resource_type in protected_operation.get('vaultCriticalOperation'):
             resource_type_protected_operation.append(protected_operation)
     return resource_type_protected_operation
-
-
-def dataprotection_resource_guard_create(client,
-                                         resource_group_name,
-                                         resource_guards_name,
-                                         e_tag=None,
-                                         location=None,
-                                         tags=None,
-                                         type_=None):
-    parameters = {}
-    parameters['e_tag'] = e_tag
-    parameters['location'] = location
-    parameters['tags'] = tags
-    if type_ is not None:
-        parameters['identity'] = {}
-        parameters['identity']['type'] = type_
-    parameters['properties'] = {}
-    return client.put(resource_group_name=resource_group_name,
-                      resource_guards_name=resource_guards_name,
-                      parameters=parameters)
-
-
-def dataprotection_resource_guard_update(client,
-                                         resource_group_name,
-                                         resource_guards_name,
-                                         tags=None,
-                                         type_=None,
-                                         resource_type=None,
-                                         critical_operation_exclusion_list=None):
-    resource_guard_object = client.get(resource_group_name, resource_guards_name)
-    parameters = {}
-    parameters['e_tag'] = resource_guard_object.e_tag
-    parameters['location'] = resource_guard_object.location
-    parameters['tags'] = tags
-    if type_ is not None:
-        parameters['identity'] = {}
-        parameters['identity']['type'] = type_
-    if resource_type is not None and critical_operation_exclusion_list is not None:
-        critical_operation_list = []
-        for critical_operation in critical_operation_exclusion_list:
-            critical_operation_list.append(resource_type + helper.critical_operation_map[critical_operation])
-        parameters['properties'] = {}
-        parameters['properties']['vault_critical_operation_exclusion_list'] = critical_operation_list
-    return client.put(resource_group_name=resource_group_name,
-                      resource_guards_name=resource_guards_name,
-                      parameters=parameters)
 
 
 def dataprotection_backup_instance_create(cmd, vault_name, resource_group_name, backup_instance, no_wait=False):

@@ -60,10 +60,14 @@ def load_command_table(self, _):
     with self.command_group('dataprotection job') as g:
         g.custom_command('list-from-resourcegraph', "dataprotection_job_list_from_resourcegraph", client_factory=cf_resource_graph_client)
 
-    with self.command_group('dataprotection resource-guard', exception_handler=exception_handler, client_factory=cf_resource_guard) as g:
-        g.custom_command('list', 'dataprotection_resource_guard_list')
+    with self.command_group('dataprotection resource-guard', exception_handler=exception_handler) as g:
         g.custom_command('list-protected-operations', 'resource_guard_list_protected_operations')
-        g.custom_command('update', 'dataprotection_resource_guard_update')
+
+    from .aaz_operations.resource_guard import Create as ResourceGuardCreate, Update as ResourceGuardUpdate
+    self.command_table['dataprotection resource-guard create'] = ResourceGuardCreate(loader=self)
+    self.command_table['dataprotection resource-guard update'] = ResourceGuardUpdate(loader=self)
 
     from .aaz_operations.recovery_point import RecoveryPointList
     self.command_table['dataprotection recovery-point list'] = RecoveryPointList(loader=self)
+
+    
