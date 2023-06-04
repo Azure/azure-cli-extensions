@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.aaz import (
-    AAZStrArg, 
+    AAZStrArg,
     AAZStrType, AAZObjectType, AAZDictType,
     AAZArgEnum,
     AAZUndefined
@@ -15,6 +15,7 @@ from ..helpers import critical_operation_map
 from knack.log import get_logger
 
 logger = get_logger(__name__)
+
 
 class Create(_Create):
 
@@ -31,7 +32,7 @@ class Create(_Create):
             help="The identityType which can be either SystemAssigned or None",
         )
         return cls._args_schema
-    
+
     class ResourceGuardsPut(_Create.ResourceGuardsPut):
 
         @property
@@ -54,7 +55,7 @@ class Create(_Create):
             tags = _builder.get(".tags")
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
-                
+
             return self.serialize_content(_content_value)
 
 
@@ -65,7 +66,7 @@ class Update(_Update):
         if cls._args_schema is not None:
             return cls._args_schema
         cls._args_schema = super()._build_arguments_schema(*args, **kwargs)
-        
+
         _args_schema = cls._args_schema
         _args_schema.resource_type = AAZStrArg(
             options=["--resource-type"],
@@ -81,7 +82,7 @@ class Update(_Update):
         enum = get_critical_operation_values()
         _args_schema.critical_operation_exclusion_list.Element.enum = AAZArgEnum(enum, case_sensitive=False)
         return cls._args_schema
-    
+
     def pre_operations(self):
         critical_operation_exclusion_list = self.ctx.args.critical_operation_exclusion_list
         resource_type = self.ctx.args.resource_type
@@ -93,7 +94,6 @@ class Update(_Update):
             if critical_operation_exclusion_list.to_serialized_data() != AAZUndefined:
                 logger.warning("WARNING: --resource-type argument is required if --critical-operation-exclusion-list is given.")
                 self.ctx.args.critical_operation_exclusion_list = AAZUndefined
-
 
     class InstanceUpdateByJson(_Update.InstanceUpdateByJson):
 

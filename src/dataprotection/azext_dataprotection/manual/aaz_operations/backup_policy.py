@@ -35,7 +35,6 @@ class Create(_Create):
             help="The name of the backup vault.",
             required=True,
         )
-        
         _args_schema.policy = AAZFreeFormDictArg(
             options=["--policy"],
             help="Request body for operation Expected value: json-string/@json-file.",
@@ -43,7 +42,7 @@ class Create(_Create):
         )
 
         return cls._args_schema
-    
+
     class BackupPoliciesCreateOrUpdate(_Create.BackupPoliciesCreateOrUpdate):
 
         @property
