@@ -75,7 +75,9 @@ def configure_backup(test):
 
     # The backup vault creation appeared to be flaky, and the test ran after adding this line. Might need to investigate.
     bvout = test.cmd('az dataprotection backup-vault show -g "{rgname}" --vault-name {vaultname}').get_output_in_json()
-    print(bvout)
+
+    # Sleep may solve the error `Cannot find user or service principal in graph database`
+    time.sleep(10)
 
     # uncomment when running live, run only in record mode - grant permission
     # test.cmd('az dataprotection backup-instance update-msi-permissions '
