@@ -595,15 +595,6 @@ def dataprotection_job_list_from_resourcegraph(client, datasource_type, resource
     return response.data
 
 
-def dataprotection_backup_policy_create(client, vault_name, resource_group_name, policy, backup_policy_name):
-    parameters = {}
-    parameters['properties'] = policy
-    return client.create_or_update(vault_name=vault_name,
-                                   resource_group_name=resource_group_name,
-                                   backup_policy_name=backup_policy_name,
-                                   parameters=parameters)
-
-
 def dataprotection_backup_policy_get_default_policy_template(datasource_type):
     manifest = helper.load_manifest(datasource_type)
     if manifest is not None and manifest["policySettings"] is not None and manifest["policySettings"]["defaultPolicy"] is not None:

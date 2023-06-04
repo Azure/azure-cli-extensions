@@ -14,50 +14,6 @@ from knack.util import CLIError
 from azure.cli.core.util import sdk_no_wait
 
 
-def dataprotection_backup_policy_list(client,
-                                      resource_group_name,
-                                      vault_name):
-    return client.list(resource_group_name=resource_group_name,
-                       vault_name=vault_name)
-
-
-def dataprotection_backup_policy_show(client,
-                                      resource_group_name,
-                                      vault_name,
-                                      backup_policy_name):
-    return client.get(resource_group_name=resource_group_name,
-                      vault_name=vault_name,
-                      backup_policy_name=backup_policy_name)
-
-
-def dataprotection_backup_policy_create(client,
-                                        resource_group_name,
-                                        vault_name,
-                                        backup_policy_name,
-                                        backup_policy=None):
-    all_properties = []
-    if backup_policy is not None:
-        all_properties.append(backup_policy)
-    if len(all_properties) > 1:
-        raise CLIError('at most one of  backup_policy is needed for properties!')
-    properties = all_properties[0] if len(all_properties) == 1 else None
-    parameters = {}
-    parameters['properties'] = properties
-    return client.create_or_update(resource_group_name=resource_group_name,
-                                   vault_name=vault_name,
-                                   backup_policy_name=backup_policy_name,
-                                   parameters=parameters)
-
-
-def dataprotection_backup_policy_delete(client,
-                                        resource_group_name,
-                                        vault_name,
-                                        backup_policy_name):
-    return client.delete(resource_group_name=resource_group_name,
-                         vault_name=vault_name,
-                         backup_policy_name=backup_policy_name)
-
-
 def dataprotection_backup_instance_list(client,
                                         resource_group_name,
                                         vault_name):
