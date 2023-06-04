@@ -250,23 +250,6 @@ def dataprotection_backup_instance_validate_for_restore(client,
                        parameters=parameters)
 
 
-def dataprotection_restorable_time_range_find(client,
-                                              resource_group_name,
-                                              vault_name,
-                                              backup_instance_name,
-                                              source_data_store_type,
-                                              start_time=None,
-                                              end_time=None):
-    parameters = {}
-    parameters['source_data_store_type'] = source_data_store_type
-    parameters['start_time'] = start_time
-    parameters['end_time'] = end_time
-    return client.find(resource_group_name=resource_group_name,
-                       vault_name=vault_name,
-                       backup_instance_name=backup_instance_name,
-                       parameters=parameters)
-
-
 def dataprotection_resource_guard_show(client,
                                        resource_group_name,
                                        resource_guards_name):

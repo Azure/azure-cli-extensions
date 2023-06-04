@@ -16,7 +16,6 @@ from azure.cli.core.commands import CliCommandType
 from azext_dataprotection.generated._client_factory import (
     cf_backup_policy,
     cf_backup_instance,
-    cf_restorable_time_range,
     cf_resource_guard,
 )
 
@@ -30,12 +29,6 @@ dataprotection_backup_policy = CliCommandType(
 dataprotection_backup_instance = CliCommandType(
     operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._backup_instances_operations#BackupInstancesOperations.{}',
     client_factory=cf_backup_instance,
-)
-
-
-dataprotection_restorable_time_range = CliCommandType(
-    operations_tmpl='azext_dataprotection.vendored_sdks.dataprotection.operations._restorable_time_ranges_operations#RestorableTimeRangesOperations.{}',
-    client_factory=cf_restorable_time_range,
 )
 
 
@@ -74,13 +67,6 @@ def load_command_table(self, _):
         #     'validate-for-restore', 'dataprotection_backup_instance_validate_for_restore', supports_no_wait=True
         # )
         g.custom_wait_command('wait', 'dataprotection_backup_instance_show')
-
-    with self.command_group(
-        'dataprotection restorable-time-range',
-        dataprotection_restorable_time_range,
-        client_factory=cf_restorable_time_range,
-    ) as g:
-        g.custom_command('find', 'dataprotection_restorable_time_range_find')
 
     with self.command_group(
         'dataprotection resource-guard', dataprotection_resource_guard, client_factory=cf_resource_guard
