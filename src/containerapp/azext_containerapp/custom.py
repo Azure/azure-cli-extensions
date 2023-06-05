@@ -2570,6 +2570,129 @@ def show_managed_identity(cmd, name, resource_group_name):
         return r["identity"]
 
 
+def assign_managed_identity_job(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    containerappjob_def = None
+
+    # Get containerapp job properties of CA we are updating
+    try:
+        containerappjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerappjob_def:
+        raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerappjob_def, AppType.ContainerAppJob)
+    set_managed_identity(cmd, resource_group_name, containerappjob_def, system_assigned, user_assigned)
+
+    try:
+        r = ContainerAppsJobClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappjob_def, no_wait=no_wait)
+        # If identity is not returned, do nothing
+        return r["identity"]
+
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def remove_managed_identity_job(cmd, name, resource_group_name, system_assigned=False, user_assigned=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    remove_system_identity = system_assigned
+    remove_user_identities = user_assigned
+
+    if user_assigned:
+        remove_id_size = len(remove_user_identities)
+
+        # Remove duplicate identities that are passed and notify
+        remove_user_identities = list(set(remove_user_identities))
+        if remove_id_size != len(remove_user_identities):
+            logger.warning("At least one identity was passed twice.")
+
+    containerappjob_def = None
+    # Get containerapp job properties of CA we are updating
+    try:
+        containerappjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerappjob_def:
+        raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerappjob_def, AppType.ContainerAppJob)
+
+    # If identity not returned
+    try:
+        containerappjob_def["identity"]
+        containerappjob_def["identity"]["type"]
+    except:
+        containerappjob_def["identity"] = {}
+        containerappjob_def["identity"]["type"] = "None"
+
+    if containerappjob_def["identity"]["type"] == "None":
+        raise InvalidArgumentValueError("The containerapp job {} has no system or user assigned identities.".format(name))
+
+    if remove_system_identity:
+        if containerappjob_def["identity"]["type"] == "UserAssigned":
+            raise InvalidArgumentValueError("The containerapp job {} has no system assigned identities.".format(name))
+        containerappjob_def["identity"]["type"] = ("None" if containerappjob_def["identity"]["type"] == "SystemAssigned" else "UserAssigned")
+
+    if isinstance(user_assigned, list) and not user_assigned:
+        containerappjob_def["identity"]["userAssignedIdentities"] = {}
+        remove_user_identities = []
+
+        if containerappjob_def["identity"]["userAssignedIdentities"] == {}:
+            containerappjob_def["identity"]["userAssignedIdentities"] = None
+            containerappjob_def["identity"]["type"] = ("None" if containerappjob_def["identity"]["type"] == "UserAssigned" else "SystemAssigned")
+
+    if remove_user_identities:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+        try:
+            containerappjob_def["identity"]["userAssignedIdentities"]
+        except:
+            containerappjob_def["identity"]["userAssignedIdentities"] = {}
+        for remove_id in remove_user_identities:
+            given_id = remove_id
+            remove_id = _ensure_identity_resource_id(subscription_id, resource_group_name, remove_id)
+            wasRemoved = False
+
+            for old_user_identity in containerappjob_def["identity"]["userAssignedIdentities"]:
+                if old_user_identity.lower() == remove_id.lower():
+                    containerappjob_def["identity"]["userAssignedIdentities"].pop(old_user_identity)
+                    wasRemoved = True
+                    break
+
+            if not wasRemoved:
+                raise InvalidArgumentValueError("The containerapp job does not have specified user identity '{}' assigned, so it cannot be removed.".format(given_id))
+
+        if containerappjob_def["identity"]["userAssignedIdentities"] == {}:
+            containerappjob_def["identity"]["userAssignedIdentities"] = None
+            containerappjob_def["identity"]["type"] = ("None" if containerappjob_def["identity"]["type"] == "UserAssigned" else "SystemAssigned")
+
+    try:
+        r = ContainerAppsJobClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappjob_def, no_wait=no_wait)
+        return r["identity"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_managed_identity_job(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    try:
+        r = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except CLIError as e:
+        handle_raw_exception(e)
+
+    try:
+        return r["identity"]
+    except:
+        r["identity"] = {}
+        r["identity"]["type"] = "None"
+        return r["identity"]
+
+
 def _validate_github(repo, branch, token):
     from github import Github, GithubException
     from github.GithubException import BadCredentialsException
@@ -3588,30 +3711,6 @@ def list_secrets(cmd, name, resource_group_name, show_values=False):
         # raise ValidationError("The containerapp {} has no assigned secrets.".format(name)) from e
 
 
-def list_secrets_job(cmd, name, resource_group_name, show_values=False):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-
-    containerappjob_def = None
-    try:
-        r = containerappjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    except:
-        pass
-
-    if not containerappjob_def:
-        raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
-
-    if not show_values:
-        try:
-            return r["properties"]["configuration"]["secrets"]
-        except:
-            return []
-    try:
-        return ContainerAppsJobClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)["value"]
-    except Exception:
-        return []
-        # raise ValidationError("The containerapp job {} has no assigned secrets.".format(name)) from e
-
-
 def show_secret(cmd, name, resource_group_name, secret_name):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
@@ -3629,25 +3728,6 @@ def show_secret(cmd, name, resource_group_name, secret_name):
         if secret["name"].lower() == secret_name.lower():
             return secret
     raise ValidationError("The containerapp {} does not have a secret assigned with name {}.".format(name, secret_name))
-
-
-def show_secret_job(cmd, name, resource_group_name, secret_name):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-
-    containerappjob_def = None
-    try:
-        containerappjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    except:
-        pass
-
-    if not containerappjob_def:
-        raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
-
-    r = ContainerAppsJobClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    for secret in r["value"]:
-        if secret["name"].lower() == secret_name.lower():
-            return secret
-    raise ValidationError("The containerapp job {} does not have a secret assigned with name {}.".format(name, secret_name))
 
 
 def remove_secrets(cmd, name, resource_group_name, secret_names, no_wait=False):
@@ -3676,42 +3756,6 @@ def remove_secrets(cmd, name, resource_group_name, secret_names, no_wait=False):
     try:
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
-        logger.warning("Secret(s) successfully removed.")
-        try:
-            return r["properties"]["configuration"]["secrets"]
-        # No secrets to return
-        except:
-            pass
-    except Exception as e:
-        handle_raw_exception(e)
-
-
-def remove_secrets_job(cmd, name, resource_group_name, secret_names, no_wait=False):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-
-    containerappjob_def = None
-    try:
-        containerappjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-    except:
-        pass
-
-    if not containerappjob_def:
-        raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
-
-    _get_existing_secrets(cmd, resource_group_name, name, containerappjob_def, AppType.ContainerAppJob)
-
-    for secret_name in secret_names:
-        wasRemoved = False
-        for secret in containerappjob_def["properties"]["configuration"]["secrets"]:
-            if secret["name"].lower() == secret_name.lower():
-                _remove_secret(containerappjob_def, secret_name=secret["name"])
-                wasRemoved = True
-                break
-        if not wasRemoved:
-            raise ValidationError("The containerapp job {} does not have a secret assigned with name {}.".format(name, secret_name))
-    try:
-        r = ContainerAppsJobClient.create_or_update(
-            cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappjob_def, no_wait=no_wait)
         logger.warning("Secret(s) successfully removed.")
         try:
             return r["properties"]["configuration"]["secrets"]
@@ -3768,6 +3812,85 @@ def set_secrets(cmd, name, resource_group_name, secrets,
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
         logger.warning("Containerapp '{}' must be restarted in order for secret changes to take effect.".format(name))
         return r["properties"]["configuration"]["secrets"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def list_secrets_job(cmd, name, resource_group_name, show_values=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerappjob_def = None
+    try:
+        r = containerappjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerappjob_def:
+        raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
+
+    if not show_values:
+        try:
+            return r["properties"]["configuration"]["secrets"]
+        except:
+            return []
+    try:
+        return ContainerAppsJobClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)["value"]
+    except Exception:
+        return []
+        # raise ValidationError("The containerapp job {} has no assigned secrets.".format(name)) from e
+
+
+def show_secret_job(cmd, name, resource_group_name, secret_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerappjob_def = None
+    try:
+        containerappjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerappjob_def:
+        raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
+
+    r = ContainerAppsJobClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    for secret in r["value"]:
+        if secret["name"].lower() == secret_name.lower():
+            return secret
+    raise ValidationError("The containerapp job {} does not have a secret assigned with name {}.".format(name, secret_name))
+
+
+def remove_secrets_job(cmd, name, resource_group_name, secret_names, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerappjob_def = None
+    try:
+        containerappjob_def = ContainerAppsJobClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerappjob_def:
+        raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerappjob_def, AppType.ContainerAppJob)
+
+    for secret_name in secret_names:
+        wasRemoved = False
+        for secret in containerappjob_def["properties"]["configuration"]["secrets"]:
+            if secret["name"].lower() == secret_name.lower():
+                _remove_secret(containerappjob_def, secret_name=secret["name"])
+                wasRemoved = True
+                break
+        if not wasRemoved:
+            raise ValidationError("The containerapp job {} does not have a secret assigned with name {}.".format(name, secret_name))
+    try:
+        r = ContainerAppsJobClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, containerapp_job_envelope=containerappjob_def, no_wait=no_wait)
+        logger.warning("Secret(s) successfully removed.")
+        try:
+            return r["properties"]["configuration"]["secrets"]
+        # No secrets to return
+        except:
+            pass
     except Exception as e:
         handle_raw_exception(e)
 

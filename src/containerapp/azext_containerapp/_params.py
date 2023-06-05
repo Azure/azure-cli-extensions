@@ -487,3 +487,10 @@ def load_arguments(self, _):
         c.argument('secret_names', id_part=None, nargs='+', help="A list of secret(s) for the container app job. Space-separated secret values names.")
         c.argument('show_values', action='store_true', help='Show the secret values.')
         c.ignore('disable_max_length')
+
+    with self.argument_context('containerapp job identity') as c:
+        c.argument('user_assigned', nargs='+', help="Space-separated user identities.")
+        c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.")
+
+    with self.argument_context('containerapp job identity remove') as c:
+        c.argument('user_assigned', nargs='*', help="Space-separated user identities. If no user identities are specified, all user identities will be removed.")

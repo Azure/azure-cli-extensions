@@ -907,6 +907,60 @@ helps['containerapp identity show'] = """
           az containerapp identity show -n myContainerapp -g MyResourceGroup
 """
 
+helps['containerapp job identity'] = """
+    type: group
+    short-summary: Commands to manage managed identities for container app job.
+"""
+
+helps['containerapp job identity assign'] = """
+    type: command
+    short-summary: Assign managed identity to a container app job.
+    long-summary: Managed identities can be user-assigned or system-assigned.
+    examples:
+    - name: Assign system identity.
+      text: |
+          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --system-assigned
+    - name: Assign user identity.
+      text: |
+          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --user-assigned myUserIdentityName
+    - name: Assign user identity (from a different resource group than the containerapp job).
+      text: |
+          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --user-assigned myUserIdentityResourceId
+    - name: Assign system and user identity.
+      text: |
+          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --system-assigned --user-assigned myUserIdentityResourceId
+"""
+
+helps['containerapp job identity remove'] = """
+    type: command
+    short-summary: Remove a managed identity from a container app job.
+    examples:
+    - name: Remove system identity.
+      text: |
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --system-assigned
+    - name: Remove user identity.
+      text: |
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --user-assigned myUserIdentityName
+    - name: Remove system and user identity (from a different resource group than the containerapp job).
+      text: |
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --system-assigned --user-assigned myUserIdentityResourceId
+    - name: Remove all user identities.
+      text: |
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --user-assigned
+    - name: Remove system identity and all user identities.
+      text: |
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --system-assigned --user-assigned
+"""
+
+helps['containerapp job identity show'] = """
+    type: command
+    short-summary: Show managed identities of a container app job.
+    examples:
+    - name: Show managed identities.
+      text: |
+          az containerapp job identity show -n myContainerappjob -g MyResourceGroup
+"""
+
 # Ingress Commands
 helps['containerapp ingress'] = """
     type: group

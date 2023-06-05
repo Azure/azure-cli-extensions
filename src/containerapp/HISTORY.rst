@@ -8,6 +8,7 @@ Release History
 * 'az containerapp up': fix --target-port value not being propagated when buildpack is used to build image from --source
 * Fix for 'az containerapp job create' with --yaml option to create a Container App job
 * Support 'az containerapp job secret' to manage secrets for Container App jobs
+* Support 'az containerapp job identity' to manage identity for Container App jobs
 * Fix for issue with --user-assigned identity for Container App jobs where identities were getting split incorrectly
 
 0.3.32
