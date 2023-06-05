@@ -465,7 +465,7 @@ def load_arguments(self, _):
         c.argument('system_assigned', help='Boolean indicating whether to assign system-assigned identity.', action='store_true')
         c.argument('trigger_type', help='Trigger type. Schedule | Event | Manual')
         c.argument('user_assigned', nargs='+', help='Space-separated user identities to be assigned.')
- 
+
     with self.argument_context('containerapp job', arg_group='Scale') as c:
         c.argument('min_executions', type=int, help="Minimum number of job executions to run per polling interval.")
         c.argument('max_executions', type=int, help="Maximum number of job executions to run per polling interval.")
