@@ -572,6 +572,10 @@ def aks_create(
     nodepool_allowed_host_ports=None,
     nodepool_asg_ids=None,
     node_public_ip_tags=None,
+    # guardrails parameters
+    guardrails_level=None,
+    guardrails_version=None,
+    guardrails_excluded_ns=None,
     # azure service mesh
     enable_azure_service_mesh=None,
     # azure monitor profile
@@ -735,6 +739,10 @@ def aks_update(
     disable_vpa=False,
     cluster_snapshot_id=None,
     custom_ca_trust_certificates=None,
+    # guardrails parameters
+    guardrails_level=None,
+    guardrails_version=None,
+    guardrails_excluded_ns=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

@@ -7,7 +7,6 @@
 # pylint: disable=too-many-locals
 # pylint: disable=line-too-long
 
-from azure.cli.core.commands import CliCommandType
 from azext_dataprotection.generated._client_factory import (
     cf_backup_instance, cf_backup_policy, cf_resource_guard
 )
@@ -65,3 +64,6 @@ def load_command_table(self, _):
         g.custom_command('list', 'dataprotection_resource_guard_list')
         g.custom_command('list-protected-operations', 'resource_guard_list_protected_operations')
         g.custom_command('update', 'dataprotection_resource_guard_update')
+
+    from .aaz_operations.recovery_point import RecoveryPointList
+    self.command_table['dataprotection recovery-point list'] = RecoveryPointList(loader=self)

@@ -231,50 +231,75 @@ def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_avai
     return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
-def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output):
+def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output, outbound_connectivity_check_for='pre-onboarding-inspector'):
 
     try:
-        if consts.Outbound_Connectivity_Check_Check_String not in outbound_connectivity_check_log:
-            return consts.Diagnostic_Check_Incomplete, storage_space_available
+        if outbound_connectivity_check_for == 'pre-onboarding-inspector':
+            if consts.Outbound_Connectivity_Check_Result_String not in outbound_connectivity_check_log:
+                return consts.Diagnostic_Check_Incomplete, storage_space_available
 
-        Outbound_Connectivity_Log_For_Cluster_Connect = outbound_connectivity_check_log.split('  ')[0]
-        # extracting the endpoints for cluster connect feature
-        Cluster_Connect_Precheck_Endpoint_Url = Outbound_Connectivity_Log_For_Cluster_Connect.split(" : ")[1]
-        # extracting the obo endpoint response code from outbound connectivity check
-        Cluster_Connect_Precheck_Endpoint_response_code = Outbound_Connectivity_Log_For_Cluster_Connect.split(" : ")[2]
+            Outbound_Connectivity_Log_For_Cluster_Connect = outbound_connectivity_check_log.split('  ')[0]
+            # extracting the endpoints for cluster connect feature
+            Cluster_Connect_Precheck_Endpoint_Url = Outbound_Connectivity_Log_For_Cluster_Connect.split(" : ")[1]
+            # extracting the obo endpoint response code from outbound connectivity check
+            Cluster_Connect_Precheck_Endpoint_response_code = Outbound_Connectivity_Log_For_Cluster_Connect.split(" : ")[2]
 
-        if(Cluster_Connect_Precheck_Endpoint_response_code != "000"):
-            if storage_space_available:
-                cluster_connect_outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check_for_cluster_connect)
-                with open(cluster_connect_outbound_connectivity_check_path, 'w+') as outbound:
-                        outbound.write("Response code " + Cluster_Connect_Precheck_Endpoint_response_code + "\nOutbound network connectivity check to cluster connect precheck endpoints passed successfully.")
-        else:
-            logger.warning("The outbound network connectivity check has failed for the endpoint - " + Cluster_Connect_Precheck_Endpoint_Url + "\nThis will affect the \"cluster-connect\" feature. If you are planning to use \"cluster-connect\" functionality , please ensure outbound connectivity to the above endpoint.\n")
-            telemetry.set_exception(exception='Outbound network connectivity check failed for the Cluster Connect endpoint', fault_type=consts.Outbound_Connectivity_Check_Failed_For_Cluster_Connect, summary="Outbound network connectivity check failed for the Cluster Connect precheck endpoint")
-            if storage_space_available:
-                cluster_connect_outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check_for_cluster_connect)
-                with open(cluster_connect_outbound_connectivity_check_path, 'w+') as outbound:
-                        outbound.write("Response code " + Cluster_Connect_Precheck_Endpoint_response_code + "\nOutbound connectivity failed for the endpoint:" + Cluster_Connect_Precheck_Endpoint_Url + " ,this is an optional endpoint needed for cluster-connect feature.")
+            if(Cluster_Connect_Precheck_Endpoint_response_code != "000"):
+                if storage_space_available:
+                    cluster_connect_outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check_for_cluster_connect)
+                    with open(cluster_connect_outbound_connectivity_check_path, 'w+') as outbound:
+                            outbound.write("Response code " + Cluster_Connect_Precheck_Endpoint_response_code + "\nOutbound network connectivity check to cluster connect precheck endpoints passed successfully.")
+            else:
+                logger.warning("The outbound network connectivity check has failed for the endpoint - " + Cluster_Connect_Precheck_Endpoint_Url + "\nThis will affect the \"cluster-connect\" feature. If you are planning to use \"cluster-connect\" functionality , please ensure outbound connectivity to the above endpoint.\n")
+                telemetry.set_exception(exception='Outbound network connectivity check failed for the Cluster Connect endpoint', fault_type=consts.Outbound_Connectivity_Check_Failed_For_Cluster_Connect, summary="Outbound network connectivity check failed for the Cluster Connect precheck endpoint")
+                if storage_space_available:
+                    cluster_connect_outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check_for_cluster_connect)
+                    with open(cluster_connect_outbound_connectivity_check_path, 'w+') as outbound:
+                            outbound.write("Response code " + Cluster_Connect_Precheck_Endpoint_response_code + "\nOutbound connectivity failed for the endpoint:" + Cluster_Connect_Precheck_Endpoint_Url + " ,this is an optional endpoint needed for cluster-connect feature.")
 
-        Onboarding_Precheck_Endpoint_outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
-        Onboarding_Precheck_Endpoint_outbound_connectivity_response = Onboarding_Precheck_Endpoint_outbound_connectivity_response[::-1]
+            Onboarding_Precheck_Endpoint_outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
+            Onboarding_Precheck_Endpoint_outbound_connectivity_response = Onboarding_Precheck_Endpoint_outbound_connectivity_response[::-1]
 
-        # Validating if outbound connectiivty is working or not and displaying proper result
-        if(Onboarding_Precheck_Endpoint_outbound_connectivity_response != "000"):
-            if storage_space_available:
-                outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check_for_onboarding)
-                with open(outbound_connectivity_check_path, 'w+') as outbound:
-                        outbound.write("Response code " + Onboarding_Precheck_Endpoint_outbound_connectivity_response + "\nOutbound network connectivity check to the onboarding precheck endpoint passed successfully.")
-            return consts.Diagnostic_Check_Passed, storage_space_available
-        else:
-            logger.warning("Error: We found an issue with outbound network connectivity from the cluster to the endpoints required for onboarding.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server' \n")
-            diagnoser_output.append("Error: We found an issue with outbound network connectivity from the cluster to the endpoints required for onboarding.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server' \n")
-            if storage_space_available:
-                outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check_for_onboarding)
-                with open(outbound_connectivity_check_path, 'w+') as outbound:
-                    outbound.write("Response code " + Onboarding_Precheck_Endpoint_outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster required for onboarding.")
-            telemetry.set_exception(exception='Outbound network connectivity check failed for onboarding', fault_type=consts.Outbound_Connectivity_Check_Failed_For_Onboarding, summary="Outbound network connectivity check for onboarding failed in the cluster")
-            return consts.Diagnostic_Check_Failed, storage_space_available
+            # Validating if outbound connectiivty is working or not and displaying proper result
+            if(Onboarding_Precheck_Endpoint_outbound_connectivity_response != "000"):
+                if storage_space_available:
+                    outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check_for_onboarding)
+                    with open(outbound_connectivity_check_path, 'w+') as outbound:
+                            outbound.write("Response code " + Onboarding_Precheck_Endpoint_outbound_connectivity_response + "\nOutbound network connectivity check to the onboarding precheck endpoint passed successfully.")
+                return consts.Diagnostic_Check_Passed, storage_space_available
+            else:
+                outbound_connectivity_failed_warning_message = "Error: We found an issue with outbound network connectivity from the cluster to the endpoints required for onboarding.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server' \n"
+                logger.warning(outbound_connectivity_failed_warning_message)
+                diagnoser_output.append(outbound_connectivity_failed_warning_message)
+                if storage_space_available:
+                    outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check_for_onboarding)
+                    with open(outbound_connectivity_check_path, 'w+') as outbound:
+                        outbound.write("Response code " + Onboarding_Precheck_Endpoint_outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster required for onboarding.")
+                telemetry.set_exception(exception='Outbound network connectivity check failed for onboarding', fault_type=consts.Outbound_Connectivity_Check_Failed_For_Onboarding, summary="Outbound network connectivity check for onboarding failed in the cluster")
+                return consts.Diagnostic_Check_Failed, storage_space_available
+
+        elif outbound_connectivity_check_for == 'troubleshoot':
+            outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
+            outbound_connectivity_response = outbound_connectivity_response[::-1]
+            if consts.Outbound_Connectivity_Check_Result_String not in outbound_connectivity_check_log:
+                return consts.Diagnostic_Check_Incomplete, storage_space_available
+
+            if(outbound_connectivity_response != "000"):
+                if storage_space_available:
+                    outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
+                    with open(outbound_connectivity_check_path, 'w+') as outbound:
+                        outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully.")
+                return consts.Diagnostic_Check_Passed, storage_space_available
+            else:
+                outbound_connectivity_failed_warning_message = "Error: We found an issue with outbound network connectivity from the cluster.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server' \n"
+                logger.warning(outbound_connectivity_failed_warning_message)
+                diagnoser_output.append(outbound_connectivity_failed_warning_message)
+                if storage_space_available:
+                    outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
+                    with open(outbound_connectivity_check_path, 'w+') as outbound:
+                        outbound.write("Response code " + outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster.")
+                telemetry.set_exception(exception='Outbound network connectivity check failed', fault_type=consts.Outbound_Connectivity_Check_Failed, summary="Outbound network connectivity check failed in the cluster")
+                return consts.Diagnostic_Check_Failed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:

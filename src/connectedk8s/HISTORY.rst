@@ -2,6 +2,11 @@
 
 Release History
 
+1.3.20
+++++++
+
+* Bug fix in parsing logs for outbound connectivity check for troubleshoot command
+
 1.3.19
 ++++++
 
