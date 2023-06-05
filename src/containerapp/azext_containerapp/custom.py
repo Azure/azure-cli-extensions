@@ -1691,8 +1691,6 @@ def create_containerappsjob(cmd,
 
     assign_system_identity = system_assigned
     if user_assigned:
-        # split entries in user_assigned and store as a list
-        user_assigned = user_assigned.split()
         assign_user_identities = [x.lower() for x in user_assigned]
     else:
         assign_user_identities = []

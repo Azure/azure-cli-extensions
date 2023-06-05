@@ -7,7 +7,7 @@ Release History
 * 'az containerapp create': fix --registry-identity "system" with --revision-suffix
 * Fix for 'az containerapp job create' with --yaml option to create a Container App job
 * Support 'az containerapp job secret' to manage secrets for Container App jobs
-* Fix for issue with user-assigned identity for Container App jobs
+* Fix for issue with --user-assigned identity for Container App jobs where identities were getting split incorrectly
 
 0.3.32
 ++++++

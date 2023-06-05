@@ -5044,6 +5044,8 @@ class ContainerAppsJob(TrackedResource):
     :type jobConfiguration: ~commondefinitions.models.JobConfiguration
     :param jobTemplate: Container App versioned application definition.
     :type template: ~commondefinitions.models.JobTemplate
+    :ivar outbound_ip_addresses: Outbound IP Addresses for container app.
+    :vartype outbound_ip_addresses: list[str]
     """
 
     _validation = {
@@ -5053,6 +5055,7 @@ class ContainerAppsJob(TrackedResource):
         'system_data': {'readonly': True},
         'location': {'required': True},
         'provisioning_state': {'readonly': True},
+        "outbound_ip_addresses": {"readonly": True},
         "event_stream_endpoint": {"readonly": True}
     }
 
@@ -5065,6 +5068,7 @@ class ContainerAppsJob(TrackedResource):
         'location': {'key': 'location', 'type': 'str'},
         'identity': {'key': 'identity', 'type': 'ManagedServiceIdentity'},
         'provisioning_state': {'key': 'properties.provisioningState', 'type': 'str'},
+        "outbound_ip_addresses": {"key": "properties.outboundIpAddresses", "type": "[str]"},
         'managed_environment_id': {'key': 'properties.managedEnvironmentId', 'type': 'str'},
         "environment_id": {"key": "properties.environmentId", "type": "str"},
         "workload_profile_name": {"key": "properties.workloadProfileName", "type": "str"},
@@ -5078,7 +5082,6 @@ class ContainerAppsJob(TrackedResource):
         *,
         location: str,
         tags: Optional[Dict[str, str]] = None,
-        extended_location: Optional["_models.ExtendedLocation"] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         managed_by: Optional[str] = None,
         managed_environment_id: Optional[str] = None,
@@ -5112,6 +5115,7 @@ class ContainerAppsJob(TrackedResource):
         self.identity = identity
         self.managed_by = managed_by
         self.provisioning_state = None
+        self.outbound_ip_addresses = None
         self.managed_environment_id = managed_environment_id
         self.environment_id = environment_id
         self.workload_profile_name = workload_profile_name
