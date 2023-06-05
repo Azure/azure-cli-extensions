@@ -9,6 +9,8 @@ from azure.cli.core.aaz import (
     AAZStrArg, AAZResourceGroupNameArg, AAZFreeFormDictArg,
     AAZObjectType, AAZFreeFormDictType
 )
+from ..helpers import clean_nulls_from_json
+import json
 
 
 class Create(_Create):
@@ -44,6 +46,17 @@ class Create(_Create):
         return cls._args_schema
 
     class BackupPoliciesCreateOrUpdate(_Create.BackupPoliciesCreateOrUpdate):
+        
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+            # Removing null valued items from json to fix 'Bad Request' error.
+            clean_reponse = clean_nulls_from_json(json.loads(session.http_response.text()))
+            encoding = session.http_response.internal_response.encoding
+            session.http_response.internal_response._content = bytes(json.dumps(clean_reponse), encoding)
+            return self.on_error(session.http_response)
 
         @property
         def content(self):

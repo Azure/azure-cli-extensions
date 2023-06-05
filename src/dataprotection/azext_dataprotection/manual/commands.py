@@ -71,3 +71,9 @@ def load_command_table(self, _):
 
     from .aaz_operations.backup_policy import Create as BackupPolicyCreate
     self.command_table['dataprotection backup-policy create'] = BackupPolicyCreate(loader=self)
+
+    from .aaz_operations.backup_instance import AdhocBackup as BackupInstanceAdhocBackup
+    self.command_table['data-protection backup-instance adhoc-backup'] = BackupInstanceAdhocBackup(loader=self)
+
+    from .aaz_operations.restorable_time_range import Find as RestorableTimeRangeFind
+    self.command_table['dataprotection restorable-time-range find'] =  RestorableTimeRangeFind(loader=self)

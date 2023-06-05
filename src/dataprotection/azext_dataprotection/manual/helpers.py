@@ -388,3 +388,19 @@ def validate_recovery_point_datetime_format(aaz_str_arg):
         return dt_iso
     except ValueError:
         raise CLIError(f"Input '{date_str}' not valid datetime. Valid example: 2017-12-31T05:30:00") from ValueError
+
+
+def clean_nulls_from_json(json):
+    """
+    Removes all `None` values from a valid json object, and returns a new dictionary or list.
+    """
+    if isinstance(json, dict):
+        return {
+            key: clean_nulls_from_json(val) 
+            for key, val in json.items()
+            if val is not None
+        }
+    if isinstance(json, list):
+        return [clean_nulls_from_json(val) for val in json if val is not None]
+    else:
+        return json
