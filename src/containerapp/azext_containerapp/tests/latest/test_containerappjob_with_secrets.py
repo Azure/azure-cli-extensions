@@ -85,7 +85,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         ])
 
         # delete secret from a Container App Job
-        self.cmd("az containerapp job secret remove --resource-group {} --name {} --secret-name testsecret2".format(resource_group, job))
+        self.cmd("az containerapp job secret remove --resource-group {} --name {} --secret-name testsecret2 --yes".format(resource_group, job))
 
         # confirm secret is deleted in a Container App Job, leaving only one secret
         job_secret_list = self.cmd("az containerapp job secret list --resource-group {} --name {} --show-values".format(resource_group, job), checks=[
