@@ -93,7 +93,7 @@ helps['datamigration sql-server-schema'] = """
                az datamigration sql-server-schema --action "GenerateScript" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="  --input-script-file-path "C:\OutputFolder\script.sql"
       - name: Run Migrate database objects from the source SQL Server to the target Azure SQL Database using ConfigFile.
         text: |-
-               az datamigration sql-server-schema --config-file-path "C:\configfile.json" configfile.json example: { "Action": "GenerateScript", "sourceConnectionString": "Server=;Initial Catalog=;User ID=;Password=", "targetConnectionString": "Server=;Initial Catalog=;User ID=;Password=", "targetConnectionString": "Server=;Initial Catalog=;User ID=;Password=", "inputScriptFilePath": "C:\OutputFolder\script.sql", "outputFolder": "C:\OutputFolder\script.sql"}
+               az datamigration sql-server-schema --config-file-path "C:\configfile.json // configfile.json example: { "Action": "GenerateScript", "sourceConnectionString": "Server=;Initial Catalog=;User ID=;Password=", "targetConnectionString": "Server=;Initial Catalog=;User ID=;Password=", "targetConnectionString": "Server=;Initial Catalog=;User ID=;Password=", "inputScriptFilePath": "C:\OutputFolder\script.sql", "outputFolder": "C:\OutputFolder\script.sql"}" 
 """
 
 helps['datamigration register-integration-runtime'] = """
