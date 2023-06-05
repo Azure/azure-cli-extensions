@@ -342,15 +342,17 @@ def datamigration_tde_migration(source_sql_connection_string=None,
     except Exception as e:
         raise e
 
+
 # -----------------------------------------------------------------------------------------------------------------
 #  Migrate schema from the source Sql Servers to the target Azure Sql Servers.
 # -----------------------------------------------------------------------------------------------------------------
 def datamigration_sql_server_schema(action=None,
-                                  src_sql_connection_str=None,
-                                  tgt_sql_connection_str=None,
-                                  input_script_file_path=None,
-                                  output_folder=None,
-                                  config_file_path=None):
+                                    src_sql_connection_str=None,
+                                    tgt_sql_connection_str=None,
+                                    input_script_file_path=None,
+                                    output_folder=None,
+                                    config_file_path=None):
+
     # Error message strings
     actionError = "Please provide valid action value. The valid values are: MigrateSchema, GenerateScript, DeploySchema."
     srcConnectionError = "Please provide src_sql_connection_str value."
@@ -373,7 +375,7 @@ def datamigration_sql_server_schema(action=None,
             if action is None:
                 raise RequiredArgumentMissingError(actionError)
 
-            actionPassed = str(); 
+            actionPassed = str()
 
             for allowedAction in actionList:
                 if allowedAction.lower() == action.lower():
@@ -389,7 +391,7 @@ def datamigration_sql_server_schema(action=None,
                 raise RequiredArgumentMissingError(tgtConnectionError)
 
             if actionPassed == "DeploySchema":
-                if input_script_file_path == None:
+                if input_script_file_path is None:
                     raise RequiredArgumentMissingError(inputFilePathError)
                 else:
                     helper.test_path_exist(input_script_file_path)
