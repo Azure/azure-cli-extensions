@@ -278,7 +278,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'service_registry_create', table_transformer=transform_service_registry_output)
         g.custom_command('delete', 'service_registry_delete', confirmation=True)
 
-    with self.command_group('spring dev-tool', is_preview=True,
+    with self.command_group('spring dev-tool',
                             custom_command_type=dev_tool_portal_cmd_group,
                             exception_handler=handle_asc_exception) as g:
         g.custom_show_command('show', 'show',
@@ -287,7 +287,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update', table_transformer=transform_dev_tool_portal_output, validator=validate_dev_tool_portal, supports_no_wait=True)
         g.custom_command('delete', 'delete', supports_no_wait=True, confirmation=True)
 
-    with self.command_group('spring application-live-view', is_preview=True,
+    with self.command_group('spring application-live-view',
                             custom_command_type=application_live_view_cmd_group,
                             exception_handler=handle_asc_exception) as g:
         g.custom_show_command('show', 'show',
@@ -367,7 +367,6 @@ def load_command_table(self, _):
 
     with self.command_group('spring application-accelerator',
                             custom_command_type=application_accelerator_cmd_group,
-                            is_preview=True,
                             exception_handler=handle_asc_exception) as g:
         g.custom_show_command('show', 'application_accelerator_show', table_transformer=transform_application_accelerator_output)
         g.custom_command('create', 'application_accelerator_create', table_transformer=transform_application_accelerator_output, supports_no_wait=True)
