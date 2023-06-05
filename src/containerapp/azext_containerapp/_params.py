@@ -485,5 +485,5 @@ def load_arguments(self, _):
         c.argument('name', id_part=None, help="The name of the container app job for which the secret needs to be retrieved.")
         c.argument('secret_name', id_part=None, help="The name of the secret to show.")
         c.argument('secret_names', id_part=None, nargs='+', help="A list of secret(s) for the container app job. Space-separated secret values names.")
-        c.argument('show_values', arg_type=get_three_state_flag(), help='Show the secret values.')
+        c.argument('show_values', action='store_true', help='Show the secret values.')
         c.ignore('disable_max_length')

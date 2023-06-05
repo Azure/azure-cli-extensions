@@ -2323,7 +2323,7 @@ def update_containerappjob_yaml(cmd, name, resource_group_name, file_name, from_
         pass
 
     if not containerappsjob_def:
-        raise ValidationError("The containerapp job '{}' does not exist".format(name))
+        raise ResourceNotFoundError("The containerapp job '{}' does not exist".format(name))
     existed_environment_id = containerappsjob_def['properties']['environmentId']
     containerappsjob_def = None
 
