@@ -20,7 +20,6 @@ from azext_confcom.errors import eprint
 from azext_confcom.template_util import (
     extract_confidential_properties,
     is_sidecar,
-    parse_template,
     pretty_print_func,
     print_func,
     readable_diff,
@@ -31,7 +30,8 @@ from azext_confcom.template_util import (
     process_mounts,
     extract_probe,
     process_env_vars_from_template,
-    get_image_info
+    get_image_info,
+    get_tar_location_from_mapping
 )
 from azext_confcom.rootfs_proxy import SecurityPolicyProxy
 
@@ -45,10 +45,13 @@ class OutputType(Enum):
 
 
 class AciPolicy:  # pylint: disable=too-many-instance-attributes
+    all_params = {}
+    all_vars = {}
+
     def __init__(
         self,
         deserialized_config: Any,
-        rego_fragments: Any = config.DEFAULT_REGO_FRAGMENTS,
+        rego_fragments: Any = copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS),
         existing_rego_fragments: Any = None,
         debug_mode: bool = False,
         disable_stdio: bool = False,
@@ -60,6 +63,8 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self._disable_stdio = disable_stdio
         self._fragments = rego_fragments
         self._existing_fragments = existing_rego_fragments
+        self._api_version = config.API_VERSION
+
         if debug_mode:
             self._allow_properties_access = config.DEBUG_MODE_SETTINGS.get(
                 "allowPropertiesAccess"
@@ -76,12 +81,16 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             self._allow_unencrypted_scratch = config.DEBUG_MODE_SETTINGS.get(
                 "allowUnencryptedScratch"
             )
+            self._allow_capability_dropping = config.DEBUG_MODE_SETTINGS.get(
+                "allowCapabilityDropping"
+            )
         else:
             self._allow_properties_access = False
             self._allow_dump_stacks = False
             self._allow_runtime_logging = False
             self._allow_environment_variable_dropping = True
             self._allow_unencrypted_scratch = False
+            self._allow_capability_dropping = True
 
         self.version = case_insensitive_dict_get(
             deserialized_config, config.ACI_FIELD_VERSION
@@ -146,7 +155,6 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
     def get_serialized_output(
         self,
         output_type: OutputType = OutputType.DEFAULT,
-        use_json=False,
         rego_boilerplate=True,
     ) -> str:
         # error check the output type
@@ -154,13 +162,11 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             eprint("Unknown output type for serialization.")
 
         policy_str = self._policy_serialization(
-            use_json, output_type == OutputType.PRETTY_PRINT
+            output_type == OutputType.PRETTY_PRINT
         )
 
-        if not use_json and rego_boilerplate:
+        if rego_boilerplate:
             policy_str = self._add_rego_boilerplate(policy_str)
-        elif use_json and output_type == OutputType.PRETTY_PRINT:
-            policy_str = json.dumps(json.loads(policy_str), indent=2, sort_keys=True)
 
         # if we're not outputting base64
         if output_type in (OutputType.RAW, OutputType.PRETTY_PRINT):
@@ -172,8 +178,12 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         # determine if we're outputting for a sidecar or not
         if self._images[0].get_id() and is_sidecar(self._images[0].get_id()):
-            return config.SIDECAR_REGO_POLICY % (output)
+            return config.SIDECAR_REGO_POLICY % (
+                pretty_print_func(self._api_version),
+                output
+            )
         return config.CUSTOMER_REGO_POLICY % (
+            pretty_print_func(self._api_version),
             pretty_print_func(self._fragments),
             output,
             pretty_print_func(self._allow_properties_access),
@@ -181,49 +191,8 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             pretty_print_func(self._allow_runtime_logging),
             pretty_print_func(self._allow_environment_variable_dropping),
             pretty_print_func(self._allow_unencrypted_scratch),
+            pretty_print_func(self._allow_capability_dropping),
         )
-
-    def _add_elements(self, dictionary) -> Dict:
-        """Recursive function to convert CCE policy rego into a json policy
-        - adds 'length' keys to dicts that were arrays
-        - expands 'elements' dicts from an array
-        """
-
-        if isinstance(dictionary, (str, int)):
-            return None
-        if isinstance(dictionary, list):
-            for item in dictionary:
-                self._add_elements(item)
-        if isinstance(dictionary, dict):
-            for key in dictionary.keys():
-                if isinstance(dictionary[key], list):
-                    elements_list = {}
-                    for i, item in enumerate(dictionary[key]):
-                        elements_list[str(i)] = item
-                    dictionary[key] = {
-                        "elements": elements_list,
-                        "length": len(dictionary[key]),
-                    }
-
-                    for i in range(len(dictionary[key]["elements"].keys())):
-                        self._add_elements(dictionary[key]["elements"][str(i)])
-                else:
-                    self._add_elements(dictionary[key])
-
-        return dictionary
-
-    def _convert_to_json(self, dictionary) -> Dict:
-        # need to make a deep copy so we can change the underlying config data
-        # dicts
-        editable = copy.deepcopy(dictionary)
-        out = {"length": len(editable), "elements": {}}
-
-        for i, container in enumerate(editable):
-            out["elements"][str(i)] = container
-
-        self._add_elements(out)
-
-        return {config.POLICY_FIELD_CONTAINERS: out}
 
     def validate_cce_policy(self) -> Tuple[bool, Dict]:
         """Utility method: check to see if the existing policy
@@ -356,12 +325,11 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         self,
         file_path: str,
         output_type: OutputType = OutputType.DEFAULT,
-        use_json=False,
     ) -> None:
-        output = self.get_serialized_output(output_type, use_json=use_json)
+        output = self.get_serialized_output(output_type)
         os_util.write_str_to_file(file_path, output)
 
-    def _policy_serialization(self, use_json, pretty_print=False) -> str:
+    def _policy_serialization(self, pretty_print=False) -> str:
         policy = []
         regular_container_images = self.get_images()
 
@@ -376,11 +344,8 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             policy += copy.deepcopy(config.DEFAULT_CONTAINERS)
             if self._disable_stdio:
                 for container in policy:
-                    container[config.POLICY_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS] = False
+                    container[config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS] = False
 
-        # default output is rego policy
-        if use_json:
-            policy = self._convert_to_json(policy)
         if pretty_print:
             return pretty_print_func(policy)
         return print_func(policy)
@@ -393,12 +358,8 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             action="ignore", message="unclosed", category=ResourceWarning
         )
 
-        client = None
         tar_location = ""
-        layer_cache = {}
-        if not tar_mapping:
-            client = self._get_docker_client()
-        elif isinstance(tar_mapping, str):
+        if isinstance(tar_mapping, str):
             tar_location = tar_mapping
         proxy = self._get_rootfs_proxy()
         container_images = self.get_images()
@@ -419,9 +380,9 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             message_queue = []
             # populate regular container images(s)
             for image in container_images:
-
+                image.parse_all_parameters_and_variables(AciPolicy.all_params, AciPolicy.all_vars)
                 image_name = f"{image.base}:{image.tag}"
-                image_info = get_image_info(progress, message_queue, client, tar_mapping, image)
+                image_info, tar = get_image_info(progress, message_queue, tar_mapping, image)
 
                 # verify and populate the working directory property
                 if not image.get_working_dir() and image_info:
@@ -471,14 +432,40 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                                 }
                             )
 
+                    if (deepdiff.DeepDiff(image.get_user(), config.DEFAULT_USER, ignore_order=True) == {}
+                            and image_info.get("User") != ""):
+                        # valid values are in the form "user", "user:group", "uid", "uid:gid", "user:gid", "uid:group"
+                        # where each entry is either a string or an unsigned integer
+                        # "" means any user (use default)
+                        # TO-DO figure out why groups is a list
+                        user = copy.deepcopy(config.DEFAULT_USER)
+                        parts = image_info.get("User").split(":", 1)
+
+                        strategy = ["name", "name"]
+                        if parts[0].isdigit():
+                            strategy[0] = "id"
+                        user[config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_USER_IDNAME] = {
+                            config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_PATTERN: parts[0],
+                            config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_STRATEGY: strategy[0]
+                        }
+                        if len(parts) == 2:
+                            # group also specified
+                            if parts[1].isdigit():
+                                strategy[1] = "id"
+                            user[config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_GROUP_IDNAMES][0] = {
+                                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_PATTERN: parts[1],
+                                config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER_STRATEGY: strategy[1]
+                            }
+                        image.set_user(user)
+
+                # populate tar location
+                if isinstance(tar_mapping, dict):
+                    tar_location = get_tar_location_from_mapping(tar_mapping, image_name)
                 # populate layer info
-                if layer_cache.get(image_name):
-                    image.set_layers(layer_cache.get(image_name))
-                else:
-                    image.set_layers(proxy.get_policy_image_layers(
-                        image.base, image.tag, tar_location=tar_location
-                    ))
-                    layer_cache[image_name] = image.get_layers()
+                image.set_layers(proxy.get_policy_image_layers(
+                    image.base, image.tag, tar_location=tar_location if tar else ""
+                ))
+
                 progress.update()
             progress.close()
             self.close()
@@ -487,7 +474,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             for message in message_queue:
                 logger.warning(message)
 
-    def get_images(self) -> List[Any]:
+    def get_images(self) -> List[ContainerImage]:
         return self._images
 
     def pull_image(self, image: ContainerImage) -> Any:
@@ -501,6 +488,7 @@ def load_policy_from_arm_template_str(
     infrastructure_svn: str = None,
     debug_mode: bool = False,
     disable_stdio: bool = False,
+    approve_wildcards: bool = False,
 ) -> List[AciPolicy]:
     """Function that converts ARM template string to an ACI Policy"""
     input_arm_json = os_util.load_json_from_str(template_data)
@@ -537,9 +525,8 @@ def load_policy_from_arm_template_str(
 
     get_values_for_params(input_parameter_json, all_params)
 
-    input_arm_json = parse_template(all_params,
-                                    case_insensitive_dict_get(input_arm_json, config.ACI_FIELD_TEMPLATE_VARIABLES)
-                                    or {}, input_arm_json)
+    AciPolicy.all_params = all_params
+    AciPolicy.all_vars = case_insensitive_dict_get(input_arm_json, config.ACI_FIELD_TEMPLATE_VARIABLES) or {}
 
     container_groups = []
 
@@ -567,7 +554,7 @@ def load_policy_from_arm_template_str(
         # add init containers to the list of other containers since they aren't treated differently
         # in the security policy
         if init_container_list:
-            container_list = container_list + init_container_list
+            container_list.extend(init_container_list)
 
         existing_containers, fragments = extract_confidential_properties(
             container_group_properties
@@ -612,19 +599,22 @@ def load_policy_from_arm_template_str(
                 {
                     config.ACI_FIELD_CONTAINERS_ID: image_name,
                     config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE: image_name,
-                    config.ACI_FIELD_CONTAINERS_ENVS: process_env_vars_from_template(image_properties),
+                    config.ACI_FIELD_CONTAINERS_ENVS: process_env_vars_from_template(
+                        AciPolicy.all_params, AciPolicy.all_vars, image_properties, approve_wildcards),
                     config.ACI_FIELD_CONTAINERS_COMMAND: case_insensitive_dict_get(
                         image_properties, config.ACI_FIELD_TEMPLATE_COMMAND
                     )
                     or [],
                     config.ACI_FIELD_CONTAINERS_MOUNTS: process_mounts(image_properties, volumes),
-                    config.ACI_FIELD_CONTAINERS_ALLOW_ELEVATED: False,
                     config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
                     + config.DEBUG_MODE_SETTINGS.get("execProcesses")
                     if debug_mode
                     else exec_processes,
                     config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
                     config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS: not disable_stdio,
+                    config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: case_insensitive_dict_get(
+                        image_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
+                    ),
                 }
             )
 
@@ -651,6 +641,7 @@ def load_policy_from_arm_template_file(
     parameter_path: str,
     debug_mode: bool = False,
     disable_stdio: bool = False,
+    approve_wildcards: bool = False,
 ) -> List[AciPolicy]:
     """Utility function: generate policy object from given arm template and parameter file paths"""
     input_arm_json = os_util.load_str_from_file(template_path)
@@ -659,7 +650,7 @@ def load_policy_from_arm_template_file(
         input_parameter_json = os_util.load_str_from_file(parameter_path)
     return load_policy_from_arm_template_str(
         input_arm_json, input_parameter_json, infrastructure_svn,
-        debug_mode=debug_mode, disable_stdio=disable_stdio
+        debug_mode=debug_mode, disable_stdio=disable_stdio, approve_wildcards=approve_wildcards,
     )
 
 

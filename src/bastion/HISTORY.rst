@@ -2,6 +2,12 @@
 
 Release History
 ===============
+0.2.4
+++++++
+* Fixing blocking of IP connect with AZ CLI tunnel to allow only standard ports.
+* documentation update
+* security fixes
+
 0.2.3
 ++++++
 * Fixes for IP address connect

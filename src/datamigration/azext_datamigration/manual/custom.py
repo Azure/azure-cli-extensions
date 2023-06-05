@@ -14,6 +14,7 @@
 import os
 import signal
 import subprocess
+from knack.prompting import prompt_pass
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError
 from azure.cli.core.azclierror import RequiredArgumentMissingError
 from azure.cli.core.azclierror import UnclassifiedUserFault
@@ -271,9 +272,15 @@ def datamigration_login_migration(src_sql_connection_str=None,
             # joining paramaters together in a string
             cmd = f'{exePath} LoginsMigration --sourceSqlConnectionString {src_sql_connection_str}'
 
+            # formating the parameter list into a string
             for param in parameterList:
-                if parameterList[param] is not None:
+                if parameterList[param] is not None and not param.__contains__("list"):
                     cmd += f' {param} "{parameterList[param]}"'
+
+                # in case the parameter input is list format it accordingly
+                elif param.__contains__("list") and parameterList[param] is not None:
+                    parameterList[param] = " ".join(f"\"{i}\"" for i in parameterList[param])
+                    cmd += f' {param} {parameterList[param]}'
             subprocess.call(cmd, shell=False)
 
         # When Config file.
@@ -290,6 +297,47 @@ def datamigration_login_migration(src_sql_connection_str=None,
         from knack.log import get_logger
         logger = get_logger(__name__)
         logger.warning(f"If outputFolder parameter is not provided, the default event and error logs folder path: {logFilePath}")
+
+    except Exception as e:
+        raise e
+
+
+# -----------------------------------------------------------------------------------------------------------------
+#  Migrate TDE certificate from source SQL Server to the target Azure SQL Server.
+# -----------------------------------------------------------------------------------------------------------------
+def datamigration_tde_migration(source_sql_connection_string=None,
+                                target_subscription_id=None,
+                                target_resource_group_name=None,
+                                target_managed_instance_name=None,
+                                network_share_path=None,
+                                network_share_domain=None,
+                                network_share_user_name=None,
+                                network_share_password=None,
+                                database_name=None):
+
+    if source_sql_connection_string is None:
+        source_sql_connection_string = prompt_pass('Connection String:', confirm=False)
+
+    if network_share_password is None:
+        network_share_password = prompt_pass('Network Share Password:', confirm=False)
+
+    try:
+        # Setup the console app
+        exePath = helper.tdeMigration_console_app_setup()
+
+        if exePath is None:
+            return
+
+        if os.path.exists(exePath) is False:
+            print("Failed to locate executable.")
+            return
+
+        cmd = f'{exePath} --sourceSqlConnectionString "{source_sql_connection_string}" --targetSubscriptionId "{target_subscription_id}" --targetResourceGroupName "{target_resource_group_name}" --targetManagedInstanceName "{target_managed_instance_name}" --networkSharePath "{network_share_path}" --networkShareDomain "{network_share_domain}" --networkShareUserName "{network_share_user_name}" --networkSharePassword "{network_share_password}" --databaseName'
+
+        for db in database_name:
+            cmd += " \"" + db + "\""
+
+        subprocess.call(cmd, shell=False)
 
     except Exception as e:
         raise e

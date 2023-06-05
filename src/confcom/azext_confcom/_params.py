@@ -65,16 +65,16 @@ def load_arguments(self, _):
             help="Debug mode will enable processes in a container group that are helpful for debugging",
         )
         c.argument(
+            "approve_wildcards",
+            options_list=("--approve-wildcards", "-y"),
+            required=False,
+            help="Approving wildcards by default will get rid of the prompts during the wildcard environment variable use case and auto-approve the use of wildcards",
+        )
+        c.argument(
             "disable_stdio",
             options_list=("--disable-stdio",),
             required=False,
             help="Disabling container stdio will disable the ability to see the output of the container in the terminal for Confidential ACI",
-        )
-        c.argument(
-            "use_json",
-            options_list=("--json", "-j"),
-            required=False,
-            help="Output in JSON format",
         )
         c.argument(
             "diff",
@@ -89,7 +89,7 @@ def load_arguments(self, _):
             help="Validate that the image used to generate the CCE Policy for a sidecar container will be allowed by its generated policy",
         )
         c.argument(
-            "print-existing-policy",
+            "print_existing_policy",
             options_list=("--print-existing-policy"),
             required=False,
             action="store_true",

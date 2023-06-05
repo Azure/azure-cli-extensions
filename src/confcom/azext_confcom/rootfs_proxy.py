@@ -9,14 +9,50 @@ import os
 import stat
 from pathlib import Path
 import platform
+import requests
 from azext_confcom.errors import eprint
 
 
 host_os = platform.system()
-arch = platform.architecture()[0]
+machine = platform.machine()
 
 
 class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
+    # static variable to cache layer hashes between container groups
+    layer_cache = {}
+
+    @staticmethod
+    def download_binaries():
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+
+        bin_folder = os.path.join(dir_path, "bin")
+        if not os.path.exists(bin_folder):
+            os.makedirs(bin_folder)
+
+        # get the most recent release artifacts from github
+        r = requests.get("https://api.github.com/repos/microsoft/hcsshim/releases")
+        bin_flag = False
+        exe_flag = False
+        # search for dmverity-vhd in the assets from hcsshim releases
+        for release in r.json():
+            # these should be newest to oldest
+            for asset in release["assets"]:
+                # download the file if it contains dmverity-vhd
+                if "dmverity-vhd" in asset["name"]:
+                    if "exe" in asset["name"]:
+                        exe_flag = True
+                    else:
+                        bin_flag = True
+                    # get the download url for the dmverity-vhd file
+                    exe_url = asset["browser_download_url"]
+                    # download the file
+                    r = requests.get(exe_url)
+                    # save the file to the bin folder
+                    with open(os.path.join(bin_folder, asset["name"]), "wb") as f:
+                        f.write(r.content)
+            if bin_flag and exe_flag:
+                break
+
     def __init__(self):
         script_directory = os.path.dirname(os.path.realpath(__file__))
         DEFAULT_LIB = "./bin/dmverity-vhd"
@@ -24,11 +60,11 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
         if host_os == "Linux":
             pass
         elif host_os == "Windows":
-            if arch == "64bit":
+            if machine.endswith("64"):
                 DEFAULT_LIB += ".exe"
             else:
-                raise NotImplementedError(
-                    f"The current architecture {arch} for windows is not supported."
+                eprint(
+                    "32-bit Windows is not supported."
                 )
         elif host_os == "Darwin":
             eprint("The extension for MacOS has not been implemented.")
@@ -39,8 +75,9 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
 
         self.policy_bin = Path(os.path.join(f"{script_directory}", f"{DEFAULT_LIB}"))
 
+        # check if the extension binary exists
         if not os.path.exists(self.policy_bin):
-            raise RuntimeError("The extension binary file cannot be located.")
+            eprint("The extension binary file cannot be located.")
         if not os.access(self.policy_bin, os.X_OK):
             # add executable permissions for the current user if they don't exist
             st = os.stat(self.policy_bin)
@@ -49,9 +86,12 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
     def get_policy_image_layers(
         self, image: str, tag: str, tar_location: str = ""
     ) -> List[str]:
-        policy_bin_str = str(self.policy_bin)
+        image_name = f"{image}:{tag}"
+        # populate layer info
+        if self.layer_cache.get(image_name):
+            return self.layer_cache.get(image_name)
 
-        img = image + ":" + tag
+        policy_bin_str = str(self.policy_bin)
 
         arg_list = [
             f"{policy_bin_str}",
@@ -64,7 +104,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             arg_list += ["-d"]
 
         # add the image to the end of the parameter list
-        arg_list += ["roothash", "-i", f"{img}"]
+        arg_list += ["roothash", "-i", f"{image_name}"]
 
         outputlines = None
         err = None
@@ -81,15 +121,15 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
         if outputlines is None:
             eprint("Null pointer detected.")
         elif len(outputlines) > 0:
-            output = outputlines.decode("utf8").rstrip("\n").split("\n")
-            output = [output[j * 2 + 1] for j in range(len(output) // 2)]
-            output = [i.rstrip("\n").split(": ", 1)[1] for i in output]
+            output = outputlines.decode("utf8").strip("\n").split("\n")
+            output = [i.split(": ", 1)[1] for i in output if len(i.split(": ", 1)) > 1]
         else:
             eprint(
-                "Cannot get layer hashes. Please check whether the image exists in local repository/daemon."
+                "Cannot get layer hashes"
             )
 
         if err.decode("utf8") != "":
             eprint(err.decode("utf8"))
-
+        # cache output layers
+        self.layer_cache[image_name] = output
         return output

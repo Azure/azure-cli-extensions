@@ -1,7 +1,6 @@
 interactions:
 - request:
-    body: '{"properties": {"appliedScopeType": "Single", "appliedScopes": ["/subscriptions/00000000-0000-0000-0000-000000000000"],
-      "instanceFlexibility": "Off"}}'
+    body: '{"properties": {"appliedScopeType": "Shared", "renew": false}}'
     headers:
       Accept:
       - application/json
@@ -12,37 +11,32 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '150'
+      - '62'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
-      - --reservation-order-id --reservation-id -t -s --instance-flexibility
+      - --reservation-order-id --reservation-id --applied-scope-typ
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-reservations/0.6.0 Azure-SDK-For-Python AZURECLI/2.0.76
-      accept-language:
-      - en-US
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
     method: PATCH
-    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/fe1341ea-4820-4ac9-9352-4136a6d8a252/reservations/8e5963e2-000b-45bd-a1b4-305c9e5f89c9?api-version=2022-03-01
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/b4e780cb-1d19-4b62-b843-b229b10522ae/reservations/96a8b784-28da-4cae-a32d-001cf4ea9a64?api-version=2022-11-01
   response:
     body:
-      string: '{"sku":{"name":"Standard_D1"},"id":"/providers/microsoft.capacity/reservationOrders/fe1341ea-4820-4ac9-9352-4136a6d8a252/reservations/8e5963e2-000b-45bd-a1b4-305c9e5f89c9","type":"Microsoft.Capacity/reservationOrders/reservations","name":"fe1341ea-4820-4ac9-9352-4136a6d8a252/8e5963e2-000b-45bd-a1b4-305c9e5f89c9","etag":37,"location":"westus","properties":{"appliedScopes":["/subscriptions/00000000-0000-0000-0000-000000000000"],"appliedScopeType":"Single","quantity":3,"provisioningState":"Succeeded","expiryDate":"2020-10-01","displayName":"TestPurchaseReservation","effectiveDateTime":"2019-11-15T05:04:31.8199549Z","lastUpdatedDateTime":"2019-11-15T05:04:34.75211Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"Off","skuDescription":"Reserved
-        VM Instance, Standard_D1, US West, 1 Year","renew":false}}'
+      string: '{"id":"/providers/microsoft.capacity/reservationOrders/b4e780cb-1d19-4b62-b843-b229b10522ae/reservations/96a8b784-28da-4cae-a32d-001cf4ea9a64","name":"96a8b784-28da-4cae-a32d-001cf4ea9a64","type":"microsoft.capacity/reservationOrders/reservations","location":"uksouth","etag":13,"sku":{"name":"Standard_B1ls"},"properties":{"reservedResourceType":"VirtualMachines","userFriendlyRenewState":"Off","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, UK South, 3 Years","renew":false,"archived":false,"quantity":4,"appliedScopeType":"Shared","displayName":"VM_RI_02-10-2023_16-37","provisioningState":"Succeeded","term":"P3Y","displayProvisioningState":"Succeeded","userFriendlyAppliedScopeType":"Shared","expiryDateTime":"2026-02-10T22:40:23.0651555Z","purchaseDateTime":"2023-02-10T22:37:49.7576881Z","benefitStartTime":"2023-02-10T22:40:23.0651555Z","lastUpdatedDateTime":"2023-03-06T20:54:41.1460524Z","expiryDate":"2026-02-10","purchaseDate":"2023-02-10","effectiveDateTime":"2023-03-06T20:54:41.0533458Z","instanceFlexibility":"On","utilization":{"trend":"SAME","aggregates":[{"grain":1.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":7.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":30.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"}]},"billingPlan":"Monthly","billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '825'
+      - '1391'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 15 Nov 2019 05:04:35 GMT
+      - Mon, 06 Mar 2023 20:54:48 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -53,14 +47,14 @@ interactions:
       - nosniff
       x-ms-ratelimit-remaining-tenant-writes:
       - '1199'
-      x-ms-test:
-      - '{"contact":"kgautam","scenarios":"RITesting","retention":"12/30/2019 5:36:07
-        PM"}'
+      x-ms-version:
+      - 1.0.2251.115
     status:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"appliedScopeType": "Shared", "instanceFlexibility": "Off"}}'
+    body: '{"properties": {"appliedScopeType": "Single", "appliedScopes": ["/subscriptions/00000000-0000-0000-0000-000000000000"],
+      "instanceFlexibility": "Off", "renew": false}}'
     headers:
       Accept:
       - application/json
@@ -71,37 +65,34 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '76'
+      - '166'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
-      - --reservation-order-id --reservation-id -t --instance-flexibility
+      - --reservation-order-id --reservation-id --applied-scope-type --applied-scopes
+        --instance-flexibility
       User-Agent:
-      - python/3.7.5 (Windows-10-10.0.18362-SP0) msrest/0.6.10 msrest_azure/0.6.2
-        azure-mgmt-reservations/0.6.0 Azure-SDK-For-Python AZURECLI/2.0.76
-      accept-language:
-      - en-US
+      - AZURECLI/2.43.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.19045-SP0)
     method: PATCH
-    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/fe1341ea-4820-4ac9-9352-4136a6d8a252/reservations/8e5963e2-000b-45bd-a1b4-305c9e5f89c9?api-version=2022-03-01
+    uri: https://management.azure.com/providers/Microsoft.Capacity/reservationOrders/b4e780cb-1d19-4b62-b843-b229b10522ae/reservations/96a8b784-28da-4cae-a32d-001cf4ea9a64?api-version=2022-11-01
   response:
     body:
-      string: '{"sku":{"name":"Standard_D1"},"id":"/providers/microsoft.capacity/reservationOrders/fe1341ea-4820-4ac9-9352-4136a6d8a252/reservations/8e5963e2-000b-45bd-a1b4-305c9e5f89c9","type":"Microsoft.Capacity/reservationOrders/reservations","name":"fe1341ea-4820-4ac9-9352-4136a6d8a252/8e5963e2-000b-45bd-a1b4-305c9e5f89c9","etag":39,"location":"westus","properties":{"appliedScopeType":"Shared","quantity":3,"provisioningState":"Succeeded","expiryDate":"2020-10-01","displayName":"TestPurchaseReservation","effectiveDateTime":"2019-11-15T05:04:57.8777013Z","lastUpdatedDateTime":"2019-11-15T05:04:59.7609158Z","reservedResourceType":"VirtualMachines","instanceFlexibility":"Off","skuDescription":"Reserved
-        VM Instance, Standard_D1, US West, 1 Year","renew":false}}'
+      string: '{"id":"/providers/microsoft.capacity/reservationOrders/b4e780cb-1d19-4b62-b843-b229b10522ae/reservations/96a8b784-28da-4cae-a32d-001cf4ea9a64","name":"96a8b784-28da-4cae-a32d-001cf4ea9a64","type":"microsoft.capacity/reservationOrders/reservations","location":"uksouth","etag":15,"sku":{"name":"Standard_B1ls"},"properties":{"appliedScopeProperties":{"subscriptionId":"/subscriptions/00000000-0000-0000-0000-000000000000","displayName":"Azure
+        subscription 1"},"reservedResourceType":"VirtualMachines","userFriendlyRenewState":"Off","skuDescription":"Reserved
+        VM Instance, Standard_B1ls, UK South, 3 Years","renew":false,"archived":false,"quantity":4,"appliedScopeType":"Single","displayName":"VM_RI_02-10-2023_16-37","provisioningState":"Succeeded","term":"P3Y","displayProvisioningState":"Succeeded","userFriendlyAppliedScopeType":"Single","expiryDateTime":"2026-02-10T22:40:23.0651555Z","purchaseDateTime":"2023-02-10T22:37:49.7576881Z","benefitStartTime":"2023-02-10T22:40:23.0651555Z","lastUpdatedDateTime":"2023-03-06T20:54:53.3084166Z","expiryDate":"2026-02-10","purchaseDate":"2023-02-10","effectiveDateTime":"2023-03-06T20:54:53.2459888Z","instanceFlexibility":"Off","utilization":{"trend":"SAME","aggregates":[{"grain":1.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":7.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"},{"grain":30.0,"grainUnit":"days","value":0.0,"valueUnit":"percentage"}]},"billingPlan":"Monthly","billingScopeId":"/subscriptions/00000000-0000-0000-0000-000000000000"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '755'
+      - '1527'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 15 Nov 2019 05:05:00 GMT
+      - Mon, 06 Mar 2023 20:55:06 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
       transfer-encoding:
@@ -112,9 +103,8 @@ interactions:
       - nosniff
       x-ms-ratelimit-remaining-tenant-writes:
       - '1199'
-      x-ms-test:
-      - '{"contact":"kgautam","scenarios":"RITesting","retention":"12/30/2019 5:36:07
-        PM"}'
+      x-ms-version:
+      - 1.0.2251.115
     status:
       code: 200
       message: OK

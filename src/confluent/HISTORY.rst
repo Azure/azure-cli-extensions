@@ -2,6 +2,9 @@
 
 Release History
 ===============
+0.5.0
++++++
+* Change to GA from experiment
 
 0.4.0
 +++++

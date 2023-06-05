@@ -5,44 +5,42 @@
 
 from azure.cli.command_modules.serviceconnector._resource_config import (
     RESOURCE,
-    AUTH_TYPE
+    AUTH_TYPE,
+    SUPPORTED_AUTH_TYPE
 )
-passwordless_target_resources = [
+from azure.cli.command_modules.serviceconnector.action import (
+    AddSecretAuthInfo,
+    AddSecretAuthInfoAuto,
+)
+from .action import (
+    AddSystemAssignedIdentityAuthInfo,
+    AddUserAssignedIdentityAuthInfo,
+    AddServicePrincipalAuthInfo,
+    AddUserAccountAuthInfo,
+)
+
+PASSWORDLESS_TARGET_RESOURCES = [
     RESOURCE.Postgres,
     RESOURCE.PostgresFlexible,
     RESOURCE.MysqlFlexible,
     RESOURCE.Sql
 ]
 
-SUPPORTED_AUTH_TYPE = {
-    RESOURCE.Local: {
-        RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount],
-        RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount],
-        RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount],
-        RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount],
-    },
-    RESOURCE.WebApp: {
-        RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity],
-        RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity],
-        RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity],
-        RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity],
-    },
-    RESOURCE.SpringCloud: {
-        RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity],
-        RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity],
-        RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity],
-        RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity],
-    },
-    RESOURCE.KubernetesCluster: {
-        RESOURCE.Postgres: [AUTH_TYPE.Secret],
-        RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret],
-        RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret],
-        RESOURCE.Sql: [AUTH_TYPE.Secret],
-    },
+# pylint: disable=line-too-long
+SUPPORTED_AUTH_TYPE[RESOURCE.Local] = {
+    RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
+    RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
+    RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
+    RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
 }
-SUPPORTED_AUTH_TYPE[RESOURCE.ContainerApp] = SUPPORTED_AUTH_TYPE[RESOURCE.SpringCloud]
 
-SUPPORTED_AUTH_TYPE[RESOURCE.SpringCloudDeprecated] = SUPPORTED_AUTH_TYPE[RESOURCE.SpringCloud]
+for resourceType in [RESOURCE.WebApp, RESOURCE.ContainerApp, RESOURCE.SpringCloud, RESOURCE.SpringCloudDeprecated]:
+    SUPPORTED_AUTH_TYPE[resourceType] = {
+        RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
+        RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
+        RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
+        RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
+    }
 
 TARGET_RESOURCES_PARAMS = {
     RESOURCE.Postgres: {
@@ -114,4 +112,49 @@ TARGET_RESOURCES_PARAMS = {
             'placeholder': 'MyDB'
         }
     },
+}
+
+AUTH_TYPE_PARAMS = {
+    AUTH_TYPE.Secret: {
+        'secret_auth_info': {
+            'options': ['--secret'],
+            'help': 'The secret auth info',
+            'action': AddSecretAuthInfo
+        }
+    },
+    AUTH_TYPE.SecretAuto: {
+        'secret_auth_info_auto': {
+            'options': ['--secret'],
+            'help': 'The secret auth info',
+            'action': AddSecretAuthInfoAuto
+        }
+    },
+    AUTH_TYPE.SystemIdentity: {
+        'system_identity_auth_info': {
+            'options': ['--system-identity'],
+            'help': 'The system assigned identity auth info',
+            'action': AddSystemAssignedIdentityAuthInfo
+        }
+    },
+    AUTH_TYPE.UserIdentity: {
+        'user_identity_auth_info': {
+            'options': ['--user-identity'],
+            'help': 'The user assigned identity auth info',
+            'action': AddUserAssignedIdentityAuthInfo
+        }
+    },
+    AUTH_TYPE.ServicePrincipalSecret: {
+        'service_principal_auth_info_secret': {
+            'options': ['--service-principal'],
+            'help': 'The service principal auth info',
+            'action': AddServicePrincipalAuthInfo
+        }
+    },
+    AUTH_TYPE.UserAccount: {
+        'user_account_auth_info': {
+            'options': ['--user-account'],
+            'help': 'The local user account auth info',
+            'action': AddUserAccountAuthInfo
+        }
+    }
 }

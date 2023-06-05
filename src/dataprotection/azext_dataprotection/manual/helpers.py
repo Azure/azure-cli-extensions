@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import re
 import json
 from importlib import import_module
 from knack.util import CLIError
@@ -37,12 +38,18 @@ def get_client_datasource_type(service_datasource_type):
 
 def get_datasource_info(datasource_type, resource_id, resource_location):
     manifest = load_manifest(datasource_type)
+
+    resource_uri = ""
+
+    if datasource_type == "AzureKubernetesService":
+        resource_uri = resource_id
+
     return {
         "datasource_type": manifest["datasourceType"],
         "object_type": "Datasource",
         "resource_name": resource_id.split("/")[-1],
         "resource_type": manifest["resourceType"],
-        "resource_uri": "",
+        "resource_uri": resource_uri,
         "resource_id": resource_id,
         "resource_location": resource_location
     }
@@ -52,13 +59,26 @@ def get_datasourceset_info(datasource_type, resource_id, resource_location):
     manifest = load_manifest(datasource_type)
     if len(resource_id.split("/")) < 3:
         raise CLIError(resource_id + " is not a valid resource id")
+
+    resource_name = resource_id.split("/")[-3]
+    resource_type = "/".join(manifest["resourceType"].split("/")[:-1])
+    resource_uri = ""
+    resource_id_return = "/".join(resource_id.split("/")[:-2])
+
+    # For AKS, Datasource set info should match datasource info
+    if datasource_type == "AzureKubernetesService":
+        resource_name = resource_id.split("/")[-1]
+        resource_type = manifest["resourceType"]
+        resource_uri = resource_id
+        resource_id_return = resource_id
+
     return {
         "datasource_type": manifest["datasourceType"],
         "object_type": "DatasourceSet",
-        "resource_name": resource_id.split("/")[-3],
-        "resource_type": "/".join(manifest["resourceType"].split("/")[:-1]),
-        "resource_uri": "",
-        "resource_id": "/".join(resource_id.split("/")[:-2]),
+        "resource_name": resource_name,
+        "resource_type": resource_type,
+        "resource_uri": resource_uri,
+        "resource_id": resource_id_return,
         "resource_location": resource_location
     }
 
@@ -121,12 +141,42 @@ def truncate_id_using_scope(arm_id, scope):
     return result_id
 
 
+def get_vault_rg_from_bi_id(backup_instance_id):
+    return backup_instance_id.split('/')[4]
+
+
+def get_vault_name_from_bi_id(backup_instance_id):
+    return backup_instance_id.split('/')[8]
+
+
+def get_bi_name_from_bi_id(backup_instance_id):
+    return backup_instance_id.split('/')[-1]
+
+
 def get_sub_id_from_arm_id(arm_id):
     return truncate_id_using_scope(arm_id, "Subscription")
 
 
 def get_rg_id_from_arm_id(arm_id):
     return truncate_id_using_scope(arm_id, "ResourceGroup")
+
+
+def get_resource_id_from_restore_request_object(restore_request_object, role_type):
+    resource_id = None
+
+    if role_type == 'DataSource':
+        resource_id = restore_request_object['restore_target_info']['datasource_info']['resource_id']
+
+    return resource_id
+
+
+def get_resource_name_from_restore_request_object(restore_request_object, role_type):
+    resource_name = None
+
+    if role_type == 'DataSource':
+        resource_name = restore_request_object['restore_target_info']['datasource_info']['resource_name']
+
+    return resource_name
 
 
 def get_resource_id_from_backup_instance(backup_instance, role_type):
@@ -139,6 +189,18 @@ def get_resource_id_from_backup_instance(backup_instance, role_type):
         resource_id = data_stores[0]['resource_group_id']
 
     return resource_id
+
+
+def get_resource_name_from_backup_instance(backup_instance, role_type):
+    resource_name = None
+
+    if role_type == 'DataSource':
+        resource_name = backup_instance['properties']['data_source_info']['resource_name']
+    elif role_type == 'SnapshotRG':
+        data_stores = backup_instance['properties']['policy_info']['policy_parameters']['data_store_parameters_list']
+        resource_name = data_stores[0]['resource_group_id'].split("/")[-1]
+
+    return resource_name
 
 
 def get_secret_params_from_uri(secret_uri):
@@ -168,8 +230,70 @@ def get_help_text_on_grant_permissions(datasource_type):
     if datasource_type == 'AzureDisk':
         help_text += "Backup vault's identity access on the disk and snapshot resource group"
 
+    if datasource_type == "AzureKubernetesService":
+        help_text += ("1. Backup vault's identity access as Reader on the AKS Cluster and snapshot resource group\n"
+                      "2. AKS cluster's identity access as Contributor on the snapshot resource group")
+
     help_text += "\nAre you sure you want to continue?"
     return help_text
+
+
+def get_help_text_on_grant_permissions_templatized(datasource_type):
+    help_text = "This command will attempt to automatically grant the following access:\n"
+    manifest = load_manifest(datasource_type)
+
+    if 'backupVaultPermissions' in manifest:
+        for role_object in manifest['backupVaultPermissions']:
+            help_text += help_text_permission_line_generator('Backup Vault', role_object, datasource_type)
+
+    if 'dataSourcePermissions' in manifest:
+        for role_object in manifest['dataSourcePermissions']:
+            help_text += help_text_permission_line_generator(
+                get_help_word_from_permission_type('DataSource', datasource_type),
+                role_object,
+                datasource_type
+            )
+
+    if 'secretStorePermissions' in manifest:
+        help_text += ("  Backup vault's identity access on the Postgres server and the key vault\n"
+                      "  'Allow all Azure Services' under network connectivity in the Postgres server\n"
+                      "  'Allow Trusted Azure Services' under network connectivity in the Key vault")
+
+    help_text += "Are you sure you want to continue?"
+    return help_text
+
+
+def help_text_permission_line_generator(sourceMSI, role_object, datasource_type):
+    help_text = "  "
+    help_text += sourceMSI + "'s identity access as "
+    help_text += role_object['roleDefinitionName']
+    help_text += " over the " + get_help_word_from_permission_type(
+        role_object['type'],
+        datasource_type
+    )
+    help_text += "\n"
+    return help_text
+
+
+def get_help_word_from_permission_type(permission_type, datasource_type):
+    if permission_type == 'SnapshotRG':
+        return 'snapshot resource group'
+
+    if permission_type == 'DataSource':
+        helptext_dsname = ''
+
+        if datasource_type == 'AzureKubernetesService':
+            helptext_dsname = "AKS Cluster"
+        if datasource_type == 'AzureBlob':
+            helptext_dsname = 'storage account'
+        if datasource_type == 'AzureDisk':
+            helptext_dsname = 'disk'
+        if datasource_type == 'AzureDatabaseForPostgreSQL':
+            helptext_dsname = "Postgres server"
+
+        return helptext_dsname
+
+    return permission_type
 
 
 def get_permission_object_from_role_object(role_object):
@@ -221,3 +345,46 @@ def get_permission_object_from_keyvault(keyvault):
         permission_object['Properties'] = keyvault.properties
 
     return permission_object
+
+
+def convert_dict_keys_snake_to_camel(dictionary):
+    '''
+    Recursively converts all dictionary and nested dictionary keys from snake case to camel case
+    '''
+    if isinstance(dictionary, list):
+        new_list = []
+        for item in dictionary:
+            new_list.append(convert_dict_keys_snake_to_camel(item))
+        return new_list
+    elif not isinstance(dictionary, dict):
+        return dictionary
+
+    new_dictionary = {}
+    for key, value in dictionary.items():
+        new_dictionary[convert_string_snake_to_camel(key)] = convert_dict_keys_snake_to_camel(value)
+    return new_dictionary
+
+
+def convert_string_snake_to_camel(string):
+    new_string = re.sub(r'_([a-z])', lambda m: m.group(1).upper(), string)
+    return new_string
+
+
+def validate_recovery_point_datetime_format(aaz_str_arg):
+    """ Validates UTC datettime in accepted format. Examples: 31-12-2017, 31-12-2017-05:30:00.
+       Returns datetime in ISO format.
+    """
+    # accepted_date_formats = ['%Y-%m-%dT%H:%M:%S']
+    if aaz_str_arg:
+        date_str = str(aaz_str_arg)
+    else:
+        return None
+
+    import dateutil.parser
+    try:
+        # Parse input string for valid datetime.
+        dt_val = dateutil.parser.parse(date_str)
+        dt_iso = dt_val.strftime("%Y-%m-%dT%H:%M:%S.0000000Z")  # Format datetime string
+        return dt_iso
+    except ValueError:
+        raise CLIError(f"Input '{date_str}' not valid datetime. Valid example: 2017-12-31T05:30:00") from ValueError

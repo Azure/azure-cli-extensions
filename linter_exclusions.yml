@@ -106,6 +106,21 @@ aks create:
     custom_ca_trust_certificates:
       rule_exclusions:
         - option_length_too_long
+    azure_monitor_workspace_resource_id:
+      rule_exclusions:
+      - option_length_too_long
+    enable_azuremonitormetrics:
+      rule_exclusions:
+      - option_length_too_long
+    ksm_metric_annotations_allow_list:
+      rule_exclusions:
+      - option_length_too_long
+    ksm_metric_labels_allow_list:
+      rule_exclusions:
+      - option_length_too_long
+    enable_windows_recording_rules:
+      rule_exclusions:
+      - option_length_too_long
 aks update:
   parameters:
     aad_admin_group_object_ids:
@@ -172,6 +187,9 @@ aks update:
       rule_exclusions:
       - option_length_too_long
     ksm_metric_labels_allow_list:
+      rule_exclusions:
+      - option_length_too_long
+    enable_windows_recording_rules:
       rule_exclusions:
       - option_length_too_long
     custom_ca_trust_certificates:
@@ -319,6 +337,9 @@ codespace plan create:
     default_sku_name:
       rule_exclusions:
       - option_length_too_long
+confidentialledger managedccfs update:
+  rule_exclusions:
+  - missing_command_test_coverage
 containerapp env create:
   parameters:
     infrastructure_subnet_resource_id:
@@ -364,6 +385,17 @@ databox job create:
     staging_storage_account:
       rule_exclusions:
       - option_length_too_long
+    transfer_configuration_type:
+      rule_exclusions:
+      - option_length_too_long
+    transfer_filter_details:
+      rule_exclusions:
+      - option_length_too_long
+databox job mark-devices-shipped:
+  parameters:
+    deliver_package_details:
+      rule_exclusions:
+        - option_length_too_long
 databricks workspace create:
   parameters:
     managed_resource_group:
@@ -623,6 +655,14 @@ desktopvirtualization workspace update:
     application_group_references:
       rule_exclusions:
       - option_length_too_long
+devcenter dev environment update:
+  parameters:
+    dev_center:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    user_id:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
 devops project list:
   parameters:
     get_default_team_image_url:

@@ -5,15 +5,19 @@
 
 # pylint: disable=too-few-public-methods, unused-argument, redefined-builtin
 
+import os
 from re import match
+from azure.cli.core import telemetry
 from azure.cli.core.commands.validators import validate_tag
 from azure.core.exceptions import ResourceNotFoundError
 from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError)
+from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
-from .vendored_sdks.appplatform.v2022_11_01_preview.models._app_platform_management_client_enums import ApmType
+from .vendored_sdks.appplatform.v2023_05_01_preview.models import (ApmReference, CertificateReference)
+from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import ApmType
 
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
 from ._resource_quantity import \
@@ -21,7 +25,7 @@ from ._resource_quantity import \
 from ._util_enterprise import (
     is_enterprise_tier, get_client
 )
-from ._validators import (validate_instance_count, _parse_sku_name)
+from ._validators import (validate_instance_count, _parse_sku_name, _parse_jar_file)
 from .buildpack_binding import (DEFAULT_BUILD_SERVICE_NAME)
 
 logger = get_logger(__name__)
@@ -101,11 +105,165 @@ def validate_builder_resource(namespace):
 
 def validate_build_pool_size(namespace):
     if _parse_sku_name(namespace.sku) == 'enterprise':
-        if namespace.build_pool_size is None:
+        if namespace.build_pool_size is None and not namespace.disable_build_service:
             namespace.build_pool_size = 'S1'
+        elif namespace.build_pool_size is not None and namespace.disable_build_service:
+            raise InvalidArgumentValueError("Conflict detected: '--build-pool-size' can not be set with '--disable-build-service'.")
     else:
         if namespace.build_pool_size is not None:
             raise ClientRequestError("You can only specify --build-pool-size with enterprise tier.")
+
+
+def validate_build_service(namespace):
+    if _parse_sku_name(namespace.sku) == 'enterprise':
+        if (namespace.registry_server or namespace.registry_username or namespace.registry_password is not None) \
+                and ((namespace.registry_server is None) or (namespace.registry_username is None) or (namespace.registry_password is None)):
+            raise InvalidArgumentValueError(
+                "The'--registry-server', '--registry-username' and '--registry-password' should be specified together.")
+        if (namespace.registry_server or namespace.registry_username or namespace.registry_password is not None) \
+                and namespace.disable_build_service:
+            raise InvalidArgumentValueError(
+                "Conflict detected: '--registry-server', '--registry-username' and '--registry-password' "
+                "can not be set with '--disable-build-service'.")
+    else:
+        if namespace.disable_build_service or namespace.registry_server or namespace.registry_username or namespace.registry_password is not None:
+            raise InvalidArgumentValueError("The build service is only supported with enterprise tier.")
+
+
+def validate_build_create(cmd, namespace):
+    client = get_client(cmd)
+    try:
+        build = client.build_service.get_build(namespace.resource_group,
+                                               namespace.service,
+                                               DEFAULT_BUILD_SERVICE_NAME,
+                                               namespace.name)
+        if build is not None:
+            raise ClientRequestError('Build {} already exists.'.format(namespace.name))
+    except ResourceNotFoundError:
+        pass
+
+
+def validate_build_update(cmd, namespace):
+    client = get_client(cmd)
+    try:
+        build = client.build_service.get_build(namespace.resource_group,
+                                               namespace.service,
+                                               DEFAULT_BUILD_SERVICE_NAME,
+                                               namespace.name)
+        if namespace.builder is None:
+            namespace.builder = build.properties.builder.split("/")[-1]
+        if namespace.build_cpu is None:
+            namespace.build_cpu = build.properties.resource_requests.cpu
+        if namespace.build_memory is None:
+            namespace.build_memory = build.properties.resource_requests.memory
+        if namespace.build_env is None:
+            namespace.build_env = build.properties.env
+    except ResourceNotFoundError:
+        raise ClientRequestError('Build {} does not exist.'.format(namespace.name))
+
+
+def validate_central_build_instance(cmd, namespace):
+    only_support_enterprise(cmd, namespace)
+    client = get_client(cmd)
+    try:
+        build_service = client.build_service.get_build_service(namespace.resource_group,
+                                                               namespace.service,
+                                                               DEFAULT_BUILD_SERVICE_NAME)
+        if not build_service.properties.container_registry:
+            raise ClientRequestError('The command is only supported when using your own container registry.')
+    except ResourceNotFoundError:
+        raise ClientRequestError('Build Service is not enabled.')
+
+
+def validate_source_path(namespace):
+    arguments = [namespace.artifact_path, namespace.source_path]
+    if all(not x for x in arguments):
+        raise InvalidArgumentValueError('One of --artifact-path, --source-path must be provided.')
+    valued_args = [x for x in arguments if x]
+    if len(valued_args) > 1:
+        raise InvalidArgumentValueError('At most one of --artifact-path, --source-path must be provided.')
+
+
+def validate_artifact_path(namespace):
+    if namespace.disable_validation:
+        telemetry.set_user_fault("jar validation is disabled")
+        return
+    if namespace.artifact_path is None or os.path.splitext(namespace.artifact_path)[-1] != "jar":
+        return
+    values = _parse_jar_file(namespace.artifact_path)
+    if values is None:
+        # ignore jar_file check
+        return
+    file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, ms_sdk_version, jdk_version = values
+
+    tips = ", if you choose to ignore these errors, turn validation off with --disable-validation"
+    if not has_jar and not has_class:
+        telemetry.set_user_fault("invalid_jar_no_class_jar")
+        raise InvalidArgumentValueError(
+            "Do not find any class or jar file, please check if your artifact is a valid fat jar" + tips)
+    if not has_manifest:
+        telemetry.set_user_fault("invalid_jar_no_manifest")
+        raise InvalidArgumentValueError(
+            "Do not find MANIFEST.MF, please check if your artifact is a valid fat jar" + tips)
+    if file_size / 1024 / 1024 < 10:
+        telemetry.set_user_fault("invalid_jar_thin_jar")
+        raise InvalidArgumentValueError("Thin jar detected, please check if your artifact is a valid fat jar" + tips)
+
+    # validate spring boot version
+    if spring_boot_version and spring_boot_version.startswith('1'):
+        telemetry.set_user_fault("old_spring_boot_version")
+        raise InvalidArgumentValueError(
+            "The spring boot {} you are using is not supported. To get the latest supported "
+            "versions please refer to: https://aka.ms/ascspringversion".format(spring_boot_version) + tips)
+
+    # old spring cloud version, need to import ms sdk <= 2.2.1
+    if spring_cloud_version:
+        if spring_cloud_version < "2.2.5":
+            if not ms_sdk_version or ms_sdk_version > "2.2.1":
+                telemetry.set_user_fault("old_spring_cloud_version")
+                raise InvalidArgumentValueError(
+                    "The spring cloud {} you are using is not supported. To get the latest supported "
+                    "versions please refer to: https://aka.ms/ascspringversion".format(spring_cloud_version) + tips)
+        else:
+            if ms_sdk_version and ms_sdk_version <= "2.2.1":
+                telemetry.set_user_fault("old_ms_sdk_version")
+                raise InvalidArgumentValueError(
+                    "The spring-cloud-starter-azure-spring-cloud-client version {} is no longer "
+                    "supported, please remove it or upgrade to a higher version, to get the latest "
+                    "supported versions please refer to: "
+                    "https://mvnrepository.com/artifact/com.microsoft.azure/spring-cloud-starter-azure"
+                    "-spring-cloud-client".format(ms_sdk_version) + tips)
+
+    if not has_actuator:
+        telemetry.set_user_fault("no_spring_actuator")
+        logger.warning(
+            "Seems you do not import spring actuator, thus metrics are not enabled, please refer to "
+            "https://aka.ms/ascdependencies for more details")
+
+
+def validate_container_registry_update(cmd, namespace):
+    validate_container_registry(namespace)
+    client = get_client(cmd)
+    try:
+        client.container_registries.get(namespace.resource_group, namespace.service, namespace.name)
+    except ResourceNotFoundError:
+        raise ClientRequestError('Container Registry {} does not exist.'.format(namespace.name))
+
+
+def validate_container_registry_create(cmd, namespace):
+    validate_container_registry(namespace)
+    client = get_client(cmd)
+    try:
+        container_registry = client.container_registries.get(namespace.resource_group, namespace.service, namespace.name)
+        if container_registry is not None:
+            raise ClientRequestError('Container Registry {} already exists.'.format(namespace.name))
+    except ResourceNotFoundError:
+        pass
+
+
+def validate_container_registry(namespace):
+    if not namespace.name or not namespace.username or not namespace.password or not namespace.server:
+        raise InvalidArgumentValueError('The --name, --server, --username and --password must be provided.')
 
 
 def validate_cpu(namespace):
@@ -316,3 +474,109 @@ def validate_customized_accelerator(namespace):
     validate_acc_git_refs(namespace)
     if namespace.accelerator_tags is not None:
         namespace.accelerator_tags = namespace.accelerator_tags.split(",") if namespace.accelerator_tags else []
+
+
+def validate_apm_properties(namespace):
+    """ Extracts multiple space-separated properties in key[=value] format """
+    if isinstance(namespace.properties, list):
+        properties_dict = {}
+        for item in namespace.properties:
+            properties_dict.update(validate_tag(item))
+        namespace.properties = properties_dict
+
+
+def validate_apm_secrets(namespace):
+    """ Extracts multiple space-separated secrets in key[=value] format """
+    if isinstance(namespace.secrets, list):
+        secrets_dict = {}
+        for item in namespace.secrets:
+            secrets_dict.update(validate_tag(item))
+        namespace.secrets = secrets_dict
+
+
+def validate_apm_not_exist(cmd, namespace):
+    client = get_client(cmd)
+    try:
+        apm_resource = client.apms.get(namespace.resource_group, namespace.service, namespace.name)
+        if apm_resource is not None:
+            raise ClientRequestError('APM {} already exists '
+                                     'in resource group {}, service {}. You can edit it by update command.'
+                                     .format(namespace.name, namespace.resource_group, namespace.service))
+    except ResourceNotFoundError:
+        # Excepted case
+        pass
+
+
+def validate_apm_update(cmd, namespace):
+    client = get_client(cmd)
+    try:
+        client.apms.get(namespace.resource_group, namespace.service, namespace.name)
+    except ResourceNotFoundError:
+        raise ClientRequestError('APM {} does not exist.'.format(namespace.name))
+
+
+def validate_apm_reference(cmd, namespace):
+    apm_names = namespace.apms
+
+    if not apm_names:
+        return
+
+    service_resource_id = get_service_resource_id(cmd, namespace)
+
+    result = []
+    for apm_name in apm_names:
+        resource_id = '{}/apms/{}'.format(service_resource_id, apm_name)
+        apm_reference = ApmReference(resource_id=resource_id)
+        result.append(apm_reference)
+
+    namespace.apms = result
+
+
+def validate_apm_reference_and_enterprise_tier(cmd, namespace):
+    if namespace.apms is not None and namespace.resource_group and namespace.service and not is_enterprise_tier(
+            cmd, namespace.resource_group, namespace.service):
+        raise ArgumentUsageError("'--apms' only supports for Enterprise tier Spring instance.")
+
+    validate_apm_reference(cmd, namespace)
+
+
+def get_service_resource_id(cmd, namespace):
+    subscription = get_subscription_id(cmd.cli_ctx)
+    service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(
+        subscription, namespace.resource_group, namespace.service)
+    return service_resource_id
+
+
+def validate_cert_reference(cmd, namespace):
+    cert_names = namespace.certificates
+
+    if not cert_names:
+        return
+
+    result = []
+    get_cert_resource_id(cert_names, cmd, namespace, result)
+
+    namespace.certificates = result
+
+
+def get_cert_resource_id(cert_names, cmd, namespace, result):
+    service_resource_id = get_service_resource_id(cmd, namespace)
+    for cert_name in cert_names:
+        resource_id = '{}/certificates/{}'.format(service_resource_id, cert_name)
+        cert_reference = CertificateReference(resource_id=resource_id)
+        result.append(cert_reference)
+
+
+def validate_build_cert_reference(cmd, namespace):
+    cert_names = namespace.build_certificates
+    if cert_names is not None and namespace.resource_group and namespace.service and not is_enterprise_tier(
+            cmd, namespace.resource_group, namespace.service):
+        raise ArgumentUsageError("'--build-certificates' only supports for Enterprise tier Spring instance.")
+
+    if not cert_names:
+        return
+
+    result = []
+    get_cert_resource_id(cert_names, cmd, namespace, result)
+
+    namespace.build_certificates = result

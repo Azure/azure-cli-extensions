@@ -1,6 +1,14 @@
 Release History
 ===============
 
+0.1.6
+++++++
+* Fix pair region mapping for eastus to westus
+
+0.1.5
+++++++
+* Fix resource group for custom storage account
+
 0.1.4
 ++++++
 * Fix repeating loading message

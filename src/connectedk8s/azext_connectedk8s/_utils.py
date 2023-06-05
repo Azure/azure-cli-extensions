@@ -12,7 +12,6 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import json
-
 from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
@@ -25,8 +24,6 @@ from msrest.exceptions import ValidationError as MSRestValidationError
 from kubernetes.client.rest import ApiException
 from azext_connectedk8s._client_factory import resource_providers_client, cf_resource_groups
 import azext_connectedk8s._constants as consts
-import azext_connectedk8s._precheckutils as precheckutils
-import azext_connectedk8s._troubleshootutils as troubleshootutils
 from kubernetes import client as kube_client
 from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, AzureResponseError, AzureInternalError, ValidationError
@@ -167,15 +164,15 @@ def save_cluster_diagnostic_checks_pod_description(corev1_api_instance, batchv1_
                 if kube_context:
                     describe_job_pod.extend(["--context", kube_context])
                 response_describe_job_pod = Popen(describe_job_pod, stdout=PIPE, stderr=PIPE)
-                _, error_describe_job_pod = response_describe_job_pod.communicate()
+                output_describe_job_pod, error_describe_job_pod = response_describe_job_pod.communicate()
                 if(response_describe_job_pod.returncode == 0):
-                    pod_description = response_describe_job_pod.communicate()[0].strip()
+                    pod_description = output_describe_job_pod.decode()
                     if storage_space_available:
-                        dns_check_path = os.path.join(filepath_with_timestamp, "cluster_diagnostic_checks_pod_description")
-                        with open(dns_check_path, 'wb') as f:
+                        dns_check_path = os.path.join(filepath_with_timestamp, "cluster_diagnostic_checks_pod_description.txt")
+                        with open(dns_check_path, 'w+') as f:
                             f.write(pod_description)
                 else:
-                    telemetry.set_exception(exception='Failed to save cluster diagnostic checks pod description in the local machine', fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Failed to save cluster diagnostic checks pod description in the local machine")
+                    telemetry.set_exception(exception=error_describe_job_pod.decode("ascii"), fault_type=consts.Cluster_Diagnostic_Checks_Pod_Description_Save_Failed, summary="Failed to save cluster diagnostic checks pod description in the local machine")
     except OSError as e:
         if "[Errno 28]" in str(e):
             storage_space_available = False
@@ -234,29 +231,75 @@ def check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_avai
     return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
-def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output):
+def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output, outbound_connectivity_check_for='pre-onboarding-inspector'):
 
     try:
-        outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
-        outbound_connectivity_response = outbound_connectivity_response[::-1]
-        if consts.Outbound_Connectivity_Check_Result_String not in outbound_connectivity_check_log:
-            return consts.Diagnostic_Check_Incomplete, storage_space_available
-        # Validating if outbound connectiivty is working or not and displaying proper result
-        if(outbound_connectivity_response != "000"):
-            if storage_space_available:
-                outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
-                with open(outbound_connectivity_check_path, 'w+') as outbound:
-                    outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully.")
-            return consts.Diagnostic_Check_Passed, storage_space_available
-        else:
-            logger.warning("Error: We found an issue with outbound network connectivity from the cluster.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server' \n")
-            diagnoser_output.append("Error: We found an issue with outbound network connectivity from the cluster.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server' \n")
-            if storage_space_available:
-                outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
-                with open(outbound_connectivity_check_path, 'w+') as outbound:
-                    outbound.write("Response code " + outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster.")
-            telemetry.set_exception(exception='Outbound network connectivity check failed', fault_type=consts.Outbound_Connectivity_Check_Failed, summary="Outbound network connectivity check failed in the cluster")
-            return consts.Diagnostic_Check_Failed, storage_space_available
+        if outbound_connectivity_check_for == 'pre-onboarding-inspector':
+            if consts.Outbound_Connectivity_Check_Result_String not in outbound_connectivity_check_log:
+                return consts.Diagnostic_Check_Incomplete, storage_space_available
+
+            Outbound_Connectivity_Log_For_Cluster_Connect = outbound_connectivity_check_log.split('  ')[0]
+            # extracting the endpoints for cluster connect feature
+            Cluster_Connect_Precheck_Endpoint_Url = Outbound_Connectivity_Log_For_Cluster_Connect.split(" : ")[1]
+            # extracting the obo endpoint response code from outbound connectivity check
+            Cluster_Connect_Precheck_Endpoint_response_code = Outbound_Connectivity_Log_For_Cluster_Connect.split(" : ")[2]
+
+            if(Cluster_Connect_Precheck_Endpoint_response_code != "000"):
+                if storage_space_available:
+                    cluster_connect_outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check_for_cluster_connect)
+                    with open(cluster_connect_outbound_connectivity_check_path, 'w+') as outbound:
+                            outbound.write("Response code " + Cluster_Connect_Precheck_Endpoint_response_code + "\nOutbound network connectivity check to cluster connect precheck endpoints passed successfully.")
+            else:
+                logger.warning("The outbound network connectivity check has failed for the endpoint - " + Cluster_Connect_Precheck_Endpoint_Url + "\nThis will affect the \"cluster-connect\" feature. If you are planning to use \"cluster-connect\" functionality , please ensure outbound connectivity to the above endpoint.\n")
+                telemetry.set_exception(exception='Outbound network connectivity check failed for the Cluster Connect endpoint', fault_type=consts.Outbound_Connectivity_Check_Failed_For_Cluster_Connect, summary="Outbound network connectivity check failed for the Cluster Connect precheck endpoint")
+                if storage_space_available:
+                    cluster_connect_outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check_for_cluster_connect)
+                    with open(cluster_connect_outbound_connectivity_check_path, 'w+') as outbound:
+                            outbound.write("Response code " + Cluster_Connect_Precheck_Endpoint_response_code + "\nOutbound connectivity failed for the endpoint:" + Cluster_Connect_Precheck_Endpoint_Url + " ,this is an optional endpoint needed for cluster-connect feature.")
+
+            Onboarding_Precheck_Endpoint_outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
+            Onboarding_Precheck_Endpoint_outbound_connectivity_response = Onboarding_Precheck_Endpoint_outbound_connectivity_response[::-1]
+
+            # Validating if outbound connectiivty is working or not and displaying proper result
+            if(Onboarding_Precheck_Endpoint_outbound_connectivity_response != "000"):
+                if storage_space_available:
+                    outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check_for_onboarding)
+                    with open(outbound_connectivity_check_path, 'w+') as outbound:
+                            outbound.write("Response code " + Onboarding_Precheck_Endpoint_outbound_connectivity_response + "\nOutbound network connectivity check to the onboarding precheck endpoint passed successfully.")
+                return consts.Diagnostic_Check_Passed, storage_space_available
+            else:
+                outbound_connectivity_failed_warning_message = "Error: We found an issue with outbound network connectivity from the cluster to the endpoints required for onboarding.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server' \n"
+                logger.warning(outbound_connectivity_failed_warning_message)
+                diagnoser_output.append(outbound_connectivity_failed_warning_message)
+                if storage_space_available:
+                    outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check_for_onboarding)
+                    with open(outbound_connectivity_check_path, 'w+') as outbound:
+                        outbound.write("Response code " + Onboarding_Precheck_Endpoint_outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster required for onboarding.")
+                telemetry.set_exception(exception='Outbound network connectivity check failed for onboarding', fault_type=consts.Outbound_Connectivity_Check_Failed_For_Onboarding, summary="Outbound network connectivity check for onboarding failed in the cluster")
+                return consts.Diagnostic_Check_Failed, storage_space_available
+
+        elif outbound_connectivity_check_for == 'troubleshoot':
+            outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
+            outbound_connectivity_response = outbound_connectivity_response[::-1]
+            if consts.Outbound_Connectivity_Check_Result_String not in outbound_connectivity_check_log:
+                return consts.Diagnostic_Check_Incomplete, storage_space_available
+
+            if(outbound_connectivity_response != "000"):
+                if storage_space_available:
+                    outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
+                    with open(outbound_connectivity_check_path, 'w+') as outbound:
+                        outbound.write("Response code " + outbound_connectivity_response + "\nOutbound network connectivity check passed successfully.")
+                return consts.Diagnostic_Check_Passed, storage_space_available
+            else:
+                outbound_connectivity_failed_warning_message = "Error: We found an issue with outbound network connectivity from the cluster.\nPlease ensure to meet the following network requirements 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#meet-network-requirements' \nIf your cluster is behind an outbound proxy server, please ensure that you have passed proxy parameters during the onboarding of your cluster.\nFor more details visit 'https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?tabs=azure-cli#connect-using-an-outbound-proxy-server' \n"
+                logger.warning(outbound_connectivity_failed_warning_message)
+                diagnoser_output.append(outbound_connectivity_failed_warning_message)
+                if storage_space_available:
+                    outbound_connectivity_check_path = os.path.join(filepath_with_timestamp, consts.Outbound_Network_Connectivity_Check)
+                    with open(outbound_connectivity_check_path, 'w+') as outbound:
+                        outbound.write("Response code " + outbound_connectivity_response + "\nWe found an issue with Outbound network connectivity from the cluster.")
+                telemetry.set_exception(exception='Outbound network connectivity check failed', fault_type=consts.Outbound_Connectivity_Check_Failed, summary="Outbound network connectivity check failed in the cluster")
+                return consts.Diagnostic_Check_Failed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
@@ -276,54 +319,6 @@ def check_cluster_outbound_connectivity(outbound_connectivity_check_log, filepat
         diagnoser_output.append("An exception has occured while performing the outbound connectivity check on the cluster. Exception: {}".format(str(e)) + "\n")
 
     return consts.Diagnostic_Check_Incomplete, storage_space_available
-
-
-def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag, for_preonboarding_checks=False):
-
-    # This function is used to store the output that is obtained throughout the Diagnoser process
-    if for_preonboarding_checks:
-        diagnoser_output = precheckutils.diagnoser_output
-    else:
-        diagnoser_output = troubleshootutils.diagnoser_output
-
-    try:
-        # If storage space is available then only we store the output
-        if storage_space_available:
-            # Path to store the diagnoser results
-            cli_output_logger_path = os.path.join(filepath_with_timestamp, consts.Diagnoser_Results)
-            # If any results are obtained during the process than we will add it to the text file.
-            if len(diagnoser_output) > 0:
-                with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                    for output in diagnoser_output:
-                        cli_output_writer.write(output + "\n")
-                    # If flag is 0 that means that process was terminated using the Keyboard Interrupt so adding that also to the text file
-                    if flag == 0:
-                        cli_output_writer.write("Process terminated externally.\n")
-
-            # If no issues was found during the whole troubleshoot execution
-            elif flag:
-                with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                    cli_output_writer.write("The diagnoser didn't find any issues on the cluster.\n")
-            # If process was terminated by user
-            else:
-                with open(cli_output_logger_path, 'w+') as cli_output_writer:
-                    cli_output_writer.write("Process terminated externally.\n")
-
-        return consts.Diagnostic_Check_Passed
-
-    # For handling storage or OS exception that may occur during the execution
-    except OSError as e:
-        if "[Errno 28]" in str(e):
-            storage_space_available = False
-            telemetry.set_exception(exception=e, fault_type=consts.No_Storage_Space_Available_Fault_Type, summary="No space left on device")
-            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
-
-    # To handle any exception that may occur during the execution
-    except Exception as e:
-        logger.warning("An exception has occured while trying to store the diagnoser results. Exception: {}".format(str(e)) + "\n")
-        telemetry.set_exception(exception=e, fault_type=consts.Diagnoser_Result_Fault_Type, summary="Error while storing the diagnoser results")
-
-    return consts.Diagnostic_Check_Failed
 
 
 def create_folder_diagnosticlogs(time_stamp, folder_name):
@@ -629,9 +624,10 @@ def helm_install_release(chart_path, subscription_id, kubernetes_distro, kuberne
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
-        if ('forbidden' in error_helm_install.decode("ascii") or 'timed out waiting for the condition' in error_helm_install.decode("ascii")):
+        helm_install_error_message = error_helm_install.decode("ascii")
+        if any(message in helm_install_error_message for message in consts.Helm_Install_Release_Userfault_Messages):
             telemetry.set_user_fault()
-        telemetry.set_exception(exception=error_helm_install.decode("ascii"), fault_type=consts.Install_HelmRelease_Fault_Type,
+        telemetry.set_exception(exception=helm_install_error_message, fault_type=consts.Install_HelmRelease_Fault_Type,
                                 summary='Unable to install helm release')
         logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
         raise CLIInternalError("Unable to install helm release: " + error_helm_install.decode("ascii"))
@@ -646,7 +642,7 @@ def get_release_namespace(kube_config, kube_context, helm_client_location, relea
     response_helm_release = Popen(cmd_helm_release, stdout=PIPE, stderr=PIPE)
     output_helm_release, error_helm_release = response_helm_release.communicate()
     if response_helm_release.returncode != 0:
-        if 'forbidden' in error_helm_release.decode("ascii"):
+        if 'forbidden' in error_helm_release.decode("ascii") or "Kubernetes cluster unreachable" in error_helm_release.decode("ascii"):
             telemetry.set_user_fault()
         telemetry.set_exception(exception=error_helm_release.decode("ascii"), fault_type=consts.List_HelmRelease_Fault_Type,
                                 summary='Unable to list helm release')

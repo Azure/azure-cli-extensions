@@ -18,20 +18,21 @@ class StackHciClientTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_stack_hci_cluster', location='eastus')
     def test_stack_hci_cluster_crud(self):
         self.kwargs.update({
-            'cluster_name': 'cli-test-cluster',
-            'app_name': 'cli-test-app'
+            'cluster_name': self.create_random_name('cluster', 15),
+            'app_name': self.create_random_name('app', 15)
         })
         self.kwargs['client_id'] = self.cmd('ad app create --display-name {app_name}').get_output_in_json()['appId']
         self.kwargs['tenant_id'] = self.cmd('account show').get_output_in_json()['tenantId']
 
-        self.cmd('stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id} --tags key0=value0', checks=[
+        cluster = self.cmd('stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id} --tags key0=value0', checks=[
             self.check('name', '{cluster_name}'),
             self.check('tags', {'key0': 'value0'}),
             self.check('type', 'microsoft.azurestackhci/clusters')
-        ])
-        self.cmd('stack-hci cluster create-identity --cluster-name {cluster_name} -g {rg}', checks=[
-            self.check('status', 'Succeeded'),
-        ])
+        ]).get_output_in_json()
+        self.kwargs.update({
+            'cluster_id': cluster['id']
+        })
+        self.cmd('stack-hci cluster create-identity --cluster-name {cluster_name} -g {rg}')
         self.cmd('stack-hci cluster list -g {rg}', checks=[
             self.check('length(@)', 1),
             self.check('@[0].name', '{cluster_name}')
@@ -40,15 +41,24 @@ class StackHciClientTest(ScenarioTest):
         self.cmd('stack-hci cluster show -n {cluster_name} -g {rg}', checks=[
             self.check('name', '{cluster_name}'),
             self.check('tags', {'key0': 'value1'}),
-            self.check('type', 'microsoft.azurestackhci/clusters')
+            self.check('type', 'microsoft.azurestackhci/clusters'),
+            self.exists('aadApplicationObjectId'),
+            self.exists('aadServicePrincipalObjectId')
+        ])
+        self.cmd('stack-hci cluster show --ids {cluster_id}', checks=[
+            self.check('name', '{cluster_name}'),
+            self.check('tags', {'key0': 'value1'}),
+            self.check('type', 'microsoft.azurestackhci/clusters'),
+            self.exists('aadApplicationObjectId'),
+            self.exists('aadServicePrincipalObjectId')
         ])
         self.cmd('stack-hci cluster delete -n {cluster_name} -g {rg} --yes')
 
     @ResourceGroupPreparer(name_prefix='cli_test_stack_hci_arc_setting', location='eastus')
     def test_stack_hci_arc_setting_crud(self):
         self.kwargs.update({
-            'cluster_name': 'cli-test-cluster',
-            'app_name': 'cli-test-app'
+            'cluster_name': self.create_random_name('cluster', 15),
+            'app_name': self.create_random_name('app', 15)
         })
         self.kwargs['client_id'] = self.cmd('ad app create --display-name {app_name}').get_output_in_json()['appId']
         self.kwargs['tenant_id'] = self.cmd('account show').get_output_in_json()['tenantId']
@@ -75,8 +85,8 @@ class StackHciClientTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_stack_hci_extension', location='eastus')
     def test_stack_hci_extension_crud(self):
         self.kwargs.update({
-            'cluster_name': 'cli-test-cluster',
-            'app_name': 'cli-test-app',
+            'cluster_name': self.create_random_name('cluster', 15),
+            'app_name': self.create_random_name('app', 15),
             'type': 'MicrosoftMonitoringAgent',
             'publisher': 'Microsoft.Compute'
         })
@@ -84,10 +94,7 @@ class StackHciClientTest(ScenarioTest):
         self.kwargs['tenant_id'] = self.cmd('account show').get_output_in_json()['tenantId']
         self.cmd('stack-hci cluster create -n {cluster_name} -g {rg} --aad-client-id {client_id} --aad-tenant-id {tenant_id}')
         self.cmd('stack-hci arc-setting create -n default -g {rg} --cluster-name {cluster_name}')
-
-        self.kwargs['settings'] = json.dumps({'workspaceId': 'xx'})
-        self.kwargs['protected_settings'] = json.dumps({'workspaceKey': 'xx'})
-        self.cmd('stack-hci extension create -n {type} -g {rg} --cluster-name {cluster_name} --arc-setting-name default --settings \'{settings}\' --protected-settings \'{protected_settings}\' --publisher {publisher} --type {type} --type-handler-version 1.10', checks=[
+        self.cmd('stack-hci extension create -n {type} -g {rg} --cluster-name {cluster_name} --arc-setting-name default --settings {{workspaceId:xx}} --protected-settings {{workspaceKey:xx}} --publisher {publisher} --type {type} --type-handler-version 1.10', checks=[
             self.check('name', self.kwargs['type']),
             self.check('type', 'microsoft.azurestackhci/clusters/arcsettings/extensions')
         ])

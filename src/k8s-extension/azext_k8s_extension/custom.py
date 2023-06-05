@@ -24,6 +24,7 @@ from .vendored_sdks.models import Identity, Scope
 from ._validators import validate_cc_registration
 
 from .partner_extensions.ContainerInsights import ContainerInsights
+from .partner_extensions.AzureMonitorMetrics import AzureMonitorMetrics
 from .partner_extensions.AzureDefender import AzureDefender
 from .partner_extensions.OpenServiceMesh import OpenServiceMesh
 from .partner_extensions.AzureMLKubernetes import AzureMLKubernetes
@@ -44,6 +45,7 @@ logger = get_logger(__name__)
 def ExtensionFactory(extension_name):
     extension_map = {
         "microsoft.azuremonitor.containers": ContainerInsights,
+        "microsoft.azuremonitor.containers.metrics": AzureMonitorMetrics,
         "microsoft.azuredefender.kubernetes": AzureDefender,
         "microsoft.openservicemesh": OpenServiceMesh,
         "microsoft.azureml.kubernetes": AzureMLKubernetes,

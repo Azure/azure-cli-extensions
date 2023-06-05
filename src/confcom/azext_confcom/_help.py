@@ -49,6 +49,10 @@ helps[
           type: boolean
           short-summary: 'When enabled, the generated security policy adds the ability to use /bin/sh or /bin/bash to debug the container. It also enabled stdio access, ability to dump stack traces, and enables runtime logging. It is recommended to only use this option for debugging purposes.'
 
+        - name: --approve-wildcards -y
+          type: boolean
+          short-summary: 'When enabled, all prompts for using wildcards in environment variables are automatically approved.'
+
         - name: --disable-stdio
           type: boolean
           short-summary: 'When enabled, the containers in the container group do not have access to stdio.'
@@ -60,10 +64,6 @@ helps[
         - name: --diff -d
           type: boolean
           short-summary: 'When combined with an input ARM Template, verifies the policy present in the ARM Template under "ccePolicy" and the containers within the ARM Template are compatible. If they are incompatible, a list of reasons is given and the exit status code will be 2.'
-
-        - name: --json -j
-          type: string
-          short-summary: 'Outputs in JSON format instead of Rego'
 
         - name: --outraw
           type: boolean
@@ -86,8 +86,8 @@ helps[
           text: az confcom acipolicygen --template-file "./template.json"
         - name: Input an ARM Template file to create a human-readable Confidential Container Security Policy
           text: az confcom acipolicygen --template-file "./template.json" --outraw-pretty-print
-        - name: Input an ARM Template file to save a Confidential Container Security Policy to a file
-          text: az confcom acipolicygen --template-file "./template.json" -s "./output-file.txt"
+        - name: Input an ARM Template file to save a Confidential Container Security Policy to a file as base64 encoded text
+          text: az confcom acipolicygen --template-file "./template.json" -s "./output-file.txt" --print-policy
         - name: Input an ARM Template file and use a tar file as the image source instead of the Docker daemon
           text: az confcom acipolicygen --template-file "./template.json" --tar "./image.tar"
 """

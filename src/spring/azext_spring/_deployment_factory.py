@@ -6,8 +6,9 @@
 # pylint: disable=wrong-import-order
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import get_file_json
-from .vendored_sdks.appplatform.v2022_11_01_preview import models
+from .vendored_sdks.appplatform.v2023_05_01_preview import models
 from ._deployment_source_factory import source_selector
+from .custom import format_scale
 
 
 APPLICATION_CONFIGURATION_SERVICE_NAME = "applicationConfigurationService"
@@ -38,11 +39,13 @@ class DefaultDeployment:
             resource_requests=self._format_resource_request(**kwargs),
             container_probe_settings=self._format_container_probe(**kwargs),
             environment_variables=self._get_env(**kwargs),
+            apms=self._get_apms(**kwargs),
             addon_configs=self._get_addon_configs(**kwargs),
             termination_grace_period_seconds=self._get_termination_grace_period_seconds(**kwargs),
             startup_probe=self._format_startup_probe(**kwargs),
             liveness_probe=self._format_liveness_probe(**kwargs),
-            readiness_probe=self._format_readiness_probe(**kwargs)
+            readiness_probe=self._format_readiness_probe(**kwargs),
+            scale=format_scale(**kwargs),
         )
 
     def _get_termination_grace_period_seconds(self, termination_grace_period_seconds=None, **_):
@@ -97,6 +100,9 @@ class DefaultDeployment:
 
     def _get_env(self, env=None, **_):
         return env
+
+    def _get_apms(self, apms=None, **_):
+        return apms
 
     def _get_addon_configs(self, config_file_patterns=None, **_):
         if config_file_patterns is not None:
