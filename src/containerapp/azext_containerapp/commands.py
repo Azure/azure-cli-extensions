@@ -43,6 +43,18 @@ def transform_revision_list_output(revs):
     return [transform_revision_output(r) for r in revs]
 
 
+def transform_job_execution_show_output(execution):
+    return {
+        'name': execution['name'],
+        'startTime': execution['properties']['startTime'],
+        'status': execution['properties']['status']
+    }
+
+
+def transform_job_execution_list_output(executions):
+    return [transform_job_execution_show_output(e) for e in executions]
+
+
 def load_command_table(self, _):
     with self.command_group('containerapp') as g:
         g.custom_show_command('show', 'show_containerapp', table_transformer=transform_containerapp_output)
@@ -80,8 +92,8 @@ def load_command_table(self, _):
         g.custom_command('stop', 'stop_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp job execution') as g:
-        g.custom_show_command('list', 'listexecution_containerappsjob')
-        g.custom_show_command('show', 'getSingleExecution_containerappsjob')
+        g.custom_show_command('list', 'listexecution_containerappsjob', table_transformer=transform_job_execution_list_output)
+        g.custom_show_command('show', 'getSingleExecution_containerappsjob', table_transformer=transform_job_execution_show_output)
 
     with self.command_group('containerapp env dapr-component') as g:
         g.custom_command('list', 'list_dapr_components')
