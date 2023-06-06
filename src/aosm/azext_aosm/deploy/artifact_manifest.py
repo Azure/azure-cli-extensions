@@ -131,16 +131,24 @@ class ArtifactManifestOperator:
                     f"{CredentialType.AZURE_STORAGE_ACCOUNT_TOKEN} are not expected "
                     f"for Artifacts of type {artifact.artifact_type}"
                 )
-
+                
             container_basename = artifact.artifact_name.replace("-", "")
-            blob_url = self._get_blob_url(
-                f"{container_basename}-{artifact.artifact_version}"
-            )
+            container_name = f"{container_basename}-{artifact.artifact_version}"
+
+            # For AOSM to work VHD blobs must have the suffix .vhd
+            if artifact.artifact_name.endswith("-vhd"):
+                blob_name = f"{artifact.artifact_name[:-4].replace('-', '')}-{artifact.artifact_version}.vhd"
+            else:
+                blob_name = container_name
+
+            logger.debug("container name: %s, blob name: %s", container_name, blob_name)
+            
+            blob_url = self._get_blob_url(container_name, blob_name)
             return BlobClient.from_blob_url(blob_url)
         else:
             return self._oras_client(self._manifest_credentials["acr_server_url"])
 
-    def _get_blob_url(self, container_name: str) -> str:
+    def _get_blob_url(self, container_name: str, blob_name: str) -> str:
         """
         Get the URL for the blob to be uploaded to the storage account artifact store.
 
@@ -151,6 +159,10 @@ class ArtifactManifestOperator:
                 sas_uri = str(container_credential["container_sas_uri"])
                 sas_uri_prefix = sas_uri.split("?")[0]
                 sas_uri_token = sas_uri.split("?")[1]
+                
+                blob_url = f"{sas_uri_prefix}/{blob_name}?{sas_uri_token}"
+                
+                logger.debug("Blob URL: %s", blob_url)
 
-                return f"{sas_uri_prefix}/{container_name}?{sas_uri_token}"
+                return blob_url
         raise KeyError(f"Manifest does not include a credential for {container_name}.")

@@ -31,7 +31,6 @@ DESCRIPTION_MAP: Dict[str, str] = {
     "acr_artifact_store_name": "Name of the ACR Artifact Store resource. Will be created if it does not exist.",
     "location": "Azure location to use when creating resources.",
     "blob_artifact_store_name": "Name of the storage account Artifact Store resource. Will be created if it does not exist.",
-    "artifact_name": "Name of the artifact",
     "file_path": (
         "Optional. File path of the artifact you wish to upload from your "
         "local disk. Delete if not required."
@@ -67,7 +66,6 @@ DESCRIPTION_MAP: Dict[str, str] = {
 
 @dataclass
 class ArtifactConfig:
-    artifact_name: str = DESCRIPTION_MAP["artifact_name"]
     # artifact.py checks for the presence of the default descriptions, change there if
     # you change the descriptions.
     file_path: Optional[str] = DESCRIPTION_MAP["file_path"]
@@ -179,8 +177,7 @@ class NSConfiguration:
     @property
     def resource_element_name(self) -> str:
         """Return the name of the resource element."""
-        artifact_name = self.arm_template.artifact_name
-        return f"{artifact_name}-resource-element"
+        return f"{self.nsdg_name.lower()}-resource-element"
 
     @property
     def network_function_name(self) -> str:
@@ -206,7 +203,6 @@ class NSConfiguration:
     def arm_template(self) -> ArtifactConfig:
         """Return the parameters of the ARM template to be uploaded as part of the NSDV."""
         artifact = ArtifactConfig()
-        artifact.artifact_name = f"{self.nsdg_name.lower()}_nf_artifact"
         artifact.version = self.nsd_version
         artifact.file_path = os.path.join(
             self.build_output_folder_name, NF_DEFINITION_JSON_FILE

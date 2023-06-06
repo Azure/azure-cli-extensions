@@ -197,9 +197,8 @@ class DeployerViaArm:
                 "saArtifactStoreName": {"value": self.config.blob_artifact_store_name},
                 "acrManifestName": {"value": self.config.acr_manifest_name},
                 "saManifestName": {"value": self.config.sa_manifest_name},
-                "vhdName": {"value": self.config.vhd.artifact_name},
+                'nfName': {"value": self.config.nf_name},
                 "vhdVersion": {"value": self.config.vhd.version},
-                "armTemplateName": {"value": self.config.arm_template.artifact_name},
                 "armTemplateVersion": {"value": self.config.arm_template.version},
             }
         elif isinstance(self.config, NSConfiguration):
@@ -208,7 +207,7 @@ class DeployerViaArm:
                 "publisherName": {"value": self.config.publisher_name},
                 "acrArtifactStoreName": {"value": self.config.acr_artifact_store_name},
                 "acrManifestName": {"value": self.config.acr_manifest_name},
-                "armTemplateName": {"value": self.config.arm_template.artifact_name},
+                "armTemplateName": {"value": f"{self.config.network_function_definition_group_name}_nfd_artifact"},
                 "armTemplateVersion": {"value": self.config.arm_template.version},
             }
         else:
