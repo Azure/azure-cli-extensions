@@ -1,17 +1,20 @@
+## Disabling as every if statement in validate in NSConfig class has this condition
+# pylint: disable=simplifiable-condition
+
 from dataclasses import dataclass, field
 from typing import Dict, Optional, Any, List
 from pathlib import Path
+import os
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError
 from azext_aosm.util.constants import (
     DEFINITION_OUTPUT_BICEP_PREFIX,
     VNF,
     CNF,
     NSD,
-    SCHEMA,
     NSD_DEFINITION_OUTPUT_BICEP_PREFIX,
     NF_DEFINITION_JSON_FILE,
 )
-import os
+
 
 DESCRIPTION_MAP: Dict[str, str] = {
     "publisher_resource_group_name":
@@ -134,33 +137,24 @@ class NSConfiguration:
             self.arm_template = ArtifactConfig(**self.arm_template)
 
     def validate(self):
-        ## validate that all of the configuration parameters are set
+        """ Validate that all of the configuration parameters are set """
 
         if self.location == DESCRIPTION_MAP["location"] or "":
             raise ValueError("Location must be set")
         if self.publisher_name == DESCRIPTION_MAP["publisher_name_nsd"] or "":
             raise ValueError("Publisher name must be set")
-        if (
-            self.publisher_resource_group_name
-            == DESCRIPTION_MAP["publisher_resource_group_name_nsd"]
-            or ""
-        ):
+        if self.publisher_resource_group_name == DESCRIPTION_MAP["publisher_resource_group_name_nsd"] or "":
             raise ValueError("Publisher resource group name must be set")
-        if (
-            self.acr_artifact_store_name == DESCRIPTION_MAP["acr_artifact_store_name"]
-            or ""
-        ):
+        if self.acr_artifact_store_name == DESCRIPTION_MAP["acr_artifact_store_name"] or "":
             raise ValueError("ACR Artifact Store name must be set")
         if (
             self.network_function_definition_group_name
-            == DESCRIPTION_MAP["network_function_definition_group_name"]
-            or ""
+            == DESCRIPTION_MAP["network_function_definition_group_name"] or ""
         ):
             raise ValueError("Network Function Definition Group name must be set")
         if (
-            self.network_function_definition_version_name
-            == DESCRIPTION_MAP["network_function_definition_version_name"]
-            or ""
+            self.network_function_definition_version_name ==
+            DESCRIPTION_MAP["network_function_definition_version_name"] or ""
         ):
             raise ValueError("Network Function Definition Version name must be set")
         if (
@@ -246,6 +240,7 @@ class VNFConfiguration(NFConfiguration):
 
         :raises ValidationError for any invalid config
         """
+
         if self.vhd.version == DESCRIPTION_MAP["version"]:
             # Config has not been filled in. Don't validate.
             return
