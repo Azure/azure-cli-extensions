@@ -19,7 +19,7 @@ examples:
         az load test create --load-test-resource {load_test_resource} --resource-group {resource_group} --test-id {test_id} --load-test-config-file {load_test_config_file}
     - name: Create a test with arguments.
       text: |
-        az load test create --test-id {test_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --display-name {display_name} --description {test_description} --test-plan {test_plan} --engine-instances {engine_instances} --env {env} 
+        az load test create --test-id {test_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --display-name {display_name} --description {test_description} --test-plan {test_plan} --engine-instances {engine_instances} --env {env}
     - name: Create a test with load test config file and override engine-instance and env using arguments.
       text: |
         az load test create --load-test-resource {load_test_resource} --resource-group {resource_group} --test-id {test_id} --load-test-config-file {load_test_config_file} --engine-instances {engine_instances} --env {env}
@@ -53,7 +53,7 @@ short-summary: Show details of test.
 examples:
     - name: Get the details of a load test.
       text: |
-        az load test show --test-id {test_id} --load-test-resource {load_test_resource} --resource-group {resource_group} 
+        az load test show --test-id {test_id} --load-test-resource {load_test_resource} --resource-group {resource_group}
 """
 
 helps[
@@ -96,7 +96,7 @@ examples:
     - name: Download all files of a test. The directory should already exist.
       text: |
         az load test download-files --test-id {test_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --path {path}
-    - name: Download all files of a test by creating the directory if it does not exist. 
+    - name: Download all files of a test by creating the directory if it does not exist.
       text: |
         az load test download-files --test-id {test_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --path {path} --force
 """
@@ -153,7 +153,7 @@ short-summary: List all server-metrics of a test.
 examples:
     - name: List all server metrics for a test.
       text: |
-        az load test server-metric list --test-id {test_id} --load-test-resource {load_test_resource} --resource-group {resource_group} 
+        az load test server-metric list --test-id {test_id} --load-test-resource {load_test_resource} --resource-group {resource_group}
 """
 
 helps[
@@ -190,7 +190,7 @@ examples:
       text: |
         az load test file download --test-id {test_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --file-name {file_name} --path {download_path}
         examples:
-    - name: Download a file from a test by creating the directory if it does not exist. 
+    - name: Download a file from a test by creating the directory if it does not exist.
       text: |
         az load test file download --test-id {test_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --file-name {file_name} --path {download_path} --force
 """
@@ -202,9 +202,9 @@ type: command
 short-summary: List all files in a test.
 long-summary: List details of all the files related to a test by providing the corresponding test id.
 examples:
-    - name: List all files in a test. 
+    - name: List all files in a test.
       text: |
-        az load test file list --test-id {test_id} --load-test-resource {load_test_resource} --resource-group {resource_group} 
+        az load test file list --test-id {test_id} --load-test-resource {load_test_resource} --resource-group {resource_group}
 """
 
 helps[
@@ -214,13 +214,13 @@ type: command
 short-summary: Upload a file to a test.
 long-summary: Upload a file to a test by providing path to file and test id.
 examples:
-    - name: Upload a JMeter script (JMX file) to a test. 
+    - name: Upload a JMeter script (JMX file) to a test.
       text: |
         az load test file upload --test-id {test_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --path {test_plan} --wait
-    - name: Upload a CSV file to a test and dont wait for upload. 
+    - name: Upload a CSV file to a test and dont wait for upload.
       text: |
         az load test file upload --test-id {test_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --path {csv_file_path} --file-type ADDITIONAL_ARTIFACTS
-    - name: Upload a user property file to a test. 
+    - name: Upload a user property file to a test.
       text: |
         az load test file upload --test-id {test_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --path {csv_file_path} --file-type USER_PROPERTIES --wait
 """
