@@ -504,7 +504,7 @@ def _suse_image_selector(distro):
 
 def _suse_image_selector_gen2(distro):
     fetch_urn_command = 'az vm image list --publisher SUSE --offer {offer} --sku gen2 --verbose --all --query "[].urn | reverse(sort(@))" -o json'.format(offer=distro)
-    logger.info('Fetching compatible SUSE OS images from gallery...')
+    #logger.info('Fetching compatible SUSE OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))
 
     # Raise exception when not finding SUSE image
