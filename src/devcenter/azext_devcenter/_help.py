@@ -10,7 +10,7 @@ helps[
     "devcenter dev"
 ] = """
     type: group
-    short-summary: "Manages devcenter developer resources."
+    short-summary: "Manage devcenter developer resources."
 """
 helps[
     "devcenter dev project"
@@ -23,7 +23,7 @@ helps[
     "devcenter dev project list"
 ] = """
     type: command
-    short-summary: "Lists all projects."
+    short-summary: "List all projects."
     examples:
       - name: List using dev center
         text: |-
@@ -37,7 +37,7 @@ helps[
     "devcenter dev project show"
 ] = """
     type: command
-    short-summary: "Gets a project."
+    short-summary: "Get a project."
     examples:
       - name: Get using dev center
         text: |-
@@ -60,7 +60,7 @@ helps[
     "devcenter dev pool list"
 ] = """
     type: command
-    short-summary: "Lists available pools."
+    short-summary: "List available pools."
     examples:
       - name: List using dev center
         text: |-
@@ -76,7 +76,7 @@ helps[
     "devcenter dev pool show"
 ] = """
     type: command
-    short-summary: "Gets a pool."
+    short-summary: "Get a pool."
     examples:
       - name: Get using dev center
         text: |-
@@ -99,7 +99,7 @@ helps[
     "devcenter dev schedule show"
 ] = """
     type: command
-    short-summary: "Gets a schedule."
+    short-summary: "Get a schedule."
     examples:
       - name: Get using dev center
         text: |-
@@ -122,8 +122,8 @@ helps[
     "devcenter dev dev-box list"
 ] = """
     type: command
-    short-summary: "Lists dev boxes for a user, lists dev boxes in the dev center for a \
-project and user, or lists dev boxes that the caller has access to in the dev center."
+    short-summary: "List dev boxes for a user, list dev boxes in the dev center for a \
+project and user, or list dev boxes that the caller has access to in the dev center."
     examples:
       - name: List all dev boxes in the dev center
         text: |-
@@ -153,7 +153,7 @@ helps[
     "devcenter dev dev-box show"
 ] = """
     type: command
-    short-summary: "Gets a dev box."
+    short-summary: "Get a dev box."
     examples:
       - name: Get using dev center
         text: |-
@@ -169,7 +169,7 @@ helps[
     "devcenter dev dev-box create"
 ] = """
     type: command
-    short-summary: "Creates a dev box."
+    short-summary: "Create a dev box."
     examples:
       - name: Create using dev center
         text: |-
@@ -185,7 +185,7 @@ helps[
     "devcenter dev dev-box delete"
 ] = """
     type: command
-    short-summary: "Deletes a dev box."
+    short-summary: "Delete a dev box."
     examples:
       - name: Delete using dev center
         text: |-
@@ -201,7 +201,7 @@ helps[
     "devcenter dev dev-box show-remote-connection"
 ] = """
     type: command
-    short-summary: "Gets remote connection info."
+    short-summary: "Get remote connection info."
     examples:
       - name: Get remote connection using dev center
         text: |-
@@ -217,7 +217,7 @@ helps[
     "devcenter dev dev-box start"
 ] = """
     type: command
-    short-summary: "Starts a dev box."
+    short-summary: "Start a dev box."
     examples:
       - name: Start using dev center
         text: |-
@@ -233,7 +233,7 @@ helps[
     "devcenter dev dev-box restart"
 ] = """
     type: command
-    short-summary: "Restarts a dev box."
+    short-summary: "Restart a dev box."
     examples:
       - name: Restart using dev center
         text: |-
@@ -249,7 +249,7 @@ helps[
     "devcenter dev dev-box stop"
 ] = """
     type: command
-    short-summary: "Stops a dev box."
+    short-summary: "Stop a dev box."
     examples:
       - name: Stop using dev center
         text: |-
@@ -265,7 +265,7 @@ helps[
     "devcenter dev dev-box list-action"
 ] = """
     type: command
-    short-summary: "Lists actions on a dev box."
+    short-summary: "List actions on a dev box."
     examples:
       - name: List actions using dev center
         text: |-
@@ -281,7 +281,7 @@ helps[
     "devcenter dev dev-box delay-action"
 ] = """
     type: command
-    short-summary: "Delays an action."
+    short-summary: "Delay an action."
     examples:
       - name: Delay action using dev center
         text: |-
@@ -299,7 +299,7 @@ helps[
     "devcenter dev dev-box delay-all-actions"
 ] = """
     type: command
-    short-summary: "Delays all actions."
+    short-summary: "Delay all actions."
     examples:
       - name: Delay all actions using dev center
         text: |-
@@ -317,7 +317,7 @@ helps[
     "devcenter dev dev-box show-action"
 ] = """
     type: command
-    short-summary: "Gets an action."
+    short-summary: "Get an action."
     examples:
       - name: Get action using dev center
         text: |-
@@ -335,7 +335,7 @@ helps[
     "devcenter dev dev-box skip-action"
 ] = """
     type: command
-    short-summary: "Skips an action."
+    short-summary: "Skip an action."
     examples:
       - name: Skip action using dev center
         text: |-
@@ -360,7 +360,7 @@ helps[
     "devcenter dev environment list"
 ] = """
     type: command
-    short-summary: "Lists the environments for a project or lists the environments for a user within a project."
+    short-summary: "List the environments for a project or list the environments for a user within a project."
     examples:
       - name: List by project using dev center
         text: |-
@@ -384,7 +384,7 @@ helps[
     "devcenter dev environment show"
 ] = """
     type: command
-    short-summary: "Gets an environment."
+    short-summary: "Get an environment."
     examples:
       - name: Get using dev center
         text: |-
@@ -419,7 +419,7 @@ helps[
     "devcenter dev environment update"
 ] = """
     type: command
-    short-summary: "Updates an environment."
+    short-summary: "Update an environment."
     examples:
       - name: Update using dev center
         text: |-
@@ -437,7 +437,7 @@ helps[
     "devcenter dev environment deploy"
 ] = """
     type: command
-    short-summary: "Updates an environment."
+    short-summary: "Update an environment."
     examples:
       - name: Update using dev center
         text: |-
@@ -455,12 +455,12 @@ helps[
     "devcenter dev environment delete"
 ] = """
     type: command
-    short-summary: "Deletes an environment and all its associated resources."
+    short-summary: "Delete an environment and all its associated resources."
     examples:
       - name: Delete using dev center
         text: |-
               az devcenter dev environment delete --dev-center-name "ContosoDevCenter"  \
-              --name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
       - name: Delete using endpoint
         text: |-
               az devcenter dev environment delete --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
@@ -478,7 +478,7 @@ helps[
     "devcenter dev catalog list"
 ] = """
     type: command
-    short-summary: "Lists all of the catalogs available for a project."
+    short-summary: "List all of the catalogs available for a project."
     examples:
       - name: List using dev center
         text: |-
@@ -494,7 +494,7 @@ helps[
     "devcenter dev catalog show"
 ] = """
     type: command
-    short-summary: "Gets the specified catalog within the project."
+    short-summary: "Get the specified catalog within the project."
     examples:
       - name: Get using dev center
         text: |-
@@ -517,7 +517,7 @@ helps[
     "devcenter dev environment-type list"
 ] = """
     type: command
-    short-summary: "Lists all environment types configured for a project."
+    short-summary: "List all environment types configured for a project."
     examples:
       - name: List using dev center
         text: |-
@@ -540,24 +540,24 @@ helps[
     "devcenter dev environment-definition list"
 ] = """
     type: command
-    short-summary: "Lists all environment definitions available within a catalog or lists all environment \
+    short-summary: "List all environment definitions available within a catalog or list all environment \
 definitions available for a project."
     examples:
       - name: List using dev center
         text: |-
-               az devcenter dev environment-definition list --dev-center-name "ContosoDevCenter"  \
+               az devcenter dev environment-definition list --dev-center-name "ContosoDevCenter" \
 --project-name "DevProject"
       - name: List using endpoint
         text: |-
-               az devcenter dev environment-definition list --dev-center-name "ContosoDevCenter"  \
+               az devcenter dev environment-definition list --dev-center-name "ContosoDevCenter" \
 --project-name "DevProject"
       - name: List by catalog using dev center
         text: |-
-               az devcenter dev environment-definition list --dev-center-name "ContosoDevCenter"  \
+               az devcenter dev environment-definition list --dev-center-name "ContosoDevCenter" \
 --project-name "DevProject" --catalog-name "myCatalog"
       - name: List by catalog using endpoint
         text: |-
-               az devcenter dev environment-definition list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/"  \
+               az devcenter dev environment-definition list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
 --project-name "DevProject" --catalog-name "myCatalog"
 """
 
@@ -569,10 +569,10 @@ helps[
     examples:
       - name: Get using dev center
         text: |-
-               az devcenter dev environment-definition show --dev-center-name "ContosoDevCenter"  \
+               az devcenter dev environment-definition show --dev-center-name "ContosoDevCenter" \
 --project-name "DevProject" --catalog-name "myCatalog" --definition-name "foo"
       - name: Get using endpoint
         text: |-
-               az devcenter dev environment-definition show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/"  \
+               az devcenter dev environment-definition show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
 --project-name "DevProject" --catalog-name "myCatalog" --definition-name "foo"
 """
