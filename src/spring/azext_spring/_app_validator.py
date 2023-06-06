@@ -7,10 +7,11 @@
 from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from msrestazure.azure_exceptions import CloudError
-from azure.core.exceptions import (ResourceNotFoundError, HttpResponseError)
+from azure.core.exceptions import ResourceNotFoundError
 from ._resource_quantity import (validate_cpu as validate_cpu_value, validate_memory as validate_memory_value)
 from ._client_factory import cf_spring
 from ._build_service import (DEFAULT_BUILD_SERVICE_NAME)
+from ._utils import get_spring_sku
 
 
 logger = get_logger(__name__)
@@ -145,14 +146,19 @@ def _get_app_name_from_namespace(namespace):
 
 def _validate_container_registry(cmd, namespace):
     client = cf_spring(cmd.cli_ctx)
-    try:
-        build_service = client.build_service.get_build_service(namespace.resource_group,
-                                                               namespace.service,
-                                                               DEFAULT_BUILD_SERVICE_NAME)
-        if build_service.properties.container_registry:
+    sku = get_spring_sku(client, namespace.resource_group, namespace.service)
+    if sku.name == 'E0':
+        try:
+            build_service = client.build_service.get_build_service(namespace.resource_group,
+                                                                   namespace.service,
+                                                                   DEFAULT_BUILD_SERVICE_NAME)
+            if build_service.properties.container_registry:
+                if namespace.source_path or namespace.artifact_path:
+                    raise InvalidArgumentValueError(
+                        "The instance using your own container registry can only use '--container-image' to deploy."
+                        " See more details in https://learn.microsoft.com/en-us/azure/spring-apps/how-to-deploy-with-custom-container-image?tabs=azure-cli")
+        except ResourceNotFoundError:
             if namespace.source_path or namespace.artifact_path:
-                raise InvalidArgumentValueError(
-                    "The instance using your own container registry can only use '--container-image' to deploy."
-                    " See more details in https://learn.microsoft.com/en-us/azure/spring-apps/how-to-deploy-with-custom-container-image?tabs=azure-cli")
-    except HttpResponseError:
-        pass
+                    raise InvalidArgumentValueError(
+                        "The instance without build service can only use '--container-image' to deploy."
+                        " See more details in https://learn.microsoft.com/en-us/azure/spring-apps/how-to-deploy-with-custom-container-image?tabs=azure-cli")

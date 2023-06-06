@@ -63,7 +63,7 @@ def fetch_diagnostic_checks_results(corev1_api_instance, batchv1_api_instance, h
             counter_container_logs = 1
             # For retrieving only cluster_diagnostic_checks logs from the output
             for outputs in cluster_diagnostic_checks_container_log_list:
-                if consts.Outbound_Connectivity_Check_Check_String in outputs:
+                if consts.Outbound_Connectivity_Check_Result_String in outputs:
                     counter_container_logs = 1
                     if outbound_connectivity_check_log == "":
                         outbound_connectivity_check_log += outputs

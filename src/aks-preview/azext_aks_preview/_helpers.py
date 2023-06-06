@@ -19,6 +19,10 @@ from knack.util import CLIError
 
 from azext_aks_preview._client_factory import get_nodepool_snapshots_client, get_mc_snapshots_client
 
+from azure.cli.command_modules.acs._validators import (
+    extract_comma_separated_string,
+)
+
 logger = get_logger(__name__)
 
 # type variables
@@ -292,3 +296,17 @@ def check_is_apiserver_vnet_integration_cluster(mc: ManagedCluster) -> bool:
     if mc and mc.api_server_access_profile:
         return bool(mc.api_server_access_profile.enable_vnet_integration)
     return False
+
+
+def setup_common_guardrails_profile(level, version, excludedNamespaces, mc: ManagedCluster, models) -> ManagedCluster:
+    if (level is not None or version is not None or excludedNamespaces is not None) and mc.guardrails_profile is None:
+        mc.guardrails_profile = models.GuardrailsProfile(
+            level=level,
+            version=version
+        )
+    # replace values with provided values
+    if excludedNamespaces is not None:
+        mc.guardrails_profile.excluded_namespaces = extract_comma_separated_string(
+            excludedNamespaces, enable_strip=True, keep_none=True, default_value=[])
+
+    return mc

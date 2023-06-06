@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.8.1
++++++
+* `az dataprotection recovery-point`: Migrated to AAZ-dev-tools
+* `az dataprotection job`: Migrated to AAZ-dev-tools
+
 0.8.0
 +++++
 * Add support for new datasource type: AzureKubernetesService (for all relevant operations in `backup-instance`` and `backup-policy`)
