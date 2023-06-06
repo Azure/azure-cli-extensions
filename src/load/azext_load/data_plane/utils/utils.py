@@ -61,11 +61,11 @@ def get_load_test_resource_endpoint(
 def get_login_credentials(cli_ctx, subscription_id=None):
     from azure.cli.core._profile import Profile
 
-    credential = Profile(cli_ctx=cli_ctx).get_login_credentials(
+    credential, subscription_id, tenant_id = Profile(cli_ctx=cli_ctx).get_login_credentials(
         subscription_id=subscription_id
     )
     logger.debug("Fetched login credentials for subscription %s", subscription_id)
-    return credential
+    return credential, subscription_id, tenant_id
 
 
 def get_admin_data_plane_client(cmd, load_test_resource, resource_group_name=None):
