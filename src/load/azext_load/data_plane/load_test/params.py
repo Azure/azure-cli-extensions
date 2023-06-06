@@ -5,6 +5,7 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
+# pylint: disable=line-too-long
 
 from azext_load.data_plane.utils import argtypes
 
