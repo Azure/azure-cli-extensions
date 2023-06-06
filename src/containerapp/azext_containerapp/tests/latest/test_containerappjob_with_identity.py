@@ -86,6 +86,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck('type', "None", case_sensitive=False)
         ])
 
+        # check container app job resource does not have any identity
         self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job), checks=[
             JMESPathCheck('identity.type', "None", case_sensitive=False)
         ])
