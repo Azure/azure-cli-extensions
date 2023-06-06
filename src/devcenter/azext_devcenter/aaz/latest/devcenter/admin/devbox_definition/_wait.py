@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/devboxdefinitions/{}", "2023-04-01"],
         ]
     }
 
@@ -42,13 +42,13 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.dev_box_definition_name = AAZStrArg(
             options=["-n", "--name", "--dev-box-definition-name"],
-            help="The name of the Dev Box definition.",
+            help="The name of the dev box definition.",
             required=True,
             id_part="child_name_1",
         )
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
             required=True,
             id_part="name",
         )
@@ -127,7 +127,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -202,7 +202,6 @@ class Wait(AAZWaitCommand):
             )
             properties.os_storage_type = AAZStrType(
                 serialized_name="osStorageType",
-                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -261,9 +260,6 @@ class _WaitHelper:
         if cls._schema_image_reference_read is not None:
             _schema.exact_version = cls._schema_image_reference_read.exact_version
             _schema.id = cls._schema_image_reference_read.id
-            _schema.offer = cls._schema_image_reference_read.offer
-            _schema.publisher = cls._schema_image_reference_read.publisher
-            _schema.sku = cls._schema_image_reference_read.sku
             return
 
         cls._schema_image_reference_read = _schema_image_reference_read = AAZObjectType()
@@ -274,15 +270,9 @@ class _WaitHelper:
             flags={"read_only": True},
         )
         image_reference_read.id = AAZStrType()
-        image_reference_read.offer = AAZStrType()
-        image_reference_read.publisher = AAZStrType()
-        image_reference_read.sku = AAZStrType()
 
         _schema.exact_version = cls._schema_image_reference_read.exact_version
         _schema.id = cls._schema_image_reference_read.id
-        _schema.offer = cls._schema_image_reference_read.offer
-        _schema.publisher = cls._schema_image_reference_read.publisher
-        _schema.sku = cls._schema_image_reference_read.sku
 
 
 __all__ = ["Wait"]

@@ -63,7 +63,7 @@ helps['fleet get-credentials'] = """
 
 helps['fleet wait'] = """
 type: command
-short-summary: Wait for a fleet resouce to reach a desired state.
+short-summary: Wait for a fleet resource to reach a desired state.
 long-summary: If an operation on fleet was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
 """
 
@@ -110,7 +110,7 @@ helps['fleet member delete'] = """
 
 helps['fleet member wait'] = """
     type: command
-    short-summary: Wait for a fleet member resouce to reach a desired state.
+    short-summary: Wait for a fleet member resource to reach a desired state.
     long-summary: If an operation on fleet member was interrupted or was started with `--no-wait`, use this command to wait for it to complete.
 """
 

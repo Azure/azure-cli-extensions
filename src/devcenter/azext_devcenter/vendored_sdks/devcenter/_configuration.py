@@ -47,7 +47,7 @@ class DevCenterConfiguration(Configuration):
 
         self.credential = credential
         self.subscription_id = subscription_id
-        self.api_version = "2022-11-11-preview"
+        self.api_version = "2023-04-01"
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
         kwargs.setdefault('sdk_moniker', 'devcenter/{}'.format(VERSION))
         self._configure(**kwargs)

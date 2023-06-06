@@ -4,6 +4,30 @@ Release History
 ===============
 Upcoming
 ++++++
+* 'az containerapp create': fix --registry-identity "system" with --revision-suffix
+
+0.3.32
+++++++
+* Fix for 'az containerapp job update' command when updating Container App job with a trigger configuration
+
+0.3.31
+++++++
+* Fix issue when using 'az containerapp up' to create a container app from a local source with a Dockerfile
+
+0.3.30
+++++++
+* Add 'az containerapp service' for binding a service to a container app
+* Add 'az containerapp patch' to enable the local source to cloud
+* Add 'az containerapp job' to manage Container Apps jobs
+* Split 'az containerapp env workload-profile set' into 'az containerapp env workload-profile add' and 'az containerapp env workload-profile update'
+* Add 'az containerapp env workload-profile add' to support creating a workload profile in an environment
+* Add 'az containerapp env workload-profile update' to support updating an existing workload profile in an environment
+* 'az containerapp auth update': fix excluded paths first and last character being cutoff
+* 'az containerapp update': remove the environmentId in the PATCH payload if it has not been changed
+* Upgrade api-version to 2023-04-01-preview
+
+0.3.29
+++++++
 * 'az containerapp create': support for assigning acrpull permissions to managed identity in cross-subscription; warn when ACR resourceNotFound, do not block the process
 * 'az containerapp hostname bind': fix bug where the prompt for validation method didn't take value in
 * Make --validation-method parameter case insensitive for 'az containerapp hostname bind' and 'az containerapp env certificate create'

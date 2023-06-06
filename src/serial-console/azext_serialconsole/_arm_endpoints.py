@@ -15,6 +15,7 @@ class ArmEndpoints:  # pylint: disable=too-few-public-methods
                               'centralus': 'westcentralus',
                               'centraluseuap': 'eastus2euap',
                               'eastasia': 'southeastasia',
+                              'eastus': 'westus',
                               'eastus2': 'westus2',  # pairing eastus2 + westus2 ensure that INT works as expected
                               'eastus2euap': 'centraluseuap',
                               'francecentral': 'francesouth',
@@ -41,6 +42,7 @@ class ArmEndpoints:  # pylint: disable=too-few-public-methods
                               'ukwest': 'uksouth',
                               'westcentralus': 'centralus',
                               'westeurope': 'northeurope',
+                              'westus': 'eastus',
                               'westus2': 'eastus2',
                               'usgovarizona': 'usgoveast',  # usgoveast == usgovvirginia
                               'usgovvirginia': 'usgovsw',  # usgovsw == usgovarizona

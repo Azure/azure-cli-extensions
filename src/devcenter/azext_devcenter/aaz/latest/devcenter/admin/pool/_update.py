@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin pool update",
-    is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a machine pool
+    """Update a pool.
 
     :example: Update
-        az devcenter admin pool update --devbox-definition-name "WebDevBox2" --pool-name "{poolName}" --project-name "{projectName}" --resource-group "rg1"
+        az devcenter admin pool update --devbox-definition-name "WebDevBox2" --pool-name "DevPool" --project-name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}", "2023-04-01"],
         ]
     }
 
@@ -56,7 +55,7 @@ class Update(AAZCommand):
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
             id_part="name",
         )
@@ -86,18 +85,18 @@ class Update(AAZCommand):
         _args_schema.dev_box_definition_name = AAZStrArg(
             options=["-d", "--dev-box-definition-name"],
             arg_group="Properties",
-            help="Name of a Dev Box definition in parent Project of this Pool",
+            help="Name of a dev box definition in parent project of this pool.",
         )
         _args_schema.local_administrator = AAZStrArg(
             options=["--local-administrator"],
             arg_group="Properties",
-            help="Indicates whether owners of Dev Boxes in this pool are added as local administrators on the Dev Box.",
+            help="Indicates whether owners of dev boxes in this pool are added as local administrators on the dev box.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.network_connection_name = AAZStrArg(
             options=["-c", "--network-connection-name"],
             arg_group="Properties",
-            help="Name of a Network Connection in parent Project of this Pool",
+            help="Name of a network connection in parent project of this pool.",
         )
         return cls._args_schema
 
@@ -183,7 +182,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -286,7 +285,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -414,6 +413,13 @@ class _UpdateHelper:
             serialized_name="devBoxDefinitionName",
             flags={"required": True},
         )
+        properties.health_status = AAZStrType(
+            serialized_name="healthStatus",
+        )
+        properties.health_status_details = AAZListType(
+            serialized_name="healthStatusDetails",
+            flags={"read_only": True},
+        )
         properties.license_type = AAZStrType(
             serialized_name="licenseType",
             flags={"required": True},
@@ -430,6 +436,26 @@ class _UpdateHelper:
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
+        properties.stop_on_disconnect = AAZObjectType(
+            serialized_name="stopOnDisconnect",
+        )
+
+        health_status_details = _schema_pool_read.properties.health_status_details
+        health_status_details.Element = AAZObjectType()
+
+        _element = _schema_pool_read.properties.health_status_details.Element
+        _element.code = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.message = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        stop_on_disconnect = _schema_pool_read.properties.stop_on_disconnect
+        stop_on_disconnect.grace_period_minutes = AAZIntType(
+            serialized_name="gracePeriodMinutes",
+        )
+        stop_on_disconnect.status = AAZStrType()
 
         system_data = _schema_pool_read.system_data
         system_data.created_at = AAZStrType(

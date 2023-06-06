@@ -608,6 +608,11 @@ helps[
         text: |-
                 az scvmm vm delete --subscription contoso-sub \
 --resource-group contoso-rg --name contoso-avset --force
+
+      - name: Delete the VM from SCVMM
+        text: |-
+                az scvmm vm delete --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-avset --deleteFromHost
 """
 
 helps[
@@ -682,6 +687,43 @@ helps[
         text: |-
                az scvmm vm restart --subscription contoso-sub \
 --resource-group contoso-rg --name contoso-vm
+"""
+
+helps[
+    'scvmm vm create-checkpoint'
+] = """
+    type: command
+    short-summary: Create a VM checkpoint
+    examples:
+      - name: Create VM checkpoint
+        text: |-
+               az scvmm vm create-checkpoint --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vm --checkpoint-name contoso-chkpt-name \
+--checkpoint-description contoso-chkpt-description
+"""
+
+helps[
+    'scvmm vm delete-checkpoint'
+] = """
+    type: command
+    short-summary: Delete the specified VM checkpoint
+    examples:
+      - name: Delete VM checkpoint
+        text: |-
+               az scvmm vm delete-checkpoint --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vm --checkpoint-id checkpoint-guid
+"""
+
+helps[
+    'scvmm vm restore-checkpoint'
+] = """
+    type: command
+    short-summary: Restore VM checkpoint
+    examples:
+      - name: Restore VM checkpoint
+        text: |-
+               az scvmm vm restore-checkpoint --subscription contoso-sub \
+--resource-group contoso-rg --name contoso-vm --checkpoint-id checkpoint-guid
 """
 
 helps[
