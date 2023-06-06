@@ -357,7 +357,10 @@ def create_or_update_body(
         new_body["keyvaultReferenceIdentityType"] = body.get(
             "keyvaultReferenceIdentityType", IdentityType.UserAssigned
         )
-
+    if new_body["keyvaultReferenceIdentityType"] == IdentityType.UserAssigned:
+        if new_body["keyvaultReferenceIdentityId"].casefold() in ["null", "none"]:
+            new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
+            new_body.pop("keyvaultReferenceIdentityId")
     subnet_id = subnet_id or yaml_test_body.get("subnetId") or body.get("subnetId")
     if subnet_id:
         new_body["subnetId"] = subnet_id

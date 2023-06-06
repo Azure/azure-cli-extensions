@@ -33,7 +33,7 @@ helps[
     "load test app-component"
 ] = """
 type: group
-short-summary: Command group to manage load test app-components.
+short-summary: Command group to manage app components.
 long-summary: Command group to manage load test app-components with add, list and remove.
 """ + _common_params
 
@@ -41,7 +41,7 @@ helps[
     "load test server-metric"
 ] = """
 type: group
-short-summary: Command group to manage load test server-metrics.
+short-summary: Command group to manage server metrics.
 long-summary: Command group to manage load test server-metrics with add, list and remove.
 """ + _common_params
 
@@ -49,8 +49,8 @@ helps[
     "load test file"
 ] = """
 type: group
-short-summary: Command group with commands related to test file.
-long-summary: Command group with commands related to test file such as upload, delete, list and download.
+short-summary: Command group for operations on test files.
+long-summary: Command group for operations on test files such as upload, delete, list and download.
 """ + _common_params
 
 helps[
@@ -65,8 +65,8 @@ helps[
     "load test-run app-component"
 ] = """
 type: group
-short-summary: Command group to manage load test run app-component.
-long-summary: Command group to manage load test run app-component with add, list and remove.
+short-summary: Command group to manage load test run app components.
+long-summary: Command group to manage load test run app-components with add, list and remove.
 """ + _common_params
 
 helps[

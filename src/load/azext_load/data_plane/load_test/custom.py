@@ -80,6 +80,7 @@ def create_test(
     )
     logger.info("Uploading files to test %s", test_id)
     upload_files_helper(client, test_id, yaml, test_plan, load_test_config_file, wait)
+    response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
     logger.info("Test %s has been created successfully", test_id)
     return response
