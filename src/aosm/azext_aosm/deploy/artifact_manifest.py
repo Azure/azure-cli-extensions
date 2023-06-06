@@ -131,7 +131,7 @@ class ArtifactManifestOperator:
                     f"{CredentialType.AZURE_STORAGE_ACCOUNT_TOKEN} are not expected "
                     f"for Artifacts of type {artifact.artifact_type}"
                 )
-                
+
             container_basename = artifact.artifact_name.replace("-", "")
             container_name = f"{container_basename}-{artifact.artifact_version}"
 
@@ -153,6 +153,7 @@ class ArtifactManifestOperator:
         Get the URL for the blob to be uploaded to the storage account artifact store.
 
         :param container_name: name of the container
+        :param blob_name: the name that the blob will get uploaded with
         """
         for container_credential in self._manifest_credentials["container_credentials"]:
             if container_credential["container_name"] == container_name:
