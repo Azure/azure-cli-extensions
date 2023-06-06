@@ -10,6 +10,7 @@ Release History
 * Support 'az containerapp job secret' to manage secrets for Container App jobs
 * Support 'az containerapp job identity' to manage identity for Container App jobs
 * Fix for issue with --user-assigned identity for Container App jobs where identities were getting split incorrectly
+* Add new parameters `--mi-system-assigned` and `--mi-user-assigned` to replace the deprecated parameters `--system-assigned` and `--user-assigned`
 
 0.3.32
 ++++++
