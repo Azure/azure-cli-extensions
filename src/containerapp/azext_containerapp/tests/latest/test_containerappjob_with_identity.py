@@ -61,7 +61,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         user_identity_id = user_identity['id']
 
         # assign user identity to container app job
-        self.cmd("az containerapp job identity assign --resource-group {} --name {} --user-assigned '{}'".format(resource_group, job, user_identity_id), checks=[
+        self.cmd("az containerapp job identity assign --resource-group {} --name {} --mi-user-assigned '{}'".format(resource_group, job, user_identity_id), checks=[
             JMESPathCheck('type', "SystemAssigned, UserAssigned", case_sensitive=False),
             JMESPathCheckExists('principalId'),
             JMESPathCheckExists('tenantId'),
@@ -69,7 +69,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         ])
 
         # Remove user assigned identity from container app job
-        self.cmd("az containerapp job identity remove --resource-group {} --name {} --user-assigned '{}' --yes".format(resource_group, job, user_identity_id), checks=[
+        self.cmd("az containerapp job identity remove --resource-group {} --name {} --mi-user-assigned '{}' --yes".format(resource_group, job, user_identity_id), checks=[
             JMESPathCheck('type', "SystemAssigned", case_sensitive=False),
             JMESPathCheckExists('principalId'),
             JMESPathCheckExists('tenantId'),
@@ -77,7 +77,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         ])
 
         # Remove system assigned identity from container app job
-        self.cmd("az containerapp job identity remove --resource-group {} --name {} --system-assigned --yes".format(resource_group, job), checks=[
+        self.cmd("az containerapp job identity remove --resource-group {} --name {} --mi-system-assigned --yes".format(resource_group, job), checks=[
             JMESPathCheck('type', "None", case_sensitive=False)
         ])
 
