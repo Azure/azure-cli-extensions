@@ -37,7 +37,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         # create a Container App Job resource with trigger type as manual and with a system assigned identity
         self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --secrets 'testsecret=testsecretvalue' --replica-timeout 200 --replica-retry-limit 2 --trigger-type manual --parallelism 1 --replica-completion-count 1 --image mcr.microsoft.com/k8se/quickstart-jobs:latest --cpu '0.25' --memory '0.5Gi' --system-assigned".format(resource_group, job, env))
 
-        # verify the container app job resource contains the secret
+        # verify the container app job resource contains system identity
         self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job), checks=[
             JMESPathCheck('name', job),
             JMESPathCheck('properties.configuration.replicaTimeout', 200),
