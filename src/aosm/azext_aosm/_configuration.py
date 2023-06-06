@@ -1,17 +1,21 @@
 from dataclasses import dataclass, field
+from enum import Enum
+import abc
+import os
 from typing import Dict, Optional, Any, List
 from pathlib import Path
-from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError
+from azure.cli.core.azclierror import (
+    InvalidArgumentValueError,
+    ValidationError,
+)
 from azext_aosm.util.constants import (
     DEFINITION_OUTPUT_BICEP_PREFIX,
     VNF,
     CNF,
     NSD,
-    SCHEMA,
     NSD_DEFINITION_OUTPUT_BICEP_PREFIX,
     NF_DEFINITION_JSON_FILE,
 )
-import os
 
 DESCRIPTION_MAP: Dict[str, str] = {
     "publisher_resource_group_name": (
@@ -23,14 +27,25 @@ DESCRIPTION_MAP: Dict[str, str] = {
         "published to. Will be created if it does not exist."
     ),
     "publisher_name_nsd": (
-        "Name of the Publisher resource you want your design published to. This published should be the same as the publisher used for your NFDVs"
+        "Name of the Publisher resource you want your design published to. "
+        "This published should be the same as the publisher used for your "
+        "NFDVs"
     ),
-    "publisher_resource_group_name_nsd": ("Resource group for the Publisher resource."),
+    "publisher_resource_group_name_nsd": (
+        "Resource group for the Publisher "
+        "resource."
+    ),
     "nf_name": "Name of NF definition",
     "version": "Version of the NF definition",
-    "acr_artifact_store_name": "Name of the ACR Artifact Store resource. Will be created if it does not exist.",
+    "acr_artifact_store_name": (
+        "Name of the ACR Artifact Store resource. "
+        "Will be created if it does not exist."
+    ),
     "location": "Azure location to use when creating resources.",
-    "blob_artifact_store_name": "Name of the storage account Artifact Store resource. Will be created if it does not exist.",
+    "blob_artifact_store_name": (
+        "Name of the storage account Artifact Store resource. "
+        "Will be created if it does not exist."
+    ),
     "artifact_name": "Name of the artifact",
     "file_path": (
         "Optional. File path of the artifact you wish to upload from your "
@@ -44,13 +59,28 @@ DESCRIPTION_MAP: Dict[str, str] = {
         "Version of the artifact. For VHDs this must be in format A-B-C. "
         "For ARM templates this must be in format A.B.C"
     ),
-    "nsdv_description": "Description of the NSDV",
-    "nsdg_name": "Network Service Design Group Name. This is the collection of Network Service Design Versions. Will be "
-    "created if it does not exist.",
-    "nsd_version": "Version of the NSD to be created. This should be in the format A.B.C",
-    "network_function_definition_group_name": "Exising Network Function Definition Group Name. This can be created using the 'az aosm nfd' commands.",
-    "network_function_definition_version_name": "Exising Network Function Definition Version Name. This can be created using the 'az aosm nfd' commands.",
-    "network_function_definition_offering_location": "Offering location of the Network Function Definition",
+    "nsd_description": "Description of the NSDV",
+    "nsd_name": (
+        "Network Service Design Group Name. This is the collection "
+        "of Network Service Design Versions. Will be "
+        "created if it does not exist."
+    ),
+    "nsd_version": (
+        "Version of the NSD to be created. This should be in the format A.B.C"
+    ),
+    "network_function_definition_publisher": (
+        "Name of the Publisher resource for an existing "
+        "Network Function Definition."
+    ),
+    "network_function_definition_name": (
+        "Name of an existing Network Function Definition."
+    ),
+    "network_function_definition_version": (
+        "Version of the existing Network Function Definition."
+    ),
+    "network_function_definition_offering_location": (
+        "Offering location of the Network Function Definition"
+    ),
     "helm_package_name": "Name of the Helm package",
     "path_to_chart": (
         "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz"
@@ -68,8 +98,8 @@ DESCRIPTION_MAP: Dict[str, str] = {
 @dataclass
 class ArtifactConfig:
     artifact_name: str = DESCRIPTION_MAP["artifact_name"]
-    # artifact.py checks for the presence of the default descriptions, change there if
-    # you change the descriptions.
+    # artifact.py checks for the presence of the default descriptions, change
+    # there if you change the descriptions.
     file_path: Optional[str] = DESCRIPTION_MAP["file_path"]
     blob_sas_url: Optional[str] = DESCRIPTION_MAP["blob_sas_url"]
     version: str = DESCRIPTION_MAP["artifact_version"]
@@ -95,123 +125,6 @@ class NFConfiguration:
     def acr_manifest_name(self) -> str:
         """Return the ACR manifest name from the NFD name."""
         return f"{self.nf_name}-acr-manifest-{self.version.replace('.', '-')}"
-
-
-@dataclass
-class NSConfiguration:
-    location: str = DESCRIPTION_MAP["location"]
-    publisher_name: str = DESCRIPTION_MAP["publisher_name_nsd"]
-    publisher_resource_group_name: str = DESCRIPTION_MAP[
-        "publisher_resource_group_name_nsd"
-    ]
-    acr_artifact_store_name: str = DESCRIPTION_MAP["acr_artifact_store_name"]
-    network_function_definition_group_name: str = DESCRIPTION_MAP[
-        "network_function_definition_group_name"
-    ]
-    network_function_definition_version_name: str = DESCRIPTION_MAP[
-        "network_function_definition_version_name"
-    ]
-    network_function_definition_offering_location: str = DESCRIPTION_MAP[
-        "network_function_definition_offering_location"
-    ]
-    nsdg_name: str = DESCRIPTION_MAP["nsdg_name"]
-    nsd_version: str = DESCRIPTION_MAP["nsd_version"]
-    nsdv_description: str = DESCRIPTION_MAP["nsdv_description"]
-
-    def __post_init__(self):
-        """
-        Cope with deserializing subclasses from dicts to ArtifactConfig.
-
-        Used when creating VNFConfiguration object from a loaded json config file.
-        """
-        if isinstance(self.arm_template, dict):
-            self.arm_template = ArtifactConfig(**self.arm_template)
-
-    def validate(self):
-        ## validate that all of the configuration parameters are set
-
-        if self.location == DESCRIPTION_MAP["location"] or "":
-            raise ValueError("Location must be set")
-        if self.publisher_name == DESCRIPTION_MAP["publisher_name_nsd"] or "":
-            raise ValueError("Publisher name must be set")
-        if (
-            self.publisher_resource_group_name
-            == DESCRIPTION_MAP["publisher_resource_group_name_nsd"]
-            or ""
-        ):
-            raise ValueError("Publisher resource group name must be set")
-        if (
-            self.acr_artifact_store_name == DESCRIPTION_MAP["acr_artifact_store_name"]
-            or ""
-        ):
-            raise ValueError("ACR Artifact Store name must be set")
-        if (
-            self.network_function_definition_group_name
-            == DESCRIPTION_MAP["network_function_definition_group_name"]
-            or ""
-        ):
-            raise ValueError("Network Function Definition Group name must be set")
-        if (
-            self.network_function_definition_version_name
-            == DESCRIPTION_MAP["network_function_definition_version_name"]
-            or ""
-        ):
-            raise ValueError("Network Function Definition Version name must be set")
-        if (
-            self.network_function_definition_offering_location
-            == DESCRIPTION_MAP["network_function_definition_offering_location"]
-            or ""
-        ):
-            raise ValueError(
-                "Network Function Definition Offering Location must be set"
-            )
-        if self.nsdg_name == DESCRIPTION_MAP["nsdg_name"] or "":
-            raise ValueError("NSDG name must be set")
-        if self.nsd_version == DESCRIPTION_MAP["nsd_version"] or "":
-            raise ValueError("NSD Version must be set")
-
-    @property
-    def build_output_folder_name(self) -> str:
-        """Return the local folder for generating the bicep template to."""
-        current_working_directory = os.getcwd()
-        return f"{current_working_directory}/{NSD_DEFINITION_OUTPUT_BICEP_PREFIX}"
-
-    @property
-    def resource_element_name(self) -> str:
-        """Return the name of the resource element."""
-        artifact_name = self.arm_template.artifact_name
-        return f"{artifact_name}-resource-element"
-
-    @property
-    def network_function_name(self) -> str:
-        """Return the name of the NFVI used for the NSDV."""
-        return f"{self.nsdg_name}_NF"
-
-    @property
-    def acr_manifest_name(self) -> str:
-        """Return the ACR manifest name from the NFD name."""
-        return f"{self.network_function_name.lower().replace('_', '-')}-acr-manifest-{self.nsd_version.replace('.', '-')}"
-
-    @property
-    def nfvi_site_name(self) -> str:
-        """Return the name of the NFVI used for the NSDV."""
-        return f"{self.nsdg_name}_NFVI"
-
-    @property
-    def cg_schema_name(self) -> str:
-        """Return the name of the Configuration Schema used for the NSDV."""
-        return f"{self.nsdg_name.replace('-', '_')}_ConfigGroupSchema"
-
-    @property
-    def arm_template(self) -> ArtifactConfig:
-        """Return the parameters of the ARM template to be uploaded as part of the NSDV."""
-        artifact = ArtifactConfig()
-        artifact.artifact_name = f"{self.nsdg_name.lower()}_nf_artifact"
-        artifact.version = self.nsd_version
-        artifact.file_path = os.path.join(
-            self.build_output_folder_name, NF_DEFINITION_JSON_FILE
-        )
-        return artifact
 
 
 @dataclass
@@ -311,6 +224,174 @@ class CNFConfiguration(NFConfiguration):
     def build_output_folder_name(self) -> str:
         """Return the local folder for generating the bicep template to."""
         return f"{DEFINITION_OUTPUT_BICEP_PREFIX}{self.nf_name}"
+
+
+class RETType(Enum):
+    NETWORK_FUNCTION_DEFINITION = "NetworkFunctionDefinition",
+    NETWORK_SERVICE_DEFINITION = "NetworkServiceDefinition",
+    ARM_RESOURCE_DEFINTION = "ARMResourceDefinition",
+    CONFIGURATION_DEFINITION = "ConfigurationDefinition",
+
+
+class RETConfiguration(abc.ABC):
+    type: RETType
+
+    def validate(self) -> None:
+        """
+        Validate the configuration passed in.
+
+        :raises ValidationError for any invalid config
+        """
+        raise NotImplementedError
+
+
+@dataclass
+class NetworkFunctionDefinitionConfiguration(RETConfiguration):
+    type = RETType.NETWORK_FUNCTION_DEFINITION
+    publisher_name: str = DESCRIPTION_MAP[
+        "network_function_definition_publisher"
+    ]
+    network_function_definition_name: str = DESCRIPTION_MAP[
+        "network_function_definition_name"
+    ]
+    network_function_definition_version: str = DESCRIPTION_MAP[
+        "network_function_definition_version"
+    ]
+    offering_location: str = DESCRIPTION_MAP[
+        "network_function_definition_offering_location"
+    ]
+
+    def validate(self) -> None:
+        """
+        Validate the configuration passed in.
+
+        :raises ValidationError for any invalid config
+        """
+        if (
+            self.publisher_name
+            == DESCRIPTION_MAP["network_function_definition_publisher"]
+        ):
+            raise ValidationError("Publisher name must be set")
+
+        if (
+            self.network_function_definition_name
+            == DESCRIPTION_MAP["network_function_definition_name"]
+        ):
+            raise ValidationError(
+                "Network function definition name must be set"
+            )
+
+        if (
+            self.network_function_definition_version 
+            == DESCRIPTION_MAP["network_function_definition_version"]
+        ):
+            raise ValidationError(
+                "Network function definition version must be set"
+            )
+
+        if (
+            self.offering_location
+            == DESCRIPTION_MAP["network_function_definition_offering_location"]
+        ):
+            raise ValidationError(
+                "Network function definition offering location must be set"
+            )
+
+
+@dataclass
+class NSConfiguration:
+    location: str = DESCRIPTION_MAP["location"]
+    publisher_name: str = DESCRIPTION_MAP["publisher_name_nsd"]
+    publisher_resource_group_name: str = DESCRIPTION_MAP[
+        "publisher_resource_group_name_nsd"
+    ]
+    acr_artifact_store_name: str = DESCRIPTION_MAP["acr_artifact_store_name"]
+    resource_element_template_configurations: List[RETConfiguration] = (
+        field(default_factory=lambda: [
+            NetworkFunctionDefinitionConfiguration(),
+        ])
+    )
+    print(NetworkFunctionDefinitionConfiguration().offering_location)
+    nsd_name: str = DESCRIPTION_MAP["nsd_name"]
+    nsd_version: str = DESCRIPTION_MAP["nsd_version"]
+    nsd_description: str = DESCRIPTION_MAP["nsd_description"]
+
+    def validate(self):
+        ## validate that all of the configuration parameters are set
+
+        if self.location == DESCRIPTION_MAP["location"] or "":
+            raise ValueError("Location must be set")
+        if self.publisher_name == DESCRIPTION_MAP["publisher_name_nsd"] or "":
+            raise ValueError("Publisher name must be set")
+        if (
+            self.publisher_resource_group_name
+            == DESCRIPTION_MAP["publisher_resource_group_name_nsd"]
+            or ""
+        ):
+            raise ValueError("Publisher resource group name must be set")
+        if (
+            self.acr_artifact_store_name 
+            == DESCRIPTION_MAP["acr_artifact_store_name"] or ""
+        ):
+            raise ValueError("ACR Artifact Store name must be set")
+        if self.resource_element_template_configurations == [] or None:
+            raise ValueError(
+                ("At least one resource element template "
+                 "configuration must be set.")
+            )
+        else:
+            for configuration in self.resource_element_template_configurations:
+                configuration.validate()
+        if self.nsd_name == DESCRIPTION_MAP["nsdg_name"] or "":
+            raise ValueError("NSD name must be set")
+        if self.nsd_version == DESCRIPTION_MAP["nsd_version"] or "":
+            raise ValueError("NSD Version must be set")
+
+    @property
+    def build_output_folder_name(self) -> str:
+        """Return the local folder for generating the bicep template to."""
+        current_working_directory = os.getcwd()
+        return (
+            f"{current_working_directory}/{NSD_DEFINITION_OUTPUT_BICEP_PREFIX}"
+        )
+
+    @property
+    def resource_element_name(self) -> str:
+        """Return the name of the resource element."""
+        artifact_name = self.arm_template.artifact_name
+        return f"{artifact_name}-resource-element"
+
+    @property
+    def acr_manifest_name(self) -> str:
+        """Return the ACR manifest name from the NFD name."""
+        return (
+            f"{self.nsd_name.lower().replace('_', '-')}"
+            f"-acr-manifest-{self.nsd_version.replace('.', '-')}"
+        )
+
+    @property
+    def nfvi_site_name(self) -> str:
+        """Return the name of the NFVI used for the NSDV."""
+        return f"{self.nsd_name}_NFVI"
+
+    @property
+    def cg_schema_name(self) -> str:
+        """Return the name of the Configuration Schema used for the NSDV."""
+        return f"{self.nsd_name.replace('-', '_')}_ConfigGroupSchema"
+
+    @property
+    def arm_template(self) -> ArtifactConfig:
+        """
+        Return the parameters of the ARM template to be uploaded as part of
+        the NSDV.
+        """
+        artifact = ArtifactConfig()
+        artifact.artifact_name = f"{self.nsd_name.lower()}_nf_artifact"
+        artifact.version = self.nsd_version
+        artifact.file_path = os.path.join(
+            self.build_output_folder_name, NF_DEFINITION_JSON_FILE
+        )
+        return artifact
 
 
 def get_configuration(

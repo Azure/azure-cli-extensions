@@ -350,7 +350,6 @@ def _generate_nsd(config: NSDGenerator, api_clients):
         from azure.cli.core.azclierror import CLIInternalError
 
         raise CLIInternalError("Generate NSD called without a config file")
-    deploy_parameters = _get_nfdv_deployment_parameters(config, api_clients)
 
     if os.path.exists(config.build_output_folder_name):
         carry_on = input(
@@ -361,7 +360,7 @@ def _generate_nsd(config: NSDGenerator, api_clients):
 
         shutil.rmtree(config.build_output_folder_name)
 
-    nsd_generator.generate_nsd(deploy_parameters)
+    nsd_generator.generate_nsd()
 
 
 def _get_nfdv_deployment_parameters(config: NSConfiguration, api_clients):

@@ -50,17 +50,18 @@ class NSDGenerator:
 
     def __init__(self, config: NSConfiguration):
         self.config = config
+
         self.nsd_bicep_template_name = NSD_DEFINITION_BICEP_SOURCE_TEMPLATE
         self.nf_bicep_template_name = NF_TEMPLATE_BICEP_FILE
         self.nsd_bicep_output_name = NSD_DEFINITION_BICEP_FILE
 
         self.build_folder_name = self.config.build_output_folder_name
 
-    def generate_nsd(self, deploy_parameters) -> None:
+    def generate_nsd(self) -> None:
         """Generate a NSD templates which includes an Artifact Manifest, NFDV and NF templates."""
         logger.info(f"Generate NSD bicep templates")
 
-        self.deploy_parameters = deploy_parameters
+        # self.deploy_parameters = deploy_parameters
 
         # Create temporary folder.
         with tempfile.TemporaryDirectory() as tmpdirname:
