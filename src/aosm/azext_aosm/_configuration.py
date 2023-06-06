@@ -116,15 +116,6 @@ class NSConfiguration:
     nsd_version: str = DESCRIPTION_MAP["nsd_version"]
     nsdv_description: str = DESCRIPTION_MAP["nsdv_description"]
 
-    def __post_init__(self):
-        """
-        Cope with deserializing subclasses from dicts to ArtifactConfig.
-
-        Used when creating VNFConfiguration object from a loaded json config file.
-        """
-        if isinstance(self.arm_template, dict):
-            self.arm_template = ArtifactConfig(**self.arm_template)
-
     def validate(self):
         ## validate that all of the configuration parameters are set
 
@@ -208,6 +199,11 @@ class NSConfiguration:
             self.build_output_folder_name, NF_DEFINITION_JSON_FILE
         )
         return artifact
+    
+    @property
+    def arm_template_artifact_name(self) -> str:
+        """Return the artifact name for the ARM template"""
+        return f"{self.network_function_definition_group_name}_nfd_artifact"
 
 
 @dataclass
