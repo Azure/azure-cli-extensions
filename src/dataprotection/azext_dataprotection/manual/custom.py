@@ -999,11 +999,13 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
 
     manifest = helper.load_manifest(datasource_type)
 
-    # Restore mode (assigned during recovery style earlier) should be supported for the workload
+    # Restore mode (assigned during RP/point-in-time validation earlier) should be supported for the workload
     if manifest is not None and manifest["allowedRestoreModes"] is not None and restore_mode not in manifest["allowedRestoreModes"]:
         raise CLIError(restore_mode + " restore mode is not supported for datasource type " + datasource_type +
                        ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
 
+    # If the source datastore (type) is allowed for the workload, we start creating the restore request object.
+    # We also check for rehydration priority/duration in here for some reason? It could be shifted out.
     if source_datastore in manifest["policySettings"]["supportedDatastoreTypes"]:
         restore_request["source_data_store_type"] = source_datastore
         if rehydration_priority:
@@ -1095,6 +1097,8 @@ def restore_initialize_for_data_recovery_as_files(target_blob_container_url, tar
 
     restore_request = {}
     restore_mode = None
+
+    # Input Validation and variable-assignment from params for recovery via RP or point-in-time
     if recovery_point_id is not None and point_in_time is not None:
         raise CLIError("Please provide either recovery point id or point in time parameter, not both.")
 
@@ -1112,10 +1116,14 @@ def restore_initialize_for_data_recovery_as_files(target_blob_container_url, tar
         raise CLIError("Please provide either recovery point id or point in time parameter.")
 
     manifest = helper.load_manifest(datasource_type)
+
+    # Restore mode (assigned during RP/point-in-time validation earlier) should be supported for the workload
     if manifest is not None and manifest["allowedRestoreModes"] is not None and restore_mode not in manifest["allowedRestoreModes"]:
         raise CLIError(restore_mode + " restore mode is not supported for datasource type " + datasource_type +
                        ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
 
+    # If the source datastore (type) is allowed for the workload, we start creating the restore request object.
+    # We also check for rehydration priority/duration in here for some reason? It could be shifted out.
     if source_datastore in manifest["policySettings"]["supportedDatastoreTypes"]:
         restore_request["source_data_store_type"] = source_datastore
         if rehydration_priority:
@@ -1128,6 +1136,9 @@ def restore_initialize_for_data_recovery_as_files(target_blob_container_url, tar
         raise CLIError(source_datastore + " datastore type is not supported for datasource type " + datasource_type +
                        ". Supported datastore types are " + ','.join(manifest["policySettings"]["supportedDatastoreTypes"]))
 
+    # Constructing the rest of the restore request object. No further validation is being done.
+    # Currently, restore_target_info.target_details.restore_target_location_type is fixed to AzureBlobs
+    # There is no check currently for ensuring that the manifest's allowedRestoreTargetTypes contains RestoreAsFiles
     restore_request["restore_target_info"] = {}
     restore_request["restore_target_info"]["object_type"] = "RestoreFilesTargetInfo"
     restore_request["restore_target_info"]["restore_location"] = restore_location
@@ -1166,7 +1177,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
 
     manifest = helper.load_manifest(datasource_type)
 
-    # Restore mode (assigned during recovery style earlier) should be supported for the workload
+    # Restore mode (assigned during RP/point-in-time validation earlier) should be supported for the workload
     if manifest is not None and manifest["allowedRestoreModes"] is not None and restore_mode not in manifest["allowedRestoreModes"]:
         raise CLIError(restore_mode + " restore mode is not supported for datasource type " + datasource_type +
                        ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
@@ -1175,6 +1186,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
     if manifest is not None and not manifest["itemLevelRecoveyEnabled"]:
         raise CLIError("Specified DatasourceType " + datasource_type + " doesn't support Item Level Recovery")
 
+    # Constructing the rest of the restore request object. No further validation is being done.
     restore_request["source_data_store_type"] = source_datastore
     restore_request["restore_target_info"] = {}
     restore_request["restore_target_info"]["object_type"] = "ItemLevelRestoreTargetInfo"
@@ -1182,9 +1194,18 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
     restore_request["restore_target_info"]["recovery_option"] = "FailIfExists"
 
     # We set the restore criteria depending on the datasource type and on the prefix pattern/container list as provided
-    # AKS directly uses the restore configuration
+    # AKS directly uses the restore configuration. Currently, the "else" just covers Blobs.
     restore_criteria_list = []
-    if datasource_type != "AzureKubernetesService":
+    if datasource_type == "AzureKubernetesService":
+        if restore_configuration is not None:
+            restore_criteria = restore_configuration
+        else:
+            raise CLIError("Please input parameter restore_configuration for AKS cluster restore.\n\
+                           Use command initialize-restoreconfig for creating the RestoreConfiguration")
+        restore_criteria_list.append(restore_criteria)
+    else:
+        # For non-AKS workloads, we need either a prefix-pattern or a container-list. Accordingly, the restore
+        # criteria's min_matching_value and max_matching_value are set. We need to provide one, but can't provide both
         if container_list is not None and (from_prefix_pattern is not None or to_prefix_pattern is not None):
             raise CLIError("Please specify either container list or prefix pattern.")
 
@@ -1259,13 +1280,6 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
 
         if container_list is None and from_prefix_pattern is None and to_prefix_pattern is None:
             raise CLIError("Provide ContainersList or Prefixes for Item Level Recovery")
-    else:
-        if restore_configuration is not None:
-            restore_criteria = restore_configuration
-        else:
-            raise CLIError("Please input parameter restore_configuration for AKS cluster restore.\n\
-                           Use command initialize-restoreconfig for creating the RestoreConfiguration")
-        restore_criteria_list.append(restore_criteria)
 
     restore_request["restore_target_info"]["restore_criteria"] = restore_criteria_list
 

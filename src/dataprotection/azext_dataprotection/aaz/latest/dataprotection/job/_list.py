@@ -52,6 +52,7 @@ class List(AAZCommand):
             options=["--vault-name"],
             help="The name of the backup vault.",
             required=True,
+            id_part="name",
         )
         return cls._args_schema
 
