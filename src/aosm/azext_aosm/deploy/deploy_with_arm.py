@@ -9,25 +9,25 @@ import shutil
 import subprocess  # noqa
 from typing import Any, Dict, Optional
 import tempfile
+import time
 
 from knack.log import get_logger
-from azext_aosm.deploy.artifact_manifest import ArtifactManifestOperator
-from azext_aosm.util.management_clients import ApiClients
 from azure.mgmt.resource.resources.models import DeploymentExtended
 
+from azext_aosm.deploy.artifact_manifest import ArtifactManifestOperator
+from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.deploy.pre_deploy import PreDeployerViaSDK
 from azext_aosm._configuration import NFConfiguration, NSConfiguration, VNFConfiguration
 from azext_aosm.util.constants import (
     NSD_DEFINITION_BICEP_FILE,
     NSD_ARTIFACT_MANIFEST_BICEP_FILE,
     NF_DEFINITION_BICEP_FILE,
-    NF_DEFINITION_JSON_FILE,
     VNF_DEFINITION_BICEP_TEMPLATE,
     VNF_MANIFEST_BICEP_TEMPLATE,
     NSD,
     VNF,
 )
-import time
+
 
 
 logger = get_logger(__name__)
@@ -200,7 +200,7 @@ class DeployerViaArm:
                 "armTemplateName": {"value": self.config.arm_template.artifact_name},
                 "armTemplateVersion": {"value": self.config.arm_template.version},
             }
-        elif isinstance(self.config, NSConfiguration):
+        if isinstance(self.config, NSConfiguration):
             return {
                 "location": {"value": self.config.location},
                 "publisherName": {"value": self.config.publisher_name},
@@ -209,8 +209,7 @@ class DeployerViaArm:
                 "armTemplateName": {"value": self.config.arm_template.artifact_name},
                 "armTemplateVersion": {"value": self.config.arm_template.version},
             }
-        else:
-            raise ValueError("Unknown configuration type")
+        raise ValueError("Unknown configuration type")
 
     def deploy_nsd_from_bicep(
         self,
@@ -291,7 +290,7 @@ class DeployerViaArm:
             os.path.join(self.config.build_output_folder_name, NF_DEFINITION_BICEP_FILE)
         )
 
-        with open(self.config.arm_template.file_path, "w") as file:
+        with open(self.config.arm_template.file_path, "w", encoding="utf-8") as file:
             file.write(json.dumps(arm_template_artifact_json, indent=4))
 
         print("Uploading ARM template artifact")
@@ -308,7 +307,7 @@ class DeployerViaArm:
         :param manifest_bicep_path: The path to the bicep template of the manifest
         :param configuration_type: The type of configuration to deploy
         """
-        print(f"Deploy bicep template for Artifact manifests")
+        print("Deploy bicep template for Artifact manifests")
         logger.debug("Deploy manifest bicep")
 
         if not manifest_bicep_path:
@@ -408,7 +407,7 @@ class DeployerViaArm:
         :return: Output dictionary from the bicep template.
         """
         # Get current time from the time module and remove all digits after the decimal point
-        current_time = str(time.time()).split(".")[0]
+        current_time = str(time.time()).split(".")[0] # pylint: disable=use-maxsplit-arg
 
         # Add a timestamp to the deployment name to ensure it is unique
         deployment_name = f"AOSM_CLI_deployment_into_{resource_group}_{current_time}"
@@ -426,22 +425,21 @@ class DeployerViaArm:
         )
 
         validation_res = validation.result()
-        logger.debug(f"Validation Result {validation_res}")
+        logger.debug("Validation Result %s", validation_res)
         if validation_res.error:
             # Validation failed so don't even try to deploy
             logger.error(
-                f"Template for resource group {resource_group} "
-                f"has failed validation. The message was: "
-                f"{validation_res.error.message}. See logs for additional details."
+                "Template for resource group %s has failed validation. The message was: %s.\
+                See logs for additional details.", resource_group, validation_res.error.message
             )
             logger.debug(
-                f"Template for resource group {resource_group} "
-                f"failed validation. Full error details: {validation_res.error}."
+                "Template for resource group %s failed validation. \
+                Full error details: %s",resource_group,validation_res.error
             )
             raise RuntimeError("Azure template validation failed.")
 
         # Validation succeeded so proceed with deployment
-        logger.debug(f"Successfully validated resources for {resource_group}")
+        logger.debug("Successfully validated resources for %s", resource_group)
 
         poller = self.api_clients.resource_client.deployments.begin_create_or_update(
             resource_group_name=resource_group,
@@ -464,10 +462,10 @@ class DeployerViaArm:
             depl_props = deployment.properties
         else:
             raise RuntimeError("The deployment has no properties.\nAborting")
-        logger.debug(f"Deployed: {deployment.name} {deployment.id} {depl_props}")
+        logger.debug("Deployed: %s %s %s", deployment.name, deployment.id, depl_props)
 
         if depl_props.provisioning_state != "Succeeded":
-            logger.debug(f"Failed to provision: {depl_props}")
+            logger.debug("Failed to provision: %s", depl_props)
             raise RuntimeError(
                 f"Deploy of template to resource group"
                 f" {resource_group} proceeded but the provisioning"
@@ -475,8 +473,7 @@ class DeployerViaArm:
                 f"\nAborting"
             )
         logger.debug(
-            f"Provisioning state of {resource_group}"
-            f": {depl_props.provisioning_state}"
+            "Provisioning state of deployment %s : %s", resource_group, depl_props.provisioning_state
         )
 
         return depl_props.outputs
@@ -497,7 +494,7 @@ class DeployerViaArm:
             raise RuntimeError(
                 "The Azure CLI is not installed - cannot render ARM templates."
             )
-        logger.debug(f"Converting {bicep_template_path} to ARM template")
+        logger.debug("Converting %s to ARM template", bicep_template_path)
 
         with tempfile.TemporaryDirectory() as tmpdir:
             bicep_filename = os.path.basename(bicep_template_path)
