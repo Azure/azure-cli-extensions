@@ -8,6 +8,7 @@
 # pylint: disable=too-many-locals
 # pylint: disable=line-too-long
 # pylint: disable=too-many-branches
+# pylint: disable=protected-access
 import uuid
 import re
 import time
@@ -17,12 +18,12 @@ from azure.cli.core.util import sdk_no_wait
 from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
 from azext_dataprotection.manual import backupcenter_helper, helpers as helper
-from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Show as ResourceGuardShow
 
 logger = get_logger(__name__)
 
 
 def resource_guard_list_protected_operations(cmd, resource_group_name, resource_guard_name, resource_type):
+    from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Show as ResourceGuardShow
     resource_guard_object = ResourceGuardShow(cli_ctx=cmd.cli_ctx)(command_args={
         "resource_group": resource_group_name,
         "resource_guard_name": resource_guard_name,
@@ -271,18 +272,40 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
     }
 
 
-def dataprotection_backup_instance_update_policy(client, resource_group_name, vault_name, backup_instance_name, policy_id, no_wait=False):
-    backup_instance = client.get(vault_name=vault_name,
-                                 resource_group_name=resource_group_name,
-                                 backup_instance_name=backup_instance_name)
+# def dataprotection_backup_instance_update_policy_old(client, resource_group_name, vault_name, backup_instance_name, policy_id, no_wait=False):
+#     backup_instance = client.get(vault_name=vault_name,
+#                                  resource_group_name=resource_group_name,
+#                                  backup_instance_name=backup_instance_name)
 
-    backup_instance.properties.policy_info.policy_id = policy_id
-    return sdk_no_wait(no_wait,
-                       client.begin_create_or_update,
-                       vault_name=vault_name,
-                       resource_group_name=resource_group_name,
-                       backup_instance_name=backup_instance_name,
-                       parameters=backup_instance)
+#     backup_instance.properties.policy_info.policy_id = policy_id
+
+#     return sdk_no_wait(no_wait,
+#                        client.begin_create_or_update,
+#                        vault_name=vault_name,
+#                        resource_group_name=resource_group_name,
+#                        backup_instance_name=backup_instance_name,
+#                        parameters=backup_instance)
+
+
+def dataprotection_backup_instance_update_policy(cmd, resource_group_name, vault_name, backup_instance_name, policy_id, no_wait=False):
+    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Show as BackupInstanceShow
+    backup_instance = BackupInstanceShow(cli_ctx=cmd.cli_ctx)(command_args={
+        "resource_group": resource_group_name,
+        "vault_name": vault_name,
+        "backup_instance_name": backup_instance_name
+    })
+    policy_info = backup_instance['properties']['policyInfo']
+    policy_info['policyId'] = policy_id
+
+    # from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Update as BackupInstanceUpdate
+    from .aaz_operations.backup_instance import Update as BackupInstanceUpdate
+    return BackupInstanceUpdate(cli_ctx=cmd.cli_ctx)(command_args={
+        "no_wait": no_wait,
+        "backup_instance_name": backup_instance_name,
+        "resource_group": resource_group_name,
+        "vault_name": vault_name,
+        "policy_info": policy_info
+    })
 
 
 def dataprotection_backup_instance_list_from_resourcegraph(client, datasource_type, resource_groups=None, vaults=None, subscriptions=None, protection_status=None, datasource_id=None):

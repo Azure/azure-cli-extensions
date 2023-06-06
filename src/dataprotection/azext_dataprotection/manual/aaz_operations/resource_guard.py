@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=protected-access
+# pylint: disable=line-too-long
 from azure.cli.core.aaz import (
     AAZStrArg,
     AAZStrType, AAZObjectType, AAZDictType,
@@ -11,8 +13,9 @@ from azure.cli.core.aaz import (
 )
 from azext_dataprotection.aaz.latest.dataprotection.resource_guard import Create as _Create, Update as _Update
 from azext_dataprotection.manual.enums import get_resource_type_values, get_critical_operation_values
-from ..helpers import critical_operation_map
 from knack.log import get_logger
+from ..helpers import critical_operation_map
+
 
 logger = get_logger(__name__)
 

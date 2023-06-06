@@ -3,14 +3,15 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=protected-access
+# pylint: disable=line-too-long
 from azext_dataprotection.aaz.latest.dataprotection.backup_policy import Create as _Create
 from azure.cli.core.aaz import (
     AAZCommand,
     AAZStrArg, AAZResourceGroupNameArg, AAZFreeFormDictArg,
     AAZObjectType, AAZFreeFormDictType
 )
-from ..helpers import clean_nulls_from_json
-import json
+from ..helpers import clean_nulls_from_session_http_response
 
 
 class Create(_Create):
@@ -20,7 +21,6 @@ class Create(_Create):
         if cls._args_schema is not None:
             return cls._args_schema
         cls._args_schema = AAZCommand._build_arguments_schema(cls, *args, **kwargs)
-        # define Arg Group ""
 
         _args_schema = cls._args_schema
         _args_schema.backup_policy_name = AAZStrArg(
@@ -29,7 +29,7 @@ class Create(_Create):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
+            help="""Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.""",
             required=True,
         )
         _args_schema.vault_name = AAZStrArg(
@@ -37,6 +37,7 @@ class Create(_Create):
             help="The name of the backup vault.",
             required=True,
         )
+        # Replacing AAZObjectArg with AAZFreeFormDictArg (schemaless)
         _args_schema.policy = AAZFreeFormDictArg(
             options=["--policy"],
             help="Request body for operation Expected value: json-string/@json-file.",
@@ -46,16 +47,14 @@ class Create(_Create):
         return cls._args_schema
 
     class BackupPoliciesCreateOrUpdate(_Create.BackupPoliciesCreateOrUpdate):
-        
+
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
             # Removing null valued items from json to fix 'Bad Request' error.
-            clean_reponse = clean_nulls_from_json(json.loads(session.http_response.text()))
-            encoding = session.http_response.internal_response.encoding
-            session.http_response.internal_response._content = bytes(json.dumps(clean_reponse), encoding)
+            clean_nulls_from_session_http_response(session)
             return self.on_error(session.http_response)
 
         @property

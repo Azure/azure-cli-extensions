@@ -32,47 +32,47 @@ from azext_dataprotection.action import (
 
 def load_arguments(self, _):
 
-    with self.argument_context('dataprotection backup-vault show') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
+    # with self.argument_context('dataprotection backup-vault show') as c:
+    #     c.argument('resource_group_name', resource_group_name_type)
+    #     c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
 
-    with self.argument_context('dataprotection backup-vault create') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault.')
-        c.argument('e_tag', type=str, help='Optional ETag.')
-        c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
-                   validator=get_default_location_from_resource_group)
-        c.argument('tags', tags_type)
-        c.argument('type_', options_list=['--type'], type=str, help='The identityType which can be either '
-                   'SystemAssigned or None', arg_group='Identity')
-        c.argument('storage_settings', action=AddStorageSettings, nargs='+', help='Storage Settings')
-        c.argument('alerts_for_all_job_failures', options_list=['--azure-monitor-alerts-for-job-failures'],
-                   arg_type=get_enum_type(['Enabled', 'Disabled']), help='Property that specifies whether built-in '
-                   'Azure Monitor alerts should be fired for all failed jobs', arg_group='Monitoring Settings Azure '
-                   'Monitor Alert Settings')
+    # with self.argument_context('dataprotection backup-vault create') as c:
+    #     c.argument('resource_group_name', resource_group_name_type)
+    #     c.argument('vault_name', type=str, help='The name of the backup vault.')
+    #     c.argument('e_tag', type=str, help='Optional ETag.')
+    #     c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
+    #                validator=get_default_location_from_resource_group)
+    #     c.argument('tags', tags_type)
+    #     c.argument('type_', options_list=['--type'], type=str, help='The identityType which can be either '
+    #                'SystemAssigned or None', arg_group='Identity')
+    #     c.argument('storage_settings', action=AddStorageSettings, nargs='+', help='Storage Settings')
+    #     c.argument('alerts_for_all_job_failures', options_list=['--azure-monitor-alerts-for-job-failures'],
+    #                arg_type=get_enum_type(['Enabled', 'Disabled']), help='Property that specifies whether built-in '
+    #                'Azure Monitor alerts should be fired for all failed jobs', arg_group='Monitoring Settings Azure '
+    #                'Monitor Alert Settings')
 
-    with self.argument_context('dataprotection backup-vault update') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
-        c.argument('tags', tags_type)
-        c.argument('alerts_for_all_job_failures', options_list=['--azure-monitor-alerts-for-job-failures'],
-                   arg_type=get_enum_type(['Enabled', 'Disabled']), help='Property that specifies whether built-in '
-                   'Azure Monitor alerts should be fired for all failed jobs', arg_group='Monitoring Settings Azure '
-                   'Monitor Alert Settings')
-        c.argument('type_', options_list=['--type'], type=str, help='The identityType which can be either '
-                   'SystemAssigned or None', arg_group='Identity')
+    # with self.argument_context('dataprotection backup-vault update') as c:
+    #     c.argument('resource_group_name', resource_group_name_type)
+    #     c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
+    #     c.argument('tags', tags_type)
+    #     c.argument('alerts_for_all_job_failures', options_list=['--azure-monitor-alerts-for-job-failures'],
+    #                arg_type=get_enum_type(['Enabled', 'Disabled']), help='Property that specifies whether built-in '
+    #                'Azure Monitor alerts should be fired for all failed jobs', arg_group='Monitoring Settings Azure '
+    #                'Monitor Alert Settings')
+    #     c.argument('type_', options_list=['--type'], type=str, help='The identityType which can be either '
+    #                'SystemAssigned or None', arg_group='Identity')
 
-    with self.argument_context('dataprotection backup-vault delete') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
+    # with self.argument_context('dataprotection backup-vault delete') as c:
+    #     c.argument('resource_group_name', resource_group_name_type)
+    #     c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
 
-    with self.argument_context('dataprotection backup-vault wait') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
+    # with self.argument_context('dataprotection backup-vault wait') as c:
+    #     c.argument('resource_group_name', resource_group_name_type)
+    #     c.argument('vault_name', type=str, help='The name of the backup vault.', id_part='name')
 
-    with self.argument_context('dataprotection backup-instance list') as c:
-        c.argument('resource_group_name', resource_group_name_type)
-        c.argument('vault_name', type=str, help='The name of the backup vault.')
+    # with self.argument_context('dataprotection backup-instance list') as c:
+    #     c.argument('resource_group_name', resource_group_name_type)
+    #     c.argument('vault_name', type=str, help='The name of the backup vault.')
 
     with self.argument_context('dataprotection backup-instance show') as c:
         c.argument('resource_group_name', resource_group_name_type)

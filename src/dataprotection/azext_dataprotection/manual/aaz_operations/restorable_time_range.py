@@ -3,9 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=protected-access
+# pylint: disable=line-too-long
 from azext_dataprotection.aaz.latest.dataprotection.restorable_time_range import Find as _Find
-import json
-from ..helpers import clean_nulls_from_json
+from ..helpers import clean_nulls_from_session_http_response
 
 
 class Find(_Find):
@@ -18,8 +19,5 @@ class Find(_Find):
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
             # Removing null valued items from json to fix 'Bad Request' error.
-            clean_reponse = clean_nulls_from_json(json.loads(session.http_response.text()))
-            encoding = session.http_response.internal_response.encoding
-            session.http_response.internal_response._content = bytes(json.dumps(clean_reponse), encoding)
+            clean_nulls_from_session_http_response(session)
             return self.on_error(session.http_response)
-
