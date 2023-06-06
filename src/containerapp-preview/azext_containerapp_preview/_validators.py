@@ -4,17 +4,18 @@
 # --------------------------------------------------------------------------------------------
 
 
-def example_name_or_id_validator(cmd, namespace):
-    # Example of a storage account name or ID validator.
-    # See: https://github.com/Azure/azure-cli/blob/dev/doc/authoring_command_modules/authoring_commands.md#supporting-name-or-id-parameters
+def validate_custom_location_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
     from msrestazure.tools import is_valid_resource_id, resource_id
-    if namespace.storage_account:
-        if not is_valid_resource_id(namespace.RESOURCE):
-            namespace.storage_account = resource_id(
-                subscription=get_subscription_id(cmd.cli_ctx),
-                resource_group=namespace.resource_group_name,
-                namespace='Microsoft.Storage',
-                type='storageAccounts',
-                name=namespace.storage_account
-            )
+
+    if not namespace.custom_location or not namespace.resource_group_name:
+        return
+
+    if not is_valid_resource_id(namespace.custom_location):
+        namespace.custom_location = resource_id(
+            subscription=get_subscription_id(cmd.cli_ctx),
+            resource_group=namespace.resource_group_name,
+            namespace='Microsoft.ExtendedLocation',
+            type='customLocations',
+            name=namespace.custom_location
+        )
