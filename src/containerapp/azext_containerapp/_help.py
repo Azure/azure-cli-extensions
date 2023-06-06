@@ -919,16 +919,16 @@ helps['containerapp job identity assign'] = """
     examples:
     - name: Assign system identity.
       text: |
-          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --mi-system-assigned
+          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --system-assigned
     - name: Assign user identity.
       text: |
-          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --mi-user-assigned myUserIdentityName
+          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --user-assigned myUserIdentityName
     - name: Assign user identity (from a different resource group than the containerapp job).
       text: |
-          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --mi-user-assigned myUserIdentityResourceId
+          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --user-assigned myUserIdentityResourceId
     - name: Assign system and user identity.
       text: |
-          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --mi-system-assigned --mi-user-assigned myUserIdentityResourceId
+          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --system-assigned --user-assigned myUserIdentityResourceId
 """
 
 helps['containerapp job identity remove'] = """
@@ -937,19 +937,19 @@ helps['containerapp job identity remove'] = """
     examples:
     - name: Remove system identity.
       text: |
-          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --mi-system-assigned
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --system-assigned
     - name: Remove user identity.
       text: |
-          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --mi-user-assigned myUserIdentityName
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --user-assigned myUserIdentityName
     - name: Remove system and user identity (from a different resource group than the containerapp job).
       text: |
-          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --mi-system-assigned --mi-user-assigned myUserIdentityResourceId
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --system-assigned --user-assigned myUserIdentityResourceId
     - name: Remove all user identities.
       text: |
-          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --mi-user-assigned
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --user-assigned
     - name: Remove system identity and all user identities.
       text: |
-          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --mi-system-assigned --mi-user-assigned
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --system-assigned --user-assigned
 """
 
 helps['containerapp job identity show'] = """
