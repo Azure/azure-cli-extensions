@@ -1,14 +1,16 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Highly Confidential Material
-"""A module to handle interacting with artifacts."""
 
-from knack.log import get_logger
-from dataclasses import dataclass
+# pylint: disable=unidiomatic-typecheck
+"""A module to handle interacting with artifacts."""
 from typing import Union
+from dataclasses import dataclass
+from knack.log import get_logger
 
 from azure.storage.blob import BlobClient
-from azext_aosm._configuration import ArtifactConfig
 from oras.client import OrasClient
+from azext_aosm._configuration import ArtifactConfig
+
 
 logger = get_logger(__name__)
 
@@ -45,8 +47,9 @@ class Artifact:
         # the field.
 
         if artifact_config.file_path:
-            target = f"{self.artifact_client.remote.hostname.replace('https://', '')}/{self.artifact_name}:{self.artifact_version}"
-            logger.debug(f"Uploading {artifact_config.file_path} to {target}")
+            target = f"{self.artifact_client.remote.hostname.replace('https://', '')}\
+                /{self.artifact_name}:{self.artifact_version}"
+            logger.debug("Uploading %s to %s", artifact_config.file_path, target)
             self.artifact_client.push(
                 files=[artifact_config.file_path],
                 target=target,
@@ -70,7 +73,7 @@ class Artifact:
             with open(artifact_config.file_path, "rb") as artifact:
                 self.artifact_client.upload_blob(artifact, overwrite=True)
             logger.info(
-                f"Successfully uploaded {artifact_config.file_path} to {self.artifact_client.account_name}"
+                "Successfully uploaded %s to %s", artifact_config.file_path, self.artifact_client.account_name
             )
         else:
             logger.info("Copy from SAS URL to blob store")
@@ -80,7 +83,8 @@ class Artifact:
                 logger.debug(source_blob.url)
                 self.artifact_client.start_copy_from_url(source_blob.url)
                 logger.info(
-                    f"Successfully copied {source_blob.blob_name} from {source_blob.account_name} to {self.artifact_client.account_name}"
+                    "Successfully copied %s from %s to %s", 
+                    source_blob.blob_name, source_blob.account_name, self.artifact_client.account_name
                 )
             else:
                 raise RuntimeError(
