@@ -98,8 +98,6 @@ class LoadTestScenario(ScenarioTest):
         assert "fake_test_id" not in [test["testId"] for test in tests]
         assert self.kwargs["test_id"] in [test.get("testId") for test in tests]
 
-        delete_test(self)
-
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_show(self, rg, load):
@@ -120,8 +118,6 @@ class LoadTestScenario(ScenarioTest):
         ).get_output_in_json()
 
         assert self.kwargs["test_id"] == test.get("testId")
-
-        delete_test(self)
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -191,8 +187,6 @@ class LoadTestScenario(ScenarioTest):
             for file in files:
                 assert file["fileName"] in files_in_dir
 
-            delete_test(self)
-
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_create_with_args(self, rg, load):
@@ -221,7 +215,7 @@ class LoadTestScenario(ScenarioTest):
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             "--display-name '{display_name}' "
-            "--test-description '{test_description}' "
+            "--description '{test_description}' "
             '--test-plan "{test_plan}" '
             "--engine-instances {engine_instances} "
             "--env {env} "
@@ -238,8 +232,6 @@ class LoadTestScenario(ScenarioTest):
         ).get_output_in_json()
 
         assert self.kwargs["test_id"] in [test.get("testId") for test in tests]
-
-        delete_test(self)
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -270,8 +262,6 @@ class LoadTestScenario(ScenarioTest):
         ).get_output_in_json()
 
         assert self.kwargs["test_id"] in [test.get("testId") for test in tests]
-
-        delete_test(self)
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -333,8 +323,6 @@ class LoadTestScenario(ScenarioTest):
         assert not app_components.get("components", {}).get(
             self.kwargs["app_component_id"]
         )
-
-        delete_test(self)
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -429,8 +417,6 @@ class LoadTestScenario(ScenarioTest):
             self.kwargs["server_metric_id"]
         )
 
-        delete_test(self)
-
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_file(self):
@@ -496,5 +482,3 @@ class LoadTestScenario(ScenarioTest):
             )
 
             assert os.path.exists(os.path.join(temp_dir, self.kwargs["file_name"]))
-
-        delete_test(self)

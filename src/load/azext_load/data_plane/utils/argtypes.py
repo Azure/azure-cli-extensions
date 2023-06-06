@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=line-too-long
+
 from azext_load.data_plane.utils import completers, models, utils, validators
 from azure.cli.core.commands.parameters import (
     get_generic_completion_list,
@@ -22,7 +24,7 @@ load_test_resource = CLIArgumentType(
     type=str,
     required=True,
     completer=get_resource_name_completion_list("Microsoft.LoadTestService/LoadTests"),
-    help="Name or ARM resource ID of the load test resource.",
+    help="Name or ARM resource ID of the Load Testing resource.",
 )
 
 wait = CLIArgumentType(
@@ -36,7 +38,7 @@ force = CLIArgumentType(
     options_list=["--force"],
     action="store_true",
     default=False,
-    help="Force run the command.",
+    help="Force run the command. This will create the directory to download files if it does not exist.",
 )
 #
 
@@ -75,21 +77,21 @@ existing_test_run_id = CLIArgumentType(
     completer=completers.get_test_run_id_completion_list(),
     options_list=["--existing-test-run-id"],
     type=str,
-    help="Test run ID of an existing load test run",
+    help="Test run ID of an existing load test run which should be rerun.",
 )
 
 test_plan = CLIArgumentType(
     validator=validators.validate_test_plan_path,
     options_list=["--test-plan"],
     type=str,
-    help="Path to the test plan file.",
+    help="Path to the JMeter script.",
 )
 
 load_test_config_file = CLIArgumentType(
     validator=validators.validate_load_test_config_file,
     options_list=["--load-test-config-file"],
     type=str,
-    help="Path to the load test config file.",
+    help="Path to the load test config file. Refer https://learn.microsoft.com/azure/load-testing/reference-test-config-yaml.",
 )
 
 test_display_name = CLIArgumentType(
@@ -107,21 +109,20 @@ test_run_display_name = CLIArgumentType(
 engine_instances = CLIArgumentType(
     options_list=["--engine-instances"],
     type=int,
-    help="Number of engine instances to use for the load test.",
+    help="Number of engine instances on which the test should run.",
 )
 
 key_vault_reference_identity = CLIArgumentType(
-    options_list=["--keyvault-id"],
+    options_list=["--keyvault-reference-id"],
     type=str,
     help="The identity that will be used to access the key vault.",
 )
 
-
 split_csv = CLIArgumentType(
+    validator=validators.validate_split_csv,
     options_list=["--split-csv"],
-    action="store_true",
-    default=False,
-    help="Split CSV additional files during test run.",
+    type=str,
+    help="Split CSV files evenly among engine instances.",
 )
 
 subnet_id = CLIArgumentType(
@@ -133,7 +134,7 @@ subnet_id = CLIArgumentType(
 )
 
 test_description = CLIArgumentType(
-    options_list=["--test-description"],
+    options_list=["--description"],
     type=str,
     help="Description of the load test.",
 )
@@ -156,7 +157,7 @@ secret = CLIArgumentType(
     validator=validators.validate_secrets,
     options_list=["--secret"],
     nargs="*",
-    help="space-separated secrets: key[=value] [key[=value] ...]. "
+    help="space-separated secrets: key[=value] [key[=value] ...]. Secrets should be stored in Azure Key Vault, and the secret identifier should be provided as the value."
     + quote_text.format("secrets"),
 )
 
@@ -164,7 +165,7 @@ certificate = CLIArgumentType(
     validator=validators.validate_certificate,
     options_list=["--certificate"],
     nargs="?",
-    help="a single certificate in 'key[=value]' format. "
+    help="a single certificate in 'key[=value]' format. The certificate should be stored in Azure Key Vault in PFX format, and the certificate identifier should be provided as the value."
     + quote_text.format("certificate"),
 )
 
@@ -172,7 +173,7 @@ dir_path = CLIArgumentType(
     validator=validators.validate_dir_path,
     options_list=["--path"],
     type=str,
-    help="Path to the directory to download files.",
+    help="Path of the directory to download files.",
 )
 
 file_name = CLIArgumentType(
@@ -223,55 +224,55 @@ app_component_id = CLIArgumentType(
     validator=validators.validate_app_component_id,
     options_list=["--app-component-id"],
     type=str,
-    help="Fully qualified ID of the app component resource.",
+    help="Fully qualified resource ID of the App Component. For example, subscriptions/{subId}/resourceGroups/{rg}/providers/Microsoft.LoadTestService/loadtests/{resName}",
 )
 
 app_component_name = CLIArgumentType(
     options_list=["--app-component-name"],
     type=str,
-    help="Name of the app component.",
+    help="Name of the app component. Refer https://learn.microsoft.com/cli/azure/resource#az-resource-show",
 )
 
 app_component_type = CLIArgumentType(
     validator=validators.validate_app_component_type,
     options_list=["--app-component-type"],
     type=str,
-    help="Type of resource of the app component.",
+    help="Type of resource of the app component. Refer https://learn.microsoft.com/cli/azure/resource#az-resource-show",
 )
 
 app_component_kind = CLIArgumentType(
     options_list=["--app-component-kind"],
     type=str,
-    help="Kind of the app component.",
+    help="Kind of the app component. Refer https://learn.microsoft.com/cli/azure/resource#az-resource-show",
 )
 
 server_metric_id = CLIArgumentType(
     validator=validators.validate_metric_id,
     options_list=["--metric-id"],
     type=str,
-    help="Fully qualified ID of the server metric.",
+    help="Fully qualified ID of the server metric. Refer https://docs.microsoft.com/en-us/rest/api/monitor/metric-definitions/list#metricdefinition",
 )
 
 server_metric_name = CLIArgumentType(
     options_list=["--metric-name"],
     type=str,
-    help="Name of the server metric.",
+    help="Name of the metric. Example, requests/duration",
 )
 
 server_metric_namespace = CLIArgumentType(
     options_list=["--metric-namespace"],
     type=str,
-    help="Namespace of the server metric.",
+    help="Namespace of the server metric. Example, microsoft.insights/components",
 )
 
 server_metric_aggregation = CLIArgumentType(
     options_list=["--aggregation"],
     type=str,
-    help="Aggregation of the server metric.",
+    help="Aggregation to be applied on the metric.",
 )
 
 metric_name = CLIArgumentType(
-    options_list=["--metric-name"],
+    options_list=["--metric-name", "--metric-definition-name"],
     type=str,
     help="Name of the metric.",
 )

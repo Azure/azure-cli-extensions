@@ -44,8 +44,7 @@ def create_test(
     if test_plan:
         template += f' --test-plan "{test_plan}"'
 
-    if wait:
-        template += " --wait"
+    template += " --wait"
 
     ScenarioTest.cmd(
         template, checks=[JMESPathCheck("testId", ScenarioTest.kwargs["test_id"])]
@@ -105,8 +104,9 @@ def delete_test_run(
         resource_group = ScenarioTest.kwargs["resource_group"]
     if not test_run_id:
         test_run_id = ScenarioTest.kwargs["test_run_id"]
+    test_id = ScenarioTest.kwargs["test_id"]
 
-    test_run = ScenarioTest.cmd(
+    ScenarioTest.cmd(
         "az load test-run delete "
         f"--load-test-resource {load_test_resource} "
         f"--resource-group {resource_group} "
@@ -114,11 +114,10 @@ def delete_test_run(
         f"--yes"
     )
 
-    test_id = test_run.get("testId", "")
     test_runs = ScenarioTest.cmd(
         "az load test-run list "
         f"--load-test-resource {load_test_resource} "
-        f"--resource-group {resource_group}"
+        f"--resource-group {resource_group} "
         f"--test-id {test_id} "
     ).get_output_in_json()
 

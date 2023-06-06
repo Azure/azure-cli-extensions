@@ -56,15 +56,18 @@ def validate_env_vars(namespace):
             env_vars_dict.update(_validate_env_var(item))
         namespace.env = env_vars_dict
 
-
 def _validate_env_var(string):
     """Extracts a single env var in key[=value] format"""
     result = {}
     if string:
         comps = string.split("=", 1)
-        result = {comps[0]: comps[1]} if len(comps) > 1 else {string: ""}
+        if len(comps) != 2:
+            raise InvalidArgumentValueError(f"Invalid env argument: {string}")
+        if comps[1] == "":
+            result = {comps[0]: None}
+        else:
+            result = {comps[0]: comps[1]}
     return result
-
 
 def validate_secrets(namespace):
     """Extracts multiple space-separated secrets in key[=value] format"""
@@ -80,13 +83,16 @@ def _validate_secret(string):
     result = {}
     if string:
         comps = string.split("=", 1)
-        if not _validate_akv_url(comps[1], "secrets"):
-            raise InvalidArgumentValueError(f"Invalid AKV Secret URL: {string}")
-        result = (
-            {comps[0]: {"type": "AKV_SECRET_URI", "value": comps[1]}}
-            if len(comps) > 1
-            else {string: ""}
-        )
+        if len(comps) != 2:
+            raise InvalidArgumentValueError(f"Invalid secret argument: {string}")
+        if comps[1] == "":
+            result = {comps[0]: None}
+        elif not _validate_akv_url(comps[1], "secrets"):
+            raise InvalidArgumentValueError(f"Invalid Azure Key Vault Secret URL: {comps[1]}")
+        else:
+            result = (
+                {comps[0]: {"type": "AKV_SECRET_URI", "value": comps[1]}}
+            )
     return result
 
 
@@ -105,8 +111,10 @@ def validate_certificate(namespace):
             f"Invalid certificate value type: {type(namespace.certificate)}"
         )
     comps = certificate.split("=", 1)
+    if len(comps) != 2:
+        raise InvalidArgumentValueError(f"Invalid certificate argument: {certificate}")
     if not _validate_akv_url(comps[1], "certificates"):
-        raise InvalidArgumentValueError(f"Invalid AKV Certificate URL: {comps[1]}")
+        raise InvalidArgumentValueError(f"Invalid Azure Key Vault Certificate URL: {comps[1]}")
     namespace.certificate = {
         "name": comps[0],
         "type": "AKV_CERT_URI",
@@ -333,3 +341,19 @@ def _validate_dimension_filter(string):
         comps = string.split("=", 1)
         result = {comps[0]: comps[1].split(",")} if len(comps) > 1 else {string: ""}
     return result
+
+def validate_split_csv(namespace):
+    if namespace.split_csv is None:
+        return
+    if not isinstance(namespace.split_csv, str):
+        raise InvalidArgumentValueError(
+            f"Invalid split-csv type: {type(namespace.split_csv)}"
+        )
+    if namespace.split_csv.casefold() not in ["true", "false", "yes", "no", "y", "n",]:
+        raise InvalidArgumentValueError(
+            f"Invalid split-csv value: {namespace.split_csv}. Allowed values: true, false, yes, no, y, n"
+        )
+    if namespace.split_csv.casefold() in ["true", "yes", "y"]:
+        namespace.split_csv = True
+    else:
+        namespace.split_csv = False

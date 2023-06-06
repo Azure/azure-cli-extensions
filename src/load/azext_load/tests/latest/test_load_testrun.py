@@ -12,6 +12,7 @@ from azext_load.tests.latest.helper import (
     create_test,
     create_test_run,
     delete_test,
+    delete_test_run,
 )
 from azext_load.tests.latest.preparers import LoadTestResourcePreparer
 from azure.cli.testsdk import (
@@ -90,8 +91,6 @@ class LoadTestRunScenario(ScenarioTest):
 
         assert test_run.get("status") in ["CANCELLING", "FAILED", "CANCELLED"]
 
-        delete_test(self)
-
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_run_list(self, rg, load):
@@ -119,8 +118,6 @@ class LoadTestRunScenario(ScenarioTest):
         assert self.kwargs["test_run_id"] in test_run_ids
         assert "fake_test_run_id" not in test_run_ids
 
-        delete_test(self)
-
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_run_show(self, rg, load):
@@ -144,8 +141,6 @@ class LoadTestRunScenario(ScenarioTest):
             checks=[JMESPathCheck("testRunId", self.kwargs["test_run_id"])],
         ).get_output_in_json()
 
-        delete_test(self)
-
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_run_create(self, rg, load):
@@ -158,12 +153,9 @@ class LoadTestRunScenario(ScenarioTest):
             }
         )
 
-        try:
-            create_test(self, wait=True)
-            create_test_run(self)
-        finally:
-            delete_test(self)
-
+        create_test(self, wait=True)
+        create_test_run(self)
+        
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_run_delete(self, rg, load):
@@ -176,11 +168,9 @@ class LoadTestRunScenario(ScenarioTest):
             }
         )
 
-        try:
-            create_test(self, wait=True)
-            create_test_run(self)
-        finally:
-            delete_test(self)
+        create_test(self, wait=True)
+        create_test_run(self)
+        delete_test_run(self)
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -195,30 +185,26 @@ class LoadTestRunScenario(ScenarioTest):
             }
         )
 
-        try:
-            create_test(self, wait=True)
-            create_test_run(self)
-            if self.is_live:
-                time.sleep(10)
-            self.cmd(
-                "az load test-run update "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--test-run-id {test_run_id} "
-                "--description '{new_description}' ",
-                checks=[JMESPathCheck("description", self.kwargs["new_description"])],
-            ).get_output_in_json()
+        create_test(self, wait=True)
+        create_test_run(self)
+        if self.is_live:
+            time.sleep(10)
+        self.cmd(
+            "az load test-run update "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--test-run-id {test_run_id} "
+            "--description '{new_description}' ",
+            checks=[JMESPathCheck("description", self.kwargs["new_description"])],
+        ).get_output_in_json()
 
-            self.cmd(
-                "az load test-run show "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--test-run-id {test_run_id}",
-                checks=[JMESPathCheck("description", self.kwargs["new_description"])],
-            ).get_output_in_json()
-
-        finally:
-            delete_test(self)
+        self.cmd(
+            "az load test-run show "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--test-run-id {test_run_id}",
+            checks=[JMESPathCheck("description", self.kwargs["new_description"])],
+        ).get_output_in_json()
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -232,37 +218,33 @@ class LoadTestRunScenario(ScenarioTest):
             }
         )
 
-        try:
-            create_test(self, wait=True)
-            create_test_run(self)
+        create_test(self, wait=True)
+        create_test_run(self)
 
-            with tempfile.TemporaryDirectory(
-                prefix="clitest-load-", suffix=create_random_name(prefix="", length=5)
-            ) as temp_dir:
-                self.kwargs.update({"path": temp_dir})
+        with tempfile.TemporaryDirectory(
+            prefix="clitest-load-", suffix=create_random_name(prefix="", length=5)
+        ) as temp_dir:
+            self.kwargs.update({"path": temp_dir})
 
-                self.cmd(
-                    "az load test-run download-files "
-                    "--load-test-resource {load_test_resource} "
-                    "--resource-group {resource_group} "
-                    "--test-run-id {test_run_id} "
-                    '--path "{path}" '
-                    "--input "
-                    "--log "
-                )
+            self.cmd(
+                "az load test-run download-files "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--test-run-id {test_run_id} "
+                '--path "{path}" '
+                "--input "
+                "--log "
+            )
 
-                files_in_dir = [
-                    f
-                    for f in os.listdir(temp_dir)
-                    if os.path.isfile(os.path.join(temp_dir, f))
-                ]
-                exts = [os.path.splitext(f)[1].casefold() for f in files_in_dir]
+            files_in_dir = [
+                f
+                for f in os.listdir(temp_dir)
+                if os.path.isfile(os.path.join(temp_dir, f))
+            ]
+            exts = [os.path.splitext(f)[1].casefold() for f in files_in_dir]
 
-                assert len(files_in_dir) >= 3
-                assert all([ext in exts for ext in [".yaml", ".zip", ".jmx"]])
-
-        finally:
-            delete_test(self)
+            assert len(files_in_dir) >= 3
+            assert all([ext in exts for ext in [".yaml", ".zip", ".jmx"]])
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -279,57 +261,53 @@ class LoadTestRunScenario(ScenarioTest):
             }
         )
 
-        try:
-            create_test(self, wait=True)
-            create_test_run(self)
+        create_test(self, wait=True)
+        create_test_run(self)
 
-            # TODO: Create an Azure resource for app component
-            self.cmd(
-                "az load test-run app-component add "
-                "--test-run-id {test_run_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                '--app-component-name "{app_component_name}" '
-                '--app-component-type "{app_component_type}" '
-                '--app-component-id "{app_component_id}" ',
-            ).get_output_in_json()
+        # TODO: Create an Azure resource for app component
+        self.cmd(
+            "az load test-run app-component add "
+            "--test-run-id {test_run_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            '--app-component-name "{app_component_name}" '
+            '--app-component-type "{app_component_type}" '
+            '--app-component-id "{app_component_id}" ',
+        ).get_output_in_json()
 
-            app_components = self.cmd(
-                "az load test-run app-component list "
-                "--test-run-id {test_run_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-            ).get_output_in_json()
+        app_components = self.cmd(
+            "az load test-run app-component list "
+            "--test-run-id {test_run_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+        ).get_output_in_json()
 
-            app_component = app_components.get("components", {}).get(
-                self.kwargs["app_component_id"]
-            )
-            assert app_component is not None and self.kwargs[
-                "app_component_id"
-            ] == app_component.get("resourceId")
+        app_component = app_components.get("components", {}).get(
+            self.kwargs["app_component_id"]
+        )
+        assert app_component is not None and self.kwargs[
+            "app_component_id"
+        ] == app_component.get("resourceId")
 
-            self.cmd(
-                "az load test-run app-component remove "
-                "--test-run-id {test_run_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                '--app-component-id "{app_component_id}" '
-                "--yes"
-            )
+        self.cmd(
+            "az load test-run app-component remove "
+            "--test-run-id {test_run_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            '--app-component-id "{app_component_id}" '
+            "--yes"
+        )
 
-            app_components = self.cmd(
-                "az load test-run app-component list "
-                "--test-run-id {test_run_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-            ).get_output_in_json()
+        app_components = self.cmd(
+            "az load test-run app-component list "
+            "--test-run-id {test_run_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+        ).get_output_in_json()
 
-            assert not app_components.get("components", {}).get(
-                self.kwargs["app_component_id"]
-            )
-
-        finally:
-            delete_test(self)
+        assert not app_components.get("components", {}).get(
+            self.kwargs["app_component_id"]
+        )
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -350,84 +328,80 @@ class LoadTestRunScenario(ScenarioTest):
             }
         )
 
-        try:
-            create_test(self, wait=True)
-            create_test_run(self)
+        create_test(self, wait=True)
+        create_test_run(self)
 
-            self.cmd(
-                "az load test-run app-component add "
-                "--test-run-id {test_run_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                '--app-component-name "{app_component_name}" '
-                '--app-component-type "{app_component_type}" '
-                '--app-component-id "{app_component_id}" ',
-            ).get_output_in_json()
+        self.cmd(
+            "az load test-run app-component add "
+            "--test-run-id {test_run_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            '--app-component-name "{app_component_name}" '
+            '--app-component-type "{app_component_type}" '
+            '--app-component-id "{app_component_id}" ',
+        ).get_output_in_json()
 
-            app_components = self.cmd(
-                "az load test-run app-component list "
-                "--test-run-id {test_run_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-            ).get_output_in_json()
+        app_components = self.cmd(
+            "az load test-run app-component list "
+            "--test-run-id {test_run_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+        ).get_output_in_json()
 
-            app_component = app_components.get("components", {}).get(
-                self.kwargs["app_component_id"]
-            )
-            assert app_component is not None and self.kwargs[
-                "app_component_id"
-            ] == app_component.get("resourceId")
+        app_component = app_components.get("components", {}).get(
+            self.kwargs["app_component_id"]
+        )
+        assert app_component is not None and self.kwargs[
+            "app_component_id"
+        ] == app_component.get("resourceId")
 
-            self.cmd(
-                "az load test-run server-metric add "
-                "--test-run-id {test_run_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--metric-id '{server_metric_id}' "
-                '--metric-name "{server_metric_name}" '
-                '--metric-namespace "{server_metric_namespace}" '
-                "--aggregation {aggregation} "
-                '--app-component-type "{app_component_type}" '
-                '--app-component-id "{app_component_id}" ',
-            ).get_output_in_json()
+        self.cmd(
+            "az load test-run server-metric add "
+            "--test-run-id {test_run_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--metric-id '{server_metric_id}' "
+            '--metric-name "{server_metric_name}" '
+            '--metric-namespace "{server_metric_namespace}" '
+            "--aggregation {aggregation} "
+            '--app-component-type "{app_component_type}" '
+            '--app-component-id "{app_component_id}" ',
+        ).get_output_in_json()
 
-            server_metrics = self.cmd(
-                "az load test-run server-metric list "
-                "--test-run-id {test_run_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-            ).get_output_in_json()
+        server_metrics = self.cmd(
+            "az load test-run server-metric list "
+            "--test-run-id {test_run_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+        ).get_output_in_json()
 
-            server_metric = server_metrics.get("metrics", {}).get(
-                self.kwargs["server_metric_id"]
-            )
-            assert server_metric is not None
-            # assert self.kwargs[
-            #     "server_metric_id"
-            # ] == server_metric.get("id")
+        server_metric = server_metrics.get("metrics", {}).get(
+            self.kwargs["server_metric_id"]
+        )
+        assert server_metric is not None
+        # assert self.kwargs[
+        #     "server_metric_id"
+        # ] == server_metric.get("id")
 
-            self.cmd(
-                "az load test-run server-metric remove "
-                "--test-run-id {test_run_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--metric-id '{server_metric_id}' "
-                "--yes"
-            )
+        self.cmd(
+            "az load test-run server-metric remove "
+            "--test-run-id {test_run_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--metric-id '{server_metric_id}' "
+            "--yes"
+        )
 
-            server_metrics = self.cmd(
-                "az load test-run server-metric list "
-                "--test-run-id {test_run_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-            ).get_output_in_json()
+        server_metrics = self.cmd(
+            "az load test-run server-metric list "
+            "--test-run-id {test_run_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+        ).get_output_in_json()
 
-            assert not server_metrics.get("metrics", {}).get(
-                self.kwargs["server_metric_id"]
-            )
-
-        finally:
-            delete_test(self)
+        assert not server_metrics.get("metrics", {}).get(
+            self.kwargs["server_metric_id"]
+        )
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -549,5 +523,3 @@ class LoadTestRunScenario(ScenarioTest):
             dimension["value"] for dimension in dimensions_list
         ]
 
-        # Delete the load test
-        delete_test(self)

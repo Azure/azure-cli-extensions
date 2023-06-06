@@ -38,7 +38,7 @@ def create_test(
     certificate=None,
     key_vault_reference_identity=None,
     subnet_id=None,
-    split_csv=False,
+    split_csv=None,
     wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
@@ -57,7 +57,8 @@ def create_test(
     if load_test_config_file is not None:
         yaml = load_yaml(load_test_config_file)
         yaml_test_body = convert_yaml_to_test(yaml)
-
+    if split_csv is None:
+        split_csv = False
     body = create_or_update_body(
         test_id,
         body,
@@ -138,6 +139,7 @@ def update_test(
     )
     logger.info("Uploading files to test %s", test_id)
     upload_files_helper(client, test_id, yaml, test_plan, load_test_config_file, wait)
+    response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
     logger.info("Test %s has been updated successfully", test_id)
     return response
