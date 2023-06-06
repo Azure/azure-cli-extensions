@@ -76,8 +76,9 @@ class ResourceDeleter:
 
     def delete_nsd(self):
         """
-        Delete the NSDV and manifests. If they don't exist it still reports them as
-        deleted.
+        Delete the NSDV and manifests.
+
+        If they don't exist it still reports them as deleted.
         """
         assert isinstance(self.config, NSConfiguration)
 
@@ -261,9 +262,7 @@ class ResourceDeleter:
             raise
 
     def delete_config_group_schema(self) -> None:
-        """
-        Delete the Configuration Group Schema.
-        """
+        """Delete the Configuration Group Schema."""
         message = f"Delete Configuration Group Schema {self.config.cg_schema_name}"
         logger.debug(message)
         print(message)

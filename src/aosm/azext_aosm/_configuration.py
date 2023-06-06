@@ -14,54 +14,59 @@ from azext_aosm.util.constants import (
 import os
 
 DESCRIPTION_MAP: Dict[str, str] = {
-    "publisher_resource_group_name": (
-        "Resource group for the Publisher resource. Will be "
-        "created if it does not exist."
-    ),
-    "publisher_name": (
-        "Name of the Publisher resource you want your definition "
-        "published to. Will be created if it does not exist."
-    ),
-    "publisher_name_nsd": (
-        "Name of the Publisher resource you want your design published to. This published should be the same as the publisher used for your NFDVs"
-    ),
-    "publisher_resource_group_name_nsd": ("Resource group for the Publisher resource."),
+    "publisher_resource_group_name":
+        "Resource group for the Publisher resource. Will be created if it does not exist."
+    ,
+    "publisher_name": 
+        "Name of the Publisher resource you want your definition published to. Will be created if it does not exist."
+    ,
+    "publisher_name_nsd": 
+        "Name of the Publisher resource you want your design published to. "
+        "This should be the same as the publisher used for your NFDVs"
+    ,
+    "publisher_resource_group_name_nsd": "Resource group for the Publisher resource.",
     "nf_name": "Name of NF definition",
     "version": "Version of the NF definition",
     "acr_artifact_store_name": "Name of the ACR Artifact Store resource. Will be created if it does not exist.",
     "location": "Azure location to use when creating resources.",
-    "blob_artifact_store_name": "Name of the storage account Artifact Store resource. Will be created if it does not exist.",
+    "blob_artifact_store_name": 
+        "Name of the storage account Artifact Store resource. Will be created if it does not exist.",
     "artifact_name": "Name of the artifact",
-    "file_path": (
-        "Optional. File path of the artifact you wish to upload from your "
-        "local disk. Delete if not required."
-    ),
-    "blob_sas_url": (
-        "Optional. SAS URL of the blob artifact you wish to copy to your "
-        "Artifact Store. Delete if not required."
-    ),
-    "artifact_version": (
+    "file_path": 
+        "Optional. File path of the artifact you wish to upload from your local disk. "
+        "Delete if not required."
+    ,
+    "blob_sas_url": 
+        "Optional. SAS URL of the blob artifact you wish to copy to your Artifact Store. "
+        "Delete if not required."
+    ,
+    "artifact_version": 
         "Version of the artifact. For VHDs this must be in format A-B-C. "
         "For ARM templates this must be in format A.B.C"
-    ),
+    ,
     "nsdv_description": "Description of the NSDV",
-    "nsdg_name": "Network Service Design Group Name. This is the collection of Network Service Design Versions. Will be "
-    "created if it does not exist.",
+    "nsdg_name": 
+        "Network Service Design Group Name. This is the collection of Network Service Design Versions. "
+        "Will be created if it does not exist.",
     "nsd_version": "Version of the NSD to be created. This should be in the format A.B.C",
-    "network_function_definition_group_name": "Exising Network Function Definition Group Name. This can be created using the 'az aosm nfd' commands.",
-    "network_function_definition_version_name": "Exising Network Function Definition Version Name. This can be created using the 'az aosm nfd' commands.",
+    "network_function_definition_group_name": 
+        "Exising Network Function Definition Group Name. "
+        "This can be created using the 'az aosm nfd' commands.",
+    "network_function_definition_version_name": 
+        "Exising Network Function Definition Version Name. "
+        "This can be created using the 'az aosm nfd' commands.",
     "network_function_definition_offering_location": "Offering location of the Network Function Definition",
     "helm_package_name": "Name of the Helm package",
-    "path_to_chart": (
+    "path_to_chart":
         "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz"
-    ),
-    "path_to_mappings": (
+    ,
+    "path_to_mappings": 
         "File path of value mappings on local disk. Accepts .yaml or .yml"
-    ),
-    "helm_depends_on": (
+    ,
+    "helm_depends_on": 
         "Names of the Helm packages this package depends on. "
         "Leave as an empty array if no dependencies"
-    ),
+    ,
 }
 
 
@@ -99,6 +104,7 @@ class NFConfiguration:
 
 @dataclass
 class NSConfiguration:
+    # pylint: disable=too-many-instance-attributes
     location: str = DESCRIPTION_MAP["location"]
     publisher_name: str = DESCRIPTION_MAP["publisher_name_nsd"]
     publisher_resource_group_name: str = DESCRIPTION_MAP[
@@ -190,7 +196,8 @@ class NSConfiguration:
     @property
     def acr_manifest_name(self) -> str:
         """Return the ACR manifest name from the NFD name."""
-        return f"{self.network_function_name.lower().replace('_', '-')}-acr-manifest-{self.nsd_version.replace('.', '-')}"
+        return \
+            f"{self.network_function_name.lower().replace('_', '-')}-acr-manifest-{self.nsd_version.replace('.', '-')}"
 
     @property
     def nfvi_site_name(self) -> str:

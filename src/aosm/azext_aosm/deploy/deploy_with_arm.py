@@ -186,9 +186,7 @@ class DeployerViaArm:
         }
 
     def construct_manifest_parameters(self) -> Dict[str, Any]:
-        """
-        Create the parmeters dictionary for VNF or NSD.
-        """
+        """Create the parmeters dictionary for VNF or NSD."""
         if isinstance(self.config, VNFConfiguration):
             return {
                 "location": {"value": self.config.location},
@@ -230,8 +228,7 @@ class DeployerViaArm:
         :type bicep_template_path: str
         :parameters_json_file: path to an override file of set parameters for the nfdv
         :param manifest_bicep_path: The path to the bicep template of the manifest
-        :param manifest_parameters_json_file: path to an override file of set parameters for
-                                        the manifest
+        :param manifest_parameters_json_file: path to an override file of set parameters for the manifest
         """
         assert isinstance(self.config, NSConfiguration)
 
@@ -307,8 +304,7 @@ class DeployerViaArm:
         """
         Deploy the bicep template defining the manifest.
 
-        :param manifest_parameters_json_file: path to an override file of set parameters
-                                                for the manifest
+        :param manifest_parameters_json_file: path to an override file of set parameters for the manifest
         :param manifest_bicep_path: The path to the bicep template of the manifest
         :param configuration_type: The type of configuration to deploy
         """
@@ -348,9 +344,7 @@ class DeployerViaArm:
         return self.pre_deployer.do_config_artifact_manifests_exist()
 
     def construct_nsd_parameters(self) -> Dict[str, Any]:
-        """
-        Create the parmeters dictionary for nsd_definition.bicep.
-        """
+        """Create the parmeters dictionary for nsd_definition.bicep."""
         assert isinstance(self.config, NSConfiguration)
         return {
             "location": {"value": self.config.location},

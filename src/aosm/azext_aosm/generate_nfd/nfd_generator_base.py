@@ -24,4 +24,3 @@ class NFDGenerator:
     def generate_nfd(self) -> None:
         """No-op on base class."""
         logger.error("Generate NFD called on base class. No-op")
-

@@ -29,14 +29,14 @@ from azext_aosm.util.constants import (
     CONFIG_MAPPINGS,
     SCHEMAS,
     SCHEMA_PREFIX,
-    DEPLOYMENT_PARAMETERS
+    DEPLOYMENT_PARAMETERS,
 )
 
 
 logger = get_logger(__name__)
 
 
-class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attributes
+class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attributes
     """
     CNF NFD Generator.
 
@@ -79,10 +79,9 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
             self._tmp_folder_name = tmpdirname
             try:
                 for helm_package in self.config.helm_packages:
-                    
                     # Turn Any type into HelmPackageConfig, to access properties on the object
                     helm_package = HelmPackageConfig(**helm_package)
-                    
+
                     # Unpack the chart into the tmp folder
                     self._extract_chart(helm_package.path_to_chart)
 
@@ -132,7 +131,7 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
                     "If you are happy with them, you should manually deploy your bicep "
                     "templates and upload your charts and images to your "
                     "artifact store."
-                )   
+                )
             except InvalidTemplateError as e:
                 raise e
 
@@ -150,9 +149,9 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
 
         :param path: The path to helm package
         """
-        
+
         logger.debug("Extracting helm package %s", path)
-        
+
         (_, ext) = os.path.splitext(path)
         if ext == ".gz" or ext == ".tgz":
             tar = tarfile.open(path, "r:gz")
@@ -183,7 +182,7 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
         path = os.path.join(self._tmp_folder_name, CNF_MANIFEST_BICEP_TEMPLATE)
         with open(path, "w", encoding="utf-8") as f:
             f.write(bicep_contents)
-            
+
         logger.info("Created artifact manifest bicep template: %s", path)
 
     def write_nfd_bicep_file(self) -> None:
@@ -195,32 +194,32 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
             )
 
         bicep_contents: str = template.render(
-            deployParametersPath = os.path.join(SCHEMAS,DEPLOYMENT_PARAMETERS),
+            deployParametersPath=os.path.join(SCHEMAS, DEPLOYMENT_PARAMETERS),
             nf_application_configurations=self.nf_application_configurations,
         )
 
         path = os.path.join(self._tmp_folder_name, CNF_DEFINITION_BICEP_TEMPLATE)
         with open(path, "w", encoding="utf-8") as f:
             f.write(bicep_contents)
-        
+
         logger.info("Created NFD bicep template: %s", path)
 
     def write_schema_to_file(self) -> None:
         """Write the schema to file deploymentParameters.json."""
-        
+
         logger.debug("Create deploymentParameters.json")
-        
+
         full_schema = os.path.join(self._tmp_folder_name, DEPLOYMENT_PARAMETERS)
         with open(full_schema, "w", encoding="UTF-8") as f:
             json.dump(self.deployment_parameter_schema, f, indent=4)
-            
+
         logger.debug(f"{full_schema} created")
 
     def copy_to_output_folder(self) -> None:
         """Copy the config mappings, schema and bicep templates (artifact manifest and NFDV) to the output folder."""
-        
+
         logger.info("Create NFD bicep %s", self.output_folder_name)
-        
+
         os.mkdir(self.output_folder_name)
         os.mkdir(os.path.join(self.output_folder_name, SCHEMAS))
 
@@ -235,7 +234,9 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
         shutil.copy(tmp_manifest_bicep_path, self.output_folder_name)
 
         tmp_config_mappings_path = os.path.join(self._tmp_folder_name, CONFIG_MAPPINGS)
-        output_config_mappings_path = os.path.join(self.output_folder_name, CONFIG_MAPPINGS)
+        output_config_mappings_path = os.path.join(
+            self.output_folder_name, CONFIG_MAPPINGS
+        )
         shutil.copytree(
             tmp_config_mappings_path,
             output_config_mappings_path,
@@ -243,12 +244,14 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
         )
 
         tmp_schema_path = os.path.join(self._tmp_folder_name, DEPLOYMENT_PARAMETERS)
-        output_schema_path = os.path.join(self.output_folder_name, SCHEMAS, DEPLOYMENT_PARAMETERS)
+        output_schema_path = os.path.join(
+            self.output_folder_name, SCHEMAS, DEPLOYMENT_PARAMETERS
+        )
         shutil.copy(
             tmp_schema_path,
             output_schema_path,
         )
-        
+
         logger.info("Copied files to %s", self.output_folder_name)
 
     def generate_nf_application_config(
@@ -340,9 +343,9 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
 
         param helm_package: The helm package config.
         """
-        
+
         logger.debug("Get chart mapping schema for %s", helm_package.name)
-        
+
         mappings_path = helm_package.path_to_mappings
         values_schema = os.path.join(
             self._tmp_folder_name, helm_package.name, "values.schema.json"
@@ -351,7 +354,7 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
         if not os.path.exists(mappings_path):
             raise InvalidTemplateError(
                 f"ERROR: The helm package '{helm_package.name}' does not have a valid values mappings file. The file at '{helm_package.path_to_mappings}' does not exist.\nPlease fix this and run the command again."
-            )    
+            )
         if not os.path.exists(values_schema):
             raise InvalidTemplateError(
                 f"ERROR: The helm package '{helm_package.name}' is missing values.schema.json. Please fix this and run the command again."
@@ -410,18 +413,21 @@ class CnfNfdGenerator(NFDGenerator): # pylint: disable=too-many-instance-attribu
     ) -> Tuple[str, str]:
         """Get the name and version of the chart."""
         chart = os.path.join(self._tmp_folder_name, helm_package.name, "Chart.yaml")
-        
+
         if not os.path.exists(chart):
-            raise InvalidTemplateError(f"There is no Chart.yaml file in the helm package '{helm_package.name}'. Please fix this and run the command again.")
-        
-        
+            raise InvalidTemplateError(
+                f"There is no Chart.yaml file in the helm package '{helm_package.name}'. Please fix this and run the command again."
+            )
+
         with open(chart, "r", encoding="utf-8") as f:
             data = yaml.load(f, Loader=yaml.FullLoader)
-            if 'name' in data and 'version' in data:
+            if "name" in data and "version" in data:
                 chart_name = data["name"]
                 chart_version = data["version"]
             else:
-                raise FileOperationError(f"A name or version is missing from Chart.yaml in the helm package '{helm_package.name}'. Please fix this and run the command again.")
+                raise FileOperationError(
+                    f"A name or version is missing from Chart.yaml in the helm package '{helm_package.name}'. Please fix this and run the command again."
+                )
 
         return (chart_name, chart_version)
 
