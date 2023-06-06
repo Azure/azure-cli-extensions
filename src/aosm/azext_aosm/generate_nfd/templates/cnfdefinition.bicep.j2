@@ -45,7 +45,9 @@ resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroup
         {
           artifactType: 'HelmPackage'
           name: '{{ configuration.name }}'
-          dependsOnProfile: {{ configuration.dependsOnProfile }}
+          dependsOnProfile: {
+            installDependsOn: {{ configuration.dependsOnProfile }}
+          }
           artifactProfile: {
             artifactStore: {
               id: acrArtifactStore.id
