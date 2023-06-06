@@ -159,7 +159,6 @@ def load_arguments(self, _):
                    help='(Enterprise Tier Only) Enable Application Configuration Service.')
         c.argument('enable_application_live_view',
                    action='store_true',
-                   is_preview=True,
                    options_list=['--enable-application-live-view', '--enable-alv'],
                    help='(Enterprise Tier Only) Enable Application Live View.')
         c.argument('enable_service_registry',
@@ -191,7 +190,6 @@ def load_arguments(self, _):
                         'List all plans by running `az spring list-marketplace-plan -o table`.')
         c.argument('enable_application_accelerator',
                    action='store_true',
-                   is_preview=True,
                    options_list=['--enable-application-accelerator', '--enable-app-acc'],
                    help='(Enterprise Tier Only) Enable Application Accelerator.')
         c.argument('managed_environment',
