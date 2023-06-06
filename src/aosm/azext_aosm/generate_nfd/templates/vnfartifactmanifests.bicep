@@ -12,13 +12,11 @@ param saArtifactStoreName string
 param acrManifestName string
 @description('Name of the manifest to deploy for the Storage Account-backed Artifact Store')
 param saManifestName string
-@description('The name under which to store the VHD')
-param vhdName string
+@description('Name of Network Function. Used predominantly as a prefix for other variable names')
+param nfName string
 @description('The version that you want to name the NFM VHD artifact, in format A-B-C. e.g. 6-13-0')
 param vhdVersion string
 @description('The name under which to store the ARM template')
-param armTemplateName string
-@description('The version that you want to name the NFM template artifact, in format A.B.C. e.g. 6.13.0. If testing for development, you can use any numbers you like.')
 param armTemplateVersion string
 
 // Created by the az aosm definition publish command before the template is deployed
@@ -46,7 +44,7 @@ resource saArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/a
   properties: {
     artifacts: [
       {
-        artifactName: '${vhdName}'
+        artifactName: '${nfName}-vhd'
         artifactType: 'VhdImageFile'
         artifactVersion: vhdVersion
       }
@@ -61,7 +59,7 @@ resource acrArtifactManifest 'Microsoft.Hybridnetwork/publishers/artifactStores/
   properties: {
     artifacts: [
       {
-        artifactName: '${armTemplateName}'
+        artifactName: '${nfName}-arm-template'
         artifactType: 'ArmTemplate'
         artifactVersion: armTemplateVersion
       }
