@@ -6,6 +6,7 @@ Upcoming
 ++++++
 * 'az containerapp create': fix --registry-identity "system" with --revision-suffix
 * 'az containerapp up': fix --target-port value not being propagated when buildpack is used to build image from --source
+* 'az containerapp job execution show/list': improve table output format
 
 0.3.32
 ++++++
