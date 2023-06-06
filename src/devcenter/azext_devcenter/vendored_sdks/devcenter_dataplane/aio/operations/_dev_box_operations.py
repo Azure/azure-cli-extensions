@@ -65,7 +65,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -149,7 +149,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -208,6 +208,7 @@ class DevBoxOperations:
             get_next, extract_data
         )
     list_by_user.metadata = {'url': '/users/{userId}/devboxes'}  # type: ignore
+
     def list_by_project(
         self,
         filter: Optional[str] = None,
@@ -234,7 +235,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -319,7 +320,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
@@ -368,7 +369,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-04-01"
         content_type = kwargs.pop("content_type", "application/json")
         accept = "application/json"
 
@@ -421,7 +422,7 @@ class DevBoxOperations:
         user_id: str = "me",
         **kwargs
     ) -> AsyncLROPoller["models.DevBox"]:
-        """Creates or updates a Dev Box.
+        """Creates or replaces a Dev Box.
 
         :param dev_box_name: The name of a Dev Box.
         :type dev_box_name: str
@@ -492,13 +493,13 @@ class DevBoxOperations:
         dev_box_name: str,
         user_id: str = "me",
         **kwargs
-    ) -> None:
-        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+    ) -> Optional["models.OperationStatus"]:
+        cls = kwargs.pop('cls', None)  # type: ClsType[Optional["models.OperationStatus"]]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
@@ -528,12 +529,15 @@ class DevBoxOperations:
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         response_headers = {}
+        deserialized = None
         if response.status_code == 202:
             response_headers['Operation-Location']=self._deserialize('str', response.headers.get('Operation-Location'))
+            deserialized = self._deserialize('OperationStatus', pipeline_response)
 
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, deserialized, response_headers)
 
+        return deserialized
     _delete_initial.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}'}  # type: ignore
 
     async def begin_delete(
@@ -541,7 +545,7 @@ class DevBoxOperations:
         dev_box_name: str,
         user_id: str = "me",
         **kwargs
-    ) -> AsyncLROPoller[None]:
+    ) -> AsyncLROPoller["models.OperationStatus"]:
         """Deletes a Dev Box.
 
         :param dev_box_name: The name of a Dev Box.
@@ -555,12 +559,12 @@ class DevBoxOperations:
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :return: An instance of AsyncLROPoller that returns either OperationStatus or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~dev_center_dataplane_client.models.OperationStatus]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationStatus"]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
@@ -578,8 +582,14 @@ class DevBoxOperations:
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
+            response_headers = {}
+            response = pipeline_response.http_response
+            response_headers['Operation-Location']=self._deserialize('str', response.headers.get('Operation-Location'))
+            deserialized = self._deserialize('OperationStatus', pipeline_response)
+
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, deserialized, response_headers)
+            return deserialized
 
         path_format_arguments = {
             'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
@@ -588,7 +598,7 @@ class DevBoxOperations:
             'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
 
-        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, lro_options={'final-state-via': 'operation-location'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:
@@ -607,13 +617,13 @@ class DevBoxOperations:
         dev_box_name: str,
         user_id: str = "me",
         **kwargs
-    ) -> None:
-        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+    ) -> "models.OperationStatus":
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationStatus"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
@@ -644,10 +654,12 @@ class DevBoxOperations:
 
         response_headers = {}
         response_headers['Operation-Location']=self._deserialize('str', response.headers.get('Operation-Location'))
+        deserialized = self._deserialize('OperationStatus', pipeline_response)
 
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, deserialized, response_headers)
 
+        return deserialized
     _start_initial.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}:start'}  # type: ignore
 
     async def begin_start(
@@ -655,7 +667,7 @@ class DevBoxOperations:
         dev_box_name: str,
         user_id: str = "me",
         **kwargs
-    ) -> AsyncLROPoller[None]:
+    ) -> AsyncLROPoller["models.OperationStatus"]:
         """Starts a Dev Box.
 
         :param dev_box_name: The name of a Dev Box.
@@ -669,12 +681,12 @@ class DevBoxOperations:
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :return: An instance of AsyncLROPoller that returns either OperationStatus or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~dev_center_dataplane_client.models.OperationStatus]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationStatus"]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
@@ -692,8 +704,14 @@ class DevBoxOperations:
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
+            response_headers = {}
+            response = pipeline_response.http_response
+            response_headers['Operation-Location']=self._deserialize('str', response.headers.get('Operation-Location'))
+            deserialized = self._deserialize('OperationStatus', pipeline_response)
+
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, deserialized, response_headers)
+            return deserialized
 
         path_format_arguments = {
             'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
@@ -702,7 +720,7 @@ class DevBoxOperations:
             'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
 
-        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, lro_options={'final-state-via': 'location'}, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, lro_options={'final-state-via': 'operation-location'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:
@@ -722,13 +740,13 @@ class DevBoxOperations:
         user_id: str = "me",
         hibernate: Optional[bool] = None,
         **kwargs
-    ) -> None:
-        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+    ) -> "models.OperationStatus":
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationStatus"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
@@ -761,10 +779,12 @@ class DevBoxOperations:
 
         response_headers = {}
         response_headers['Operation-Location']=self._deserialize('str', response.headers.get('Operation-Location'))
+        deserialized = self._deserialize('OperationStatus', pipeline_response)
 
         if cls:
-            return cls(pipeline_response, None, response_headers)
+            return cls(pipeline_response, deserialized, response_headers)
 
+        return deserialized
     _stop_initial.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}:stop'}  # type: ignore
 
     async def begin_stop(
@@ -773,7 +793,7 @@ class DevBoxOperations:
         user_id: str = "me",
         hibernate: Optional[bool] = None,
         **kwargs
-    ) -> AsyncLROPoller[None]:
+    ) -> AsyncLROPoller["models.OperationStatus"]:
         """Stops a Dev Box.
 
         :param dev_box_name: The name of a Dev Box.
@@ -789,12 +809,12 @@ class DevBoxOperations:
          polling object for personal polling strategy
         :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either None or the result of cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[None]
+        :return: An instance of AsyncLROPoller that returns either OperationStatus or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~dev_center_dataplane_client.models.OperationStatus]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType[None]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationStatus"]
         lro_delay = kwargs.pop(
             'polling_interval',
             self._config.polling_interval
@@ -813,8 +833,14 @@ class DevBoxOperations:
         kwargs.pop('content_type', None)
 
         def get_long_running_output(pipeline_response):
+            response_headers = {}
+            response = pipeline_response.http_response
+            response_headers['Operation-Location']=self._deserialize('str', response.headers.get('Operation-Location'))
+            deserialized = self._deserialize('OperationStatus', pipeline_response)
+
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, deserialized, response_headers)
+            return deserialized
 
         path_format_arguments = {
             'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
@@ -823,7 +849,7 @@ class DevBoxOperations:
             'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
 
-        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, lro_options={'final-state-via': 'location'}, path_format_arguments=path_format_arguments,  **kwargs)
+        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, lro_options={'final-state-via': 'operation-location'}, path_format_arguments=path_format_arguments,  **kwargs)
         elif polling is False: polling_method = AsyncNoPolling()
         else: polling_method = polling
         if cont_token:
@@ -836,6 +862,128 @@ class DevBoxOperations:
         else:
             return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
     begin_stop.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}:stop'}  # type: ignore
+
+    async def _restart_initial(
+        self,
+        dev_box_name: str,
+        user_id: str = "me",
+        **kwargs
+    ) -> "models.OperationStatus":
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationStatus"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2023-04-01"
+        accept = "application/json"
+
+        # Construct URL
+        url = self._restart_initial.metadata['url']  # type: ignore
+        path_format_arguments = {
+            'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
+            'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
+        }
+        url = self._client.format_url(url, **path_format_arguments)
+
+        # Construct parameters
+        query_parameters = {}  # type: Dict[str, Any]
+        query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+
+        # Construct headers
+        header_parameters = {}  # type: Dict[str, Any]
+        header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+        request = self._client.post(url, query_parameters, header_parameters)
+        pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+        response = pipeline_response.http_response
+
+        if response.status_code not in [202]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        response_headers['Operation-Location']=self._deserialize('str', response.headers.get('Operation-Location'))
+        deserialized = self._deserialize('OperationStatus', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)
+
+        return deserialized
+    _restart_initial.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}:restart'}  # type: ignore
+
+    async def begin_restart(
+        self,
+        dev_box_name: str,
+        user_id: str = "me",
+        **kwargs
+    ) -> AsyncLROPoller["models.OperationStatus"]:
+        """Restarts a Dev Box.
+
+        :param dev_box_name: The name of a Dev Box.
+        :type dev_box_name: str
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
+         authentication context.
+        :type user_id: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: True for ARMPolling, False for no polling, or a
+         polling object for personal polling strategy
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either OperationStatus or the result of cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~dev_center_dataplane_client.models.OperationStatus]
+        :raises ~azure.core.exceptions.HttpResponseError:
+        """
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.OperationStatus"]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._restart_initial(
+                dev_box_name=dev_box_name,
+                user_id=user_id,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+
+        kwargs.pop('error_map', None)
+        kwargs.pop('content_type', None)
+
+        def get_long_running_output(pipeline_response):
+            response_headers = {}
+            response = pipeline_response.http_response
+            response_headers['Operation-Location']=self._deserialize('str', response.headers.get('Operation-Location'))
+            deserialized = self._deserialize('OperationStatus', pipeline_response)
+
+            if cls:
+                return cls(pipeline_response, deserialized, response_headers)
+            return deserialized
+
+        path_format_arguments = {
+            'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
+            'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
+            'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+            'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
+        }
+
+        if polling is True: polling_method = AsyncLROBasePolling(lro_delay, lro_options={'final-state-via': 'operation-location'}, path_format_arguments=path_format_arguments,  **kwargs)
+        elif polling is False: polling_method = AsyncNoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        else:
+            return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+    begin_restart.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}:restart'}  # type: ignore
 
     async def get_remote_connection(
         self,
@@ -860,7 +1008,7 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
@@ -897,13 +1045,13 @@ class DevBoxOperations:
         return deserialized
     get_remote_connection.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}/remoteConnection'}  # type: ignore
 
-    def list_upcoming_actions(
+    def list_actions(
         self,
         dev_box_name: str,
         user_id: str = "me",
         **kwargs
-    ) -> AsyncIterable["models.UpcomingActionsListResult"]:
-        """Lists upcoming actions on a Dev Box.
+    ) -> AsyncIterable["models.DevBoxActionsListResult"]:
+        """Lists actions on a Dev Box.
 
         :param dev_box_name: The name of a Dev Box.
         :type dev_box_name: str
@@ -911,16 +1059,16 @@ class DevBoxOperations:
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either UpcomingActionsListResult or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~dev_center_dataplane_client.models.UpcomingActionsListResult]
+        :return: An iterator like instance of either DevBoxActionsListResult or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~dev_center_dataplane_client.models.DevBoxActionsListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.UpcomingActionsListResult"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DevBoxActionsListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -930,7 +1078,7 @@ class DevBoxOperations:
 
             if not next_link:
                 # Construct URL
-                url = self.list_upcoming_actions.metadata['url']  # type: ignore
+                url = self.list_actions.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
                     'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
@@ -957,7 +1105,7 @@ class DevBoxOperations:
             return request
 
         async def extract_data(pipeline_response):
-            deserialized = self._deserialize('UpcomingActionsListResult', pipeline_response)
+            deserialized = self._deserialize('DevBoxActionsListResult', pipeline_response)
             list_of_elem = deserialized.value
             if cls:
                 list_of_elem = cls(list_of_elem)
@@ -978,45 +1126,45 @@ class DevBoxOperations:
         return AsyncItemPaged(
             get_next, extract_data
         )
-    list_upcoming_actions.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}/upcomingActions'}  # type: ignore
+    list_actions.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}/actions'}  # type: ignore
 
-    async def get_upcoming_action(
+    async def get_action(
         self,
         dev_box_name: str,
-        upcoming_action_id: str,
+        action_name: str,
         user_id: str = "me",
         **kwargs
-    ) -> "models.UpcomingAction":
-        """Gets an Upcoming Action.
+    ) -> "models.DevBoxAction":
+        """Gets an action.
 
         :param dev_box_name: The name of a Dev Box.
         :type dev_box_name: str
-        :param upcoming_action_id: The upcoming action id.
-        :type upcoming_action_id: str
+        :param action_name: The name of an action that will take place on a Dev Box.
+        :type action_name: str
         :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: UpcomingAction, or the result of cls(response)
-        :rtype: ~dev_center_dataplane_client.models.UpcomingAction
+        :return: DevBoxAction, or the result of cls(response)
+        :rtype: ~dev_center_dataplane_client.models.DevBoxAction
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.UpcomingAction"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DevBoxAction"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
-        url = self.get_upcoming_action.metadata['url']  # type: ignore
+        url = self.get_action.metadata['url']  # type: ignore
         path_format_arguments = {
             'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
             'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
             'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
             'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
-            'upcomingActionId': self._serialize.url("upcoming_action_id", upcoming_action_id, 'str', max_length=36, min_length=0, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$'),
+            'actionName': self._serialize.url("action_name", action_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -1036,27 +1184,27 @@ class DevBoxOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('UpcomingAction', pipeline_response)
+        deserialized = self._deserialize('DevBoxAction', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    get_upcoming_action.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}/upcomingActions/{upcomingActionId}'}  # type: ignore
+    get_action.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}/actions/{actionName}'}  # type: ignore
 
-    async def skip_upcoming_action(
+    async def skip_action(
         self,
         dev_box_name: str,
-        upcoming_action_id: str,
+        action_name: str,
         user_id: str = "me",
         **kwargs
     ) -> None:
-        """Skips an Upcoming Action.
+        """Skips an occurrence of an action.
 
         :param dev_box_name: The name of a Dev Box.
         :type dev_box_name: str
-        :param upcoming_action_id: The upcoming action id.
-        :type upcoming_action_id: str
+        :param action_name: The name of an action that will take place on a Dev Box.
+        :type action_name: str
         :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
@@ -1070,17 +1218,17 @@ class DevBoxOperations:
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
-        url = self.skip_upcoming_action.metadata['url']  # type: ignore
+        url = self.skip_action.metadata['url']  # type: ignore
         path_format_arguments = {
             'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
             'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
             'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
             'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
-            'upcomingActionId': self._serialize.url("upcoming_action_id", upcoming_action_id, 'str', max_length=36, min_length=0, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$'),
+            'actionName': self._serialize.url("action_name", action_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
@@ -1103,55 +1251,55 @@ class DevBoxOperations:
         if cls:
             return cls(pipeline_response, None, {})
 
-    skip_upcoming_action.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}/upcomingActions/{upcomingActionId}:skip'}  # type: ignore
+    skip_action.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}/actions/{actionName}:skip'}  # type: ignore
 
-    async def delay_upcoming_action(
+    async def delay_action(
         self,
         dev_box_name: str,
-        upcoming_action_id: str,
-        delay_until: datetime.datetime,
+        action_name: str,
+        until: datetime.datetime,
         user_id: str = "me",
         **kwargs
-    ) -> "models.UpcomingAction":
-        """Delays an Upcoming Action.
+    ) -> "models.DevBoxAction":
+        """Delays the occurrence of an action.
 
         :param dev_box_name: The name of a Dev Box.
         :type dev_box_name: str
-        :param upcoming_action_id: The upcoming action id.
-        :type upcoming_action_id: str
-        :param delay_until: The delayed action time (UTC).
-        :type delay_until: ~datetime.datetime
+        :param action_name: The name of an action that will take place on a Dev Box.
+        :type action_name: str
+        :param until: The time to delay the Dev Box action or actions until.
+        :type until: ~datetime.datetime
         :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context.
         :type user_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: UpcomingAction, or the result of cls(response)
-        :rtype: ~dev_center_dataplane_client.models.UpcomingAction
+        :return: DevBoxAction, or the result of cls(response)
+        :rtype: ~dev_center_dataplane_client.models.DevBoxAction
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["models.UpcomingAction"]
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DevBoxAction"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         # Construct URL
-        url = self.delay_upcoming_action.metadata['url']  # type: ignore
+        url = self.delay_action.metadata['url']  # type: ignore
         path_format_arguments = {
             'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
             'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
             'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
             'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
-            'upcomingActionId': self._serialize.url("upcoming_action_id", upcoming_action_id, 'str', max_length=36, min_length=0, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$'),
+            'actionName': self._serialize.url("action_name", action_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
         }
         url = self._client.format_url(url, **path_format_arguments)
 
         # Construct parameters
         query_parameters = {}  # type: Dict[str, Any]
         query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
-        query_parameters['delayUntil'] = self._serialize.query("delay_until", delay_until, 'iso-8601')
+        query_parameters['until'] = self._serialize.query("until", until, 'iso-8601')
 
         # Construct headers
         header_parameters = {}  # type: Dict[str, Any]
@@ -1165,10 +1313,97 @@ class DevBoxOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('UpcomingAction', pipeline_response)
+        deserialized = self._deserialize('DevBoxAction', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
-    delay_upcoming_action.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}/upcomingActions/{upcomingActionId}:delay'}  # type: ignore
+    delay_action.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}/actions/{actionName}:delay'}  # type: ignore
+
+    def delay_actions(
+        self,
+        dev_box_name: str,
+        until: datetime.datetime,
+        user_id: str = "me",
+        **kwargs
+    ) -> AsyncIterable["models.DevBoxActionsDelayMultipleResult"]:
+        """Delays all actions.
+
+        :param dev_box_name: The name of a Dev Box.
+        :type dev_box_name: str
+        :param until: The time to delay the Dev Box action or actions until.
+        :type until: ~datetime.datetime
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
+         authentication context.
+        :type user_id: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either DevBoxActionsDelayMultipleResult or the result of cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~dev_center_dataplane_client.models.DevBoxActionsDelayMultipleResult]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["models.DevBoxActionsDelayMultipleResult"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        api_version = "2023-04-01"
+        accept = "application/json"
+
+        def prepare_request(next_link=None):
+            # Construct headers
+            header_parameters = {}  # type: Dict[str, Any]
+            header_parameters['Accept'] = self._serialize.header("accept", accept, 'str')
+
+            if not next_link:
+                # Construct URL
+                url = self.delay_actions.metadata['url']  # type: ignore
+                path_format_arguments = {
+                    'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
+                    'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+                    'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                # Construct parameters
+                query_parameters = {}  # type: Dict[str, Any]
+                query_parameters['api-version'] = self._serialize.query("api_version", api_version, 'str')
+                query_parameters['until'] = self._serialize.query("until", until, 'iso-8601')
+
+                request = self._client.post(url, query_parameters, header_parameters)
+            else:
+                url = next_link
+                query_parameters = {}  # type: Dict[str, Any]
+                path_format_arguments = {
+                    'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
+                    'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
+                    'userId': self._serialize.url("user_id", user_id, 'str', max_length=36, min_length=2, pattern=r'^[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$|^me$'),
+                    'devBoxName': self._serialize.url("dev_box_name", dev_box_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
+                }
+                url = self._client.format_url(url, **path_format_arguments)
+                request = self._client.get(url, query_parameters, header_parameters)
+            return request
+
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize('DevBoxActionsDelayMultipleResult', pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
+
+        async def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = await self._client._pipeline.run(request, stream=False, **kwargs)
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+        return AsyncItemPaged(
+            get_next, extract_data
+        )
+    delay_actions.metadata = {'url': '/projects/{projectName}/users/{userId}/devboxes/{devBoxName}/actions:delay'}  # type: ignore

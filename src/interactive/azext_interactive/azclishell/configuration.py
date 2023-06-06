@@ -12,20 +12,24 @@ from azure.cli.core._help import PRIVACY_STATEMENT
 
 from prompt_toolkit import prompt  # pylint: disable=import-error
 
-
 SELECT_SYMBOL = {
     'outside': '#',
     'query': '??',
     'example': '::',
     'exit_code': '$',
     'scope': '%%',
-    'unscope': '..'
+    'unscope': '..',
+    # Where users enter keywords and requirement descriptions to search for commands and scenarios
+    'search': '/'
 }
 
 GESTURE_INFO = {
-    SELECT_SYMBOL['outside'] + "[cmd]": "use commands outside the application",
     # pylint: disable=line-too-long
-    "[cmd] + [param] +" + "\"" + SELECT_SYMBOL['query'] + "[query]" + "\"": "Inject jmespath query from previous command",
+    SELECT_SYMBOL['search'] + ' [keyword]': "search for commands and scenarios",
+    SELECT_SYMBOL['outside'] + "[cmd]": "use commands outside the application",
+    SELECT_SYMBOL['example'] + " [num]": "complete a recommended scenario step by step",
+    "[cmd] + [param] +" + "\"" + SELECT_SYMBOL[
+        'query'] + "[query]" + "\"": "Inject jmespath query from previous command",
     "\"" + SELECT_SYMBOL['query'] + "[query]" + "\"": "Jmespath query of the previous command",
     "[cmd] " + SELECT_SYMBOL['example'] + " [num]": "do a step by step tutorial of example",
     SELECT_SYMBOL['exit_code']: "get the exit code of the previous command",
@@ -41,8 +45,9 @@ def help_text(values):
     """ reformats the help text """
     result = ""
     for key in values:
-        result += key + ' '.join('' for x in range(GESTURE_LENGTH - len(key))) +\
-                        ': ' + values[key] + '\n'
+        # ' '.join('' for x in range(GESTURE_LENGTH - len(key))) is used to make the help text aligned
+        # Example: If values = {'/ [keyword]': 'description1', '#[cmd]': 'description2'}, the result will be:'/ [keyword]: description1\n#[cmd]   : description2\n'
+        result += key + ' '.join('' for x in range(GESTURE_LENGTH - len(key))) + ': ' + values[key] + '\n'
     return result
 
 
@@ -56,6 +61,7 @@ class Configuration(object):
                       'y': True, 'Y': True, 'n': False, 'N': False}
 
     """ Configuration information """
+
     def __init__(self, cli_config, style=None):
         self.config = configparser.ConfigParser({
             'firsttime': 'yes',
@@ -66,10 +72,12 @@ class Configuration(object):
         self.config.add_section('Layout')
         self.config.set('Help Files', 'command', 'help_dump.json')
         self.config.set('Help Files', 'history', 'history.txt')
+        self.config.set('Help Files', 'recommend_path', 'recommend_path.txt')
         self.config.set('Help Files', 'frequency', 'frequency.json')
         self.config.set('Layout', 'command_description', 'yes')
         self.config.set('Layout', 'param_description', 'yes')
         self.config.set('Layout', 'examples', 'yes')
+        self.config.set('Layout', 'scenarios', 'no')
         self.config_dir = os.getenv('AZURE_CONFIG_DIR') or os.path.expanduser(os.path.join('~', '.azure-shell'))
 
         if not os.path.exists(self.config_dir):
@@ -88,6 +96,10 @@ class Configuration(object):
     def get_history(self):
         """ returns the history """
         return self.config.get('Help Files', 'history')
+
+    def get_recommend_path(self):
+        """ returns the history """
+        return self.config.get('Help Files', 'recommend_path')
 
     def get_help_files(self):
         """ returns where the command table is cached """

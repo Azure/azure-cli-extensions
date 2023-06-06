@@ -227,6 +227,74 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         # fail on invalid file path
         with self.assertRaises(InvalidArgumentValueError):
             ctx_3.get_http_proxy_config()
+    
+    def test_get_guardrails_level(self):
+        ctx1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"guardrails_level": None}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE
+        )
+        self.assertEqual(ctx1.get_guardrails_level(), None)
+        
+        ctx2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"guardrails_level": "Warning"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE
+        )
+        mc2 = self.models.ManagedCluster(
+            location="test_location",
+            guardrails_profile=self.models.GuardrailsProfile(level="Warning", excluded_namespaces=None, version="")
+        )
+        ctx2.attach_mc(mc2)
+        self.assertEqual(ctx2.get_guardrails_level(), "Warning")
+    
+    def test_get_guardrails_version(self):
+        ctx1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"guardrails_version": None}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE
+        )
+        self.assertEqual(ctx1.get_guardrails_version(), None)
+
+        ctx2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"guardrails_version": "v1.0.0"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE
+        )
+
+        mc2 = self.models.ManagedCluster(
+            location="test_location",
+            guardrails_profile=self.models.GuardrailsProfile(version="v1.0.0", level=None, excluded_namespaces=None)
+        )
+        ctx2.attach_mc(mc2)
+        self.assertEqual(ctx2.get_guardrails_version(), "v1.0.0")
+
+    def test_get_guardrails_excluded_namespaces(self):
+        ctx1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"guardrails_excluded_ns": None}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE
+        )
+        self.assertEqual(ctx1.get_guardrails_excluded_namespaces(), None)
+
+        ctx2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"guardrails_excluded_ns": "ns1,ns2"}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE
+        )
+
+        mc2 = self.models.ManagedCluster(
+            location="test_location",
+            guardrails_profile=self.models.GuardrailsProfile(excluded_namespaces=["ns1","ns2"], level=None, version=None)
+        )
+        ctx2.attach_mc(mc2)
+        self.assertEqual(ctx2.get_guardrails_excluded_namespaces(), "ns1,ns2")
 
     def test_get_kube_proxy_config(self):
         # default
@@ -268,6 +336,43 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         # fail on invalid file path
         with self.assertRaises(InvalidArgumentValueError):
             ctx_3.get_kube_proxy_config()
+
+        # custom value
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"kube_proxy_config": get_test_data_file_path("kubeproxyconfig.json")}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        # fail on invalid file path
+        config_4 = ctx_4.get_kube_proxy_config()
+
+        self.assertIsInstance(config_4, dict)
+        self.assertEqual(config_4["mode"], "IPTABLES")
+
+        # update case
+        ctx_5 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({"kube_proxy_config": get_test_data_file_path("kubeproxyconfig_update.json")}),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+
+        # existing cluster
+        mc_5 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(kube_proxy_config=self.models.ContainerServiceNetworkProfileKubeProxyConfig(
+            enabled=True,
+            mode="IPTABLES",
+            ipvs_config=self.models.ContainerServiceNetworkProfileKubeProxyConfigIpvsConfig(
+                scheduler="RoundRobin",
+            ))),
+        )
+        ctx_5.attach_mc(mc_5)
+        config_5 = ctx_5.get_kube_proxy_config()
+        self.assertIsInstance(config_5, dict)
+        self.assertEqual(config_5["mode"], "IPVS")
+        self.assertEqual(config_5["ipvsConfig"]["scheduler"], "LeastConnection")
 
     def test_get_pod_cidrs(self):
         # default
@@ -3284,6 +3389,44 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         self.models = AKSPreviewManagedClusterModels(self.cmd, CUSTOM_MGMT_AKS_PREVIEW)
         self.client = MockClient()
 
+    def test_set_up_guardrails_profile(self):
+        # Base case - no options specified, GuardrailsProfile should be None
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW
+        )
+
+        mc_1 = self.models.ManagedCluster(location="test_location")
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_guardrails_profile(mc_1)
+        gt_mc_1 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_1,gt_mc_1)
+
+        # Make sure GuardrailsProfile is filled out appropriately
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+            "guardrails_level": "Warning",
+            "guardrails_version": "v1.0.0",
+            "guardrails_excluded_ns": "ns1,ns2"
+            },
+            CUSTOM_MGMT_AKS_PREVIEW
+        )
+
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_guardrails_profile(mc_2)
+        gt_mc_2 = self.models.ManagedCluster(location="test_location")
+        gt_mc_2.guardrails_profile = self.models.GuardrailsProfile(
+            level="Warning",
+            version="v1.0.0",
+            excluded_namespaces=["ns1","ns2"]
+        )
+        self.assertEqual(dec_mc_2,gt_mc_2)
+
     def test_set_up_agentpool_profile(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
@@ -3594,7 +3737,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
                 enabled=True,
                 config={
                     CONST_MONITORING_LOG_ANALYTICS_WORKSPACE_RESOURCE_ID: "/test_workspace_resource_id",
-                    CONST_MONITORING_USING_AAD_MSI_AUTH: "True",
+                    CONST_MONITORING_USING_AAD_MSI_AUTH: "true",
                 },
             ),
             CONST_INGRESS_APPGW_ADDON_NAME: self.models.ManagedClusterAddonProfile(

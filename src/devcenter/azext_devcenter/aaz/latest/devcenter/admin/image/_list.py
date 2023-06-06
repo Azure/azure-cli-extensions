@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin image list",
-    is_preview=True,
 )
 class List(AAZCommand):
-    """List images for a devcenter or gallery.
+    """List images for a dev center or gallery.
 
     :example: List by dev center
         az devcenter admin image list --dev-center-name "Contoso" --resource-group "rg1"
@@ -26,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/galleries/{}/images", "2022-11-11-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/images", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/galleries/{}/images", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/images", "2023-04-01"],
         ]
     }
 
@@ -50,7 +49,7 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
             required=True,
         )
         _args_schema.gallery_name = AAZStrArg(
@@ -134,7 +133,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -199,6 +198,9 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.description = AAZStrType(
                 flags={"read_only": True},
+            )
+            properties.hibernate_support = AAZStrType(
+                serialized_name="hibernateSupport",
             )
             properties.offer = AAZStrType(
                 flags={"read_only": True},
@@ -299,7 +301,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -364,6 +366,9 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.description = AAZStrType(
                 flags={"read_only": True},
+            )
+            properties.hibernate_support = AAZStrType(
+                serialized_name="hibernateSupport",
             )
             properties.offer = AAZStrType(
                 flags={"read_only": True},

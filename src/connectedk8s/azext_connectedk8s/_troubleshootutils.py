@@ -464,7 +464,7 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
                 elif counter_container_logs == 0:
                     dns_check_log += "  " + outputs
             dns_check, storage_space_available = azext_utils.check_cluster_DNS(dns_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output)
-            outbound_connectivity_check, storage_space_available = azext_utils.check_cluster_outbound_connectivity(diagnoser_container_log_list[-1], filepath_with_timestamp, storage_space_available, diagnoser_output)
+            outbound_connectivity_check, storage_space_available = azext_utils.check_cluster_outbound_connectivity(diagnoser_container_log_list[-1], filepath_with_timestamp, storage_space_available, diagnoser_output, "troubleshoot")
         else:
             return consts.Diagnostic_Check_Incomplete, storage_space_available
 
