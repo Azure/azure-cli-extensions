@@ -12,7 +12,7 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-MIN_GA_VERSION = '0.3.32'
+MIN_GA_VERSION = '0.3.33'
 GA_CONTAINERAPP_EXTENSION_NAME = 'containerapp'
 GA_CONTAINERAPP_EXTENSION_MODULE = 'azext_containerapp.custom'
 
@@ -26,10 +26,9 @@ def _get_or_add_extension(cmd, extension_name):
         ext = get_extension(extension_name)
         # check extension version
         if ext and parse_version(ext.version) < parse_version(MIN_GA_VERSION):
-            prompt_msg = 'The command requires the latest version of extension containerapp. Do you want to upgrade it now?'
-            prompt_ext = _prompt_y_n(cmd, prompt_msg, extension_name)
-            if prompt_ext:
-                return _update_containerapp_extension(cmd, extension_name)
+            msg = "The command requires the latest version of extension {}. Run 'az extension add  --upgrade -n {}' to upgrade extension".format(extension_name, extension_name)
+            logger.warning(msg)
+            return False
     except ExtensionNotInstalledException:
         prompt_msg = 'The command requires the extension containerapp. Do you want to install it now?'
         prompt_ext = _prompt_y_n(cmd, prompt_msg, extension_name)
