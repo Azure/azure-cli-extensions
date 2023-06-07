@@ -28,8 +28,6 @@ from azext_aosm.util.constants import (
     VNF,
 )
 
-
-
 logger = get_logger(__name__)
 
 
@@ -285,7 +283,7 @@ class DeployerViaArm:
 
         arm_template_artifact = acr_manifest.artifacts[0]
 
-        ## Convert the NF bicep to ARM
+        # Convert the NF bicep to ARM
         arm_template_artifact_json = self.convert_bicep_to_arm(
             os.path.join(self.config.build_output_folder_name, NF_DEFINITION_BICEP_FILE)
         )
@@ -407,7 +405,7 @@ class DeployerViaArm:
         :return: Output dictionary from the bicep template.
         """
         # Get current time from the time module and remove all digits after the decimal point
-        current_time = str(time.time()).split(".")[0] # pylint: disable=use-maxsplit-arg
+        current_time = str(time.time()).split(".")[0]  # pylint: disable=use-maxsplit-arg
 
         # Add a timestamp to the deployment name to ensure it is unique
         deployment_name = f"AOSM_CLI_deployment_into_{resource_group}_{current_time}"
@@ -434,7 +432,7 @@ class DeployerViaArm:
             )
             logger.debug(
                 "Template for resource group %s failed validation. \
-                Full error details: %s",resource_group,validation_res.error
+                Full error details: %s", resource_group, validation_res.error
             )
             raise RuntimeError("Azure template validation failed.")
 

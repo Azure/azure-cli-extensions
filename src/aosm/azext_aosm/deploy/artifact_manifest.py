@@ -148,7 +148,7 @@ class ArtifactManifestOperator:
         for container_credential in self._manifest_credentials["container_credentials"]:
             if container_credential["container_name"] == container_name:
                 sas_uri = str(container_credential["container_sas_uri"])
-                sas_uri_prefix = sas_uri.split("?")[0] # pylint: disable=use-maxsplit-arg
+                sas_uri_prefix = sas_uri.split("?")[0]  # pylint: disable=use-maxsplit-arg
                 sas_uri_token = sas_uri.split("?")[1]
 
                 return f"{sas_uri_prefix}/{container_name}?{sas_uri_token}"

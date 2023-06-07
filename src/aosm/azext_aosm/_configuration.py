@@ -20,10 +20,10 @@ DESCRIPTION_MAP: Dict[str, str] = {
     "publisher_resource_group_name":
         "Resource group for the Publisher resource. Will be created if it does not exist."
     ,
-    "publisher_name": 
+    "publisher_name":
         "Name of the Publisher resource you want your definition published to. Will be created if it does not exist."
     ,
-    "publisher_name_nsd": 
+    "publisher_name_nsd":
         "Name of the Publisher resource you want your design published to. "
         "This should be the same as the publisher used for your NFDVs"
     ,
