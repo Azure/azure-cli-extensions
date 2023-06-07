@@ -26,8 +26,8 @@ def _get_or_add_extension(cmd, extension_name):
         ext = get_extension(extension_name)
         # check extension version
         if ext and parse_version(ext.version) < parse_version(MIN_GA_VERSION):
-            msg = "The command requires the latest version of extension {}. Run 'az extension add  --upgrade -n {}' to upgrade extension".format(extension_name, extension_name)
-            logger.warning(msg)
+            msg = "The command requires the latest version of extension {}. Run 'az extension add --upgrade -n {}' to upgrade extension".format(extension_name, extension_name)
+            logger.Error(msg)
             return False
     except ExtensionNotInstalledException:
         prompt_msg = 'The command requires the extension containerapp. Do you want to install it now?'
@@ -75,41 +75,6 @@ def _remove_extension(extension_name):
         from azure.cli.core.extension import operations
         operations.remove_extension(extension_name=extension_name)
     except Exception:  # nopa pylint: disable=broad-except
-        return False
-    return True
-
-
-def _update_containerapp_extension(cmd, extension_name):
-    from azure.cli.core.extension import ExtensionNotInstalledException
-    try:
-        from azure.cli.core.extension import operations
-        from importlib import import_module
-        m1 = import_module(GA_CONTAINERAPP_EXTENSION_MODULE)
-        # import_module('azext_containerapp._clients')
-        # import_module('azext_containerapp._utils')
-        # import_module('azext_containerapp._client_factory')
-        # import_module('azext_containerapp._constants')
-        # import_module('azext_containerapp._models')
-
-        operations.update_extension(cmd=cmd, extension_name=extension_name)
-        # operations.add_extension_to_path(extension_name)
-
-        operations.reload_extension(extension_name=extension_name)
-        # operations.reload_extension(extension_name=extension_name, extension_module='azext_containerapp._models')
-        # operations.reload_extension(extension_name=extension_name, extension_module='azext_containerapp._constants')
-        # operations.reload_extension(extension_name=extension_name, extension_module='azext_containerapp._client_factory')
-        # operations.reload_extension(extension_name=extension_name, extension_module='azext_containerapp._clients')
-        # operations.reload_extension(extension_name=extension_name, extension_module='azext_containerapp._utils')
-        # operations.reload_extension(extension_name=extension_name, extension_module=GA_CONTAINERAPP_EXTENSION_MODULE)
-    except CLIError as err:
-        logger.info(err)
-    except ExtensionNotInstalledException as err:
-        logger.debug(err)
-        return False
-    except ModuleNotFoundError as err:
-        logger.debug(err)
-        logger.error(
-            "Error occurred attempting to load the extension module. Use --debug for more information.")
         return False
     return True
 
