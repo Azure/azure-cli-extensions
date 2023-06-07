@@ -55,12 +55,13 @@ def create_containerapp(cmd,
                         user_assigned=None,
                         registry_identity=None,
                         workload_profile_name=None,
-                        secret_volume_mount=None):
-    raw_parameters = locals()
+                        secret_volume_mount=None,
+                        environment_type="managed"):
     azext_custom = _get_azext_module(
         GA_CONTAINERAPP_EXTENSION_NAME, GA_CONTAINERAPP_EXTENSION_MODULE)
     try:
         return azext_custom.create_containerapp(cmd,
+                                                name,
                                                 resource_group_name,
                                                 yaml,
                                                 image,
