@@ -20,7 +20,6 @@ def load_arguments(self, _):
         c.argument("env", argtypes.env)
         c.argument("secrets", argtypes.secret)
         c.argument("certificate", argtypes.certificate)
-        c.argument("wait", argtypes.wait)
 
     with self.argument_context("load test-run update") as c:
         c.argument("test_id", argtypes.test_id)

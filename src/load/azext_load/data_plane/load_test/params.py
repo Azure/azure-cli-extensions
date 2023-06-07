@@ -27,7 +27,7 @@ def load_arguments(self, _):
             "key_vault_reference_identity", argtypes.key_vault_reference_identity
         )
         c.argument("engine_instances", argtypes.engine_instances)
-        c.argument("wait", argtypes.wait)
+        c.argument("custom_no_wait", argtypes.custom_no_wait)
 
     with self.argument_context("load test update") as c:
         c.argument("load_test_config_file", argtypes.load_test_config_file)
@@ -43,8 +43,8 @@ def load_arguments(self, _):
         c.argument("engine_instances", argtypes.engine_instances)
         c.argument("subnet_id", argtypes.subnet_id)
         c.argument("split_csv", argtypes.split_csv)
-        c.argument("wait", argtypes.wait)
-
+        c.argument("custom_no_wait", argtypes.custom_no_wait)
+        
     with self.argument_context("load test download-files") as c:
         c.argument("path", argtypes.dir_path)
         c.argument("force", argtypes.force)
@@ -58,7 +58,6 @@ def load_arguments(self, _):
     with self.argument_context("load test file upload") as c:
         c.argument("path", argtypes.file_path)
         c.argument("file_type", argtypes.file_type)
-        c.argument("wait", argtypes.wait)
 
     with self.argument_context("load test file delete") as c:
         c.argument("file_name", argtypes.file_name)

@@ -28,7 +28,7 @@ def create_test_run(
     secrets=None,
     certificate=None,
     resource_group_name=None,
-    wait=False,
+    no_wait=False,
 ):
     logger.info("Create test run started")
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
@@ -57,7 +57,7 @@ def create_test_run(
         old_test_run_id=existing_test_run_id,
     )
     response = poller.polling_method().resource()
-    if wait:
+    if not no_wait:
         response = poller.result()
     logger.info("Test run created with following response %s", response)
     return response

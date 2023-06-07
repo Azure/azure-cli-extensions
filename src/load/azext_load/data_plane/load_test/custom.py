@@ -39,7 +39,7 @@ def create_test(
     key_vault_reference_identity=None,
     subnet_id=None,
     split_csv=None,
-    wait=False,
+    custom_no_wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Create test has started for test ID : %s", test_id)
@@ -79,7 +79,7 @@ def create_test(
         "Created test with test ID: %s and response obj is %s", test_id, response
     )
     logger.info("Uploading files to test %s", test_id)
-    upload_files_helper(client, test_id, yaml, test_plan, load_test_config_file, wait)
+    upload_files_helper(client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait)
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
     logger.info("Test %s has been created successfully", test_id)
@@ -102,7 +102,7 @@ def update_test(
     key_vault_reference_identity=None,
     subnet_id=None,
     split_csv=None,
-    wait=False,
+    custom_no_wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Update test has started for test ID : %s", test_id)
@@ -139,7 +139,7 @@ def update_test(
         "Updated test with test ID: %s and response obj is %s", test_id, response
     )
     logger.info("Uploading files to test %s", test_id)
-    upload_files_helper(client, test_id, yaml, test_plan, load_test_config_file, wait)
+    upload_files_helper(client, test_id, yaml, test_plan, load_test_config_file, not custom_no_wait)
     response = client.get_test(test_id)
     logger.info("Upload files to test %s has completed", test_id)
     logger.info("Test %s has been updated successfully", test_id)
@@ -344,13 +344,13 @@ def upload_test_file(
     path,
     file_type=None,
     resource_group_name=None,
-    wait=False,
+    no_wait=False,
 ):
     logger.info("Upload test file started")
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Uploading file for the test")
     response = upload_file_to_test(
-        client, test_id, path, file_type=file_type, wait=wait
+        client, test_id, path, file_type=file_type, wait=not no_wait
     )
     logger.debug("Upload test file response: %s", response)
     logger.info("Upload test file completed")

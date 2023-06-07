@@ -27,11 +27,11 @@ load_test_resource = CLIArgumentType(
     help="Name or ARM resource ID of the Load Testing resource.",
 )
 
-wait = CLIArgumentType(
-    options_list=["--wait"],
+custom_no_wait = CLIArgumentType(
+    options_list=["--no-wait"],
     action="store_true",
     default=False,
-    help="Wait for the Long-Running Operation to complete.",
+    help="Do not wait for the long-running operation to finish.",
 )
 
 force = CLIArgumentType(
@@ -328,8 +328,8 @@ dimension_filters = CLIArgumentType(
     options_list=["--dimension-filters"],
     nargs="*",
     help=(
-        "space and comma-separated dimension filters: key1[=value1,value2] [key2[=value3] ...]. "
+        "space and comma-separated dimension filters: key1[=value1] key1[=value2] key2[=value3] format ...]. "
         "* is supported as a wildcard for both key and value. "
-        "Example: `--dimension-filters key1=value1,key2=*`, `--dimension-filters *`"
+        "Example: `--dimension-filters key1=value1 key2=*`, `--dimension-filters *`"
     ),
 )

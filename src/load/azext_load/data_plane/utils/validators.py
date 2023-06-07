@@ -9,7 +9,7 @@ from collections import OrderedDict
 from datetime import datetime
 
 import yaml
-from azure.cli.core.azclierror import InvalidArgumentValueError
+from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationError
 from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id
 
@@ -201,9 +201,9 @@ def validate_load_test_config_file(namespace):
     try:
         with open(namespace.load_test_config_file, "r", encoding="UTF-8") as file:
             yaml.safe_load(file)
-    except yaml.YAMLError as e:
-        raise InvalidArgumentValueError(
-            f"Invalid YAML file: {namespace.load_test_config_file}. Error: {e}"
+    except Exception as e:
+        raise FileOperationError(
+            f"Failed to read YAML file: {namespace.load_test_config_file}. Error: {e}"
         ) from e
 
 
@@ -241,14 +241,14 @@ def _validate_path(path, is_dir=False):
                 f"Provided path '{path}' is not a directory"
             )
         if not os.access(path, os.W_OK | os.X_OK):
-            raise InvalidArgumentValueError(
+            raise FileOperationError(
                 f"Provided path '{path}' is not writable or executable"
             )
     else:
         if not os.path.isfile(path):
             raise InvalidArgumentValueError(f"Provided path '{path}' is not a file")
         if not os.access(path, os.R_OK):
-            raise InvalidArgumentValueError(f"Provided path '{path}' is not readable")
+            raise FileOperationError(f"Provided path '{path}' is not readable")
     return path
 
 
@@ -322,16 +322,16 @@ def validate_metric_namespaces(namespace):
 
 
 def validate_dimension_filters(namespace):
-    """Extracts multiple space and comma-separated dimension filters in key1[=value1,value2] format"""
+    """Extracts multiple space and comma-separated dimension filters in key1[=value1] key1[=value2] key2[=value3] format"""
     if isinstance(namespace.dimension_filters, list):
         filters_dict = OrderedDict()
         for item in namespace.dimension_filters:
             dimension_filter = _validate_dimension_filter(item)
             for key, value in dimension_filter.items():
                 if key in filters_dict:
-                    filters_dict[key].extend(value)
+                    filters_dict[key].append(value)
                 else:
-                    filters_dict[key] = value
+                    filters_dict[key] = list(value)
         filters_list = []
         for key, value in filters_dict.items():
             filters_list.append({"name": key, "values": value})
@@ -339,11 +339,11 @@ def validate_dimension_filters(namespace):
 
 
 def _validate_dimension_filter(string):
-    """Extracts a single comma-separated dimension filters in key1[=value1,value2] format"""
+    """Extracts a single comma-separated dimension filters in key1[=value1] format"""
     result = {}
     if string:
         comps = string.split("=", 1)
-        result = {comps[0]: comps[1].split(",")} if len(comps) > 1 else {string: ""}
+        result = {comps[0]: comps[1]} if len(comps) > 1 else {string: ""}
     return result
 
 

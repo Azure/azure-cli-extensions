@@ -11,7 +11,12 @@ import requests
 import yaml
 from azext_load.data_plane.utils import validators
 from azext_load.vendored_sdks.loadtesting_mgmt import LoadTestMgmtClient
-from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueError
+from azure.cli.core.azclierror import (
+    FileOperationError,
+    InvalidArgumentValueError,
+    RequiredArgumentMissingError,
+    CLIInternalError,
+)
 from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
@@ -61,9 +66,9 @@ def get_load_test_resource_endpoint(
 def get_login_credentials(cli_ctx, subscription_id=None):
     from azure.cli.core._profile import Profile
 
-    credential, subscription_id, tenant_id = Profile(cli_ctx=cli_ctx).get_login_credentials(
-        subscription_id=subscription_id
-    )
+    credential, subscription_id, tenant_id = Profile(
+        cli_ctx=cli_ctx
+    ).get_login_credentials(subscription_id=subscription_id)
     logger.debug("Fetched login credentials for subscription %s", subscription_id)
     return credential, subscription_id, tenant_id
 
@@ -106,7 +111,7 @@ def get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name=N
 
 def get_enum_values(enum):
     if not isinstance(enum, EnumMeta):
-        raise InvalidArgumentValueError(f"Invalid enum type: {type(enum)}")
+        raise CLIInternalError(f"Invalid enum type: {type(enum)}")
     return [item.value for item in enum]
 
 
@@ -172,12 +177,12 @@ def upload_file_to_test(client, test_id, file_path, file_type=None, wait=False):
 def parse_cert(certificate):
     logger.debug("Parsing certificate")
     if len(certificate) != 1:
-        raise ValueError("Only one certificate is supported")
+        raise InvalidArgumentValueError("Only one certificate is supported")
     certificate = certificate[0]
     name, value = certificate.get("name"), certificate.get("value")
     # pylint: disable-next=protected-access
     if not validators._validate_akv_url(value, "certificates"):
-        raise ValueError(f"Invalid AKV Certificate URL: {value}")
+        raise InvalidArgumentValueError(f"Invalid AKV Certificate URL: {value}")
     certificate = {
         "name": name,
         "type": "AKV_CERT_URI",
@@ -194,10 +199,12 @@ def parse_secrets(secrets):
     for secret in secrets:
         name, value = secret.get("name"), secret.get("value")
         if name is None or value is None:
-            raise ValueError("Both name and value are required for secret")
+            raise RequiredArgumentMissingError(
+                "Both name and value are required for secret"
+            )
         # pylint: disable-next=protected-access
         if not validators._validate_akv_url(value, "secrets"):
-            raise ValueError(f"Invalid AKV Certificate URL: {value}")
+            raise InvalidArgumentValueError(f"Invalid AKV Certificate URL: {value}")
         secrets_dict[name] = {
             name: {
                 "type": "AKV_SECRET_URI",
@@ -215,7 +222,7 @@ def parse_env(envs):
     for env in envs:
         name, value = env.get("name"), env.get("value")
         if name is None:
-            raise ValueError("Name is required for environment variable")
+            raise InvalidArgumentValueError("Name is required for environment variable")
         if value is None:
             value = ""
         env_dict[name] = value
@@ -232,7 +239,7 @@ def load_yaml(file_path):
             logger.info("Yaml file loaded successfully")
             return data
     except yaml.YAMLError as e:
-        raise ValueError(f"Error loading yaml file: {e}") from e
+        raise FileOperationError(f"Error loading yaml file: {e}") from e
     except Exception as e:
         logger.debug(
             "Exception occurred while parsing load test configuration file: %s",
@@ -408,10 +415,16 @@ def create_or_update_body(
     new_body["loadTestConfiguration"]["quickStartTest"] = False
     if split_csv is not None:
         new_body["loadTestConfiguration"]["splitAllCSVs"] = split_csv
-    elif yaml_test_body.get("loadTestConfiguration", {}).get("splitAllCSVs") is not None:
-        new_body["loadTestConfiguration"]["splitAllCSVs"] = yaml_test_body["loadTestConfiguration"]["splitAllCSVs"]
+    elif (
+        yaml_test_body.get("loadTestConfiguration", {}).get("splitAllCSVs") is not None
+    ):
+        new_body["loadTestConfiguration"]["splitAllCSVs"] = yaml_test_body[
+            "loadTestConfiguration"
+        ]["splitAllCSVs"]
     elif body.get("loadTestConfiguration", {}).get("splitAllCSVs") is not None:
-        new_body["loadTestConfiguration"]["splitAllCSVs"] = body["loadTestConfiguration"]["splitAllCSVs"]
+        new_body["loadTestConfiguration"]["splitAllCSVs"] = body[
+            "loadTestConfiguration"
+        ]["splitAllCSVs"]
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
 

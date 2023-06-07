@@ -49,7 +49,7 @@ def load_test_commands(self, _):
         custom_command_type=admin_custom_sdk,
         is_preview=True,
     ) as g:
-        g.custom_command("upload", "upload_test_file")
+        g.custom_command("upload", "upload_test_file", supports_no_wait=True)
         g.custom_command("list", "list_test_file")
         g.custom_command("delete", "delete_test_file", confirmation=True)
         g.custom_command(
