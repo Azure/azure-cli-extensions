@@ -210,7 +210,7 @@ def _check_existing_rg(rg_name):
         logger.error(azCommandError)
         raise Exception('Unexpected error occured while fetching existing resource groups.')
 
-    logger.info('Resource group exists is \'%s\'', group_exists)
+    logger.info('Pre-existing repair resource group with the same name is \'%s\'', group_exists)
     return group_exists
 
 
