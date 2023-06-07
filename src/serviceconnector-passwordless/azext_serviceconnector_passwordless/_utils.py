@@ -58,6 +58,7 @@ def get_local_ip():
                     logger.warning(
                         'The provided IP address is not a valid IPv4 address.')
         except NoTTYException as e:
+            telemetry.set_exception(e, "No-TTY")
             raise CLIInternalError(
                 'Unable to get local ip address. Please add firewall rule to allow local connection first.') from e
 
@@ -70,5 +71,6 @@ def confirm_all_ip_allow():
             telemetry.set_exception(ex, "Connect-Db-Fail")
             raise ex
     except NoTTYException as e:
+        telemetry.set_exception(e, "No-TTY")
         raise CLIInternalError(
             'Unable to prompt for confirmation as no tty available. Use --yes.') from e
