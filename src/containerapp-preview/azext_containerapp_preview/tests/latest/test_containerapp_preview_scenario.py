@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import unittest
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
@@ -21,4 +20,4 @@ class containerappScenarioTest(ScenarioTest):
             'name': 'test1'
         })
 
-        self.cmd('az containerapp create --name "ghrunnersacajobstest" --resource-group "arc-appint-forxinyu12-rg0" --environment "my-environment" --image "mcr.microsoft.com/k8se/quickstart:latest"')
+        self.cmd("az containerapp create --name app --resource-group {} --environment my-environment --image 'mcr.microsoft.com/k8se/quickstart:latest' --environment-type connected".format(resource_group))
