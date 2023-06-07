@@ -56,8 +56,7 @@ class LoadTestScenario(ScenarioTest):
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             '--load-test-config-file "{load_test_config_file}" '
-            "--env rps=10 "
-            "--wait ",
+            "--env rps=10 ",
             checks=checks,
         ).get_output_in_json()
 
@@ -218,8 +217,7 @@ class LoadTestScenario(ScenarioTest):
             "--description '{test_description}' "
             '--test-plan "{test_plan}" '
             "--engine-instances {engine_instances} "
-            "--env {env} "
-            "--wait ",
+            "--env {env} ",
             checks=checks,
         ).get_output_in_json()
 
@@ -455,7 +453,6 @@ class LoadTestScenario(ScenarioTest):
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             '--path "{test_plan}" '
-            "--wait"
         )
 
         files = self.cmd(

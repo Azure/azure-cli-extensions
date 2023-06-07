@@ -20,9 +20,9 @@ examples:
     - name: Create a test with arguments.
       text: |
         az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --description "Test description" --test-plan sample-jmx.jmx --engine-instances 1 --env rps=2 count=1
-    - name: Create a test with load test config file and override engine-instance and env using arguments.
+    - name: Create a test with load test config file and override engine-instance and env using arguments and don't wait for file upload.
       text: |
-        az load test create --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-test-id --load-test-config-file ~/resources/sample-config.yaml --engine-instances 1 --env rps=2 count=1
+        az load test create --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-test-id --load-test-config-file ~/resources/sample-config.yaml --engine-instances 1 --env rps=2 count=1 --no-wait
     - name: Create a test with secrets and environment variables.
       text: |
         az load test create --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --display-name "Sample Name" --description "Test description" --test-plan sample-jmx.jmx --secret secret_name1=secret_uri1 secret_name2=secret_uri2 --env rps=2 count=1
@@ -62,9 +62,9 @@ helps[
 type: command
 short-summary: Update an existing load test.
 examples:
-    - name: Update a test with load test config file.
+    - name: Update a test with load test config file and don't wait for file upload.
       text: |
-        az load test update --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --load-test-config-file ~/resources/sample-config.yaml
+        az load test update --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --load-test-config-file ~/resources/sample-config.yaml --no-wait
     - name: Update the display name and description for a test.
       text: |
         az load test update --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-existing-test-id --description "Test description" --display-name "Sample Name"
@@ -119,7 +119,7 @@ helps[
     "load test app-component list"
 ] = """
 type: command
-short-summary: List all app component of a test.
+short-summary: List all app components for a test.
 examples:
     - name: List all app components for a test.
       text: |
@@ -152,7 +152,7 @@ helps[
     "load test server-metric list"
 ] = """
 type: command
-short-summary: List all server-metrics of a test.
+short-summary: List all server-metrics for a test.
 examples:
     - name: List all server metrics for a test.
       text: |
@@ -186,8 +186,8 @@ helps[
     "load test file download"
 ] = """
 type: command
-short-summary: Download a file of a test.
-long-summary: Download a file of a test by providing the file name, test id and path where to download to path.
+short-summary: Download a file from a test.
+long-summary: Download a file from, a test by providing the file name, test id and path to download the files.
 examples:
     - name: Download a file from a test. The directory should already exist.
       text: |
@@ -219,11 +219,11 @@ long-summary: Upload a file to a test by providing path to file and test id.
 examples:
     - name: Upload a JMeter script (JMX file) to a test.
       text: |
-        az load test file upload --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --path sample-jmx.jmx --wait
-    - name: Upload a CSV file to a test and dont wait for upload.
+        az load test file upload --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --path sample-jmx.jmx
+    - name: Upload a CSV file to a test and without waiting for the long-running operation to finish.
       text: |
-        az load test file upload --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --path ~/Resources/split-csv.csv --file-type ADDITIONAL_ARTIFACTS
+        az load test file upload --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --path ~/Resources/split-csv.csv --file-type ADDITIONAL_ARTIFACTS --no-wait
     - name: Upload a user property file to a test.
       text: |
-        az load test file upload --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --path ~/Resources/user-prop.properties --file-type USER_PROPERTIES --wait
+        az load test file upload --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --path ~/Resources/user-prop.properties --file-type USER_PROPERTIES
 """

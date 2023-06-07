@@ -331,7 +331,7 @@ def validate_dimension_filters(namespace):
                 if key in filters_dict:
                     filters_dict[key].append(value)
                 else:
-                    filters_dict[key] = list(value)
+                    filters_dict[key] = [value]
         filters_list = []
         for key, value in filters_dict.items():
             filters_list.append({"name": key, "values": value})

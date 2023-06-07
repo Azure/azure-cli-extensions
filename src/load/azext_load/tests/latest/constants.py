@@ -18,7 +18,7 @@ class LoadConstants:
 
     ENV_VAR_DURATION_NAME = "duration_in_sec"
     ENV_VAR_DURATION_SHORT = "1"
-    ENV_VAR_DURATION_LONG = "240"
+    ENV_VAR_DURATION_LONG = "120"
 
     # App Component constants
     APP_COMPONENT_ID = r"/subscriptions/{subscription_id}/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss"

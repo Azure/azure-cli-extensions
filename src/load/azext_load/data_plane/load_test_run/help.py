@@ -13,10 +13,11 @@ helps[
 ] = """
 type: command
 short-summary: Create a new load test run.
+long-summary: Create a new load test run for a given test. If an existing test run is specified, then the test run will be rerun. By default this command will wait for the test run to complete. Use --no-wait to skip this wait.
 examples:
-    - name: Create a test run for a test and wait for test run completion.
+    - name: Create a test run for a test without waiting for test run completion.
       text: |
-        az load test-run create --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-test-id --test-run-id sample-test-run-id --wait
+        az load test-run create --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-test-id --test-run-id sample-test-run-id --no-wait
     - name: Rerun an existing test run.
       text: |
         az load test-run create --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-test-id --test-run-id sample-test-run-id --description "Test run description" --existing-test-run-id existing_test_run_id
@@ -49,7 +50,7 @@ helps[
     "load test-run update"
 ] = """
 type: command
-short-summary: Update existing load test run.
+short-summary: Update an existing load test run.
 examples:
     - name: Update the description for a test run
       text: |
@@ -107,7 +108,7 @@ helps[
     "load test-run app-component list"
 ] = """
 type: command
-short-summary: List all app component of a test run.
+short-summary: List all app components for a test run.
 examples:
     - name: List all app components for a test run.
       text: |
@@ -140,7 +141,7 @@ helps[
     "load test-run server-metric list"
 ] = """
 type: command
-short-summary: List all server-metrics of a test run.
+short-summary: List all server-metrics for a test run.
 examples:
     - name: List all server metrics for a test run.
       text: |

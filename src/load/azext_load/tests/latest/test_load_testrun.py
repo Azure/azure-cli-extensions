@@ -43,7 +43,7 @@ class LoadTestRunScenario(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(LoadTestRunScenario, self).__init__(*args, **kwargs)
         self.kwargs.update({"subscription_id": self.get_subscription_id()})
-
+    
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_run_stop(self, rg, load):
@@ -56,20 +56,19 @@ class LoadTestRunScenario(ScenarioTest):
             }
         )
 
-        create_test(self, is_long=True, wait=True)
-
+        create_test(self, is_long=True)
         test_run = self.cmd(
             "az load test-run create "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             "--test-id {test_id} "
             "--test-run-id {test_run_id} ",
-            checks=[JMESPathCheck("testRunId", self.kwargs["test_run_id"])],
+            "--no-wait",
         ).get_output_in_json()
 
         #waiting for test to start
         if self.is_live:
-            time.sleep(40)
+            time.sleep(20)
 
         test_run = self.cmd(
             "az load test-run stop "
@@ -90,7 +89,7 @@ class LoadTestRunScenario(ScenarioTest):
         ).get_output_in_json()
 
         assert test_run.get("status") in ["CANCELLING", "FAILED", "CANCELLED"]
-
+    
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
     def test_load_test_run_list(self, rg, load):
@@ -103,7 +102,7 @@ class LoadTestRunScenario(ScenarioTest):
             }
         )
 
-        create_test(self, wait=True)
+        create_test(self)
         create_test_run(self)
 
         test_runs = self.cmd(
@@ -129,7 +128,7 @@ class LoadTestRunScenario(ScenarioTest):
                 "test_plan": LoadTestRunConstants.TEST_PLAN,
             }
         )
-        create_test(self, wait=True)
+        create_test(self)
 
         create_test_run(self)
 
@@ -153,7 +152,7 @@ class LoadTestRunScenario(ScenarioTest):
             }
         )
 
-        create_test(self, wait=True)
+        create_test(self)
         create_test_run(self)
         
     @ResourceGroupPreparer(**rg_params)
@@ -168,7 +167,7 @@ class LoadTestRunScenario(ScenarioTest):
             }
         )
 
-        create_test(self, wait=True)
+        create_test(self)
         create_test_run(self)
         delete_test_run(self)
 
@@ -185,7 +184,7 @@ class LoadTestRunScenario(ScenarioTest):
             }
         )
 
-        create_test(self, wait=True)
+        create_test(self)
         create_test_run(self)
         if self.is_live:
             time.sleep(10)
@@ -218,7 +217,7 @@ class LoadTestRunScenario(ScenarioTest):
             }
         )
 
-        create_test(self, wait=True)
+        create_test(self)
         create_test_run(self)
 
         with tempfile.TemporaryDirectory(
@@ -261,9 +260,10 @@ class LoadTestRunScenario(ScenarioTest):
             }
         )
 
-        create_test(self, wait=True)
+        create_test(self)
         create_test_run(self)
-
+        if self.is_live:
+            time.sleep(10)
         # TODO: Create an Azure resource for app component
         self.cmd(
             "az load test-run app-component add "
@@ -328,7 +328,7 @@ class LoadTestRunScenario(ScenarioTest):
             }
         )
 
-        create_test(self, wait=True)
+        create_test(self)
         create_test_run(self)
 
         self.cmd(
@@ -422,7 +422,7 @@ class LoadTestRunScenario(ScenarioTest):
             }
         )
 
-        create_test(self, is_long=True, wait=True)
+        create_test(self, is_long=True)
         create_test_run(self)
 
         # Verify metrics for the test run with no additional parameters
@@ -522,4 +522,3 @@ class LoadTestRunScenario(ScenarioTest):
         assert self.kwargs["metric_dimension_value"] in [
             dimension["value"] for dimension in dimensions_list
         ]
-
