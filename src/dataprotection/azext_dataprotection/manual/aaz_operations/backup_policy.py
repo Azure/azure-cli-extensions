@@ -29,7 +29,7 @@ class Create(_Create):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="""Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.""",
+            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         _args_schema.vault_name = AAZStrArg(
@@ -54,6 +54,7 @@ class Create(_Create):
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
             # Removing null valued items from json to fix 'Bad Request' error.
+            # This is a temporary fix for AAZ failing to handle null values in error response.
             clean_nulls_from_session_http_response(session)
             return self.on_error(session.http_response)
 

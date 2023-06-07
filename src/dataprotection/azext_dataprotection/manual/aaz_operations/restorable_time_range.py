@@ -19,5 +19,6 @@ class Find(_Find):
             if session.http_response.status_code in [200]:
                 return self.on_200(session)
             # Removing null valued items from json to fix 'Bad Request' error.
+            # This is a temporary fix for AAZ failing to handle null values in error response.
             clean_nulls_from_session_http_response(session)
             return self.on_error(session.http_response)
