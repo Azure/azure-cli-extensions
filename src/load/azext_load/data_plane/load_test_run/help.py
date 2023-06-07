@@ -87,7 +87,7 @@ examples:
     - name: Download input, log and result files for a test run. The directory should already exist.
       text: |
         az load test-run download-files --load-test-resource sample-alt-resource --resource-group sample-rg --test-run-id sample-test-run-id --path ~/Downloads/OutputArtifacts --input --log --result
-    - name: Download input and log files for a test run by creating the directory if it does not exist. 
+    - name: Download input and log files for a test run by creating the directory if it does not exist.
       text: |
         az load test-run download-files --load-test-resource sample-alt-resource --resource-group sample-rg --test-run-id sample-test-run-id --path ~/Downloads/OutputArtifacts --input --log --force
 """
@@ -111,7 +111,7 @@ short-summary: List all app component of a test run.
 examples:
     - name: List all app components for a test run.
       text: |
-        az load test-run app-component list --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg 
+        az load test-run app-component list --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg
 """
 
 helps[
