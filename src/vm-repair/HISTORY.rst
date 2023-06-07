@@ -1,6 +1,15 @@
 
 Release History
 ===============
+
+0.5.3
+++++++
+Removing check for EncryptionSettingsCollection.enabled is string 'false'.
+
+0.5.2
+++++++
+Fix bug in _fetch_encryption_settings, add check for EncryptionSettingsCollection.enabled is false.
+
 0.5.1
 ++++++
 Updated exsiting privateIpAddress field to privateIPAddress and privateIpAllocationMethod to privateIPAllocationMethod.

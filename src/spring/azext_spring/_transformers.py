@@ -339,3 +339,29 @@ def transform_container_registry_output(result):
         item['Username'] = item['properties']['username']
 
     return result if is_list else result[0]
+
+
+def transform_apm_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Name'] = item['name']
+        item['Provisioning State'] = item['properties']['provisioningState']
+        item['Type'] = item['properties']['type']
+
+    return result if is_list else result[0]
+
+
+def transform_apm_type_output(result):
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    for item in result:
+        item['Name'] = item['name']
+
+    return result if is_list else result[0]

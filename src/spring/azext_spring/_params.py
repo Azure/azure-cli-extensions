@@ -28,7 +28,10 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
                                      validate_build_env, validate_target_module, validate_runtime_version,
-                                     validate_acs_ssh_or_warn)
+                                     validate_acs_ssh_or_warn, validate_apm_properties, validate_apm_secrets,
+                                     validate_apm_not_exist, validate_apm_update, validate_apm_reference,
+                                     validate_apm_reference_and_enterprise_tier, validate_cert_reference,
+                                     validate_build_cert_reference)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -156,7 +159,6 @@ def load_arguments(self, _):
                    help='(Enterprise Tier Only) Enable Application Configuration Service.')
         c.argument('enable_application_live_view',
                    action='store_true',
-                   is_preview=True,
                    options_list=['--enable-application-live-view', '--enable-alv'],
                    help='(Enterprise Tier Only) Enable Application Live View.')
         c.argument('enable_service_registry',
@@ -188,7 +190,6 @@ def load_arguments(self, _):
                         'List all plans by running `az spring list-marketplace-plan -o table`.')
         c.argument('enable_application_accelerator',
                    action='store_true',
-                   is_preview=True,
                    options_list=['--enable-application-accelerator', '--enable-app-acc'],
                    help='(Enterprise Tier Only) Enable Application Accelerator.')
         c.argument('managed_environment',
@@ -515,6 +516,11 @@ def load_arguments(self, _):
                 'build_cpu', arg_type=build_cpu_type, default="1")
             c.argument(
                 'build_memory', arg_type=build_memory_type, default="2Gi")
+            c.argument('apms', nargs='*', help='(Enterprise Tier Only) Space-separated APM names.',
+                       validator=validate_apm_reference_and_enterprise_tier)
+            c.argument('build_certificates', nargs='*',
+                       help='(Enterprise Tier Only) Space-separated certificate names, the certificates are used during build time.',
+                       validator=validate_build_cert_reference)
 
     with self.argument_context('spring app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)
@@ -736,6 +742,8 @@ def load_arguments(self, _):
             c.argument('build_env', build_env_type)
             c.argument('source_path', arg_type=source_path_type, validator=validate_source_path)
             c.argument('artifact_path', help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_artifact_path)
+            c.argument('apms', nargs='*', help='Space-separated APM names.', validator=validate_apm_reference)
+            c.argument('certificates', nargs='*', help='Space-separated certificate names.', validator=validate_cert_reference)
             c.argument('disable_validation', arg_type=get_three_state_flag(), help='If true, disable jar validation.')
 
     with self.argument_context('spring build-service build create') as c:
@@ -921,6 +929,50 @@ def load_arguments(self, _):
                   'spring build-service builder buildpack-binding delete']:
         with self.argument_context(scope) as c:
             c.argument('builder_name', help='The name for builder.', default="default")
+            c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    for scope in ['spring apm create']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='APM name.', validator=validate_apm_not_exist)
+
+    for scope in ['spring apm update']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='APM name.', validator=validate_apm_update)
+
+    for scope in ['spring apm create',
+                  'spring apm update']:
+        with self.argument_context(scope) as c:
+            c.argument('type', type=str,
+                       help='Required type for APM. Run "az spring apm list-support-types"'
+                            'to get all the supported APM types.')
+            c.argument('properties',
+                       help='Non-sensitive properties for APM. Format "key[=value]".',
+                       nargs='*',
+                       validator=validate_apm_properties)
+            c.argument('secrets',
+                       help='Sensitive properties for APM. '
+                            'Once put, it will be encrypted and never return to user. '
+                            'Format "key[=value]".',
+                       nargs='*',
+                       validator=validate_apm_secrets)
+
+    for scope in ['spring apm show',
+                  'spring apm enable-globally',
+                  'spring apm disable-globally',
+                  'spring apm delete']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='APM name.')
+
+    for scope in ['spring apm create',
+                  'spring apm update',
+                  'spring apm list',
+                  'spring apm list-support-types',
+                  'spring apm enable-globally',
+                  'spring apm disable-globally',
+                  'spring apm list-enabled-globally',
+                  'spring apm show',
+                  'spring apm delete']:
+        with self.argument_context(scope) as c:
             c.argument('service', service_name_type, validator=only_support_enterprise)
 
     for scope in ['spring application-accelerator predefined-accelerator list',

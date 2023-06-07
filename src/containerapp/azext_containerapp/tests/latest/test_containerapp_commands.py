@@ -685,6 +685,16 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding")
         ])
 
+        self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(
+            resource_group, postgres_ca_name, env_name))
+
+        self.cmd('containerapp service redis delete -g {} -n {} --yes'.format(
+            resource_group, redis_ca_name, env_name))
+
+        self.cmd('containerapp service list -g {} --environment {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
 
 class ContainerappEnvStorageTests(ScenarioTest):
     @AllowLargeResponse(8192)
@@ -832,6 +842,15 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
 
+        app2 = self.create_random_name(prefix='aca', length=24)
+        self.cmd(f'containerapp create -g {resource_group} -n {app2} --registry-identity {identity_rid} --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io --revision-suffix test1')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app2}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.template.revisionSuffix", "test1"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+        ])
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
@@ -852,6 +871,15 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         self.cmd(f'containerapp create -g {resource_group} -n {app} --registry-identity "system" --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io')
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
+
+        app2 = self.create_random_name(prefix='aca', length=24)
+        self.cmd(f'containerapp create -g {resource_group} -n {app2} --registry-identity "system" --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io --revision-suffix test1')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app2}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.template.revisionSuffix", "test1"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+        ])
 
 
 class ContainerappScaleTests(ScenarioTest):

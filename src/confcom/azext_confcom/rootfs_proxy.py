@@ -121,9 +121,8 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
         if outputlines is None:
             eprint("Null pointer detected.")
         elif len(outputlines) > 0:
-            output = outputlines.decode("utf8").rstrip("\n").split("\n")
-            output = [output[j * 2 + 1] for j in range(len(output) // 2)]
-            output = [i.rstrip("\n").split(": ", 1)[1] for i in output]
+            output = outputlines.decode("utf8").strip("\n").split("\n")
+            output = [i.split(": ", 1)[1] for i in output if len(i.split(": ", 1)) > 1]
         else:
             eprint(
                 "Cannot get layer hashes"
