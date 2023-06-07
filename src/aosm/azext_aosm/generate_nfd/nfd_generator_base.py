@@ -11,7 +11,7 @@ logger = get_logger(__name__)
 
 class NFDGenerator:
     """A class for generating an NFD from a config file."""
-
+    # pylint: disable=too-few-public-methods
     def __init__(
         self,
     ) -> None:
@@ -24,4 +24,3 @@ class NFDGenerator:
     def generate_nfd(self) -> None:
         """No-op on base class."""
         logger.error("Generate NFD called on base class. No-op")
-

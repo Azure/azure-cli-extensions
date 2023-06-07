@@ -1,66 +1,69 @@
+## Disabling as every if statement in validate in NSConfig class has this condition
+# pylint: disable=simplifiable-condition
+
 from dataclasses import dataclass, field
 from typing import Dict, Optional, Any, List
 from pathlib import Path
+import os
 from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError
 from azext_aosm.util.constants import (
     DEFINITION_OUTPUT_BICEP_PREFIX,
     VNF,
     CNF,
     NSD,
-    SCHEMA,
     NSD_DEFINITION_OUTPUT_BICEP_PREFIX,
     NF_DEFINITION_JSON_FILE,
 )
-import os
+
 
 DESCRIPTION_MAP: Dict[str, str] = {
-    "publisher_resource_group_name": (
-        "Resource group for the Publisher resource. Will be "
-        "created if it does not exist."
-    ),
-    "publisher_name": (
-        "Name of the Publisher resource you want your definition "
-        "published to. Will be created if it does not exist."
-    ),
-    "publisher_name_nsd": (
-        "Name of the Publisher resource you want your design published to. This published should be the same as the publisher used for your NFDVs"
-    ),
-    "publisher_resource_group_name_nsd": ("Resource group for the Publisher resource."),
+    "publisher_resource_group_name":
+        "Resource group for the Publisher resource. Will be created if it does not exist."
+    ,
+    "publisher_name":
+        "Name of the Publisher resource you want your definition published to. Will be created if it does not exist."
+    ,
+    "publisher_name_nsd":
+        "Name of the Publisher resource you want your design published to. "
+        "This should be the same as the publisher used for your NFDVs"
+    ,
+    "publisher_resource_group_name_nsd": "Resource group for the Publisher resource.",
     "nf_name": "Name of NF definition",
     "version": "Version of the NF definition",
     "acr_artifact_store_name": "Name of the ACR Artifact Store resource. Will be created if it does not exist.",
     "location": "Azure location to use when creating resources.",
-    "blob_artifact_store_name": "Name of the storage account Artifact Store resource. Will be created if it does not exist.",
-    "file_path": (
-        "Optional. File path of the artifact you wish to upload from your "
-        "local disk. Delete if not required."
-    ),
-    "blob_sas_url": (
-        "Optional. SAS URL of the blob artifact you wish to copy to your "
-        "Artifact Store. Delete if not required."
-    ),
-    "artifact_version": (
+    "blob_artifact_store_name":
+        "Name of the storage account Artifact Store resource. Will be created if it does not exist.",
+    "artifact_name": "Name of the artifact",
+    "file_path":
+        "Optional. File path of the artifact you wish to upload from your local disk. "
+        "Delete if not required.",
+    "blob_sas_url":
+        "Optional. SAS URL of the blob artifact you wish to copy to your Artifact Store. "
+        "Delete if not required.",
+    "artifact_version":
         "Version of the artifact. For VHDs this must be in format A-B-C. "
-        "For ARM templates this must be in format A.B.C"
-    ),
+        "For ARM templates this must be in format A.B.C",
     "nsdv_description": "Description of the NSDV",
-    "nsdg_name": "Network Service Design Group Name. This is the collection of Network Service Design Versions. Will be "
-    "created if it does not exist.",
+    "nsdg_name":
+        "Network Service Design Group Name. This is the collection of Network Service Design Versions. "
+        "Will be created if it does not exist.",
     "nsd_version": "Version of the NSD to be created. This should be in the format A.B.C",
-    "network_function_definition_group_name": "Exising Network Function Definition Group Name. This can be created using the 'az aosm nfd' commands.",
-    "network_function_definition_version_name": "Exising Network Function Definition Version Name. This can be created using the 'az aosm nfd' commands.",
+    "network_function_definition_group_name":
+        "Exising Network Function Definition Group Name. "
+        "This can be created using the 'az aosm nfd' commands.",
+    "network_function_definition_version_name":
+        "Exising Network Function Definition Version Name. "
+        "This can be created using the 'az aosm nfd' commands.",
     "network_function_definition_offering_location": "Offering location of the Network Function Definition",
     "helm_package_name": "Name of the Helm package",
-    "path_to_chart": (
-        "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz"
-    ),
-    "path_to_mappings": (
-        "File path of value mappings on local disk. Accepts .yaml or .yml"
-    ),
-    "helm_depends_on": (
+    "path_to_chart":
+        "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz",
+    "path_to_mappings":
+        "File path of value mappings on local disk. Accepts .yaml or .yml",
+    "helm_depends_on":
         "Names of the Helm packages this package depends on. "
-        "Leave as an empty array if no dependencies"
-    ),
+        "Leave as an empty array if no dependencies",
 }
 
 
@@ -97,6 +100,7 @@ class NFConfiguration:
 
 @dataclass
 class NSConfiguration:
+    # pylint: disable=too-many-instance-attributes
     location: str = DESCRIPTION_MAP["location"]
     publisher_name: str = DESCRIPTION_MAP["publisher_name_nsd"]
     publisher_resource_group_name: str = DESCRIPTION_MAP[
@@ -117,33 +121,24 @@ class NSConfiguration:
     nsdv_description: str = DESCRIPTION_MAP["nsdv_description"]
 
     def validate(self):
-        ## validate that all of the configuration parameters are set
+        """ Validate that all of the configuration parameters are set """
 
         if self.location == DESCRIPTION_MAP["location"] or "":
             raise ValueError("Location must be set")
         if self.publisher_name == DESCRIPTION_MAP["publisher_name_nsd"] or "":
             raise ValueError("Publisher name must be set")
-        if (
-            self.publisher_resource_group_name
-            == DESCRIPTION_MAP["publisher_resource_group_name_nsd"]
-            or ""
-        ):
+        if self.publisher_resource_group_name == DESCRIPTION_MAP["publisher_resource_group_name_nsd"] or "":
             raise ValueError("Publisher resource group name must be set")
-        if (
-            self.acr_artifact_store_name == DESCRIPTION_MAP["acr_artifact_store_name"]
-            or ""
-        ):
+        if self.acr_artifact_store_name == DESCRIPTION_MAP["acr_artifact_store_name"] or "":
             raise ValueError("ACR Artifact Store name must be set")
         if (
             self.network_function_definition_group_name
-            == DESCRIPTION_MAP["network_function_definition_group_name"]
-            or ""
+            == DESCRIPTION_MAP["network_function_definition_group_name"] or ""
         ):
             raise ValueError("Network Function Definition Group name must be set")
         if (
-            self.network_function_definition_version_name
-            == DESCRIPTION_MAP["network_function_definition_version_name"]
-            or ""
+            self.network_function_definition_version_name ==
+            DESCRIPTION_MAP["network_function_definition_version_name"] or ""
         ):
             raise ValueError("Network Function Definition Version name must be set")
         if (
@@ -178,7 +173,8 @@ class NSConfiguration:
     @property
     def acr_manifest_name(self) -> str:
         """Return the ACR manifest name from the NFD name."""
-        return f"{self.network_function_name.lower().replace('_', '-')}-acr-manifest-{self.nsd_version.replace('.', '-')}"
+        return \
+            f"{self.network_function_name.lower().replace('_', '-')}-acr-manifest-{self.nsd_version.replace('.', '-')}"
 
     @property
     def nfvi_site_name(self) -> str:
@@ -231,6 +227,7 @@ class VNFConfiguration(NFConfiguration):
 
         :raises ValidationError for any invalid config
         """
+
         if self.vhd.version == DESCRIPTION_MAP["version"]:
             # Config has not been filled in. Don't validate.
             return

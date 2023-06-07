@@ -4,14 +4,12 @@
 # --------------------------------------------------------------------------------------
 """Contains a class for generating VNF NFDs and associated resources."""
 
-import logging
 import json
 import os
 import shutil
 import tempfile
 
 from functools import cached_property
-from pathlib import Path
 from typing import Any, Dict, Optional
 from knack.log import get_logger
 
@@ -32,6 +30,7 @@ logger = get_logger(__name__)
 
 
 class VnfNfdGenerator(NFDGenerator):
+    # pylint: disable=too-many-instance-attributes
     """
     VNF NFD Generator.
 
@@ -57,15 +56,13 @@ class VnfNfdGenerator(NFDGenerator):
         self._manifest_path = os.path.join(
             self.output_folder_name, self.manifest_template_name
         )
+        self.tmp_folder_name = ''
 
     def generate_nfd(self) -> None:
-        """Create a bicep template for an NFD from the ARM template for the VNF."""
         """
         Generate a VNF NFD which comprises an group, an Artifact Manifest and a NFDV.
-
         Create a bicep template for an NFD from the ARM template for the VNF.
         """
-
         # Create temporary folder.
         with tempfile.TemporaryDirectory() as tmpdirname:
             self.tmp_folder_name = tmpdirname
@@ -97,7 +94,7 @@ class VnfNfdGenerator(NFDGenerator):
     @cached_property
     def vm_parameters(self) -> Dict[str, Any]:
         """The parameters from the VM ARM template."""
-        with open(self.arm_template_path, "r") as _file:
+        with open(self.arm_template_path, "r", encoding="utf-8") as _file:
             data = json.load(_file)
             if "parameters" in data:
                 parameters: Dict[str, Any] = data["parameters"]
@@ -146,10 +143,10 @@ class VnfNfdGenerator(NFDGenerator):
         deploy_parameters_full: Dict[str, Any] = SCHEMA_PREFIX
         deploy_parameters_full["properties"].update(nfd_parameters)
 
-        with open(deployment_parameters_path, "w") as _file:
+        with open(deployment_parameters_path, "w", encoding="utf-8") as _file:
             _file.write(json.dumps(deploy_parameters_full, indent=4))
 
-        logger.debug(f"{deployment_parameters_path} created")
+        logger.debug("%s created", deployment_parameters_path)
 
     def write_template_parameters(self, folder_path: str) -> None:
         """
@@ -164,10 +161,10 @@ class VnfNfdGenerator(NFDGenerator):
 
         template_parameters_path = os.path.join(folder_path, "templateParameters.json")
 
-        with open(template_parameters_path, "w") as _file:
+        with open(template_parameters_path, "w", encoding="utf-8") as _file:
             _file.write(json.dumps(template_parameters, indent=4))
 
-        logger.debug(f"{template_parameters_path} created")
+        logger.debug("%s created", template_parameters_path)
 
     def write_vhd_parameters(self, folder_path: str) -> None:
         """
@@ -193,7 +190,7 @@ class VnfNfdGenerator(NFDGenerator):
         with open(vhd_parameters_path, "w", encoding="utf-8") as _file:
             _file.write(json.dumps(vhd_parameters, indent=4))
 
-        logger.debug(f"{vhd_parameters_path} created")
+        logger.debug("%s created", vhd_parameters_path)
 
     def copy_to_output_folder(self) -> None:
         """Copy the bicep templates, config mappings and schema into the build output folder."""
