@@ -38,7 +38,7 @@ def load_arguments(self, _):
         c.argument("secrets", argtypes.secret)
         c.argument("certificate", argtypes.certificate)
         c.argument(
-            "key_vault_reference_identity", argtypes.key_vault_reference_identity
+            "key_vault_reference_identity", argtypes.key_vault_reference_identity, help="The identity that will be used to access the key vault. Provide `null` or `None` to use the system assigned identity of the load test resource."
         )
         c.argument("engine_instances", argtypes.engine_instances)
         c.argument("subnet_id", argtypes.subnet_id)

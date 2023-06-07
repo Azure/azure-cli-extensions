@@ -16,10 +16,10 @@ short-summary: Create a new load test run.
 examples:
     - name: Create a test run for a test and wait for test run completion.
       text: |
-        az load test-run create --load-test-resource {load_test_resource} --resource-group {resource_group} --test-id {test_id} --test-run-id {test_run_id} --wait
+        az load test-run create --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-test-id --test-run-id sample-test-run-id --wait
     - name: Rerun an existing test run.
       text: |
-        az load test-run create --load-test-resource {load_test_resource} --resource-group {resource_group} --test-id {test_id} --test-run-id {test_run_id} --description {description} --existing-test-run-id {existing_test_run_id}
+        az load test-run create --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-test-id --test-run-id sample-test-run-id --description "Test run description" --existing-test-run-id existing_test_run_id
 """
 
 helps[
@@ -30,7 +30,7 @@ short-summary: List all test runs.
 examples:
     - name: List all tests runs in a test.
       text: |
-        az load test-run list --load-test-resource {load_test_resource} --resource-group {resource_group} --test-id {test_id}
+        az load test-run list --load-test-resource sample-alt-resource --resource-group sample-rg --test-id sample-test-id
 """
 
 helps[
@@ -42,7 +42,7 @@ long-summary: Show details of the test run identified by given test-run-id.
 examples:
     - name: Get the details of a test run.
       text: |
-        az load test-run show --load-test-resource {load_test_resource} --resource-group {resource_group} --test-run-id {test_run_id}
+        az load test-run show --load-test-resource sample-alt-resource --resource-group sample-rg --test-run-id sample-test-run-id
 """
 
 helps[
@@ -51,9 +51,9 @@ helps[
 type: command
 short-summary: Update existing load test run.
 examples:
-    - name: Get the details of a test run.
+    - name: Update the description for a test run
       text: |
-        az load test-run show --load-test-resource {load_test_resource} --resource-group {resource_group} --test-run-id {test_run_id}
+        az load test-run update --load-test-resource sample-alt-resource --resource-group sample-rg --test-run-id sample-test-run-id --description "Test run description"
 """
 
 helps[
@@ -64,7 +64,7 @@ short-summary: Stop running a load test run.
 examples:
     - name: Stop a test run.
       text: |
-        az load test-run stop --load-test-resource {load_test_resource} --resource-group {resource_group} --test-run-id {test_run_id} --yes
+        az load test-run stop --load-test-resource sample-alt-resource --resource-group sample-rg --test-run-id sample-test-run-id --yes
 """
 
 helps[
@@ -75,7 +75,7 @@ short-summary: Delete an existing load test run.
 examples:
     - name: Delete a test run.
       text: |
-        az load test-run delete --load-test-resource {load_test_resource} --resource-group {resource_group} --test-run-id {test_run_id} --yes
+        az load test-run delete --load-test-resource sample-alt-resource --resource-group sample-rg --test-run-id sample-test-run-id --yes
 """
 
 helps[
@@ -86,10 +86,10 @@ short-summary: Download files for an existing load test run.
 examples:
     - name: Download input, log and result files for a test run. The directory should already exist.
       text: |
-        az load test-run download-files --load-test-resource {load_test_resource} --resource-group {resource_group} --test-run-id {test_run_id} --path {path} --input --log --result
+        az load test-run download-files --load-test-resource sample-alt-resource --resource-group sample-rg --test-run-id sample-test-run-id --path ~/Downloads/OutputArtifacts --input --log --result
     - name: Download input and log files for a test run by creating the directory if it does not exist. 
       text: |
-        az load test-run download-files --load-test-resource {load_test_resource} --resource-group {resource_group} --test-run-id {test_run_id} --path {path} --input --log --force
+        az load test-run download-files --load-test-resource sample-alt-resource --resource-group sample-rg --test-run-id sample-test-run-id --path ~/Downloads/OutputArtifacts --input --log --force
 """
 
 helps[
@@ -100,7 +100,7 @@ short-summary: Add an app component to a test run.
 examples:
     - name: Add an app component to a test run.
       text: |
-        az load test-run app-component add --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --app-component-name {app_component_name} --app-component-type {app_component_type} --app-component-id {app_component_id}
+        az load test-run app-component add --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg --app-component-name appcomponentresource --app-component-type microsoft.insights/components --app-component-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/samplerg/providers/microsoft.insights/components/appcomponentresource" --app-component-kind web
 """
 
 helps[
@@ -111,7 +111,7 @@ short-summary: List all app component of a test run.
 examples:
     - name: List all app components for a test run.
       text: |
-        az load test-run app-component list --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group} 
+        az load test-run app-component list --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg 
 """
 
 helps[
@@ -122,7 +122,7 @@ short-summary: Remove an app component from a test run.
 examples:
     - name: Remove an app component from a test run.
       text: |
-        az load test-run app-component remove --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --app-component-id {app_component_id} --yes
+        az load test-run app-component remove --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg --app-component-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/Microsoft.Compute/virtualMachineScaleSets/app-comp-name --yes
 """
 
 helps[
@@ -133,7 +133,7 @@ short-summary: Add a server-metric to a test run.
 examples:
     - name: Add a server metric for an app component to a test run.
       text: |
-        az load test-run server-metric add --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --metric-id {server_metric_id} --metric-name {server_metric_name} --metric-namespace {server_metric_namespace} --aggregation {aggregation} --app-component-type {app_component_type} --app-component-id {app_component_id}
+        az load test-run server-metric add --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg --metric-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Sample-rg/providers/Microsoft.Compute/virtualMachineScaleSets/sample-temp-vmss/providers/microsoft.insights/metricdefinitions/Percentage CPU" --metric-name  "Percentage CPU" --metric-namespace microsoft.compute/virtualmachinescalesets --aggregation Average --app-component-type Microsoft.Compute/virtualMachineScaleSets --app-component-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sample-rg/providers/Microsoft.Compute/virtualMachineScaleSets/app-comp-name
 """
 
 helps[
@@ -144,7 +144,7 @@ short-summary: List all server-metrics of a test run.
 examples:
     - name: List all server metrics for a test run.
       text: |
-        az load test-run server-metric list --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group}
+        az load test-run server-metric list --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg
 """
 
 helps[
@@ -155,7 +155,7 @@ short-summary: Remove a server-metric from a test run.
 examples:
     - name: Remove a server metric from a test run.
       text: |
-        az load test-run server-metric remove --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --metric-id {server_metric_id} --yes
+        az load test-run server-metric remove --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg --metric-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/Sample-rg/providers/Microsoft.Compute/virtualMachineScaleSets/Sample-temp-vmss/providers/microsoft.insights/metricdefinitions/Percentage CPU" --yes
 """
 
 helps[
@@ -166,7 +166,7 @@ short-summary: Get all metric namespaces for a load test run.
 examples:
     - name: Get metric namespace for a load test run.
       text: |
-        az load test-run metrics get-namespaces --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group}
+        az load test-run metrics get-namespaces --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg
 """
 
 helps[
@@ -177,22 +177,22 @@ short-summary: List metrics for a load test run.
 examples:
     - name: List all metrics for a given load test run and metric namespace.
       text: |
-        az load test-run metrics list --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --metric-namespace LoadTestRunMetrics
+        az load test-run metrics list --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg --metric-namespace LoadTestRunMetrics
     - name: List Virtual Users metrics for a given load test run.
       text: |
-        az load test-run metrics list --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --metric-namespace LoadTestRunMetrics --metric-name VirtualUsers
+        az load test-run metrics list --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg --metric-namespace LoadTestRunMetrics --metric-name VirtualUsers
     - name: List Virtual Users metrics for a given load test run, time period and aggregation interval.
       text: |
-        az load test-run metrics list --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --metric-namespace LoadTestRunMetrics --metric-name VirtualUsers --start-time 2023-01-01T15:16:17Z --end-time 2023-01-01T16:17:18Z --interval PT5M
+        az load test-run metrics list --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg --metric-namespace LoadTestRunMetrics --metric-name VirtualUsers --start-time 2023-01-01T15:16:17Z --end-time 2023-01-01T16:17:18Z --interval PT5M
     - name: List Response Time metrics for a given load test run and all dimension filters.
       text: |
-        az load test-run metrics list --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --metric-namespace LoadTestRunMetrics --metric-name ResponseTime --dimension-filters *
+        az load test-run metrics list --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg --metric-namespace LoadTestRunMetrics --metric-name ResponseTime --dimension-filters *
     - name: List Response Time metrics for a given load test run and all values for a specific dimension.
       text: |
-        az load test-run metrics list --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --metric-namespace LoadTestRunMetrics --metric-name ResponseTime --dimension-filters RequestName=*
+        az load test-run metrics list --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg --metric-namespace LoadTestRunMetrics --metric-name ResponseTime --dimension-filters RequestName=*
     - name: List Response Time metrics for a given load test run and specific dimensions.
       text: |
-        az load test-run metrics list --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --metric-namespace LoadTestRunMetrics --metric-name ResponseTime --dimension-filters RequestName=Homepage RequestName=Homepage-1
+        az load test-run metrics list --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg --metric-namespace LoadTestRunMetrics --metric-name ResponseTime --dimension-filters RequestName=Homepage RequestName=Homepage-1
 """
 
 helps[
@@ -203,10 +203,10 @@ short-summary: Get all metric definitions for a load test run.
 examples:
     - name: Get metric definitions for a given load test run and test run metric namespace.
       text: |
-        az load test-run metrics get-definitions --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --metric-namespace LoadTestRunMetrics
+        az load test-run metrics get-definitions --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg --metric-namespace LoadTestRunMetrics
     - name: Get metric definitions for a given load test run and engine health metric namespace.
       text: |
-        az load test-run metrics get-definitions --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --metric-namespace EngineHealthMetrics
+        az load test-run metrics get-definitions --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg --metric-namespace EngineHealthMetrics
 """
 
 helps[
@@ -217,8 +217,8 @@ short-summary: Get all metric dimension values for load test run.
 examples:
     - name: Get CPU metric dimension values for a given load test run.
       text: |
-        az load test-run metrics get-dimensions --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --metric-namespace EngineHealthMetrics --metric-name CPU --metric-dimension EngineId
+        az load test-run metrics get-dimensions --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg --metric-namespace EngineHealthMetrics --metric-name CPU --metric-dimension EngineId
     - name: Get Response Time metric dimension values for a given load test run, time period and aggregation interval.
       text: |
-        az load test-run metrics get-dimensions --test-run-id {test_run_id} --load-test-resource {load_test_resource} --resource-group {resource_group} --metric-namespace LoadTestRunMetrics --metric-name ResponseTime --metric-dimension RequestName --start-time 2023-01-01T15:16:17Z --end-time 2023-01-01T16:17:18Z --interval PT5M
+        az load test-run metrics get-dimensions --test-run-id sample-test-run-id --load-test-resource sample-alt-resource --resource-group sample-rg --metric-namespace LoadTestRunMetrics --metric-name ResponseTime --metric-dimension RequestName --start-time 2023-01-01T15:16:17Z --end-time 2023-01-01T16:17:18Z --interval PT5M
 """
