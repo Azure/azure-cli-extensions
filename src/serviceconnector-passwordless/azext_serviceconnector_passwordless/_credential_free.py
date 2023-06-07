@@ -6,7 +6,6 @@
 import struct
 import sys
 from knack.log import get_logger
-from knack.prompting import prompt_y_n, NoTTYException
 from msrestazure.tools import parse_resource_id
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import (
@@ -18,7 +17,6 @@ from azure.cli.core.azclierror import (
 from azure.cli.core.extension.operations import _install_deps_for_psycopg2, _run_pip
 from azure.cli.core._profile import Profile
 from azure.cli.command_modules.serviceconnector._utils import (
-    run_cli_cmd as run_cli_cmd_base,
     generate_random_string,
     is_packaged_installed,
     get_object_id_of_current_user
@@ -31,7 +29,7 @@ from azure.cli.command_modules.serviceconnector._validators import (
     get_source_resource_name,
     get_target_resource_name,
 )
-
+from ._utils import run_cli_cmd, get_local_ip, confirm_all_ip_allow
 logger = get_logger(__name__)
 
 AUTHTYPES = {
@@ -40,17 +38,6 @@ AUTHTYPES = {
     AUTH_TYPE.ServicePrincipalSecret: 'servicePrincipalSecret',
     AUTH_TYPE.UserAccount: 'userAccount',
 }
-IP_ADDRESS_CHECKER = 'https://api.ipify.org'
-OPEN_ALL_IP_MESSAGE = 'Do you want to enable access for all IPs to allow local environment connecting to database?'
-
-
-def run_cli_cmd(cmd, retry=0, interval=0, should_retry_func=None):
-    try:
-        return run_cli_cmd_base(cmd, retry, interval, should_retry_func)
-    except CLIInternalError as e:
-        telemetry.set_exception(
-            e, "Cli-Command-Fail-" + cmd.split(" -")[0].strip())
-        raise e
 
 
 # pylint: disable=line-too-long, consider-using-f-string, too-many-statements
@@ -313,24 +300,22 @@ class MysqlFlexibleHandler(TargetHandler):
         except AzureConnectionError as e:
             logger.warning(e)
             # allow local access
-            from requests import get
-            ip_address = get(IP_ADDRESS_CHECKER).text
-            self.set_target_firewall(True, ip_name, ip_address, ip_address)
-            # create again
+            ip_address = get_local_ip()
+            if not ip_address:
+                self.set_target_firewall(
+                    True, ip_name, '0.0.0.0', '255.255.255.255')
+            else:
+                self.set_target_firewall(
+                    True, ip_name, ip_address, ip_address)
             try:
                 self.create_aad_user_in_mysql(connection_kwargs, query_list)
             except AzureConnectionError as e:
                 logger.warning(e)
-                try:
-                    if not self.skip_prompt:
-                        if not prompt_y_n(OPEN_ALL_IP_MESSAGE):
-                            ex = AzureConnectionError(
-                                "Please confirm local environment can connect to database and try again.")
-                            telemetry.set_exception(ex, "Connect-Db-Fail")
-                            raise ex from e
-                except NoTTYException as e:
-                    raise CLIInternalError(
-                        'Unable to prompt for confirmation as no tty available. Use --yes.') from e
+                if not ip_address:
+                    telemetry.set_exception(e, "Connect-Db-Fail")
+                    raise e
+                if not self.skip_prompt:
+                    confirm_all_ip_allow()
                 # allow public access
                 self.set_target_firewall(
                     True, ip_name, '0.0.0.0', '255.255.255.255')
@@ -338,8 +323,8 @@ class MysqlFlexibleHandler(TargetHandler):
                 try:
                     self.create_aad_user_in_mysql(connection_kwargs, query_list)
                 except AzureConnectionError as e:
-                    telemetry.set_exception(ex, "Connect-Db-Fail")
-                    raise ex from e
+                    telemetry.set_exception(e, "Connect-Db-Fail")
+                    raise e
             finally:
                 self.set_target_firewall(False, ip_name)
 
@@ -635,24 +620,23 @@ class PostgresFlexHandler(TargetHandler):
         except AzureConnectionError as e:
             logger.warning(e)
             # allow local access
-            from requests import get
-            ip_address = self.ip or get(IP_ADDRESS_CHECKER).text
-            self.set_target_firewall(True, ip_name, ip_address, ip_address)
+            ip_address = self.ip or get_local_ip()
+            if not ip_address:
+                self.set_target_firewall(
+                    True, ip_name, '0.0.0.0', '255.255.255.255')
+            else:
+                self.set_target_firewall(
+                    True, ip_name, ip_address, ip_address)
             try:
                 # create again
                 self.create_aad_user_in_pg(connection_string, query_list)
             except AzureConnectionError as e:
                 logger.warning(e)
-                try:
-                    if not self.skip_prompt:
-                        if not prompt_y_n(OPEN_ALL_IP_MESSAGE):
-                            ex = AzureConnectionError(
-                                "Please confirm local environment can connect to database and try again.")
-                            telemetry.set_exception(ex, "Connect-Db-Fail")
-                            raise ex from e
-                except NoTTYException as e:
-                    raise CLIInternalError(
-                        'Unable to prompt for confirmation as no tty available. Use --yes.') from e
+                if not ip_address:
+                    telemetry.set_exception(e, "Connect-Db-Fail")
+                    raise e
+                if not self.skip_prompt:
+                    confirm_all_ip_allow()
                 self.set_target_firewall(
                     True, ip_name, '0.0.0.0', '255.255.255.255')
                 # create again
