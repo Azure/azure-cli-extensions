@@ -13,7 +13,8 @@
 
 from azure.cli.core.commands.parameters import (
     resource_group_name_type,
-    file_type
+    file_type,
+    get_enum_type
 )
 from azext_datamigration.action import (
     AddSourceSqlConnection,
@@ -75,7 +76,7 @@ def load_arguments(self, _):
         c.argument('database_name', nargs='+', options_list=["--database-name", "--dbname"], help='Source database name.')
 
     with self.argument_context('datamigration sql-server-schema') as c:
-        c.argument('action', type=str, help='Select one schema migration action. The valid values are: MigrateSchema, GenerateScript, DeploySchema. MigrateSchema is to migrate the database objects to Azure SQL Database target. GenerateScript is to generate an editable TSQL schema script that can be used to run on the target to deploy the objects. DeploySchema is to run the TSQL script generated from -GenerateScript action on the target to deploy the objects.')
+        c.argument('action', type=str, arg_type=get_enum_type(["MigrateSchema", "GenerateScript", "DeploySchema"]), help='Select one schema migration action. MigrateSchema is to migrate the database objects to Azure SQL Database target. GenerateScript is to generate an editable TSQL schema script that can be used to run on the target to deploy the objects. DeploySchema is to run the TSQL script generated from -GenerateScript action on the target to deploy the objects.')
         c.argument('src_sql_connection_str', type=str, help='Connection string for the source SQL instance, using the formal connection string format.')
         c.argument('tgt_sql_connection_str', type=str, help='Connection string for the target SQL instance, using the formal connection string format.')
         c.argument('input_script_file_path', type=file_type, completer=FilesCompleter(), help='Location of an editable TSQL schema script. Use this parameter only with DeploySchema Action.')

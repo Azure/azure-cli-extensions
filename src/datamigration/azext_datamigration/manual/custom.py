@@ -354,13 +354,10 @@ def datamigration_sql_server_schema(action=None,
                                     config_file_path=None):
 
     # Error message strings
-    actionError = "Please provide valid action value. The valid values are: MigrateSchema, GenerateScript, DeploySchema."
+    actionError = "Please provide valid action value."
     srcConnectionError = "Please provide src_sql_connection_str value."
     tgtConnectionError = "Please provide tgt_sql_connection_str value."
     inputFilePathError = "Please provide input_script_file_path value for the action of DeploySchema."
-
-    # The accepted actions
-    actionList = ["MigrateSchema", "GenerateScript", "DeploySchema"]
 
     try:
         # Setup the console app
@@ -375,22 +372,13 @@ def datamigration_sql_server_schema(action=None,
             if action is None:
                 raise RequiredArgumentMissingError(actionError)
 
-            actionPassed = str()
-
-            for allowedAction in actionList:
-                if allowedAction.lower() == action.lower():
-                    actionPassed = allowedAction
-
-            if actionPassed == str():
-                raise RequiredArgumentMissingError(actionError)
-
             if src_sql_connection_str is None:
                 raise RequiredArgumentMissingError(srcConnectionError)
 
             if tgt_sql_connection_str is None:
                 raise RequiredArgumentMissingError(tgtConnectionError)
 
-            if actionPassed == "DeploySchema":
+            if action == "DeploySchema":
                 if input_script_file_path is None:
                     raise RequiredArgumentMissingError(inputFilePathError)
                 else:
@@ -405,7 +393,7 @@ def datamigration_sql_server_schema(action=None,
             }
 
             # joining paramaters together in a string
-            cmd = f'{exePath} {actionPassed}'
+            cmd = f'{exePath} {action}'
 
             # formating the parameter list into a string
             for param in parameterList:
