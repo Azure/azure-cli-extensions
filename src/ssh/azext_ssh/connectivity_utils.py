@@ -70,6 +70,7 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
             _handle_relay_connection_delay(cmd)
     return cred
 
+
 def _check_service_configuration(cmd, resource_uri, port):
     from .aaz.latest.hybrid_connectivity.endpoint.service_configuration import Show as ShowServiceConfig
     show_service_config_args = {
@@ -91,6 +92,7 @@ def _check_service_configuration(cmd, resource_uri, port):
         return serviceConfig['port'] == int(port)
     else:
         return True
+
 
 def _create_default_endpoint(cmd, resource_uri):
     from .aaz.latest.hybrid_connectivity.endpoint import Create as CreateHybridConnectivityEndpoint
@@ -163,6 +165,7 @@ def _create_service_configuration(cmd, resource_uri, port):
                                                consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
     return serviceConfig
 
+
 def _list_credentials(cmd, resource_uri, certificate_validity_in_seconds):
     from .aaz.latest.hybrid_connectivity.endpoint import ListCredential
 
@@ -174,6 +177,7 @@ def _list_credentials(cmd, resource_uri, certificate_validity_in_seconds):
     }
 
     return ListCredential(cli_ctx=cmd.cli_ctx)(command_args=list_cred_args)  
+
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
 def get_client_side_proxy(arc_proxy_folder):
@@ -274,6 +278,7 @@ def format_relay_info_string(relay_info):
     enc = base64.b64encode(result_bytes)
     base64_result_string = enc.decode("ascii")
     return base64_result_string
+
 
 def _handle_relay_connection_delay(cmd):
     # relay has retry delay after relay connection is lost
