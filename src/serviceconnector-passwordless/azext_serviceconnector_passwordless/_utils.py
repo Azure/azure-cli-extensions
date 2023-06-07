@@ -1,17 +1,15 @@
 from knack.prompting import prompt, prompt_y_n, NoTTYException
+from knack.log import get_logger
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import (
     AzureConnectionError,
-    ValidationError,
     CLIInternalError,
-    ResourceNotFoundError
 )
 from azure.cli.command_modules.serviceconnector._utils import (
     run_cli_cmd as run_cli_cmd_base,
     should_load_source as should_load_source_base
 )
 from ._resource_config import PASSWORDLESS_SOURCE_RESOURCES
-from knack.log import get_logger
 
 logger = get_logger(__name__)
 
@@ -34,11 +32,12 @@ def run_cli_cmd(cmd, retry=0, interval=0, should_retry_func=None):
         raise e
 
 
+# pylint: disable=broad-except, line-too-long
 def get_local_ip():
     from requests import get
     try:
         return get(IP_ADDRESS_CHECKER).text
-    except Exception as e:
+    except Exception:
         help_message = "Please enter your local IP address to allow connection to database(press enter to allow all IPs): "
         try:
             while True:
