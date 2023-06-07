@@ -32,50 +32,43 @@ DESCRIPTION_MAP: Dict[str, str] = {
     "version": "Version of the NF definition",
     "acr_artifact_store_name": "Name of the ACR Artifact Store resource. Will be created if it does not exist.",
     "location": "Azure location to use when creating resources.",
-    "blob_artifact_store_name": 
+    "blob_artifact_store_name":
         "Name of the storage account Artifact Store resource. Will be created if it does not exist.",
     "artifact_name": "Name of the artifact",
-    "file_path": 
+    "file_path":
         "Optional. File path of the artifact you wish to upload from your local disk. "
-        "Delete if not required."
-    ,
-    "blob_sas_url": 
+        "Delete if not required.",
+    "blob_sas_url":
         "Optional. SAS URL of the blob artifact you wish to copy to your Artifact Store. "
-        "Delete if not required."
-    ,
-    "artifact_version": 
+        "Delete if not required.",
+    "artifact_version":
         "Version of the artifact. For VHDs this must be in format A-B-C. "
-        "For ARM templates this must be in format A.B.C"
-    ,
+        "For ARM templates this must be in format A.B.C",
     "nsdv_description": "Description of the NSDV",
-    "nsdg_name": 
+    "nsdg_name":
         "Network Service Design Group Name. This is the collection of Network Service Design Versions. "
         "Will be created if it does not exist.",
     "nsd_version": "Version of the NSD to be created. This should be in the format A.B.C",
-    "network_function_definition_group_name": 
+    "network_function_definition_group_name":
         "Exising Network Function Definition Group Name. "
         "This can be created using the 'az aosm nfd' commands.",
-    "network_function_definition_version_name": 
+    "network_function_definition_version_name":
         "Exising Network Function Definition Version Name. "
         "This can be created using the 'az aosm nfd' commands.",
     "network_function_definition_offering_location": "Offering location of the Network Function Definition",
     "helm_package_name": "Name of the Helm package",
     "path_to_chart":
-        "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz"
-    ,
-    "path_to_mappings": 
-        "File path of value mappings on local disk. Accepts .yaml or .yml"
-    ,
-    "helm_depends_on": 
+        "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz",
+    "path_to_mappings":
+        "File path of value mappings on local disk. Accepts .yaml or .yml",
+    "helm_depends_on":
         "Names of the Helm packages this package depends on. "
-        "Leave as an empty array if no dependencies"
-    ,
+        "Leave as an empty array if no dependencies",
 }
 
 
 @dataclass
 class ArtifactConfig:
-    artifact_name: str = DESCRIPTION_MAP["artifact_name"]
     # artifact.py checks for the presence of the default descriptions, change there if
     # you change the descriptions.
     file_path: Optional[str] = DESCRIPTION_MAP["file_path"]
@@ -127,15 +120,6 @@ class NSConfiguration:
     nsd_version: str = DESCRIPTION_MAP["nsd_version"]
     nsdv_description: str = DESCRIPTION_MAP["nsdv_description"]
 
-    def __post_init__(self):
-        """
-        Cope with deserializing subclasses from dicts to ArtifactConfig.
-
-        Used when creating VNFConfiguration object from a loaded json config file.
-        """
-        if isinstance(self.arm_template, dict):
-            self.arm_template = ArtifactConfig(**self.arm_template)
-
     def validate(self):
         """ Validate that all of the configuration parameters are set """
 
@@ -179,8 +163,7 @@ class NSConfiguration:
     @property
     def resource_element_name(self) -> str:
         """Return the name of the resource element."""
-        artifact_name = self.arm_template.artifact_name
-        return f"{artifact_name}-resource-element"
+        return f"{self.nsdg_name.lower()}-resource-element"
 
     @property
     def network_function_name(self) -> str:
@@ -207,12 +190,16 @@ class NSConfiguration:
     def arm_template(self) -> ArtifactConfig:
         """Return the parameters of the ARM template to be uploaded as part of the NSDV."""
         artifact = ArtifactConfig()
-        artifact.artifact_name = f"{self.nsdg_name.lower()}_nf_artifact"
         artifact.version = self.nsd_version
         artifact.file_path = os.path.join(
             self.build_output_folder_name, NF_DEFINITION_JSON_FILE
         )
         return artifact
+    
+    @property
+    def arm_template_artifact_name(self) -> str:
+        """Return the artifact name for the ARM template"""
+        return f"{self.network_function_definition_group_name}_nfd_artifact"
 
 
 @dataclass

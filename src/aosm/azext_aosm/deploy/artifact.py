@@ -7,7 +7,8 @@ from typing import Union
 from dataclasses import dataclass
 from knack.log import get_logger
 
-from azure.storage.blob import BlobClient
+from azure.storage.blob import BlobClient, BlobType
+from azext_aosm._configuration import ArtifactConfig
 from oras.client import OrasClient
 from azext_aosm._configuration import ArtifactConfig
 
@@ -71,7 +72,7 @@ class Artifact:
         if artifact_config.file_path:
             logger.info("Upload to blob store")
             with open(artifact_config.file_path, "rb") as artifact:
-                self.artifact_client.upload_blob(artifact, overwrite=True)
+                self.artifact_client.upload_blob(artifact, overwrite=True, blob_type=BlobType.PAGEBLOB)
             logger.info(
                 "Successfully uploaded %s to %s", artifact_config.file_path, self.artifact_client.account_name
             )
