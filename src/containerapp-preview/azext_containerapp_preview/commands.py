@@ -22,10 +22,5 @@ def transform_containerapp_output(app):
 
 def load_command_table(self, _):
 
-    # TODO: Add command type here
-    # containerapp-preview_sdk = CliCommandType(
-    #    operations_tmpl='<PATH>.operations#None.{}',
-    #    client_factory=cf_containerapp_preview)
-
     with self.command_group('containerapp', is_preview=True) as g:
         g.custom_command('create', 'create_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory(), table_transformer=transform_containerapp_output)
