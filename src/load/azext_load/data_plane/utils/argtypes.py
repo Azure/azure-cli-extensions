@@ -127,7 +127,6 @@ split_csv = CLIArgumentType(
 
 subnet_id = CLIArgumentType(
     validator=validators.validate_subnet_id,
-    completer=completers.get_subnet_resource_id_completion_list(),
     options_list=["--subnet-id"],
     type=str,
     help="Resource ID of the subnet to use for private load test.",
