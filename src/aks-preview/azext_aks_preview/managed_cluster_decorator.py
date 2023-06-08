@@ -1909,9 +1909,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: bool
         """
-        # print("_get_enable_azure_monitor_metrics being called...")
         # Read the original value passed by the command.
-        enable_azure_monitor_metrics = self.raw_param.get("enable_azuremonitormetrics")
+        # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
+        enable_azure_monitor_metrics = self.raw_param.get("enable_azure_monitor_metrics") or self.raw_param.get("enable_azuremonitormetrics")
         # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
@@ -1947,7 +1947,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         # Read the original value passed by the command.
-        disable_azure_monitor_metrics = self.raw_param.get("disable_azuremonitormetrics")
+         # TODO: should remove get value from disable_azuremonitormetrics once the option is removed
+        disable_azure_monitor_metrics = self.raw_param.get("disable_azure_monitor_metrics") or self.raw_param.get("disable_azuremonitormetrics")
         if disable_azure_monitor_metrics and self._get_enable_azure_monitor_metrics(False):
             raise MutuallyExclusiveArgumentError("Cannot specify --enable-azuremonitormetrics and --disable-azuremonitormetrics at the same time.")
         return disable_azure_monitor_metrics
@@ -3315,7 +3316,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
             mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=False)
 
-        if (self.context.raw_param.get("enable_azuremonitormetrics") or self.context.raw_param.get("disable_azuremonitormetrics")):
+        # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
+        # TODO: should remove get value from disable_azuremonitormetrics once the option is removed
+        if (self.context.raw_param.get("enable_azure_monitor_metrics") or
+            self.context.raw_param.get("enable_azuremonitormetrics") or
+            self.context.raw_param.get("disable_azure_monitor_metrics") or
+            self.context.raw_param.get("disable_azuremonitormetrics")):
             ensure_azure_monitor_profile_prerequisites(
                 self.cmd,
                 self.context.get_subscription_id(),
