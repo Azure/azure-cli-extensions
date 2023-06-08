@@ -35,24 +35,24 @@ CLASSIFIERS = [
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = []
 
-# with open('README.rst', 'r', encoding='utf-8') as f:
-#     README = f.read()
-# with open('HISTORY.rst', 'r', encoding='utf-8') as f:
-#     HISTORY = f.read()
-#
-# setup(
-#     name='containerapp-preview',
-#     version=VERSION,
-#     description='Microsoft Azure Command-Line Tools Containerapp-preview Extension',
-#     # TODO: Update author and email, if applicable
-#     author='Microsoft Corporation',
-#     author_email='azpycli@microsoft.com',
-#     # TODO: change to your extension source code repo if the code will not be put in azure-cli-extensions repo
-#     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/containerapp-preview',
-#     long_description=README + '\n\n' + HISTORY,
-#     license='MIT',
-#     classifiers=CLASSIFIERS,
-#     packages=find_packages(),
-#     install_requires=DEPENDENCIES,
-#     package_data={'azext_containerapp_preview': ['azext_metadata.json']},
-# )
+with open('README.rst', 'r', encoding='utf-8') as f:
+    README = f.read()
+with open('HISTORY.rst', 'r', encoding='utf-8') as f:
+    HISTORY = f.read()
+
+setup(
+    name='containerapp-preview',
+    version=VERSION,
+    description='Microsoft Azure Command-Line Tools Containerapp-preview Extension',
+    # TODO: Update author and email, if applicable
+    author='Microsoft Corporation',
+    author_email='azpycli@microsoft.com',
+    # TODO: change to your extension source code repo if the code will not be put in azure-cli-extensions repo
+    url='https://github.com/Azure/azure-cli-extensions/tree/master/src/containerapp-preview',
+    long_description=README + '\n\n' + HISTORY,
+    license='MIT',
+    classifiers=CLASSIFIERS,
+    packages=find_packages(),
+    install_requires=DEPENDENCIES,
+    package_data={'azext_containerapp_preview': ['azext_metadata.json']},
+)
