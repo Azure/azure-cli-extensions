@@ -537,6 +537,9 @@ helps['aks create'] = """
         - name: --enable-asm --enable-azure-service-mesh
           type: bool
           short-summary: Enable Azure Service Mesh.
+        - name: --enable-azuremonitormetrics
+          type: bool
+          short-summary: Enable Azure Monitor Metrics Profile
         - name: --enable-azure-monitor-metrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
@@ -960,6 +963,9 @@ helps['aks update'] = """
         - name: --defender-config
           type: string
           short-summary: Path to JSON file containing Microsoft Defender profile configurations.
+        - name: --enable-azuremonitormetrics
+          type: bool
+          short-summary: Enable Azure Monitor Metrics Profile
         - name: --enable-azure-monitor-metrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
@@ -978,6 +984,9 @@ helps['aks update'] = """
         - name: --enable-windows-recording-rules
           type: bool
           short-summary: Enable Windows Recording Rules when enabling the Azure Monitor Metrics addon
+        - name: --disable-azuremonitormetrics
+          type: bool
+          short-summary: Disable Azure Monitor Metrics Profile. This will delete all DCRA's associated with the cluster, any linked DCRs with the data stream = prometheus-stream and the recording rule groups created by the addon for this AKS cluster.
         - name: --disable-azure-monitor-metrics
           type: bool
           short-summary: Disable Azure Monitor Metrics Profile. This will delete all DCRA's associated with the cluster, any linked DCRs with the data stream = prometheus-stream and the recording rule groups created by the addon for this AKS cluster.
