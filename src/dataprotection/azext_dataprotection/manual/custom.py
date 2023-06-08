@@ -1025,21 +1025,14 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
     datasource_id = None
     # Alternate/Original Location - setting the Target's datasource info accordingly
     if target_resource_id is not None and backup_instance_id is not None:
-        raise CLIError("Please provide either target-resource-id (for alternate location restore) of backup-instance-id \
-                       (for original location restore), not both.")
+        raise CLIError("Please provide either target-resource-id or backup-instance-id not both.")
 
     if target_resource_id is not None:
-        # Verify that the alternate location restore is allowed for datasource type
-        if 'AlternateLocation' not in manifest['allowedRestoreTargetTypes']:
-            raise CLIError('Alternate Location Restore is not allowed for the given DataStoreType \
-                           Please try again with --backup-instance-id parameter.')
+        # No validation for alternate/original location restore, as target_resource_id can be used for both
         datasource_id = target_resource_id
 
     if backup_instance_id is not None:
-        # Verify that the original location restore is allowed for datasource type
-        if 'OriginalLocation' not in manifest['allowedRestoreTargetTypes']:
-            raise CLIError('Original Location Restore is not allowed for the given DataStoreType \
-                           Please try again with --target-resource-id parameter.')
+        # No validation for alternate/original location restore, to be added if understood to be required
         vault_resource_group = helper.get_vault_rg_from_bi_id(backup_instance_id)
         vault_name = helper.get_vault_name_from_bi_id((backup_instance_id))
         backup_instance_name = helper.get_bi_name_from_bi_id(backup_instance_id)
@@ -1286,21 +1279,14 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
     datasource_id = None
     # Alternate/Original Location - setting the Target's datasource info accordingly
     if target_resource_id is not None and backup_instance_id is not None:
-        raise CLIError("Please provide either target-resource-id (for alternate location restore) of backup-instance-id \
-                       (for original location restore), not both.")
+        raise CLIError("Please provide either target-resource-id or backup-instance-id not both.")
 
     if target_resource_id is not None:
-        # Verify that the alternate location restore is allowed for datasource type
-        if 'AlternateLocation' not in manifest['allowedRestoreTargetTypes']:
-            raise CLIError('Alternate Location Restore is not allowed for the given DataStoreType \
-                           Please try again with --backup-instance-id parameter.')
+        # No validation for alternate/original location restore, as target_resource_id can be used for both
         datasource_id = target_resource_id
 
     if backup_instance_id is not None:
-        # Verify that the original location restore is allowed for datasource type
-        if 'OriginalLocation' not in manifest['allowedRestoreTargetTypes']:
-            raise CLIError('Original Location Restore is not allowed for the given DataStoreType \
-                           Please try again with --target-resource-id parameter.')
+        # No validation for alternate/original location restore, to be added if understood to be required
         vault_resource_group = helper.get_vault_rg_from_bi_id(backup_instance_id)
         vault_name = helper.get_vault_name_from_bi_id((backup_instance_id))
         backup_instance_name = helper.get_bi_name_from_bi_id(backup_instance_id)
