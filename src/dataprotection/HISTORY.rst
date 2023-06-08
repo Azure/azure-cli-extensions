@@ -2,6 +2,13 @@
 
 Release History
 ===============
+0.9.0
++++++
+* Add support for cross-subscription-restore for Dataprotection.
+* `az dataprotection backup-vault create`: Add parameter (`--cross-subscription-restore-state`/ `--csr-state`), allowing backup vault creation with the cross-subscription-restore state flag set.
+* `az dataprotection backup-vault update`: Add parameter (`--cross-subscription-restore-state`/ `--csr-state`), allowing updating the cross-subscription-restore state flag in backup vaults.
+* `az dataprotection backup-instance restore initialize-for-data-recovery-as-files`: Add parameter `--target-resource-id`, required for cross-subscription-restore of OSS Scenario as files.
+
 0.8.2
 +++++
 * No user-facing updates - quickfix making the `aaz_operations` folder a module.
