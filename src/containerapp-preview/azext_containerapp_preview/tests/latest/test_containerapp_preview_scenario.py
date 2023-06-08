@@ -13,6 +13,6 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class ContainerappScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(8192)
-    def test_containerapp_preview(self, resource_group):
+    def test_containerapp_preview(self):
         return
 
