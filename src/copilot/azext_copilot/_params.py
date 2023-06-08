@@ -18,6 +18,7 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', validator=get_default_location_from_resource_group)
         c.argument('copilot_name', copilot_name_type, options_list=['--name', '-n'])
+        c.argument('prompt', options_list=['--prompt', '-p'], help='Let CLI Copilot do your job for you.')
 
     with self.argument_context('copilot list') as c:
         c.argument('copilot_name', copilot_name_type, id_part=None)

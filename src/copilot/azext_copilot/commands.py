@@ -17,7 +17,8 @@ def load_command_table(self, _):
 
 
     with self.command_group('copilot') as g:
-        g.custom_command('create', 'create_copilot')
+        g.custom_command('', 'create_copilot')
+        # g.custom_command('create', 'create_copilot')
         # g.command('delete', 'delete')
         g.custom_command('list', 'list_copilot')
         # g.show_command('show', 'get')
