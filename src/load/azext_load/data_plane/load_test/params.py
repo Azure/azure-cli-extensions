@@ -44,7 +44,7 @@ def load_arguments(self, _):
         c.argument("subnet_id", argtypes.subnet_id)
         c.argument("split_csv", argtypes.split_csv)
         c.argument("custom_no_wait", argtypes.custom_no_wait)
-        
+
     with self.argument_context("load test download-files") as c:
         c.argument("path", argtypes.dir_path)
         c.argument("force", argtypes.force)
