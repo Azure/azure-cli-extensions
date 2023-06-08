@@ -19,5 +19,3 @@ class containerappScenarioTest(ScenarioTest):
         self.kwargs.update({
             'name': 'test1'
         })
-
-        self.cmd("az containerapp create --name app --resource-group {} --environment my-environment --image 'mcr.microsoft.com/k8se/quickstart:latest' --environment-type connected".format(resource_group))
