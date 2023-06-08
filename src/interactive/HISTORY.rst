@@ -3,6 +3,11 @@
 Release History
 ===============
 
+0.5.1
++++++
+* Fix bugs to prevent users from exiting the entire az interactive by using Ctrl+C during command execution
+* Fix confusing error message caused by uncompleted command loading and param update
+
 0.5.0
 +++++
 * Support command recommendations that predicts the next commands users might need.

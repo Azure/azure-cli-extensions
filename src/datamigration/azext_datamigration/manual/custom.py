@@ -341,3 +341,71 @@ def datamigration_tde_migration(source_sql_connection_string=None,
 
     except Exception as e:
         raise e
+
+
+# -----------------------------------------------------------------------------------------------------------------
+#  Migrate schema from the source Sql Servers to the target Azure Sql Servers.
+# -----------------------------------------------------------------------------------------------------------------
+def datamigration_sql_server_schema(action=None,
+                                    src_sql_connection_str=None,
+                                    tgt_sql_connection_str=None,
+                                    input_script_file_path=None,
+                                    output_folder=None,
+                                    config_file_path=None):
+
+    # Error message strings
+    actionError = "Please provide valid action value."
+    srcConnectionError = "Please provide src_sql_connection_str value."
+    tgtConnectionError = "Please provide tgt_sql_connection_str value."
+    inputFilePathError = "Please provide input_script_file_path value for the action of DeploySchema."
+
+    try:
+        # Setup the console app
+        defaultOutputFolder, exePath = helper.sqlServerSchema_console_app_setup()
+
+        if config_file_path is not None:
+            helper.test_path_exist(config_file_path)
+            print(f"Run through the provided config file:")
+            cmd = f'{exePath} --configFile "{config_file_path}"'
+            subprocess.call(cmd, shell=False)
+        else:
+            if action is None:
+                raise RequiredArgumentMissingError(actionError)
+
+            if src_sql_connection_str is None:
+                raise RequiredArgumentMissingError(srcConnectionError)
+
+            if tgt_sql_connection_str is None:
+                raise RequiredArgumentMissingError(tgtConnectionError)
+
+            if action == "DeploySchema":
+                if input_script_file_path is None:
+                    raise RequiredArgumentMissingError(inputFilePathError)
+                else:
+                    helper.test_path_exist(input_script_file_path)
+
+            # parameter set for Perfornace data collection
+            parameterList = {
+                "--sourceConnectionString": src_sql_connection_str,
+                "--targetConnectionString": tgt_sql_connection_str,
+                "--inputScriptFilePath": input_script_file_path,
+                "--outputFolder": output_folder
+            }
+
+            # joining paramaters together in a string
+            cmd = f'{exePath} {action}'
+
+            # formating the parameter list into a string
+            for param in parameterList:
+                if parameterList[param] is not None and not param.__contains__("list"):
+                    cmd += f' {param} "{parameterList[param]}"'
+
+                # in case the parameter input is list format it accordingly
+                elif param.__contains__("list") and parameterList[param] is not None:
+                    parameterList[param] = " ".join(f"\"{i}\"" for i in parameterList[param])
+                    cmd += f' {param} {parameterList[param]}'
+
+            subprocess.call(cmd, shell=False)
+
+    except Exception as e:
+        raise e

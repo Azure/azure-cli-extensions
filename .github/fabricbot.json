@@ -12984,6 +12984,77 @@
           }
         ]
       }
+    },
+    {
+      "taskType": "trigger",
+      "capabilityId": "IssueResponder",
+      "subCapability": "PullRequestResponder",
+      "version": "1.0",
+      "config": {
+        "conditions": {
+          "operator": "and",
+          "operands": [
+            {
+              "name": "isAction",
+              "parameters": {
+                "action": "opened"
+              }
+            },
+            {
+              "operator": "or",
+              "operands": [
+                {
+                  "name": "titleContains",
+                  "parameters": {
+                    "titlePattern": "devcenter",
+                    "isRegex": true
+                  }
+                },
+                {
+                  "name": "bodyContains",
+                  "parameters": {
+                    "bodyPattern": "devcenter",
+                    "isRegex": true
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "eventType": "pull_request",
+        "eventNames": [
+          "pull_request",
+          "issues",
+          "project_card"
+        ],
+        "taskName": "[devcenter] Auto assign labels and reviewers based on PR title/description.",
+        "actions": [
+          {
+            "name": "requestReviewer",
+            "parameters": {
+              "reviewer": "kairu-ms"
+            }
+          },
+          {
+            "name": "requestReviewer",
+            "parameters": {
+              "reviewer": "jsntcy"
+            }
+          },
+          {
+            "name": "addLabel",
+            "parameters": {
+              "label": "Auto-Assign"
+            }
+          },
+          {
+            "name": "assignToUser",
+            "parameters": {
+              "user": "kairu-ms"
+            }
+          }
+        ]
+      }
     }
   ],
   "userGroups": [
