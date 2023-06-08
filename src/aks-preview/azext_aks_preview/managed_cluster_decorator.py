@@ -1947,7 +1947,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         # Read the original value passed by the command.
-         # TODO: should remove get value from disable_azuremonitormetrics once the option is removed
+        # TODO: should remove get value from disable_azuremonitormetrics once the option is removed
         disable_azure_monitor_metrics = self.raw_param.get("disable_azure_monitor_metrics") or self.raw_param.get("disable_azuremonitormetrics")
         if disable_azure_monitor_metrics and self._get_enable_azure_monitor_metrics(False):
             raise MutuallyExclusiveArgumentError("Cannot specify --enable-azuremonitormetrics and --disable-azuremonitormetrics at the same time.")
@@ -3318,10 +3318,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
         # TODO: should remove get value from disable_azuremonitormetrics once the option is removed
-        if (self.context.raw_param.get("enable_azure_monitor_metrics") or
+        if (
+            self.context.raw_param.get("enable_azure_monitor_metrics") or
             self.context.raw_param.get("enable_azuremonitormetrics") or
             self.context.raw_param.get("disable_azure_monitor_metrics") or
-            self.context.raw_param.get("disable_azuremonitormetrics")):
+            self.context.raw_param.get("disable_azuremonitormetrics")
+        ):
             ensure_azure_monitor_profile_prerequisites(
                 self.cmd,
                 self.context.get_subscription_id(),
