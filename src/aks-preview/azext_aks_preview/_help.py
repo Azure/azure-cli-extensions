@@ -555,6 +555,12 @@ helps['aks create'] = """
         - name: --enable-windows-recording-rules
           type: bool
           short-summary: Enable Windows Recording Rules when enabling the Azure Monitor Metrics addon
+        - name: --nodepool-labels
+          type: string
+          short-summary: The node labels for all node pools in this cluster. See https://aka.ms/node-labels for syntax of labels.
+        - name: --nodepool-taints
+          type: string
+          short-summary: The node taints for all node pools in this cluster.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
