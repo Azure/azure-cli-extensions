@@ -1085,7 +1085,8 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
 
 
 def restore_initialize_for_data_recovery_as_files(target_blob_container_url, target_file_name, datasource_type, source_datastore,
-                                                  restore_location, recovery_point_id=None, point_in_time=None,
+                                                  restore_location, target_resource_id=None,
+                                                  recovery_point_id=None, point_in_time=None,
                                                   rehydration_priority=None, rehydration_duration=15):
 
     restore_request = {}
@@ -1140,6 +1141,10 @@ def restore_initialize_for_data_recovery_as_files(target_blob_container_url, tar
     restore_request["restore_target_info"]["target_details"]["url"] = target_blob_container_url
     restore_request["restore_target_info"]["target_details"]["file_prefix"] = target_file_name
     restore_request["restore_target_info"]["target_details"]["restore_target_location_type"] = "AzureBlobs"
+
+    # Mandatory for Cross-subscription restore scenario for OSS
+    if target_resource_id is not None:
+        restore_request["restore_target_info"]["target_details"]["target_resource_arm_id"] = target_resource_id
 
     return restore_request
 
