@@ -26,11 +26,11 @@ def _get_or_add_extension(cmd, extension_name):
         ext = get_extension(extension_name)
         # check extension version
         if ext and parse_version(ext.version) < parse_version(MIN_GA_VERSION):
-            msg = "The command requires the latest version of extension {}. Run 'az extension add --upgrade -n {}' to upgrade extension".format(extension_name, extension_name)
+            msg = f"The command requires the latest version of extension {extension_name}. Run 'az extension add --upgrade -n {extension_name}' to upgrade extension"
             logger.Error(msg)
             return False
     except ExtensionNotInstalledException:
-        prompt_msg = 'The command requires the extension containerapp. Do you want to install it now?'
+        prompt_msg = f"The command requires the extension {extension_name}. Do you want to install it now?"
         prompt_ext = _prompt_y_n(cmd, prompt_msg, extension_name)
         if prompt_ext:
             return _install_containerapp_extension(cmd, extension_name)
@@ -41,7 +41,7 @@ def _prompt_y_n(cmd, prompt_msg, ext_name):
     no_prompt_config_msg = "Run 'az config set extension.use_dynamic_install=" \
                            "yes_without_prompt' to allow installing extensions without prompt."
     try:
-        yes_without_prompt = 'yes_without_prompt' == _get_extension_use_dynamic_install_config(cmd.cli_ctx)
+        yes_without_prompt = _get_extension_use_dynamic_install_config(cmd.cli_ctx) == 'yes_without_prompt'
         if yes_without_prompt:
             logger.warning('The command requires the extension %s. It will be installed first.', ext_name)
             return True
@@ -52,13 +52,13 @@ def _prompt_y_n(cmd, prompt_msg, ext_name):
 
         return prompt_result
     except NoTTYException:
-        tty_err_msg = "The command requires the extension {}. " \
+        tty_err_msg = f"The command requires the extension {ext_name}. " \
                       "Unable to prompt for extension install confirmation as no tty " \
-                      "available. {}".format(ext_name, no_prompt_config_msg)
+                      "available. {no_prompt_config_msg}"
         az_error = NoTTYError(tty_err_msg)
         az_error.print_error()
         az_error.send_telemetry()
-        raise NoTTYError
+        raise NoTTYError from az_error
 
 
 def _install_containerapp_extension(cmd, extension_name, upgrade=False):
@@ -89,4 +89,4 @@ def _get_azext_module(extension_name, module_name):
         azext_custom = import_module(module_name)
         return azext_custom
     except ImportError as ie:
-        raise CLIError(ie)
+        raise CLIError(ie) from ie
