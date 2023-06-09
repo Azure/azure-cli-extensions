@@ -13,7 +13,7 @@ class Find(_Find):
 
     class RestorableTimeRangesFind(_Find.RestorableTimeRangesFind):
 
-        def __call__(self, *args, **kwargs):
+        def __call__(self, *args, **kwargs):    # Remove after error handling fixed.
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
