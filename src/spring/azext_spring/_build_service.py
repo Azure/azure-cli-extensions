@@ -152,14 +152,14 @@ def build_result_list(cmd, client, resource_group, service, build_name=None):
     return client.build_service.list_build_results(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, build_name)
 
 
-def update_build_service(cmd, client, resource_group, service, registry_name=None):
+def update_build_service(cmd, client, resource_group, service, registry_name=None, no_wait=False):
     subscription = get_subscription_id(cmd.cli_ctx)
     service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(subscription, resource_group, service)
     build_service_properties = models.BuildServiceProperties(
         container_registry='{}/containerregistries/{}'.format(service_resource_id, registry_name) if registry_name else None)
     build_service_resource = models.BuildService(
         properties=build_service_properties)
-    return client.build_service.begin_create_or_update(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, build_service_resource)
+    return sdk_no_wait(no_wait, client.build_service.begin_create_or_update, resource_group, service, DEFAULT_BUILD_SERVICE_NAME, build_service_resource)
 
 
 def build_service_show(cmd, client, resource_group, service):

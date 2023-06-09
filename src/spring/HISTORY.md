@@ -1,5 +1,13 @@
 Release History
 ===============
+1.13.2
+---
+* Add argument `--build-certificates` in `az spring app deploy`.
+
+1.13.1
+---
+* Fix the parameter `--no-wait` of the command -- `az spring build-service update`.
+
 1.13.0
 ---
 * Add new command -- `az spring apm show` to show the APM resource.

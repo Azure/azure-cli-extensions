@@ -1347,12 +1347,12 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/backupPolicies/storagepolicy?api-version=2023-01-01
   response:
     body:
-      string: '{"properties":{"policyRules":[{"lifecycles":[{"deleteAfter":{"objectType":"AbsoluteDeleteOption","duration":"P30D"},"sourceDataStore":{"dataStoreType":"OperationalStore","objectType":"DataStoreInfoBase"}}],"isDefault":true,"name":"Default","objectType":"AzureRetentionRule"}],"datasourceTypes":["Microsoft.Storage/storageAccounts/blobServices"],"objectType":"BackupPolicy"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/backupPolicies/storagepolicy","name":"storagepolicy","type":"Microsoft.DataProtection/backupVaults/backupPolicies"}'
+      string: '{"properties":{"policyRules":[{"backupParameters":{"backupType":"Incremental","objectType":"AzureBackupParams"},"trigger":{"schedule":{"repeatingTimeIntervals":["R/2020-04-05T13:00:00+00:00/PT4H"]},"taggingCriteria":[{"tagInfo":{"tagName":"Default","id":"Default_"},"taggingPriority":99,"isDefault":true}],"objectType":"ScheduleBasedTriggerContext"},"dataStore":{"dataStoreType":"OperationalStore","objectType":"DataStoreInfoBase"},"name":"BackupHourly","objectType":"AzureBackupRule"},{"lifecycles":[{"deleteAfter":{"objectType":"AbsoluteDeleteOption","duration":"P7D"},"sourceDataStore":{"dataStoreType":"OperationalStore","objectType":"DataStoreInfoBase"}}],"isDefault":true,"name":"Default","objectType":"AzureRetentionRule"}],"datasourceTypes":["Microsoft.Compute/disks"],"objectType":"BackupPolicy"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/backupPolicies/diskpolicy","name":"diskpolicy","type":"Microsoft.DataProtection/backupVaults/backupPolicies"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '640'
+      - '1066'
       content-type:
       - application/json
       date:
@@ -2192,7 +2192,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"South India","Slice":"E","Ring":"2","ScaleUnit":"000","RoleInstance":"MA1PEPF00002027"}}'
+      - '{"ServerInfo":{"DataCenter":"South India","Slice":"E","Ring":"2","ScaleUnit":"000","RoleInstance":"MA1PEPF0000496C"}}'
       x-ms-resource-unit:
       - '3'
     status:
@@ -8823,12 +8823,12 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/oss-clitest-rg/providers/Microsoft.DBforPostgreSQL/servers/oss-clitest-server/firewallRules?api-version=2017-12-01
   response:
     body:
-      string: '{"value":[{"properties":{"startIpAddress":"0.0.0.0","endIpAddress":"0.0.0.0"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/oss-clitest-rg/providers/Microsoft.DBforPostgreSQL/servers/oss-clitest-server/firewallRules/AllowAllWindowsAzureIps","name":"AllowAllWindowsAzureIps","type":"Microsoft.DBforPostgreSQL/servers/firewallRules"}]}'
+      string: '{"value":[]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '360'
+      - '12'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -9356,7 +9356,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
       x-powered-by:
       - ASP.NET
     status:
@@ -10004,7 +10004,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '477'
+      - '478'
       content-type:
       - application/json
       date:
@@ -10545,12 +10545,64 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"dataSourceInfo": {"datasourceType": "Microsoft.Storage/storageAccounts/blobServices",
-      "objectType": "Datasource", "resourceID": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.Storage/storageAccounts/cliteststoreaccount",
-      "resourceLocation": "centraluseuap", "resourceName": "cliteststoreaccount",
-      "resourceType": "Microsoft.Storage/storageAccounts", "resourceUri": ""}, "friendlyName":
-      "cliteststoreaccount", "objectType": "BackupInstance", "policyInfo": {"policyId":
-      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/backupPolicies/storagepolicy"}}}'
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection backup-instance create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --vault-name --backup-instance
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22000-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/operationStatus/ZGNmNjIzZTItZjY4My00NWYzLWJlYzYtZDExNTg1NGYwM2FjOzQzM2Y5YWViLWNiZDQtNDI1OC1iMDQyLTU3OWMwOTkyOWUzZQ==?api-version=2023-01-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/operationStatus/ZGNmNjIzZTItZjY4My00NWYzLWJlYzYtZDExNTg1NGYwM2FjOzQzM2Y5YWViLWNiZDQtNDI1OC1iMDQyLTU3OWMwOTkyOWUzZQ==","name":"ZGNmNjIzZTItZjY4My00NWYzLWJlYzYtZDExNTg1NGYwM2FjOzQzM2Y5YWViLWNiZDQtNDI1OC1iMDQyLTU3OWMwOTkyOWUzZQ==","status":"Succeeded","startTime":"2023-05-26T14:36:03.8275193Z","endTime":"2023-05-26T14:36:45Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '477'
+      content-type:
+      - application/json
+      date:
+      - Fri, 26 May 2023 14:37:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '997'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"dataSourceInfo": {"datasourceType": "Microsoft.Compute/disks",
+      "objectType": "Datasource", "resourceID": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.Compute/disks/cli-test-disk-new",
+      "resourceLocation": "centraluseuap", "resourceName": "cli-test-disk-new", "resourceType":
+      "Microsoft.Compute/disks", "resourceUri": ""}, "friendlyName": "cli-test-disk-new",
+      "objectType": "BackupInstance", "policyInfo": {"policyId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/backupPolicies/diskpolicy",
+      "policyParameters": {"dataStoreParametersList": [{"dataStoreType": "OperationalStore",
+      "objectType": "AzureOperationalStoreParameters", "resourceGroupId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg"}]}}},
+      "tags": {"Owner": "dppclitest"}}'
     headers:
       Accept:
       - application/json
@@ -10561,7 +10613,7 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '714'
+      - '933'
       Content-Type:
       - application/json
       ParameterSetName:
@@ -10569,17 +10621,17 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/backupInstances/cliteststoreaccount-cliteststoreaccount-b7e6f082-b310-11eb-8f55-9cfce85d4fa1?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/backupInstances/cli-test-disk-new-cli-test-disk-new-b7e6f082-b310-11eb-8f55-9cfce85d4fa1?api-version=2023-01-01
   response:
     body:
-      string: '{"properties":{"friendlyName":"cliteststoreaccount","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.Storage/storageAccounts/cliteststoreaccount","resourceUri":"","datasourceType":"Microsoft.Storage/storageAccounts/blobServices","resourceName":"cliteststoreaccount","resourceType":"Microsoft.Storage/storageAccounts","resourceLocation":"centraluseuap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/backupPolicies/storagepolicy"},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Provisioning","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/backupInstances/cliteststoreaccount-cliteststoreaccount-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","name":"cliteststoreaccount-cliteststoreaccount-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","type":"Microsoft.DataProtection/backupVaults/backupInstances"}'
+      string: '{"tags":{"Owner":"dppclitest"},"properties":{"friendlyName":"cli-test-disk-new","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.Compute/disks/cli-test-disk-new","resourceUri":"","datasourceType":"Microsoft.Compute/disks","resourceName":"cli-test-disk-new","resourceType":"Microsoft.Compute/disks","resourceLocation":"centraluseuap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/backupPolicies/diskpolicy","policyParameters":{"dataStoreParametersList":[{"dataStoreType":"OperationalStore","objectType":"AzureOperationalStoreParameters","resourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg"}]}},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Provisioning","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/backupInstances/cli-test-disk-new-cli-test-disk-new-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","name":"cli-test-disk-new-cli-test-disk-new-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","type":"Microsoft.DataProtection/backupVaults/backupInstances"}'
     headers:
       azure-asyncoperation:
       - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/operationStatus/NmNlMzc1MTQtNmI0Ny00NWEwLWFiN2ItNWIzNmYzMTU0MDcxO2I5ZDY3OTM3LTViMTktNDAzNy05YTY0LWY4ZmU5NjkwYTc3Mg==?api-version=2023-01-01
       cache-control:
       - no-cache
       content-length:
-      - '1224'
+      - '1424'
       content-type:
       - application/json
       date:
@@ -10717,15 +10769,15 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/backupInstances/cliteststoreaccount-cliteststoreaccount-b7e6f082-b310-11eb-8f55-9cfce85d4fa1?api-version=2023-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/operationStatus/ZGNmNjIzZTItZjY4My00NWYzLWJlYzYtZDExNTg1NGYwM2FjOzc2ODg3NTdkLWViYWYtNGFjZC05OTIyLWQxMDNlN2Q2NDBjZQ==?api-version=2023-01-01
   response:
     body:
-      string: '{"properties":{"friendlyName":"cliteststoreaccount","dataSourceInfo":{"resourceID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.Storage/storageAccounts/cliteststoreaccount","resourceUri":"","datasourceType":"Microsoft.Storage/storageAccounts/blobServices","resourceName":"cliteststoreaccount","resourceType":"Microsoft.Storage/storageAccounts","resourceLocation":"centraluseuap","objectType":"Datasource"},"policyInfo":{"policyId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/backupPolicies/storagepolicy"},"protectionStatus":{"status":"ConfiguringProtection"},"currentProtectionState":"ConfiguringProtection","provisioningState":"Succeeded","objectType":"BackupInstance"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/backupInstances/cliteststoreaccount-cliteststoreaccount-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","name":"cliteststoreaccount-cliteststoreaccount-b7e6f082-b310-11eb-8f55-9cfce85d4fa1","type":"Microsoft.DataProtection/backupVaults/backupInstances"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sarath-rg/providers/Microsoft.DataProtection/backupVaults/cli-test-new-vault1/operationStatus/ZGNmNjIzZTItZjY4My00NWYzLWJlYzYtZDExNTg1NGYwM2FjOzc2ODg3NTdkLWViYWYtNGFjZC05OTIyLWQxMDNlN2Q2NDBjZQ==","name":"ZGNmNjIzZTItZjY4My00NWYzLWJlYzYtZDExNTg1NGYwM2FjOzc2ODg3NTdkLWViYWYtNGFjZC05OTIyLWQxMDNlN2Q2NDBjZQ==","status":"Succeeded","startTime":"2023-05-26T14:37:08.6002852Z","endTime":"2023-05-26T14:37:10Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1221'
+      - '477'
       content-type:
       - application/json
       date:
@@ -11041,7 +11093,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
       x-powered-by:
       - ASP.NET
     status:
@@ -11071,7 +11123,7 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '478'
+      - '477'
       content-type:
       - application/json
       date:
@@ -14657,7 +14709,7 @@ interactions:
       x-ms-ratelimit-remaining-resource:
       - Microsoft.Compute/DeleteDisks3Min;2999,Microsoft.Compute/DeleteDisks30Min;23997
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14998'
     status:
       code: 202
       message: Accepted

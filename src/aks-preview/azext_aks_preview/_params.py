@@ -75,6 +75,11 @@ from azext_aks_preview._consts import (
     CONST_WEEKINDEX_FIRST,
     CONST_WEEKINDEX_FOURTH,
     CONST_WEEKINDEX_LAST,
+    CONST_GUARDRAILSLEVEL_OFF,
+    CONST_GUARDRAILSLEVEL_WARNING,
+    CONST_GUARDRAILSLEVEL_ENFORCEMENT,
+    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_EXTERNAL,
+    CONST_AZURE_SERVICE_MESH_INGRESS_MODE_INTERNAL,
     CONST_WEEKINDEX_SECOND,
     CONST_WEEKINDEX_THIRD,
     CONST_WEEKLY_MAINTENANCE_SCHEDULE,
@@ -229,6 +234,13 @@ week_indexes = [
 credential_formats = [CONST_CREDENTIAL_FORMAT_AZURE, CONST_CREDENTIAL_FORMAT_EXEC]
 
 keyvault_network_access_types = [CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PUBLIC, CONST_AZURE_KEYVAULT_NETWORK_ACCESS_PRIVATE]
+
+# consts for guardrails level
+guardrails_levels = [
+    CONST_GUARDRAILSLEVEL_OFF,
+    CONST_GUARDRAILSLEVEL_WARNING,
+    CONST_GUARDRAILSLEVEL_ENFORCEMENT
+]
 
 # azure service mesh
 ingress_gateway_types = [
@@ -417,6 +429,10 @@ def load_arguments(self, _):
         c.argument('nodepool_asg_ids', validator=validate_application_security_groups, is_preview=True, help="application security groups for agentpool")
         c.argument('node_public_ip_tags', arg_type=tags_type, validator=validate_node_public_ip_tags,
                    help='space-separated tags: key[=value] [key[=value] ...].')
+        c.argument('guardrails_level', arg_type=get_enum_type(guardrails_levels), is_preview=True)
+        c.argument('guardrails_version', type=str,
+                   help='The guardrails version', is_preview=True)
+        c.argument('guardrails_excluded_ns', type=str, is_preview=True)
         # azure monitor profile
         c.argument('enable_azuremonitormetrics', action='store_true')
         c.argument('azure_monitor_workspace_resource_id', validator=validate_azuremonitorworkspaceresourceid)
@@ -538,6 +554,9 @@ def load_arguments(self, _):
         c.argument('disable_vpa', action='store_true', is_preview=True, help="disable vertical pod autoscaler for cluster")
         c.argument('cluster_snapshot_id', validator=validate_cluster_snapshot_id, is_preview=True)
         c.argument('custom_ca_trust_certificates', options_list=["--custom-ca-trust-certificates", "--ca-certs"], validator=validate_custom_ca_trust_certificates, is_preview=True, help="path to file containing list of new line separated CAs")
+        c.argument('guardrails_level', arg_type=get_enum_type(guardrails_levels), is_preview=True)
+        c.argument('guardrails_version', help='The guardrails version', is_preview=True)
+        c.argument('guardrails_excluded_ns', is_preview=True)
 
     with self.argument_context('aks upgrade') as c:
         c.argument('kubernetes_version', completer=get_k8s_upgrades_completion_list)

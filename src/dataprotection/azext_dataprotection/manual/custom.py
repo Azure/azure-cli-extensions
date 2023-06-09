@@ -17,6 +17,7 @@ from knack.log import get_logger
 from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
 from azext_dataprotection.manual import backupcenter_helper, helpers as helper
+# from azext_dataprotection.aaz.latest.data_protection.resource_guard import Show as ResourceGuardShow
 
 logger = get_logger(__name__)
 

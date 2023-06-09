@@ -518,18 +518,26 @@ def validate_apm_update(cmd, namespace):
 def validate_apm_reference(cmd, namespace):
     apm_names = namespace.apms
 
-    result = []
     if not apm_names:
-        return result
+        return
 
     service_resource_id = get_service_resource_id(cmd, namespace)
 
+    result = []
     for apm_name in apm_names:
         resource_id = '{}/apms/{}'.format(service_resource_id, apm_name)
         apm_reference = ApmReference(resource_id=resource_id)
         result.append(apm_reference)
 
     namespace.apms = result
+
+
+def validate_apm_reference_and_enterprise_tier(cmd, namespace):
+    if namespace.apms is not None and namespace.resource_group and namespace.service and not is_enterprise_tier(
+            cmd, namespace.resource_group, namespace.service):
+        raise ArgumentUsageError("'--apms' only supports for Enterprise tier Spring instance.")
+
+    validate_apm_reference(cmd, namespace)
 
 
 def get_service_resource_id(cmd, namespace):
@@ -542,14 +550,33 @@ def get_service_resource_id(cmd, namespace):
 def validate_cert_reference(cmd, namespace):
     cert_names = namespace.certificates
 
-    result = []
     if not cert_names:
-        return result
+        return
 
+    result = []
+    get_cert_resource_id(cert_names, cmd, namespace, result)
+
+    namespace.certificates = result
+
+
+def get_cert_resource_id(cert_names, cmd, namespace, result):
     service_resource_id = get_service_resource_id(cmd, namespace)
     for cert_name in cert_names:
         resource_id = '{}/certificates/{}'.format(service_resource_id, cert_name)
         cert_reference = CertificateReference(resource_id=resource_id)
         result.append(cert_reference)
 
-    namespace.certificates = result
+
+def validate_build_cert_reference(cmd, namespace):
+    cert_names = namespace.build_certificates
+    if cert_names is not None and namespace.resource_group and namespace.service and not is_enterprise_tier(
+            cmd, namespace.resource_group, namespace.service):
+        raise ArgumentUsageError("'--build-certificates' only supports for Enterprise tier Spring instance.")
+
+    if not cert_names:
+        return
+
+    result = []
+    get_cert_resource_id(cert_names, cmd, namespace, result)
+
+    namespace.build_certificates = result
