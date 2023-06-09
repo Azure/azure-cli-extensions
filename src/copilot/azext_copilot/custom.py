@@ -6,13 +6,13 @@
 from knack.log import get_logger
 from knack.util import CLIError
 from .response_utils import process_prompt
+from azure.cli.core.commands.client_factory import get_subscription_id
 
 logger = get_logger(__name__)
 
 def create_copilot(cmd, prompt):
-    payload = process_prompt(prompt)
-
-    logger.warning(payload)
+    sub_id = get_subscription_id(cmd.cli_ctx)
+    process_prompt(prompt, sub_id)
 
 
 def list_copilot(cmd, resource_group_name=None):
