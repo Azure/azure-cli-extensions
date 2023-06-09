@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+Upcoming
+++++++
+* 'az containerapp job execution show/list': improve table output format
+
 0.3.33
 ++++++
 * 'az containerapp create': fix --registry-identity "system" with --revision-suffix
