@@ -43,6 +43,7 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
                                  namespace=namespace, type=arc_type, name=vm_name)
     
     cred = None
+    new_service_config = False
     try: 
         cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
     except ResourceNotFoundError:
@@ -55,6 +56,7 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
 
     if not cred:
         _create_service_configuration(cmd, resource_uri, port)
+        new_service_config = True
         try:
             cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
         except Exception as e:
@@ -63,6 +65,7 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
     else:
         if not _check_service_configuration(cmd, resource_uri, port):
             _create_service_configuration(cmd, resource_uri, port)
+            new_service_config = True
             try:
                 cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
             except Exception as e:
