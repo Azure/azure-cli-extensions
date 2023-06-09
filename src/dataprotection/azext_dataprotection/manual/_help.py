@@ -200,7 +200,7 @@ helps['dataprotection backup-instance initialize-restoreconfig'] = """
 
 helps['dataprotection backup-instance validate-for-backup'] = """
     type: command
-    short-summary: Validate whether adhoc backup will be successful or not.
+    short-summary: Validate whether configure backup will be successful or not.
     examples:
       - name: Validate for backup
         text: az dataprotection backup-instance validate-for-backup -g sarath-rg --vault-name sarath-vault --backup-instance backup_instance.json
