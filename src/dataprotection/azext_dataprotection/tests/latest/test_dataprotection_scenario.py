@@ -141,13 +141,7 @@ class DataprotectionScenarioTest(ScenarioTest):
             'myBackupInstance3': 'zblobbackuptestsa58',
         })
 
-    @ResourceGroupPreparer(name_prefix='clitestdataprotection_viveksipgtest'[:7], key='rg_3', parameter_name='rg_3')
-    @ResourceGroupPreparer(name_prefix='clitestdataprotection_000pikumar'[:7], key='rg_2', parameter_name='rg_2')
-    @ResourceGroupPreparer(name_prefix='clitestdataprotection_SampleResourceGroup'[:7], key='rg', parameter_name='rg')
-    @ResourceGroupPreparer(name_prefix='clitestdataprotection_testrg'[:7], key='rg_4', parameter_name='rg_4')
-    @ResourceGroupPreparer(name_prefix='clitestdataprotection_BugBash1'[:7], key='rg_5', parameter_name='rg_5')
-    @ResourceGroupPreparer(name_prefix='clitestdataprotection_Blob-Backup'[:7], key='rg_6', parameter_name='rg_6')
-    def test_dataprotection_Scenario(self, rg_3, rg_2, rg, rg_4, rg_5, rg_6):
+    def test_dataprotection_Scenario(self):
         call_scenario(self)
         calc_coverage(__file__)
         raise_if()

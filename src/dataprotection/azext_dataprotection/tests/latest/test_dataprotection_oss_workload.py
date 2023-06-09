@@ -27,8 +27,7 @@ def configure_backup(test):
 
     # uncomment when running live, run only in record mode - grant permission
     # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDatabaseForPostgreSQL --permissions-scope Resource -g "{rgname}" --vault-name "{vaultname}" --operation Backup --backup-instance "{backup_instance_json}" --keyvault-id "{keyvaultid}" --yes')
-
-    time.sleep(60)
+    # time.sleep(60)
 
     test.cmd('az dataprotection backup-instance create -g "{rgname}" --vault-name "{vaultname}" --backup-instance "{backup_instance_json}"')
 
