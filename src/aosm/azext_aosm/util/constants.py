@@ -10,7 +10,7 @@ CNF = "cnf"
 NSD = "nsd"
 SCHEMA = "schema"
 
-## TODO pk5: clean up these names
+# TODO pk5: clean up these names
 
 # Names of files used in the repo
 NSD_DEFINITION_BICEP_SOURCE_TEMPLATE = "nsd_template.bicep"
@@ -47,8 +47,11 @@ SCHEMA_PREFIX = {
     "type": "object",
     "properties": {},
 }
-IMAGE_LINE_REGEX = (
-    r"image: \{\{ .Values.(.+?) \}\}/(.+?):(\d+\.\d+\.\d+(-\w+)?(\.\d+)?)"
-)
-IMAGE_PULL_SECRET_LINE_REGEX = r"imagePullSecrets: \[name: \{\{ .Values.(.+?) \}\}\]"
+# IMAGE_LINE_REGEX = (
+#     r"image: \{\{ .Values.(.+?) \}\}/(.+?):(\d+\.\d+\.\d+(-\w+)?(\.\d+)?)"
+# )
+IMAGE_LINE_REGEX = r".Values\.([^\s})]*)"
+# IMAGE_PULL_SECRET_LINE_REGEX = r"imagePullSecrets: \[name: \{\{ .Values.(.+?) \}\}\]"
+IMAGE_PULL_SECRET_LINE_REGEX = r".Values\.([^\s})]*)"
+
 DEPLOYMENT_PARAMETER_MAPPING_REGEX = r"\{deployParameters.(.+?)\}"

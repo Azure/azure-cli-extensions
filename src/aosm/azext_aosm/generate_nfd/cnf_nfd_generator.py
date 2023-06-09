@@ -97,18 +97,24 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
                     # Get all image line matches for files in the chart.
                     # Do this here so we don't have to do it multiple times.
+                    # image_line_matches = self.find_pattern_matches_in_chart(
+                    #     helm_package, IMAGE_LINE_REGEX
+                    # )
                     image_line_matches = self.find_pattern_matches_in_chart(
-                        helm_package, IMAGE_LINE_REGEX
+                        helm_package, IMAGE_LINE_REGEX, "image:"
                     )
-
+                    print("first", image_line_matches)
                     # Generate the NF application configuration for the chart
                     # passed to jinja2 renderer to render bicep template
                     self.nf_application_configurations.append(
                         self.generate_nf_application_config(
                             helm_package,
                             image_line_matches,
+                            # self.find_pattern_matches_in_chart(
+                            #     helm_package, IMAGE_PULL_SECRET_LINE_REGEX
+                            # ),
                             self.find_pattern_matches_in_chart(
-                                helm_package, IMAGE_PULL_SECRET_LINE_REGEX
+                                helm_package, IMAGE_PULL_SECRET_LINE_REGEX, "imagePullSecrets:"
                             ),
                         )
                     )
@@ -288,7 +294,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                     yield os.path.join(root, file)
 
     def find_pattern_matches_in_chart(
-        self, helm_package: HelmPackageConfig, pattern: str
+        self, helm_package: HelmPackageConfig, pattern: str, start_string: str
     ) -> List[Tuple[str, ...]]:
         """
         Find pattern matches in Helm chart, using provided REGEX pattern.
@@ -298,12 +304,38 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         """
         chart_dir = os.path.join(self._tmp_folder_name, helm_package.name)
         matches = []
-
+        path = []
+        # name_and_version = ()
+        # for file in self._find_yaml_files(chart_dir):
+        #     with open(file, "r", encoding="UTF-8") as f:
+        #         contents = f.read()
+        #         print(re.findall(pattern, contents))
+        #         matches += re.findall(pattern, contents)
         for file in self._find_yaml_files(chart_dir):
             with open(file, "r", encoding="UTF-8") as f:
-                contents = f.read()
-                matches += re.findall(pattern, contents)
+                for line in f:
+                    if start_string in line:
+                        print("LINE", start_string, line)
+                        path = re.findall(pattern, line)
+                        # testing splitting regex to get version and name
+                        if start_string == "image:":
+                            # re.findall(r"\/(.*)\:(.*)", line)
 
+                            # name_and_version = re.search(r"\/([^\s\/:]+):([^\s\/]+)", line)
+                            name_and_version = re.search(r"\/([^\/]+):([^\/]+)", line)
+                            # name_and_version = re.search(r'/(.+?):[\s"]*([^/)\s"]+)', line)
+                            print("name_and_version", name_and_version)
+                            print("n", name_and_version.group(1))
+                            print("v", name_and_version.group(2))
+                            # name = name_and_version[0][0]
+                            # version = name_and_version[0][1]
+                            # print("name", name)
+                            # ( ['image1', 'image2'], 'name', 'version' )
+                            matches += (path, name_and_version.group(1), name_and_version.group(2))
+                            print("path", path)
+                        else:
+                            matches += path
+        print("MATCHES", matches)
         return matches
 
     def get_artifact_list(
@@ -351,7 +383,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         values_schema = os.path.join(
             self._tmp_folder_name, helm_package.name, "values.schema.json"
         )
-
+        print("helm", helm_package.name)
+        
         if not os.path.exists(mappings_path):
             raise InvalidTemplateError(
                 f"ERROR: The helm package '{helm_package.name}' does not have a valid values mappings file. \
@@ -360,8 +393,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             )
         if not os.path.exists(values_schema):
             raise InvalidTemplateError(
-                f"ERROR: The helm package '{helm_package.name}' is missing values.schema.json. \
-                    Please fix this and run the command again."
+                f"ERROR: The helm package '{helm_package.name}' is missing values.schema.json.\n\
+                Please fix this and run the command again."
             )
 
         with open(mappings_path, "r", encoding="utf-8") as stream:
@@ -387,7 +420,11 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
     ) -> Dict[Any, Any]:
         """Find the deploy parameters in the values.mappings.yaml file and add them to the schema."""
         original_schema_nested_dict = schema_nested_dict
+        # if given a blank mapping file, return empty schema
+        if nested_dict is None:
+            return {}
         for k, v in nested_dict.items():
+            # print("k", k)
             # if value is a string and contains deployParameters.
             if isinstance(v, str) and re.search(DEPLOYMENT_PARAMETER_MAPPING_REGEX, v):
                 # only add the parameter name (e.g. from {deployParameter.zone} only param = zone)
@@ -440,10 +477,10 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
     def generate_parameter_mappings(self, helm_package: HelmPackageConfig) -> str:
         """Generate parameter mappings for the given helm package."""
-        values = os.path.join(
-            self._tmp_folder_name, helm_package.name, "values.mappings.yaml"
-        )
-
+        # values = os.path.join(
+        #     self._tmp_folder_name, helm_package.name, "values.mappings.yaml"
+        # )
+        values = helm_package.path_to_mappings
         mappings_folder_path = os.path.join(self._tmp_folder_name, CONFIG_MAPPINGS)
         mappings_filename = f"{helm_package.name}-mappings.json"
 
