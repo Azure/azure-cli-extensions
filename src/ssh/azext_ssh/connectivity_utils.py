@@ -30,7 +30,7 @@ logger = log.get_logger(__name__)
 
 
 # Get the Access Details to connect to Arc Connectivity platform from the HybridConnectivity RP
-def get_relay_information(cmd, resource_group, vm_name, resource_type, certificate_validity_in_seconds, port):
+def get_relay_information(cmd, resource_group, vm_name, resource_type, certificate_validity_in_seconds, port, yes_without_prompt):
     from .aaz.latest.hybrid_connectivity.endpoint import ListCredential
 
     if not certificate_validity_in_seconds or \
@@ -55,23 +55,23 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
         raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
 
     if not cred:
-        _create_service_configuration(cmd, resource_uri, port)
+        _create_service_configuration(cmd, resource_uri, port, yes_without_prompt)
         new_service_config = True
         try:
             cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
         except Exception as e:
             raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
-        _handle_relay_connection_delay(cmd)
+        _handle_relay_connection_delay(cmd, "Setting up service configuration")
     else:
         if not _check_service_configuration(cmd, resource_uri, port):
-            _create_service_configuration(cmd, resource_uri, port)
+            _create_service_configuration(cmd, resource_uri, port, yes_without_prompt)
             new_service_config = True
             try:
                 cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
             except Exception as e:
                 raise azclierror.UnclassifiedUserFault(f"Unable to get relay information. Failed with error: {str(e)}")
-            _handle_relay_connection_delay(cmd)
-    return cred
+            _handle_relay_connection_delay(cmd, "Setting up service configuration")
+    return (cred, new_service_config)
 
 
 def _check_service_configuration(cmd, resource_uri, port):
@@ -128,11 +128,11 @@ def _create_default_endpoint(cmd, resource_uri):
     return endpoint
 
 
-def _create_service_configuration(cmd, resource_uri, port):
+def _create_service_configuration(cmd, resource_uri, port, yes_without_prompt):
     from .aaz.latest.hybrid_connectivity.endpoint.service_configuration import Create as CreateServiceConfig
     if not port:
         port = '22'
-    if not prompt_y_n(f"Current service configuration doesn't allow SSH connection to port {port}. Would you like to add it?") and port != '22':
+    if not yes_without_prompt and not prompt_y_n(f"Current service configuration doesn't allow SSH connection to port {port}. Would you like to add it?"):
         raise azclierror.ClientRequestError(f"No ssh permission for port {port}. If you want to connect to this port follow intructions on this doc: aka.ms/ssharc.")
             
     create_service_conf_args = {
@@ -283,16 +283,16 @@ def format_relay_info_string(relay_info):
     return base64_result_string
 
 
-def _handle_relay_connection_delay(cmd):
+def _handle_relay_connection_delay(cmd, message):
     # relay has retry delay after relay connection is lost
     # must sleep for at least as long as the delay
     # otherwise the ssh connection will fail
     progress_bar = cmd.cli_ctx.get_progress_controller(True)
     for x in range(0, consts.RELAY_CONNECTION_DELAY_IN_SECONDS + 1):
         interval = float(1/consts.RELAY_CONNECTION_DELAY_IN_SECONDS)
-        progress_bar.add(message='Service configuration setup:',
+        progress_bar.add(message='{}:'.format(message),
                             value=interval * x, total_val=1.0)
         time.sleep(1)
-    progress_bar.add(message='Service configuration setup: complete', 
+    progress_bar.add(message='{}: complete'.format(message), 
                         value=1.0, total_val=1.0)
     progress_bar.end()

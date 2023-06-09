@@ -44,10 +44,9 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         if op_info.is_arc():
             env['SSHPROXY_RELAY_INFO'] = connectivity_utils.format_relay_info_string(op_info.relay_info)
 
-        retry_attempts_left = 0
+        retry_attempt = 0
+        retry_attempts_allowed = 0
         successful_connection = False
-        if op_info.new_service_config:
-            retry_attempts_left = 1
 
         # Get ssh client before starting the clean up process in case there is an error in getting client.
         command = [get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host(), "-l", op_info.local_user]
@@ -55,7 +54,10 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         command = command + op_info.build_args() + ssh_arg_list
         logger.debug("Running ssh command %s", ' '.join(command))
 
-        while (retry_attempts_left >= 0 and not successful_connection):
+        while (retry_attempt <= retry_attempts_allowed and not successful_connection):
+            if retry_attempt == 1:
+                logger.warning(f"Initial ssh connection attempt after service configuration update failed, retrying in {str(const.RELAY_CONNECTION_DELAY_IN_SECONDS)} seconds.")
+                time.sleep(const.RELAY_CONNECTION_DELAY_IN_SECONDS)
             connection_duration = time.time()
             try:
                 # pylint: disable=consider-using-with
@@ -76,7 +78,9 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
                 ssh_connection_data['Context.Default.AzureCLI.SSHConnectionStatus'] = "Success"
                 successful_connection = True
             telemetry.add_extension_event('ssh', ssh_connection_data)
-            retry_attempts_left -= 1
+            if op_info.new_service_config and ssh_process.poll() == 255:
+                retry_attempts_allowed = 1
+            retry_attempt += 1
 
     finally:
         # Even if something fails between the creation of the credentials and the end of the ssh connection, we

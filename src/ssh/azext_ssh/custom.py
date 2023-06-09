@@ -33,7 +33,7 @@ logger = log.get_logger(__name__)
 def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_file=None,
            private_key_file=None, use_private_ip=False, local_user=None, cert_file=None, port=None,
            ssh_client_folder=None, delete_credentials=False, resource_type=None, ssh_proxy_folder=None,
-           winrdp=False, ssh_args=None):
+           winrdp=False, yes_without_prompt=False, ssh_args=None):
 
     # delete_credentials can only be used by Azure Portal to provide one-click experience on CloudShell.
     if delete_credentials and os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
@@ -59,7 +59,7 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
     ssh_session = ssh_info.SSHSession(resource_group_name, vm_name, ssh_ip, public_key_file,
                                       private_key_file, use_private_ip, local_user, cert_file, port,
                                       ssh_client_folder, ssh_args, delete_credentials, resource_type,
-                                      ssh_proxy_folder, credentials_folder, winrdp)
+                                      ssh_proxy_folder, credentials_folder, winrdp, yes_without_prompt)
     ssh_session.resource_type = resource_type_utils.decide_resource_type(cmd, ssh_session)
     target_os_utils.handle_target_os_type(cmd, ssh_session)
 
@@ -142,13 +142,13 @@ def ssh_cert(cmd, cert_path=None, public_key_file=None, ssh_client_folder=None):
 
 def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, private_key_file=None,
             local_user=None, cert_file=None, port=None, resource_type=None, ssh_client_folder=None,
-            delete_credentials=False, ssh_proxy_folder=None, winrdp=False, ssh_args=None):
+            delete_credentials=False, ssh_proxy_folder=None, winrdp=False, yes_without_prompt=False, ssh_args=None):
 
     if not resource_type:
         resource_type = const.ARC_RESOURCE_TYPE_PLACEHOLDER
 
     ssh_vm(cmd, resource_group_name, vm_name, None, public_key_file, private_key_file, False, local_user, cert_file,
-           port, ssh_client_folder, delete_credentials, resource_type, ssh_proxy_folder, winrdp, ssh_args)
+           port, ssh_client_folder, delete_credentials, resource_type, ssh_proxy_folder, winrdp, yes_without_prompt, ssh_args)
 
 
 def _do_ssh_op(cmd, op_info, op_call):
@@ -190,7 +190,8 @@ def _do_ssh_op(cmd, op_info, op_call):
             (op_info.relay_info, op_info.new_service_config) = connectivity_utils.get_relay_information(cmd, 
                                                                           op_info.resource_group_name,
                                                                           op_info.vm_name, op_info.resource_type,
-                                                                          cert_lifetime, op_info.port)
+                                                                          cert_lifetime, op_info.port,
+                                                                          op_info.yes_without_prompt)
     except Exception as e:
         if delete_keys or delete_cert:
             logger.debug("An error occured before operation concluded. Deleting generated keys: %s %s %s",
