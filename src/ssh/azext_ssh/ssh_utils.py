@@ -35,8 +35,7 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         # When connecting to a local user on a host with a banner, output gets messed up if stderr redirected.
         # If user expects logs to be printed, do not redirect logs. In some ocasions output gets messed up.
         redirect_stderr = set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list) and \
-            (delete_cert or op_info.delete_credentials)
-
+            (delete_cert or op_info.delete_credentials or op_info.new_service_config)
         if redirect_stderr:
             ssh_arg_list = ['-v'] + ssh_arg_list
 
@@ -55,6 +54,7 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         logger.debug("Running ssh command %s", ' '.join(command))
 
         while (retry_attempt <= retry_attempts_allowed and not successful_connection):
+            service_config_delay_error = False
             if retry_attempt == 1:
                 logger.warning(f"Initial ssh connection attempt after service configuration update failed, retrying in {str(const.RELAY_CONNECTION_DELAY_IN_SECONDS)} seconds.")
                 time.sleep(const.RELAY_CONNECTION_DELAY_IN_SECONDS)
@@ -63,7 +63,7 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
                 # pylint: disable=consider-using-with
                 if redirect_stderr:
                     ssh_process = subprocess.Popen(command, stderr=subprocess.PIPE, env=env, encoding='utf-8')
-                    _read_ssh_logs(ssh_process, op_info, delete_cert, delete_keys)
+                    service_config_delay_error = _read_ssh_logs(ssh_process, op_info, delete_cert, delete_keys)
                 else:
                     ssh_process = subprocess.Popen(command, env=env, encoding='utf-8')
                     _wait_to_delete_credentials(ssh_process, op_info, delete_cert, delete_keys)
@@ -78,7 +78,7 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
                 ssh_connection_data['Context.Default.AzureCLI.SSHConnectionStatus'] = "Success"
                 successful_connection = True
             telemetry.add_extension_event('ssh', ssh_connection_data)
-            if op_info.new_service_config and ssh_process.poll() == 255:
+            if op_info.new_service_config and service_config_delay_error and ssh_process.poll() == 255:
                 retry_attempts_allowed = 1
             retry_attempt += 1
 
@@ -107,7 +107,7 @@ def _read_ssh_logs(ssh_sub, op_info, delete_cert, delete_keys):
     log_list = []
     connection_established = False
     t0 = time.time()
-
+    service_config_delay_error = False
     next_line = ssh_sub.stderr.readline()
     while next_line:
         log_list.append(next_line)
@@ -117,6 +117,8 @@ def _read_ssh_logs(ssh_sub, op_info, delete_cert, delete_keys):
            not next_line.startswith("Authenticated "):
             sys.stderr.write(next_line)
             _check_for_known_errors(next_line, delete_cert, log_list)
+            if not service_config_delay_error:
+                service_config_delay_error = check_for_service_config_delay_error(next_line)
 
         if "debug1: Entering interactive session." in next_line:
             connection_established = True
@@ -131,6 +133,7 @@ def _read_ssh_logs(ssh_sub, op_info, delete_cert, delete_keys):
         next_line = ssh_sub.stderr.readline()
 
     ssh_sub.wait()
+    return service_config_delay_error
 
 
 def _wait_to_delete_credentials(ssh_sub, op_info, delete_cert, delete_keys):
@@ -254,6 +257,14 @@ def _check_for_known_errors(error_message, delete_cert, log_lines):
     if re.search(regex, error_message):
         logger.error("Please make sure SSH port is allowed using \"azcmagent config list\" in the target "
                      "Arc Server. Ensure SSHD is running on the target machine.\n")
+
+
+def check_for_service_config_delay_error(error_message):
+    service_config_delay_error = False
+    regex = ("{\"level\":\"fatal\",\"msg\":\"sshproxy: error connecting to the address: 404 Endpoint does not exist.*")
+    if re.search(regex, error_message):
+        service_config_delay_error = True
+    return service_config_delay_error
 
 
 def get_ssh_client_path(ssh_command="ssh", ssh_client_folder=None):
