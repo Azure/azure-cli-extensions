@@ -28,6 +28,8 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
         log_list = []
         print_ssh_logs = False
         ssh_success = False
+        retry_attempt = 0
+        retry_attempts_allowed = 0
 
         resource_port = 3389
         local_port = _get_open_port()
@@ -40,11 +42,18 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
         else:
             ssh_info.ssh_args = ['-L', f"{local_port}:localhost:{resource_port}", "-N"] + ssh_info.ssh_args
 
-        ssh_process, print_ssh_logs = start_ssh_tunnel(ssh_info)
-        ssh_connection_t0 = time.time()
-        ssh_success, log_list = wait_for_ssh_connection(ssh_process, print_ssh_logs)
-        ssh_utils.do_cleanup(delete_keys, delete_cert, ssh_info.delete_credentials, ssh_info.cert_file,
-                             ssh_info.private_key_file, ssh_info.public_key_file)
+        while (retry_attempt <= retry_attempts_allowed and not ssh_success):
+            if retry_attempt == 1:
+                logger.warning(f"Initial ssh connection attempt after service configuration update failed, retrying in {str(const.RELAY_CONNECTION_DELAY_IN_SECONDS)} seconds.")
+                time.sleep(const.RELAY_CONNECTION_DELAY_IN_SECONDS)
+            ssh_process, print_ssh_logs = start_ssh_tunnel(ssh_info)
+            ssh_connection_t0 = time.time()
+            ssh_success, log_list = wait_for_ssh_connection(ssh_process, print_ssh_logs)
+            ssh_utils.do_cleanup(delete_keys, delete_cert, ssh_info.delete_credentials, ssh_info.cert_file,
+                                ssh_info.private_key_file, ssh_info.public_key_file)
+            if ssh_info.new_service_config and ssh_process.poll() == 255:
+                retry_attempts_allowed = 1
+            retry_attempt += 1    
         if ssh_success and ssh_process.poll() is None:
             call_rdp(local_port)
 
@@ -121,7 +130,7 @@ def start_ssh_tunnel(op_info):
 
 def wait_for_ssh_connection(ssh_sub, print_ssh_logs):
     log_list = []
-    ssh_sucess = False
+    ssh_success = False
     while True:
         next_line = ssh_sub.stderr.readline()
         if print_ssh_logs:
@@ -129,14 +138,14 @@ def wait_for_ssh_connection(ssh_sub, print_ssh_logs):
         else:
             log_list.append(next_line)
         if "debug1: Entering interactive session." in next_line:
-            logger.debug("SSH Connection estalished succesfully.")
-            ssh_sucess = True
+            logger.debug("SSH Connection established succesfully.")
+            ssh_success = True
             break
         if ssh_sub.poll() is not None:
             logger.debug("SSH Connection failed.")
-            ssh_sucess = False
+            ssh_success = False
             break
-    return ssh_sucess, log_list
+    return ssh_success, log_list
 
 
 def terminate_ssh(ssh_process, log_list, print_ssh_logs):
