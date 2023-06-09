@@ -196,4 +196,3 @@ class LoadScenario(ScenarioTest):
         
         self.cmd('az load delete --name {resource_name_cmk} '
                 '--resource-group {rg} --yes')
-        

@@ -322,7 +322,7 @@ def validate_metric_namespaces(namespace):
 
 
 def validate_dimension_filters(namespace):
-    """Extracts multiple space and comma-separated dimension filters in key1[=value1] key1[=value2] key2[=value3] format"""
+    """Extracts multiple space separated dimension filters in key1[=value1] key1[=value2] key2[=value3] format"""
     if isinstance(namespace.dimension_filters, list):
         filters_dict = OrderedDict()
         for item in namespace.dimension_filters:
@@ -339,7 +339,7 @@ def validate_dimension_filters(namespace):
 
 
 def _validate_dimension_filter(string):
-    """Extracts a single comma-separated dimension filters in key1[=value1] format"""
+    """Extracts a single dimension filters in key1[=value1] format"""
     result = {}
     if string:
         comps = string.split("=", 1)

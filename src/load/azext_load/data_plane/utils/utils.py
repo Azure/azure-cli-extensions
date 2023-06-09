@@ -282,7 +282,7 @@ def convert_yaml_to_test(data):
         logger.warning(
             "Quick start test is not supported currently in CLI. Please use portal to run quick start test"
         )
-    if data.get("splitAllCSVs"):
+    if data.get("splitAllCSVs") is not None:
         new_body["loadTestConfiguration"]["splitAllCSVs"] = data.get("splitAllCSVs")
 
     if data.get("failureCriteria"):
@@ -312,6 +312,7 @@ def convert_yaml_to_test(data):
             new_body["passFailCriteria"]["passFailMetrics"][metric_id][
                 "requestName"
             ] = name
+    logger.debug("Converted yaml to test body: %s", new_body)
     return new_body
 
 

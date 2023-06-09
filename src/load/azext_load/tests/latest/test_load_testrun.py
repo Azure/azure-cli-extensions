@@ -57,14 +57,14 @@ class LoadTestRunScenario(ScenarioTest):
         )
 
         create_test(self, is_long=True)
-        test_run = self.cmd(
+        self.cmd(
             "az load test-run create "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             "--test-id {test_id} "
-            "--test-run-id {test_run_id} ",
+            "--test-run-id {test_run_id} "
             "--no-wait",
-        ).get_output_in_json()
+        )
 
         #waiting for test to start
         if self.is_live:
@@ -187,7 +187,7 @@ class LoadTestRunScenario(ScenarioTest):
         create_test(self)
         create_test_run(self)
         if self.is_live:
-            time.sleep(10)
+            time.sleep(20)
         self.cmd(
             "az load test-run update "
             "--load-test-resource {load_test_resource} "
