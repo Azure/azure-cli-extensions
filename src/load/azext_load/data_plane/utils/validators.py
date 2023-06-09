@@ -131,7 +131,7 @@ def validate_subnet_id(namespace):
         return
     if not is_valid_resource_id(namespace.subnet_id):
         raise InvalidArgumentValueError(
-            f"{namespace.subnet_id} is not a valid Azure resource ID."
+            f"{namespace.subnet_id} is not a valid Azure subnet resource ID."
         )
 
 
@@ -180,7 +180,7 @@ def validate_download(namespace):
     if namespace.force:
         os.makedirs(namespace.path, exist_ok=True)
         logger.warning(
-            "Directory does not exist. Created as --force is passed - %s",
+            "\"%s\" directory does not exist. Created as --force option is passed.",
             namespace.path,
         )
         return

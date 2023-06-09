@@ -193,7 +193,7 @@ def download_test_files(
                 file_path,
             )
         logger.warning(
-            "Downloaded files for test with test ID: %s at %s", test_id, path
+            "Downloaded files for test ID: %s at  directory %s", test_id, path
         )
     else:
         logger.warning("No files found for test with test ID: %s", test_id)
@@ -392,7 +392,7 @@ def download_test_file(
         test_id,
         file_path,
     )
-    logger.warning("Downloaded files for test with test ID: %s at %s", test_id, path)
+    logger.warning("Downloaded files for test ID: %s at directory %s", test_id, path)
 
 
 def delete_test_file(
