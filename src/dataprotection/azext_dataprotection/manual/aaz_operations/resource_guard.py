@@ -98,7 +98,7 @@ class Update(_Update):
                 logger.warning("WARNING: --resource-type argument is required if --critical-operation-exclusion-list is given.")
                 self.ctx.args.critical_operation_exclusion_list = AAZUndefined
 
-    class InstanceUpdateByJson(_Update.InstanceUpdateByJson):
+    class InstanceUpdateByJson(_Update.InstanceUpdateByJson):   # pylint: disable=too-few-public-methods
 
         def _update_instance(self, instance):
             _instance = super()._update_instance(instance)

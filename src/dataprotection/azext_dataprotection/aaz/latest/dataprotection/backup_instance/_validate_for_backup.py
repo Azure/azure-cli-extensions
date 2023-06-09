@@ -16,7 +16,10 @@ from azure.cli.core.aaz import *
     is_experimental=True,
 )
 class ValidateForBackup(AAZCommand):
-    """Validate whether adhoc backup will be successful or not
+    """Validate whether adhoc backup will be successful or not.
+
+    :example: Validate for backup
+        az dataprotection backup-instance validate-for-backup -g sarath-rg --vault-name sarath-vault --backup-instance backup_instance.json
     """
 
     _aaz_info = {
@@ -52,13 +55,8 @@ class ValidateForBackup(AAZCommand):
             required=True,
             id_part="name",
         )
-
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
         _args_schema.backup_instance = AAZObjectArg(
             options=["--backup-instance"],
-            arg_group="Parameters",
             help="Backup Instance",
             required=True,
         )

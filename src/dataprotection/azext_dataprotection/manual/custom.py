@@ -14,7 +14,6 @@ import re
 import time
 from knack.util import CLIError
 from knack.log import get_logger
-from azure.cli.core.util import sdk_no_wait
 from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
 from azext_dataprotection.manual import backupcenter_helper, helpers as helper
@@ -39,61 +38,10 @@ def resource_guard_list_protected_operations(cmd, resource_group_name, resource_
     return resource_type_protected_operation
 
 
-def dataprotection_backup_instance_create(cmd, vault_name, resource_group_name, backup_instance, no_wait=False):
-    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Create as _Create, ValidateForBackup as _ValidateForBackup, Update as _Update
-
-    class ValidateAndCreate(_Update):
-
-        def _execute_operations(self):
-            self.pre_operations()
-            yield self.BackupInstancesValidateForBackup(ctx=self.ctx)()
-            yield self.BackupInstancesCreateOrUpdate(ctx=self.ctx)()
-            self.post_operations()
-
-        def pre_operations(self):
-            self.ctx.set_var(
-                "instance",
-                backup_instance,
-                schema_builder=self.BackupInstancesCreateOrUpdate._build_schema_on_200_201
-            )
-
-        class BackupInstancesValidateForBackup(_ValidateForBackup.BackupInstancesValidateForBackup):
-
-            @property
-            def content(self):
-                _content_value, _builder = self.new_content_builder(
-                    self.ctx.args,
-                    value=self.ctx.vars.instance.properties,
-                )
-
-                return {
-                    "backupInstance": self.serialize_content(_content_value)
-                }
-
-        class BackupInstancesCreateOrUpdate(_Create.BackupInstancesCreateOrUpdate):
-
-            @property
-            def content(self):
-                _content_value, _builder = self.new_content_builder(
-                    self.ctx.args,
-                    value=self.ctx.vars.instance,
-                )
-                return self.serialize_content(_content_value)
-
-    backup_instance_name = backup_instance["backup_instance_name"]
-
-    return ValidateAndCreate(cli_ctx=cmd.cli_ctx)(command_args={
-        "vault_name": vault_name,
-        "resource_group": resource_group_name,
-        "backup_instance_name": backup_instance_name,
-        "no_wait": no_wait,
-    })
-
-
 def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource_group_name, backup_instance,
                                                        no_wait=False):
 
-    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Create as _Create, ValidateForBackup as _ValidateForBackup
+    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import ValidateForBackup as _ValidateForBackup
 
     class Validate(_ValidateForBackup):
 
@@ -140,7 +88,7 @@ def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource
 
             @property
             def content(self):
-                body = helper.convert_dict_keys_snake_to_camel(backup_instance["properties"])
+                body = helper.convert_dict_keys_snake_to_camel(backup_instance['properties'])
 
                 return {
                     "backupInstance": body
@@ -149,7 +97,7 @@ def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource
     return Validate(cli_ctx=cmd.cli_ctx)(command_args={
         "vault_name": vault_name,
         "resource_group": resource_group_name,
-        "backup_instance": backup_instance["properties"],
+        "backup_instance": backup_instance['properties'],
         "no_wait": no_wait,
     })
 
@@ -272,21 +220,6 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
     }
 
 
-# def dataprotection_backup_instance_update_policy_old(client, resource_group_name, vault_name, backup_instance_name, policy_id, no_wait=False):
-#     backup_instance = client.get(vault_name=vault_name,
-#                                  resource_group_name=resource_group_name,
-#                                  backup_instance_name=backup_instance_name)
-
-#     backup_instance.properties.policy_info.policy_id = policy_id
-
-#     return sdk_no_wait(no_wait,
-#                        client.begin_create_or_update,
-#                        vault_name=vault_name,
-#                        resource_group_name=resource_group_name,
-#                        backup_instance_name=backup_instance_name,
-#                        parameters=backup_instance)
-
-
 def dataprotection_backup_instance_update_policy(cmd, resource_group_name, vault_name, backup_instance_name, policy_id, no_wait=False):
     from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Show as BackupInstanceShow
     backup_instance = BackupInstanceShow(cli_ctx=cmd.cli_ctx)(command_args={
@@ -297,7 +230,6 @@ def dataprotection_backup_instance_update_policy(cmd, resource_group_name, vault
     policy_info = backup_instance['properties']['policyInfo']
     policy_info['policyId'] = policy_id
 
-    # from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Update as BackupInstanceUpdate
     from .aaz_operations.backup_instance import Update as BackupInstanceUpdate
     return BackupInstanceUpdate(cli_ctx=cmd.cli_ctx)(command_args={
         "no_wait": no_wait,
@@ -827,44 +759,6 @@ def dataprotection_backup_policy_tag_remove_in_policy(name, policy):
     return policy
 
 
-def dataprotection_backup_instance_validate_for_restore(cmd, vault_name, resource_group_name, backup_instance_name,
-                                                        restore_request_object, no_wait=False):
-    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import ValidateForRestore as _ValidateForRestore
-
-    class ValidateForRestore(_ValidateForRestore):
-
-        def pre_operations(self):
-            self.ctx.set_var(
-                "instance",
-                restore_request_object,
-                schema_builder=self.BackupInstancesValidateForRestore._build_schema_on_200
-            )
-
-        @classmethod
-        def _build_arguments_schema(cls, *args, **kwargs):
-            args_schema = super()._build_arguments_schema(*args, **kwargs)
-
-            args_schema.restore_request_object._required = False
-
-            return args_schema
-
-        class BackupInstancesValidateForRestore(_ValidateForRestore.BackupInstancesValidateForRestore):
-
-            @property
-            def content(self):
-                return {
-                    "restoreRequestObject": helper.convert_dict_keys_snake_to_camel(restore_request_object)
-                }
-
-    return ValidateForRestore(cli_ctx=cmd.cli_ctx)(command_args={
-        "vault_name": vault_name,
-        "resource_group": resource_group_name,
-        "backup_instance_name": backup_instance_name,
-        "restore_request_object": restore_request_object,
-        "no_wait": no_wait
-    })
-
-
 def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, excluded_resource_types=None,
                                                             included_resource_types=None, excluded_namespaces=None,
                                                             included_namespaces=None, label_selectors=None,
@@ -895,49 +789,6 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
         "conflict_policy": conflict_policy,
         "namespace_mappings": namespace_mappings,
     }
-
-
-def dataprotection_backup_instance_restore_trigger(cmd, vault_name, resource_group_name, backup_instance_name,
-                                                   restore_request_object, no_wait=False):
-    from azext_dataprotection.aaz.latest.dataprotection.backup_instance.restore import Trigger as _Trigger
-
-    class Trigger(_Trigger):
-
-        @classmethod
-        def _build_arguments_schema(cls, *args, **kwargs):
-            args_schema = super()._build_arguments_schema(*args, **kwargs)
-
-            args_schema.restore_target_info._required = False
-            args_schema.source_data_store_type._required = False
-
-            return args_schema
-
-        def _execute_operations(self):
-            self.pre_operations()
-            yield self.BackupInstancesTriggerRestore(ctx=self.ctx)()
-            self.post_operations()
-
-        class BackupInstancesTriggerRestore(_Trigger.BackupInstancesTriggerRestore):
-
-            @property
-            def content(self):
-                return helper.convert_dict_keys_snake_to_camel(restore_request_object)
-
-            def on_200(self, session):
-                data = self.deserialize_http_content(session)
-                self.ctx.set_var(
-                    "instance",
-                    data["properties"],
-                    schema_builder=self._build_schema_on_200
-                )
-
-    return Trigger(cli_ctx=cmd.cli_ctx)(command_args={
-        "vault_name": vault_name,
-        "resource_group": resource_group_name,
-        "backup_instance_name": backup_instance_name,
-        "restore_request_object": restore_request_object,
-        "no_wait": no_wait
-    })
 
 
 def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore, restore_location, target_resource_id=None,
@@ -991,7 +842,7 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
     datasource_id = None
     # Alternate/Original Location - setting the Target's datasource info accordingly
     if target_resource_id is not None and backup_instance_id is not None:
-        raise CLIError("Please provide either target-resource-id (for alternate location restore) of backup-instance-id \
+        raise CLIError("Please provide either target-resource-id (for alternate location restore) or backup-instance-id \
                        (for original location restore), not both.")
 
     if target_resource_id is not None:
@@ -1019,7 +870,7 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
         datasource_id = backup_instance['properties']['dataSourceInfo']['resourceID']
 
     if backup_instance_id is None and target_resource_id is None:
-        raise CLIError("Please provide either target-resource-id (for alternate location restore) of backup-instance-id (for original location restore).")
+        raise CLIError("Please provide either target-resource-id (for alternate location restore) or backup-instance-id (for original location restore).")
 
     restore_request["restore_target_info"]["datasource_info"] = helper.get_datasource_info(datasource_type, datasource_id, restore_location)
 

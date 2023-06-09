@@ -7,7 +7,6 @@
 # pylint: disable=line-too-long
 from azext_dataprotection.aaz.latest.dataprotection.backup_policy import Create as _Create
 from azure.cli.core.aaz import (
-    AAZCommand,
     AAZStrArg, AAZResourceGroupNameArg, AAZFreeFormDictArg,
     AAZObjectType, AAZFreeFormDictType
 )
@@ -20,7 +19,7 @@ class Create(_Create):
     def _build_arguments_schema(cls, *args, **kwargs):
         if cls._args_schema is not None:
             return cls._args_schema
-        cls._args_schema = AAZCommand._build_arguments_schema(cls, *args, **kwargs)
+        cls._args_schema = super(_Create, cls)._build_arguments_schema(cls, *args, **kwargs)    # pylint: disable=bad-super-call
 
         _args_schema = cls._args_schema
         _args_schema.backup_policy_name = AAZStrArg(
@@ -48,7 +47,7 @@ class Create(_Create):
 
     class BackupPoliciesCreateOrUpdate(_Create.BackupPoliciesCreateOrUpdate):
 
-        def __call__(self, *args, **kwargs):
+        def __call__(self, *args, **kwargs):    # Remove after error handling fixed.
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [200]:
