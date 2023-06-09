@@ -2,6 +2,17 @@
 
 Release History
 ===============
+0.8.3
++++++
+* `az dataprotection backup-instance`: Migrated to AAZ-dev-tools
+* `az dataprotection backup-policy`: Migrated to AAZ-dev-tools
+* `az dataprotection resource-guard`: Migrated to AAZ-dev-tools
+* `az dataprotection restorable-time-range`: Migrated to AAZ-dev-tools=
+
+0.8.2
++++++
+* No user-facing updates - quickfix making the `aaz_operations` folder a module.
+
 0.8.1
 +++++
 * `az dataprotection recovery-point`: Migrated to AAZ-dev-tools
