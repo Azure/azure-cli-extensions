@@ -3,15 +3,14 @@
 
 # pylint: disable=unidiomatic-typecheck
 """A module to handle interacting with artifacts."""
-from typing import Union
 from dataclasses import dataclass
-from knack.log import get_logger
+from typing import Union
 
 from azure.storage.blob import BlobClient, BlobType
-from azext_aosm._configuration import ArtifactConfig
+from knack.log import get_logger
 from oras.client import OrasClient
-from azext_aosm._configuration import ArtifactConfig
 
+from azext_aosm._configuration import ArtifactConfig
 
 logger = get_logger(__name__)
 
@@ -72,9 +71,13 @@ class Artifact:
         if artifact_config.file_path:
             logger.info("Upload to blob store")
             with open(artifact_config.file_path, "rb") as artifact:
-                self.artifact_client.upload_blob(artifact, overwrite=True, blob_type=BlobType.PAGEBLOB)
+                self.artifact_client.upload_blob(
+                    artifact, overwrite=True, blob_type=BlobType.PAGEBLOB
+                )
             logger.info(
-                "Successfully uploaded %s to %s", artifact_config.file_path, self.artifact_client.account_name
+                "Successfully uploaded %s to %s",
+                artifact_config.file_path,
+                self.artifact_client.account_name,
             )
         else:
             logger.info("Copy from SAS URL to blob store")
@@ -84,8 +87,10 @@ class Artifact:
                 logger.debug(source_blob.url)
                 self.artifact_client.start_copy_from_url(source_blob.url)
                 logger.info(
-                    "Successfully copied %s from %s to %s", 
-                    source_blob.blob_name, source_blob.account_name, self.artifact_client.account_name
+                    "Successfully copied %s from %s to %s",
+                    source_blob.blob_name,
+                    source_blob.account_name,
+                    self.artifact_client.account_name,
                 )
             else:
                 raise RuntimeError(

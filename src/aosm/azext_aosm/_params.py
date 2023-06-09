@@ -7,7 +7,7 @@
 from argcomplete.completers import FilesCompleter
 from azure.cli.core import AzCommandsLoader
 
-from .util.constants import VNF, CNF, NSD
+from .util.constants import CNF, VNF
 
 
 def load_arguments(self: AzCommandsLoader, _):
@@ -51,6 +51,22 @@ def load_arguments(self: AzCommandsLoader, _):
             type=file_type,
             completer=FilesCompleter(allowednames="*.bicep"),
             help="Optional path to a bicep file to publish. Use to override publish of the built design with an alternative file.",
+        )
+        c.argument(
+            "order_params",
+            arg_type=get_three_state_flag(),
+            help="VNF definition_type only - ignored for CNF."
+            " Order deploymentParameters schema and configMappings to have the "
+            "parameters without default values at the top and those with default "
+            "values at the bottom. Can make it easier to remove those with defaults "
+            "which you do not want to expose as NFD parameters.",
+        )
+        c.argument(
+            "interactive",
+            options_list=["--interactive", "-i"],
+            arg_type=get_three_state_flag(),
+            help="Prompt user to choose every parameter to expose as an NFD parameter."
+            " Those without defaults are automatically included.",
         )
         c.argument(
             "parameters_json_file",

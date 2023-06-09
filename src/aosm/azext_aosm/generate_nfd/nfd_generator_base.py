@@ -5,12 +5,12 @@
 """Contains a base class for generating NFDs."""
 from knack.log import get_logger
 
-
 logger = get_logger(__name__)
 
 
 class NFDGenerator:
     """A class for generating an NFD from a config file."""
+
     # pylint: disable=too-few-public-methods
     def __init__(
         self,

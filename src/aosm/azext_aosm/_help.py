@@ -6,7 +6,6 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-
 helps[
     "aosm"
 ] = """

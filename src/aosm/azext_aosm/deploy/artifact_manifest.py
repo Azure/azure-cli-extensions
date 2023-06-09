@@ -4,27 +4,28 @@
 
 from functools import cached_property, lru_cache
 from typing import Any, List, Union
-from knack.log import get_logger
-from oras.client import OrasClient
 
 from azure.cli.core.azclierror import AzCLIError
 from azure.storage.blob import BlobClient
+from knack.log import get_logger
+from oras.client import OrasClient
 
-from azext_aosm.deploy.artifact import Artifact
 from azext_aosm._configuration import NFConfiguration, NSConfiguration
+from azext_aosm.deploy.artifact import Artifact
+from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.vendored_sdks.models import (
     ArtifactManifest,
-    ManifestArtifactFormat,
-    CredentialType,
     ArtifactType,
+    CredentialType,
+    ManifestArtifactFormat,
 )
-from azext_aosm.util.management_clients import ApiClients
 
 logger = get_logger(__name__)
 
 
 class ArtifactManifestOperator:
     """ArtifactManifest class."""
+
     # pylint: disable=too-few-public-methods
     def __init__(
         self,
@@ -123,7 +124,8 @@ class ArtifactManifestOperator:
             # Check we have the required artifact types for this credential. Indicates
             # a coding error if we hit this but worth checking.
             if not (
-                artifact.artifact_type in (ArtifactType.IMAGE_FILE, ArtifactType.VHD_IMAGE_FILE)
+                artifact.artifact_type
+                in (ArtifactType.IMAGE_FILE, ArtifactType.VHD_IMAGE_FILE)
             ):
                 raise AzCLIError(
                     f"Cannot upload artifact {artifact.artifact_name}."
@@ -142,7 +144,7 @@ class ArtifactManifestOperator:
                 blob_name = container_name
 
             logger.debug("container name: %s, blob name: %s", container_name, blob_name)
-            
+
             blob_url = self._get_blob_url(container_name, blob_name)
             return BlobClient.from_blob_url(blob_url)
         return self._oras_client(self._manifest_credentials["acr_server_url"])
@@ -159,9 +161,8 @@ class ArtifactManifestOperator:
                 sas_uri = str(container_credential["container_sas_uri"])
                 sas_uri_prefix = sas_uri.split("?")[0]  # pylint: disable=use-maxsplit-arg
                 sas_uri_token = sas_uri.split("?")[1]
-                
+
                 blob_url = f"{sas_uri_prefix}/{blob_name}?{sas_uri_token}"
-                
                 logger.debug("Blob URL: %s", blob_url)
 
                 return blob_url
