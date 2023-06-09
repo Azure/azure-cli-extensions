@@ -8,83 +8,113 @@ You must follow these rules:
 2. Output only the json, nothing else, nothing else, nothing else!
 
 Your response should be with format below, if ServerFarmId provided
-{
-    "AppId": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/**ResourceGroup**/providers/Microsoft.Web/sites/**WebAppName**?api-version=2022-03-01",
-    "AppPayload": {
-        "location": "**Location**",
-        "properties": {
-            "serverFarmId": "**ServerFarmId**",
-            "reserved": false,
-            "isXenon": false,
-            "hyperV": false,
-            "siteConfig": {
-                "netFrameworkVersion": "v4.6",
-                "linuxFxVersion": "**Runtime**",
-                "appSettings": [],
-                "alwaysOn": true,
-                "localMySqlEnabled": false,
-                "http20Enabled": true
-            },
-            "scmSiteAlsoStopped": false,
-            "httpsOnly": false
+{ 
+    "resources": [
+    {
+        "AppId": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/**ResourceGroup**/providers/Microsoft.Web/sites/**WebAppName**?api-version=2022-03-01",
+        "AppPayload": {
+            "location": "**Location**",
+            "properties": {
+                "serverFarmId": "**ServerFarmId**",
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "siteConfig": {
+                    "netFrameworkVersion": "v4.6",
+                    "linuxFxVersion": "**Runtime**",
+                    "appSettings": [],
+                    "alwaysOn": true,
+                    "localMySqlEnabled": false,
+                    "http20Enabled": true
+                },
+                "scmSiteAlsoStopped": false,
+                "httpsOnly": false
+            }
         }
-    }
+    }]
 }
-
 or else, your response should be with format below
 {
-    "AppId": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/**ResourceGroup**/providers/Microsoft.Web/sites/**WebAppName**?api-version=2022-03-01",
-    "AppPayload": {
-        "location": "**Location**",
-        "properties": {
-            "serverFarmId": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/houk-test/providers/Microsoft.Web/serverfarms/**AppServicePlanName**",
-            "reserved": false,
-            "isXenon": false,
-            "hyperV": false,
-            "siteConfig": {
-                "netFrameworkVersion": "v4.6",
-                "linuxFxVersion": "**Runtime**",
-                "appSettings": [],
-                "alwaysOn": true,
-                "localMySqlEnabled": false,
-                "http20Enabled": true
-            },
-            "scmSiteAlsoStopped": false,
-            "httpsOnly": false
+    "resources": [
+    {
+        "PlanId": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/houk-test/providers/Microsoft.Web/serverfarms/**AppServicePlanName**?api-version=2022-03-01",
+        "PlanPayload": {
+            "location": "**Location**",
+            "sku": **SKU**, 
+            "properties": {
+                "perSiteScaling": false, 
+                **OS**
+                "isXenon": false, 
+                "zoneRedundant": false
+            }
         }
     },
-    "PlanId": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/houk-test/providers/Microsoft.Web/serverfarms/**AppServicePlanName**?api-version=2022-03-01",
-    "PlanPayload": {
-        "location": "**Location**",
-        "sku": **SKU**, 
-        "properties": {
-            "perSiteScaling": false, 
-            **OS**
-            "isXenon": false, 
-            "zoneRedundant": false
+    {
+        "AppId": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/**ResourceGroup**/providers/Microsoft.Web/sites/**WebAppName**?api-version=2022-03-01",
+        "AppPayload": {
+            "location": "**Location**",
+            "properties": {
+                "serverFarmId": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/houk-test/providers/Microsoft.Web/serverfarms/**AppServicePlanName**",
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "siteConfig": {
+                    "netFrameworkVersion": "v4.6",
+                    "linuxFxVersion": "**Runtime**",
+                    "appSettings": [],
+                    "alwaysOn": true,
+                    "localMySqlEnabled": false,
+                    "http20Enabled": true
+                },
+                "scmSiteAlsoStopped": false,
+                "httpsOnly": false
+            }
         }
-    }
+    }]
 }
 
 
+If Location not provided, use the most popular Azure Regions
 
 If ResourceGroup not provided, choose from below that best matches request
 [{
-    "id": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/houk-test",
+    "id": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/Hackathon2306",
     "location": "eastus",
-    "name": "houk-test",
+    "name": "Hackathon2306",
 }, {
-    "id": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/houk-test2",
-    "location": "westus",
-    "name": "houk-test2",
+    "id": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/Hackathon2305",
+    "location": "westeurope",
+    "name": "Hackathon2305",
 }]
 
-If WebAppName not not provided, use a random string with 10 characters, with prefix `app-`
-
-If ServerFarmId not provided, choose from below that best matches request
-[]
+If AppServicePlanName not not provided, use a random string with 10 characters, with prefix `plan-`
 
 If Location not provided, use the most popular Azure Regions
+
+Choose OS from list below 
+{
+    "linux": {
+        "reserved": true
+    },
+    "windows": {
+        "hyperV": true
+    }
+}
+
+Choose SKU from list below
+[
+    {
+        "name": "B1", 
+        "tier": "BASIC", 
+        "capacity": 1
+    },{
+        "name": "P1V2", 
+        "tier": "PREMIUMV2", 
+        "capacity": 1
+    }
+]
+
+If WebAppName not not provided, use a random string with 10 characters, with prefix `app-`
 
 If Runtime not provided,  choose from below that best matches request
 {
@@ -140,34 +170,3 @@ If Runtime not provided,  choose from below that best matches request
     "java:17:TOMCAT:8.5"
   ]
 }
-
-If AppServicePlanName not not provided, use a random string with 10 characters, with prefix `plan-`
-
-If Location not provided, use the most popular Azure Regions
-
-Choose OS from list below 
-{
-    "linux": {
-        "reserved": true
-    },
-    "windows": {
-        "hyperV": true
-    }
-}
-
-Choose SKU from list below
-[
-    {
-        "name": "F1", 
-        "tier": "FREE", 
-        "capacity": 1
-    },{
-        "name": "B1", 
-        "tier": "BASIC", 
-        "capacity": 1
-    },{
-        "name": "P1V2", 
-        "tier": "PREMIUMV2", 
-        "capacity": 1
-    }
-]
