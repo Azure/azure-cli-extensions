@@ -5,6 +5,7 @@
 
 import struct
 import sys
+import re
 from knack.log import get_logger
 from msrestazure.tools import parse_resource_id
 from azure.cli.core import telemetry
@@ -460,7 +461,12 @@ class SqlHandler(TargetHandler):
             self.create_aad_user_in_sql(connection_args, query_list)
         except AzureConnectionError as e:
             if not self.ip:
-                telemetry.set_exception(e, "Connect-Db-Fail")
+                error_code = ''
+                error_res = re.search(
+                    '\((\d{5})\)', str(e))
+                if error_res:
+                    error_code = error_res.group(1)
+                telemetry.set_exception(e, "Connect-Db-Fail-" + error_code)
                 raise e
             logger.warning(e)
             # allow local access
@@ -473,7 +479,12 @@ class SqlHandler(TargetHandler):
                 logger.warning(e)
                 ex = AzureConnectionError(
                     "Please confirm local environment can connect to database and try again.")
-                telemetry.set_exception(ex, "Connect-Db-Fail")
+                error_code = ''
+                error_res = re.search(
+                    '\((\d{5})\)', str(e))
+                if error_res:
+                    error_code = error_res.group(1)
+                telemetry.set_exception(e, "Connect-Db-Fail-" + error_code)
                 raise ex from e
             finally:
                 self.set_target_firewall(False, ip_name)
@@ -541,7 +552,6 @@ class SqlHandler(TargetHandler):
                             logger.warning(e)
                         conn.commit()
         except pyodbc.Error as e:
-            import re
             search_ip = re.search(
                 "Client with IP address '(.*?)' is not allowed to access the server", str(e))
             if search_ip is not None:
@@ -695,7 +705,6 @@ class PostgresFlexHandler(TargetHandler):
         try:
             conn = psycopg2.connect(conn_string)
         except (psycopg2.Error, psycopg2.OperationalError) as e:
-            import re
             # logger.warning(e)
             search_ip = re.search(
                 'no pg_hba.conf entry for host "(.*)", user ', str(e))
