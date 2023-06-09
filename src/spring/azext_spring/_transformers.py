@@ -293,6 +293,7 @@ def transform_customized_accelerator_output(result):
         item['Git branch'] = item['properties']['gitRepository']['branch']
         item['Git commit'] = item['properties']['gitRepository']['commit']
         item['Git tag'] = item['properties']['gitRepository']['gitTag']
+        item['Git implementation'] = item['properties']['gitRepository']['gitImplementation']
         item['Git Auth Type'] = item['properties']['gitRepository']['authSetting']['authType']
 
     return result if is_list else result[0]

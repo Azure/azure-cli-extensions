@@ -96,6 +96,7 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
                                   git_branch=None,
                                   git_commit=None,
                                   git_tag=None,
+                                  git_implementation=None,
                                   ca_cert_name=None,
                                   username=None,
                                   password=None,
@@ -132,7 +133,8 @@ def customized_accelerator_upsert(cmd, client, resource_group, service, name,
         interval_in_seconds=git_interval,
         branch=git_branch,
         commit=git_commit,
-        git_tag=git_tag
+        git_tag=git_tag,
+        git_implementation=git_implementation
     )
     properties = models.CustomizedAcceleratorProperties(
         display_name=display_name,
