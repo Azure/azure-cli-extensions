@@ -54,6 +54,7 @@ from .scenario_suggest import ScenarioAutoSuggest
 from .threads import LoadCommandTableThread
 from .util import get_window_dim, parse_quotes, get_os_clear_screen_word, get_yes_or_no_option, select_option
 from .scenario_search import SearchThread, show_search_item
+from .chatgpt_generate import ChatgptThread
 
 NOTIFICATIONS = ""
 PART_SCREEN_EXAMPLE = .3
@@ -548,7 +549,7 @@ class AzInteractiveShell(object):
             return
         self.scenario_repl(scenario)
 
-    def scenario_repl(self, scenario):
+    def scenario_repl(self, scenario, is_chatgpt=False):
         """ REPL(Read-Eval-Print Loop) for interactive scenario execution """
         auto_suggest = ScenarioAutoSuggest()
         example_cli = CommandLineInterface(
@@ -569,9 +570,29 @@ class AzInteractiveShell(object):
             initial_document=Document(scenario.get('reason') or scenario.get('scenario') or 'Running a E2E Scenario. ')
         )
         quit_scenario = False
+        generate_script = False
+        step_msg = ([(Style.WARNING, 'Do you want to further modify the current scenario?'),
+                     (Style.SECONDARY, "(y/n)\n"),
+                     (Style.PRIMARY, 'If y, you will start a scenario to execute the script.\n'),
+                     (Style.PRIMARY, 'If n, you can give some more messages to optimize the script.\n')])
+        if is_chatgpt:
+            self.chatgpt_continue_generate = not get_yes_or_no_option(step_msg)
+            if self.chatgpt_continue_generate:
+                return
+        if not is_chatgpt:
+            generate_script = not get_yes_or_no_option(step_msg)
+        if generate_script:
+            history_msg=[]
+            history_msg.append({'role': 'user', 'content': self.recommender.cur_thread.keywords})
+            history_msg.append({'role': 'assistant', 'content': str(scenario)})
+            print_styled_text([(Style.PRIMARY,
+                                "\nPlease input more information to continue the chat and optimize the script.\n")])
+            input_msg = input()
+            self.chatgpt_generation(text=input_msg, history_msg=history_msg)
+            return
         # give notice to users that they can skip a command or quit the scenario
         print_styled_text([(Style.WARNING, '\nYou can use CTRL C to skip a command of the scenario, '
-                                           'and CTRL D to exit the scenario.')])
+                                           'and CTRL D to exit the scenario.\n')])
         for nx_cmd, sample in gen_command_in_scenario(scenario, file=self.output):
             auto_suggest.update(sample)
             retry = True
@@ -623,6 +644,10 @@ class AzInteractiveShell(object):
         if not keywords:
             print_styled_text([(Style.WARNING, 'Please input search keywords')])
             return
+        # Max time wait for the search thread to finish
+        prompt_timeout_limit = 10
+        already_prompted = False
+        start_time = time.time()
         self.recommender.cur_thread = SearchThread(self.recommender.cli_ctx, keywords,
                                                    self.recommender.recommendation_path,
                                                    self.recommender.executing_command,
@@ -644,12 +669,13 @@ class AzInteractiveShell(object):
                 print_styled_text([(Style.WARNING, results)])
                 self.recommender.cur_thread.result = []
                 return
-            if len(results) == 0:
+            if len(results) == 0 or results[0]["score"] < 11.5:
                 print_styled_text([(Style.WARNING, "We currently can't find the scenario you need. \n"
                                                    "You can try to change the search keywords or "
                                                    "submit an issue to ask for the scenario you need.")])
                 # -1 means no result
                 self.recommender.feedback_search("-1", keywords)
+                self.chatgpt_generation(text=keywords)
             else:
                 show_search_item(results)
 
@@ -659,10 +685,58 @@ class AzInteractiveShell(object):
                 if option == 0:
                     # 0 means no selection
                     self.recommender.feedback_search("0", keywords)
+                    self.chatgpt_generation(text=keywords)
                 if option > 0:
                     scenario = results[option - 1]
                     self.recommender.feedback_search(option, keywords, scenario=scenario)
                     self.scenario_repl(scenario)
+
+    def chatgpt_generation(self, text, history_msg=None):
+        """ parses for the chatgpt generation """
+        generate_script = True
+        if not history_msg:
+            step_msg = [
+                (Style.PRIMARY, "\nDo you want to try out for the under preview Chatgpt Script Generation feature?"),
+                (Style.SECONDARY, "(y/n)\n")]
+            # whether to generate script with chatgpt
+            generate_script = get_yes_or_no_option(step_msg)
+        if not generate_script:
+            return
+        self.recommender.cur_thread = ChatgptThread(self.recommender.cli_ctx, text,
+                                                    self.recommender.recommendation_path,
+                                                    self.recommender.executing_command,
+                                                    self.recommender.on_prepared_callback, history_msg=history_msg)
+        self.recommender.cur_thread.start()
+        # Wait for the chatgpt thread to finish
+        print_styled_text([(Style.PRIMARY,
+                            "The script is now being generated to meet your specific requirements. This process may take approximately 40 seconds. You have the option to abort the generation at any time by using Ctrl+C.")])
+        while self.recommender.cur_thread.is_alive():
+            try:
+                time.sleep(0.1)
+                if self.recommender.cur_thread.result:
+                    break
+            except (KeyboardInterrupt, ValueError):
+                # Catch CTRL + C to quit the search thread
+                return
+        if self.recommender.cur_thread.result is not None:
+            results = self.recommender.cur_thread.result
+            # If the result is a string, it means the search thread has encountered an error
+            if type(results) is str:
+                print_styled_text([(Style.WARNING, results)])
+                self.recommender.cur_thread.result = []
+                step_msg = [(Style.PRIMARY, "Do you want to retry?"), (Style.SECONDARY, "(y/n)\n")]
+                retry = get_yes_or_no_option(step_msg)
+                if retry:
+                    self.chatgpt_generation(text, history_msg=history_msg)
+            elif type(results) is list:
+                scenario = results[0]["content"]
+                history_msg = results[0]["history_msg"]
+                self.scenario_repl(scenario, is_chatgpt=True)
+                if self.chatgpt_continue_generate:
+                    print_styled_text([(Style.PRIMARY,
+                                        "\nPlease input more messages to continue the chat and optimize the script.\n")])
+                    input_msg = input()
+                    self.chatgpt_generation(text=input_msg, history_msg=history_msg)
 
     def _special_cases(self, cmd, outside):
         break_flag = False
