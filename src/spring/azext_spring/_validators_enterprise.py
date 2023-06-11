@@ -294,12 +294,6 @@ def validate_acc_git_refs(namespace):
         raise ArgumentUsageError("Git Repository configurations at least one of '--git-branch --git-commit --git-tag' should be all provided.")
 
 
-def validate_git_implementation(namespace):
-    if namespace.git_implementation is not None:
-        if namespace.git_implementation != "go-git" and namespace.git_implementation != "libgit2" :
-            raise InvalidArgumentValueError("Allowed git-implementation are: 'go-git' ,'libgit2'")
-
-
 def validate_git_interval(namespace):
     if namespace.git_interval is not None:
         if namespace.git_interval < 1:

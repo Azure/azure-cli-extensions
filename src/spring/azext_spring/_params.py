@@ -22,7 +22,7 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_build_update, validate_container_registry_create,
                                      validate_container_registry_update, validate_central_build_instance,
                                      validate_builder_update, validate_build_pool_size, validate_build_service,
-                                     validate_git_uri, validate_acc_git_url, validate_acc_git_refs, validate_acs_patterns, validate_config_file_patterns,validate_git_implementation,
+                                     validate_git_uri, validate_acc_git_url, validate_acc_git_refs, validate_acs_patterns, validate_config_file_patterns,
                                      validate_routes, validate_gateway_instance_count, validate_git_interval,
                                      validate_api_portal_instance_count,
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
@@ -1004,7 +1004,7 @@ def load_arguments(self, _):
             c.argument('git_branch', type=str, help='Git repository branch to be used.', validator=validate_acc_git_refs)
             c.argument('git_commit', type=str, help='Git repository commit to be used.', validator=validate_acc_git_refs)
             c.argument('git_tag', type=str, help='Git repository tag to be used.', validator=validate_acc_git_refs)
-            c.argument('git_implementation', type=str, help='Git libraries to be used.', validator=validate_git_implementation)
+            c.argument('git_implementation', type=str, arg_type=get_enum_type(['go-git', 'libgit2']), help='Git libraries to be used.')
 
             c.argument('ca_cert_name', help='CA certificate name.')
             c.argument('username', help='Username of git repository basic auth.')
