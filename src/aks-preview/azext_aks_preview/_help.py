@@ -540,6 +540,9 @@ helps['aks create'] = """
         - name: --enable-azuremonitormetrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
+        - name: --enable-azure-monitor-metrics
+          type: bool
+          short-summary: Enable Azure Monitor Metrics Profile
         - name: --azure-monitor-workspace-resource-id
           type: string
           short-summary: Resource ID of the Azure Monitor Workspace
@@ -963,6 +966,9 @@ helps['aks update'] = """
         - name: --enable-azuremonitormetrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
+        - name: --enable-azure-monitor-metrics
+          type: bool
+          short-summary: Enable Azure Monitor Metrics Profile
         - name: --azure-monitor-workspace-resource-id
           type: string
           short-summary: Resource ID of the Azure Monitor Workspace
@@ -979,6 +985,9 @@ helps['aks update'] = """
           type: bool
           short-summary: Enable Windows Recording Rules when enabling the Azure Monitor Metrics addon
         - name: --disable-azuremonitormetrics
+          type: bool
+          short-summary: Disable Azure Monitor Metrics Profile. This will delete all DCRA's associated with the cluster, any linked DCRs with the data stream = prometheus-stream and the recording rule groups created by the addon for this AKS cluster.
+        - name: --disable-azure-monitor-metrics
           type: bool
           short-summary: Disable Azure Monitor Metrics Profile. This will delete all DCRA's associated with the cluster, any linked DCRs with the data stream = prometheus-stream and the recording rule groups created by the addon for this AKS cluster.
         - name: --enable-node-restriction

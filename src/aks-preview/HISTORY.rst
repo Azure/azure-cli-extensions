@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+0.5.142
++++++++
+* Deprecate option names `--enable-azuremonitormetrics` and `--disable-azuremonitormetrics`, use `--enable-azure-monitor-metrics` and `--disable-azure-monitor-metrics` instead, so as to be consistent with the option names in official azure-cli. Fix issue `\#26600 <https://github.com/Azure/azure-cli/issues/26600>`_.
+
 0.5.141
 +++++++
 * Fix `az aks get-credentials` not using the value set by environment variable `KUBECONFIG`, see issue `\#26444 <https://github.com/Azure/azure-cli-extensions/issues/26444>`_.
