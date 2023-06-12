@@ -27,4 +27,3 @@ class ClusterMetricsConfiguration:
     def pre_operations(cls, args):
         ''' "default" is the default name for the metrics configuration name '''
         args.metrics_configuration_name = "default"
-
