@@ -2009,6 +2009,11 @@ network vwan update:
     security_provider_name:
       rule_exclusions:
       - option_length_too_long
+nf controller create:
+  parameters:
+    workload_er_connections:
+      rule_exclusions:
+      - option_length_too_long
 nf rack create:
   rule_exclusions:
   - missing_command_test_coverage
@@ -2021,6 +2026,25 @@ nf device delete:
 nf interface delete:
   rule_exclusions:
   - missing_command_test_coverage
+nf l3domain create:
+  parameters:
+    aggregate_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    connected_subnet_route_policy:
+      rule_exclusions:
+      - option_length_too_long
+    redistribute_connected_subnets:
+      rule_exclusions:
+      - option_length_too_long
+    redistribute_static_routes:
+      rule_exclusions:
+      - option_length_too_long
+nf internalnetwork create:
+  parameters:
+    static_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
 notification-hub authorization-rule create:
   parameters:
     notification_hub_name:
