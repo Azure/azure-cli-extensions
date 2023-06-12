@@ -11,7 +11,6 @@ from azure.cli.command_modules.serviceconnector._resource_config import (
     TARGET_RESOURCES,
     LOCAL_CONNECTION_PARAMS
 )
-from azure.cli.command_modules.serviceconnector._utils import should_load_source
 from azure.cli.command_modules.serviceconnector._addon_factory import AddonFactory
 from ._resource_config import (
     AUTH_TYPE,
@@ -19,6 +18,7 @@ from ._resource_config import (
     TARGET_RESOURCES_PARAMS,
     SUPPORTED_AUTH_TYPE,
 )
+from ._utils import should_load_source
 
 
 # pylint: disable=consider-using-f-string
