@@ -582,9 +582,8 @@ class AzInteractiveShell(object):
         if not is_chatgpt:
             generate_script = not get_yes_or_no_option(step_msg)
         if generate_script:
-            history_msg=[]
-            history_msg.append({'role': 'user', 'content': self.recommender.cur_thread.keywords})
-            history_msg.append({'role': 'assistant', 'content': str(scenario)})
+            history_msg = [{'role': 'user', 'content': self.recommender.cur_thread.keywords},
+                           {'role': 'assistant', 'content': str(scenario)}]
             print_styled_text([(Style.PRIMARY,
                                 "\nPlease input more information to continue the chat and optimize the script.\n")])
             input_msg = input()
@@ -645,9 +644,6 @@ class AzInteractiveShell(object):
             print_styled_text([(Style.WARNING, 'Please input search keywords')])
             return
         # Max time wait for the search thread to finish
-        prompt_timeout_limit = 10
-        already_prompted = False
-        start_time = time.time()
         self.recommender.cur_thread = SearchThread(self.recommender.cli_ctx, keywords,
                                                    self.recommender.recommendation_path,
                                                    self.recommender.executing_command,

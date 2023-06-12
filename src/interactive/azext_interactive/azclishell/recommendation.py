@@ -363,9 +363,8 @@ def send_feedback(option_idx, latest_commands, processed_exception=None, recomme
 
 
 def _show_details_for_e2e_scenario(scenario, file=None):
-    print_styled_text([(Style.PRIMARY, "\n\n"+scenario['scenario']),
-                       (Style.ACTION, " contains the following commands:\n")],
-                      file=file)
+    print_styled_text([(Style.PRIMARY, "\n\n" + scenario['scenario']),
+                       (Style.ACTION, " contains the following commands:\n")], file=file)
     nx_cmd_set = scenario["nextCommandSet"]
     exec_idx = scenario.get("executeIndex", [])
     for idx, nx_cmd in enumerate(nx_cmd_set):
