@@ -34,7 +34,7 @@ from knack.prompting import prompt_y_n, prompt as prompt_str
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
-
+from .containerapp_decorator import ContainerAppCreateDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_exception
 from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient, WorkloadProfileClient, ContainerAppsJobClient
 from ._dev_service_utils import DevServiceUtils
@@ -390,6 +390,69 @@ def create_containerapp_yaml(cmd, name, resource_group_name, file_name, no_wait=
 
 
 def create_containerapp(cmd,
+                        name,
+                        resource_group_name,
+                        yaml=None,
+                        image=None,
+                        container_name=None,
+                        managed_env=None,
+                        min_replicas=None,
+                        max_replicas=None,
+                        scale_rule_name=None,
+                        scale_rule_type=None,
+                        scale_rule_http_concurrency=None,
+                        scale_rule_metadata=None,
+                        scale_rule_auth=None,
+                        target_port=None,
+                        exposed_port=None,
+                        transport="auto",
+                        ingress=None,
+                        revisions_mode="single",
+                        secrets=None,
+                        env_vars=None,
+                        cpu=None,
+                        memory=None,
+                        registry_server=None,
+                        registry_user=None,
+                        registry_pass=None,
+                        dapr_enabled=False,
+                        dapr_app_port=None,
+                        dapr_app_id=None,
+                        dapr_app_protocol=None,
+                        dapr_http_read_buffer_size=None,
+                        dapr_http_max_request_size=None,
+                        dapr_log_level=None,
+                        dapr_enable_api_logging=False,
+                        service_type=None,
+                        service_bindings=None,
+                        revision_suffix=None,
+                        startup_command=None,
+                        args=None,
+                        tags=None,
+                        no_wait=False,
+                        system_assigned=False,
+                        disable_warnings=False,
+                        user_assigned=None,
+                        registry_identity=None,
+                        workload_profile_name=None,
+                        secret_volume_mount=None):
+    raw_parameters = locals()
+    containerapp_create_decorator = ContainerAppCreateDecorator(
+        cmd=cmd,
+        client=ContainerAppClient,
+        raw_parameters=raw_parameters
+    )
+    containerapp_create_decorator.register_provider()
+    containerapp_create_decorator.validate_argument()
+    containerapp_def = containerapp_create_decorator.set_payload()
+    r = containerapp_create_decorator.put_containerapp(containerapp_def)
+    containerapp_def, need_post_put = containerapp_create_decorator.set_payload_for_post_put(containerapp_def, r)
+    if need_post_put:
+        r = containerapp_create_decorator.post_put_containerapp(containerapp_def, r)
+    return r
+
+
+def create_containerapp2(cmd,
                         name,
                         resource_group_name,
                         yaml=None,
