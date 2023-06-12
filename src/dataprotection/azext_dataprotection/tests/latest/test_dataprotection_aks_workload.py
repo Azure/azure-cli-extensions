@@ -78,17 +78,17 @@ def configure_backup(test):
     print(bvout)
 
     # uncomment when running live, run only in record mode - grant permission
-    test.cmd('az dataprotection backup-instance update-msi-permissions '
-            '--datasource-type AzureKubernetesService '
-            '--operation Backup '
-            '--permissions-scope ResourceGroup '
-            '--vault-name "{vaultname}" '
-            '--resource-group "{rgname}" '
-            '--backup-instance "{backup_instance_json}" -y')
-    time.sleep(120)
+    # test.cmd('az dataprotection backup-instance update-msi-permissions '
+    #         '--datasource-type AzureKubernetesService '
+    #         '--operation Backup '
+    #         '--permissions-scope ResourceGroup '
+    #         '--vault-name "{vaultname}" '
+    #         '--resource-group "{rgname}" '
+    #         '--backup-instance "{backup_instance_json}" -y')
+    # time.sleep(120)
 
     # Also uncomment when running live, only run in record mode - provide trusted access
-    helper_trusted_access(test)
+    # helper_trusted_access(test)
 
     test.cmd('az dataprotection backup-instance create -g "{rgname}" --vault-name "{vaultname}" --backup-instance "{backup_instance_json}"')
 
@@ -148,18 +148,18 @@ def trigger_restore_original_location(test):
     test.kwargs.update({"restore_request": restore_json})
 
     # uncomment when running live, run only in record mode - grant permission
-    test.cmd('az dataprotection backup-instance update-msi-permissions '
-            '--datasource-type AzureKubernetesService '
-            '--operation Restore '
-            '--permissions-scope Resource '
-            '--vault-name "{vaultname}" '
-            '--resource-group "{rgname}" '
-            '--restore-request-object "{restore_request}" '
-            '--snapshot-resource-group-id "{rg_id}" -y')
-    time.sleep(120)
+    # test.cmd('az dataprotection backup-instance update-msi-permissions '
+    #         '--datasource-type AzureKubernetesService '
+    #         '--operation Restore '
+    #         '--permissions-scope Resource '
+    #         '--vault-name "{vaultname}" '
+    #         '--resource-group "{rgname}" '
+    #         '--restore-request-object "{restore_request}" '
+    #         '--snapshot-resource-group-id "{rg_id}" -y')
+    # time.sleep(120)
 
     # Also uncomment when running live, only run in record mode - provide trusted access
-    helper_trusted_access(test)
+    # helper_trusted_access(test)
 
     test.cmd('az dataprotection backup-instance validate-for-restore -g "{rgname}" --vault-name "{vaultname}" -n "{backup_instance_name}" --restore-request-object "{restore_request}"')
 
