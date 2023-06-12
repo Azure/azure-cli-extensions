@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "stack-hci cluster create-identity",
+    "stack-hci arc-setting initialize-disable-proces",
 )
-class CreateIdentity(AAZCommand):
-    """Create cluster identity.
+class InitializeDisableProces(AAZCommand):
+    """Initialize ARC Disable process on the cluster
 
-    :example: Create cluster identity
-        az stack-hci cluster create-identity --name "myCluster" --resource-group "test-rg"
+    :example: Initialize disable proces
+        az stack-hci arc-setting initialize-disable-proces -g rg --arc-setting-name default --cluster-name name
     """
 
     _aaz_info = {
         "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/createclusteridentity", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/arcsettings/{}/initializedisableprocess", "2023-03-01"],
         ]
     }
 
@@ -32,7 +32,7 @@ class CreateIdentity(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -45,6 +45,12 @@ class CreateIdentity(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.arc_setting_name = AAZStrArg(
+            options=["--arc-setting-name"],
+            help="The name of the proxy resource holding details of HCI ArcSetting information.",
+            required=True,
+            id_part="child_name_1",
+        )
         _args_schema.cluster_name = AAZStrArg(
             options=["--cluster-name"],
             help="The name of the cluster.",
@@ -58,7 +64,7 @@ class CreateIdentity(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ClustersCreateIdentity(ctx=self.ctx)()
+        yield self.ArcSettingsInitializeDisableProcess(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,11 +75,7 @@ class CreateIdentity(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
-    class ClustersCreateIdentity(AAZHttpOperation):
+    class ArcSettingsInitializeDisableProcess(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -103,7 +105,7 @@ class CreateIdentity(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureStackHCI/clusters/{clusterName}/createClusterIdentity",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureStackHCI/clusters/{clusterName}/arcSettings/{arcSettingName}/initializeDisableProcess",
                 **self.url_parameters
             )
 
@@ -118,6 +120,10 @@ class CreateIdentity(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "arcSettingName", self.ctx.args.arc_setting_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "clusterName", self.ctx.args.cluster_name,
                     required=True,
@@ -143,56 +149,12 @@ class CreateIdentity(AAZCommand):
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
         def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.properties = AAZObjectType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.aad_application_object_id = AAZStrType(
-                serialized_name="aadApplicationObjectId",
-            )
-            properties.aad_client_id = AAZStrType(
-                serialized_name="aadClientId",
-            )
-            properties.aad_service_principal_object_id = AAZStrType(
-                serialized_name="aadServicePrincipalObjectId",
-            )
-            properties.aad_tenant_id = AAZStrType(
-                serialized_name="aadTenantId",
-            )
-
-            return cls._schema_on_200
+            pass
 
 
-class _CreateIdentityHelper:
-    """Helper class for CreateIdentity"""
+class _InitializeDisableProcesHelper:
+    """Helper class for InitializeDisableProces"""
 
 
-__all__ = ["CreateIdentity"]
+__all__ = ["InitializeDisableProces"]

@@ -12,26 +12,27 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "stack-hci cluster show",
+    "stack-hci cluster extend-software-assurance-benefit",
 )
-class Show(AAZCommand):
-    """Get HCI cluster.
+class ExtendSoftwareAssuranceBenefit(AAZCommand):
+    """Extend Software Assurance Benefit to a cluster
 
-    :example: Get cluster
-        az stack-hci cluster show --name "myCluster" --resource-group "test-rg"
+    :example: Extend software assurance benefit
+        az stack-hci cluster extend-software-assurance-benefit --cluster-name name -g rg --software-assurance-intent enable
     """
 
     _aaz_info = {
         "version": "2023-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/extendsoftwareassurancebenefit", "2023-03-01"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -45,7 +46,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
-            options=["-n", "--name", "--cluster-name"],
+            options=["--cluster-name"],
             help="The name of the cluster.",
             required=True,
             id_part="name",
@@ -53,11 +54,21 @@ class Show(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.software_assurance_intent = AAZStrArg(
+            options=["--software-assurance-intent"],
+            arg_group="Properties",
+            help="Customer Intent for Software Assurance Benefit.",
+            enum={"Disable": "Disable", "Enable": "Enable"},
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ClustersGet(ctx=self.ctx)()
+        yield self.ClustersExtendSoftwareAssuranceBenefit(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,27 +83,43 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class ClustersGet(AAZHttpOperation):
+    class ClustersExtendSoftwareAssuranceBenefit(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureStackHCI/clusters/{clusterName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureStackHCI/clusters/{clusterName}/extendSoftwareAssuranceBenefit",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -130,10 +157,28 @@ class Show(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("properties", AAZObjectType)
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("softwareAssuranceIntent", AAZStrType, ".software_assurance_intent")
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -416,8 +461,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ExtendSoftwareAssuranceBenefitHelper:
+    """Helper class for ExtendSoftwareAssuranceBenefit"""
 
 
-__all__ = ["Show"]
+__all__ = ["ExtendSoftwareAssuranceBenefit"]
