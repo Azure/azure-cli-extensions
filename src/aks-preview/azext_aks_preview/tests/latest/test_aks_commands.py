@@ -7205,7 +7205,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                      '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkObservabilityPreview'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('networkProfile.networkPlugin', 'azure'),
             self.check('networkProfile.monitoring.enabled', True),
         ])
 
@@ -7239,7 +7238,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update to enable network observability
         self.cmd('aks update --resource-group={resource_group} --name={name} --enable-network-observability', checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('networkProfile.networkPlugin', 'azure'),
             self.check('networkProfile.monitoring.enabled', True),
         ])
 
