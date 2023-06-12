@@ -626,15 +626,12 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return bool(self.raw_param.get('enable_cilium_dataplane'))
 
-    def get_enable_network_observability(self) -> Optional[bool]:
+    def get_enable_network_observability(self) -> bool:
         """Get the value of enable_network_observability
 
         :return: bool or None
         """
-        enable_network_observability = self.raw_param.get("enable_network_observability")
-        if enable_network_observability is None:
-            return None
-        return bool(self.raw_param.get('enable_network_observability'))
+        return self.raw_param.get("enable_network_observability")
 
     def get_load_balancer_managed_outbound_ipv6_count(self) -> Union[int, None]:
         """Obtain the expected count of IPv6 managed outbound IPs.

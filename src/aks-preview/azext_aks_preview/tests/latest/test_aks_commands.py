@@ -7189,18 +7189,19 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_create_with_enable_network_observability(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
+        # kwargs for string formatting
+
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
-            'location': resource_group_location,
-            'resource_type': 'Microsoft.ContainerService/ManagedClusters',
             'ssh_key_value': self.generate_ssh_keys(),
+            'location': resource_group_location,
         })
-
+    
         # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--network-plugin azure --enable-network-observability true --ssh-key-value={ssh_key_value} ' \
+                     '--ssh-key-value={ssh_key_value} --node-count=1 --tier standard --enable-network-observability ' \
                      '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkObservabilityPreview'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -7217,22 +7218,26 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_update_with_enable_network_observability(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
+        # kwargs for string formatting
+
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
-            'ssh_key_value': self.generate_ssh_keys()
+            'ssh_key_value': self.generate_ssh_keys(),
+            'location': resource_group_location,
         })
-
+    
+        # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} ' \
-                     '--network-plugin azure --ssh-key-value={ssh_key_value} '
+                     '--ssh-key-value={ssh_key_value} --node-count=1 --tier standard ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkObservabilityPreview'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
-            self.check('networkProfile.networkPlugin', 'azure'),
         ])
 
         # update to enable network observability
-        self.cmd('aks update --resource-group={resource_group} --name={name} --enable-network-observability true', checks=[
+        self.cmd('aks update --resource-group={resource_group} --name={name} --enable-network-observability', checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('networkProfile.networkPlugin', 'azure'),
             self.check('networkProfile.monitoring.enabled', True),
