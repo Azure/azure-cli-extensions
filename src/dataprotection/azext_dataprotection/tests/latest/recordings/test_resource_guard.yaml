@@ -1,0 +1,794 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection resource-guard create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.49.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestdataprotection_resourceguard_000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001","name":"clitestdataprotection_resourceguard_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_resource_guard","date":"2023-06-12T04:45:13Z","module":"dataprotection"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '417'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Jun 2023 04:45:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection resource-guard create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard?api-version=2023-01-01
+  response:
+    body:
+      string: '{"location":"westus","properties":{"provisioningState":"Succeeded","resourceGuardOperations":[{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupPolicies/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectionPolicyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteResourceGuardProxyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupSecurityPIN/action","requestResourceType":"Microsoft.DataProtection/resourceGuards/getBackupSecurityPINRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupconfig/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/disableSoftDeleteRequests"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete"}],"vaultCriticalOperationExclusionList":[],"allowAutoApprovals":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard","name":"cli-test-resource-guard","type":"Microsoft.DataProtection/resourceGuards"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1957'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Jun 2023 04:45:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection resource-guard list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards?api-version=2023-01-01
+  response:
+    body:
+      string: '{"value":[{"location":"westus","properties":{"provisioningState":"Succeeded","resourceGuardOperations":[{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupPolicies/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectionPolicyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteResourceGuardProxyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupSecurityPIN/action","requestResourceType":"Microsoft.DataProtection/resourceGuards/getBackupSecurityPINRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupconfig/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/disableSoftDeleteRequests"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete"}],"vaultCriticalOperationExclusionList":[],"allowAutoApprovals":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard","name":"cli-test-resource-guard","type":"Microsoft.DataProtection/resourceGuards"}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1969'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Jun 2023 04:45:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '998'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection resource-guard show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard?api-version=2023-01-01
+  response:
+    body:
+      string: '{"location":"westus","properties":{"provisioningState":"Succeeded","resourceGuardOperations":[{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupPolicies/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectionPolicyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteResourceGuardProxyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupSecurityPIN/action","requestResourceType":"Microsoft.DataProtection/resourceGuards/getBackupSecurityPINRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupconfig/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/disableSoftDeleteRequests"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete"}],"vaultCriticalOperationExclusionList":[],"allowAutoApprovals":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard","name":"cli-test-resource-guard","type":"Microsoft.DataProtection/resourceGuards"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1957'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Jun 2023 04:45:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '997'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection resource-guard update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --resource-type --critical-operation-exclusion-list
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard?api-version=2023-01-01
+  response:
+    body:
+      string: '{"location":"westus","properties":{"provisioningState":"Succeeded","resourceGuardOperations":[{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupPolicies/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectionPolicyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteResourceGuardProxyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupSecurityPIN/action","requestResourceType":"Microsoft.DataProtection/resourceGuards/getBackupSecurityPINRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupconfig/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/disableSoftDeleteRequests"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete"}],"vaultCriticalOperationExclusionList":[],"allowAutoApprovals":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard","name":"cli-test-resource-guard","type":"Microsoft.DataProtection/resourceGuards"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1957'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Jun 2023 04:45:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '998'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"vaultCriticalOperationExclusionList":
+      ["Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete",
+      "Microsoft.RecoveryServices/vaults/backupSecurityPIN/action"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection resource-guard update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '235'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --resource-type --critical-operation-exclusion-list
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard?api-version=2023-01-01
+  response:
+    body:
+      string: '{"location":"westus","properties":{"provisioningState":"Succeeded","resourceGuardOperations":[{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupPolicies/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectionPolicyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteResourceGuardProxyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupconfig/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/disableSoftDeleteRequests"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete"}],"vaultCriticalOperationExclusionList":["Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete","Microsoft.RecoveryServices/vaults/backupSecurityPIN/action"],"allowAutoApprovals":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard","name":"cli-test-resource-guard","type":"Microsoft.DataProtection/resourceGuards"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1717'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Jun 2023 04:45:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection resource-guard list-protected-operations
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --resource-type
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard?api-version=2023-01-01
+  response:
+    body:
+      string: '{"location":"westus","properties":{"provisioningState":"Succeeded","resourceGuardOperations":[{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupPolicies/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectionPolicyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteResourceGuardProxyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupconfig/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/disableSoftDeleteRequests"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete"}],"vaultCriticalOperationExclusionList":["Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete","Microsoft.RecoveryServices/vaults/backupSecurityPIN/action"],"allowAutoApprovals":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard","name":"cli-test-resource-guard","type":"Microsoft.DataProtection/resourceGuards"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1717'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Jun 2023 04:45:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection resource-guard update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --critical-operation-exclusion-list
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard?api-version=2023-01-01
+  response:
+    body:
+      string: '{"location":"westus","properties":{"provisioningState":"Succeeded","resourceGuardOperations":[{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupPolicies/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectionPolicyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteResourceGuardProxyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupconfig/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/disableSoftDeleteRequests"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete"}],"vaultCriticalOperationExclusionList":["Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete","Microsoft.RecoveryServices/vaults/backupSecurityPIN/action"],"allowAutoApprovals":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard","name":"cli-test-resource-guard","type":"Microsoft.DataProtection/resourceGuards"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1717'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Jun 2023 04:45:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '999'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"vaultCriticalOperationExclusionList":
+      ["Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete",
+      "Microsoft.RecoveryServices/vaults/backupSecurityPIN/action"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection resource-guard update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '235'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --critical-operation-exclusion-list
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard?api-version=2023-01-01
+  response:
+    body:
+      string: '{"location":"westus","properties":{"provisioningState":"Succeeded","resourceGuardOperations":[{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupPolicies/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectionPolicyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteResourceGuardProxyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupconfig/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/disableSoftDeleteRequests"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete"}],"vaultCriticalOperationExclusionList":["Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete","Microsoft.RecoveryServices/vaults/backupSecurityPIN/action"],"allowAutoApprovals":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard","name":"cli-test-resource-guard","type":"Microsoft.DataProtection/resourceGuards"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1717'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Jun 2023 04:45:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection resource-guard update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --critical-operation-exclusion-list
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard?api-version=2023-01-01
+  response:
+    body:
+      string: '{"location":"westus","properties":{"provisioningState":"Succeeded","resourceGuardOperations":[{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupPolicies/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectionPolicyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteResourceGuardProxyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupconfig/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/disableSoftDeleteRequests"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete"}],"vaultCriticalOperationExclusionList":["Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete","Microsoft.RecoveryServices/vaults/backupSecurityPIN/action"],"allowAutoApprovals":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard","name":"cli-test-resource-guard","type":"Microsoft.DataProtection/resourceGuards"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1717'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Jun 2023 04:45:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '998'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"vaultCriticalOperationExclusionList":
+      ["Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete",
+      "Microsoft.RecoveryServices/vaults/backupSecurityPIN/action"]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection resource-guard update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '235'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --critical-operation-exclusion-list
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard?api-version=2023-01-01
+  response:
+    body:
+      string: '{"location":"westus","properties":{"provisioningState":"Succeeded","resourceGuardOperations":[{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupPolicies/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectionPolicyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteResourceGuardProxyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupconfig/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/disableSoftDeleteRequests"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete"}],"vaultCriticalOperationExclusionList":["Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete","Microsoft.RecoveryServices/vaults/backupSecurityPIN/action"],"allowAutoApprovals":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard","name":"cli-test-resource-guard","type":"Microsoft.DataProtection/resourceGuards"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1717'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Jun 2023 04:45:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '98'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection resource-guard update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --resource-type --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard?api-version=2023-01-01
+  response:
+    body:
+      string: '{"location":"westus","properties":{"provisioningState":"Succeeded","resourceGuardOperations":[{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupPolicies/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectionPolicyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteResourceGuardProxyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupconfig/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/disableSoftDeleteRequests"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete"}],"vaultCriticalOperationExclusionList":["Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete","Microsoft.RecoveryServices/vaults/backupSecurityPIN/action"],"allowAutoApprovals":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard","name":"cli-test-resource-guard","type":"Microsoft.DataProtection/resourceGuards"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1717'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Jun 2023 04:45:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '997'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"vaultCriticalOperationExclusionList":
+      ["Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete",
+      "Microsoft.RecoveryServices/vaults/backupSecurityPIN/action"]}, "tags": {"Purpose":
+      "Testing"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection resource-guard update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '267'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --resource-type --tags
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard?api-version=2023-01-01
+  response:
+    body:
+      string: '{"location":"westus","tags":{"Purpose":"Testing"},"properties":{"provisioningState":"Succeeded","resourceGuardOperations":[{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupPolicies/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectionPolicyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteResourceGuardProxyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupconfig/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/disableSoftDeleteRequests"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete"}],"vaultCriticalOperationExclusionList":["Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete","Microsoft.RecoveryServices/vaults/backupSecurityPIN/action"],"allowAutoApprovals":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard","name":"cli-test-resource-guard","type":"Microsoft.DataProtection/resourceGuards"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1746'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Jun 2023 04:45:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '97'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection resource-guard update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --resource-type --critical-operation-exclusion-list
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard?api-version=2023-01-01
+  response:
+    body:
+      string: '{"location":"westus","tags":{"Purpose":"Testing"},"properties":{"provisioningState":"Succeeded","resourceGuardOperations":[{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupPolicies/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectionPolicyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteResourceGuardProxyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupconfig/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/disableSoftDeleteRequests"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete"}],"vaultCriticalOperationExclusionList":["Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete","Microsoft.RecoveryServices/vaults/backupSecurityPIN/action"],"allowAutoApprovals":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard","name":"cli-test-resource-guard","type":"Microsoft.DataProtection/resourceGuards"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1746'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Jun 2023 04:45:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '996'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"vaultCriticalOperationExclusionList":
+      []}, "tags": {"Purpose": "Testing"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection resource-guard update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '113'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --resource-type --critical-operation-exclusion-list
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard?api-version=2023-01-01
+  response:
+    body:
+      string: '{"location":"westus","tags":{"Purpose":"Testing"},"properties":{"provisioningState":"Succeeded","resourceGuardOperations":[{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectedItemRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupPolicies/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/updateProtectionPolicyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/resourceGuards/deleteResourceGuardProxyRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupSecurityPIN/action","requestResourceType":"Microsoft.DataProtection/resourceGuards/getBackupSecurityPINRequests"},{"vaultCriticalOperation":"Microsoft.RecoveryServices/vaults/backupconfig/write","requestResourceType":"Microsoft.DataProtection/resourceGuards/disableSoftDeleteRequests"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupInstances/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupInstances/delete"},{"vaultCriticalOperation":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete","requestResourceType":"Microsoft.DataProtection/backupVaults/backupResourceGuardProxies/delete"}],"vaultCriticalOperationExclusionList":[],"allowAutoApprovals":true},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard","name":"cli-test-resource-guard","type":"Microsoft.DataProtection/resourceGuards"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1986'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 12 Jun 2023 04:45:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '96'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dataprotection resource-guard delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_resourceguard_000001/providers/Microsoft.DataProtection/resourceGuards/cli-test-resource-guard?api-version=2023-01-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 12 Jun 2023 04:45:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '99'
+    status:
+      code: 200
+      message: OK
+version: 1
