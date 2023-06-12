@@ -564,6 +564,7 @@ def aks_create(
     enable_node_restriction=False,
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
+    enable_network_observability=None,
     # nodepool
     crg_id=None,
     message_of_the_day=None,

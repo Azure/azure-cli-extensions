@@ -231,6 +231,9 @@ helps['aks create'] = """
               Used together with the "azure" network plugin.
               Requires either --pod-subnet-id or --network-plugin-mode=overlay.
               This flag is deprecated in favor of --network-dataplane=cilium.
+        - name: --enable-network-observability
+          type: bool
+          short-summary: Enable network observability on a cluster.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.

@@ -417,6 +417,7 @@ def load_arguments(self, _):
         c.argument('enable_vpa', action='store_true', is_preview=True, help="enable vertical pod autoscaler for cluster")
         c.argument('enable_node_restriction', action='store_true', is_preview=True, help="enable node restriction for cluster")
         c.argument('enable_cilium_dataplane', action='store_true', is_preview=True, deprecate_info=c.deprecate(target='--enable-cilium-dataplane', redirect='--network-dataplane', hide=True))
+        c.argument('enable_network_observability', action='store_true', is_preview=True, help="enable network observability for cluster")
         c.argument('custom_ca_trust_certificates', options_list=["--custom-ca-trust-certificates", "--ca-certs"], is_preview=True, help="path to file containing list of new line separated CAs")
         # nodepool
         c.argument('crg_id', validator=validate_crg_id, is_preview=True)
