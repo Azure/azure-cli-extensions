@@ -85,3 +85,6 @@ def load_command_table(self, _):
 
     from .aaz_operations.restorable_time_range import Find as RestorableTimeRangeFind
     self.command_table['dataprotection restorable-time-range find'] = RestorableTimeRangeFind(loader=self)
+
+    from .aaz_operations.backup_vault import Update as BackupVaultUpdate
+    self.command_table['dataprotection backup-vault update'] = BackupVaultUpdate(loader=self)
