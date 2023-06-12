@@ -80,6 +80,8 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
             telemetry.add_extension_event('ssh', ssh_connection_data)
             if op_info.new_service_config and service_config_delay_error and ssh_process.poll() == 255:
                 retry_attempts_allowed = 1
+                if retry_attempt == 1:
+                    logger.warning(f"Service configuration update could still be prohibiting ssh connection. Please run command again.")
             retry_attempt += 1
 
     finally:

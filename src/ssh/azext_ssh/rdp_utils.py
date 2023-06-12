@@ -52,8 +52,10 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
             ssh_success, log_list, service_config_delay_error = wait_for_ssh_connection(ssh_process, print_ssh_logs)
             if ssh_info.new_service_config and service_config_delay_error and ssh_process.poll() == 255:
                 retry_attempts_allowed = 1
+                if retry_attempt == 1:
+                    logger.warning(f"Service configuration update could still be prohibiting ssh connection. Please run command again.")
             retry_attempt += 1 
-              
+
         ssh_utils.do_cleanup(delete_keys, delete_cert, ssh_info.delete_credentials, ssh_info.cert_file,
                             ssh_info.private_key_file, ssh_info.public_key_file) 
         if ssh_success and ssh_process.poll() is None:
