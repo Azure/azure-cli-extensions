@@ -747,6 +747,7 @@ def aks_update(
     guardrails_level=None,
     guardrails_version=None,
     guardrails_excluded_ns=None,
+    enable_network_observability=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

@@ -626,7 +626,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return bool(self.raw_param.get('enable_cilium_dataplane'))
 
-    def get_enable_network_observability(self) -> bool:
+    def get_enable_network_observability(self) -> Optional[bool]:
         """Get the value of enable_network_observability
 
         :return: bool or None
@@ -2377,7 +2377,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         else:
             network_profile.network_dataplane = self.context.get_network_dataplane()
 
-        network_profile.monitoring = self.models.NetworkMonitoring(enabled=self.context.get_enable_network_observability())
+        network_observability = self.context.get_enable_network_observability()
+        if network_observability is not None:
+            network_profile.network_monitoring = self.models.NetworkMonitoring(
+                enabled=network_observability
+            )
 
         return mc
 
@@ -3018,6 +3022,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.network_profile.pod_cidr = pod_cidr
         return mc
 
+    def update_enable_network_observability_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update enable network observability of network profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        network_observability = self.context.get_enable_network_observability()
+        if network_observability is not None:
+            mc.network_profile.monitoring = self.models.NetworkMonitoring(
+                enabled=network_observability
+            )
+        return mc
+
     def update_outbound_type_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update outbound type of network profile for the ManagedCluster object.
 
@@ -3622,5 +3640,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_guardrails_profile(mc)
         # update auto upgrade profile
         mc = self.update_upgrade_settings(mc)
+        # update network_observability in network_profile
+        mc = self.update_enable_network_observability_in_network_profile(mc)
 
         return mc

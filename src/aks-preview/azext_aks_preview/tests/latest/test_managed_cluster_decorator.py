@@ -869,7 +869,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         self.assertEqual(ctx_2.get_enable_network_observability(), True)
 
         # Flag set to True.
-        ctx_2 = AKSPreviewManagedClusterContext(
+        ctx_3 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
                 {
@@ -879,7 +879,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_2.get_enable_network_observability(), True)
+        self.assertEqual(ctx_3.get_enable_network_observability(), True)
 
     def test_get_enable_managed_identity(self):
         # custom value
@@ -4443,6 +4443,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             enable_pod_security_policy=False,
             storage_profile=storage_profile_1,
         )
+        print(dec_mc_1.network_profile)
+        print(dec_mc_1.network_profile.monitoring)
+        print(ground_truth_mc_1.network_profile)
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         dec_1.context.raw_param.print_usage_statistics()

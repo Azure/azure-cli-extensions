@@ -1034,6 +1034,9 @@ helps['aks update'] = """
         - name: --guardrails-excluded-ns
           type: string
           short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails. Use "" to clear a previously non-empty list
+        - name: --enable-network-observability
+          type: bool
+          short-summary: Enable network observability on a cluster.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
