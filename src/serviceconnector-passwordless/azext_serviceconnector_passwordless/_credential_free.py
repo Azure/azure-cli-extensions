@@ -460,18 +460,23 @@ class SqlHandler(TargetHandler):
             logger.warning("Connecting to database...")
             self.create_aad_user_in_sql(connection_args, query_list)
         except AzureConnectionError as e:
-            if not self.ip:
-                error_code = ''
-                error_res = re.search(
-                    '\((\d{5})\)', str(e))
-                if error_res:
-                    error_code = error_res.group(1)
-                telemetry.set_exception(e, "Connect-Db-Fail-" + error_code)
-                raise e
-            logger.warning(e)
-            # allow local access
-            ip_address = self.ip
-            self.set_target_firewall(True, ip_name, ip_address, ip_address)
+            from azure.cli.core.util import in_cloud_console
+            if in_cloud_console():
+                self.set_target_firewall(
+                    True, ip_name, '0.0.0.0', '0.0.0.0')
+            else:
+                if not self.ip:
+                    error_code = ''
+                    error_res = re.search(
+                        '\((\d{5})\)', str(e))
+                    if error_res:
+                        error_code = error_res.group(1)
+                    telemetry.set_exception(e, "Connect-Db-Fail-" + error_code)
+                    raise e
+                logger.warning(e)
+                # allow local access
+                ip_address = self.ip
+                self.set_target_firewall(True, ip_name, ip_address, ip_address)
             try:
                 # create again
                 self.create_aad_user_in_sql(connection_args, query_list)
