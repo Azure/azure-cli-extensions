@@ -97,6 +97,7 @@ class ConfigSession():
         self.proxy_path = None
         self.relay_info = None
         self.relay_info_path = None
+        self.yes_without_prompt = False
         self.public_key_file = os.path.abspath(public_key_file) if public_key_file else None
         self.private_key_file = os.path.abspath(private_key_file) if private_key_file else None
         self.cert_file = os.path.abspath(cert_file) if cert_file else None
@@ -192,7 +193,7 @@ class ConfigSession():
         oschmod.set_mode(relay_info_path, 0o644)
         # pylint: disable=broad-except
         try:
-            expiration = datetime.datetime.fromtimestamp(self.relay_info.expires_on)
+            expiration = datetime.datetime.fromtimestamp(self.relay_info['expiresOn'])
             expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
             print_styled_text((Style.SUCCESS, f"Generated relay information {relay_info_path} is valid until "
                                               f"{expiration} in local time."))
