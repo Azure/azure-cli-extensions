@@ -48,17 +48,14 @@ class List(AAZCommand):
             options=["--backup-instance-name"],
             help="The name of the backup instance.",
             required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
         _args_schema.vault_name = AAZStrArg(
             options=["--vault-name"],
             help="The name of the backup vault.",
             required=True,
-            id_part="name",
         )
         _args_schema.filter = AAZStrArg(
             options=["--filter"],
