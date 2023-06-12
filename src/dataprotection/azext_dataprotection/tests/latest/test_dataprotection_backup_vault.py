@@ -53,7 +53,7 @@ class BackupVaultScenarioTest(ScenarioTest):
         # soft-delete updates
         test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{backupVaultName}" --soft-delete-state "On" --retention-duration-in-days "14"', checks=[
             test.check('properties.securitySettings.softDeleteSettings.state', "On"),
-            test.check('properties.securitySettings.softDeleteSettings.retentionDurationInDays', "14")
+            test.check('properties.securitySettings.softDeleteSettings.retentionDurationInDays', 14.0)
         ])
         test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{backupVaultName}" --soft-delete-state "Off"', checks=[
             test.check('properties.securitySettings.softDeleteSettings.state', "Off")
