@@ -79,27 +79,27 @@ class CustomActionProperties:
     @classmethod
     def _build_schema_properties_read(cls, _schema):
         if cls._schema_properties_read is not None:
-            _schema.exitCode = cls._schema_properties_read.exitCode
-            _schema.outputHead = cls._schema_properties_read.outputHead
-            _schema.resultUrl = cls._schema_properties_read.resultUrl
+            _schema.exit_code = cls._schema_properties_read.exit_code
+            _schema.output_head = cls._schema_properties_read.output_head
+            _schema.result_url = cls._schema_properties_read.result_url
             return
 
         cls._schema_properties_read = _schema_properties_read = AAZObjectType()
 
         properties_read = _schema_properties_read
-        properties_read.exitCode = AAZStrType(
+        properties_read.exit_code = AAZStrType(
             flags={"read_only": True},
         )
-        properties_read.outputHead = AAZStrType(
+        properties_read.output_head = AAZStrType(
             flags={"read_only": True},
         )
-        properties_read.resultUrl = AAZStrType(
+        properties_read.result_url = AAZStrType(
             flags={"read_only": True},
         )
 
-        _schema.exitCode = cls._schema_properties_read.exitCode
-        _schema.outputHead = cls._schema_properties_read.outputHead
-        _schema.resultUrl = cls._schema_properties_read.resultUrl
+        _schema.exit_code = cls._schema_properties_read.exit_code
+        _schema.output_head = cls._schema_properties_read.output_head
+        _schema.result_url = cls._schema_properties_read.result_url
 
     _schema_operation_status_result_read = None
 
@@ -172,13 +172,13 @@ class CustomActionProperties:
         properties = self.ctx.vars.instance.properties
 
         # Display the output head to the console
-        if has_value(properties.outputHead):
-            logger.warning(properties.outputHead.to_serialized_data())
+        if has_value(properties.output_head):
+            logger.warning(properties.output_head.to_serialized_data())
             logger.warning("\n================================")
 
         # Display the result URL
-        if has_value(properties.resultUrl):
-            result_url = properties.resultUrl.to_serialized_data()
+        if has_value(properties.result_url):
+            result_url = properties.result_url.to_serialized_data()
             logger.warning(
                 "Script execution result can be found in storage account:\n" + result_url + "\n")
 
