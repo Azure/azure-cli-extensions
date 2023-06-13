@@ -9,10 +9,12 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from ._consent_and_install_default_extension import *
 from ._create import *
 from ._create_identity import *
 from ._delete import *
 from ._generate_password import *
+from ._initialize_disable_proces import *
 from ._list import *
 from ._show import *
 from ._update import *
