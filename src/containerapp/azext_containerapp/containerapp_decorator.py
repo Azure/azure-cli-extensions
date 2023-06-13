@@ -67,19 +67,19 @@ class BaseContainerAppDecorator:
     def register_provider(self):
         raise NotImplementedError()
 
-    def validate_argument(self):
+    def validate_arguments(self):
         raise NotImplementedError()
 
-    def set_payload(self):
+    def construct_containerapp(self):
         raise NotImplementedError()
 
-    def put_containerapp(self, containerapp_def):
+    def create_containerapp(self, containerapp_def):
         raise NotImplementedError()
 
-    def set_payload_for_post_put(self, containerapp_def, r):
+    def construct_containerapp_for_post_process(self, containerapp_def, r):
         raise NotImplementedError()
 
-    def post_put_containerapp(self, containerapp_def):
+    def post_process_containerapp(self, containerapp_def):
         raise NotImplementedError()
 
     def get_param(self, key) -> Any:
@@ -98,24 +98,18 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
     def register_provider(self):
         register_provider_if_needed(self.cmd, CONTAINER_APPS_RP)
 
-    def validate_argument(self):
+    def validate_arguments(self):
         validate_container_app_name(self.get_name(), AppType.ContainerApp.name)
         validate_create(self.get_registry_identity(), self.get_registry_pass(), self.get_registry_user(), self.get_registry_server(), self.get_no_wait())
         validate_revision_suffix(self.get_revision_suffix())
 
-    def set_payload(self):
+    def construct_containerapp(self):
         if self.get_registry_identity() and not is_registry_msi_system(self.get_registry_identity()):
             logger.info("Creating an acrpull role assignment for the registry identity")
             create_acrpull_role_assignment(self.cmd, self.get_registry_server(), self.get_registry_identity(), skip_error=True)
 
         if self.get_yaml():
-            if self.get_image() or self.get_managed_env() or self.get_min_replicas() or self.get_max_replicas() or self.get_target_port() or self.get_ingress() or \
-                    self.get_revisions_mode() or self.get_secrets() or self.get_env_vars() or self.get_cpu() or self.get_memory() or self.get_registry_server() or \
-                    self.get_registry_user() or self.get_registry_pass() or self.get_dapr_enabled() or self.get_dapr_app_port() or self.get_dapr_app_id() or \
-                    self.get_startup_command() or self.get_args() or self.get_tags():
-                not self.get_disable_warnings() and logger.warning(
-                    'Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
-            return self.create_containerapp_yaml(name=self.get_name(), file_name=self.get_yaml())
+            return self.set_up_create_containerapp_yaml(name=self.get_name(), file_name=self.get_yaml())
 
         if not self.get_image():
             self.set_image(HELLO_WORLD_IMAGE)
@@ -312,7 +306,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
                 set_managed_identity(self.cmd, self.get_resource_group_name(), containerapp_def, user_assigned=[self.get_registry_identity()])
         return containerapp_def
 
-    def put_containerapp(self, containerapp_def):
+    def create_containerapp(self, containerapp_def):
         try:
             r = self.client.create_or_update(
                 cmd=self.cmd, resource_group_name=self.get_resource_group_name(), name=self.get_name(), container_app_envelope=containerapp_def,
@@ -337,10 +331,10 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         except Exception as e:
             handle_raw_exception(e)
 
-    def set_payload_for_post_put(self, containerapp_def, r):
+    def construct_containerapp_for_post_process(self, containerapp_def, r):
         if is_registry_msi_system(self.get_registry_identity()):
             while r["properties"]["provisioningState"] == "InProgress":
-                r = ContainerAppClient.show(self.cmd, self.get_resource_group_name(), self.get_name())
+                r = self.client.show(self.cmd, self.get_resource_group_name(), self.get_name())
                 time.sleep(10)
             logger.info("Creating an acrpull role assignment for the system identity")
             system_sp = r["identity"]["principalId"]
@@ -352,14 +346,12 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             registries_def["server"] = self.get_registry_server()
             registries_def["identity"] = self.get_registry_identity()
             safe_set(containerapp_def, "properties", "configuration", "registries", value=[registries_def])
+            return containerapp_def
 
-            return containerapp_def, True
-        return None, False
-
-    def post_put_containerapp(self, containerapp_def):
+    def post_process_containerapp(self, containerapp_def):
         r = None
         if is_registry_msi_system(self.get_registry_identity()):
-            r = self.put_containerapp(containerapp_def)
+            r = self.create_containerapp(containerapp_def)
         if self.get_service_connectors_def_list() is not None:
             linker_client = get_linker_client(self.cmd)
 
@@ -370,8 +362,16 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
                 linker_client.linker.begin_create_or_update(resource_uri=r["id"],
                                                             parameters=item["parameters"],
                                                             linker_name=item["linker_name"]).result()
+        return r
 
-    def create_containerapp_yaml(self, name, file_name):
+    def set_up_create_containerapp_yaml(self, name, file_name):
+        if self.get_image() or self.get_managed_env() or self.get_min_replicas() or self.get_max_replicas() or self.get_target_port() or self.get_ingress() or \
+                self.get_revisions_mode() or self.get_secrets() or self.get_env_vars() or self.get_cpu() or self.get_memory() or self.get_registry_server() or \
+                self.get_registry_user() or self.get_registry_pass() or self.get_dapr_enabled() or self.get_dapr_app_port() or self.get_dapr_app_id() or \
+                self.get_startup_command() or self.get_args() or self.get_tags():
+            not self.get_disable_warnings() and logger.warning(
+                'Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
+
         yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
         if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
             raise ValidationError(
@@ -650,28 +650,3 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
 
     def set_service_connectors_def_list(self, service_connectors_def_list):
         self.set_param("service_connectors_def_list", service_connectors_def_list)
-
-
-class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
-    def register_provider(self):
-        pass
-
-    def validate_argument(self):
-        pass
-
-    def set_payload(self):
-        pass
-
-    def put_containerapp(self, containerapp_def):
-        pass
-
-    def set_payload_for_post_put(self, containerapp_def, r):
-        pass
-
-    def post_put_containerapp(self, containerapp_def):
-        pass
-
-    def __init__(
-        self, cmd: AzCliCommand, client: ContainerAppClient, raw_parameters: Dict
-    ):
-        super().__init__(cmd, client, raw_parameters)
