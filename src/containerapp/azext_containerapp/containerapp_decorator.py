@@ -97,7 +97,7 @@ class BaseContainerAppDecorator:
 
 class ContainerAppCreateDecorator(BaseContainerAppDecorator):
     def __init__(
-        self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models:str
+        self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
     ):
         super().__init__(cmd, client, raw_parameters, models)
 
