@@ -449,19 +449,20 @@ def create_containerapp(cmd,
                         workload_profile_name=None,
                         secret_volume_mount=None):
     raw_parameters = locals()
+
     containerapp_create_decorator = ContainerAppCreateDecorator(
         cmd=cmd,
         client=ContainerAppClient,
         raw_parameters=raw_parameters
     )
     containerapp_create_decorator.register_provider()
-    containerapp_create_decorator.validate_argument()
-    containerapp_def = containerapp_create_decorator.set_payload()
-    r = containerapp_create_decorator.put_containerapp(containerapp_def)
-    containerapp_def, need_post_put = containerapp_create_decorator.set_payload_for_post_put(containerapp_def, r)
-    if need_post_put:
-        r = containerapp_create_decorator.post_put_containerapp(containerapp_def, r)
-    return r
+    containerapp_create_decorator.validate_arguments()
+
+    containerapp_def = containerapp_create_decorator.construct_containerapp()
+    r = containerapp_create_decorator.create_containerapp(containerapp_def)
+    containerapp_def = containerapp_create_decorator.construct_containerapp_for_post_process(containerapp_def, r)
+    r2 = containerapp_create_decorator.post_process_containerapp(containerapp_def)
+    return r2 if r2 is not None else r
 
 
 def create_containerapp2(cmd,

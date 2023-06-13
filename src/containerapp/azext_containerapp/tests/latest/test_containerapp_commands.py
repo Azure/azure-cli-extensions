@@ -237,6 +237,22 @@ class ContainerappIngressTests(ScenarioTest):
         for revision in revisions_list:
             self.assertEqual(revision["properties"]["trafficWeight"], 50)
 
+    # @AllowLargeResponse(8192)
+    # def test_containerapp_custom_domains2_e2e(self):
+    #     redis_ca_name = 'redis'
+    #     postgres_ca_name = 'postgres'
+    #     env_name = 'my-environment2'
+    #     resource_group = 'arc-appint-forxinyu12-rg0'
+    #
+    #     # create_containerapp_env(self, env_name, resource_group)
+    #     # self.cmd('containerapp service redis create -g {} -n {} --environment {}'.format(
+    #     #     resource_group, redis_ca_name, env_name))
+    #     #
+    #     # self.cmd('containerapp service postgres create -g {} -n {} --environment {}'.format(
+    #     #     resource_group, postgres_ca_name, env_name))
+    #     self.cmd('az containerapp create --name "ghrunnersaca" --resource-group "arc-appint-forxinyu12-rg0" --environment "my-environment2" --image "mcr.microsoft.com/k8se/quickstart:latest" --bind postgres:postgres_binding redis')
+
+
     @AllowLargeResponse(8192)
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     @ResourceGroupPreparer(location="westeurope")
