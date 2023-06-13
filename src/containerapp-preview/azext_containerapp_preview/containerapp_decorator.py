@@ -30,7 +30,7 @@ class BaseContainerAppDecorator:
     def construct_containerapp_for_post_process(self, containerapp_def, r):
         raise NotImplementedError()
 
-    def post_process_containerapp(self, containerapp_def):
+    def post_process_containerapp(self, containerapp_def, r):
         raise NotImplementedError()
 
     def get_param(self, key) -> Any:
@@ -71,6 +71,6 @@ class ContainerAppPreviewCreateDecorator(BaseContainerAppDecorator):
     def construct_containerapp_for_post_process(self, containerapp_def, r):
         return self.ga_containerapp_create_decorator.construct_containerapp_for_post_process(containerapp_def, r)
 
-    def post_process_containerapp(self, containerapp_def):
+    def post_process_containerapp(self, containerapp_def, r):
         return self.ga_containerapp_create_decorator.post_process_containerapp(containerapp_def)
 
