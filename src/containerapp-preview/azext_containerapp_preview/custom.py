@@ -16,7 +16,7 @@ def create_containerapp(cmd,
                         yaml=None,
                         image=None,
                         container_name=None,
-                        managed_env=None,
+                        env=None,
                         min_replicas=None,
                         max_replicas=None,
                         scale_rule_name=None,
@@ -59,6 +59,7 @@ def create_containerapp(cmd,
                         secret_volume_mount=None,
                         environment_type="managed"):
     raw_parameters = locals()
+    raw_parameters["managed_env"] = env
     containerapp_preview_create_decorator = ContainerAppPreviewCreateDecorator(
         cmd=cmd,
         client=ContainerAppClient,
