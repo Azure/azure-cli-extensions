@@ -351,8 +351,8 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         else:
             target_port = self.get_target_port() or "<port>"
             not self.get_disable_warnings() and logger.warning("\nContainer app created. To access it over HTTPS, enable ingress: "
-                                                    "az containerapp ingress enable -n %s -g %s --type external --target-port %s"
-                                                    " --transport auto\n", self.get_name(), self.get_resource_group_name(), target_port)
+                                                               "az containerapp ingress enable -n %s -g %s --type external --target-port %s"
+                                                               " --transport auto\n", self.get_name(), self.get_resource_group_name(), target_port)
 
         if self.get_service_connectors_def_list() is not None:
             linker_client = get_linker_client(self.cmd)
