@@ -96,4 +96,8 @@ helps['vm repair reset-nic'] = """
 helps['vm repair repair-and-restore'] = """
     type: command
     short-summary: Repair and restore the VM.
+    examples:
+        - name: Repair and restore a VM.
+          text: >
+            az vm repair repair-and-restore --name "vmrepairtest" --resource-group "MyResourceGroup" --verbose
 """

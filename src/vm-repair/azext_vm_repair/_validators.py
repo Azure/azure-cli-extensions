@@ -380,21 +380,12 @@ def validate_vm_username(username, is_linux):
 
 def validate_repair_and_restore(cmd, namespace):
     import json
-    # loop through all properties in namespace
-    logger.info((namespace))
-    logger.info(cmd)
-        # if the property is not None
-        # if value is not None:
-        #     # if the property is not a valid parameter for the command
-        #     if key not in VALID_PARAMS:
-        #         raise CLIError('Invalid parameter: {}'.format(key))
-            
     check_extension_version(EXTENSION_NAME)
 
     logger.info('Validating repair and restore parameters...')
-    
+
     logger.info(namespace.vm_name + ' ' + namespace.resource_group_name)
-    
+
     # Check if VM exists and is not classic VM
     source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
     is_linux = _is_linux_os(source_vm)
@@ -402,7 +393,7 @@ def validate_repair_and_restore(cmd, namespace):
     # Check repair vm name
     namespace.repair_vm_name = ('repair-' + namespace.vm_name)[:14] + '_'
     logger.info('Repair VM name: %s', namespace.repair_vm_name)
- 
+
     # Check copy disk name
     timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
     if namespace.copy_disk_name:
@@ -419,7 +410,6 @@ def validate_repair_and_restore(cmd, namespace):
     else:
         namespace.repair_group_name = 'repair-' + namespace.vm_name + '-' + timestamp
         logger.info('Repair resource group name: %s', namespace.repair_group_name)
-    
 
     # Check encrypted disk
     encryption_type, _, _, _ = _fetch_encryption_settings(source_vm)
@@ -440,34 +430,7 @@ def validate_repair_and_restore(cmd, namespace):
     # Prompt input for public ip usage
     namespace.associate_public_ip = False
 
-    ########
     # Validate repair run
-    ########
 
-
-    #namespace.run_on_repair = True
     source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
     is_linux = _is_linux_os(source_vm)
-    # if not is_linux and namespace.run_id.startswith('linux'):
-    #     raise CLIError('Script IDs that start with \'linux\' are Linux Shell scripts. You cannot run Linux Shell scripts on a Windows VM.')
-    # if is_linux and namespace.run_id.startswith('win'):
-    #     raise CLIError('Script IDs that start with \'win\' are Windows PowerShell scripts. You cannot run Windows PowerShell scripts on a Linux VM.')
-
-    ########
-    # Validate restore run
-    ########
-    
-    #_validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
-    #fetch_repair_vm(namespace)
-
-    # repair_vm = get_vm(cmd, namespace.repair_group_name, namespace.repair_vm_name)
-    # data_disks = repair_vm.storage_profile.data_disks
-    # if not data_disks:
-    #     raise CLIError('No data disks found on repair VM: {}'.format(namespace.repair_vm_name))
-
-    # if not namespace.disk_name:
-    #     namespace.disk_name = data_disks[0].name
-    #     logger.info('Disk-name not given. Defaulting to the first data disk attached to the repair VM: %s', data_disks[0].name)
-    # else:  # check disk name
-    #     if not [disk for disk in data_disks if disk.name == namespace.disk_name]:
-    #         raise CLIError('No data disks found on the repair VM: \'{vm}\' with the disk name: \'{disk}\''.format(vm=repair_vm_id['name'], disk=namespace.disk_name))
