@@ -85,7 +85,7 @@ class BaseContainerAppDecorator:
     def construct_containerapp_for_post_process(self, containerapp_def, r):
         raise NotImplementedError()
 
-    def post_process_containerapp(self, containerapp_def):
+    def post_process_containerapp(self, containerapp_def, r):
         raise NotImplementedError()
 
     def get_param(self, key) -> Any:
@@ -318,21 +318,6 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
                 cmd=self.cmd, resource_group_name=self.get_resource_group_name(), name=self.get_name(), container_app_envelope=containerapp_def,
                 no_wait=self.get_no_wait())
 
-            if r["properties"] and r["properties"]["provisioningState"] and r["properties"][
-                "provisioningState"].lower() == "waiting" and not self.get_no_wait():
-                logger.warning(
-                    'Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(
-                        self.get_name(), self.get_resource_group_name()
-                    ))
-
-            if r["properties"] and r["properties"]["configuration"] and r["properties"]["configuration"]["ingress"] and \
-                    r["properties"]["configuration"]["ingress"]["fqdn"]:
-                logger.warning("\nContainer app created. Access your app at https://{}/\n".format(
-                    r["properties"]["configuration"]["ingress"]["fqdn"]))
-            else:
-                logger.warning(
-                    "\nContainer app created. To access it over HTTPS, enable ingress: az containerapp ingress enable --help\n")
-
             return r
         except Exception as e:
             handle_raw_exception(e)
@@ -354,10 +339,21 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             safe_set(containerapp_def, "properties", "configuration", "registries", value=[registries_def])
             return containerapp_def
 
-    def post_process_containerapp(self, containerapp_def):
-        r = None
+    def post_process_containerapp(self, containerapp_def, r):
         if is_registry_msi_system(self.get_registry_identity()):
             r = self.create_containerapp(containerapp_def)
+
+        if "properties" in r and "provisioningState" in r["properties"] and r["properties"]["provisioningState"].lower() == "waiting" and not self.get_no_wait():
+            not self.get_disable_warnings() and logger.warning('Containerapp creation in progress. Please monitor the creation using `az containerapp show -n {} -g {}`'.format(self.get_name, self.get_resource_group_name()))
+
+        if "configuration" in r["properties"] and "ingress" in r["properties"]["configuration"] and r["properties"]["configuration"]["ingress"] and "fqdn" in r["properties"]["configuration"]["ingress"]:
+            not self.get_disable_warnings() and logger.warning("\nContainer app created. Access your app at https://{}/\n".format(r["properties"]["configuration"]["ingress"]["fqdn"]))
+        else:
+            target_port = self.get_target_port() or "<port>"
+            not self.get_disable_warnings() and logger.warning("\nContainer app created. To access it over HTTPS, enable ingress: "
+                                                    "az containerapp ingress enable -n %s -g %s --type external --target-port %s"
+                                                    " --transport auto\n", self.get_name(), self.get_resource_group_name(), target_port)
+
         if self.get_service_connectors_def_list() is not None:
             linker_client = get_linker_client(self.cmd)
 
