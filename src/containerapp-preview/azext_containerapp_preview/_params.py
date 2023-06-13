@@ -19,4 +19,4 @@ def load_arguments(self, _):
     with self.argument_context('containerapp create') as c:
         c.argument('env', validator=validate_env_name_or_id, options_list=['--environment'],
                    help="Name or resource ID of the container app's environment.")
-        c.argument('environment_type', arg_type=get_enum_type(["managed", "connected"]), help="Type of environment.")
+        c.argument('environment_type', arg_type=get_enum_type(["managed", "connected"]), help="Type of environment.", is_preview=True)
