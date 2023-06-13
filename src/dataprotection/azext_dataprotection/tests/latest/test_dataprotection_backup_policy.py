@@ -53,7 +53,7 @@ class BackupPolicyScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitestdataprotection_backuppolicy_')
     def test_dataprotection_backup_policy_manual(test):
         test.kwargs.update({
-            'policyName':'diskPolicy',
+            'policyName':'disk-policy',
             'vaultName': 'cli-test-backup-vault',
             'location': 'eastus'
         })

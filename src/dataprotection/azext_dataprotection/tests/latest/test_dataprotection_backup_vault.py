@@ -15,15 +15,15 @@ class BackupVaultScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='clitestdataprotection_backupvault_')
     def test_dataprotection_backup_vault_create_and_delete(test):
         test.kwargs.update({
-            'backupVaultName': 'cli-test-backup-vault',
+            'vaultName': 'cli-test-backup-vault',
             'location': 'eastus'
         })
         test.cmd('az dataprotection backup-vault create '
-                '-g "{rg}" --vault-name "{backupVaultName}" -l "{location}" '
+                '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
                 '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type "SystemAssigned" '
                 '--soft-delete-state "Off" --immutability-state "Locked"',
                 checks=[
-                    test.check('name', "{backupVaultName}"),
+                    test.check('name', "{vaultName}"),
                     test.check('identity.type', "SystemAssigned"),
                     test.check('properties.securitySettings.softDeleteSettings.state', "Off"),
                     test.check('properties.securitySettings.immutabilitySettings.state', "Locked"),
@@ -31,52 +31,52 @@ class BackupVaultScenarioTest(ScenarioTest):
                     test.check('properties.storageSettings[0].type', "LocallyRedundant")
                 ])
         test.cmd('az dataprotection backup-vault list -g "{rg}"', checks=[
-            test.check("length([?name == '{backupVaultName}'])", 1),
-            test.exists("[?name == '{backupVaultName}']")   # Better way to check existance ?.
+            test.check("length([?name == '{vaultName}'])", 1),
+            test.exists("[?name == '{vaultName}']")   # Better way to check existance ?.
         ])
-        test.cmd('az dataprotection backup-vault show -g "{rg}" --vault-name "{backupVaultName}"', checks=[
-            test.check('name', "{backupVaultName}")
+        test.cmd('az dataprotection backup-vault show -g "{rg}" --vault-name "{vaultName}"', checks=[
+            test.check('name', "{vaultName}")
         ])
-        test.cmd('az dataprotection backup-vault delete -g "{rg}" --vault-name "{backupVaultName}" -y')
+        test.cmd('az dataprotection backup-vault delete -g "{rg}" --vault-name "{vaultName}" -y')
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitestdataprotection_backupvault_')
     def test_dataprotection_backup_vault_update(test):
         test.kwargs.update({
-            'backupVaultName': 'cli-test-backup-vault',
+            'vaultName': 'cli-test-backup-vault',
             'location': 'eastus'
         })
         test.cmd('az dataprotection backup-vault create '
-                '-g "{rg}" --vault-name "{backupVaultName}" -l "{location}" '
+                '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
                 '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type "SystemAssigned" '
                 '--soft-delete-state "Off" --immutability-state "Unlocked"')
 
         # soft-delete updates
-        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{backupVaultName}" --soft-delete-state "On" --retention-duration-in-days "14"', checks=[
+        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --soft-delete-state "On" --retention-duration-in-days "14"', checks=[
             test.check('properties.securitySettings.softDeleteSettings.state', "On"),
             test.check('properties.securitySettings.softDeleteSettings.retentionDurationInDays', 14.0)
         ])
-        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{backupVaultName}" --soft-delete-state "Off"', checks=[
+        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --soft-delete-state "Off"', checks=[
             test.check('properties.securitySettings.softDeleteSettings.state', "Off")
         ])
-        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{backupVaultName}" --soft-delete-state "AlwaysOn"', checks=[
+        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --soft-delete-state "AlwaysOn"', checks=[
             test.check('properties.securitySettings.softDeleteSettings.state', "AlwaysOn"),
         ])
-        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{backupVaultName}" --soft-delete-state "On"', expect_failure=True)
+        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --soft-delete-state "On"', expect_failure=True)
 
         # azure-monitor-alerts-for-job-failures updates
-        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{backupVaultName}" --azure-monitor-alerts-for-job-failures enabled', checks=[
+        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --azure-monitor-alerts-for-job-failures enabled', checks=[
             test.check('properties.monitoringSettings.azureMonitorAlertSettings.alertsForAllJobFailures', 'Enabled')
         ])
-        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{backupVaultName}" --azure-monitor-alerts-for-job-failures disabled', checks=[
+        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --azure-monitor-alerts-for-job-failures disabled', checks=[
             test.check('properties.monitoringSettings.azureMonitorAlertSettings.alertsForAllJobFailures', 'Disabled')
         ])
 
         # immutability-state updates
-        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{backupVaultName}" --immutability-state "Disabled"', checks=[
+        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --immutability-state "Disabled"', checks=[
             test.check('properties.securitySettings.immutabilitySettings.state', "Disabled")
         ])
-        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{backupVaultName}" --immutability-state "Locked"', checks=[
+        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --immutability-state "Locked"', checks=[
             test.check('properties.securitySettings.immutabilitySettings.state', "Locked")
         ])
-        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{backupVaultName}" --immutability-state "Unlocked"', expect_failure=True)
+        test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --immutability-state "Unlocked"', expect_failure=True)
