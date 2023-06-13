@@ -14,5 +14,6 @@ class ContainerappScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(8192)
     def test_containerapp_preview(self):
+        self.cmd('az containerapp create --name "ghrunnersaca" --resource-group "arc-appint-forxinyu12-rg0" --environment "my-environment2" --image "mcr.microsoft.com/k8se/quickstart:latest" --bind postgres:postgres_binding redis')
         return
 
