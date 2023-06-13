@@ -12,7 +12,7 @@ from ..helpers import clean_nulls_from_session_http_response
 class Update(_Update):
 
     class BackupVaultsCreateOrUpdate(_Update.BackupVaultsCreateOrUpdate):
-        
+
         def __call__(self, *args, **kwargs):    # Remove after error handling fixed.
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
