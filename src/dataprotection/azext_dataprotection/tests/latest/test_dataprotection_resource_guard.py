@@ -13,7 +13,7 @@ class ResourceGuardScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitestdataprotection_resourceguard_')
-    def test_dataprotection_resource_guard_create(test):
+    def test_dataprotection_resource_guard_create_and_delete(test):
         test.kwargs.update({
             'resourceGuardName':'cli-test-resource-guard',
         })
