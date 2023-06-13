@@ -2,8 +2,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from knack.log import get_logger
+
 from ._clients import ContainerAppClient
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator
+
+logger = get_logger(__name__)
 
 
 def create_containerapp(cmd,
@@ -66,5 +70,5 @@ def create_containerapp(cmd,
     containerapp_def = containerapp_preview_create_decorator.construct_containerapp()
     r = containerapp_preview_create_decorator.create_containerapp(containerapp_def)
     containerapp_def = containerapp_preview_create_decorator.construct_containerapp_for_post_process(containerapp_def, r)
-    r2 = containerapp_preview_create_decorator.post_process_containerapp(containerapp_def)
-    return r2 if r2 is not None else r
+    r = containerapp_preview_create_decorator.post_process_containerapp(containerapp_def, r)
+    return r
