@@ -2100,12 +2100,11 @@ def load_yaml_file(file_name):
         raise ValidationError('Error parsing {} ({})'.format(file_name, str(ex))) from ex
 
 
-def create_deserializer():
-    from ._sdk_models import ContainerApp  # pylint: disable=unused-import
+def create_deserializer(models="azext_containerapp._sdk_models"):
     from msrest import Deserializer
     import inspect
 
-    sdkClasses = inspect.getmembers(sys.modules["azext_containerapp._sdk_models"])
+    sdkClasses = inspect.getmembers(sys.modules[models])
     deserializer = {}
 
     for sdkClass in sdkClasses:

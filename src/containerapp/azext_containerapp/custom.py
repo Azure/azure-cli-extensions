@@ -453,7 +453,8 @@ def create_containerapp(cmd,
     containerapp_create_decorator = ContainerAppCreateDecorator(
         cmd=cmd,
         client=ContainerAppClient,
-        raw_parameters=raw_parameters
+        raw_parameters=raw_parameters,
+        models="azext_containerapp._sdk_models"
     )
     containerapp_create_decorator.register_provider()
     containerapp_create_decorator.validate_arguments()

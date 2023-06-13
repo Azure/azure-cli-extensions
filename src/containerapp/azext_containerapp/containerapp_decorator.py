@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except
 from typing import Dict, Any
 
 from azure.cli.core.commands import AzCliCommand
@@ -58,11 +63,12 @@ logger = get_logger(__name__)
 
 class BaseContainerAppDecorator:
     def __init__(
-        self, cmd: AzCliCommand, client: ContainerAppClient, raw_parameters: Dict
+        self, cmd: AzCliCommand, client: ContainerAppClient, raw_parameters: Dict, models: str
     ):
         self.raw_param = raw_parameters
         self.cmd = cmd
         self.client = client
+        self.models = models
 
     def register_provider(self):
         raise NotImplementedError()
@@ -91,9 +97,9 @@ class BaseContainerAppDecorator:
 
 class ContainerAppCreateDecorator(BaseContainerAppDecorator):
     def __init__(
-        self, cmd: AzCliCommand, client: Any, raw_parameters: Dict
+        self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models:str
     ):
-        super().__init__(cmd, client, raw_parameters)
+        super().__init__(cmd, client, raw_parameters, models)
 
     def register_provider(self):
         register_provider_if_needed(self.cmd, CONTAINER_APPS_RP)
@@ -393,7 +399,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         # Deserialize the yaml into a ContainerApp object. Need this since we're not using SDK
         containerapp_def = None
         try:
-            deserializer = create_deserializer()
+            deserializer = create_deserializer(self.models)
 
             containerapp_def = deserializer('ContainerApp', yaml_containerapp)
         except DeserializationError as ex:
