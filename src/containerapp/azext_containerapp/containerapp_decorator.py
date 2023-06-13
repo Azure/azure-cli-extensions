@@ -20,7 +20,7 @@ from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from ._client_factory import handle_raw_exception
-from ._clients import ManagedEnvironmentClient, ContainerAppClient
+from ._clients import ContainerAppClient
 
 from ._models import (
     Ingress as IngressModel,
@@ -63,12 +63,13 @@ logger = get_logger(__name__)
 
 class BaseContainerAppDecorator:
     def __init__(
-        self, cmd: AzCliCommand, client: ContainerAppClient, raw_parameters: Dict, models: str
+        self, cmd: AzCliCommand, client: Any, environment_client: Any, raw_parameters: Dict, models: str
     ):
         self.raw_param = raw_parameters
         self.cmd = cmd
         self.client = client
         self.models = models
+        self.environment_client = environment_client
 
     def register_provider(self):
         raise NotImplementedError()
@@ -97,9 +98,9 @@ class BaseContainerAppDecorator:
 
 class ContainerAppCreateDecorator(BaseContainerAppDecorator):
     def __init__(
-        self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
+        self, cmd: AzCliCommand, client: Any, environment_client: Any, raw_parameters: Dict, models: str
     ):
-        super().__init__(cmd, client, raw_parameters, models)
+        super().__init__(cmd, client, environment_client, raw_parameters, models)
 
     def register_provider(self):
         register_provider_if_needed(self.cmd, CONTAINER_APPS_RP)
@@ -130,7 +131,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         managed_env_info = None
 
         try:
-            managed_env_info = ManagedEnvironmentClient.show(cmd=self.cmd, resource_group_name=managed_env_rg,
+            managed_env_info = self.environment_client.show(cmd=self.cmd, resource_group_name=managed_env_rg,
                                                              name=managed_env_name)
         except:
             pass
@@ -440,7 +441,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             raise ValidationError('Invalid environmentId specified. Environment not found')
 
         try:
-            env_info = ManagedEnvironmentClient.show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
+            env_info = self.environment_client.show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
         except:
             pass
 
