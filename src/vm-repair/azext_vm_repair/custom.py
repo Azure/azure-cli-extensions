@@ -51,7 +51,7 @@ logger = get_logger(__name__)
 
 def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False):
 
-    #log all the parameters
+    # log all the parameters
     logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s', vm_name, resource_group_name, repair_password, repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes)
 
     # Init command helper object
@@ -388,7 +388,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
 
     # log method parameters
     logger.debug('vm repair run parameters: vm_name: %s, resource_group_name: %s, run_id: %s, repair_vm_id: %s, custom_script_file: %s, parameters: %s, run_on_repair: %s, preview: %s',
-                    vm_name, resource_group_name, run_id, repair_vm_id, custom_script_file, parameters, run_on_repair, preview)
+                 vm_name, resource_group_name, run_id, repair_vm_id, custom_script_file, parameters, run_on_repair, preview)
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair run')
@@ -667,27 +667,25 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
     return return_dict
 
 
-
-def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False):
+def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
     from datetime import datetime
     import secrets
     import string
 
-
     password_length = 30
     password_characters = string.ascii_lowercase + string.digits + string.ascii_uppercase
     repair_password = ''.join(secrets.choice(password_characters) for i in range(password_length))
-    
+
     username_length = 13
     username_characters = string.ascii_lowercase + string.digits
     repair_username = ''.join(secrets.choice(username_characters) for i in range(username_length))
-    
+
     timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
     repair_vm_name = ('repair-' + vm_name)[:14] + '_'
     copy_disk_name = vm_name + '-DiskCopy-' + timestamp
     repair_group_name = 'repair-' + vm_name + '-' + timestamp
     existing_rg = _check_existing_rg(repair_group_name)
-    
+
     create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True)
 
     # log create_out
@@ -724,12 +722,10 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
             _clean_up_resources(repair_group_name, confirm=False)
         return
 
-
     logger.info('Running restore command')
     show_vm_id = 'az vm show -g {g} -n {n} --query id -o tsv' \
-                    .format(g=repair_group_name, n=repair_vm_name)
-    
+        .format(g=repair_group_name, n=repair_vm_name)
+
     repair_vm_id = _call_az_command(show_vm_id)
 
     restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True)
-
