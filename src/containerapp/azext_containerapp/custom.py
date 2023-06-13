@@ -473,7 +473,7 @@ def create_containerapp(cmd,
     if not managed_env_info:
         raise ValidationError("The environment '{}' does not exist. Specify a valid environment".format(managed_env))
 
-    while not no_wait and "properties" in managed_env_info and managed_env_info["properties"]["provisioningState"].lower() in ["inprogress","updating"]:
+    while not no_wait and "properties" in managed_env_info and managed_env_info["properties"]["provisioningState"].lower() in ["inprogress", "updating"]:
         logger.info("Waiting for environment provisioning to finish before creating container app")
         time.sleep(10)
         managed_env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=managed_env_rg, name=managed_env_name)
