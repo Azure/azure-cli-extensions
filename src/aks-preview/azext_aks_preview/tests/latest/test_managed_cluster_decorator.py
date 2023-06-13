@@ -4443,9 +4443,6 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             enable_pod_security_policy=False,
             storage_profile=storage_profile_1,
         )
-        print(dec_mc_1.network_profile)
-        print(dec_mc_1.network_profile.monitoring)
-        print(ground_truth_mc_1.network_profile)
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
         dec_1.context.raw_param.print_usage_statistics()
