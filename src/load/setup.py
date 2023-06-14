@@ -36,7 +36,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 setup(
     name='load',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Load Extension.',
+    description='Microsoft Azure Command-Line Tools Load Testing Extension.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
