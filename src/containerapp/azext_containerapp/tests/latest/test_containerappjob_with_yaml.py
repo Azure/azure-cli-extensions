@@ -23,9 +23,21 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
 
         env = self.create_random_name(prefix='env', length=24)
         job = self.create_random_name(prefix='yaml', length=24)
+        storage = self.create_random_name(prefix='storage', length=24)
+        share = self.create_random_name(prefix='share', length=24)
+
+        self.cmd(
+            f'az storage account create --resource-group {resource_group}  --name {storage} --location {TEST_LOCATION} --kind StorageV2 --sku Standard_LRS --enable-large-file-share --output none')
+        self.cmd(
+            f'az storage share-rm create --resource-group {resource_group}  --storage-account {storage} --name {share} --quota 1024 --enabled-protocols SMB --output none')
 
         create_containerapp_env(self, env, resource_group)
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+
+        account_key = self.cmd(f'az storage account keys list -g {resource_group} -n {storage} --query "[0].value" '
+                               '-otsv').output.strip()
+        self.cmd(
+            f'az containerapp env storage set -g {resource_group} -n {env} -a {storage} -k {account_key} -f {share} --storage-name {share} --access-mode ReadWrite')
 
         user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
         user_identity = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
@@ -59,6 +71,10 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
                         cpu: 0.5
                         ephemeralStorage: 1Gi
                         memory: 1Gi
+                      volumeMounts:
+                        - mountPath: /mnt/data
+                          volumeName: azure-files-volume
+                          subPath: sub
                     initContainers:
                     - command:
                         - /bin/sh
@@ -79,7 +95,11 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
                         resources:
                             cpu: "0.25"
                             memory: 0.5Gi
-                    volumes: null
+                    volumes:
+                    - name: azure-files-volume
+                      storageType: AzureFile
+                      storageName: {share}
+                      mountOptions: uid=999,gid=999
                 workloadProfileName: null
             identity:
               type: UserAssigned
@@ -100,6 +120,13 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             JMESPathCheck('properties.template.containers[0].resources.cpu', "0.5"),
             JMESPathCheck('properties.template.containers[0].resources.memory', "1Gi"),
             JMESPathCheck('identity.type', "UserAssigned"),
+            JMESPathCheck('properties.template.volumes[0].storageType', 'AzureFile'),
+            JMESPathCheck('properties.template.volumes[0].storageName', share),
+            JMESPathCheck('properties.template.volumes[0].name', 'azure-files-volume'),
+            JMESPathCheck('properties.template.volumes[0].mountOptions', 'uid=999,gid=999'),
+            JMESPathCheck('properties.template.containers[0].volumeMounts[0].subPath', 'sub'),
+            JMESPathCheck('properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
+            JMESPathCheck('properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume')
         ])
 
         # wait for provisioning state of job to be succeeded before updating
@@ -138,6 +165,10 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
                         cpu: 0.75
                         ephemeralStorage: 1Gi
                         memory: 1.5Gi
+                      volumeMounts:
+                        - mountPath: /mnt/data
+                          volumeName: azure-files-volume
+                          subPath: sub2
                     initContainers:
                     - command:
                         - /bin/sh
@@ -158,6 +189,11 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
                         resources:
                             cpu: "0.25"
                             memory: 0.5Gi
+                    volumes:
+                    - name: azure-files-volume
+                      storageType: AzureFile
+                      storageName: {share}
+                      mountOptions: uid=1000,gid=1000
             """
         write_test_file(containerappjob_file_name, containerappjob_yaml_text)
 
@@ -170,6 +206,13 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
             JMESPathCheck('properties.template.containers[0].resources.cpu', "0.75"),
             JMESPathCheck('properties.template.containers[0].resources.memory', "1.5Gi"),
+            JMESPathCheck('properties.template.volumes[0].storageType', 'AzureFile'),
+            JMESPathCheck('properties.template.volumes[0].storageName', share),
+            JMESPathCheck('properties.template.volumes[0].name', 'azure-files-volume'),
+            JMESPathCheck('properties.template.volumes[0].mountOptions', 'uid=1000,gid=1000'),
+            JMESPathCheck('properties.template.containers[0].volumeMounts[0].subPath', 'sub2'),
+            JMESPathCheck('properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
+            JMESPathCheck('properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume'),
         ])
 
         # wait for provisioning state of job to be succeeded before updating
