@@ -2027,24 +2027,24 @@ network vwan update:
     security_provider_name:
       rule_exclusions:
       - option_length_too_long
-nf controller create:
+networkfabric controller create:
   parameters:
     workload_er_connections:
       rule_exclusions:
       - option_length_too_long
-nf rack create:
+networkfabric rack create:
   rule_exclusions:
   - missing_command_test_coverage
-nf rack delete:
+networkfabric rack delete:
   rule_exclusions:
   - missing_command_test_coverage
-nf device delete:
+networkfabric device delete:
   rule_exclusions:
   - missing_command_test_coverage
-nf interface delete:
+networkfabric interface delete:
   rule_exclusions:
   - missing_command_test_coverage
-nf l3domain create:
+networkfabric l3domain create:
   parameters:
     aggregate_route_configuration:
       rule_exclusions:
@@ -2058,7 +2058,7 @@ nf l3domain create:
     redistribute_static_routes:
       rule_exclusions:
       - option_length_too_long
-nf internalnetwork create:
+networkfabric internalnetwork create:
   parameters:
     static_route_configuration:
       rule_exclusions:
