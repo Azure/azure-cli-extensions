@@ -60,7 +60,7 @@ class SpringSingleValueReplacer(RegexSingleValueReplacer):
 
 
 class SpringResourceGroupPreparer(ResourceGroupPreparer):
-    def __init__(self, location='uksouth', **kwargs):
+    def __init__(self, location='eastus', **kwargs):
         super(SpringResourceGroupPreparer, self).__init__(location=location, **kwargs)
     
     def create_resource(self, name, **kwargs):
@@ -82,7 +82,7 @@ class SpringPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
                  parameter_name='spring',
                  dev_setting_name='AZURE_CLI_TEST_DEV_SPRING_NAME',
                  resource_group_parameter_name='resource_group',
-                 location='uksouth',
+                 location='eastus',
                  random_name_length=15, key='asa', additional_params=None):
         if ' ' in name_prefix:
             raise CliTestError('Error: Space character in Spring name prefix \'%s\'' % name_prefix)

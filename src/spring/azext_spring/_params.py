@@ -28,7 +28,7 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
                                      validate_build_env, validate_target_module, validate_runtime_version,
-                                     validate_acs_ssh_or_warn)
+                                     validate_acs_ssh_or_warn, validate_acs_create)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -38,7 +38,7 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
-from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import (SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
+from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import (ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
 
 name_type = CLIArgumentType(options_list=[
@@ -153,7 +153,14 @@ def load_arguments(self, _):
         c.argument('enable_application_configuration_service',
                    action='store_true',
                    options_list=['--enable-application-configuration-service', '--enable-acs'],
+                   arg_group="Application Configuration Service",
                    help='(Enterprise Tier Only) Enable Application Configuration Service.')
+        c.argument('application_configuration_service_generation',
+                   arg_group="Application Configuration Service",
+                   type=ConfigurationServiceGeneration,
+                   options_list=['--application-configuration-service-generation', '--acs-gen'],
+                   validator=validate_acs_create,
+                   help='(Enterprise Tier Only) Application Configuration Service Generation to enable. Allowed values are: ' + ', '.join(list(ConfigurationServiceGeneration)))
         c.argument('enable_application_live_view',
                    action='store_true',
                    is_preview=True,
@@ -802,6 +809,10 @@ def load_arguments(self, _):
         with self.argument_context('spring application-configuration-service {}'.format(scope)) as c:
             c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
 
+    for scope in ['create', 'update']:
+        with self.argument_context('spring application-configuration-service {}'.format(scope)) as c:
+            c.argument('generation', type=ConfigurationServiceGeneration, help='Generation. Allowed values are: ' + ', '.join(list(ConfigurationServiceGeneration)))
+
     for scope in ['add', 'update']:
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
             c.argument('patterns',
@@ -818,6 +829,7 @@ def load_arguments(self, _):
             c.argument('host_key_algorithm', help='Host key algorithm of the added config.')
             c.argument('private_key', help='Private_key of the added config.', validator=validate_acs_ssh_or_warn)
             c.argument('host_key_check', help='Strict host key checking of the added config which is used in SSH authentication. If false, ignore errors with host key.')
+            c.argument('ca_cert_name', help='CA certificate name.')
 
     for scope in ['add', 'update', 'remove']:
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
