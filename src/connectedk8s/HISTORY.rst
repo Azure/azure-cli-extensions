@@ -2,6 +2,16 @@
 
 Release History
 
+1.3.20
+++++++
+
+* Bug fix in parsing logs for outbound connectivity check for troubleshoot command
+
+1.3.19
+++++++
+
+* Adding outbound network connectivity check for Cluster Connect (OBO endpoint)
+
 1.3.18
 ++++++
 

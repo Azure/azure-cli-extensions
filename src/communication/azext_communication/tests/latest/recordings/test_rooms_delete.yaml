@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{}'
+    body: '{"validFrom": null, "validUntil": null}'
     headers:
       Accept:
       - application/json
@@ -9,45 +9,48 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2'
+      - '39'
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - '2022-12-05T20:13:34.778673Z'
+      - Fri, 26 May 2023 04:09:15 GMT
       Repeatability-Request-ID:
-      - 4bdbfbeb-74d9-11ed-ae30-a864f13124e5
+      - 13d8f376-fb7b-11ed-a362-8cf8c5abc371
       User-Agent:
-      - azsdk-python-communication-rooms/1.0.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.6 azsdk-python-communication-rooms/1.0.0b3 Python/3.8.0 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
-      - RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=
+      - vBTkhrLFogng0nIWoP6/XqO3xl87GjFK9aShkzc8E3g=
       x-ms-date:
-      - Mon, 05 Dec 2022 20:13:34 GMT
+      - Fri, 26 May 2023 04:09:15 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/rooms?api-version=2022-02-01
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-03-31-preview
   response:
     body:
-      string: '{"id": "sanitized", "createdDateTime": "2022-12-05T20:13:36.0656393+00:00",
-        "validFrom": "2022-12-05T20:13:35.9400931+00:00", "validUntil": "2023-06-03T20:13:35.9400931+00:00",
-        "roomJoinPolicy": "InviteOnly", "participants": []}'
+      string: '{"id": "sanitized", "createdAt": "2023-05-26T04:09:16.1001348+00:00",
+        "validFrom": "2023-05-26T04:09:15.6454174+00:00", "validUntil": "2023-11-22T04:09:15.6454174+00:00"}'
     headers:
+      api-deprecated-versions:
+      - '2021-04-07'
       api-supported-versions:
-      - 2021-04-07, 2022-02-01
+      - 2022-02-01, 2023-03-31-preview
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:13:35 GMT
+      - Fri, 26 May 2023 04:09:16 GMT
       location:
-      - '99478061052196209'
+      - '99496660977532440'
       ms-cv:
-      - NimnshKe+kWiSIzZW0hJ6g.0
+      - AlS3vhNrc0afMC4S9rAOVg.0
       repeatability-result:
       - accepted
+      request-context:
+      - appId=
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 071COYwAAAACRTmhFJdLZQqxEtw+b2MguWVZSMzExMDAwMTE1MDM3ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 06zBwZAAAAACNqhtVMxesTK/zOqzk9fkcWVZSMzExMDAwMTE1MDMzADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
     status:
@@ -65,27 +68,31 @@ interactions:
       Content-Length:
       - '0'
       User-Agent:
-      - azsdk-python-communication-rooms/1.0.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.6 azsdk-python-communication-rooms/1.0.0b3 Python/3.8.0 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
       - 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
       x-ms-date:
-      - Mon, 05 Dec 2022 20:13:35 GMT
+      - Fri, 26 May 2023 04:09:16 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: DELETE
-    uri: https://sanitized.communication.azure.com/rooms/sanitized?api-version=2022-02-01
+    uri: https://sanitized.communication.azure.com/rooms/sanitized?api-version=2023-03-31-preview
   response:
     body:
       string: ''
     headers:
+      api-deprecated-versions:
+      - '2021-04-07'
       api-supported-versions:
-      - 2021-04-07, 2022-02-01
+      - 2022-02-01, 2023-03-31-preview
       date:
-      - Mon, 05 Dec 2022 20:13:36 GMT
+      - Fri, 26 May 2023 04:09:17 GMT
       ms-cv:
-      - m4GqsWerkUKFoyJFSZuBuA.0
+      - nKWawYG+2kKwaoxQAhF44g.0
+      request-context:
+      - appId=
       x-azure-ref:
-      - 08FCOYwAAAAC3DIjWXC07T7/2bWiufIBOWVZSMzExMDAwMTE1MDIzADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 07DBwZAAAAABx0KUtViAUQrUMxiCeCp/ZWVZSMzExMDAwMTE1MDI5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
     status:

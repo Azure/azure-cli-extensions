@@ -1,10 +1,35 @@
 Release History
 ===============
-1.13.0
+1.14.0
 ---
 * Add new command -- `az spring application-configuration-service create --generation` to support create Application Configuration Service with different generation
 * Add new command -- `az spring application-configuration-service update --generation` to support update Application Configuration Service to different generation
 * Add new command -- `az spring application-configuration-service git repo add --ca-cert-name` to support bind certificate to Application Configuration Service Gen2
+
+1.13.2
+---
+* Add argument `--build-certificates` in `az spring app deploy`.
+
+1.13.1
+---
+* Fix the parameter `--no-wait` of the command -- `az spring build-service update`.
+
+1.13.0
+---
+* Add new command -- `az spring apm show` to show the APM resource.
+* Add new command -- `az spring apm create` to create APM resource.
+* Add new command -- `az spring apm update` to update APM resource.
+* Add new command -- `az spring apm delete` to delete APM resource.
+* Add new command -- `az spring apm enable-globally` to enable an APM globally.
+* Add new command -- `az spring apm disable-globally` to disable an APM globally.
+* Add new command -- `az spring apm list-support-types` to list all the supported APM types.
+* Add new command -- `az spring apm list` to list all the APM resources.
+* Add new command -- `az spring apm list-enabled-globally` to list all the APMs enabled globally.
+
+1.12.2
+---
+* Add default `enabled_state` for `az spring config-server set` in Standard Counsumption tier.
+>>>>>>> main
 
 1.12.1
 ---

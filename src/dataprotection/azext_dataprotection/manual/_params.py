@@ -88,10 +88,6 @@ def load_arguments(self, _):
         c.argument('vault_name', type=str, help="Name of the vault.")
         c.argument('policy_id', type=str, help="specify the ID of the new policy with which backup instance will be associated with.")
 
-    with self.argument_context('dataprotection recovery-point list') as c:
-        c.argument('start_time', type=datetime_type, help="specify the start date in UTC (yyyy-mm-ddTHH:MM:SS)")
-        c.argument('end_time', type=datetime_type, help="specify the end date in UTC (yyyy-mm-ddTHH:MM:SS)")
-
     with self.argument_context('dataprotection backup-policy create') as c:
         c.argument('policy', type=validate_file_or_dict, help='Request body for operation Expected value: '
                    'json-string/@json-file.')
@@ -228,6 +224,8 @@ def load_arguments(self, _):
     with self.argument_context('dataprotection backup-instance restore initialize-for-data-recovery-as-files') as c:
         c.argument('target_blob_container_url', type=str, help="specify the blob container url to which the data will be restored.")
         c.argument('target_file_name', type=str, help="specify the file name to which the data will be restored.")
+        c.argument('target_resource_id', type=str, help="specify the target storage container ARM ID to which data will be restored, "
+                   'required for restoring as files to another subscription')
         c.argument('recovery_point_id', type=str, help="specify the recovery point ID which will be used for restoring the data.")
         c.argument('point_in_time', type=datetime_type, help="specify the point in time which will be used for restoring the data in UTC (yyyy-mm-ddTHH:MM:SS)")
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type")
