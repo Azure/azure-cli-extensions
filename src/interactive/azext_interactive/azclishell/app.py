@@ -663,7 +663,6 @@ class AzInteractiveShell(object):
                 break
         if self.recommender.cur_thread.result is not None:
             result = self.recommender.cur_thread.result
-            # If the result is a string, it means the search thread has encountered an error
             if result["type"] == RecommendType.Error:
                 print_styled_text([(Style.WARNING, result["content"])])
                 self.recommender.cur_thread.result = []
