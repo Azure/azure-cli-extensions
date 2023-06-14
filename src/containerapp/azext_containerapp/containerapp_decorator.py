@@ -19,8 +19,8 @@ from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
+from ._clients import ManagedEnvironmentClient
 from ._client_factory import handle_raw_exception
-from ._clients import ContainerAppClient
 
 from ._models import (
     Ingress as IngressModel,
@@ -63,13 +63,12 @@ logger = get_logger(__name__)
 
 class BaseContainerAppDecorator:
     def __init__(
-        self, cmd: AzCliCommand, client: Any, environment_client: Any, raw_parameters: Dict, models: str
+        self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
     ):
         self.raw_param = raw_parameters
         self.cmd = cmd
         self.client = client
         self.models = models
-        self.environment_client = environment_client
 
     def register_provider(self):
         raise NotImplementedError()
@@ -98,9 +97,10 @@ class BaseContainerAppDecorator:
 
 class ContainerAppCreateDecorator(BaseContainerAppDecorator):
     def __init__(
-        self, cmd: AzCliCommand, client: Any, environment_client: Any, raw_parameters: Dict, models: str
+        self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
     ):
-        super().__init__(cmd, client, environment_client, raw_parameters, models)
+        super().__init__(cmd, client, raw_parameters, models)
+        self.environment_client = self.get_environment_client()
 
     def register_provider(self):
         register_provider_if_needed(self.cmd, CONTAINER_APPS_RP)
@@ -131,8 +131,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
         managed_env_info = None
 
         try:
-            managed_env_info = self.environment_client.show(cmd=self.cmd, resource_group_name=managed_env_rg,
-                                                             name=managed_env_name)
+            managed_env_info = self.environment_client.show(cmd=self.cmd, resource_group_name=managed_env_rg, name=managed_env_name)
         except:
             pass
 
@@ -453,6 +452,9 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             containerapp_def['location'] = env_info['location']
 
         return containerapp_def
+
+    def get_environment_client(self):
+        return ManagedEnvironmentClient
 
     def get_name(self):
         return self.get_param("name")
