@@ -34,6 +34,7 @@ class ChatgptThread(threading.Thread):
             self.result = {"content": "Connection Error. Please check your network connection.",
                            "api_version": self.api_version, "type": RecommendType.Error}
 
+
 def generate_script(user_msg: str, history_msg: list):
     """Generate CLI Scripts with ChatGPT model"""
     import requests

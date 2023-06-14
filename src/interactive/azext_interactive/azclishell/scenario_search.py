@@ -10,6 +10,7 @@ from azure.cli.core.style import Style, print_styled_text
 from ._azclierror import ScenarioSearchError
 from .recommendation import RecommendType
 
+
 class SearchScope(int, Enum):
     All = 1
     Scenario = 2

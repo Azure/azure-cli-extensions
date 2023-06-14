@@ -13,7 +13,6 @@ from azure.cli.core import telemetry
 from azure.cli.core import __version__ as version
 from azure.cli.core.style import print_styled_text, Style
 from prompt_toolkit.history import FileHistory
-from .scenario_search import SearchThread
 
 
 class RecommendType(int, Enum):
