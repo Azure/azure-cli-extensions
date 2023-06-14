@@ -7,7 +7,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf ipprefix create
+      - networkfabric ipprefix create
       Connection:
       - keep-alive
       ParameterSetName:
@@ -123,7 +123,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 07:27:40 GMT
+      - Wed, 14 Jun 2023 02:19:05 GMT
       expires:
       - '-1'
       pragma:
@@ -147,7 +147,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf ipprefix create
+      - networkfabric ipprefix create
       Connection:
       - keep-alive
       Content-Length:
@@ -159,10 +159,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix061223?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix061423?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix061223","name":"nfa-tool-ts-cli-ipprefix061223","type":"microsoft.managednetworkfabric/ipprefixes","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-12T07:27:45.7076266Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-12T07:27:45.7076266Z"},"properties":{"ipPrefixRules":[{"action":"Permit","sequenceNumber":10,"networkPrefix":"10.12.14.0/24","condition":"EqualTo","subnetMaskLength":24}],"provisioningState":"Succeeded","annotation":null}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix061423","name":"nfa-tool-ts-cli-ipprefix061423","type":"microsoft.managednetworkfabric/ipprefixes","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-14T02:19:10.5116474Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-14T02:19:10.5116474Z"},"properties":{"ipPrefixRules":[{"action":"Permit","sequenceNumber":10,"networkPrefix":"10.12.14.0/24","condition":"EqualTo","subnetMaskLength":24}],"provisioningState":"Succeeded","annotation":null}}'
     headers:
       cache-control:
       - no-cache
@@ -171,13 +171,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 07:27:47 GMT
+      - Wed, 14 Jun 2023 02:19:12 GMT
       etag:
-      - '"f109ce17-0000-0100-0000-6486c8f20000"'
+      - '"5b0b517e-0000-0100-0000-6489239f0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 9a1101bc-5f8a-4b25-9c24-c9aa2c4ab603
+      - 2ccc8904-4711-40db-9e4a-e742cacd66e0
       pragma:
       - no-cache
       strict-transport-security:
@@ -203,7 +203,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf ipprefix show
+      - networkfabric ipprefix show
       Connection:
       - keep-alive
       ParameterSetName:
@@ -211,10 +211,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix061223?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix061423?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix061223","name":"nfa-tool-ts-cli-ipprefix061223","type":"microsoft.managednetworkfabric/ipprefixes","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-12T07:27:45.7076266Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-12T07:27:45.7076266Z"},"properties":{"ipPrefixRules":[{"action":"Permit","sequenceNumber":10,"networkPrefix":"10.12.14.0/24","condition":"EqualTo","subnetMaskLength":24}],"provisioningState":"Succeeded","annotation":null}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix061423","name":"nfa-tool-ts-cli-ipprefix061423","type":"microsoft.managednetworkfabric/ipprefixes","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-14T02:19:10.5116474Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-14T02:19:10.5116474Z"},"properties":{"ipPrefixRules":[{"action":"Permit","sequenceNumber":10,"networkPrefix":"10.12.14.0/24","condition":"EqualTo","subnetMaskLength":24}],"provisioningState":"Succeeded","annotation":null}}'
     headers:
       cache-control:
       - no-cache
@@ -223,9 +223,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 07:27:49 GMT
+      - Wed, 14 Jun 2023 02:19:14 GMT
       etag:
-      - '"f109ce17-0000-0100-0000-6486c8f20000"'
+      - '"5b0b517e-0000-0100-0000-6489239f0000"'
       expires:
       - '-1'
       pragma:
@@ -251,7 +251,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf ipprefix list
+      - networkfabric ipprefix list
       Connection:
       - keep-alive
       User-Agent:
@@ -260,16 +260,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/ipPrefixes?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix1-061223","name":"nfa-tool-ts-cli-ipprefix1-061223","type":"microsoft.managednetworkfabric/ipprefixes","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-12T07:12:57.3440245Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-12T07:12:57.3440245Z"},"properties":{"ipPrefixRules":[{"action":"Permit","sequenceNumber":1234,"networkPrefix":"1.1.10.10/20","condition":"EqualTo","subnetMaskLength":25}],"provisioningState":"Succeeded","annotation":null}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix061223","name":"nfa-tool-ts-cli-ipprefix061223","type":"microsoft.managednetworkfabric/ipprefixes","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-12T07:27:45.7076266Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-12T07:27:45.7076266Z"},"properties":{"ipPrefixRules":[{"action":"Permit","sequenceNumber":10,"networkPrefix":"10.12.14.0/24","condition":"EqualTo","subnetMaskLength":24}],"provisioningState":"Succeeded","annotation":null}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fab1nfrg061323/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/ipprefixv4internalnetwork1export","name":"ipprefixv4internalnetwork1export","type":"microsoft.managednetworkfabric/ipprefixes","location":"eastus2euap","systemData":{"createdBy":"v-abalka@microsoft.com","createdByType":"User","createdAt":"2023-06-13T17:39:58.7873258Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-06-13T17:42:21.0825226Z"},"properties":{"ipPrefixRules":[{"action":"Deny","sequenceNumber":10,"networkPrefix":"10.2.36.0/28","condition":"EqualTo","subnetMaskLength":28},{"action":"Permit","sequenceNumber":12,"networkPrefix":"10.2.38.0/24","condition":"EqualTo","subnetMaskLength":24}],"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fab1nfrg061323/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/ipprefixv4internalnetwork1import","name":"ipprefixv4internalnetwork1import","type":"microsoft.managednetworkfabric/ipprefixes","location":"eastus2euap","systemData":{"createdBy":"v-abalka@microsoft.com","createdByType":"User","createdAt":"2023-06-13T17:43:12.5580655Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-06-13T17:53:12.5563511Z"},"properties":{"ipPrefixRules":[{"action":"Deny","sequenceNumber":10,"networkPrefix":"10.2.39.0/24","condition":"EqualTo","subnetMaskLength":24},{"action":"Permit","sequenceNumber":12,"networkPrefix":"10.2.40.0/24","condition":"EqualTo","subnetMaskLength":24}],"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix1-061223","name":"nfa-tool-ts-cli-ipprefix1-061223","type":"microsoft.managednetworkfabric/ipprefixes","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-12T07:12:57.3440245Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-06-12T07:41:37.0570622Z"},"properties":{"ipPrefixRules":[{"action":"Permit","sequenceNumber":1234,"networkPrefix":"1.1.10.10/20","condition":"EqualTo","subnetMaskLength":25}],"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix061423","name":"nfa-tool-ts-cli-ipprefix061423","type":"microsoft.managednetworkfabric/ipprefixes","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-14T02:19:10.5116474Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-14T02:19:10.5116474Z"},"properties":{"ipPrefixRules":[{"action":"Permit","sequenceNumber":10,"networkPrefix":"10.12.14.0/24","condition":"EqualTo","subnetMaskLength":24}],"provisioningState":"Succeeded","annotation":null}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1511'
+      - '3198'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 07:27:51 GMT
+      - Wed, 14 Jun 2023 02:19:16 GMT
       expires:
       - '-1'
       pragma:
@@ -281,10 +281,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - dbac1015-f71f-41b9-b7e2-236f748c4de9
-      - 75cc9b08-2a11-478e-9063-3eef0a96a93a
-      - af0c27c9-0257-4a00-a92c-2530d4674ca7
-      - f3990591-9193-41cb-9724-c7826e25ac4d
+      - 41b58a1f-3212-45e3-aed9-a23ce979ec6a
+      - 72f58113-2332-45ed-84f9-b4e0879e6eff
+      - 832b0b9a-0559-42d6-8095-1caa539bf6ea
+      - 875394df-7998-4873-bad3-78d851607475
     status:
       code: 200
       message: OK
@@ -296,7 +296,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf ipprefix list
+      - networkfabric ipprefix list
       Connection:
       - keep-alive
       ParameterSetName:
@@ -307,7 +307,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix061223","name":"nfa-tool-ts-cli-ipprefix061223","type":"microsoft.managednetworkfabric/ipprefixes","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-12T07:27:45.7076266Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-12T07:27:45.7076266Z"},"properties":{"ipPrefixRules":[{"action":"Permit","sequenceNumber":10,"networkPrefix":"10.12.14.0/24","condition":"EqualTo","subnetMaskLength":24}],"provisioningState":"Succeeded","annotation":null}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix061423","name":"nfa-tool-ts-cli-ipprefix061423","type":"microsoft.managednetworkfabric/ipprefixes","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-14T02:19:10.5116474Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-14T02:19:10.5116474Z"},"properties":{"ipPrefixRules":[{"action":"Permit","sequenceNumber":10,"networkPrefix":"10.12.14.0/24","condition":"EqualTo","subnetMaskLength":24}],"provisioningState":"Succeeded","annotation":null}}]}'
     headers:
       cache-control:
       - no-cache
@@ -316,7 +316,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 07:27:53 GMT
+      - Wed, 14 Jun 2023 02:19:18 GMT
       expires:
       - '-1'
       pragma:
@@ -328,10 +328,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 1135bcc6-8f0c-4a1d-b6d4-ff7604b19073
-      - 8e8cb988-893f-4f02-b805-f37b29f65854
-      - 2b7f54fd-13cd-4940-8260-a384f5df94e6
-      - 87372ca8-d96e-413b-a806-ab1b20abbb54
+      - 3c952dca-b6ef-46d2-b8df-58517f0e3222
+      - 53514860-233d-4cc3-a005-669ba81ce409
+      - c792a3af-62c6-4d6f-8ee0-13ae6192ddbf
+      - 5c09c302-4008-43ca-ae23-089e695d0a92
     status:
       code: 200
       message: OK
@@ -343,7 +343,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf ipprefix delete
+      - networkfabric ipprefix delete
       Connection:
       - keep-alive
       Content-Length:
@@ -353,7 +353,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix061223?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix061423?api-version=2023-02-01-preview
   response:
     body:
       string: ''
@@ -363,11 +363,11 @@ interactions:
       content-length:
       - '0'
       date:
-      - Mon, 12 Jun 2023 07:27:59 GMT
+      - Wed, 14 Jun 2023 02:19:22 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - b10b7e29-85c9-433c-8339-7698d5f583c8
+      - 0a643b65-1dc1-447f-8b9e-80b8ad1a51fc
       pragma:
       - no-cache
       strict-transport-security:

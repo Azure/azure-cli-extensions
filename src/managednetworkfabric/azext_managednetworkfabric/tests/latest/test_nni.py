@@ -33,7 +33,7 @@ def step_create(test, checks=None):
     '''nni create operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf nni create --resource-group {rg} --resource-name {name} --fabric {fabric}'
+    test.cmd('az networkfabric nni create --resource-group {rg} --resource-name {name} --fabric {fabric}'
              ' --is-management-type {isManagementType} --use-option-b {useOptionB}'
              ' --layer2-configuration {layer2Configuration}'
              ' --layer3-configuration {layer3Configuration}', checks=checks)
@@ -43,20 +43,20 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az nf nni show --resource-name {name} --resource-group {rg} --fabric {fabric}')
+        'az networkfabric nni show --resource-name {name} --resource-group {rg} --fabric {fabric}')
     
 def step_delete(test, checks=None):
     '''nni delete operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf nni delete --resource-name {name} --resource-group {rg} --fabric {fabric}')
+        'az networkfabric nni delete --resource-name {name} --resource-group {rg} --fabric {fabric}')
 
 def step_list_resource_group(test, checks=None):
     '''nni list by resource group operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf nni list --resource-group {rg} --fabric {fabric}')
+    test.cmd('az networkfabric nni list --resource-group {rg} --fabric {fabric}')
 
 class NNIScenarioTest1(ScenarioTest):
     ''' NNIScenario test'''

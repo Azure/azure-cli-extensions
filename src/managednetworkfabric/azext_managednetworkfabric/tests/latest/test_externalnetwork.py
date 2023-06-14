@@ -33,27 +33,27 @@ def step_create(test, checks=None):
     '''externalnetwork create operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf externalnetwork create --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {peering_option} --option-a-properties {optionAProperties} --option-b-properties {optionBProperties}', checks=checks)
+    test.cmd('az networkfabric externalnetwork create --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {peering_option} --option-a-properties {optionAProperties} --option-b-properties {optionBProperties}', checks=checks)
 
 def step_show(test, checks=None):
     '''externalnetwork show operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf externalnetwork show --resource-name {name} --l3domain {l3domain} --resource-group {rg}')
+        'az networkfabric externalnetwork show --resource-name {name} --l3domain {l3domain} --resource-group {rg}')
     
 def step_delete(test, checks=None):
     '''externalnetwork delete operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf externalnetwork delete --resource-name {name} --l3domain {l3domain} --resource-group {rg}')
+        'az networkfabric externalnetwork delete --resource-name {name} --l3domain {l3domain} --resource-group {rg}')
 
 def step_list_resource_group(test, checks=None):
     '''externalnetwork list by resource group operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf externalnetwork list --resource-group {rg} --l3domain {l3domain}')
+    test.cmd('az networkfabric externalnetwork list --resource-group {rg} --l3domain {l3domain}')
 
 class ExternalNetworkScenarioTest1(ScenarioTest):
     ''' External Network Scenario test'''

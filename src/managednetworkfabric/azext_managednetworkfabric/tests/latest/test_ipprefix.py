@@ -35,35 +35,35 @@ def step_create(test, checks=None):
     if checks is None:
         checks = []    
     test.cmd(
-        'az nf ipprefix create --resource-group {rg} --location {location} --resource-name {name} --ip-prefix-rules {ipPrefixRules} ', checks=checks)
+        'az networkfabric ipprefix create --resource-group {rg} --location {location} --resource-name {name} --ip-prefix-rules {ipPrefixRules} ', checks=checks)
 
 def step_show(test, checks=None):
     '''ipprefix show operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf ipprefix show --resource-name {name} --resource-group {rg}')
+        'az networkfabric ipprefix show --resource-name {name} --resource-group {rg}')
     
 def step_delete(test, checks=None):
     '''ipprefix delete operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf ipprefix delete --resource-name {name} --resource-group {rg}')
+        'az networkfabric ipprefix delete --resource-name {name} --resource-group {rg}')
 
 def step_list_resource_group(test, checks=None):
     '''ipprefix list by resource group operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf ipprefix list --resource-group {rg}')
+        'az networkfabric ipprefix list --resource-group {rg}')
 
 def step_list_subscription(test, checks=None):
     '''ipprefix list by subscription operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf ipprefix list')
+        'az networkfabric ipprefix list')
 
 class IpPrefixScenarioTest1(ScenarioTest):
     ''' IpPrefix Scenario test'''

@@ -35,7 +35,7 @@ def step_update(test, checks=None):
     '''Device create operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf device update --resource-group {rg} --resource-name {name} '
+    test.cmd('az networkfabric device update --resource-group {rg} --resource-name {name} '
     ' --serial-number {serial_number}', checks=checks)
 
 def step_show(test, checks=None):
@@ -43,19 +43,19 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az nf device show --resource-name {name} --resource-group {rg}')
+        'az networkfabric device show --resource-name {name} --resource-group {rg}')
 
 def step_list_resource_group(test, checks=None):
     '''Device list by resource group operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf device list --resource-group {rg}')
+    test.cmd('az networkfabric device list --resource-group {rg}')
 
 def step_list_subscription(test, checks=None):
     '''Device list by subscription operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf device list')
+    test.cmd('az networkfabric device list')
 
 class DeviceScenarioTest1(ScenarioTest):
     ''' DeviceScenario test'''

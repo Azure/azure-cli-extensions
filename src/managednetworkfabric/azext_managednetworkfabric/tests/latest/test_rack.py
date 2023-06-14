@@ -33,19 +33,19 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az nf rack show --resource-name {name} --resource-group {rg}')
+        'az networkfabric rack show --resource-name {name} --resource-group {rg}')
 
 def step_list_resource_group(test, checks=None):
     '''Rack list by resource group operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf rack list --resource-group {rg}')
+    test.cmd('az networkfabric rack list --resource-group {rg}')
 
 def step_list_subscription(test, checks=None):
     '''Rack list by subscription'''
     if checks is None:
         checks = []
-    test.cmd('az nf rack list')
+    test.cmd('az networkfabric rack list')
 
 class RackScenarioTest1(ScenarioTest):
     ''' RackScenario test'''

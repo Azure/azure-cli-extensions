@@ -34,25 +34,25 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az nf interface show --resource-name {name} --resource-group {rg} --device {device_name}')
+        'az networkfabric interface show --resource-name {name} --resource-group {rg} --device {device_name}')
 
 def step_list_resource_group(test, checks=None):
     '''Interface list by resource group operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf interface list --resource-group {rg} --device {device_name}')
+    test.cmd('az networkfabric interface list --resource-group {rg} --device {device_name}')
 
 def step_update_admin_state_Enable(test, checks=None):
     '''Interface Update admin state Enable operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf interface update-admin-state --resource-group {rg} --device {device_name} --resource-name {name} --state {state_Enable}')
+    test.cmd('az networkfabric interface update-admin-state --resource-group {rg} --device {device_name} --resource-name {name} --state {state_Enable}')
 
 def step_update_admin_state_Disable(test, checks=None):
     '''Interface Update admin state Disable operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf interface update-admin-state --resource-group {rg} --device {device_name} --resource-name {name} --state {state_Disable}')
+    test.cmd('az networkfabric interface update-admin-state --resource-group {rg} --device {device_name} --resource-name {name} --state {state_Disable}')
 
 class InterfaceScenarioTest1(ScenarioTest):
     ''' InterfaceScenario test'''

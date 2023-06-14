@@ -36,45 +36,45 @@ def step_create(test, checks=None):
     '''l2domain create operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf l2domain create --resource-group {rg} --resource-name {name} --location {location} --nf-id {nf_id} --vlan-id {vlan_id}', checks=checks)
+    test.cmd('az networkfabric l2domain create --resource-group {rg} --resource-name {name} --location {location} --nf-id {nf_id} --vlan-id {vlan_id}', checks=checks)
 
 def step_show(test, checks=None):
     '''l2domain show operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf l2domain show --resource-name {name} --resource-group {rg}')
+        'az networkfabric l2domain show --resource-name {name} --resource-group {rg}')
     
 def step_delete(test, checks=None):
     '''l2domain delete operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf l2domain delete --resource-name {name} --resource-group {rg}')
+        'az networkfabric l2domain delete --resource-name {name} --resource-group {rg}')
 
 def step_list_subscription(test, checks=None):
     '''l2domain list by subscription operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf l2domain list')
+    test.cmd('az networkfabric l2domain list')
 
 def step_list_resource_group(test, checks=None):
     '''l2domain list by resource group operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf l2domain list --resource-group {rg}')
+    test.cmd('az networkfabric l2domain list --resource-group {rg}')
 
 def step_update_admin_state_Enable(test, checks=None):
     '''l2domain Update admin state operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf l2domain update-admin-state --resource-group {rg} --resource-name {name} --state {state_Enable} --no-wait')
+    test.cmd('az networkfabric l2domain update-admin-state --resource-group {rg} --resource-name {name} --state {state_Enable} --no-wait')
 
 def step_update_admin_state_Disable(test, checks=None):
     '''l2domain Update admin state operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf l2domain update-admin-state --resource-group {rg} --resource-name {name} --state {state_Disable} --no-wait')
+    test.cmd('az networkfabric l2domain update-admin-state --resource-group {rg} --resource-name {name} --state {state_Disable} --no-wait')
 
 class L2DomainScenarioTest1(ScenarioTest):
     ''' L2 Domain Scenario test'''

@@ -34,7 +34,7 @@ def step_create(test, checks=None):
     '''ipcommunity create operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf ipcommunity create --resource-group {rg} --location {location} --resource-name {name} '
+    test.cmd('az networkfabric ipcommunity create --resource-group {rg} --location {location} --resource-name {name} '
              ' --action {action} --well-known-communities {well_known_communities} --community-members {community_members}', checks=checks)
 
 def step_show(test, checks=None):
@@ -42,26 +42,26 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az nf ipcommunity show --resource-name {name} --resource-group {rg}')
+        'az networkfabric ipcommunity show --resource-name {name} --resource-group {rg}')
     
 def step_delete(test, checks=None):
     '''ipcommunity delete operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf ipcommunity delete --resource-name {name} --resource-group {rg}')
+        'az networkfabric ipcommunity delete --resource-name {name} --resource-group {rg}')
 
 def step_list_resource_group(test, checks=None):
     '''ipcommunity list by resource group operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf ipcommunity list --resource-group {rg}')
+    test.cmd('az networkfabric ipcommunity list --resource-group {rg}')
 
 def step_list_subscription(test, checks=None):
     '''ipcommunity list by subscription operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf ipcommunity list')
+    test.cmd('az networkfabric ipcommunity list')
 
 class IpCommunityScenarioTest1(ScenarioTest):
     ''' Ip Community Scenario test'''

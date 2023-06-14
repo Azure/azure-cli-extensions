@@ -34,32 +34,32 @@ def step_create(test, checks=None):
     '''ipextendedcommunity create operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf ipextendedcommunity create --resource-group {rg} --location {location} --resource-name {name}'
+    test.cmd('az networkfabric ipextendedcommunity create --resource-group {rg} --location {location} --resource-name {name}'
              ' --action {action} --route-targets {route_targets}', checks=checks)
 
 def step_show(test, checks=None):
     '''ipextendedcommunity show operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf ipextendedcommunity show --resource-name {name} --resource-group {rg}')
+    test.cmd('az networkfabric ipextendedcommunity show --resource-name {name} --resource-group {rg}')
     
 def step_delete(test, checks=None):
     '''ipextendedcommunity delete operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf ipextendedcommunity delete --resource-name {name} --resource-group {rg}')
+    test.cmd('az networkfabric ipextendedcommunity delete --resource-name {name} --resource-group {rg}')
 
 def step_list_resource_group(test, checks=None):
     '''ipextendedcommunity list by resource group operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf ipextendedcommunity list --resource-group {rg}')
+    test.cmd('az networkfabric ipextendedcommunity list --resource-group {rg}')
 
 def step_list_subscription(test, checks=None):
     '''ipextendedcommunity list by subscription operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf ipextendedcommunity list')
+    test.cmd('az networkfabric ipextendedcommunity list')
 
 class IpExtendedCommunityScenarioTest1(ScenarioTest):
     ''' Ip Extended Community Scenario test'''

@@ -52,39 +52,39 @@ def step_create_s1(test, checks=None):
     '''routepolicy create operation with IpCommunities'''
     if checks is None:
         checks = []
-    test.cmd('az nf routepolicy create --resource-group {rg} --resource-name {name} --location {location} --statements {statements_with_ipcommunity}', checks=checks)
+    test.cmd('az networkfabric routepolicy create --resource-group {rg} --resource-name {name} --location {location} --statements {statements_with_ipcommunity}', checks=checks)
 
 def step_create_s2(test, checks=None):
     '''routepolicy create operation with IpExtendedCommunities'''
     if checks is None:
         checks = []
-    test.cmd('az nf routepolicy create --resource-group {rg} --resource-name {name} --location {location} --statements {statements_with_ipextcommunity}', checks=checks)
+    test.cmd('az networkfabric routepolicy create --resource-group {rg} --resource-name {name} --location {location} --statements {statements_with_ipextcommunity}', checks=checks)
 
 def step_show(test, checks=None):
     '''routepolicy show operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf routepolicy show --resource-name {name} --resource-group {rg}')
+        'az networkfabric routepolicy show --resource-name {name} --resource-group {rg}')
     
 def step_delete(test, checks=None):
     '''routepolicy delete operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf routepolicy delete --resource-name {name} --resource-group {rg}')
+        'az networkfabric routepolicy delete --resource-name {name} --resource-group {rg}')
 
 def step_list_resource_group(test, checks=None):
     '''routepolicy list by resource group operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf routepolicy list --resource-group {rg}')
+    test.cmd('az networkfabric routepolicy list --resource-group {rg}')
 
 def step_list_subscription(test, checks=None):
     '''routepolicy list by subscription operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf routepolicy list')
+    test.cmd('az networkfabric routepolicy list')
 
 class RoutePolicyScenarioTest1(ScenarioTest):
     ''' Route Policy Scenario1 test'''

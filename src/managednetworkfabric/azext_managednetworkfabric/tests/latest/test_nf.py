@@ -49,7 +49,7 @@ def step_create(test, checks=None):
     '''nf create operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf fabric create --resource-group {rg} --location {location} --resource-name {name} --nf-sku {nf_sku} --nfc-id {nfc_id}'
+    test.cmd('az networkfabric fabric create --resource-group {rg} --location {location} --resource-name {name} --nf-sku {nf_sku} --nfc-id {nfc_id}'
 			 ' --fabric-asn {fabric_asn} --ipv4-prefix {ipv4_prefix} --ipv6-prefix {ipv6_prefix} --rack-count {rack_count} --server-count-per-rack {server_count_per_rack}'
 			 ' --ts-config {terminalServerConf} --managed-network-config {managedNetworkConf}', checks=checks)
 
@@ -58,40 +58,40 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az nf fabric show --resource-name {name} --resource-group {rg}')
+        'az networkfabric fabric show --resource-name {name} --resource-group {rg}')
     
 def step_delete(test, checks=None):
     '''nf delete operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf fabric delete --resource-name {name} --resource-group {rg}')
+        'az networkfabric fabric delete --resource-name {name} --resource-group {rg}')
 
 def step_list_resource_group(test, checks=None):
     '''nf list by resource group operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf fabric list --resource-group {rg}')
+    test.cmd('az networkfabric fabric list --resource-group {rg}')
 
 def step_list_subscription(test, checks=None):
     '''nf list by subscription operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf fabric list')
+    test.cmd('az networkfabric fabric list')
 
 def step_provision(test, checks=None):
     '''nf provision operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf fabric provision --resource-name {resource_name} --resource-group {rg}')
+        'az networkfabric fabric provision --resource-name {resource_name} --resource-group {rg}')
     
 def step_deprovision(test, checks=None):
     '''nf deprovision operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf fabric deprovision --resource-name {resource_name} --resource-group {rg}')
+        'az networkfabric fabric deprovision --resource-name {resource_name} --resource-group {rg}')
 
 class NFScenarioTest1(ScenarioTest):
     ''' NFScenario test'''

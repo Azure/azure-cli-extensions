@@ -48,7 +48,7 @@ def step_create(test, checks=None):
     '''l3domain create operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf l3domain create --resource-group {rg} --resource-name {name} --location {location} --nf-id {nf_id}'
+    test.cmd('az networkfabric l3domain create --resource-group {rg} --resource-name {name} --location {location} --nf-id {nf_id}'
              ' --redistribute-connected-subnets {redistributeConnectedSubnets} --redistribute-static-routes {redistributeStaticRoutes} '
              ' --aggregate-route-configuration {aggregateRouteConf} --connected-subnet-route-policy {connectedSubnetRoutePolicy}', checks=checks)
 
@@ -57,38 +57,38 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az nf l3domain show --resource-name {name} --resource-group {rg}')
+        'az networkfabric l3domain show --resource-name {name} --resource-group {rg}')
     
 def step_delete(test, checks=None):
     '''l3domain delete operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf l3domain delete --resource-name {name} --resource-group {rg}')
+        'az networkfabric l3domain delete --resource-name {name} --resource-group {rg}')
 
 def step_list_resource_group(test, checks=None):
     '''l3domain list by resource group operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf l3domain list --resource-group {rg}')
+    test.cmd('az networkfabric l3domain list --resource-group {rg}')
 
 def step_list_subscription(test, checks=None):
     '''l3domain list by subscription operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf l3domain list')
+    test.cmd('az networkfabric l3domain list')
 
 def step_update_admin_state_Enable(test, checks=None):
     '''l3domain Update admin state operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf l3domain update-admin-state --resource-group {rg} --resource-name {resource_name} --state {state_Enable} --no-wait')
+    test.cmd('az networkfabric l3domain update-admin-state --resource-group {rg} --resource-name {resource_name} --state {state_Enable} --no-wait')
 
 def step_update_admin_state_Disable(test, checks=None):
     '''l3domain Update admin state operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf l3domain update-admin-state --resource-group {rg} --resource-name {resource_name} --state {state_Disable} --no-wait')
+    test.cmd('az networkfabric l3domain update-admin-state --resource-group {rg} --resource-name {resource_name} --state {state_Disable} --no-wait')
 
 class L3DomainScenarioTest1(ScenarioTest):
     ''' L3 Domain Scenario test'''

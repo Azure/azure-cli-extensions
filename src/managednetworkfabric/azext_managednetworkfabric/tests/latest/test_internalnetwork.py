@@ -33,7 +33,7 @@ def step_create(test, checks=None):
     '''internalnetwork create operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf internalnetwork create --resource-group {rg} --l3-isolation-domain-name {l3domain} --resource-name {name} --vlan-id {vlan_id}'
+    test.cmd('az networkfabric internalnetwork create --resource-group {rg} --l3-isolation-domain-name {l3domain} --resource-name {name} --vlan-id {vlan_id}'
 			 ' --mtu {mtu} --connected-ipv4-subnets {connectedIpv4Subnets} --connected-ipv6-subnets {connectedIpv6Subnets} --static-route-configuration {staticRouteConf} --bgp-configuration {bgpConf} --no-wait', checks=checks)
 
 def step_show(test, checks=None):
@@ -41,20 +41,20 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az nf internalnetwork show --resource-name {name} --l3domain {l3domain} --resource-group {rg}')
+        'az networkfabric internalnetwork show --resource-name {name} --l3domain {l3domain} --resource-group {rg}')
     
 def step_delete(test, checks=None):
     '''internalnetwork delete operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf internalnetwork delete --resource-name {name} --l3domain {l3domain} --resource-group {rg}')
+        'az networkfabric internalnetwork delete --resource-name {name} --l3domain {l3domain} --resource-group {rg}')
 
 def step_list_resource_group(test, checks=None):
     '''internalnetwork list by resource group operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf internalnetwork list --resource-group {rg} --l3domain {l3domain}')
+    test.cmd('az networkfabric internalnetwork list --resource-group {rg} --l3domain {l3domain}')
 
 class InternalNetworkScenarioTest1(ScenarioTest):
     ''' Internal Network Scenario test'''

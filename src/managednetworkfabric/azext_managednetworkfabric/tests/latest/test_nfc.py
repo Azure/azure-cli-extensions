@@ -49,7 +49,7 @@ def step_create(test, checks=None):
     '''nfc create operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf controller create --resource-group {rg} --location {location} --resource-name {name}'
+    test.cmd('az networkfabric controller create --resource-group {rg} --location {location} --resource-name {name}'
 			 ' --infra-er-connections {infraERConnections} --workload-er-connections {workloadERConnections}'
              ' --ipv4-address-space {ipv4AddressSpace} --no-wait' , checks=checks)
 
@@ -58,26 +58,26 @@ def step_show(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az nf controller show --resource-name {name} --resource-group {rg}')
+        'az networkfabric controller show --resource-name {name} --resource-group {rg}')
     
 def step_delete(test, checks=None):
     '''nfc delete operation'''
     if checks is None:
         checks = []
     test.cmd(
-        'az nf controller delete --resource-name {nameDelete} --resource-group {rg}')
+        'az networkfabric controller delete --resource-name {nameDelete} --resource-group {rg}')
 
 def step_list_resource_group(test, checks=None):
     '''nfc list by resource group operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf controller list --resource-group {rg}')
+    test.cmd('az networkfabric controller list --resource-group {rg}')
 
 def step_list_subscription(test, checks=None):
     '''nfc list by subscription operation'''
     if checks is None:
         checks = []
-    test.cmd('az nf controller list')
+    test.cmd('az networkfabric controller list')
 
 class NFCScenarioTest1(ScenarioTest):
     ''' NFCScenario test'''

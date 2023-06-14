@@ -10,7 +10,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf externalnetwork create
+      - networkfabric externalnetwork create
       Connection:
       - keep-alive
       Content-Length:
@@ -23,13 +23,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061423?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","name":"nfa-tool-ts-cli-externalnetwork061223","type":"microsoft.managednetworkfabric/l3isolationdomains/externalnetworks","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-12T10:43:28.1608329Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-12T10:43:28.1608329Z"},"properties":{"annotation":null,"importRoutePolicyId":null,"exportRoutePolicyId":null,"peeringOption":"OptionB","optionAProperties":{"mtu":1500,"vlanId":513,"peerASN":65234,"bfdConfiguration":null,"primaryIpv4Prefix":"172.23.1.0/31","secondaryIpv4Prefix":"172.23.1.2/31"},"optionBProperties":{"importRouteTargets":["65541:2001"],"exportRouteTargets":["65531:2001"]},"disabledOnResources":null,"networkToNetworkInterconnectId":null,"administrativeState":"Enabled","provisioningState":"Accepted"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061423","name":"nfa-tool-ts-cli-externalnetwork061423","type":"microsoft.managednetworkfabric/l3isolationdomains/externalnetworks","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-14T02:47:17.2355165Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-14T02:47:17.2355165Z"},"properties":{"annotation":null,"importRoutePolicyId":null,"exportRoutePolicyId":null,"peeringOption":"OptionB","optionAProperties":{"mtu":1500,"vlanId":513,"peerASN":65234,"bfdConfiguration":null,"primaryIpv4Prefix":"172.23.1.0/31","secondaryIpv4Prefix":"172.23.1.2/31"},"optionBProperties":{"importRouteTargets":["65541:2001"],"exportRouteTargets":["65531:2001"]},"disabledOnResources":null,"networkToNetworkInterconnectId":null,"administrativeState":"Enabled","provisioningState":"Accepted"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/c760ac3c-5428-400e-aa18-966f2f6a9547*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0?api-version=2023-02-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/c70bfbbd-79e8-401d-a0d5-3f43e0208c45*B8936469377DCF712EBF1B54EF566E983F05FB70DBE8D83E4988B9B1DBB1AD1E?api-version=2023-02-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -37,13 +37,13 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 10:43:29 GMT
+      - Wed, 14 Jun 2023 02:47:17 GMT
       etag:
-      - '"b8059eec-0000-0100-0000-6486f6d10000"'
+      - '"dd058f69-0000-0100-0000-64892a350000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 6dcbda26-1ee1-4c59-8c40-b9e0f4ae6e9e
+      - 6405b29c-cb28-4005-b884-312acf45e338
       pragma:
       - no-cache
       strict-transport-security:
@@ -53,7 +53,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 201
       message: Created
@@ -65,7 +65,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf externalnetwork create
+      - networkfabric externalnetwork create
       Connection:
       - keep-alive
       ParameterSetName:
@@ -74,10 +74,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/c760ac3c-5428-400e-aa18-966f2f6a9547*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/c70bfbbd-79e8-401d-a0d5-3f43e0208c45*B8936469377DCF712EBF1B54EF566E983F05FB70DBE8D83E4988B9B1DBB1AD1E?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/c760ac3c-5428-400e-aa18-966f2f6a9547*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","name":"c760ac3c-5428-400e-aa18-966f2f6a9547*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","status":"Accepted","startTime":"2023-06-12T10:43:29.7031009Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/c70bfbbd-79e8-401d-a0d5-3f43e0208c45*B8936469377DCF712EBF1B54EF566E983F05FB70DBE8D83E4988B9B1DBB1AD1E","name":"c70bfbbd-79e8-401d-a0d5-3f43e0208c45*B8936469377DCF712EBF1B54EF566E983F05FB70DBE8D83E4988B9B1DBB1AD1E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061423","status":"Accepted","startTime":"2023-06-14T02:47:17.8375616Z"}'
     headers:
       cache-control:
       - no-cache
@@ -86,9 +86,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 10:43:31 GMT
+      - Wed, 14 Jun 2023 02:47:18 GMT
       etag:
-      - '"72030495-0000-0100-0000-6486f6d10000"'
+      - '"9803b55c-0000-0100-0000-64892a350000"'
       expires:
       - '-1'
       pragma:
@@ -112,7 +112,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf externalnetwork create
+      - networkfabric externalnetwork create
       Connection:
       - keep-alive
       ParameterSetName:
@@ -121,21 +121,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/c760ac3c-5428-400e-aa18-966f2f6a9547*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/c70bfbbd-79e8-401d-a0d5-3f43e0208c45*B8936469377DCF712EBF1B54EF566E983F05FB70DBE8D83E4988B9B1DBB1AD1E?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/c760ac3c-5428-400e-aa18-966f2f6a9547*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","name":"c760ac3c-5428-400e-aa18-966f2f6a9547*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","status":"Succeeded","startTime":"2023-06-12T10:43:29.7031009Z","endTime":"2023-06-12T10:43:32.946732Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/c70bfbbd-79e8-401d-a0d5-3f43e0208c45*B8936469377DCF712EBF1B54EF566E983F05FB70DBE8D83E4988B9B1DBB1AD1E","name":"c70bfbbd-79e8-401d-a0d5-3f43e0208c45*B8936469377DCF712EBF1B54EF566E983F05FB70DBE8D83E4988B9B1DBB1AD1E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061423","status":"Succeeded","startTime":"2023-06-14T02:47:17.8375616Z","endTime":"2023-06-14T02:47:20.6157292Z","properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '735'
+      - '736'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 10:44:01 GMT
+      - Wed, 14 Jun 2023 02:47:48 GMT
       etag:
-      - '"72031c95-0000-0100-0000-6486f6d40000"'
+      - '"9803b75c-0000-0100-0000-64892a380000"'
       expires:
       - '-1'
       pragma:
@@ -159,7 +159,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf externalnetwork create
+      - networkfabric externalnetwork create
       Connection:
       - keep-alive
       ParameterSetName:
@@ -168,10 +168,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061423?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","name":"nfa-tool-ts-cli-externalnetwork061223","type":"microsoft.managednetworkfabric/l3isolationdomains/externalnetworks","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-12T10:43:28.1608329Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-12T10:43:28.1608329Z"},"properties":{"peeringOption":"OptionB","optionAProperties":{"mtu":1500,"vlanId":513,"peerASN":65234,"primaryIpv4Prefix":"172.23.1.0/31","secondaryIpv4Prefix":"172.23.1.2/31","fabricASN":20},"optionBProperties":{"importRouteTargets":["65541:2001"],"exportRouteTargets":["65531:2001"]},"administrativeState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061423","name":"nfa-tool-ts-cli-externalnetwork061423","type":"microsoft.managednetworkfabric/l3isolationdomains/externalnetworks","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-14T02:47:17.2355165Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-14T02:47:17.2355165Z"},"properties":{"peeringOption":"OptionB","optionAProperties":{"mtu":1500,"vlanId":513,"peerASN":65234,"primaryIpv4Prefix":"172.23.1.0/31","secondaryIpv4Prefix":"172.23.1.2/31","fabricASN":20},"optionBProperties":{"importRouteTargets":["65541:2001"],"exportRouteTargets":["65531:2001"]},"administrativeState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -180,9 +180,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 10:44:01 GMT
+      - Wed, 14 Jun 2023 02:47:49 GMT
       etag:
-      - '"b805b9ec-0000-0100-0000-6486f6d50000"'
+      - '"dd05be69-0000-0100-0000-64892a380000"'
       expires:
       - '-1'
       pragma:
@@ -208,7 +208,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf externalnetwork show
+      - networkfabric externalnetwork show
       Connection:
       - keep-alive
       ParameterSetName:
@@ -216,10 +216,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061423?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","name":"nfa-tool-ts-cli-externalnetwork061223","type":"microsoft.managednetworkfabric/l3isolationdomains/externalnetworks","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-12T10:43:28.1608329Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-12T10:43:28.1608329Z"},"properties":{"peeringOption":"OptionB","optionAProperties":{"mtu":1500,"vlanId":513,"peerASN":65234,"primaryIpv4Prefix":"172.23.1.0/31","secondaryIpv4Prefix":"172.23.1.2/31","fabricASN":20},"optionBProperties":{"importRouteTargets":["65541:2001"],"exportRouteTargets":["65531:2001"]},"administrativeState":"Enabled","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061423","name":"nfa-tool-ts-cli-externalnetwork061423","type":"microsoft.managednetworkfabric/l3isolationdomains/externalnetworks","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-14T02:47:17.2355165Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-14T02:47:17.2355165Z"},"properties":{"peeringOption":"OptionB","optionAProperties":{"mtu":1500,"vlanId":513,"peerASN":65234,"primaryIpv4Prefix":"172.23.1.0/31","secondaryIpv4Prefix":"172.23.1.2/31","fabricASN":20},"optionBProperties":{"importRouteTargets":["65541:2001"],"exportRouteTargets":["65531:2001"]},"administrativeState":"Enabled","provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -228,9 +228,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 10:44:05 GMT
+      - Wed, 14 Jun 2023 02:47:50 GMT
       etag:
-      - '"b805b9ec-0000-0100-0000-6486f6d50000"'
+      - '"dd05be69-0000-0100-0000-64892a380000"'
       expires:
       - '-1'
       pragma:
@@ -256,7 +256,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf externalnetwork list
+      - networkfabric externalnetwork list
       Connection:
       - keep-alive
       ParameterSetName:
@@ -267,7 +267,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","name":"nfa-tool-ts-cli-externalnetwork061223","type":"microsoft.managednetworkfabric/l3isolationdomains/externalnetworks","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-12T10:43:28.1608329Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-12T10:43:28.1608329Z"},"properties":{"peeringOption":"OptionB","optionAProperties":{"mtu":1500,"vlanId":513,"peerASN":65234,"primaryIpv4Prefix":"172.23.1.0/31","secondaryIpv4Prefix":"172.23.1.2/31","fabricASN":20},"optionBProperties":{"importRouteTargets":["65541:2001"],"exportRouteTargets":["65531:2001"]},"administrativeState":"Enabled","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061423","name":"nfa-tool-ts-cli-externalnetwork061423","type":"microsoft.managednetworkfabric/l3isolationdomains/externalnetworks","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-14T02:47:17.2355165Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-14T02:47:17.2355165Z"},"properties":{"peeringOption":"OptionB","optionAProperties":{"mtu":1500,"vlanId":513,"peerASN":65234,"primaryIpv4Prefix":"172.23.1.0/31","secondaryIpv4Prefix":"172.23.1.2/31","fabricASN":20},"optionBProperties":{"importRouteTargets":["65541:2001"],"exportRouteTargets":["65531:2001"]},"administrativeState":"Enabled","provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
@@ -276,7 +276,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 10:44:08 GMT
+      - Wed, 14 Jun 2023 02:47:52 GMT
       expires:
       - '-1'
       pragma:
@@ -302,7 +302,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf externalnetwork delete
+      - networkfabric externalnetwork delete
       Connection:
       - keep-alive
       Content-Length:
@@ -312,13 +312,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061423?api-version=2023-02-01-preview
   response:
     body:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0?api-version=2023-02-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/1770998f-255b-4548-a195-67a104a57d9a*B8936469377DCF712EBF1B54EF566E983F05FB70DBE8D83E4988B9B1DBB1AD1E?api-version=2023-02-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -326,15 +326,15 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 10:44:09 GMT
+      - Wed, 14 Jun 2023 02:47:54 GMT
       etag:
-      - '"b8054bee-0000-0100-0000-6486f6fa0000"'
+      - '"dd05d96b-0000-0100-0000-64892a5a0000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0?api-version=2023-02-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/1770998f-255b-4548-a195-67a104a57d9a*B8936469377DCF712EBF1B54EF566E983F05FB70DBE8D83E4988B9B1DBB1AD1E?api-version=2023-02-01-preview
       mise-correlation-id:
-      - a0b7b866-a505-46c5-94cd-735642512fad
+      - dc2c451c-21c9-4c38-ba2b-99c311f037ea
       pragma:
       - no-cache
       strict-transport-security:
@@ -356,7 +356,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf externalnetwork delete
+      - networkfabric externalnetwork delete
       Connection:
       - keep-alive
       ParameterSetName:
@@ -364,399 +364,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/1770998f-255b-4548-a195-67a104a57d9a*B8936469377DCF712EBF1B54EF566E983F05FB70DBE8D83E4988B9B1DBB1AD1E?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","name":"bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","status":"Deleting","startTime":"2023-06-12T10:44:10.6571353Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/1770998f-255b-4548-a195-67a104a57d9a*B8936469377DCF712EBF1B54EF566E983F05FB70DBE8D83E4988B9B1DBB1AD1E","name":"1770998f-255b-4548-a195-67a104a57d9a*B8936469377DCF712EBF1B54EF566E983F05FB70DBE8D83E4988B9B1DBB1AD1E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061423","status":"Succeeded","startTime":"2023-06-14T02:47:54.3044856Z","endTime":"2023-06-14T02:47:54.7412168Z","properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '676'
+      - '736'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 10:44:10 GMT
+      - Wed, 14 Jun 2023 02:47:55 GMT
       etag:
-      - '"7203c296-0000-0100-0000-6486f6fa0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - nf externalnetwork delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-name --l3domain --resource-group
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0?api-version=2023-02-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","name":"bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","status":"Deleting","startTime":"2023-06-12T10:44:10.6571353Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '676'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 10:44:41 GMT
-      etag:
-      - '"7203c296-0000-0100-0000-6486f6fa0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - nf externalnetwork delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-name --l3domain --resource-group
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0?api-version=2023-02-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","name":"bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","status":"Deleting","startTime":"2023-06-12T10:44:10.6571353Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '676'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 10:45:11 GMT
-      etag:
-      - '"7203c296-0000-0100-0000-6486f6fa0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - nf externalnetwork delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-name --l3domain --resource-group
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0?api-version=2023-02-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","name":"bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","status":"Deleting","startTime":"2023-06-12T10:44:10.6571353Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '676'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 10:45:42 GMT
-      etag:
-      - '"7203c296-0000-0100-0000-6486f6fa0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - nf externalnetwork delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-name --l3domain --resource-group
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0?api-version=2023-02-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","name":"bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","status":"Deleting","startTime":"2023-06-12T10:44:10.6571353Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '676'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 10:46:24 GMT
-      etag:
-      - '"7203c296-0000-0100-0000-6486f6fa0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - nf externalnetwork delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-name --l3domain --resource-group
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0?api-version=2023-02-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","name":"bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","status":"Deleting","startTime":"2023-06-12T10:44:10.6571353Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '676'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 10:46:54 GMT
-      etag:
-      - '"7203c296-0000-0100-0000-6486f6fa0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - nf externalnetwork delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-name --l3domain --resource-group
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0?api-version=2023-02-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","name":"bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","status":"Deleting","startTime":"2023-06-12T10:44:10.6571353Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '676'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 10:47:25 GMT
-      etag:
-      - '"7203c296-0000-0100-0000-6486f6fa0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - nf externalnetwork delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-name --l3domain --resource-group
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0?api-version=2023-02-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","name":"bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","status":"Deleting","startTime":"2023-06-12T10:44:10.6571353Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '676'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 10:47:55 GMT
-      etag:
-      - '"7203c296-0000-0100-0000-6486f6fa0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - nf externalnetwork delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-name --l3domain --resource-group
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0?api-version=2023-02-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","name":"bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","status":"Deleting","startTime":"2023-06-12T10:44:10.6571353Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '676'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 10:48:26 GMT
-      etag:
-      - '"7203c296-0000-0100-0000-6486f6fa0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - nf externalnetwork delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-name --l3domain --resource-group
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0?api-version=2023-02-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","name":"bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","status":"Succeeded","startTime":"2023-06-12T10:44:10.6571353Z","endTime":"2023-06-12T10:48:39.902338Z","properties":null}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '735'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 10:48:58 GMT
-      etag:
-      - '"7203299d-0000-0100-0000-6486f8070000"'
+      - '"9803f05e-0000-0100-0000-64892a5a0000"'
       expires:
       - '-1'
       pragma:
@@ -780,7 +402,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf externalnetwork delete
+      - networkfabric externalnetwork delete
       Connection:
       - keep-alive
       ParameterSetName:
@@ -788,21 +410,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/1770998f-255b-4548-a195-67a104a57d9a*B8936469377DCF712EBF1B54EF566E983F05FB70DBE8D83E4988B9B1DBB1AD1E?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","name":"bbf9edb9-e00c-4a70-adde-9e39854596e4*022E89A12FDDBB9D8B07AE1F3E72C56A1F36D1DDF6CC27EE6ADBDA83AF6548D0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061223","status":"Succeeded","startTime":"2023-06-12T10:44:10.6571353Z","endTime":"2023-06-12T10:48:39.902338Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/1770998f-255b-4548-a195-67a104a57d9a*B8936469377DCF712EBF1B54EF566E983F05FB70DBE8D83E4988B9B1DBB1AD1E","name":"1770998f-255b-4548-a195-67a104a57d9a*B8936469377DCF712EBF1B54EF566E983F05FB70DBE8D83E4988B9B1DBB1AD1E","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/nfa-tool-ts-cli-l3domain1-061223/externalNetworks/nfa-tool-ts-cli-externalnetwork061423","status":"Succeeded","startTime":"2023-06-14T02:47:54.3044856Z","endTime":"2023-06-14T02:47:54.7412168Z","properties":null}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '735'
+      - '736'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 10:48:58 GMT
+      - Wed, 14 Jun 2023 02:47:55 GMT
       etag:
-      - '"7203299d-0000-0100-0000-6486f8070000"'
+      - '"9803f05e-0000-0100-0000-64892a5a0000"'
       expires:
       - '-1'
       pragma:

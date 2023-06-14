@@ -7,7 +7,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf routepolicy create
+      - networkfabric routepolicy create
       Connection:
       - keep-alive
       ParameterSetName:
@@ -123,7 +123,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 07:41:11 GMT
+      - Wed, 14 Jun 2023 02:20:46 GMT
       expires:
       - '-1'
       pragma:
@@ -149,7 +149,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf routepolicy create
+      - networkfabric routepolicy create
       Connection:
       - keep-alive
       Content-Length:
@@ -161,27 +161,27 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061223?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061423?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061223","name":"nfa-tool-ts-cli-routepolicy061223","type":"microsoft.managednetworkfabric/routepolicies","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-12T07:41:17.6846934Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-12T07:41:17.6846934Z"},"properties":{"statements":[{"sequenceNumber":1214,"condition":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"],"ipPrefixId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix1-061223"},"action":{"localPreference":113,"actionType":"Permit","ipCommunityProperties":{"add":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"]}}}}],"provisioningState":"Accepted"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061423","name":"nfa-tool-ts-cli-routepolicy061423","type":"microsoft.managednetworkfabric/routepolicies","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-14T02:20:51.042021Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-14T02:20:53.9117788Z"},"properties":{"statements":[{"sequenceNumber":1214,"condition":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"],"ipPrefixId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix1-061223"},"action":{"localPreference":113,"actionType":"Permit","ipCommunityProperties":{"add":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"]}}}}],"provisioningState":"Accepted"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/1ddf8c5b-0276-4d80-bcef-e512e0f4ffb2*034B9DA378CBB417CAB7CA57CD0B5433AAB2190B0105D353F366398AACF22797?api-version=2023-02-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/e036a575-e2a3-43bd-8d1a-5bd32b12c150*D151D6B4864CA13859B46DA8F0E329119AD80990BFB1F452E9AD20500DF473C0?api-version=2023-02-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '1377'
+      - '1376'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 07:41:19 GMT
+      - Wed, 14 Jun 2023 02:20:54 GMT
       etag:
-      - '"660b31fe-0000-0100-0000-6486cc1e0000"'
+      - '"b80bff46-0000-0100-0000-648924060000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 915315bc-8801-4d0f-a67f-499250e44ade
+      - 408a2089-e880-41f6-a3c7-1d403d22f00f
       pragma:
       - no-cache
       strict-transport-security:
@@ -203,7 +203,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf routepolicy create
+      - networkfabric routepolicy create
       Connection:
       - keep-alive
       ParameterSetName:
@@ -211,10 +211,10 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/1ddf8c5b-0276-4d80-bcef-e512e0f4ffb2*034B9DA378CBB417CAB7CA57CD0B5433AAB2190B0105D353F366398AACF22797?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/e036a575-e2a3-43bd-8d1a-5bd32b12c150*D151D6B4864CA13859B46DA8F0E329119AD80990BFB1F452E9AD20500DF473C0?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/1ddf8c5b-0276-4d80-bcef-e512e0f4ffb2*034B9DA378CBB417CAB7CA57CD0B5433AAB2190B0105D353F366398AACF22797","name":"1ddf8c5b-0276-4d80-bcef-e512e0f4ffb2*034B9DA378CBB417CAB7CA57CD0B5433AAB2190B0105D353F366398AACF22797","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061223","status":"Succeeded","startTime":"2023-06-12T07:41:18.5769686Z","endTime":"2023-06-12T07:41:19.4316867Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/e036a575-e2a3-43bd-8d1a-5bd32b12c150*D151D6B4864CA13859B46DA8F0E329119AD80990BFB1F452E9AD20500DF473C0","name":"e036a575-e2a3-43bd-8d1a-5bd32b12c150*D151D6B4864CA13859B46DA8F0E329119AD80990BFB1F452E9AD20500DF473C0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061423","status":"Succeeded","startTime":"2023-06-14T02:20:54.0981648Z","endTime":"2023-06-14T02:20:54.6778839Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -223,9 +223,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 07:41:20 GMT
+      - Wed, 14 Jun 2023 02:20:55 GMT
       etag:
-      - '"6f03adef-0000-0100-0000-6486cc1f0000"'
+      - '"98038628-0000-0100-0000-648924060000"'
       expires:
       - '-1'
       pragma:
@@ -249,7 +249,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf routepolicy create
+      - networkfabric routepolicy create
       Connection:
       - keep-alive
       ParameterSetName:
@@ -257,21 +257,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061223?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061423?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061223","name":"nfa-tool-ts-cli-routepolicy061223","type":"microsoft.managednetworkfabric/routepolicies","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-12T07:41:17.6846934Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-12T07:41:17.6846934Z"},"properties":{"statements":[{"sequenceNumber":1214,"condition":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"],"ipPrefixId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix1-061223"},"action":{"localPreference":113,"actionType":"Permit","ipCommunityProperties":{"add":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"]}}}}],"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061423","name":"nfa-tool-ts-cli-routepolicy061423","type":"microsoft.managednetworkfabric/routepolicies","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-14T02:20:51.042021Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-14T02:20:53.9117788Z"},"properties":{"statements":[{"sequenceNumber":1214,"condition":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"],"ipPrefixId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix1-061223"},"action":{"localPreference":113,"actionType":"Permit","ipCommunityProperties":{"add":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"]}}}}],"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1378'
+      - '1377'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 07:41:21 GMT
+      - Wed, 14 Jun 2023 02:20:56 GMT
       etag:
-      - '"660b49fe-0000-0100-0000-6486cc1f0000"'
+      - '"b80b0847-0000-0100-0000-648924060000"'
       expires:
       - '-1'
       pragma:
@@ -297,7 +297,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf routepolicy show
+      - networkfabric routepolicy show
       Connection:
       - keep-alive
       ParameterSetName:
@@ -305,21 +305,21 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061223?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061423?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061223","name":"nfa-tool-ts-cli-routepolicy061223","type":"microsoft.managednetworkfabric/routepolicies","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-12T07:41:17.6846934Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-12T07:41:21.0160551Z"},"properties":{"statements":[{"sequenceNumber":1214,"condition":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"],"ipPrefixId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix1-061223"},"action":{"localPreference":113,"actionType":"Permit","ipCommunityProperties":{"add":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"]}}}}],"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061423","name":"nfa-tool-ts-cli-routepolicy061423","type":"microsoft.managednetworkfabric/routepolicies","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-14T02:20:51.042021Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-14T02:20:53.9117788Z"},"properties":{"statements":[{"sequenceNumber":1214,"condition":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"],"ipPrefixId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix1-061223"},"action":{"localPreference":113,"actionType":"Permit","ipCommunityProperties":{"add":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"]}}}}],"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1378'
+      - '1377'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 07:41:31 GMT
+      - Wed, 14 Jun 2023 02:20:57 GMT
       etag:
-      - '"660b6efe-0000-0100-0000-6486cc220000"'
+      - '"b80b0847-0000-0100-0000-648924060000"'
       expires:
       - '-1'
       pragma:
@@ -345,7 +345,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf routepolicy list
+      - networkfabric routepolicy list
       Connection:
       - keep-alive
       User-Agent:
@@ -354,16 +354,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/routePolicies?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ankitha-rg/providers/Microsoft.ManagedNetworkFabric/routePolicies/rcf-Fab1-l3domain-connsubnet-ext-policy","name":"rcf-Fab1-l3domain-connsubnet-ext-policy","type":"microsoft.managednetworkfabric/routepolicies","location":"westus3","systemData":{"createdBy":"v-akurapati@microsoft.com","createdByType":"User","createdAt":"2023-05-09T10:31:48.9140534Z","lastModifiedBy":"v-akurapati@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-09T10:31:48.9140534Z"},"properties":{"statements":[{"sequenceNumber":10,"condition":{},"action":{"actionType":"Permit","ipCommunityProperties":{"set":{"ipCommunityIds":["<ref-of-ipcommunity-staticsubnet>"]}}}}],"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061223","name":"nfa-tool-ts-cli-routepolicy061223","type":"microsoft.managednetworkfabric/routepolicies","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-12T07:41:17.6846934Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-12T07:41:21.0160551Z"},"properties":{"statements":[{"sequenceNumber":1214,"condition":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"],"ipPrefixId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix1-061223"},"action":{"localPreference":113,"actionType":"Permit","ipCommunityProperties":{"add":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"]}}}}],"provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fab1nfrg061323/providers/Microsoft.ManagedNetworkFabric/routePolicies/rcf-fab1-l3domain-exp-policy","name":"rcf-fab1-l3domain-exp-policy","type":"microsoft.managednetworkfabric/routepolicies","location":"eastus2euap","systemData":{"createdBy":"v-abalka@microsoft.com","createdByType":"User","createdAt":"2023-06-13T17:42:17.2794193Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-06-13T18:10:06.5772621Z"},"properties":{"statements":[{"sequenceNumber":10,"condition":{"ipPrefixId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fab1nfrg061323/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/ipprefixv4internalnetwork1export"},"action":{"actionType":"Permit","ipCommunityProperties":{"set":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fab1nfrg061323/providers/Microsoft.ManagedNetworkFabric/ipCommunities/ipcommunityinternalexport"]}}}}],"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fab1nfrg061323/providers/Microsoft.ManagedNetworkFabric/routePolicies/rcf-fab1-l3domain-imp-policy","name":"rcf-fab1-l3domain-imp-policy","type":"microsoft.managednetworkfabric/routepolicies","location":"eastus2euap","systemData":{"createdBy":"v-abalka@microsoft.com","createdByType":"User","createdAt":"2023-06-13T17:53:09.3010194Z","lastModifiedBy":"d1bd24c7-b27f-477e-86dd-939e107873d7","lastModifiedByType":"Application","lastModifiedAt":"2023-06-13T18:10:05.5146214Z"},"properties":{"statements":[{"sequenceNumber":10,"condition":{"ipPrefixId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fab1nfrg061323/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/ipprefixv4internalnetwork1import"},"action":{"actionType":"Permit","ipCommunityProperties":{"set":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/fab1nfrg061323/providers/Microsoft.ManagedNetworkFabric/ipCommunities/ipcommunityinternalimport"]}}}}],"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ankitha-rg/providers/Microsoft.ManagedNetworkFabric/routePolicies/rcf-Fab1-l3domain-connsubnet-ext-policy","name":"rcf-Fab1-l3domain-connsubnet-ext-policy","type":"microsoft.managednetworkfabric/routepolicies","location":"westus3","systemData":{"createdBy":"v-akurapati@microsoft.com","createdByType":"User","createdAt":"2023-05-09T10:31:48.9140534Z","lastModifiedBy":"v-akurapati@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-09T10:31:48.9140534Z"},"properties":{"statements":[{"sequenceNumber":10,"condition":{},"action":{"actionType":"Permit","ipCommunityProperties":{"set":{"ipCommunityIds":["<ref-of-ipcommunity-staticsubnet>"]}}}}],"provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061423","name":"nfa-tool-ts-cli-routepolicy061423","type":"microsoft.managednetworkfabric/routepolicies","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-14T02:20:51.042021Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-14T02:20:53.9117788Z"},"properties":{"statements":[{"sequenceNumber":1214,"condition":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"],"ipPrefixId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix1-061223"},"action":{"localPreference":113,"actionType":"Permit","ipCommunityProperties":{"add":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"]}}}}],"provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '2159'
+      - '4318'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 07:41:33 GMT
+      - Wed, 14 Jun 2023 02:20:58 GMT
       expires:
       - '-1'
       pragma:
@@ -375,10 +375,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - bee8b063-0b56-442e-86f6-260735c41710
-      - d8104ec5-f784-49f7-b40b-23d02f7a0a69
-      - c81178e2-7a4a-40a9-a99c-a9d006b8d8bf
-      - 488fbd00-31ac-41d1-ae19-ce38521c5fe4
+      - 4d1dbfa1-da7d-42b3-897e-9f329c636e0d
+      - c858f513-69d5-49e4-b063-857ea972c517
+      - 85d7c9d4-b403-4a10-ab1a-3aa5d07b9e6e
+      - e4a06bcf-2ba3-48b8-a2b7-32745857b7d5
     status:
       code: 200
       message: OK
@@ -390,7 +390,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf routepolicy list
+      - networkfabric routepolicy list
       Connection:
       - keep-alive
       ParameterSetName:
@@ -401,16 +401,16 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies?api-version=2023-02-01-preview
   response:
     body:
-      string: '{"value":[]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061423","name":"nfa-tool-ts-cli-routepolicy061423","type":"microsoft.managednetworkfabric/routepolicies","location":"eastus","systemData":{"createdBy":"v-rmarimuthu@microsoft.com","createdByType":"User","createdAt":"2023-06-14T02:20:51.042021Z","lastModifiedBy":"v-rmarimuthu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-14T02:20:53.9117788Z"},"properties":{"statements":[{"sequenceNumber":1214,"condition":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"],"ipPrefixId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipPrefixes/nfa-tool-ts-cli-ipprefix1-061223"},"action":{"localPreference":113,"actionType":"Permit","ipCommunityProperties":{"add":{"ipCommunityIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfcrg060523/providers/Microsoft.ManagedNetworkFabric/ipCommunities/nfa-tool-ts-cli-ipcommunity1-061223"]}}}}],"provisioningState":"Succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '12'
+      - '1389'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 07:41:46 GMT
+      - Wed, 14 Jun 2023 02:21:00 GMT
       expires:
       - '-1'
       pragma:
@@ -422,10 +422,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 2a51d47e-fe8f-4ee4-b7cb-1967bf09b5fc
-      - 1774537e-10d7-4190-b87a-e6d8435e1526
-      - 9c9ef938-dbce-4a7a-a329-e43e283c8f26
-      - c6926b29-266c-4f1b-9153-1b8f1524cada
+      - 70e0ad17-5a66-41b6-8b05-a34a85775320
+      - 234f26bf-ac73-49ec-9e60-fcff20f5cd30
+      - 4d5f0258-63fe-4888-972d-2cf203bcdf31
+      - 64d9a8a7-312a-4e0b-af52-a4523ef19071
     status:
       code: 200
       message: OK
@@ -437,7 +437,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - nf routepolicy delete
+      - networkfabric routepolicy delete
       Connection:
       - keep-alive
       Content-Length:
@@ -447,17 +447,29 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061223?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061423?api-version=2023-02-01-preview
   response:
     body:
-      string: ''
+      string: 'null'
     headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/fb628b55-7ac3-4190-8a1a-c7d295efbf78*D151D6B4864CA13859B46DA8F0E329119AD80990BFB1F452E9AD20500DF473C0?api-version=2023-02-01-preview
       cache-control:
       - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 07:41:53 GMT
+      - Wed, 14 Jun 2023 02:21:02 GMT
+      etag:
+      - '"b80b4448-0000-0100-0000-6489240e0000"'
       expires:
       - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/fb628b55-7ac3-4190-8a1a-c7d295efbf78*D151D6B4864CA13859B46DA8F0E329119AD80990BFB1F452E9AD20500DF473C0?api-version=2023-02-01-preview
+      mise-correlation-id:
+      - 26e5a4d2-1a83-477e-ae88-130ad14bcf5e
       pragma:
       - no-cache
       strict-transport-security:
@@ -469,6 +481,98 @@ interactions:
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
     status:
-      code: 204
-      message: No Content
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric routepolicy delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/fb628b55-7ac3-4190-8a1a-c7d295efbf78*D151D6B4864CA13859B46DA8F0E329119AD80990BFB1F452E9AD20500DF473C0?api-version=2023-02-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/fb628b55-7ac3-4190-8a1a-c7d295efbf78*D151D6B4864CA13859B46DA8F0E329119AD80990BFB1F452E9AD20500DF473C0","name":"fb628b55-7ac3-4190-8a1a-c7d295efbf78*D151D6B4864CA13859B46DA8F0E329119AD80990BFB1F452E9AD20500DF473C0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061423","status":"Succeeded","startTime":"2023-06-14T02:21:02.4686135Z","endTime":"2023-06-14T02:21:02.9327073Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '677'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Jun 2023 02:21:03 GMT
+      etag:
+      - '"9803a228-0000-0100-0000-6489240e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkfabric routepolicy delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-name --resource-group
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/fb628b55-7ac3-4190-8a1a-c7d295efbf78*D151D6B4864CA13859B46DA8F0E329119AD80990BFB1F452E9AD20500DF473C0?api-version=2023-02-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ManagedNetworkFabric/locations/EASTUS/operationStatuses/fb628b55-7ac3-4190-8a1a-c7d295efbf78*D151D6B4864CA13859B46DA8F0E329119AD80990BFB1F452E9AD20500DF473C0","name":"fb628b55-7ac3-4190-8a1a-c7d295efbf78*D151D6B4864CA13859B46DA8F0E329119AD80990BFB1F452E9AD20500DF473C0","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nfa-tool-ts-clisdktest-nfrg060523/providers/Microsoft.ManagedNetworkFabric/routePolicies/nfa-tool-ts-cli-routepolicy061423","status":"Succeeded","startTime":"2023-06-14T02:21:02.4686135Z","endTime":"2023-06-14T02:21:02.9327073Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '677'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 14 Jun 2023 02:21:03 GMT
+      etag:
+      - '"9803a228-0000-0100-0000-6489240e0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
 version: 1
