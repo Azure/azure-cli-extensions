@@ -17,6 +17,7 @@ from .scenario_search import SearchThread
 
 
 class RecommendType(int, Enum):
+    Error = 0
     All = 1
     Solution = 2
     Command = 3

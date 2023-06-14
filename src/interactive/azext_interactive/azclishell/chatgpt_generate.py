@@ -12,6 +12,7 @@ from .recommendation import RecommendType
 class ChatgptThread(threading.Thread):
     def __init__(self, cli_ctx, user_msg, search_path, executing_command, on_prepared_callback, history_msg=None):
         super().__init__()
+        self.result = None
         self.cli_ctx = cli_ctx
         self.user_msg = user_msg
         self.history_msg = history_msg
@@ -21,18 +22,17 @@ class ChatgptThread(threading.Thread):
         if executing_command:
             self.command_history.append(executing_command)
         self.processed_exception = search_path.get_result_summary() if not executing_command else None
-        self.result = []
         self.api_version = None
 
     def run(self) -> None:
         try:
             result, self.api_version = generate_script(user_msg=self.user_msg, history_msg=self.history_msg)
-            self.result.append(
-                {"content": transform_script_to_scenario(result["content"]), "history_msg": result["history_msg"],
-                 "api_version": self.api_version, "type": RecommendType.Chatgpt})
+            self.result = {"content": transform_script_to_scenario(result["content"]),
+                           "history_msg": result["history_msg"], "api_version": self.api_version,
+                           "type": RecommendType.Chatgpt}
         except ChatgptGenrateError:
-            self.result = "Connection Error. Please check your network connection."
-
+            self.result = {"content": "Connection Error. Please check your network connection.",
+                           "api_version": self.api_version, "type": RecommendType.Error}
 
 def generate_script(user_msg: str, history_msg: list):
     """Generate CLI Scripts with ChatGPT model"""
@@ -65,7 +65,8 @@ def generate_script(user_msg: str, history_msg: list):
 
 def transform_script_to_scenario(script):
     """Transform the generated script to a scenario"""
-    scenario = {'scenario': script['Description'], 'nextCommandSet': script['CommandSet'], 'source': 5, 'type': 6,
+    # source 5 means it is from chatgpt service
+    scenario = {'scenario': script['Description'], 'nextCommandSet': script['CommandSet'], 'source': 5, 'type': RecommendType.Chatgpt,
                 'executeIndex': range(len(script['CommandSet'])), 'score': 1, 'reason': script['Reason'],
                 'description': script['Description']}
     return scenario
