@@ -1,5 +1,11 @@
 Release History
 ===============
+1.13.0
+---
+* Add new command -- `az spring application-configuration-service create --generation` to support create Application Configuration Service with different generation
+* Add new command -- `az spring application-configuration-service update --generation` to support update Application Configuration Service to different generation
+* Add new command -- `az spring application-configuration-service git repo add --ca-cert-name` to support bind certificate to Application Configuration Service Gen2
+
 1.12.1
 ---
 * Add new command -- `az spring eureka-server show` to show the Eureka server resource in consumption tier.
