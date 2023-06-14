@@ -122,6 +122,7 @@ class ContainerAppPreviewCreateDecorator(BaseContainerAppDecorator):
                     "User passed a managedEnvironment resource id but specified --environment-type connected. Using environment type managed.")
 
         self.set_environment_type(environment_type)
+        self.set_env(env)
         # Validate environment exists + grab location and/or custom_location
         try:
             if environment_type == "managed":
@@ -143,6 +144,9 @@ class ContainerAppPreviewCreateDecorator(BaseContainerAppDecorator):
 
     def get_env(self):
         return self.get_param("env")
+
+    def set_env(self, env):
+        self.set_param("env", env)
 
     def get_yaml(self):
         return self.get_param("yaml")
