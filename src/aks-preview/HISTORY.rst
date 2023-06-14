@@ -13,6 +13,10 @@ Pending
 ++++++
 * Vendor new SDK and bump API version to 2023-05-02-preview.
 
+0.5.143
++++++++
+* Add `--enable-network-observability` flag to `az aks create` and `az aks update`.
+
 0.5.142
 +++++++
 * Deprecate option names `--enable-azuremonitormetrics` and `--disable-azuremonitormetrics`, use `--enable-azure-monitor-metrics` and `--disable-azure-monitor-metrics` instead, so as to be consistent with the option names in official azure-cli. Fix issue `\#26600 <https://github.com/Azure/azure-cli/issues/26600>`_.
