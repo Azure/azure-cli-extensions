@@ -4260,12 +4260,10 @@ def containerapp_up(cmd,
     from ._up_utils import (_validate_up_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
                             ResourceGroup, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
                             _get_registry_details, _create_github_action, _set_up_defaults, up_output,
-                            check_env_name_on_rg, get_token, _validate_containerapp_name, _has_dockerfile)
+                            check_env_name_on_rg, get_token, _has_dockerfile)
     from ._github_oauth import cache_github_token
     HELLOWORLD = "mcr.microsoft.com/k8se/quickstart"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
-
-    _validate_containerapp_name(name)
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     _validate_up_args(cmd, source, image, repo, registry_server)

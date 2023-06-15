@@ -9,7 +9,7 @@ Upcoming
 * 'az containerapp create/update': --yaml support properties for api-version 2023-04-01-preview (e.g. subPath, mountOptions)
 * 'az containerapp service': add support for creation and deletion of kafka
 * 'az containerapp create': --registry-server support registry with custom port
-
+* Add regex to fix validation for containerapp name
 
 0.3.33
 ++++++
