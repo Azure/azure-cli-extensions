@@ -637,6 +637,7 @@ def store_as_secret_and_return_secret_ref(secrets_list, registry_user, registry_
         return registry_pass
     else:
         # If user passed in registry password
+        registry_server = registry_server.replace(':', '-')
         if urlparse(registry_server).hostname is not None:
             registry_secret_name = "{server}-{user}".format(server=urlparse(registry_server).hostname.replace('.', ''), user=registry_user.lower())
         else:
