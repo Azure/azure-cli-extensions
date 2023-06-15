@@ -995,7 +995,7 @@ def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
         raw_parameters=raw_parameters,
         models="azext_containerapp._sdk_models"
     )
-    containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_base_decorator.validate_subscription_registered()
 
     return containerapp_base_decorator.show_containerapp()
 
@@ -1008,18 +1008,23 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None):
         raw_parameters=raw_parameters,
         models="azext_containerapp._sdk_models"
     )
-    containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_base_decorator.validate_subscription_registered()
 
     return containerapp_base_decorator.list_containerapp(resource_group_name, managed_env)
 
 
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    raw_parameters = locals()
+    containerapp_base_decorator = BaseContainerAppDecorator(
+        cmd=cmd,
+        client=ContainerAppClient,
+        raw_parameters=raw_parameters,
+        models="azext_containerapp._sdk_models"
+    )
+    containerapp_base_decorator.validate_subscription_registered()
 
-    try:
-        return ContainerAppClient.delete(cmd=cmd, name=name, resource_group_name=resource_group_name, no_wait=no_wait)
-    except CLIError as e:
-        handle_raw_exception(e)
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    return containerapp_base_decorator.delete_containerapp()
 
 
 def create_managed_environment(cmd,

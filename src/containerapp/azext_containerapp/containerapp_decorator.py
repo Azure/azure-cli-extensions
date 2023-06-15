@@ -76,6 +76,9 @@ class BaseContainerAppDecorator:
     def register_provider(self):
         register_provider_if_needed(self.cmd, CONTAINER_APPS_RP)
 
+    def validate_subscription_registered(self):
+        _validate_subscription_registered(self.cmd, CONTAINER_APPS_RP)
+
     def validate_arguments(self):
         raise NotImplementedError()
 
@@ -94,9 +97,6 @@ class BaseContainerAppDecorator:
     def update_containerapp(self, containerapp_def):
         raise NotImplementedError()
 
-    def validate_subscription_registered(self, resource_provider):
-        _validate_subscription_registered(self.cmd, resource_provider)
-
     def list_containerapp(self, resource_group_name=None, managed_env=None):
         try:
             containerapps = []
@@ -108,13 +108,10 @@ class BaseContainerAppDecorator:
             if managed_env:
                 env_name = parse_resource_id(managed_env)["name"].lower()
                 if "resource_group" in parse_resource_id(managed_env):
-                    ManagedEnvironmentClient.show(self.cmd, parse_resource_id(managed_env)["resource_group"],
-                                                  parse_resource_id(managed_env)["name"])
-                    containerapps = [c for c in containerapps if
-                                     c["properties"]["environmentId"].lower() == managed_env.lower()]
+                    self.get_environment_client().show(self.cmd, parse_resource_id(managed_env)["resource_group"], parse_resource_id(managed_env)["name"])
+                    containerapps = [c for c in containerapps if c["properties"]["environmentId"].lower() == managed_env.lower()]
                 else:
-                    containerapps = [c for c in containerapps if
-                                     parse_resource_id(c["properties"]["environmentId"])["name"].lower() == env_name]
+                    containerapps = [c for c in containerapps if parse_resource_id(c["properties"]["environmentId"])["name"].lower() == env_name]
 
             return containerapps
         except CLIError as e:
@@ -124,13 +121,33 @@ class BaseContainerAppDecorator:
         try:
             r = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
             if self.get_param("show_secrets"):
-                _get_existing_secrets(self.cmd, self.get_argument_resource_group_name(), self.get_argument_name(), r)
+                self.set_up_get_existing_secrets(r)
             return r
+        except CLIError as e:
+            handle_raw_exception(e)
+
+    def delete_containerapp(self):
+        try:
+            return self.client.delete(cmd=self.cmd, name=self.get_argument_name(), resource_group_name=self.get_argument_resource_group_name(),
+                                             no_wait=self.get_argument_no_wait())
         except CLIError as e:
             handle_raw_exception(e)
 
     def get_environment_client(self):
         return ManagedEnvironmentClient
+
+    def set_up_get_existing_secrets(self, containerapp_def):
+        if "secrets" not in containerapp_def["properties"]["configuration"]:
+            containerapp_def["properties"]["configuration"]["secrets"] = []
+        else:
+            secrets = None
+            try:
+                secrets = self.client.list_secrets(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+            except Exception as e:  # pylint: disable=broad-except
+                handle_raw_exception(e)
+
+            containerapp_def["properties"]["configuration"]["secrets"] = secrets["value"]
+            safe_set(containerapp_def, "properties", "configuration", "secrets", value=secrets["value"])
 
     def get_param(self, key) -> Any:
         return self.raw_param.get(key)
@@ -144,6 +161,158 @@ class BaseContainerAppDecorator:
     def get_argument_resource_group_name(self):
         return self.get_param("resource_group_name")
 
+    def get_argument_no_wait(self):
+        return self.get_param("no_wait")
+
+    def get_argument_yaml(self):
+        return self.get_param("yaml")
+
+    def get_argument_image(self):
+        return self.get_param("image")
+
+    def set_argument_image(self, image):
+        self.set_param("image", image)
+
+    def get_argument_container_name(self):
+        return self.get_param("container_name")
+
+    def get_argument_managed_env(self):
+        return self.get_param("managed_env")
+
+    def get_argument_min_replicas(self):
+        return self.get_param("min_replicas")
+
+    def get_argument_max_replicas(self):
+        return self.get_param("max_replicas")
+
+    def get_argument_scale_rule_name(self):
+        return self.get_param("scale_rule_name")
+
+    def get_argument_scale_rule_type(self):
+        return self.get_param("scale_rule_type")
+
+    def set_argument_scale_rule_type(self, scale_rule_type):
+        self.set_param("scale_rule_type", scale_rule_type)
+
+    def get_argument_scale_rule_http_concurrency(self):
+        return self.get_param("scale_rule_http_concurrency")
+
+    def get_argument_scale_rule_metadata(self):
+        return self.get_param("scale_rule_metadata")
+
+    def get_argument_scale_rule_auth(self):
+        return self.get_param("scale_rule_auth")
+
+    def get_argument_target_port(self):
+        return self.get_param("target_port")
+
+    def get_argument_exposed_port(self):
+        return self.get_param("exposed_port")
+
+    def get_argument_transport(self):
+        return self.get_param("transport")
+
+    def get_argument_ingress(self):
+        return self.get_param("ingress")
+
+    def get_argument_revisions_mode(self):
+        return self.get_param("revisions_mode")
+
+    def get_argument_secrets(self):
+        return self.get_param("secrets")
+
+    def get_argument_env_vars(self):
+        return self.get_param("env_vars")
+
+    def get_argument_cpu(self):
+        return self.get_param("cpu")
+
+    def get_argument_memory(self):
+        return self.get_param("memory")
+
+    def get_argument_registry_server(self):
+        return self.get_param("registry_server")
+
+    def get_argument_registry_user(self):
+        return self.get_param("registry_user")
+
+    def set_argument_registry_user(self, registry_user):
+        self.set_param("registry_user", registry_user)
+
+    def get_argument_registry_pass(self):
+        return self.get_param("registry_pass")
+
+    def set_argument_registry_pass(self, registry_pass):
+        self.set_param("registry_pass", registry_pass)
+
+    def get_argument_dapr_enabled(self):
+        return self.get_param("dapr_enabled")
+
+    def get_argument_dapr_app_port(self):
+        return self.get_param("dapr_app_port")
+
+    def get_argument_dapr_app_id(self):
+        return self.get_param("dapr_app_id")
+
+    def get_argument_dapr_app_protocol(self):
+        return self.get_param("dapr_app_protocol")
+
+    def get_argument_dapr_http_read_buffer_size(self):
+        return self.get_param("dapr_http_read_buffer_size")
+
+    def get_argument_dapr_http_max_request_size(self):
+        return self.get_param("dapr_http_max_request_size")
+
+    def get_argument_dapr_log_level(self):
+        return self.get_param("dapr_log_level")
+
+    def get_argument_dapr_enable_api_logging(self):
+        return self.get_param("dapr_enable_api_logging")
+
+    def get_argument_service_type(self):
+        return self.get_param("service_type")
+
+    def get_argument_service_bindings(self):
+        return self.get_param("service_bindings")
+
+    def get_argument_revision_suffix(self):
+        return self.get_param("revision_suffix")
+
+    def get_argument_startup_command(self):
+        return self.get_param("startup_command")
+
+    def get_argument_args(self):
+        return self.get_param("args")
+
+    def get_argument_tags(self):
+        return self.get_param("tags")
+
+    def get_argument_system_assigned(self):
+        return self.get_param("system_assigned")
+
+    def get_argument_disable_warnings(self):
+        return self.get_param("disable_warnings")
+
+    def get_argument_user_assigned(self):
+        return self.get_param("user_assigned")
+
+    def get_argument_registry_identity(self):
+        return self.get_param("registry_identity")
+
+    def get_argument_workload_profile_name(self):
+        return self.get_param("workload_profile_name")
+
+    def set_argument_workload_profile_name(self, workload_profile_name):
+        self.set_param("workload_profile_name", workload_profile_name)
+
+    def get_argument_secret_volume_mount(self):
+        return self.get_param("secret_volume_mount")
+
+    def get_argument_service_connectors_def_list(self):
+        return self.get_param("service_connectors_def_list")
+
+    def set_argument_service_connectors_def_list(self, service_connectors_def_list):
+        self.set_param("service_connectors_def_list", service_connectors_def_list)
 
 class ContainerAppCreateDecorator(BaseContainerAppDecorator, ABC):
     def __init__(
@@ -539,156 +708,3 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator, ABC):
                 scale_def = ScaleModel
             scale_def["rules"] = [scale_rule_def]
             return scale_def
-
-    def get_argument_yaml(self):
-        return self.get_param("yaml")
-
-    def get_argument_image(self):
-        return self.get_param("image")
-
-    def set_argument_image(self, image):
-        self.set_param("image", image)
-
-    def get_argument_container_name(self):
-        return self.get_param("container_name")
-
-    def get_argument_managed_env(self):
-        return self.get_param("managed_env")
-
-    def get_argument_min_replicas(self):
-        return self.get_param("min_replicas")
-
-    def get_argument_max_replicas(self):
-        return self.get_param("max_replicas")
-
-    def get_argument_scale_rule_name(self):
-        return self.get_param("scale_rule_name")
-
-    def get_argument_scale_rule_type(self):
-        return self.get_param("scale_rule_type")
-
-    def set_argument_scale_rule_type(self, scale_rule_type):
-        self.set_param("scale_rule_type", scale_rule_type)
-
-    def get_argument_scale_rule_http_concurrency(self):
-        return self.get_param("scale_rule_http_concurrency")
-
-    def get_argument_scale_rule_metadata(self):
-        return self.get_param("scale_rule_metadata")
-
-    def get_argument_scale_rule_auth(self):
-        return self.get_param("scale_rule_auth")
-
-    def get_argument_target_port(self):
-        return self.get_param("target_port")
-
-    def get_argument_exposed_port(self):
-        return self.get_param("exposed_port")
-
-    def get_argument_transport(self):
-        return self.get_param("transport")
-
-    def get_argument_ingress(self):
-        return self.get_param("ingress")
-
-    def get_argument_revisions_mode(self):
-        return self.get_param("revisions_mode")
-
-    def get_argument_secrets(self):
-        return self.get_param("secrets")
-
-    def get_argument_env_vars(self):
-        return self.get_param("env_vars")
-
-    def get_argument_cpu(self):
-        return self.get_param("cpu")
-
-    def get_argument_memory(self):
-        return self.get_param("memory")
-
-    def get_argument_registry_server(self):
-        return self.get_param("registry_server")
-
-    def get_argument_registry_user(self):
-        return self.get_param("registry_user")
-
-    def set_argument_registry_user(self, registry_user):
-        self.set_param("registry_user", registry_user)
-
-    def get_argument_registry_pass(self):
-        return self.get_param("registry_pass")
-
-    def set_argument_registry_pass(self, registry_pass):
-        self.set_param("registry_pass", registry_pass)
-
-    def get_argument_dapr_enabled(self):
-        return self.get_param("dapr_enabled")
-
-    def get_argument_dapr_app_port(self):
-        return self.get_param("dapr_app_port")
-
-    def get_argument_dapr_app_id(self):
-        return self.get_param("dapr_app_id")
-
-    def get_argument_dapr_app_protocol(self):
-        return self.get_param("dapr_app_protocol")
-
-    def get_argument_dapr_http_read_buffer_size(self):
-        return self.get_param("dapr_http_read_buffer_size")
-
-    def get_argument_dapr_http_max_request_size(self):
-        return self.get_param("dapr_http_max_request_size")
-
-    def get_argument_dapr_log_level(self):
-        return self.get_param("dapr_log_level")
-
-    def get_argument_dapr_enable_api_logging(self):
-        return self.get_param("dapr_enable_api_logging")
-
-    def get_argument_service_type(self):
-        return self.get_param("service_type")
-
-    def get_argument_service_bindings(self):
-        return self.get_param("service_bindings")
-
-    def get_argument_revision_suffix(self):
-        return self.get_param("revision_suffix")
-
-    def get_argument_startup_command(self):
-        return self.get_param("startup_command")
-
-    def get_argument_args(self):
-        return self.get_param("args")
-
-    def get_argument_tags(self):
-        return self.get_param("tags")
-
-    def get_argument_no_wait(self):
-        return self.get_param("no_wait")
-
-    def get_argument_system_assigned(self):
-        return self.get_param("system_assigned")
-
-    def get_argument_disable_warnings(self):
-        return self.get_param("disable_warnings")
-
-    def get_argument_user_assigned(self):
-        return self.get_param("user_assigned")
-
-    def get_argument_registry_identity(self):
-        return self.get_param("registry_identity")
-
-    def get_argument_workload_profile_name(self):
-        return self.get_param("workload_profile_name")
-
-    def set_argument_workload_profile_name(self, workload_profile_name):
-        self.set_param("workload_profile_name", workload_profile_name)
-
-    def get_argument_secret_volume_mount(self):
-        return self.get_param("secret_volume_mount")
-
-    def get_argument_service_connectors_def_list(self):
-        return self.get_param("service_connectors_def_list")
-
-    def set_argument_service_connectors_def_list(self, service_connectors_def_list):
-        self.set_param("service_connectors_def_list", service_connectors_def_list)
