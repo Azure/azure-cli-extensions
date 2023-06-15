@@ -34,7 +34,7 @@ from knack.prompting import prompt_y_n, prompt as prompt_str
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
-from .containerapp_decorator import ContainerAppCreateDecorator
+from .containerapp_decorator import ContainerAppCreateDecorator, BaseContainerAppDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_exception
 from ._clients import ManagedEnvironmentClient, ContainerAppClient, GitHubActionClient, DaprComponentClient, StorageClient, AuthClient, WorkloadProfileClient, ContainerAppsJobClient
 from ._dev_service_utils import DevServiceUtils
@@ -988,38 +988,29 @@ def update_containerapp(cmd,
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    raw_parameters = locals()
+    containerapp_base_decorator = BaseContainerAppDecorator(
+        cmd=cmd,
+        client=ContainerAppClient,
+        raw_parameters=raw_parameters,
+        models="azext_containerapp._sdk_models"
+    )
+    containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    try:
-        r = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
-        if show_secrets:
-            _get_existing_secrets(cmd, resource_group_name, name, r)
-        return r
-    except CLIError as e:
-        handle_raw_exception(e)
+    return containerapp_base_decorator.show_containerapp()
 
 
 def list_containerapp(cmd, resource_group_name=None, managed_env=None):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    raw_parameters = locals()
+    containerapp_base_decorator = BaseContainerAppDecorator(
+        cmd=cmd,
+        client=ContainerAppClient,
+        raw_parameters=raw_parameters,
+        models="azext_containerapp._sdk_models"
+    )
+    containerapp_base_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
-    try:
-        containerapps = []
-        if resource_group_name is None:
-            containerapps = ContainerAppClient.list_by_subscription(cmd=cmd)
-        else:
-            containerapps = ContainerAppClient.list_by_resource_group(cmd=cmd, resource_group_name=resource_group_name)
-
-        if managed_env:
-            env_name = parse_resource_id(managed_env)["name"].lower()
-            if "resource_group" in parse_resource_id(managed_env):
-                ManagedEnvironmentClient.show(cmd, parse_resource_id(managed_env)["resource_group"], parse_resource_id(managed_env)["name"])
-                containerapps = [c for c in containerapps if c["properties"]["environmentId"].lower() == managed_env.lower()]
-            else:
-                containerapps = [c for c in containerapps if parse_resource_id(c["properties"]["environmentId"])["name"].lower() == env_name]
-
-        return containerapps
-    except CLIError as e:
-        handle_raw_exception(e)
+    return containerapp_base_decorator.list_containerapp(resource_group_name, managed_env)
 
 
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
