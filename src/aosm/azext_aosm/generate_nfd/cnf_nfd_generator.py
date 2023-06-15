@@ -27,12 +27,12 @@ from azext_aosm.util.constants import (
     DEPLOYMENT_PARAMETER_MAPPING_REGEX,
     IMAGE_NAME_AND_VERSION_REGEX,
     IMAGE_PATH_REGEX,
-    CONFIG_MAPPINGS,
-    SCHEMAS,
     DEPLOYMENT_PARAMETERS,
     GENERATED_VALUES_MAPPINGS,
     SCHEMA_PREFIX,
     SCHEMAS,
+    IMAGE_PULL_SECRETS_START_STRING,
+    IMAGE_START_STRING
 )
 from azext_aosm.util.utils import input_ack
 
@@ -112,7 +112,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                     # Get all image line matches for files in the chart.
                     # Do this here so we don't have to do it multiple times.
                     image_line_matches = self.find_pattern_matches_in_chart(
-                        helm_package, "image:"
+                        helm_package, IMAGE_START_STRING
                     )
                     # Creates a flattened list of image registry paths to prevent set error
                     image_registry_paths = []
@@ -126,7 +126,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                             helm_package,
                             image_registry_paths,
                             self.find_pattern_matches_in_chart(
-                                helm_package, "imagePullSecrets:"
+                                helm_package, IMAGE_PULL_SECRETS_START_STRING
                             ),
                         )
                     )
@@ -389,6 +389,14 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
         param helm_package: The helm package config.
         param start_string: The string to search for, either imagePullSecrets: or image:
+
+        If searching for imagePullSecrets,
+        returns list of lists containing image pull secrets paths,
+        e.g. Values.foo.bar.imagePullSecret
+
+        If searching for image,
+        returns list of tuples containing the list of image paths and the name and version of the image.
+        e.g. (Values.foo.bar.repoPath, foo, 1.2.3)
         """
         chart_dir = os.path.join(self._tmp_folder_name, helm_package.name)
         matches = []
@@ -400,7 +408,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                     if start_string in line:
                         path = re.findall(IMAGE_PATH_REGEX, line)
                         # If "image:", search for chart name and version
-                        if start_string == "image:":
+                        if start_string == IMAGE_START_STRING:
                             name_and_version = re.search(IMAGE_NAME_AND_VERSION_REGEX, line)
                             matches.append((path, name_and_version.group(1), name_and_version.group(2)))
                         else:
