@@ -24,14 +24,13 @@ from azext_aosm.util.constants import (
     CNF_MANIFEST_BICEP_TEMPLATE,
     CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE,
     DEPLOYMENT_PARAMETER_MAPPING_REGEX,
-    IMAGE_LINE_REGEX,
-    IMAGE_PULL_SECRET_LINE_REGEX,
+    IMAGE_NAME_AND_VERSION_REGEX,
+    IMAGE_PATH_REGEX,
     CONFIG_MAPPINGS,
     SCHEMAS,
     SCHEMA_PREFIX,
     DEPLOYMENT_PARAMETERS,
 )
-
 
 logger = get_logger(__name__)
 
@@ -98,13 +97,13 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                     # Get all image line matches for files in the chart.
                     # Do this here so we don't have to do it multiple times.
                     image_line_matches = self.find_pattern_matches_in_chart(
-                        helm_package, IMAGE_LINE_REGEX, "image:"
+                        helm_package, "image:"
                     )
                     
-                    # Creates a flattened list to prevent set error
+                    # Creates a flattened list of image registry paths to prevent set error
                     image_registry_paths = []
-                    for m in image_line_matches:
-                        image_registry_paths += m[0]
+                    for registry_path in image_line_matches:
+                        image_registry_paths += registry_path[0]
 
                     # Generate the NF application configuration for the chart
                     # passed to jinja2 renderer to render bicep template
@@ -113,7 +112,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                             helm_package,
                             image_registry_paths,
                             self.find_pattern_matches_in_chart(
-                                helm_package, IMAGE_PULL_SECRET_LINE_REGEX, "imagePullSecrets:"
+                                helm_package, "imagePullSecrets:"
                             ),
                         )
                     )
@@ -263,23 +262,22 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
     def generate_nf_application_config(
         self,
         helm_package: HelmPackageConfig,
-        # image_line_matches: List[Tuple[str, ...]],
         image_registry_path: List[str],
         image_pull_secret_line_matches: List[Tuple[str, ...]],
     ) -> Dict[str, Any]:
         """Generate NF application config."""
         (name, version) = self.get_chart_name_and_version(helm_package)
 
-        registryValuesPaths = set(image_registry_path)
-        imagePullSecretsValuesPaths = set(image_pull_secret_line_matches)
+        registry_values_paths = set(image_registry_path)
+        image_pull_secrets_values_paths = set(image_pull_secret_line_matches)
 
         return {
             "name": helm_package.name,
             "chartName": name,
             "chartVersion": version,
             "dependsOnProfile": helm_package.depends_on,
-            "registryValuesPaths": list(registryValuesPaths),
-            "imagePullSecretsValuesPaths": list(imagePullSecretsValuesPaths),
+            "registryValuesPaths": list(registry_values_paths),
+            "imagePullSecretsValuesPaths": list(image_pull_secrets_values_paths),
             "valueMappingsPath": self.generate_parameter_mappings(helm_package),
         }
 
@@ -295,41 +293,29 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                     yield os.path.join(root, file)
 
     def find_pattern_matches_in_chart(
-        self, helm_package: HelmPackageConfig, pattern: str, start_string: str
+        self, helm_package: HelmPackageConfig, start_string: str
     ) -> List[Tuple[str, ...]]:
         """
         Find pattern matches in Helm chart, using provided REGEX pattern.
 
         param helm_package: The helm package config.
-        param pattern: The regex pattern to match.
+        param start_string: The string to search for, either imagePullSecrets: or image:
         """
         chart_dir = os.path.join(self._tmp_folder_name, helm_package.name)
         matches = []
         path = []
-        # name_and_version = ()
-        # for file in self._find_yaml_files(chart_dir):
-        #     with open(file, "r", encoding="UTF-8") as f:
-        #         contents = f.read()
-        #         print(re.findall(pattern, contents))
-        #         matches += re.findall(pattern, contents)
+
         for file in self._find_yaml_files(chart_dir):
             with open(file, "r", encoding="UTF-8") as f:
                 for line in f:
                     if start_string in line:
-                        print("LINE", start_string, line)
-                        path = re.findall(pattern, line)
-                        # testing splitting regex to get version and name
-                        if start_string == "image:":                      
-                            name_and_version = re.search(r"\/([^\s]*):([^\s)\"}]*)", line)
-                            print("name_and_version", name_and_version)
-                            print("n", name_and_version.group(1))
-                            print("v", name_and_version.group(2))
-                            # ( ['image1', 'image2'], 'name', 'version' )
-                            match = (path, name_and_version.group(1), name_and_version.group(2))
-                            matches.append(match)
+                        path = re.findall(IMAGE_PATH_REGEX, line)
+                        # If "image:", search for chart name and version
+                        if start_string == "image:":
+                            name_and_version = re.search(IMAGE_NAME_AND_VERSION_REGEX, line)
+                            matches.append((path, name_and_version.group(1), name_and_version.group(2)))
                         else:
                             matches += path
-        print("MATCHES", matches)
         return matches
 
     def get_artifact_list(

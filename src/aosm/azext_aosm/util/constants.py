@@ -47,11 +47,7 @@ SCHEMA_PREFIX = {
     "type": "object",
     "properties": {},
 }
-# IMAGE_LINE_REGEX = (
-#     r"image: \{\{ .Values.(.+?) \}\}/(.+?):(\d+\.\d+\.\d+(-\w+)?(\.\d+)?)"
-# )
-IMAGE_LINE_REGEX = r".Values\.([^\s})]*)"
-# IMAGE_PULL_SECRET_LINE_REGEX = r"imagePullSecrets: \[name: \{\{ .Values.(.+?) \}\}\]"
-IMAGE_PULL_SECRET_LINE_REGEX = r".Values\.([^\s})]*)"
 
+IMAGE_PATH_REGEX = r".Values\.([^\s})]*)"
+IMAGE_NAME_AND_VERSION_REGEX = r"\/([^\s]*):([^\s)\"}]*)"
 DEPLOYMENT_PARAMETER_MAPPING_REGEX = r"\{deployParameters.(.+?)\}"
