@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -32,14 +30,16 @@ class ContainerAppPatchTest(ScenarioTest):
         # Generate a name for the Container App
         app_name = self.create_random_name(prefix='containerapp', length=24)
 
+        # Create container app and re-tag image to an older version to simulate patch list
+        old_tag = "run-dotnet-aspnet-7.0.1-cbl-mariner2.0"
         create_and_verify_containerapp_up(self,resource_group,source_path=source_path,ingress=ingress,target_port=target_port,app_name=app_name)
-        self._retag_image_to_older_version_and_push(resource_group=resource_group,app_name=app_name)
+        self._retag_image_to_older_version_and_push(resource_group=resource_group,app_name=app_name,old_tag=old_tag)
 
         # Execute and verify patch list command
         patchable_images = self.cmd(f'containerapp patch list -g {resource_group}').get_output_in_json()
         newRunImageTag = patchable_images[0]["newRunImage"].split(':')[1]
         self.assertEquals(newRunImageTag,_utils.get_latest_buildpack_run_tag("aspnet", "7.0"))
-        self.assertEquals(patchable_images[0]["oldRunImage"], "run-dotnet-aspnet-7.0.1-cbl-mariner2.0")
+        self.assertEquals(patchable_images[0]["oldRunImage"], old_tag)
 
         # Execute and verify patch apply command
         self.cmd(f'containerapp patch apply -g {resource_group}')
@@ -62,14 +62,16 @@ class ContainerAppPatchTest(ScenarioTest):
         env_name = self.create_random_name(prefix='env', length=24)
         self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
 
+        # Create container app and re-tag image to an older version to simulate patch list
+        old_tag = "run-dotnet-aspnet-7.0.1-cbl-mariner2.0"
         create_and_verify_containerapp_up(self,resource_group,env_name=env_name,source_path=source_path,ingress=ingress,target_port=target_port,app_name=app_name)
-        self._retag_image_to_older_version_and_push(resource_group=resource_group,app_name=app_name)
+        self._retag_image_to_older_version_and_push(resource_group=resource_group,app_name=app_name,old_tag=old_tag)
 
         # Execute and verify patch list command
         patchable_images = self.cmd(f'containerapp patch list -g {resource_group} --environment {env_name}').get_output_in_json()
         newRunImageTag = patchable_images[0]["newRunImage"].split(':')[1]
         self.assertEquals(newRunImageTag,_utils.get_latest_buildpack_run_tag("aspnet", "7.0"))
-        self.assertEquals(patchable_images[0]["oldRunImage"], "run-dotnet-aspnet-7.0.1-cbl-mariner2.0")
+        self.assertEquals(patchable_images[0]["oldRunImage"], old_tag)
 
         # Execute and verify patch apply command
         self.cmd(f'containerapp patch apply -g {resource_group} --environment {env_name}')
@@ -114,8 +116,10 @@ class ContainerAppPatchTest(ScenarioTest):
         # Generate a name for the Container App
         app_name = self.create_random_name(prefix='containerapp', length=24)
 
+        # Create container app and re-tag image to an older version to simulate patch list
+        old_tag = "run-dotnet-aspnet-7.0.1-cbl-mariner2.0"
         create_and_verify_containerapp_up(self,resource_group,source_path=source_path,ingress=ingress,target_port=target_port,app_name=app_name)
-        self._retag_image_to_older_version_and_push(resource_group=resource_group,app_name=app_name)
+        self._retag_image_to_older_version_and_push(resource_group=resource_group,app_name=app_name,old_tag=old_tag)
 
         # Execute and verify patch list command
         self.cmd(f'configure --defaults group={resource_group}')
@@ -123,7 +127,7 @@ class ContainerAppPatchTest(ScenarioTest):
         patchable_images = self.cmd(patch_cmd).get_output_in_json()
         newRunImageTag = patchable_images[0]["newRunImage"].split(':')[1]
         self.assertEquals(newRunImageTag,_utils.get_latest_buildpack_run_tag("aspnet", "7.0"))
-        self.assertEquals(patchable_images[0]["oldRunImage"], "run-dotnet-aspnet-7.0.1-cbl-mariner2.0")
+        self.assertEquals(patchable_images[0]["oldRunImage"], old_tag)
 
         # Execute and verify patch apply command
         self.cmd(f'containerapp patch apply')
@@ -132,7 +136,7 @@ class ContainerAppPatchTest(ScenarioTest):
         patched_image_tag = patched_image.split(':')[1]
         self.assertEquals(patched_image_tag,_utils.get_latest_buildpack_run_tag("aspnet", "7.0"))
 
-    def _retag_image_to_older_version_and_push(self,resource_group,app_name):
+    def _retag_image_to_older_version_and_push(self,resource_group,app_name,old_tag):
         client = docker.from_env()
         app = self.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
         image_name = app["properties"]["template"]["containers"][0]["image"]
@@ -141,7 +145,6 @@ class ContainerAppPatchTest(ScenarioTest):
         repo = app["properties"]["template"]["containers"][0]["name"]
 
         # Re-tag image to an older version to simulate patch list
-        old_tag = "run-dotnet-aspnet-7.0.1-cbl-mariner2.0"
         old_image_name = registry + "/" + repo + ":" + old_tag
         current_image.tag(registry + "/" + repo, tag = old_tag)
 
