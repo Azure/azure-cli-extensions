@@ -97,22 +97,21 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
                     # Get all image line matches for files in the chart.
                     # Do this here so we don't have to do it multiple times.
-                    # image_line_matches = self.find_pattern_matches_in_chart(
-                    #     helm_package, IMAGE_LINE_REGEX
-                    # )
                     image_line_matches = self.find_pattern_matches_in_chart(
                         helm_package, IMAGE_LINE_REGEX, "image:"
                     )
-                    print("first", image_line_matches)
+                    
+                    # Creates a flattened list to prevent set error
+                    image_registry_paths = []
+                    for m in image_line_matches:
+                        image_registry_paths += m[0]
+
                     # Generate the NF application configuration for the chart
                     # passed to jinja2 renderer to render bicep template
                     self.nf_application_configurations.append(
                         self.generate_nf_application_config(
                             helm_package,
-                            image_line_matches,
-                            # self.find_pattern_matches_in_chart(
-                            #     helm_package, IMAGE_PULL_SECRET_LINE_REGEX
-                            # ),
+                            image_registry_paths,
                             self.find_pattern_matches_in_chart(
                                 helm_package, IMAGE_PULL_SECRET_LINE_REGEX, "imagePullSecrets:"
                             ),
@@ -121,7 +120,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                     # Workout the list of artifacts for the chart and
                     # update the list for the NFD with any unique artifacts.
                     chart_artifacts = self.get_artifact_list(
-                        helm_package, set(image_line_matches)
+                        helm_package, image_line_matches
                     )
                     self.artifacts += [
                         a for a in chart_artifacts if a not in self.artifacts
@@ -264,12 +263,14 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
     def generate_nf_application_config(
         self,
         helm_package: HelmPackageConfig,
-        image_line_matches: List[Tuple[str, ...]],
+        # image_line_matches: List[Tuple[str, ...]],
+        image_registry_path: List[str],
         image_pull_secret_line_matches: List[Tuple[str, ...]],
     ) -> Dict[str, Any]:
         """Generate NF application config."""
         (name, version) = self.get_chart_name_and_version(helm_package)
-        registryValuesPaths = set({m[0] for m in image_line_matches})
+
+        registryValuesPaths = set(image_registry_path)
         imagePullSecretsValuesPaths = set(image_pull_secret_line_matches)
 
         return {
@@ -318,21 +319,14 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                         print("LINE", start_string, line)
                         path = re.findall(pattern, line)
                         # testing splitting regex to get version and name
-                        if start_string == "image:":
-                            # re.findall(r"\/(.*)\:(.*)", line)
-
-                            # name_and_version = re.search(r"\/([^\s\/:]+):([^\s\/]+)", line)
-                            name_and_version = re.search(r"\/([^\/]+):([^\/]+)", line)
-                            # name_and_version = re.search(r'/(.+?):[\s"]*([^/)\s"]+)', line)
+                        if start_string == "image:":                      
+                            name_and_version = re.search(r"\/([^\s]*):([^\s)\"}]*)", line)
                             print("name_and_version", name_and_version)
                             print("n", name_and_version.group(1))
                             print("v", name_and_version.group(2))
-                            # name = name_and_version[0][0]
-                            # version = name_and_version[0][1]
-                            # print("name", name)
                             # ( ['image1', 'image2'], 'name', 'version' )
-                            matches += (path, name_and_version.group(1), name_and_version.group(2))
-                            print("path", path)
+                            match = (path, name_and_version.group(1), name_and_version.group(2))
+                            matches.append(match)
                         else:
                             matches += path
         print("MATCHES", matches)
@@ -356,7 +350,6 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             "version": chart_version,
         }
         artifact_list.append(helm_artifact)
-
         for match in image_line_matches:
             artifact_list.append(
                 {
@@ -383,7 +376,6 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         values_schema = os.path.join(
             self._tmp_folder_name, helm_package.name, "values.schema.json"
         )
-        print("helm", helm_package.name)
         
         if not os.path.exists(mappings_path):
             raise InvalidTemplateError(
@@ -424,7 +416,6 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         if nested_dict is None:
             return {}
         for k, v in nested_dict.items():
-            # print("k", k)
             # if value is a string and contains deployParameters.
             if isinstance(v, str) and re.search(DEPLOYMENT_PARAMETER_MAPPING_REGEX, v):
                 # only add the parameter name (e.g. from {deployParameter.zone} only param = zone)
