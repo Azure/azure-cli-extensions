@@ -659,6 +659,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
         image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
         redis_ca_name = 'redis'
         postgres_ca_name = 'postgres'
+        kafka_ca_name = 'kafka'
 
         create_containerapp_env(self, env_name, resource_group)
 
@@ -667,6 +668,9 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         self.cmd('containerapp service postgres create -g {} -n {} --environment {}'.format(
             resource_group, postgres_ca_name, env_name))
+        
+        self.cmd('containerapp service kafka create -g {} -n {} --environment {}'.format(
+            resource_group, kafka_ca_name, env_name))
 
         self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
             resource_group, ca_name, env_name, image), checks=[
@@ -679,10 +683,11 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
         ])
 
-        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding'.format(
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka'.format(
             resource_group, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
-            JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding")
+            JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[2].name', "kafka")
         ])
 
         self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(
@@ -690,6 +695,9 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         self.cmd('containerapp service redis delete -g {} -n {} --yes'.format(
             resource_group, redis_ca_name, env_name))
+        
+        self.cmd('containerapp service kafka delete -g {} -n {} --yes'.format(
+            resource_group, kafka_ca_name, env_name))
 
         self.cmd('containerapp service list -g {} --environment {}'.format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
