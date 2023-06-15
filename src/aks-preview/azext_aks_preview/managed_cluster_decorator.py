@@ -626,6 +626,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return bool(self.raw_param.get('enable_cilium_dataplane'))
 
+    def get_enable_network_observability(self) -> Optional[bool]:
+        """Get the value of enable_network_observability
+
+        :return: bool or None
+        """
+        return self.raw_param.get("enable_network_observability")
+
     def get_load_balancer_managed_outbound_ipv6_count(self) -> Union[int, None]:
         """Obtain the expected count of IPv6 managed outbound IPs.
 
@@ -1909,9 +1916,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: bool
         """
-        # print("_get_enable_azure_monitor_metrics being called...")
         # Read the original value passed by the command.
-        enable_azure_monitor_metrics = self.raw_param.get("enable_azuremonitormetrics")
+        # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
+        enable_azure_monitor_metrics = self.raw_param.get("enable_azure_monitor_metrics") or self.raw_param.get("enable_azuremonitormetrics")
         # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
@@ -1947,7 +1954,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         # Read the original value passed by the command.
-        disable_azure_monitor_metrics = self.raw_param.get("disable_azuremonitormetrics")
+        # TODO: should remove get value from disable_azuremonitormetrics once the option is removed
+        disable_azure_monitor_metrics = self.raw_param.get("disable_azure_monitor_metrics") or self.raw_param.get("disable_azuremonitormetrics")
         if disable_azure_monitor_metrics and self._get_enable_azure_monitor_metrics(False):
             raise MutuallyExclusiveArgumentError("Cannot specify --enable-azuremonitormetrics and --disable-azuremonitormetrics at the same time.")
         return disable_azure_monitor_metrics
@@ -2368,6 +2376,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             network_profile.network_dataplane = CONST_NETWORK_DATAPLANE_CILIUM
         else:
             network_profile.network_dataplane = self.context.get_network_dataplane()
+
+        network_observability = self.context.get_enable_network_observability()
+        if network_observability is not None:
+            network_profile.monitoring = self.models.NetworkMonitoring(
+                enabled=network_observability
+            )
 
         return mc
 
@@ -3008,6 +3022,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.network_profile.pod_cidr = pod_cidr
         return mc
 
+    def update_enable_network_observability_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update enable network observability of network profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        network_observability = self.context.get_enable_network_observability()
+        if network_observability is not None:
+            mc.network_profile.monitoring = self.models.NetworkMonitoring(
+                enabled=network_observability
+            )
+        return mc
+
     def update_outbound_type_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update outbound type of network profile for the ManagedCluster object.
 
@@ -3315,7 +3343,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
             mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=False)
 
-        if (self.context.raw_param.get("enable_azuremonitormetrics") or self.context.raw_param.get("disable_azuremonitormetrics")):
+        # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
+        # TODO: should remove get value from disable_azuremonitormetrics once the option is removed
+        if (
+            self.context.raw_param.get("enable_azure_monitor_metrics") or
+            self.context.raw_param.get("enable_azuremonitormetrics") or
+            self.context.raw_param.get("disable_azure_monitor_metrics") or
+            self.context.raw_param.get("disable_azuremonitormetrics")
+        ):
             ensure_azure_monitor_profile_prerequisites(
                 self.cmd,
                 self.context.get_subscription_id(),
@@ -3605,5 +3640,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_guardrails_profile(mc)
         # update auto upgrade profile
         mc = self.update_upgrade_settings(mc)
+        # update network_observability in network_profile
+        mc = self.update_enable_network_observability_in_network_profile(mc)
 
         return mc

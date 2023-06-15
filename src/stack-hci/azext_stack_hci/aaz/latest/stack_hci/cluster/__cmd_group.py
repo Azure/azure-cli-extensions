@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "stack-hci cluster",
 )
 class __CMDGroup(AAZCommandGroup):
-    """cluster with stack hci.
+    """Manage cluster with stack hci.
     """
     pass
 

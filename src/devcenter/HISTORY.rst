@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.0.1
+++++++
+* Update error string for environment create same name validation
+* Update data plane help to align with control plane
+
 1.0.0
 ++++++
 * Update control plane and data plane APIs to v2023-04-01
