@@ -246,7 +246,6 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
-    @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
     def test_containerapp_env_workload_profiles_e2e_no_waits(self, resource_group):
         import requests
 
