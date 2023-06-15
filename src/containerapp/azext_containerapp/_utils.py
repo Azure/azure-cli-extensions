@@ -45,7 +45,7 @@ from ._clients import ContainerAppClient, ManagedEnvironmentClient, WorkloadProf
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
                          LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
-                         LOGS_STRING, PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS)
+                         LOGS_STRING, PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS, DEV_SERVICE_LIST)
 from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel,
                       ManagedCertificateEnvelop as ManagedCertificateEnvelopModel,
                       ServiceConnector as ServiceConnectorModel)
@@ -452,8 +452,9 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
                 if not containerapp_def:
                     raise ResourceNotFoundError(f"The service '{service_name}' does not exist")
 
-                configuration = containerapp_def["properties"]["configuration"]["service"]
-                if configuration is None or configuration["type"] not in ["redis", "postgres"]:
+                service_type = safe_get(containerapp_def, "properties", "configuration", "service", "type")
+
+                if service_type is None or service_type not in DEV_SERVICE_LIST:
                     raise ResourceNotFoundError(f"The service '{service_name}' does not exist")
 
                 service_bindings_def_list.append({
@@ -636,6 +637,7 @@ def store_as_secret_and_return_secret_ref(secrets_list, registry_user, registry_
         return registry_pass
     else:
         # If user passed in registry password
+        registry_server = registry_server.replace(':', '-')
         if urlparse(registry_server).hostname is not None:
             registry_secret_name = "{server}-{user}".format(server=urlparse(registry_server).hostname.replace('.', ''), user=registry_user.lower())
         else:
