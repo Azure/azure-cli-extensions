@@ -1,0 +1,42 @@
+{
+  "resources": [
+    {
+      "PlanId": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/Hackathon2306/providers/Microsoft.Web/serverfarms/plan-ubxvzj?api-version=2022-03-01",
+      "PlanPayload": {
+        "location": "eastus",
+        "sku": {
+          "name": "B1",
+          "tier": "BASIC",
+          "capacity": 1
+        },
+        "properties": {
+          "perSiteScaling": false,
+          "isXenon": false,
+          "zoneRedundant": false
+        }
+      }
+    },
+    {
+      "AppId": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/Hackathon2306/providers/Microsoft.Web/sites/app-ucvzjwbs?api-version=2022-03-01",
+      "AppPayload": {
+        "location": "eastus",
+        "properties": {
+          "serverFarmId": "/subscriptions/937bc588-a144-4083-8612-5f9ffbbddb14/resourceGroups/Hackathon2306/providers/Microsoft.Web/serverfarms/plan-ubxvzj",
+          "reserved": false,
+          "isXenon": false,
+          "hyperV": false,
+          "siteConfig": {
+            "netFrameworkVersion": "v4.6",
+            "linuxFxVersion": "",
+            "appSettings": [],
+            "alwaysOn": true,
+            "localMySqlEnabled": false,
+            "http20Enabled": true
+          },
+          "scmSiteAlsoStopped": false,
+          "httpsOnly": false
+        }
+      }
+    }
+  ]
+}  
