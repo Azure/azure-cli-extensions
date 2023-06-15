@@ -2379,7 +2379,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         network_observability = self.context.get_enable_network_observability()
         if network_observability is not None:
-            network_profile.network_monitoring = self.models.NetworkMonitoring(
+            network_profile.monitoring = self.models.NetworkMonitoring(
                 enabled=network_observability
             )
 
