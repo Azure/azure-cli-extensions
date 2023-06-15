@@ -11,79 +11,36 @@ from ._utils import (_get_azext_module, GA_CONTAINERAPP_EXTENSION_NAME)
 logger = get_logger(__name__)
 
 
-class BaseContainerAppDecorator:
+class ContainerAppPreviewCreateDecorator(_get_azext_module(GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp.containerapp_decorator").ContainerAppCreateDecorator):
     def __init__(
-        self, cmd: AzCliCommand, client: ContainerAppClient, raw_parameters: Dict, models: str
-    ):
-        self.raw_param = raw_parameters
-        self.cmd = cmd
-        self.client = client
-        self.models = models
-
-    def register_provider(self):
-        raise NotImplementedError()
-
-    def validate_arguments(self):
-        raise NotImplementedError()
-
-    def construct_containerapp(self):
-        raise NotImplementedError()
-
-    def create_containerapp(self, containerapp_def):
-        raise NotImplementedError()
-
-    def construct_containerapp_for_post_process(self, containerapp_def, r):
-        raise NotImplementedError()
-
-    def post_process_containerapp(self, containerapp_def, r):
-        raise NotImplementedError()
-
-    def get_param(self, key) -> Any:
-        return self.raw_param.get(key)
-
-    def set_param(self, key, value):
-        self.raw_param[key] = value
-
-
-class ContainerAppPreviewCreateDecorator(BaseContainerAppDecorator):
-    def __init__(
-        self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models:str
+        self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
     ):
         super().__init__(cmd, client, raw_parameters, models)
         azext_default_utils = _get_azext_module(
             GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp._utils")
-        self.azext_default_utils = azext_default_utils
 
-        azext_default_decorator = _get_azext_module(
-            GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp.containerapp_decorator")
-        ga_containerapp_create_decorator = azext_default_decorator.ContainerAppCreateDecorator(
-            cmd=cmd,
-            client=ContainerAppClient,
-            raw_parameters=raw_parameters,
-            models=models
-        )
-        self.ga_containerapp_create_decorator = ga_containerapp_create_decorator
-        self.ga_containerapp_create_decorator.environment_client = self.get_environment_client()
+        self.azext_default_utils = azext_default_utils
+        self.environment_client = self.get_environment_client()
 
     def register_provider(self):
-        self.ga_containerapp_create_decorator.register_provider()
+        super().register_provider()
 
     def validate_arguments(self):
-        self.ga_containerapp_create_decorator.validate_arguments()
+        super().validate_arguments()
 
     def construct_containerapp(self):
-        containerapp_def = self.ga_containerapp_create_decorator.construct_containerapp()
+        containerapp_def = super().construct_containerapp()
         containerapp_def = self.set_up_extended_location(containerapp_def)
         return containerapp_def
 
     def create_containerapp(self, containerapp_def):
-        return self.ga_containerapp_create_decorator.create_containerapp(containerapp_def)
+        return super().create_containerapp(containerapp_def)
 
     def construct_containerapp_for_post_process(self, containerapp_def, r):
-        return self.ga_containerapp_create_decorator.construct_containerapp_for_post_process(containerapp_def, r)
+        return super().construct_containerapp_for_post_process(containerapp_def, r)
 
     def post_process_containerapp(self, containerapp_def, r):
-        return self.ga_containerapp_create_decorator.post_process_containerapp(containerapp_def, r)
+        return super().post_process_containerapp(containerapp_def, r)
 
     def set_up_extended_location(self, containerapp_def):
         parsed_env = parse_resource_id(self.get_env())  # custom_location check here perhaps
@@ -107,8 +64,12 @@ class ContainerAppPreviewCreateDecorator(BaseContainerAppDecorator):
                     'environmentId is required. This can be retrieved using the `az containerapp env show -g MyResourceGroup -n MyContainerappEnvironment --query id` command. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
         else:
             env = self.get_env()
+
         environment_type = self.get_environment_type()
-        parsed_env = parse_resource_id(env)  # custom_location check here perhaps
+        if not env and not environment_type:
+            return ManagedEnvironmentClient
+
+        parsed_env = parse_resource_id(env)
 
         # Validate environment type
         if parsed_env['resource_type'] == "connectedEnvironments":
@@ -123,14 +84,11 @@ class ContainerAppPreviewCreateDecorator(BaseContainerAppDecorator):
 
         self.set_environment_type(environment_type)
         self.set_env(env)
-        # Validate environment exists + grab location and/or custom_location
-        try:
-            if environment_type == "managed":
-                return ManagedEnvironmentClient
-            else:
-                return ConnectedEnvironmentClient
-        except:
-            pass
+
+        if environment_type == "managed":
+            return ManagedEnvironmentClient
+        else:
+            return ConnectedEnvironmentClient
 
     def get_yaml_containerapp(self):
         load_file = self.azext_default_utils.load_yaml_file(self.get_yaml())
