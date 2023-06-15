@@ -99,7 +99,6 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                     image_line_matches = self.find_pattern_matches_in_chart(
                         helm_package, "image:"
                     )
-                    
                     # Creates a flattened list of image registry paths to prevent set error
                     image_registry_paths = []
                     for registry_path in image_line_matches:
@@ -362,7 +361,6 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         values_schema = os.path.join(
             self._tmp_folder_name, helm_package.name, "values.schema.json"
         )
-        
         if not os.path.exists(mappings_path):
             raise InvalidTemplateError(
                 f"ERROR: The helm package '{helm_package.name}' does not have a valid values mappings file. \
