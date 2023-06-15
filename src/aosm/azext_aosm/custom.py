@@ -138,33 +138,17 @@ def publish_definition(
     """
     Publish a generated definition.
 
-    :param cmd: :param client: :type client: HybridNetworkManagementClient :param
-    definition_type: VNF or CNF :param config_
-    file:
-    Path to the config file for the NFDV    :param definition_file: Optional path to a
-    bicep template to deploy, in case the user                       wants to edit the
-    built NFDV template. If omitted, the default                       built NFDV
-    template will be used.    :param parameters_json_
-    file:
-    Optional path to a parameters file for the bicep file,                      in case
-    the user wants to edit the built NFDV template. If                      omitted,
-    parameters from config will be turned into parameters                      for the
-    bicep file    :param manifest_
-    file:
-    Optional path to an override bicep template to deploy
-    manifests    :param manifest_parameters_json_
-    file:
     :param cmd:
     :param client:
     :type client: HybridNetworkManagementClient
     :param definition_type: VNF or CNF
     :param config_file: Path to the config file for the NFDV
     :param definition_file: Optional path to a bicep template to deploy, in case the
-        user        wants to edit the built NFDV template. If omitted, the default
-        built NFDV template will be used.
+        user wants to edit the built NFDV template.
+        If omitted, the default built NFDV template will be used.
     :param parameters_json_file: Optional path to a parameters file for the bicep file,
-        in case the user wants to edit the built NFDV template. If       omitted,
-        parameters from config will be turned into parameters       for the bicep file
+        in case the user wants to edit the built NFDV template. If omitted,
+        parameters from config will be turned into parameters for the bicep file
     :param manifest_file: Optional path to an override bicep template to deploy
         manifests
     :param manifest_parameters_json_file: Optional path to an override bicep parameters
