@@ -3,34 +3,32 @@
 # License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------
 """Contains a class for generating VNF NFDs and associated resources."""
-from knack.log import get_logger
 import json
 import logging
 import os
 import shutil
+import tempfile
 from functools import cached_property
 from pathlib import Path
 from typing import Any, Dict, Optional
-import tempfile
-
-from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
-
-from azext_aosm._configuration import NSConfiguration
-from azext_aosm.util.constants import (
-    NSD_DEFINITION_BICEP_SOURCE_TEMPLATE,
-    NSD_DEFINITION_BICEP_FILE,
-    NF_TEMPLATE_BICEP_FILE,
-    NF_DEFINITION_BICEP_FILE,
-    NSD_ARTIFACT_MANIFEST_BICEP_FILE,
-    NSD_CONFIG_MAPPING_FILE,
-    SCHEMAS,
-    CONFIG_MAPPINGS,
-    NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE,
-    TEMPLATES,
-)
 
 from jinja2 import Template
+from knack.log import get_logger
 
+from azext_aosm._configuration import NSConfiguration
+from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
+from azext_aosm.util.constants import (
+    CONFIG_MAPPINGS,
+    NF_DEFINITION_BICEP_FILE,
+    NF_TEMPLATE_BICEP_FILE,
+    NSD_ARTIFACT_MANIFEST_BICEP_FILE,
+    NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE,
+    NSD_CONFIG_MAPPING_FILE,
+    NSD_DEFINITION_BICEP_FILE,
+    NSD_DEFINITION_BICEP_SOURCE_TEMPLATE,
+    SCHEMAS,
+    TEMPLATES,
+)
 
 logger = get_logger(__name__)
 

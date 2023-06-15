@@ -3,6 +3,10 @@
 Release History
 ===============
 
+unreleased
+++++++++++
+* `az aosm nfd build` options `--order-params` and `--interactive` to help users choose which NF parameters to expose as deployParameters. Feature added that allows CNF value mappings file to be generated if none is supplied.
+
 0.2.0
 ++++++
 Breaking change to commands - now use `nfd` instead of `definition`. Publish option removed from build.
