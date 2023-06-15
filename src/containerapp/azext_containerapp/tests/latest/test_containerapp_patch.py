@@ -18,6 +18,7 @@ from knack.util import CLIError
 
 from azext_containerapp.tests.latest.common import TEST_LOCATION
 from azext_containerapp import _utils
+from azext_containerapp.tests.latest.utils import create_and_verify_containerapp_up
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ContainerAppPatchTest(ScenarioTest):
@@ -31,7 +32,7 @@ class ContainerAppPatchTest(ScenarioTest):
         # Generate a name for the Container App
         app_name = self.create_random_name(prefix='containerapp', length=24)
 
-        self._create_and_verify_containerapp_up(resource_group,source_path=source_path,ingress=ingress,target_port=target_port,app_name=app_name)
+        create_and_verify_containerapp_up(self,resource_group,source_path=source_path,ingress=ingress,target_port=target_port,app_name=app_name)
         self._retag_image_to_older_version_and_push(resource_group=resource_group,app_name=app_name)
 
         # Execute and verify patch list command
@@ -61,7 +62,7 @@ class ContainerAppPatchTest(ScenarioTest):
         env_name = self.create_random_name(prefix='env', length=24)
         self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
 
-        self._create_and_verify_containerapp_up(resource_group,env_name=env_name,source_path=source_path,ingress=ingress,target_port=target_port,app_name=app_name)
+        create_and_verify_containerapp_up(self,resource_group,env_name=env_name,source_path=source_path,ingress=ingress,target_port=target_port,app_name=app_name)
         self._retag_image_to_older_version_and_push(resource_group=resource_group,app_name=app_name)
 
         # Execute and verify patch list command
@@ -89,7 +90,7 @@ class ContainerAppPatchTest(ScenarioTest):
         env_name = self.create_random_name(prefix='env', length=24)
         self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
 
-        self._create_and_verify_containerapp_up(resource_group,env_name=env_name,image=image,app_name=app_name)
+        create_and_verify_containerapp_up(self,resource_group,env_name=env_name,image=image,app_name=app_name)
 
         # Execute and verify patch list command
         patch_cmd = f'containerapp patch list -g {resource_group} --environment {env_name} --show-all'
@@ -110,10 +111,10 @@ class ContainerAppPatchTest(ScenarioTest):
         ingress = 'external'
         target_port = '80'
 
-         # Generate a name for the Container App
+        # Generate a name for the Container App
         app_name = self.create_random_name(prefix='containerapp', length=24)
 
-        self._create_and_verify_containerapp_up(resource_group,source_path=source_path,ingress=ingress,target_port=target_port,app_name=app_name)
+        create_and_verify_containerapp_up(self,resource_group,source_path=source_path,ingress=ingress,target_port=target_port,app_name=app_name)
         self._retag_image_to_older_version_and_push(resource_group=resource_group,app_name=app_name)
 
         # Execute and verify patch list command
@@ -144,7 +145,7 @@ class ContainerAppPatchTest(ScenarioTest):
         old_image_name = registry + "/" + repo + ":" + old_tag
         current_image.tag(registry + "/" + repo, tag = old_tag)
 
-         # Re-tag and push
+        # Re-tag and push
         client.images.push(registry + "/" + repo, tag = old_tag)
         self.cmd('az containerapp update -n {} -g {} --image {}'.format(app_name, resource_group, old_image_name))
         app = self.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
@@ -153,52 +154,3 @@ class ContainerAppPatchTest(ScenarioTest):
 
         # Verify if image was updated
         self.assertEquals(retagged_image_tag,old_tag)
-
-    def _create_and_verify_containerapp_up(
-            self,
-            resource_group,
-            env_name = None,
-            source_path = None,
-            image = None,
-            location = None,
-            ingress = None,
-            target_port = None,
-            app_name = None):
-        # Configure the default location
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
-
-        # Ensure that the Container App environment is created
-        if env_name is None:
-           env_name = self.create_random_name(prefix='env', length=24)
-           self.cmd(f'containerapp env create -g {resource_group} -n {env_name}')
-
-        if app_name is None:
-            # Generate a name for the Container App
-            app_name = self.create_random_name(prefix='containerapp', length=24)
-
-        # Construct the 'az containerapp up' command
-        up_cmd = f"containerapp up -g {resource_group} -n {app_name} --environment {env_name}"
-        if source_path:
-            up_cmd += f" --source \"{source_path}\""
-        if image:
-            up_cmd += f" --image {image}"
-        if ingress:
-            up_cmd += f" --ingress {ingress}"
-        if target_port:
-            up_cmd += f" --target-port {target_port}"
-
-        # Execute the 'az containerapp up' command
-        self.cmd(up_cmd)
-
-        # Verify that the Container App is running
-        app = self.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
-        url = app["properties"]["configuration"]["ingress"]["fqdn"]
-        url = url if url.startswith("http") else f"http://{url}"
-        resp = requests.get(url)
-        self.assertTrue(resp.ok)
-
-        # Re-run the 'az containerapp up' command with the location parameter if provided
-        if location:
-            up_cmd += f" -l {location.upper()}"
-            self.cmd(up_cmd)
-
