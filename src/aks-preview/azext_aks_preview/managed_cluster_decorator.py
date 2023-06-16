@@ -2945,6 +2945,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             (self.context.get_cluster_autoscaler_profile(), None),
             (self.context.get_api_server_authorized_ip_ranges(), None),
             (self.context.get_nodepool_labels(), None),
+            (self.context.get_nodepool_taints(), None),
             (self.context.raw_param.get("enable_workload_identity"), None),
             (self.context.raw_param.get("upgrade_settings"), None),
         ]

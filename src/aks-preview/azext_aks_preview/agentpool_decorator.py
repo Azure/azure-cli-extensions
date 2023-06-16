@@ -270,7 +270,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 ))
         return res
 
-    def get_node_taints(self) -> Union[List[str], None]:
+    def get_nodepool_taints(self) -> Union[List[str], None]:
         """Obtain the value of nodepool_taints.
 
         :return: dictionary or None
