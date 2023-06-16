@@ -26,7 +26,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = ["deepdiff", "requests"]
+DEPENDENCIES = ["cli-meta-tool"]
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
