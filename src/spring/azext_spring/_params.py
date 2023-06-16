@@ -861,6 +861,7 @@ def load_arguments(self, _):
                    help='Sensitive properties for environment variables. Once put, it will be encrypted and not returned.'
                         'Format "key[=value]" and separated by space.')
         c.argument('allowed_origins', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed origins to make cross-site requests. The special value `*` allows all domains.")
+        c.argument('allowed_origin_patterns', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed origin patterns to make cross-site requests.")
         c.argument('allowed_methods', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed HTTP methods on cross-site requests. The special value `*` allows all methods.")
         c.argument('allowed_headers', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed headers in cross-site requests. The special value `*` allows actual requests to send any header.")
         c.argument('max_age', arg_group='Cross-origin Resource Sharing (CORS)', type=int,
@@ -873,6 +874,8 @@ def load_arguments(self, _):
                    options_list=['--enable-certificate-verification', '--enable-cert-verify'],
                    help='If true, will verify certificate in TLS connection from gateway to app.')
         c.argument('certificate_names', arg_group='Client Certificate Authentication', help="Comma-separated list of certificate names in Azure Spring Apps.")
+        c.argument('addon_configs_json', arg_group='Add-on Configurations', help="JSON string of add-on configurations.")
+        c.argument('addon_configs_file', arg_group='Add-on Configurations', help="The file path of JSON string of add-on configurations.")
 
     for scope in ['spring gateway custom-domain',
                   'spring api-portal custom-domain']:
