@@ -18,7 +18,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestdataprotection_updatemsipermissions_000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001","name":"clitestdataprotection_updatemsipermissions_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_dataprotection_update_msi_permissions_disk","date":"2023-06-13T10:51:38Z","module":"dataprotection"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001","name":"clitestdataprotection_updatemsipermissions_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_dataprotection_update_msi_permissions_disk","date":"2023-06-15T05:57:07Z","module":"dataprotection"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:51:42 GMT
+      - Thu, 15 Jun 2023 05:57:09 GMT
       expires:
       - '-1'
       pragma:
@@ -74,7 +74,7 @@ interactions:
         diskSizeGB\": 4,\r\n    \"provisioningState\": \"Updating\"\r\n  }\r\n}"
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/DiskOperations/80d6b013-4d13-4297-9b62-fdbdcc3a4d60?p=6591385f-1c34-4f15-a5b1-d15c0cc1db85&api-version=2022-07-02
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/DiskOperations/c23fb6b4-830e-4c6d-a920-70c868b64513?p=6591385f-1c34-4f15-a5b1-d15c0cc1db85&api-version=2022-07-02
       cache-control:
       - no-cache
       content-length:
@@ -82,11 +82,11 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:51:47 GMT
+      - Thu, 15 Jun 2023 05:57:14 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/DiskOperations/80d6b013-4d13-4297-9b62-fdbdcc3a4d60?p=6591385f-1c34-4f15-a5b1-d15c0cc1db85&monitor=true&api-version=2022-07-02
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/DiskOperations/c23fb6b4-830e-4c6d-a920-70c868b64513?p=6591385f-1c34-4f15-a5b1-d15c0cc1db85&monitor=true&api-version=2022-07-02
       pragma:
       - no-cache
       server:
@@ -99,7 +99,7 @@ interactions:
       x-ms-ratelimit-remaining-resource:
       - Microsoft.Compute/CreateUpdateDisks3Min;2999,Microsoft.Compute/CreateUpdateDisks30Min;24997
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '1198'
     status:
       code: 202
       message: Accepted
@@ -119,11 +119,11 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 azsdk-python-azure-mgmt-compute/29.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/DiskOperations/80d6b013-4d13-4297-9b62-fdbdcc3a4d60?p=6591385f-1c34-4f15-a5b1-d15c0cc1db85&api-version=2022-07-02
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Compute/locations/westus/DiskOperations/c23fb6b4-830e-4c6d-a920-70c868b64513?p=6591385f-1c34-4f15-a5b1-d15c0cc1db85&api-version=2022-07-02
   response:
     body:
-      string: "{\r\n  \"startTime\": \"2023-06-13T10:51:47.306404+00:00\",\r\n  \"\
-        endTime\": \"2023-06-13T10:51:47.3845323+00:00\",\r\n  \"status\": \"Succeeded\"\
+      string: "{\r\n  \"startTime\": \"2023-06-15T05:57:14.5123567+00:00\",\r\n  \"\
+        endTime\": \"2023-06-15T05:57:14.6216666+00:00\",\r\n  \"status\": \"Succeeded\"\
         ,\r\n  \"properties\": {\r\n    \"output\": {\r\n  \"name\": \"cli-test-disk\"\
         ,\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.Compute/disks/cli-test-disk\"\
         ,\r\n  \"type\": \"Microsoft.Compute/disks\",\r\n  \"location\": \"westus\"\
@@ -134,20 +134,20 @@ interactions:
         \    \"diskMBpsReadWrite\": 25,\r\n    \"encryption\": {\r\n      \"type\"\
         : \"EncryptionAtRestWithPlatformKey\"\r\n    },\r\n    \"networkAccessPolicy\"\
         : \"AllowAll\",\r\n    \"publicNetworkAccess\": \"Enabled\",\r\n    \"timeCreated\"\
-        : \"2023-06-13T10:51:47.306404+00:00\",\r\n    \"provisioningState\": \"Succeeded\"\
-        ,\r\n    \"diskState\": \"Unattached\",\r\n    \"diskSizeBytes\": 4294967296,\r\
-        \n    \"uniqueId\": \"642cae17-489a-4e7c-8438-397bc700bb70\",\r\n    \"tier\"\
-        : \"P1\"\r\n  }\r\n}\r\n  },\r\n  \"name\": \"80d6b013-4d13-4297-9b62-fdbdcc3a4d60\"\
+        : \"2023-06-15T05:57:14.5123567+00:00\",\r\n    \"provisioningState\": \"\
+        Succeeded\",\r\n    \"diskState\": \"Unattached\",\r\n    \"diskSizeBytes\"\
+        : 4294967296,\r\n    \"uniqueId\": \"fe9b11db-27e1-490a-b978-c39f47d02a0c\"\
+        ,\r\n    \"tier\": \"P1\"\r\n  }\r\n}\r\n  },\r\n  \"name\": \"c23fb6b4-830e-4c6d-a920-70c868b64513\"\
         \r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1173'
+      - '1175'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:51:47 GMT
+      - Thu, 15 Jun 2023 05:57:14 GMT
       expires:
       - '-1'
       pragma:
@@ -164,7 +164,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-resource:
-      - Microsoft.Compute/GetOperation3Min;49997,Microsoft.Compute/GetOperation30Min;399993
+      - Microsoft.Compute/GetOperation3Min;49999,Microsoft.Compute/GetOperation30Min;399993
     status:
       code: 200
       message: OK
@@ -196,19 +196,19 @@ interactions:
         \    \"diskMBpsReadWrite\": 25,\r\n    \"encryption\": {\r\n      \"type\"\
         : \"EncryptionAtRestWithPlatformKey\"\r\n    },\r\n    \"networkAccessPolicy\"\
         : \"AllowAll\",\r\n    \"publicNetworkAccess\": \"Enabled\",\r\n    \"timeCreated\"\
-        : \"2023-06-13T10:51:47.306404+00:00\",\r\n    \"provisioningState\": \"Succeeded\"\
-        ,\r\n    \"diskState\": \"Unattached\",\r\n    \"diskSizeBytes\": 4294967296,\r\
-        \n    \"uniqueId\": \"642cae17-489a-4e7c-8438-397bc700bb70\",\r\n    \"tier\"\
-        : \"P1\"\r\n  }\r\n}"
+        : \"2023-06-15T05:57:14.5123567+00:00\",\r\n    \"provisioningState\": \"\
+        Succeeded\",\r\n    \"diskState\": \"Unattached\",\r\n    \"diskSizeBytes\"\
+        : 4294967296,\r\n    \"uniqueId\": \"fe9b11db-27e1-490a-b978-c39f47d02a0c\"\
+        ,\r\n    \"tier\": \"P1\"\r\n  }\r\n}"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '949'
+      - '950'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:51:48 GMT
+      - Thu, 15 Jun 2023 05:57:15 GMT
       expires:
       - '-1'
       pragma:
@@ -225,7 +225,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-resource:
-      - Microsoft.Compute/LowCostGet3Min;14995,Microsoft.Compute/LowCostGet30Min;119986
+      - Microsoft.Compute/LowCostGet3Min;14997,Microsoft.Compute/LowCostGet30Min;119985
     status:
       code: 200
       message: OK
@@ -254,10 +254,10 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault?api-version=2022-12-01
   response:
     body:
-      string: '{"location":"eastus","identity":{"type":"SystemAssigned","principalId":"54f6fa71-262a-4cbb-8b20-38c5a735ef77","tenantId":"1b33ee0e-49fa-4f21-ad37-e7fa300cf2a6"},"properties":{"provisioningState":"Provisioning","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault","name":"cli-test-backup-vault","type":"Microsoft.DataProtection/backupVaults"}'
+      string: '{"location":"eastus","identity":{"type":"SystemAssigned","principalId":"e628f8a9-638b-49f5-9d43-1c3b793e9268","tenantId":"1b33ee0e-49fa-4f21-ad37-e7fa300cf2a6"},"properties":{"provisioningState":"Provisioning","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault","name":"cli-test-backup-vault","type":"Microsoft.DataProtection/backupVaults"}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault/operationStatus/YmM0ZmM2ZmEtNDlmYy00OWU3LWJmNGMtNTgzMGQxZmIxYjczO2U4OTc0MWMzLTdkOGYtNDZmZS1iNDhlLTljNDhkMDg4N2I1Zg==?api-version=2022-12-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault/operationStatus/MmQ4ZGQ5YmItYjZiNy00NTc0LWI2MTEtMDJiYjgxMzMxNzI4OzA2YTM3ZjM5LTU1NzItNDJlMS05ZTE5LWMxZmZhM2NlNzRmYQ==?api-version=2022-12-01
       cache-control:
       - no-cache
       content-length:
@@ -265,7 +265,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:51:58 GMT
+      - Thu, 15 Jun 2023 05:57:25 GMT
       expires:
       - '-1'
       pragma:
@@ -277,7 +277,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-arm-resource-system-data:
-      - '{"createdBy":"vishesh.r.patel@gmail.com","createdByType":"User","createdAt":"2023-06-13T10:51:53.9668132Z","lastModifiedBy":"vishesh.r.patel@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-13T10:51:53.9668132Z"}'
+      - '{"createdBy":"vishesh.r.patel@gmail.com","createdByType":"User","createdAt":"2023-06-15T05:57:20.784644Z","lastModifiedBy":"vishesh.r.patel@gmail.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-15T05:57:20.784644Z"}'
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '99'
     status:
@@ -299,19 +299,19 @@ interactions:
       User-Agent:
       - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault/operationStatus/YmM0ZmM2ZmEtNDlmYy00OWU3LWJmNGMtNTgzMGQxZmIxYjczO2U4OTc0MWMzLTdkOGYtNDZmZS1iNDhlLTljNDhkMDg4N2I1Zg==?api-version=2022-12-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault/operationStatus/MmQ4ZGQ5YmItYjZiNy00NTc0LWI2MTEtMDJiYjgxMzMxNzI4OzA2YTM3ZjM5LTU1NzItNDJlMS05ZTE5LWMxZmZhM2NlNzRmYQ==?api-version=2022-12-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault/operationStatus/YmM0ZmM2ZmEtNDlmYy00OWU3LWJmNGMtNTgzMGQxZmIxYjczO2U4OTc0MWMzLTdkOGYtNDZmZS1iNDhlLTljNDhkMDg4N2I1Zg==","name":"YmM0ZmM2ZmEtNDlmYy00OWU3LWJmNGMtNTgzMGQxZmIxYjczO2U4OTc0MWMzLTdkOGYtNDZmZS1iNDhlLTljNDhkMDg4N2I1Zg==","status":"Succeeded","startTime":"2023-06-13T10:51:57.9505258Z","endTime":"2023-06-13T10:51:58Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault/operationStatus/MmQ4ZGQ5YmItYjZiNy00NTc0LWI2MTEtMDJiYjgxMzMxNzI4OzA2YTM3ZjM5LTU1NzItNDJlMS05ZTE5LWMxZmZhM2NlNzRmYQ==","name":"MmQ4ZGQ5YmItYjZiNy00NTc0LWI2MTEtMDJiYjgxMzMxNzI4OzA2YTM3ZjM5LTU1NzItNDJlMS05ZTE5LWMxZmZhM2NlNzRmYQ==","status":"Succeeded","startTime":"2023-06-15T05:57:24.409376Z","endTime":"2023-06-15T05:57:25Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '519'
+      - '518'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:51:59 GMT
+      - Thu, 15 Jun 2023 05:57:26 GMT
       expires:
       - '-1'
       pragma:
@@ -350,7 +350,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault?api-version=2022-12-01
   response:
     body:
-      string: '{"location":"eastus","identity":{"type":"SystemAssigned","principalId":"54f6fa71-262a-4cbb-8b20-38c5a735ef77","tenantId":"1b33ee0e-49fa-4f21-ad37-e7fa300cf2a6"},"properties":{"provisioningState":"Succeeded","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault","name":"cli-test-backup-vault","type":"Microsoft.DataProtection/backupVaults"}'
+      string: '{"location":"eastus","identity":{"type":"SystemAssigned","principalId":"e628f8a9-638b-49f5-9d43-1c3b793e9268","tenantId":"1b33ee0e-49fa-4f21-ad37-e7fa300cf2a6"},"properties":{"provisioningState":"Succeeded","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault","name":"cli-test-backup-vault","type":"Microsoft.DataProtection/backupVaults"}'
     headers:
       cache-control:
       - no-cache
@@ -359,7 +359,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:00 GMT
+      - Thu, 15 Jun 2023 05:57:27 GMT
       expires:
       - '-1'
       pragma:
@@ -421,7 +421,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:02 GMT
+      - Thu, 15 Jun 2023 05:57:29 GMT
       expires:
       - '-1'
       pragma:
@@ -461,7 +461,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault?api-version=2022-12-01
   response:
     body:
-      string: '{"location":"eastus","identity":{"type":"SystemAssigned","principalId":"54f6fa71-262a-4cbb-8b20-38c5a735ef77","tenantId":"1b33ee0e-49fa-4f21-ad37-e7fa300cf2a6"},"properties":{"provisioningState":"Succeeded","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault","name":"cli-test-backup-vault","type":"Microsoft.DataProtection/backupVaults"}'
+      string: '{"location":"eastus","identity":{"type":"SystemAssigned","principalId":"e628f8a9-638b-49f5-9d43-1c3b793e9268","tenantId":"1b33ee0e-49fa-4f21-ad37-e7fa300cf2a6"},"properties":{"provisioningState":"Succeeded","storageSettings":[{"datastoreType":"VaultStore","type":"LocallyRedundant"}],"isVaultProtectedByResourceGuard":false,"securitySettings":{"softDeleteSettings":{"state":"Off","retentionDurationInDays":0.0}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/backupVaults/cli-test-backup-vault","name":"cli-test-backup-vault","type":"Microsoft.DataProtection/backupVaults"}'
     headers:
       cache-control:
       - no-cache
@@ -470,7 +470,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:04 GMT
+      - Thu, 15 Jun 2023 05:57:32 GMT
       expires:
       - '-1'
       pragma:
@@ -507,7 +507,7 @@ interactions:
       User-Agent:
       - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.49.0
     method: GET
-    uri: https://graph.microsoft.com/v1.0/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%2754f6fa71-262a-4cbb-8b20-38c5a735ef77%27%29
+    uri: https://graph.microsoft.com/v1.0/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27e628f8a9-638b-49f5-9d43-1c3b793e9268%27%29
   response:
     body:
       string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#servicePrincipals","value":[]}'
@@ -519,11 +519,11 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:04 GMT
+      - Thu, 15 Jun 2023 05:57:33 GMT
       odata-version:
       - '4.0'
       request-id:
-      - 7b8c4d46-4e0f-4a1c-a1d1-19f379f34464
+      - 41577602-95d5-425b-bda3-cf4e6e245fa1
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -531,14 +531,14 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"South India","Slice":"E","Ring":"2","ScaleUnit":"000","RoleInstance":"MA1PEPF00002027"}}'
+      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"001","RoleInstance":"SI2PEPF00003BB2"}}'
       x-ms-resource-unit:
       - '1'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"ids": ["54f6fa71-262a-4cbb-8b20-38c5a735ef77"], "types": ["user", "group",
+    body: '{"ids": ["e628f8a9-638b-49f5-9d43-1c3b793e9268"], "types": ["user", "group",
       "servicePrincipal", "directoryObjectPartnerReference"]}'
     headers:
       Accept:
@@ -562,7 +562,7 @@ interactions:
     uri: https://graph.microsoft.com/v1.0/directoryObjects/getByIds
   response:
     body:
-      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#directoryObjects","value":[{"@odata.type":"#microsoft.graph.servicePrincipal","id":"54f6fa71-262a-4cbb-8b20-38c5a735ef77","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/BackupVaults/cli-test-backup-vault"],"appDisplayName":null,"appDescription":null,"appId":"99bc5022-af92-4409-8d37-dde8119d9450","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-06-13T10:51:56Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"cli-test-backup-vault","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["99bc5022-af92-4409-8d37-dde8119d9450","https://identity.azure.net/LVf5KQFesCsdhI90dsasZaFtJ6iysGfqlRSwnX3CBLQ="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"E325E1D74BA77F647BA71CD6A12370AD4114E51F","displayName":"CN=99bc5022-af92-4409-8d37-dde8119d9450","endDateTime":"2023-09-11T10:46:00Z","key":null,"keyId":"3610e8c9-ac88-4d50-b53f-000363296bcd","startDateTime":"2023-06-13T10:46:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}}]}'
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#directoryObjects","value":[{"@odata.type":"#microsoft.graph.servicePrincipal","id":"e628f8a9-638b-49f5-9d43-1c3b793e9268","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/BackupVaults/cli-test-backup-vault"],"appDisplayName":null,"appDescription":null,"appId":"156f5339-6c27-4dcd-907d-8bebf25accee","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-06-15T05:57:23Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"cli-test-backup-vault","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["156f5339-6c27-4dcd-907d-8bebf25accee","https://identity.azure.net/ocYCdOiRvpgzeKyuFosu3261XWvZ/OIJZ/s3RUh/lI0="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"1887E64E64803963C70462CD8FB28832076E6951","displayName":"CN=156f5339-6c27-4dcd-907d-8bebf25accee","endDateTime":"2023-09-13T05:52:00Z","key":null,"keyId":"086031bb-eaae-4e5a-86f5-bdb41aa278ac","startDateTime":"2023-06-15T05:52:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}}]}'
     headers:
       cache-control:
       - no-cache
@@ -571,13 +571,13 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:04 GMT
+      - Thu, 15 Jun 2023 05:57:32 GMT
       location:
       - https://graph.microsoft.com
       odata-version:
       - '4.0'
       request-id:
-      - f065757c-d590-4364-bcac-280cac6eb0c7
+      - b8e7c481-9d9d-4fcb-8e81-8e29088992f0
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -585,7 +585,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"South India","Slice":"E","Ring":"2","ScaleUnit":"000","RoleInstance":"MA1PEPF00002728"}}'
+      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"001","RoleInstance":"SI2PEPF00004A90"}}'
       x-ms-resource-unit:
       - '3'
     status:
@@ -621,7 +621,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:05 GMT
+      - Thu, 15 Jun 2023 05:57:34 GMT
       expires:
       - '-1'
       pragma:
@@ -656,7 +656,7 @@ interactions:
       User-Agent:
       - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.49.0
     method: GET
-    uri: https://graph.microsoft.com/v1.0/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%2754f6fa71-262a-4cbb-8b20-38c5a735ef77%27%29
+    uri: https://graph.microsoft.com/v1.0/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27e628f8a9-638b-49f5-9d43-1c3b793e9268%27%29
   response:
     body:
       string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#servicePrincipals","value":[]}'
@@ -668,11 +668,11 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:06 GMT
+      - Thu, 15 Jun 2023 05:57:35 GMT
       odata-version:
       - '4.0'
       request-id:
-      - d31a447e-9c0d-4bc2-888a-4a2de69d62bd
+      - b264aaa1-d216-4993-a89f-049b9118431f
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -680,14 +680,14 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"South India","Slice":"E","Ring":"2","ScaleUnit":"000","RoleInstance":"MA1PEPF00004251"}}'
+      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"001","RoleInstance":"SI2PEPF00004A97"}}'
       x-ms-resource-unit:
       - '1'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"ids": ["54f6fa71-262a-4cbb-8b20-38c5a735ef77"], "types": ["user", "group",
+    body: '{"ids": ["e628f8a9-638b-49f5-9d43-1c3b793e9268"], "types": ["user", "group",
       "servicePrincipal", "directoryObjectPartnerReference"]}'
     headers:
       Accept:
@@ -711,7 +711,7 @@ interactions:
     uri: https://graph.microsoft.com/v1.0/directoryObjects/getByIds
   response:
     body:
-      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#directoryObjects","value":[{"@odata.type":"#microsoft.graph.servicePrincipal","id":"54f6fa71-262a-4cbb-8b20-38c5a735ef77","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/BackupVaults/cli-test-backup-vault"],"appDisplayName":null,"appDescription":null,"appId":"99bc5022-af92-4409-8d37-dde8119d9450","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-06-13T10:51:56Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"cli-test-backup-vault","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["99bc5022-af92-4409-8d37-dde8119d9450","https://identity.azure.net/LVf5KQFesCsdhI90dsasZaFtJ6iysGfqlRSwnX3CBLQ="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"E325E1D74BA77F647BA71CD6A12370AD4114E51F","displayName":"CN=99bc5022-af92-4409-8d37-dde8119d9450","endDateTime":"2023-09-11T10:46:00Z","key":null,"keyId":"3610e8c9-ac88-4d50-b53f-000363296bcd","startDateTime":"2023-06-13T10:46:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}}]}'
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#directoryObjects","value":[{"@odata.type":"#microsoft.graph.servicePrincipal","id":"e628f8a9-638b-49f5-9d43-1c3b793e9268","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/BackupVaults/cli-test-backup-vault"],"appDisplayName":null,"appDescription":null,"appId":"156f5339-6c27-4dcd-907d-8bebf25accee","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-06-15T05:57:23Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"cli-test-backup-vault","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["156f5339-6c27-4dcd-907d-8bebf25accee","https://identity.azure.net/ocYCdOiRvpgzeKyuFosu3261XWvZ/OIJZ/s3RUh/lI0="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"1887E64E64803963C70462CD8FB28832076E6951","displayName":"CN=156f5339-6c27-4dcd-907d-8bebf25accee","endDateTime":"2023-09-13T05:52:00Z","key":null,"keyId":"086031bb-eaae-4e5a-86f5-bdb41aa278ac","startDateTime":"2023-06-15T05:52:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}}]}'
     headers:
       cache-control:
       - no-cache
@@ -720,13 +720,13 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:05 GMT
+      - Thu, 15 Jun 2023 05:57:35 GMT
       location:
       - https://graph.microsoft.com
       odata-version:
       - '4.0'
       request-id:
-      - 4d3f48bf-908b-4797-ba31-42c75b453141
+      - 2f37998f-d0e1-45d8-b726-60729bebfd7e
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -734,7 +734,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"South India","Slice":"E","Ring":"2","ScaleUnit":"000","RoleInstance":"MA1PEPF0000496C"}}'
+      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"001","RoleInstance":"SI2PEPF00003E5B"}}'
       x-ms-resource-unit:
       - '3'
     status:
@@ -771,7 +771,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:07 GMT
+      - Thu, 15 Jun 2023 05:57:36 GMT
       expires:
       - '-1'
       pragma:
@@ -791,7 +791,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/3e5e47e6-65f7-47ef-90b5-e5dd4d455f24",
-      "principalId": "54f6fa71-262a-4cbb-8b20-38c5a735ef77", "principalType": "ServicePrincipal"}}'
+      "principalId": "e628f8a9-638b-49f5-9d43-1c3b793e9268", "principalType": "ServicePrincipal"}}'
     headers:
       Accept:
       - application/json
@@ -814,10 +814,10 @@ interactions:
       - AZURECLI/2.49.0 azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.10.11
         (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.Compute/disks/cli-test-disk/providers/Microsoft.Authorization/roleAssignments/cec23cf6-ac1d-4f5b-ab47-0581c51c90cc?api-version=2022-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.Compute/disks/cli-test-disk/providers/Microsoft.Authorization/roleAssignments/b118c0a7-650b-414d-8c9a-c66f959eadfa?api-version=2022-04-01
   response:
     body:
-      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/3e5e47e6-65f7-47ef-90b5-e5dd4d455f24","principalId":"54f6fa71-262a-4cbb-8b20-38c5a735ef77","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.Compute/disks/cli-test-disk","condition":null,"conditionVersion":null,"createdOn":"2023-06-13T10:52:07.7019143Z","updatedOn":"2023-06-13T10:52:08.0279165Z","createdBy":null,"updatedBy":"c44d2d26-725a-469e-8685-bb9480da24c3","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.Compute/disks/cli-test-disk/providers/Microsoft.Authorization/roleAssignments/cec23cf6-ac1d-4f5b-ab47-0581c51c90cc","type":"Microsoft.Authorization/roleAssignments","name":"cec23cf6-ac1d-4f5b-ab47-0581c51c90cc"}'
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/3e5e47e6-65f7-47ef-90b5-e5dd4d455f24","principalId":"e628f8a9-638b-49f5-9d43-1c3b793e9268","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.Compute/disks/cli-test-disk","condition":null,"conditionVersion":null,"createdOn":"2023-06-15T05:57:37.7202414Z","updatedOn":"2023-06-15T05:57:38.3142503Z","createdBy":null,"updatedBy":"c44d2d26-725a-469e-8685-bb9480da24c3","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.Compute/disks/cli-test-disk/providers/Microsoft.Authorization/roleAssignments/b118c0a7-650b-414d-8c9a-c66f959eadfa","type":"Microsoft.Authorization/roleAssignments","name":"b118c0a7-650b-414d-8c9a-c66f959eadfa"}'
     headers:
       cache-control:
       - no-cache
@@ -826,7 +826,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:10 GMT
+      - Thu, 15 Jun 2023 05:57:41 GMT
       expires:
       - '-1'
       pragma:
@@ -836,7 +836,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 201
       message: Created
@@ -857,7 +857,7 @@ interactions:
       User-Agent:
       - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.49.0
     method: GET
-    uri: https://graph.microsoft.com/v1.0/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%2754f6fa71-262a-4cbb-8b20-38c5a735ef77%27%29
+    uri: https://graph.microsoft.com/v1.0/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27e628f8a9-638b-49f5-9d43-1c3b793e9268%27%29
   response:
     body:
       string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#servicePrincipals","value":[]}'
@@ -869,11 +869,11 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:10 GMT
+      - Thu, 15 Jun 2023 05:57:42 GMT
       odata-version:
       - '4.0'
       request-id:
-      - 59822674-a40a-415f-a888-0b2d1d04052d
+      - c523fa5d-82d0-4fca-a10a-f45b1468d6ad
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -881,14 +881,14 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"South India","Slice":"E","Ring":"2","ScaleUnit":"000","RoleInstance":"MA1PEPF0000508F"}}'
+      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"001","RoleInstance":"SI2PEPF00003F06"}}'
       x-ms-resource-unit:
       - '1'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"ids": ["54f6fa71-262a-4cbb-8b20-38c5a735ef77"], "types": ["user", "group",
+    body: '{"ids": ["e628f8a9-638b-49f5-9d43-1c3b793e9268"], "types": ["user", "group",
       "servicePrincipal", "directoryObjectPartnerReference"]}'
     headers:
       Accept:
@@ -912,7 +912,7 @@ interactions:
     uri: https://graph.microsoft.com/v1.0/directoryObjects/getByIds
   response:
     body:
-      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#directoryObjects","value":[{"@odata.type":"#microsoft.graph.servicePrincipal","id":"54f6fa71-262a-4cbb-8b20-38c5a735ef77","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/BackupVaults/cli-test-backup-vault"],"appDisplayName":null,"appDescription":null,"appId":"99bc5022-af92-4409-8d37-dde8119d9450","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-06-13T10:51:56Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"cli-test-backup-vault","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["99bc5022-af92-4409-8d37-dde8119d9450","https://identity.azure.net/LVf5KQFesCsdhI90dsasZaFtJ6iysGfqlRSwnX3CBLQ="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"E325E1D74BA77F647BA71CD6A12370AD4114E51F","displayName":"CN=99bc5022-af92-4409-8d37-dde8119d9450","endDateTime":"2023-09-11T10:46:00Z","key":null,"keyId":"3610e8c9-ac88-4d50-b53f-000363296bcd","startDateTime":"2023-06-13T10:46:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}}]}'
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#directoryObjects","value":[{"@odata.type":"#microsoft.graph.servicePrincipal","id":"e628f8a9-638b-49f5-9d43-1c3b793e9268","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/BackupVaults/cli-test-backup-vault"],"appDisplayName":null,"appDescription":null,"appId":"156f5339-6c27-4dcd-907d-8bebf25accee","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-06-15T05:57:23Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"cli-test-backup-vault","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["156f5339-6c27-4dcd-907d-8bebf25accee","https://identity.azure.net/ocYCdOiRvpgzeKyuFosu3261XWvZ/OIJZ/s3RUh/lI0="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"1887E64E64803963C70462CD8FB28832076E6951","displayName":"CN=156f5339-6c27-4dcd-907d-8bebf25accee","endDateTime":"2023-09-13T05:52:00Z","key":null,"keyId":"086031bb-eaae-4e5a-86f5-bdb41aa278ac","startDateTime":"2023-06-15T05:52:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}}]}'
     headers:
       cache-control:
       - no-cache
@@ -921,13 +921,13 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:11 GMT
+      - Thu, 15 Jun 2023 05:57:42 GMT
       location:
       - https://graph.microsoft.com
       odata-version:
       - '4.0'
       request-id:
-      - 592ec91e-758c-42f4-9831-d9f451bf4025
+      - 2a8c5714-a444-4a98-87b1-d812a28658c6
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -935,7 +935,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"South India","Slice":"E","Ring":"2","ScaleUnit":"000","RoleInstance":"MA1PEPF000012F3"}}'
+      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"001","RoleInstance":"SI2PEPF000017E9"}}'
       x-ms-resource-unit:
       - '3'
     status:
@@ -971,7 +971,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:10 GMT
+      - Thu, 15 Jun 2023 05:57:42 GMT
       expires:
       - '-1'
       pragma:
@@ -1006,7 +1006,7 @@ interactions:
       User-Agent:
       - python/3.10.11 (Windows-10-10.0.22621-SP0) AZURECLI/2.49.0
     method: GET
-    uri: https://graph.microsoft.com/v1.0/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%2754f6fa71-262a-4cbb-8b20-38c5a735ef77%27%29
+    uri: https://graph.microsoft.com/v1.0/servicePrincipals?$filter=servicePrincipalNames%2Fany%28c%3Ac%20eq%20%27e628f8a9-638b-49f5-9d43-1c3b793e9268%27%29
   response:
     body:
       string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#servicePrincipals","value":[]}'
@@ -1018,11 +1018,11 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:11 GMT
+      - Thu, 15 Jun 2023 05:57:43 GMT
       odata-version:
       - '4.0'
       request-id:
-      - 871beef3-b394-4e3e-85e5-910e406a4024
+      - 511d0bda-98a7-4d5b-b50b-89caad051cfd
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -1030,14 +1030,14 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"South India","Slice":"E","Ring":"2","ScaleUnit":"000","RoleInstance":"MA1PEPF000012F5"}}'
+      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"001","RoleInstance":"SI2PEPF000039CF"}}'
       x-ms-resource-unit:
       - '1'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"ids": ["54f6fa71-262a-4cbb-8b20-38c5a735ef77"], "types": ["user", "group",
+    body: '{"ids": ["e628f8a9-638b-49f5-9d43-1c3b793e9268"], "types": ["user", "group",
       "servicePrincipal", "directoryObjectPartnerReference"]}'
     headers:
       Accept:
@@ -1061,7 +1061,7 @@ interactions:
     uri: https://graph.microsoft.com/v1.0/directoryObjects/getByIds
   response:
     body:
-      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#directoryObjects","value":[{"@odata.type":"#microsoft.graph.servicePrincipal","id":"54f6fa71-262a-4cbb-8b20-38c5a735ef77","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/BackupVaults/cli-test-backup-vault"],"appDisplayName":null,"appDescription":null,"appId":"99bc5022-af92-4409-8d37-dde8119d9450","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-06-13T10:51:56Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"cli-test-backup-vault","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["99bc5022-af92-4409-8d37-dde8119d9450","https://identity.azure.net/LVf5KQFesCsdhI90dsasZaFtJ6iysGfqlRSwnX3CBLQ="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"E325E1D74BA77F647BA71CD6A12370AD4114E51F","displayName":"CN=99bc5022-af92-4409-8d37-dde8119d9450","endDateTime":"2023-09-11T10:46:00Z","key":null,"keyId":"3610e8c9-ac88-4d50-b53f-000363296bcd","startDateTime":"2023-06-13T10:46:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}}]}'
+      string: '{"@odata.context":"https://graph.microsoft.com/v1.0/$metadata#directoryObjects","value":[{"@odata.type":"#microsoft.graph.servicePrincipal","id":"e628f8a9-638b-49f5-9d43-1c3b793e9268","deletedDateTime":null,"accountEnabled":true,"alternativeNames":["isExplicit=False","/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.DataProtection/BackupVaults/cli-test-backup-vault"],"appDisplayName":null,"appDescription":null,"appId":"156f5339-6c27-4dcd-907d-8bebf25accee","applicationTemplateId":null,"appOwnerOrganizationId":null,"appRoleAssignmentRequired":false,"createdDateTime":"2023-06-15T05:57:23Z","description":null,"disabledByMicrosoftStatus":null,"displayName":"cli-test-backup-vault","homepage":null,"loginUrl":null,"logoutUrl":null,"notes":null,"notificationEmailAddresses":[],"preferredSingleSignOnMode":null,"preferredTokenSigningKeyThumbprint":null,"replyUrls":[],"servicePrincipalNames":["156f5339-6c27-4dcd-907d-8bebf25accee","https://identity.azure.net/ocYCdOiRvpgzeKyuFosu3261XWvZ/OIJZ/s3RUh/lI0="],"servicePrincipalType":"ManagedIdentity","signInAudience":null,"tags":[],"tokenEncryptionKeyId":null,"info":null,"samlSingleSignOnSettings":null,"addIns":[],"appRoles":[],"keyCredentials":[{"customKeyIdentifier":"1887E64E64803963C70462CD8FB28832076E6951","displayName":"CN=156f5339-6c27-4dcd-907d-8bebf25accee","endDateTime":"2023-09-13T05:52:00Z","key":null,"keyId":"086031bb-eaae-4e5a-86f5-bdb41aa278ac","startDateTime":"2023-06-15T05:52:00Z","type":"AsymmetricX509Cert","usage":"Verify"}],"oauth2PermissionScopes":[],"passwordCredentials":[],"resourceSpecificApplicationPermissions":[],"verifiedPublisher":{"displayName":null,"verifiedPublisherId":null,"addedDateTime":null}}]}'
     headers:
       cache-control:
       - no-cache
@@ -1070,13 +1070,13 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:11 GMT
+      - Thu, 15 Jun 2023 05:57:43 GMT
       location:
       - https://graph.microsoft.com
       odata-version:
       - '4.0'
       request-id:
-      - 7123cdc9-28f5-4505-bbbf-3b87c8d8f228
+      - b21f0e4c-221e-444e-a446-23abdc733140
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -1084,7 +1084,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"South India","Slice":"E","Ring":"2","ScaleUnit":"000","RoleInstance":"MA1PEPF00002723"}}'
+      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"001","RoleInstance":"SI2PEPF00004A8F"}}'
       x-ms-resource-unit:
       - '3'
     status:
@@ -1121,7 +1121,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:11 GMT
+      - Thu, 15 Jun 2023 05:57:43 GMT
       expires:
       - '-1'
       pragma:
@@ -1141,7 +1141,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/7efff54f-a5b4-42b5-a1c5-5411624893ce",
-      "principalId": "54f6fa71-262a-4cbb-8b20-38c5a735ef77", "principalType": "ServicePrincipal"}}'
+      "principalId": "e628f8a9-638b-49f5-9d43-1c3b793e9268", "principalType": "ServicePrincipal"}}'
     headers:
       Accept:
       - application/json
@@ -1164,10 +1164,10 @@ interactions:
       - AZURECLI/2.49.0 azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.10.11
         (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.Authorization/roleAssignments/0ead7de4-3c0b-4c27-898e-4a77b38c8afb?api-version=2022-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.Authorization/roleAssignments/ed4e9143-3d39-4eb1-b243-18c7f00f6cc4?api-version=2022-04-01
   response:
     body:
-      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/7efff54f-a5b4-42b5-a1c5-5411624893ce","principalId":"54f6fa71-262a-4cbb-8b20-38c5a735ef77","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001","condition":null,"conditionVersion":null,"createdOn":"2023-06-13T10:52:12.4167255Z","updatedOn":"2023-06-13T10:52:12.7837322Z","createdBy":null,"updatedBy":"c44d2d26-725a-469e-8685-bb9480da24c3","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.Authorization/roleAssignments/0ead7de4-3c0b-4c27-898e-4a77b38c8afb","type":"Microsoft.Authorization/roleAssignments","name":"0ead7de4-3c0b-4c27-898e-4a77b38c8afb"}'
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/7efff54f-a5b4-42b5-a1c5-5411624893ce","principalId":"e628f8a9-638b-49f5-9d43-1c3b793e9268","principalType":"ServicePrincipal","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001","condition":null,"conditionVersion":null,"createdOn":"2023-06-15T05:57:44.4349293Z","updatedOn":"2023-06-15T05:57:44.7799267Z","createdBy":null,"updatedBy":"c44d2d26-725a-469e-8685-bb9480da24c3","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestdataprotection_updatemsipermissions_000001/providers/Microsoft.Authorization/roleAssignments/ed4e9143-3d39-4eb1-b243-18c7f00f6cc4","type":"Microsoft.Authorization/roleAssignments","name":"ed4e9143-3d39-4eb1-b243-18c7f00f6cc4"}'
     headers:
       cache-control:
       - no-cache
@@ -1176,7 +1176,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 13 Jun 2023 10:52:14 GMT
+      - Thu, 15 Jun 2023 05:57:50 GMT
       expires:
       - '-1'
       pragma:
@@ -1186,7 +1186,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 201
       message: Created

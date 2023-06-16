@@ -6,10 +6,15 @@
 # pylint: disable=protected-access
 # pylint: disable=line-too-long
 from azext_dataprotection.aaz.latest.dataprotection.restorable_time_range import Find as _Find
-from ..helpers import clean_nulls_from_session_http_response
+from ..helpers import clean_nulls_from_session_http_response, validate_recovery_point_datetime_format
 
 
 class Find(_Find):
+
+    # Can be used to make start_time and end_time input more user friendly
+    # def pre_operations(self):
+    #     self.ctx.args.start_time = validate_recovery_point_datetime_format(self.ctx.args.start_time)
+    #     self.ctx.args.end_time = validate_recovery_point_datetime_format(self.ctx.args.end_time)
 
     class RestorableTimeRangesFind(_Find.RestorableTimeRangesFind):
 
