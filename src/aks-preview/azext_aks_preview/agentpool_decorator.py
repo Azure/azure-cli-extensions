@@ -270,7 +270,34 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 ))
         return res
 
+    def get_node_taints(self) -> Union[List[str], None]:
+        """Obtain the value of nodepool_taints.
 
+        :return: dictionary or None
+        """
+
+        # read the original value passed by the command
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
+            node_taints = self.raw_param.get("nodepool_taints")
+        else:
+            node_taints = self.raw_param.get("node_taints")
+
+        # normalize, default is an empty list
+        if node_taints is not None:
+            node_taints = [x.strip() for x in (node_taints.split(",") if node_taints else [])]
+
+        # keep None as None for update mode
+        if node_taints is None and self.decorator_mode == DecoratorMode.CREATE:
+            node_taints = []
+
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if self.agentpool and self.agentpool.node_taints is not None:
+                node_taints = self.agentpool.node_taints
+
+        # this parameter does not need validation
+        return node_taints
+    
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
         self,
