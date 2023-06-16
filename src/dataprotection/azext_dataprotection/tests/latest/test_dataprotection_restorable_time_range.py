@@ -25,7 +25,9 @@ class RestorableTimeRangeScenarioTest(ScenarioTest):
             test.greater_than('length(properties.restorableTimeRanges)', 0)
         ])
 
-        # Odd behaviour. Fix added as comment.
+        test.cmd('az dataprotection restorable-time-range find --source-data-store-type "OperationalStore" -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
+                 '--start-time 2023-06-16T01:00:00.0000000Z --end-time 2033-06-16T01:00:00.0000000Z')
+
         test.cmd('az dataprotection restorable-time-range find --source-data-store-type "OperationalStore" -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
                  '--start-time 2001-02-27T12:00:00.0000000Z --end-time 2002-05-14T14:10:00.0000000Z')
         test.cmd('az dataprotection restorable-time-range find --source-data-store-type "OperationalStore" -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
@@ -38,15 +40,15 @@ class RestorableTimeRangeScenarioTest(ScenarioTest):
                  '--start-time 2001-02-27T12:00:00+05:30 --end-time 2002-05-14T14:10:00+05:30')
 
         test.cmd('az dataprotection restorable-time-range find --source-data-store-type "OperationalStore" -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
-                 '--start-time 2001-02-27T12:00:00.0000000Z')
+                 '--start-time 2023-06-16T01:00:00.0000000Z')
         test.cmd('az dataprotection restorable-time-range find --source-data-store-type "OperationalStore" -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
-                 '--start-time 2001-02-27T12:00:00.000Z', expect_failure=True)
+                 '--start-time 2023-06-16T01:00:00.000Z', expect_failure=True)
         test.cmd('az dataprotection restorable-time-range find --source-data-store-type "OperationalStore" -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
-                 '--end-time 2001-02-27T12:00:00.00Z', expect_failure=True)
+                 '--end-time 2033-06-16T01:00:00.00Z', expect_failure=True)
         test.cmd('az dataprotection restorable-time-range find --source-data-store-type "OperationalStore" -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
-                 '--start-time 2001-02-27T12:00:00', expect_failure=True)
+                 '--start-time 2023-06-16T01:00:00', expect_failure=True)
         test.cmd('az dataprotection restorable-time-range find --source-data-store-type "OperationalStore" -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
-                 '--end-time 2001-02-27T12:00:00+05:30', expect_failure=True)
+                 '--end-time 2033-06-16T01:00:00+05:30', expect_failure=True)
 
         test.cmd('az dataprotection restorable-time-range find --source-data-store-type "OperationalStore" -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" '
-                 '--start-time 2002-05-14T14:10:00.0000000Z --end-time 2001-02-27T12:00:00.0000000Z', expect_failure=True)
+                 '--start-time 2033-06-16T01:00:00.0000000Z --end-time 2023-06-16T01:00:00.0000000Z', expect_failure=True)

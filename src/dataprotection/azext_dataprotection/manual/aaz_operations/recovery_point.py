@@ -9,6 +9,10 @@
 from azure.cli.core.aaz import AAZStrArg
 from azext_dataprotection.aaz.latest.dataprotection.recovery_point import List as _RecoveryPointList
 from ..helpers import validate_recovery_point_datetime_format
+from knack.log import get_logger
+
+
+logger = get_logger(__name__)
 
 
 class RecoveryPointList(_RecoveryPointList):
@@ -34,6 +38,11 @@ class RecoveryPointList(_RecoveryPointList):
     def pre_operations(self):
         start_time = validate_recovery_point_datetime_format(self.ctx.args.start_time)
         end_time = validate_recovery_point_datetime_format(self.ctx.args.end_time)
+        if start_time and end_time:
+            import dateutil.parser
+            if dateutil.parser.parse(start_time) > dateutil.parser.parse(end_time):
+                logger.warning("The argument --start-time is greater than --end-time.")
+
         rp_filter = ""
         if start_time:
             rp_filter += "startDate eq '" + start_time + "'"
