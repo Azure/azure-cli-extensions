@@ -1,5 +1,10 @@
 Release History
 ===============
+1.13.3
+---
+* Add arguments `--allowed-origin-patterns`, `--addon-configs-json` and `--addon-configs-file` in `az spring gateway update`.
+* Add new command -- `az spring gateway restart` to restart Spring Cloud Gateway.
+
 1.13.2
 ---
 * Add argument `--build-certificates` in `az spring app deploy`.
