@@ -239,13 +239,8 @@ def validate_nodepool_taints(namespace):
     if taints is None:
         return
 
-    if isinstance(taints, list):
-        taints_lst = []
-        for item in taints:
-            taints_lst.update(validate_taints(item))
-        after_validation_taints = taints_lst
-    else:
-        after_validation_taints = validate_taints(taints)
+    if taints is not None:
+        after_validation_taints = [x.strip() for x in (taints.split(",") if taints else [])]
 
     if hasattr(namespace, 'nodepool_taints'):
         namespace.nodepool_taints = after_validation_taints
