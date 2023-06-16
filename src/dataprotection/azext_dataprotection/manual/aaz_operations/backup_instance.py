@@ -5,6 +5,7 @@
 
 # pylint: disable=protected-access
 # pylint: disable=line-too-long
+
 from azure.cli.core.aaz import (
     AAZFreeFormDictArg, AAZStrArg, AAZResourceGroupNameArg,
 )

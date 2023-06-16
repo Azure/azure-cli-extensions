@@ -5,6 +5,7 @@
 
 # pylint: disable=protected-access
 # pylint: disable=line-too-long
+
 from azext_dataprotection.aaz.latest.dataprotection.backup_vault import Update as _Update
 from ..helpers import clean_nulls_from_session_http_response
 
