@@ -476,10 +476,13 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
         with open(values_schema, "r", encoding="utf-8") as f:
             data = json.load(f)
-            schema_data = data["properties"]
+            schema_data = data
 
         try:
-            final_schema = self.find_deploy_params(values_data, schema_data, {})
+            # self.find_deploy_params(values_data)
+            deploy_params_dict = self.traverse_dict(values_data, DEPLOYMENT_PARAMETER_MAPPING_REGEX)
+            new_schema = self.search_schema(deploy_params_dict, schema_data)
+            print("here", new_schema)
         except KeyError as e:
             raise InvalidTemplateError(
                 f"ERROR: Your schema and values for the helm package '{helm_package.name}' do not match. \
@@ -487,83 +490,122 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             ) from e
 
         logger.debug("Generated chart mapping schema for %s", helm_package.name)
-        return final_schema
+        return new_schema
 
-    def find_deploy_params(
-        self, nested_dict, schema_nested_dict, final_schema
-    ) -> Dict[Any, Any]:
+    def traverse_dict(self, d, target):
+        stack = [(d, [])]
+        result = {}
+        while stack:
+            (node, path) = stack.pop()
+            for k, v in node.items():
+                if isinstance(v, dict):
+                    stack.append((v, path + [k]))
+                elif isinstance(v, str) and re.search(target, v):
+                    match = re.search(target, v)
+                    result[match.group(1)] = path + [k]
+            if isinstance(node, list):
+                for i in node:
+                    if isinstance(i, dict):
+                        stack.append((i, path))
+        print(result)
+        return result
+
+    def search_schema(self, result, full_schema):
         """
-        Create a schema of types of only those values in the values.mappings.yaml file which have a deployParameters mapping.
+        Search through provided schema for the types of the deployment parameters. 
+        This assumes that the type of the key will be the type of the deployment parameter.
+        e.g. if foo: {deployParameter.bar} and foo is type string, then bar is type string.
         
-        Finds the relevant part of the full schema of the values file and finds the 
-        type of the parameter name, then adds that to the final schema, with no nesting.
-        
-        Returns a schema of form:
-        {
-            "$schema": "https://json-schema.org/draft-07/schema#",
-            "title": "DeployParametersSchema",
-            "type": "object",
-            "properties": {
-                "<parameter1>": {
-                    "type": "<type>"
-                },
-                "<parameter2>": {
-                    "type": "<type>"
-                },
-        
-        nested_dict: the dictionary of the values mappings yaml which contains 
-                     deployParameters mapping placeholders
-        schema_nested_dict: the properties section of the full schema (or sub-object in 
-                            schema)
-        final_schema: Blank dictionary if this is the top level starting point, 
-                      otherwise the final_schema as far as we have got.
+        param result: The result of the traverse_dict function.
+        param full_schema: The schema to search through.
         """
-        original_schema_nested_dict = schema_nested_dict
-        # if given a blank mapping file, return empty schema
-        if nested_dict is None:
-            return {}
-        for k, v in nested_dict.items():
-            # if value is a string and contains deployParameters.
-            if isinstance(v, str) and re.search(DEPLOYMENT_PARAMETER_MAPPING_REGEX, v):
-                logger.debug(
-                    "Found string deploy parameter for key %s, value %s. Find schema type",
-                    k,
-                    v,
-                )
-                # only add the parameter name (e.g. from {deployParameter.zone} only
-                # param = zone)
-                param = v.split(".", 1)[1]
-                param = param.split("}", 1)[0]
-
-                # add the schema for k (from the full schema) to the (new) schema
-                if "properties" in schema_nested_dict.keys():
-                    # Occurs if top level item in schema properties is an object with
-                    # properties itself
-                    final_schema.update(
-                        {param: {"type": schema_nested_dict["properties"][k]["type"]}}
-                    )
+        # result = {'oam_paas_1': ['global', 'grafana', 'url']}
+        # node = schema
+        new_schema = {}
+        for deploy_param in result:
+            node = full_schema
+            for path_list in result[deploy_param]:
+                if "properties" in node.keys():
+                    node = node["properties"][path_list]
                 else:
-                    # Occurs if top level schema item in schema properties are objects
-                    # with no "properties" - but can have "type".
-                    final_schema.update(
-                        {param: {"type": schema_nested_dict[k]["type"]}}
-                    )
-            # else if value is a (non-empty) dictionary (i.e another layer of nesting)
-            elif hasattr(v, "items") and v.items():
-                logger.debug("Found dict value for key %s. Find schema type", k)
-                # handling schema having properties which doesn't map directly to the
-                # values file nesting
-                if "properties" in schema_nested_dict.keys():
-                    schema_nested_dict = schema_nested_dict["properties"][k]
-                else:
-                    schema_nested_dict = schema_nested_dict[k]
-                # recursively call function with values (i.e the nested dictionary)
-                self.find_deploy_params(v, schema_nested_dict, final_schema)
-                # reset the schema dict to its original value (once finished with that
-                # level of recursion)
-                schema_nested_dict = original_schema_nested_dict
+                    print("No schema found for deployment parameter: ", deploy_param, " - assuming it is of type string")
+                    new_schema.update({deploy_param: {"type": "string"}})
+            if deploy_param not in new_schema:
+                new_schema.update({deploy_param: {"type": node.get('type', None)}})
+        return new_schema
 
-        return final_schema
+    # def find_deploy_params(
+    #     self, nested_dict, schema_nested_dict, final_schema
+    # ) -> Dict[Any, Any]:
+    #     """
+    #     Create a schema of types of only those values in the values.mappings.yaml file which have a deployParameters mapping.
+    #     Finds the relevant part of the full schema of the values file and finds the 
+    #     type of the parameter name, then adds that to the final schema, with no nesting.
+    #     Returns a schema of form:
+    #     {
+    #         "$schema": "https://json-schema.org/draft-07/schema#",
+    #         "title": "DeployParametersSchema",
+    #         "type": "object",
+    #         "properties": {
+    #             "<parameter1>": {
+    #                 "type": "<type>"
+    #             },
+    #             "<parameter2>": {
+    #                 "type": "<type>"
+    #             },
+    #     nested_dict: the dictionary of the values mappings yaml which contains 
+    #                  deployParameters mapping placeholders
+    #     schema_nested_dict: the properties section of the full schema (or sub-object in 
+    #                         schema)
+    #     final_schema: Blank dictionary if this is the top level starting point, 
+    #                   otherwise the final_schema as far as we have got.
+    #     """
+    #     original_schema_nested_dict = schema_nested_dict
+    #     # if given a blank mapping file, return empty schema
+    #     if nested_dict is None:
+    #         return {}
+    #     for k, v in nested_dict.items():
+    #         # if value is a string and contains deployParameters.
+    #         if isinstance(v, str) and re.search(DEPLOYMENT_PARAMETER_MAPPING_REGEX, v):
+    #             logger.debug(
+    #                 "Found string deploy parameter for key %s, value %s. Find schema type",
+    #                 k,
+    #                 v,
+    #             )
+    #             # only add the parameter name (e.g. from {deployParameter.zone} only
+    #             # param = zone)
+    #             param = v.split(".", 1)[1]
+    #             param = param.split("}", 1)[0]
+
+    #             # add the schema for k (from the full schema) to the (new) schema
+    #             if "properties" in schema_nested_dict.keys():
+    #                 # Occurs if top level item in schema properties is an object with
+    #                 # properties itself
+    #                 final_schema.update(
+    #                     {param: {"type": schema_nested_dict["properties"][k]["type"]}}
+    #                 )
+    #             else:
+    #                 # Occurs if top level schema item in schema properties are objects
+    #                 # with no "properties" - but can have "type".
+    #                 final_schema.update(
+    #                     {param: {"type": schema_nested_dict[k]["type"]}}
+    #                 )
+    #         # else if value is a (non-empty) dictionary (i.e another layer of nesting)
+    #         elif hasattr(v, "items") and v.items():
+    #             logger.debug("Found dict value for key %s. Find schema type", k)
+    #             # handling schema having properties which doesn't map directly to the
+    #             # values file nesting
+    #             if "properties" in schema_nested_dict.keys():
+    #                 schema_nested_dict = schema_nested_dict["properties"][k]
+    #             else:
+    #                 schema_nested_dict = schema_nested_dict[k]
+    #             # recursively call function with values (i.e the nested dictionary)
+    #             self.find_deploy_params(v, schema_nested_dict, final_schema)
+    #             # reset the schema dict to its original value (once finished with that
+    #             # level of recursion)
+    #             schema_nested_dict = original_schema_nested_dict
+
+    #     return final_schema
 
     def _replace_values_with_deploy_params(
         self,
