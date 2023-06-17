@@ -7,15 +7,12 @@
 from argcomplete.completers import FilesCompleter
 from azure.cli.core import AzCommandsLoader
 
-from .util.constants import VNF, CNF, NSD
+from .util.constants import CNF, NSD, VNF
 
 
 def load_arguments(self: AzCommandsLoader, _):
-    from azure.cli.core.commands.parameters import (
-        file_type,
-        get_enum_type,
-        get_three_state_flag,
-    )
+    from azure.cli.core.commands.parameters import (file_type, get_enum_type,
+                                                    get_three_state_flag)
 
     definition_type = get_enum_type([VNF, CNF])
 

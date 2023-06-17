@@ -7,28 +7,24 @@ import json
 import os
 import shutil
 import subprocess  # noqa
-from typing import Any, Dict, Optional
 import tempfile
-
-from knack.log import get_logger
-from azext_aosm.deploy.artifact_manifest import ArtifactManifestOperator
-from azext_aosm.util.management_clients import ApiClients
-from azure.mgmt.resource.resources.models import DeploymentExtended
-
-from azext_aosm.deploy.pre_deploy import PreDeployerViaSDK
-from azext_aosm._configuration import NFConfiguration, NSConfiguration, VNFConfiguration
-from azext_aosm.util.constants import (
-    NSD_DEFINITION_BICEP_FILE,
-    NSD_ARTIFACT_MANIFEST_BICEP_FILE,
-    NF_DEFINITION_BICEP_FILE,
-    NF_DEFINITION_JSON_FILE,
-    VNF_DEFINITION_BICEP_TEMPLATE,
-    VNF_MANIFEST_BICEP_TEMPLATE,
-    NSD,
-    VNF,
-)
 import time
+from typing import Any, Dict, Optional
 
+from azure.mgmt.resource.resources.models import DeploymentExtended
+from knack.log import get_logger
+
+from azext_aosm._configuration import (NFConfiguration, NSConfiguration,
+                                       VNFConfiguration)
+from azext_aosm.deploy.artifact_manifest import ArtifactManifestOperator
+from azext_aosm.deploy.pre_deploy import PreDeployerViaSDK
+from azext_aosm.util.constants import (NF_DEFINITION_BICEP_FILE,
+                                       NF_DEFINITION_JSON_FILE, NSD,
+                                       NSD_ARTIFACT_MANIFEST_BICEP_FILE,
+                                       NSD_DEFINITION_BICEP_FILE, VNF,
+                                       VNF_DEFINITION_BICEP_TEMPLATE,
+                                       VNF_MANIFEST_BICEP_TEMPLATE)
+from azext_aosm.util.management_clients import ApiClients
 
 logger = get_logger(__name__)
 

@@ -2,22 +2,20 @@
 # Highly Confidential Material
 """A module to handle interacting with artifact manifests."""
 
-from knack.log import get_logger
 from functools import cached_property, lru_cache
 from typing import Any, List, Union
-from azure.cli.core.azclierror import AzCLIError
-from azext_aosm.deploy.artifact import Artifact
-from azure.storage.blob import BlobClient
-from oras.client import OrasClient
-from azext_aosm._configuration import NFConfiguration, NSConfiguration
-from azext_aosm.vendored_sdks.models import (
-    ArtifactManifest,
-    ManifestArtifactFormat,
-    CredentialType,
-    ArtifactType,
-)
 
+from azure.cli.core.azclierror import AzCLIError
+from azure.storage.blob import BlobClient
+from knack.log import get_logger
+from oras.client import OrasClient
+
+from azext_aosm._configuration import NFConfiguration, NSConfiguration
+from azext_aosm.deploy.artifact import Artifact
 from azext_aosm.util.management_clients import ApiClients
+from azext_aosm.vendored_sdks.models import (ArtifactManifest, ArtifactType,
+                                             CredentialType,
+                                             ManifestArtifactFormat)
 
 logger = get_logger(__name__)
 

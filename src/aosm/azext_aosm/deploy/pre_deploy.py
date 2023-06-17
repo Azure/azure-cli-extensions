@@ -4,22 +4,18 @@
 # --------------------------------------------------------------------------------------
 """Contains class for deploying resources required by NFDs/NSDs via the SDK."""
 
+from azure.cli.core.azclierror import AzCLIError
+from azure.core import exceptions as azure_exceptions
+from azure.mgmt.resource.resources.models import ResourceGroup
 from knack.log import get_logger
 
-from azure.core import exceptions as azure_exceptions
-from azure.cli.core.azclierror import AzCLIError
-from azure.mgmt.resource.resources.models import ResourceGroup
-
+from azext_aosm._configuration import (NFConfiguration, NSConfiguration,
+                                       VNFConfiguration)
 from azext_aosm.util.management_clients import ApiClients
-from azext_aosm.vendored_sdks.models import (
-    ArtifactStore,
-    ArtifactStoreType,
-    NetworkFunctionDefinitionGroup,
-    NetworkServiceDesignGroup,
-    Publisher,
-    ProvisioningState,
-)
-from azext_aosm._configuration import NFConfiguration, VNFConfiguration, NSConfiguration
+from azext_aosm.vendored_sdks.models import (ArtifactStore, ArtifactStoreType,
+                                             NetworkFunctionDefinitionGroup,
+                                             NetworkServiceDesignGroup,
+                                             ProvisioningState, Publisher)
 
 logger = get_logger(__name__)
 

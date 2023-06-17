@@ -5,10 +5,10 @@
 """Contains class for deploying generated definitions using the Python SDK."""
 from knack.log import get_logger
 
+from azext_aosm._configuration import (NFConfiguration, NSConfiguration,
+                                       VNFConfiguration)
 from azext_aosm.util.management_clients import ApiClients
-from azext_aosm._configuration import NFConfiguration, VNFConfiguration, NSConfiguration
 from azext_aosm.util.utils import input_ack
-
 
 logger = get_logger(__name__)
 

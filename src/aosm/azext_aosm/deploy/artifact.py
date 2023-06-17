@@ -2,13 +2,14 @@
 # Highly Confidential Material
 """A module to handle interacting with artifacts."""
 
-from knack.log import get_logger
 from dataclasses import dataclass
 from typing import Union
 
 from azure.storage.blob import BlobClient
-from azext_aosm._configuration import ArtifactConfig
+from knack.log import get_logger
 from oras.client import OrasClient
+
+from azext_aosm._configuration import ArtifactConfig
 
 logger = get_logger(__name__)
 

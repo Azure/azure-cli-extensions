@@ -8,29 +8,24 @@ import os
 import shutil
 from dataclasses import asdict
 from typing import Optional
-from knack.log import get_logger
-from azure.cli.core.azclierror import (
-    CLIInternalError,
-    InvalidArgumentValueError,
-    UnclassifiedUserFault,
-)
 
-from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
-from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
-from azext_aosm.generate_nsd.nsd_generator import NSDGenerator
-from azext_aosm.generate_nfd.vnf_nfd_generator import VnfNfdGenerator
+from azure.cli.core.azclierror import (CLIInternalError,
+                                       InvalidArgumentValueError,
+                                       UnclassifiedUserFault)
+from knack.log import get_logger
+
+from azext_aosm._client_factory import cf_resources
+from azext_aosm._configuration import (NFConfiguration, NSConfiguration,
+                                       get_configuration)
 from azext_aosm.delete.delete import ResourceDeleter
 from azext_aosm.deploy.deploy_with_arm import DeployerViaArm
-from azext_aosm.util.constants import VNF, CNF, NSD
+from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
+from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
+from azext_aosm.generate_nfd.vnf_nfd_generator import VnfNfdGenerator
+from azext_aosm.generate_nsd.nsd_generator import NSDGenerator
+from azext_aosm.util.constants import CNF, NSD, VNF
 from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.vendored_sdks import HybridNetworkManagementClient
-from azext_aosm._client_factory import cf_resources
-from azext_aosm._configuration import (
-    get_configuration,
-    NFConfiguration,
-    NSConfiguration,
-)
-
 
 logger = get_logger(__name__)
 
@@ -345,7 +340,7 @@ def publish_design(
 def _generate_nsd(config: NSDGenerator, api_clients):
     """Generate a Network Service Design for the given type and config."""
     if config:
-        nsd_generator = NSDGenerator(config)
+        nsd_generator = NSDGenerator(config, api_clients)
     else:
         from azure.cli.core.azclierror import CLIInternalError
 
@@ -361,15 +356,3 @@ def _generate_nsd(config: NSDGenerator, api_clients):
         shutil.rmtree(config.build_output_folder_name)
 
     nsd_generator.generate_nsd()
-
-
-def _get_nfdv_deployment_parameters(config: NSConfiguration, api_clients):
-    """Get the properties of the existing NFDV."""
-    NFDV_object = api_clients.aosm_client.network_function_definition_versions.get(
-        resource_group_name=config.publisher_resource_group_name,
-        publisher_name=config.publisher_name,
-        network_function_definition_group_name=config.network_function_definition_group_name,
-        network_function_definition_version_name=config.network_function_definition_version_name,
-    )
-
-    return NFDV_object.deploy_parameters

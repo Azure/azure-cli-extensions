@@ -3,34 +3,32 @@
 # License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------
 """Contains a class for generating VNF NFDs and associated resources."""
-from knack.log import get_logger
 import json
 import logging
 import os
 import shutil
+import tempfile
 from functools import cached_property
 from pathlib import Path
 from typing import Any, Dict, Optional
-import tempfile
-
-from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
-
-from azext_aosm._configuration import NSConfiguration
-from azext_aosm.util.constants import (
-    NSD_DEFINITION_BICEP_SOURCE_TEMPLATE,
-    NSD_DEFINITION_BICEP_FILE,
-    NF_TEMPLATE_BICEP_FILE,
-    NF_DEFINITION_BICEP_FILE,
-    NSD_ARTIFACT_MANIFEST_BICEP_FILE,
-    NSD_CONFIG_MAPPING_FILE,
-    SCHEMAS,
-    CONFIG_MAPPINGS,
-    NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE,
-    TEMPLATES,
-)
 
 from jinja2 import Template
+from knack.log import get_logger
 
+from azext_aosm._configuration import (NetworkFunctionDefinitionConfiguration,
+                                       NSConfiguration, RETType)
+from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
+from azext_aosm.util.constants import (CONFIG_MAPPINGS,
+                                       NF_DEFINITION_BICEP_FILE,
+                                       NF_TEMPLATE_BICEP_FILE,
+                                       NSD_ARTIFACT_MANIFEST_BICEP_FILE,
+                                       NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE,
+                                       NSD_CONFIG_MAPPING_FILE,
+                                       NSD_DEFINITION_BICEP_FILE,
+                                       NSD_DEFINITION_BICEP_SOURCE_TEMPLATE,
+                                       SCHEMAS, TEMPLATES)
+from azext_aosm.util.management_clients import ApiClients
+from azext_aosm.vendored_sdks.models import NetworkFunctionDefinitionVersion
 
 logger = get_logger(__name__)
 
@@ -48,9 +46,10 @@ class NSDGenerator:
       be deployed by the NSDV
     """
 
-    def __init__(self, config: NSConfiguration):
+    def __init__(self, config: NSConfiguration, api_clients: ApiClients):
         self.config = config
-
+        self.ret_configurations = config.resource_element_template_configurations
+        self.aosm_clients = api_clients.aosm_client
         self.nsd_bicep_template_name = NSD_DEFINITION_BICEP_SOURCE_TEMPLATE
         self.nf_bicep_template_name = NF_TEMPLATE_BICEP_FILE
         self.nsd_bicep_output_name = NSD_DEFINITION_BICEP_FILE
@@ -61,16 +60,21 @@ class NSDGenerator:
         """Generate a NSD templates which includes an Artifact Manifest, NFDV and NF templates."""
         logger.info(f"Generate NSD bicep templates")
 
-        # self.deploy_parameters = deploy_parameters
-
         # Create temporary folder.
         with tempfile.TemporaryDirectory() as tmpdirname:
             self.tmp_folder_name = tmpdirname
 
-            self.create_parameter_files()
-            self.write_nsd_manifest()
-            self.write_nf_bicep()
-            self.write_nsd_bicep()
+            for ret_config in self.ret_configurations:
+                if (
+                    ret_config.type == RETType.NETWORK_FUNCTION_DEFINITION
+                    and type(ret_config) == NetworkFunctionDefinitionConfiguration
+                ):
+                    nfdv: NetworkFunctionDefinitionVersion = self.aosm_clients.network_function_definition_versions.get(
+                        resource_group_name=ret_config.publisher_resource_group,
+                        publisher_name=ret_config.publisher_name,
+                        network_function_definition_group_name=ret_config.network_function_definition_name,
+                        network_function_definition_version_name=ret_config.network_function_definition_version,
+                    )
 
             self.copy_to_output_folder()
             print(f"Generated NSD bicep templates created in {self.build_folder_name}")
@@ -178,7 +182,9 @@ class NSDGenerator:
         logger.debug("Create NSD manifest")
 
         self.generate_bicep(
-            NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE, NSD_ARTIFACT_MANIFEST_BICEP_FILE, {}
+            NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE,
+            NSD_ARTIFACT_MANIFEST_BICEP_FILE,
+            {},
         )
 
     def generate_bicep(self, template_name, output_file_name, params) -> None:

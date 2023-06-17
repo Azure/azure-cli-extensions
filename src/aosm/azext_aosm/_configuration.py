@@ -1,21 +1,16 @@
-from dataclasses import dataclass, field
-from enum import Enum
 import abc
 import os
-from typing import Dict, Optional, Any, List
+from dataclasses import dataclass, field
+from enum import Enum
 from pathlib import Path
-from azure.cli.core.azclierror import (
-    InvalidArgumentValueError,
-    ValidationError,
-)
-from azext_aosm.util.constants import (
-    DEFINITION_OUTPUT_BICEP_PREFIX,
-    VNF,
-    CNF,
-    NSD,
-    NSD_DEFINITION_OUTPUT_BICEP_PREFIX,
-    NF_DEFINITION_JSON_FILE,
-)
+from typing import Any, Dict, List, Optional
+
+from azure.cli.core.azclierror import (InvalidArgumentValueError,
+                                       ValidationError)
+
+from azext_aosm.util.constants import (CNF, DEFINITION_OUTPUT_BICEP_PREFIX,
+                                       NF_DEFINITION_JSON_FILE, NSD,
+                                       NSD_DEFINITION_OUTPUT_BICEP_PREFIX, VNF)
 
 DESCRIPTION_MAP: Dict[str, str] = {
     "publisher_resource_group_name": (
@@ -32,8 +27,7 @@ DESCRIPTION_MAP: Dict[str, str] = {
         "NFDVs"
     ),
     "publisher_resource_group_name_nsd": (
-        "Resource group for the Publisher "
-        "resource."
+        "Resource group for the Publisher " "resource."
     ),
     "nf_name": "Name of NF definition",
     "version": "Version of the NF definition",
@@ -69,8 +63,7 @@ DESCRIPTION_MAP: Dict[str, str] = {
         "Version of the NSD to be created. This should be in the format A.B.C"
     ),
     "network_function_definition_publisher": (
-        "Name of the Publisher resource for an existing "
-        "Network Function Definition."
+        "Name of the Publisher resource for an existing " "Network Function Definition."
     ),
     "network_function_definition_name": (
         "Name of an existing Network Function Definition."
@@ -226,13 +219,14 @@ class CNFConfiguration(NFConfiguration):
         return f"{DEFINITION_OUTPUT_BICEP_PREFIX}{self.nf_name}"
 
 
-class RETType(Enum):
-    NETWORK_FUNCTION_DEFINITION = "NetworkFunctionDefinition",
-    NETWORK_SERVICE_DEFINITION = "NetworkServiceDefinition",
-    ARM_RESOURCE_DEFINTION = "ARMResourceDefinition",
-    CONFIGURATION_DEFINITION = "ConfigurationDefinition",
+class RETType(str, Enum):
+    NETWORK_FUNCTION_DEFINITION = ("NetworkFunctionDefinition",)
+    NETWORK_SERVICE_DEFINITION = ("NetworkServiceDefinition",)
+    ARM_RESOURCE_DEFINTION = ("ARMResourceDefinition",)
+    CONFIGURATION_DEFINITION = ("ConfigurationDefinition",)
 
 
+@dataclass
 class RETConfiguration(abc.ABC):
     type: RETType
 
@@ -247,10 +241,9 @@ class RETConfiguration(abc.ABC):
 
 @dataclass
 class NetworkFunctionDefinitionConfiguration(RETConfiguration):
-    type = RETType.NETWORK_FUNCTION_DEFINITION
-    publisher_name: str = DESCRIPTION_MAP[
-        "network_function_definition_publisher"
-    ]
+    type: RETType = RETType.NETWORK_FUNCTION_DEFINITION
+    publisher_name: str = DESCRIPTION_MAP["network_function_definition_publisher"]
+    publisher_resource_group: str = "Publisher resource group."
     network_function_definition_name: str = DESCRIPTION_MAP[
         "network_function_definition_name"
     ]
@@ -277,17 +270,13 @@ class NetworkFunctionDefinitionConfiguration(RETConfiguration):
             self.network_function_definition_name
             == DESCRIPTION_MAP["network_function_definition_name"]
         ):
-            raise ValidationError(
-                "Network function definition name must be set"
-            )
+            raise ValidationError("Network function definition name must be set")
 
         if (
-            self.network_function_definition_version 
+            self.network_function_definition_version
             == DESCRIPTION_MAP["network_function_definition_version"]
         ):
-            raise ValidationError(
-                "Network function definition version must be set"
-            )
+            raise ValidationError("Network function definition version must be set")
 
         if (
             self.offering_location
@@ -306,18 +295,17 @@ class NSConfiguration:
         "publisher_resource_group_name_nsd"
     ]
     acr_artifact_store_name: str = DESCRIPTION_MAP["acr_artifact_store_name"]
-    resource_element_template_configurations: List[RETConfiguration] = (
-        field(default_factory=lambda: [
+    resource_element_template_configurations: List[RETConfiguration] = field(
+        default_factory=lambda: [
             NetworkFunctionDefinitionConfiguration(),
-        ])
+        ]
     )
-    print(NetworkFunctionDefinitionConfiguration().offering_location)
     nsd_name: str = DESCRIPTION_MAP["nsd_name"]
     nsd_version: str = DESCRIPTION_MAP["nsd_version"]
     nsd_description: str = DESCRIPTION_MAP["nsd_description"]
 
     def validate(self):
-        ## validate that all of the configuration parameters are set
+        # validate that all of the configuration parameters are set
 
         if self.location == DESCRIPTION_MAP["location"] or "":
             raise ValueError("Location must be set")
@@ -330,14 +318,13 @@ class NSConfiguration:
         ):
             raise ValueError("Publisher resource group name must be set")
         if (
-            self.acr_artifact_store_name 
-            == DESCRIPTION_MAP["acr_artifact_store_name"] or ""
+            self.acr_artifact_store_name == DESCRIPTION_MAP["acr_artifact_store_name"]
+            or ""
         ):
             raise ValueError("ACR Artifact Store name must be set")
         if self.resource_element_template_configurations == [] or None:
             raise ValueError(
-                ("At least one resource element template "
-                 "configuration must be set.")
+                ("At least one resource element template " "configuration must be set.")
             )
         else:
             for configuration in self.resource_element_template_configurations:
@@ -351,9 +338,7 @@ class NSConfiguration:
     def build_output_folder_name(self) -> str:
         """Return the local folder for generating the bicep template to."""
         current_working_directory = os.getcwd()
-        return (
-            f"{current_working_directory}/{NSD_DEFINITION_OUTPUT_BICEP_PREFIX}"
-        )
+        return f"{current_working_directory}/{NSD_DEFINITION_OUTPUT_BICEP_PREFIX}"
 
     @property
     def resource_element_name(self) -> str:

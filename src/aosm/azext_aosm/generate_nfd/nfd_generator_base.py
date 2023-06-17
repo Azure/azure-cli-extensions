@@ -5,7 +5,6 @@
 """Contains a base class for generating NFDs."""
 from knack.log import get_logger
 
-
 logger = get_logger(__name__)
 
 
@@ -24,4 +23,3 @@ class NFDGenerator:
     def generate_nfd(self) -> None:
         """No-op on base class."""
         logger.error("Generate NFD called on base class. No-op")
-

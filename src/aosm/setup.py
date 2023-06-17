@@ -7,7 +7,8 @@
 
 
 from codecs import open
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 try:
     from azure_bdist_wheel import cmdclass

@@ -4,29 +4,23 @@
 # --------------------------------------------------------------------------------------
 """Contains a class for generating VNF NFDs and associated resources."""
 
-import logging
 import json
+import logging
 import os
 import shutil
 import tempfile
-
 from functools import cached_property
 from pathlib import Path
 from typing import Any, Dict, Optional
+
 from knack.log import get_logger
 
-from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
-
 from azext_aosm._configuration import VNFConfiguration
-from azext_aosm.util.constants import (
-    VNF_DEFINITION_BICEP_TEMPLATE,
-    VNF_MANIFEST_BICEP_TEMPLATE,
-    CONFIG_MAPPINGS,
-    SCHEMAS,
-    SCHEMA_PREFIX,
-    DEPLOYMENT_PARAMETERS,
-)
-
+from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
+from azext_aosm.util.constants import (CONFIG_MAPPINGS, DEPLOYMENT_PARAMETERS,
+                                       SCHEMA_PREFIX, SCHEMAS,
+                                       VNF_DEFINITION_BICEP_TEMPLATE,
+                                       VNF_MANIFEST_BICEP_TEMPLATE)
 
 logger = get_logger(__name__)
 
