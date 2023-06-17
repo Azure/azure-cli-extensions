@@ -7,7 +7,6 @@
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, KeyVaultPreparer, JMESPathCheck
 
-
 class LoadScenario(ScenarioTest):
     location = 'westus2'
     identity_name1 = 'clitestid1'

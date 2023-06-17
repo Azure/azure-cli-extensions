@@ -21,3 +21,4 @@ def load_command_table(self, _):
         g.custom_command('register-integration-runtime', 'datamigration_register_ir')
         g.custom_command('login-migration', 'datamigration_login_migration')
         g.custom_command('tde-migration', 'datamigration_tde_migration')
+        g.custom_command('sql-server-schema', 'datamigration_sql_server_schema')
