@@ -31,9 +31,7 @@ class Create(_Create, CustomSshOptions):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         # Build VM Authentication args
-        args_schema = CustomSshOptions.build_ssh_arg_schema(
-            args_schema, "Authentication"
-        )
+        args_schema = cls.build_ssh_arg_schema(args_schema, "Authentication")
 
         # deregister the VM cli arguments which users should not interact with
         args_schema.ssh_public_keys._registered = False

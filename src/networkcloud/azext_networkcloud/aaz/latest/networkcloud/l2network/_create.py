@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create a new layer 2 (L2) network or update the properties of the existing network.
 
     :example: Create or update L2 network
-        az networkcloud l2network create --name "l2NetworkName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --hybrid-aks-plugin-type "DPDK" --interface-name "eth0" --l2-isolation-domain-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2IsolationDomainName" --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName"
+        az networkcloud l2network create --name "l2NetworkName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --interface-name "eth0" --l2-isolation-domain-id "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2IsolationDomainName" --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName"
     """
 
     _aaz_info = {
@@ -99,13 +99,6 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.hybrid_aks_plugin_type = AAZStrArg(
-            options=["--hybrid-aks-plugin-type"],
-            arg_group="Properties",
-            help="The network plugin type for Hybrid AKS.",
-            default="SRIOV",
-            enum={"DPDK": "DPDK", "OSDevice": "OSDevice", "SRIOV": "SRIOV"},
-        )
         _args_schema.interface_name = AAZStrArg(
             options=["--interface-name"],
             arg_group="Properties",
@@ -241,7 +234,6 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("hybridAksPluginType", AAZStrType, ".hybrid_aks_plugin_type")
                 properties.set_prop("interfaceName", AAZStrType, ".interface_name")
                 properties.set_prop("l2IsolationDomainId", AAZStrType, ".l2_isolation_domain_id", typ_kwargs={"flags": {"required": True}})
 

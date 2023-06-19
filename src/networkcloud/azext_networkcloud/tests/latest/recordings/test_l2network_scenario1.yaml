@@ -1,8 +1,8 @@
 interactions:
 - request:
-    body: '{"extendedLocation": {"name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc",
-      "type": "CustomLocation"}, "location": "eastus", "properties": {"hybridAksPluginType":
-      "DPDK", "interfaceName": "eth0", "l2IsolationDomainId": "/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L2IsolationDomains/l2isolationdomain1"},
+    body: '{"extendedLocation": {"name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc",
+      "type": "CustomLocation"}, "location": "eastus", "properties": {"interfaceName":
+      "eth0", "l2IsolationDomainId": "/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L2IsolationDomains/l2isolationdomain1"},
       "tags": {"tag1": "tag1"}}'
     headers:
       Accept:
@@ -14,36 +14,36 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '502'
+      - '471'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --name --extended-location --location --hybrid-aks-plugin-type --interface-name
-        --l2-isolation-domain-id --tags --resource-group
+      - --name --extended-location --location --interface-name --l2-isolation-domain-id
+        --tags --resource-group
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001?api-version=2023-05-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","name":"cli-test-l2-000001","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T19:42:51.2960199Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-15T19:42:51.2960199Z"},"properties":{"provisioningState":"Accepted","hybridAksPluginType":"DPDK","interfaceName":"eth0","l2IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L2IsolationDomains/l2isolationdomain1"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","name":"cli-test-l2-000001","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:46:07.3035931Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T20:46:07.3035931Z"},"properties":{"provisioningState":"Accepted","interfaceName":"eth0","l2IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L2IsolationDomains/l2isolationdomain1"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/ab805e45-2d2c-4406-bde5-72f07e31378b*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710?api-version=2023-05-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/a3d410b4-7305-40ed-b1f4-6bbda25fbea6*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189?api-version=2023-05-01-preview
       cache-control:
       - no-cache
       content-length:
-      - '977'
+      - '952'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 May 2023 19:42:51 GMT
+      - Wed, 21 Jun 2023 20:46:08 GMT
       etag:
-      - '"0600223a-0000-0100-0000-64628b3b0000"'
+      - '"0410a1c8-0000-0100-0000-649361900000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - d28c746f-0b7f-4aa7-9461-12af0dbbe1be
+      - 9f127f2d-d8b5-4212-bae5-9abf6f1a02ca
       pragma:
       - no-cache
       strict-transport-security:
@@ -69,15 +69,15 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --extended-location --location --hybrid-aks-plugin-type --interface-name
-        --l2-isolation-domain-id --tags --resource-group
+      - --name --extended-location --location --interface-name --l2-isolation-domain-id
+        --tags --resource-group
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/ab805e45-2d2c-4406-bde5-72f07e31378b*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710?api-version=2023-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/a3d410b4-7305-40ed-b1f4-6bbda25fbea6*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189?api-version=2023-05-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/ab805e45-2d2c-4406-bde5-72f07e31378b*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710","name":"ab805e45-2d2c-4406-bde5-72f07e31378b*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","status":"Accepted","startTime":"2023-05-15T19:42:51.3456709Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/a3d410b4-7305-40ed-b1f4-6bbda25fbea6*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189","name":"a3d410b4-7305-40ed-b1f4-6bbda25fbea6*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","status":"Accepted","startTime":"2023-06-21T20:46:07.5627141Z"}'
     headers:
       cache-control:
       - no-cache
@@ -86,9 +86,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 May 2023 19:42:51 GMT
+      - Wed, 21 Jun 2023 20:46:08 GMT
       etag:
-      - '"b801ea9c-0000-0100-0000-64628b3b0000"'
+      - '"e1020a77-0000-0100-0000-6493618f0000"'
       expires:
       - '-1'
       pragma:
@@ -116,15 +116,15 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --extended-location --location --hybrid-aks-plugin-type --interface-name
-        --l2-isolation-domain-id --tags --resource-group
+      - --name --extended-location --location --interface-name --l2-isolation-domain-id
+        --tags --resource-group
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/ab805e45-2d2c-4406-bde5-72f07e31378b*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710?api-version=2023-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/a3d410b4-7305-40ed-b1f4-6bbda25fbea6*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189?api-version=2023-05-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/ab805e45-2d2c-4406-bde5-72f07e31378b*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710","name":"ab805e45-2d2c-4406-bde5-72f07e31378b*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","status":"Succeeded","startTime":"2023-05-15T19:42:51.3456709Z","endTime":"2023-05-15T19:43:00.3334053Z","error":{},"properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/a3d410b4-7305-40ed-b1f4-6bbda25fbea6*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189","name":"a3d410b4-7305-40ed-b1f4-6bbda25fbea6*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","status":"Succeeded","startTime":"2023-06-21T20:46:07.5627141Z","endTime":"2023-06-21T20:46:14.9836414Z","error":{},"properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -133,9 +133,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 May 2023 19:43:21 GMT
+      - Wed, 21 Jun 2023 20:46:38 GMT
       etag:
-      - '"b801f19c-0000-0100-0000-64628b440000"'
+      - '"e1021177-0000-0100-0000-649361960000"'
       expires:
       - '-1'
       pragma:
@@ -163,27 +163,27 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --name --extended-location --location --hybrid-aks-plugin-type --interface-name
-        --l2-isolation-domain-id --tags --resource-group
+      - --name --extended-location --location --interface-name --l2-isolation-domain-id
+        --tags --resource-group
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001?api-version=2023-05-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","name":"cli-test-l2-000001","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T19:42:51.2960199Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T19:43:01.6066269Z"},"properties":{"provisioningState":"Succeeded","hybridAksPluginType":"DPDK","interfaceName":"eth0","l2IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L2IsolationDomains/l2isolationdomain1","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","name":"cli-test-l2-000001","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:46:07.3035931Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-21T20:46:17.1142379Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","l2IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L2IsolationDomains/l2isolationdomain1","hybridAksPluginType":"SRIOV","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
         resource creation succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1335'
+      - '1331'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 May 2023 19:43:21 GMT
+      - Wed, 21 Jun 2023 20:46:38 GMT
       etag:
-      - '"0600243a-0000-0100-0000-64628b450000"'
+      - '"0410f8c8-0000-0100-0000-649361990000"'
       expires:
       - '-1'
       pragma:
@@ -219,24 +219,24 @@ interactions:
       ParameterSetName:
       - --name --tags --resource-group
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001?api-version=2023-05-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","name":"cli-test-l2-000001","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T19:42:51.2960199Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-15T19:43:23.3578462Z"},"properties":{"provisioningState":"Succeeded","hybridAksPluginType":"DPDK","interfaceName":"eth0","l2IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L2IsolationDomains/l2isolationdomain1","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","name":"cli-test-l2-000001","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:46:07.3035931Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T20:46:40.8763841Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","l2IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L2IsolationDomains/l2isolationdomain1","hybridAksPluginType":"SRIOV","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
         resource creation succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1335'
+      - '1333'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 May 2023 19:43:24 GMT
+      - Wed, 21 Jun 2023 20:46:41 GMT
       etag:
-      - '"0600253a-0000-0100-0000-64628b5b0000"'
+      - '"0410cfcb-0000-0100-0000-649361b10000"'
       expires:
       - '-1'
       pragma:
@@ -252,7 +252,7 @@ interactions:
       x-ms-providerhub-traffic:
       - 'True'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -270,24 +270,24 @@ interactions:
       ParameterSetName:
       - --name --resource-group
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001?api-version=2023-05-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","name":"cli-test-l2-000001","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T19:42:51.2960199Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-15T19:43:23.3578462Z"},"properties":{"provisioningState":"Succeeded","hybridAksPluginType":"DPDK","interfaceName":"eth0","l2IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L2IsolationDomains/l2isolationdomain1","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","name":"cli-test-l2-000001","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:46:07.3035931Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T20:46:40.8763841Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","l2IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L2IsolationDomains/l2isolationdomain1","hybridAksPluginType":"SRIOV","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
         resource creation succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1335'
+      - '1333'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 May 2023 19:43:24 GMT
+      - Wed, 21 Jun 2023 20:46:43 GMT
       etag:
-      - '"0600253a-0000-0100-0000-64628b5b0000"'
+      - '"0410cfcb-0000-0100-0000-649361b10000"'
       expires:
       - '-1'
       pragma:
@@ -317,26 +317,27 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/l2Networks?api-version=2023-05-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/l2Networks/l2network-569","name":"l2network-569","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m16-1-9c522075177c-hostedresources-07abb5ff/providers/microsoft.extendedlocation/customlocations/m16-1-9c522075177c-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"l2Network","ManagedBy":"nc-labs","LabEnvironment":"m16-1","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-05-09T06:05:38.5742447Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-09T06:08:20.0601402Z"},"properties":{"provisioningState":"Succeeded","hybridAksPluginType":"DPDK","l2IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/m16-1-l2domain-569","associatedResourceIds":[],"hybridAksClustersAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/pipelinehaks-xEaZHs8atcaIPQ"],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
-        resource creation succeeded","interfaceName":"l2netw-18581","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/clusters/m16-1-9c522075177c"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/travisneely-sim-rg/providers/Microsoft.NetworkCloud/l2Networks/l2n-trav-1003","name":"l2n-trav-1003","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-5a3087f7/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T14:31:22.4158644Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T18:54:43.3812522Z"},"properties":{"provisioningState":"Succeeded","l2IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/l2IsolationDomains/l2isolationdomain2","interfaceName":"l2n-tr-c67db","hybridAksPluginType":"SRIOV","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/travisneely-sim-rg/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/travisneely-sim-rg/providers/Microsoft.NetworkCloud/virtualMachines/testvm1230501"],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/travisneely-sim-rg/providers/Microsoft.NetworkCloud/virtualMachines/testvm1230501"],"detailedStatus":"Available","detailedStatusMessage":"all
-        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/travisneely-sim-rg/providers/Microsoft.NetworkCloud/l2Networks/l2n-trav-1011","name":"l2n-trav-1011","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-5a3087f7/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T14:34:10.4008341Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-15T19:43:23.3578462Z"},"properties":{"provisioningState":"Succeeded","hybridAksPluginType":"DPDK","interfaceName":"eth0","l2IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L2IsolationDomains/l2isolationdomain1","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
-        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkCloud/l2Networks/rgl2testnetwork","name":"rgl2testnetwork","type":"microsoft.networkcloud/l2networks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-427177bf/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-04-21T14:13:42.5377154Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-04-21T14:13:42.5377154Z"},"properties":{"provisioningState":"Failed","hybridAksPluginType":"DPDK","interfaceName":"l2netw-5","l2IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/rprelight-l2domain-5"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/l2Networks/l2network-569","name":"l2network-569","type":"microsoft.networkcloud/l2networks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"l2Network","ManagedBy":"nc-labs","LabEnvironment":"j18","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-05-02T06:59:28.3535233Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-02T07:00:25.447391Z"},"properties":{"provisioningState":"Succeeded","hybridAksPluginType":"DPDK","interfaceName":"l2netw-51d93","l2IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/j18-l2domain-569","associatedResourceIds":[],"hybridAksClustersAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/pipelinehaks-HjfxOFWK0XXjvw"],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
-        resource creation succeeded","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/l2Networks/l2network-570","name":"l2network-570","type":"microsoft.networkcloud/l2networks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-labs","LabEnvironment":"j18","ResourceType":"l2Network"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-02T17:25:39.9900275Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-02T22:34:43.6270002Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"vlan-570","l2IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/j18-l2domain-570","hybridAksPluginType":"SRIOV","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3","detailedStatusMessage":"all
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/linquan-sim-rg/providers/Microsoft.NetworkCloud/l2Networks/l2network","name":"l2network","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tags":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-25T05:14:09.0754976Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-25T05:14:09.0754976Z"},"properties":{"provisioningState":"Failed","hybridAksPluginType":"DPDK","interfaceName":"eth0","l2IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L2IsolationDomains/l2isolationdomain1"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j25-cluster/providers/Microsoft.NetworkCloud/l2Networks/l2network-569","name":"l2network-569","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j25-77c882e61c36-hostedresources-516cffcc/providers/microsoft.extendedlocation/customlocations/j25-77c882e61c36-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"l2Network","ManagedBy":"nc-labs","LabEnvironment":"j25","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-06-18T20:42:00.1547454Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-18T20:44:09.5349843Z"},"properties":{"provisioningState":"Succeeded","hybridAksPluginType":"DPDK","l2IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j25-cluster/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/j25-l2domain-569","associatedResourceIds":[],"hybridAksClustersAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j25-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/pipelinehaks-EAWovoM6rrznZw"],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","interfaceName":"l2netw-04e99","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j25-cluster/providers/Microsoft.NetworkCloud/clusters/j25-77c882e61c36"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j17-cluster/providers/Microsoft.NetworkCloud/l2Networks/l2network-569","name":"l2network-569","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j17-f96136f77dcb-hostedresources-299d1cbf/providers/microsoft.extendedlocation/customlocations/j17-f96136f77dcb-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"l2Network","ManagedBy":"nc-labs","LabEnvironment":"j17","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-06-19T15:33:19.7191457Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-19T15:35:44.8912906Z"},"properties":{"provisioningState":"Succeeded","hybridAksPluginType":"DPDK","l2IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j17-cluster/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/j17-l2domain-569","associatedResourceIds":[],"hybridAksClustersAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j17-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/pipelinehaks-4xc8AGhz5ZiB4A"],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","interfaceName":"l2netw-3ec8c","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j17-cluster/providers/Microsoft.NetworkCloud/clusters/j17-f96136f77dcb"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/l2Networks/l2network-569","name":"l2network-569","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m16-1-487bb720ddfb-hostedresources-25e56565/providers/microsoft.extendedlocation/customlocations/m16-1-487bb720ddfb-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"l2Network","ManagedBy":"nc-labs","LabEnvironment":"m16-1","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-06-20T09:11:02.677401Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-20T09:13:13.4858971Z"},"properties":{"provisioningState":"Succeeded","hybridAksPluginType":"DPDK","l2IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/m16-1-l2domain-569","associatedResourceIds":[],"hybridAksClustersAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/pipelinehaks-VqRe0INyDdBIlQ"],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","interfaceName":"l2netw-18581","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/clusters/m16-1-487bb720ddfb"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","name":"cli-test-l2-000001","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:46:07.3035931Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T20:46:40.8763841Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","l2IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L2IsolationDomains/l2isolationdomain1","hybridAksPluginType":"SRIOV","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkCloud/l2Networks/rgl2testnetwork","name":"rgl2testnetwork","type":"microsoft.networkcloud/l2networks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-427177bf/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-04-21T14:13:42.5377154Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-04-21T14:13:42.5377154Z"},"properties":{"provisioningState":"Failed","hybridAksPluginType":"DPDK","interfaceName":"l2netw-5","l2IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/rprelight-l2domain-5"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/l2Networks/l2network-569","name":"l2network-569","type":"microsoft.networkcloud/l2networks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"l2Network","ManagedBy":"nc-labs","LabEnvironment":"j18","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-05-02T06:59:28.3535233Z","lastModifiedBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","lastModifiedByType":"Application","lastModifiedAt":"2023-05-22T16:24:47.2099445Z"},"properties":{"provisioningState":"Failed","hybridAksClustersAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/pipelinehaks-HjfxOFWK0XXjvw"],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3","hybridAksPluginType":"DPDK","l2IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/j18-l2domain-569","associatedResourceIds":[]}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/l2Networks/l2network-570","name":"l2network-570","type":"microsoft.networkcloud/l2networks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-labs","LabEnvironment":"j18","ResourceType":"l2Network"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-02T17:25:39.9900275Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-06-16T13:41:41.6332757Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"vlan-570","l2IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/j18-l2domain-570","hybridAksPluginType":"SRIOV","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3","detailedStatusMessage":"all
         resource creation succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '9663'
+      - '11373'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 May 2023 19:43:25 GMT
+      - Wed, 21 Jun 2023 20:46:43 GMT
       expires:
       - '-1'
       pragma:
@@ -348,9 +349,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 454574d7-3613-41b7-a1c4-b8b6cb27162d
-      - 213104df-1bc5-4f82-aa93-2e750ebcddf1
-      - b1fd6998-e482-4580-a3ae-4b246c94d1cc
+      - f299a484-a078-4c06-8692-6ae02e919005
+      - e58a32a8-b8eb-43db-8c68-855cc1962a40
+      - 15c5e395-b208-4220-a000-eec4a88e1b80
     status:
       code: 200
       message: OK
@@ -368,22 +369,22 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks?api-version=2023-05-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","name":"cli-test-l2-000001","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T19:42:51.2960199Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-15T19:43:23.3578462Z"},"properties":{"provisioningState":"Succeeded","hybridAksPluginType":"DPDK","interfaceName":"eth0","l2IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L2IsolationDomains/l2isolationdomain1","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","name":"cli-test-l2-000001","type":"microsoft.networkcloud/l2networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4ae3464d/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-06-21T20:46:07.3035931Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-06-21T20:46:40.8763841Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"eth0","l2IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L2IsolationDomains/l2isolationdomain1","hybridAksPluginType":"SRIOV","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/anpankie-sim/providers/Microsoft.NetworkCloud/clusters/simulator","associatedResourceIds":[],"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
         resource creation succeeded"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1347'
+      - '1345'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 May 2023 19:43:26 GMT
+      - Wed, 21 Jun 2023 20:46:44 GMT
       expires:
       - '-1'
       pragma:
@@ -395,9 +396,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-original-request-ids:
-      - 033a58ec-7a1a-4364-9dea-46ce4e638abc
-      - cbb16d99-0083-4d27-8db9-0e779b22bb8a
-      - d35a3b04-34b8-43e8-9956-fd228c2c9b65
+      - c4e859d7-aa1f-4b3c-97ed-d6ed6868578f
+      - 560f7275-0a7c-47f3-9513-880043d2401e
+      - 6d8f4726-f306-4b6a-8bef-87728a0bc653
     status:
       code: 200
       message: OK
@@ -417,7 +418,7 @@ interactions:
       ParameterSetName:
       - --name --resource-group -y
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001?api-version=2023-05-01-preview
   response:
@@ -425,7 +426,7 @@ interactions:
       string: 'null'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f36bc72c-7238-4509-9c73-acba4be4458c*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710?api-version=2023-05-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/d1bdc11b-fbe8-466a-83a8-198f2999c9ed*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189?api-version=2023-05-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -433,15 +434,15 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 May 2023 19:43:27 GMT
+      - Wed, 21 Jun 2023 20:46:45 GMT
       etag:
-      - '"0600263a-0000-0100-0000-64628b5f0000"'
+      - '"041036d5-0000-0100-0000-649361b60000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f36bc72c-7238-4509-9c73-acba4be4458c*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710?api-version=2023-05-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/d1bdc11b-fbe8-466a-83a8-198f2999c9ed*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189?api-version=2023-05-01-preview
       mise-correlation-id:
-      - 505541e4-2e34-47ba-bf54-23a7bee9478f
+      - e4b7d2b5-cc0c-4030-ba81-f52a9adb37a6
       pragma:
       - no-cache
       strict-transport-security:
@@ -469,12 +470,12 @@ interactions:
       ParameterSetName:
       - --name --resource-group -y
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f36bc72c-7238-4509-9c73-acba4be4458c*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710?api-version=2023-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/d1bdc11b-fbe8-466a-83a8-198f2999c9ed*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189?api-version=2023-05-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f36bc72c-7238-4509-9c73-acba4be4458c*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710","name":"f36bc72c-7238-4509-9c73-acba4be4458c*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","status":"Deleting","startTime":"2023-05-15T19:43:26.9700894Z"}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/d1bdc11b-fbe8-466a-83a8-198f2999c9ed*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189","name":"d1bdc11b-fbe8-466a-83a8-198f2999c9ed*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","status":"Deleting","startTime":"2023-06-21T20:46:45.8656214Z"}'
     headers:
       cache-control:
       - no-cache
@@ -483,9 +484,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 May 2023 19:43:27 GMT
+      - Wed, 21 Jun 2023 20:46:45 GMT
       etag:
-      - '"b8012e9d-0000-0100-0000-64628b5e0000"'
+      - '"e1024c77-0000-0100-0000-649361b50000"'
       expires:
       - '-1'
       pragma:
@@ -511,12 +512,12 @@ interactions:
       ParameterSetName:
       - --name --resource-group -y
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f36bc72c-7238-4509-9c73-acba4be4458c*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710?api-version=2023-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/d1bdc11b-fbe8-466a-83a8-198f2999c9ed*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189?api-version=2023-05-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f36bc72c-7238-4509-9c73-acba4be4458c*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710","name":"f36bc72c-7238-4509-9c73-acba4be4458c*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","status":"Succeeded","startTime":"2023-05-15T19:43:26.9700894Z","endTime":"2023-05-15T19:43:35.1434272Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/d1bdc11b-fbe8-466a-83a8-198f2999c9ed*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189","name":"d1bdc11b-fbe8-466a-83a8-198f2999c9ed*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","status":"Succeeded","startTime":"2023-06-21T20:46:45.8656214Z","endTime":"2023-06-21T20:46:55.6768211Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -525,15 +526,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 May 2023 19:43:56 GMT
+      - Wed, 21 Jun 2023 20:47:15 GMT
       etag:
-      - '"b801409d-0000-0100-0000-64628b670000"'
+      - '"e1027d77-0000-0100-0000-649361bf0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -553,12 +558,12 @@ interactions:
       ParameterSetName:
       - --name --resource-group -y
       User-Agent:
-      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.27.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f36bc72c-7238-4509-9c73-acba4be4458c*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710?api-version=2023-05-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/d1bdc11b-fbe8-466a-83a8-198f2999c9ed*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189?api-version=2023-05-01-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f36bc72c-7238-4509-9c73-acba4be4458c*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710","name":"f36bc72c-7238-4509-9c73-acba4be4458c*B0D0EE27E243D5C711C8FE7ECF2AEB48019B05B189C6A6DDFB839F2AAC4CC710","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","status":"Succeeded","startTime":"2023-05-15T19:43:26.9700894Z","endTime":"2023-05-15T19:43:35.1434272Z","properties":null}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/d1bdc11b-fbe8-466a-83a8-198f2999c9ed*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189","name":"d1bdc11b-fbe8-466a-83a8-198f2999c9ed*65C246F4DA46FA5685D49541F22273BFDC1BCC2B45ADECBAB9319FAC13947189","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l2Networks/cli-test-l2-000001","status":"Succeeded","startTime":"2023-06-21T20:46:45.8656214Z","endTime":"2023-06-21T20:46:55.6768211Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -567,15 +572,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 15 May 2023 19:43:56 GMT
+      - Wed, 21 Jun 2023 20:47:15 GMT
       etag:
-      - '"b801409d-0000-0100-0000-64628b670000"'
+      - '"e1027d77-0000-0100-0000-649361bf0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:

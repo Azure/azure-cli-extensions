@@ -12,6 +12,7 @@ Provides Ssh Key customization
 import os
 
 from azure.cli.core import keys
+from azure.cli.core.aaz._base import has_value
 from azure.cli.core.aaz import AAZBoolArg, AAZListArg, AAZStrArg
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from knack.log import get_logger
@@ -26,7 +27,7 @@ class CustomSshOptions:
     def generate_ssh_keys():
         """generates ssh keys in user .ssh folder"""
 
-        key_name = "id_rsa"
+        key_name = "id_rsa_generated"
         private_key_path = os.path.join(os.path.expanduser("~"), ".ssh", key_name)
         public_key_path = os.path.join(
             os.path.expanduser("~"), ".ssh", f"{key_name}.pub"
@@ -130,15 +131,13 @@ class CustomSshOptions:
         args_schema.ssh_dest_key_path.Element = AAZStrArg()
         return args_schema
 
-    @staticmethod
-    def add_ssh_config(args):
+    @classmethod
+    def add_ssh_config(cls, args):
         ssh_keys = []
-        if bool(args.generate_ssh_keys):
-            ssh_keys += CustomSshOptions.generate_ssh_keys()
-        if list(args.ssh_dest_key_path):
-            ssh_keys += CustomSshOptions.get_ssh_keys_from_path(
-                list(args.ssh_dest_key_path)
-            )
-        if list(args.ssh_key_values):
-            ssh_keys += CustomSshOptions.add_ssh_key_action(list(args.ssh_key_values))
+        if has_value(args.generate_ssh_keys) and bool(args.generate_ssh_keys):
+            ssh_keys += cls.generate_ssh_keys()
+        if has_value(args.ssh_dest_key_path):
+            ssh_keys += cls.get_ssh_keys_from_path(list(args.ssh_dest_key_path))
+        if has_value(args.ssh_key_values):
+            ssh_keys += cls.add_ssh_key_action(list(args.ssh_key_values))
         return ssh_keys

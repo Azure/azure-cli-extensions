@@ -35,8 +35,8 @@ class TestCommonSsh(unittest.TestCase):
 
         # Validate call values match mock home dir
         mock_keys.assert_called_with(
-            "{}/.ssh/id_rsa".format(test_home_dir),
-            "{}/.ssh/id_rsa.pub".format(test_home_dir),
+            "{}/.ssh/id_rsa_generated".format(test_home_dir),
+            "{}/.ssh/id_rsa_generated.pub".format(test_home_dir),
         )
 
         # Validate result matches key returned by azcli lib

@@ -47,7 +47,7 @@ def step_create(test, checks=None):
         checks = []
     test.cmd('az networkcloud trunkednetwork create --name {name} --extended-location '
              ' name={extendedLocation} type="CustomLocation" --location {location} '
-             '--hybrid-aks-plugin-type "{hybridAksPluginType}" --interface-name "{interfaceName}" '
+             '--interface-name "{interfaceName}" '
              '--isolation-domain-ids  {isolationDomainIds} --vlans {vlans} '
              '--tags {tags} --resource-group {rg} --debug', checks=checks)
 
@@ -104,7 +104,6 @@ class TrunkedNetworkScenarioTest(ScenarioTest):
             "type": CONFIG.get('TRUNKED_NETWORK', 'type'),
             'vlans': CONFIG.get('TRUNKED_NETWORK', 'vlans'),
             "interfaceName": CONFIG.get('TRUNKED_NETWORK', 'interface_name'),
-            "hybridAksPluginType": CONFIG.get('TRUNKED_NETWORK', 'hybrid_aks_plugin_type'),
             "isolationDomainIds": CONFIG.get('TRUNKED_NETWORK', 'isolation_domain_ids'),
         })
 

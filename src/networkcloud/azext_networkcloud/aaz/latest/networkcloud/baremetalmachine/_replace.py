@@ -109,6 +109,9 @@ class Replace(AAZCommand):
             fmt=AAZStrArgFormat(
                 min_length=1,
             ),
+            blank=AAZPromptInput(
+                msg="Administrator password of device:",
+            ),
         )
         bmc_credentials.username = AAZStrArg(
             options=["username"],

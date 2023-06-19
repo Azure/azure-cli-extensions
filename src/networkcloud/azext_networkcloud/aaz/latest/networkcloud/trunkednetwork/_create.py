@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create a new trunked network or update the properties of the existing trunked network.
 
     :example: Create or update trunked network
-        az networkcloud trunkednetwork create --resource-group "resourceGroupName" --name "trunkedNetworkName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --hybrid-aks-plugin-type "DPDK" --interface-name "eth0" --isolation-domain-ids "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2IsolationDomainName" "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/l3IsolationDomainName" --vlans 12 14 --tags key1="myvalue1" key2="myvalue2"
+        az networkcloud trunkednetwork create --resource-group "resourceGroupName" --name "trunkedNetworkName" --extended-location name="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ExtendedLocation/customLocations/clusterExtendedLocationName" type="CustomLocation" --location "location" --interface-name "eth0" --isolation-domain-ids "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedNetworkFabric/l2IsolationDomains/l2IsolationDomainName" "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/l3IsolationDomainName" --vlans 12 14 --tags key1="myvalue1" key2="myvalue2"
     """
 
     _aaz_info = {
@@ -61,13 +61,6 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.hybrid_aks_plugin_type = AAZStrArg(
-            options=["--hybrid-aks-plugin-type"],
-            arg_group="Properties",
-            help="The network plugin type for Hybrid AKS.",
-            default="SRIOV",
-            enum={"DPDK": "DPDK", "OSDevice": "OSDevice", "SRIOV": "SRIOV"},
-        )
         _args_schema.interface_name = AAZStrArg(
             options=["--interface-name"],
             arg_group="Properties",
@@ -253,7 +246,6 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("hybridAksPluginType", AAZStrType, ".hybrid_aks_plugin_type")
                 properties.set_prop("interfaceName", AAZStrType, ".interface_name")
                 properties.set_prop("isolationDomainIds", AAZListType, ".isolation_domain_ids", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("vlans", AAZListType, ".vlans", typ_kwargs={"flags": {"required": True}})

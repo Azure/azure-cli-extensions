@@ -9,10 +9,11 @@
 Provides Kubernetescluster customization
 """
 
-
 from azext_networkcloud.aaz.latest.networkcloud.kubernetescluster import (
     Create as _Create,
 )
+
+from azure.cli.core.aaz._base import has_value
 from azure.cli.core.aaz import AAZListArg, AAZStrArg, register_callback
 from knack.log import get_logger
 
@@ -85,9 +86,9 @@ class Create(_Create, CustomSshOptions):
         # initial agent pool configuration
         for x in args.initial_agent_pool_configurations:
             ssh_keys_initial_pool = []
-            if x._data.get("ssh_key_values") is not None:
+            if has_value(x.ssh_key_values) and x.ssh_key_values.to_serialized_data():
                 ssh_keys_initial_pool += CustomSshOptions.add_ssh_key_action(
-                    (x._data["ssh_key_values"].values())
+                    (x.ssh_key_values.to_serialized_data())
                 )
             x.ssh_public_keys = ssh_keys_initial_pool
         return args
