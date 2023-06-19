@@ -1,0 +1,2813 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"analyticsWorkspaceId": "", "fabricControllerId":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli3",
+      "managedResourceGroupConfiguration": {"name": "cli-test-cm-mrg-000002"}}, "tags":
+      {"DisableFabricIntegration": "true"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '364'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","name":"cli-test-cm-000001","type":"microsoft.networkcloud/clustermanagers","location":"eastus","tags":{"DisableFabricIntegration":"true"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-19T18:11:12.2648025Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T18:11:12.2648025Z"},"properties":{"analyticsWorkspaceId":"","fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli3","managedResourceGroupConfiguration":{"location":"eastus","name":"cli-test-cm-mrg-000002"},"provisioningState":"Accepted"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '877'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:11:12 GMT
+      etag:
+      - '"21003d93-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:11:12 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:11:42 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:12:12 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:12:42 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:13:14 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:13:44 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:14:13 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:14:43 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:15:14 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:15:44 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:16:14 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:16:44 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:17:15 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:17:45 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:18:15 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:18:45 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:19:15 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:19:46 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:20:16 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:20:46 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:21:16 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:21:46 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:22:16 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:22:46 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:23:17 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:23:47 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:24:17 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:24:48 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:25:18 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:25:48 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:26:18 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:26:49 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:27:19 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:27:49 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Accepted","startTime":"2023-05-19T18:11:12.3390319Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:28:19 GMT
+      etag:
+      - '"8a0094fc-0000-0100-0000-6467bbc00000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"372bd487-9f26-44b4-8b47-0d677763d6b7*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Succeeded","startTime":"2023-05-19T18:11:12.3390319Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:28:50 GMT
+      etag:
+      - '"04009651-0000-4d00-0000-6467bfc80000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --location --resource-group --fabric-controller-id --tags --managed-resource-group-configuration
+        --analytics-workspace-id
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","name":"cli-test-cm-000001","type":"microsoft.networkcloud/clustermanagers","location":"eastus","tags":{"DisableFabricIntegration":"true","nc:environment":"sandbox"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-19T18:11:12.2648025Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T18:11:12.2648025Z"},"properties":{"analyticsWorkspaceId":"","fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli3","managedResourceGroupConfiguration":{"location":"eastus","name":"cli-test-cm-mrg-000002"},"provisioningState":"Succeeded","availabilityZones":["1","2","3"],"vmSize":"Standard_D4_v2","clusterVersions":[{"supportExpiryDate":"2023-07-31
+        00:00:00 +0000 UTC","targetClusterVersion":"3.1.0"},{"supportExpiryDate":"2023-07-31
+        00:00:00 +0000 UTC","targetClusterVersion":"3.2.0"}],"managerExtendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-test-cm-mrg-000002/providers/microsoft.extendedlocation/customlocations/cli-test-cm-000001-cl","type":"CustomLocation"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1381'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:28:50 GMT
+      etag:
+      - '"210044c4-0000-0100-0000-6467bfc30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"DisableFabricIntegration": "true", "tagUpdate": "NewTag"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '69'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","name":"cli-test-cm-000001","type":"microsoft.networkcloud/clustermanagers","location":"eastus","tags":{"DisableFabricIntegration":"true","tagUpdate":"NewTag"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-19T18:11:12.2648025Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T18:28:51.5647522Z"},"properties":{"analyticsWorkspaceId":"","fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli3","managedResourceGroupConfiguration":{"location":"eastus","name":"cli-test-cm-mrg-000002"},"provisioningState":"Succeeded","availabilityZones":["1","2","3"],"vmSize":"Standard_D4_v2","clusterVersions":[{"supportExpiryDate":"2023-07-31
+        00:00:00 +0000 UTC","targetClusterVersion":"3.1.0"},{"supportExpiryDate":"2023-07-31
+        00:00:00 +0000 UTC","targetClusterVersion":"3.2.0"}],"managerExtendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-test-cm-mrg-000002/providers/microsoft.extendedlocation/customlocations/cli-test-cm-000001-cl","type":"CustomLocation"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1375'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:28:52 GMT
+      etag:
+      - '"2100bbc5-0000-0100-0000-6467bfe30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","name":"cli-test-cm-000001","type":"microsoft.networkcloud/clustermanagers","location":"eastus","tags":{"DisableFabricIntegration":"true","tagUpdate":"NewTag"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-19T18:11:12.2648025Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T18:28:51.5647522Z"},"properties":{"analyticsWorkspaceId":"","fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli3","managedResourceGroupConfiguration":{"location":"eastus","name":"cli-test-cm-mrg-000002"},"provisioningState":"Succeeded","availabilityZones":["1","2","3"],"vmSize":"Standard_D4_v2","clusterVersions":[{"supportExpiryDate":"2023-07-31
+        00:00:00 +0000 UTC","targetClusterVersion":"3.1.0"},{"supportExpiryDate":"2023-07-31
+        00:00:00 +0000 UTC","targetClusterVersion":"3.2.0"}],"managerExtendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-test-cm-mrg-000002/providers/microsoft.extendedlocation/customlocations/cli-test-cm-000001-cl","type":"CustomLocation"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1375'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:28:52 GMT
+      etag:
+      - '"2100bbc5-0000-0100-0000-6467bfe30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","name":"cli-test-cm-000001","type":"microsoft.networkcloud/clustermanagers","location":"eastus","tags":{"DisableFabricIntegration":"true","tagUpdate":"NewTag"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-19T18:11:12.2648025Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-19T18:28:51.5647522Z"},"properties":{"analyticsWorkspaceId":"","fabricControllerId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ssteinbrueck-sim-rg/providers/Microsoft.Network/virtualNetworks/CM_vNet/subnets/azcli3","managedResourceGroupConfiguration":{"location":"eastus","name":"cli-test-cm-mrg-000002"},"provisioningState":"Succeeded","availabilityZones":["1","2","3"],"vmSize":"Standard_D4_v2","clusterVersions":[{"supportExpiryDate":"2023-07-31
+        00:00:00 +0000 UTC","targetClusterVersion":"3.1.0"},{"supportExpiryDate":"2023-07-31
+        00:00:00 +0000 UTC","targetClusterVersion":"3.2.0"}],"managerExtendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli-test-cm-mrg-000002/providers/microsoft.extendedlocation/customlocations/cli-test-cm-000001-cl","type":"CustomLocation"}}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1387'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:28:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 94816504-2e14-41b0-b78a-a251db2ef181
+      - da54713d-824d-4df3-9b13-a0b93a4a6fa9
+      - 55dbd84d-bdf2-4bdb-9995-462e473c8863
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001?api-version=2022-12-12-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:28:54 GMT
+      etag:
+      - '"2100e9c5-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:28:54 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:29:25 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:29:55 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:30:25 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:30:56 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:31:26 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:31:55 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:32:26 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:32:56 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:33:26 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:33:57 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:34:26 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:34:56 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:35:27 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:35:57 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:36:27 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Deleting","startTime":"2023-05-19T18:28:55.0925582Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '568'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:36:57 GMT
+      etag:
+      - '"8c004d9f-0000-0100-0000-6467bfe70000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Succeeded","startTime":"2023-05-19T18:28:55.0925582Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:37:28 GMT
+      etag:
+      - '"04004b54-0000-4d00-0000-6467c1cf0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud clustermanager delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.16 (Linux-5.10.102.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","name":"0fd2db80-87be-4837-a326-b67d3d399976*0CBDF305C8906FCFE85640DBAEDED030B318DD66AC83DFB193388F418BD9C2E5","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000003/providers/Microsoft.NetworkCloud/clusterManagers/cli-test-cm-000001","status":"Succeeded","startTime":"2023-05-19T18:28:55.0925582Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 19 May 2023 18:37:28 GMT
+      etag:
+      - '"04004b54-0000-4d00-0000-6467c1cf0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

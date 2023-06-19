@@ -6,6 +6,11 @@ Release History
 * Add new command -- `az spring application-configuration-service update --generation` to support updating Application Configuration Service to different generation
 * Add new command -- `az spring application-configuration-service git repo add --ca-cert-name` to support binding certificate to Application Configuration Service Gen2
 
+1.13.3
+---
+* Add arguments `--allowed-origin-patterns`, `--addon-configs-json` and `--addon-configs-file` in `az spring gateway update`.
+* Add new command `az spring gateway restart` to restart Spring Cloud Gateway.
+
 1.13.2
 ---
 * Add argument `--build-certificates` in `az spring app deploy`.

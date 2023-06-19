@@ -1070,6 +1070,14 @@ helps['spring gateway update'] = """
           text: az spring gateway update -s MyService -g MyResourceGroup --assign-endpoint true --https-only true
 """
 
+helps['spring gateway restart'] = """
+    type: command
+    short-summary: Restart Spring Cloud Gateway.
+    examples:
+        - name: Restart Spring Cloud Gateway.
+          text: az spring gateway restart -s MyService -g MyResourceGroup
+"""
+
 helps['spring gateway sync-cert'] = """
     type: command
     short-summary: Sync certificate of gateway.

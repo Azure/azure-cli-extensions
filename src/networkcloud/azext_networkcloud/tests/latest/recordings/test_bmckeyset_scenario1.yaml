@@ -1,0 +1,720 @@
+interactions:
+- request:
+    body: '{"extendedLocation": {"name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m15-e4f14334258d-hostedresources-49660092/providers/microsoft.extendedlocation/customlocations/m15-e4f14334258d-cstm-loc",
+      "type": "CustomLocation"}, "location": "eastus", "properties": {"azureGroupId":
+      "testGroup", "expiration": "2023-12-31T23:59:59.008Z", "privilegeLevel": "ReadOnly",
+      "userList": [{"azureUserName": "userABC", "description": "UserDesc", "sshPublicKey":
+      {"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCYnWX/sth0/ikG/d+ahWdO4sTp1stHP1jnEcxt0Vr4YcoKYh6cic2yZr3Mjb4NxcuJKAw4kmJ7bSRl5na8MEJkSFyMberQaqapahv+lx7Pm8ZTZVlVcvq0Q83yrHA/62RNtLqLF03RaTaBMrNXZoC76euPEHK4LNgk9UxhTfE0GDHGHOHGRafh24pTgVhyd7nSTuYyY+OlIfv6J726wGsRFZ8OXtE7xfHEtfzsFJBpf15YOEEtdrIQ0w+xj53nO2FOk+gLhExxlfj4gizQZPXtNI+nM7d25rlZWQW4RngFAvon63/3HNELCEHmAaEPpoAQpgESl19AtTQzUf5hl3RAyL75CM7V95/NcUG0UJ+3t1wI+Kc3WpTkHZmbcgOBYSi6+JPpmqB/oxEkjDUIvyyenLB9UFyTj8keQ2vCYzaTBLjcndDJWFYM+MbKHCSx/XxZXDkFiPQeLgkWixFAWLmufnwULIx/tr/VRdQFSZI6MoUmfUqaQhv7a2eVikiqLEk=
+      fake-public-key"}}]}, "tags": {"tag1": "tag1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster bmckeyset create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1084'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --cluster-name --extended-location --location --azure-group-id --expiration
+        --privilege-level --user-list --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1036-azure-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001","name":"cli-test-bmcks-000001","type":"microsoft.networkcloud/clusters/bmckeysets","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m15-e4f14334258d-hostedresources-49660092/providers/microsoft.extendedlocation/customlocations/m15-e4f14334258d-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-22T19:48:38.4151306Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-22T19:48:38.4151306Z"},"properties":{"provisioningState":"Accepted","azureGroupId":"testGroup","expiration":"2023-12-31T23:59:59.008Z","privilegeLevel":"ReadOnly","userList":[{"azureUserName":"userABC","description":"UserDesc","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQCYnWX/sth0/ikG/d+ahWdO4sTp1stHP1jnEcxt0Vr4YcoKYh6cic2yZr3Mjb4NxcuJKAw4kmJ7bSRl5na8MEJkSFyMberQaqapahv+lx7Pm8ZTZVlVcvq0Q83yrHA/62RNtLqLF03RaTaBMrNXZoC76euPEHK4LNgk9UxhTfE0GDHGHOHGRafh24pTgVhyd7nSTuYyY+OlIfv6J726wGsRFZ8OXtE7xfHEtfzsFJBpf15YOEEtdrIQ0w+xj53nO2FOk+gLhExxlfj4gizQZPXtNI+nM7d25rlZWQW4RngFAvon63/3HNELCEHmAaEPpoAQpgESl19AtTQzUf5hl3RAyL75CM7V95/NcUG0UJ+3t1wI+Kc3WpTkHZmbcgOBYSi6+JPpmqB/oxEkjDUIvyyenLB9UFyTj8keQ2vCYzaTBLjcndDJWFYM+MbKHCSx/XxZXDkFiPQeLgkWixFAWLmufnwULIx/tr/VRdQFSZI6MoUmfUqaQhv7a2eVikiqLEk=
+        fake-public-key"}}]}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/add4f457-8177-4cee-99e1-7ce85d524a48*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB?api-version=2022-12-12-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1590'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 May 2023 19:48:39 GMT
+      etag:
+      - '"ff0455a1-0000-0100-0000-646bc7160000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - d2e52bf0-afd1-452d-a32b-4ad07fc05005
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster bmckeyset create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --cluster-name --extended-location --location --azure-group-id --expiration
+        --privilege-level --user-list --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1036-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/add4f457-8177-4cee-99e1-7ce85d524a48*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/add4f457-8177-4cee-99e1-7ce85d524a48*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB","name":"add4f457-8177-4cee-99e1-7ce85d524a48*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001","status":"Accepted","startTime":"2023-05-22T19:48:38.5324934Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '590'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 May 2023 19:48:39 GMT
+      etag:
+      - '"4301663b-0000-0100-0000-646bc7160000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster bmckeyset create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --cluster-name --extended-location --location --azure-group-id --expiration
+        --privilege-level --user-list --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1036-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/add4f457-8177-4cee-99e1-7ce85d524a48*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/add4f457-8177-4cee-99e1-7ce85d524a48*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB","name":"add4f457-8177-4cee-99e1-7ce85d524a48*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001","status":"Succeeded","startTime":"2023-05-22T19:48:38.5324934Z","endTime":"2023-05-22T19:48:53.8858669Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '661'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 May 2023 19:49:08 GMT
+      etag:
+      - '"4301d840-0000-0100-0000-646bc7250000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster bmckeyset create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --cluster-name --extended-location --location --azure-group-id --expiration
+        --privilege-level --user-list --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1036-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001","name":"cli-test-bmcks-000001","type":"microsoft.networkcloud/clusters/bmckeysets","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m15-e4f14334258d-hostedresources-49660092/providers/microsoft.extendedlocation/customlocations/m15-e4f14334258d-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-22T19:48:38.4151306Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-22T19:48:54.4370251Z"},"properties":{"provisioningState":"Succeeded","azureGroupId":"testGroup","expiration":"2023-12-31T23:59:59.008Z","privilegeLevel":"ReadOnly","userList":[{"azureUserName":"userABC","description":"UserDesc","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQCYnWX/sth0/ikG/d+ahWdO4sTp1stHP1jnEcxt0Vr4YcoKYh6cic2yZr3Mjb4NxcuJKAw4kmJ7bSRl5na8MEJkSFyMberQaqapahv+lx7Pm8ZTZVlVcvq0Q83yrHA/62RNtLqLF03RaTaBMrNXZoC76euPEHK4LNgk9UxhTfE0GDHGHOHGRafh24pTgVhyd7nSTuYyY+OlIfv6J726wGsRFZ8OXtE7xfHEtfzsFJBpf15YOEEtdrIQ0w+xj53nO2FOk+gLhExxlfj4gizQZPXtNI+nM7d25rlZWQW4RngFAvon63/3HNELCEHmAaEPpoAQpgESl19AtTQzUf5hl3RAyL75CM7V95/NcUG0UJ+3t1wI+Kc3WpTkHZmbcgOBYSi6+JPpmqB/oxEkjDUIvyyenLB9UFyTj8keQ2vCYzaTBLjcndDJWFYM+MbKHCSx/XxZXDkFiPQeLgkWixFAWLmufnwULIx/tr/VRdQFSZI6MoUmfUqaQhv7a2eVikiqLEk=
+        fake-public-key"}}],"userListStatus":[{"azureUserName":"userABC","status":"Active"}],"lastValidation":"2023-05-22T19:48:52Z","detailedStatus":"AllActive","detailedStatusMessage":"Failed
+        to update users on following nodes:  "}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1816'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 May 2023 19:49:09 GMT
+      etag:
+      - '"ff0422b6-0000-0100-0000-646bc7260000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"expiration": "2024-01-31T23:59:59.008Z", "userList": [{"azureUserName":
+      "userXYZ", "description": "UserDesc", "sshPublicKey": {"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCYnWX/sth0/ikG/d+ahWdO4sTp1stHP1jnEcxt0Vr4YcoKYh6cic2yZr3Mjb4NxcuJKAw4kmJ7bSRl5na8MEJkSFyMberQaqapahv+lx7Pm8ZTZVlVcvq0Q83yrHA/62RNtLqLF03RaTaBMrNXZoC76euPEHK4LNgk9UxhTfE0GDHGHOHGRafh24pTgVhyd7nSTuYyY+OlIfv6J726wGsRFZ8OXtE7xfHEtfzsFJBpf15YOEEtdrIQ0w+xj53nO2FOk+gLhExxlfj4gizQZPXtNI+nM7d25rlZWQW4RngFAvon63/3HNELCEHmAaEPpoAQpgESl19AtTQzUf5hl3RAyL75CM7V95/NcUG0UJ+3t1wI+Kc3WpTkHZmbcgOBYSi6+JPpmqB/oxEkjDUIvyyenLB9UFyTj8keQ2vCYzaTBLjcndDJWFYM+MbKHCSx/XxZXDkFiPQeLgkWixFAWLmufnwULIx/tr/VRdQFSZI6MoUmfUqaQhv7a2eVikiqLEk=
+      fake-public-key"}}]}, "tags": {"tag1": "tag1", "tag2": "tag2update"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster bmckeyset update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '778'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --cluster-name --tags --user-list --expiration --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1036-azure-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001?api-version=2022-12-12-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/ea608706-6767-4e49-b314-5c38192e03b1*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB?api-version=2022-12-12-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 May 2023 19:49:09 GMT
+      etag:
+      - '"ff045cc5-0000-0100-0000-646bc7360000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/ea608706-6767-4e49-b314-5c38192e03b1*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB?api-version=2022-12-12-preview
+      mise-correlation-id:
+      - b39570af-2de4-465a-8c3f-96ce7db8a9d2
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster bmckeyset update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --cluster-name --tags --user-list --expiration --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1036-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/ea608706-6767-4e49-b314-5c38192e03b1*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/ea608706-6767-4e49-b314-5c38192e03b1*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB","name":"ea608706-6767-4e49-b314-5c38192e03b1*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001","status":"Accepted","startTime":"2023-05-22T19:49:09.85348Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '588'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 May 2023 19:49:09 GMT
+      etag:
+      - '"43014c45-0000-0100-0000-646bc7350000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster bmckeyset update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --cluster-name --tags --user-list --expiration --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1036-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/ea608706-6767-4e49-b314-5c38192e03b1*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/ea608706-6767-4e49-b314-5c38192e03b1*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB","name":"ea608706-6767-4e49-b314-5c38192e03b1*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001","status":"Succeeded","startTime":"2023-05-22T19:49:09.85348Z","endTime":"2023-05-22T19:49:24.9543125Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '659'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 May 2023 19:49:39 GMT
+      etag:
+      - '"43010d4a-0000-0100-0000-646bc7440000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster bmckeyset update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --cluster-name --tags --user-list --expiration --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1036-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001","name":"cli-test-bmcks-000001","type":"microsoft.networkcloud/clusters/bmckeysets","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m15-e4f14334258d-hostedresources-49660092/providers/microsoft.extendedlocation/customlocations/m15-e4f14334258d-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-22T19:48:38.4151306Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-22T19:49:25.402787Z"},"properties":{"azureGroupId":"testGroup","expiration":"2024-01-31T23:59:59.008Z","privilegeLevel":"ReadOnly","userList":[{"azureUserName":"userXYZ","description":"UserDesc","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQCYnWX/sth0/ikG/d+ahWdO4sTp1stHP1jnEcxt0Vr4YcoKYh6cic2yZr3Mjb4NxcuJKAw4kmJ7bSRl5na8MEJkSFyMberQaqapahv+lx7Pm8ZTZVlVcvq0Q83yrHA/62RNtLqLF03RaTaBMrNXZoC76euPEHK4LNgk9UxhTfE0GDHGHOHGRafh24pTgVhyd7nSTuYyY+OlIfv6J726wGsRFZ8OXtE7xfHEtfzsFJBpf15YOEEtdrIQ0w+xj53nO2FOk+gLhExxlfj4gizQZPXtNI+nM7d25rlZWQW4RngFAvon63/3HNELCEHmAaEPpoAQpgESl19AtTQzUf5hl3RAyL75CM7V95/NcUG0UJ+3t1wI+Kc3WpTkHZmbcgOBYSi6+JPpmqB/oxEkjDUIvyyenLB9UFyTj8keQ2vCYzaTBLjcndDJWFYM+MbKHCSx/XxZXDkFiPQeLgkWixFAWLmufnwULIx/tr/VRdQFSZI6MoUmfUqaQhv7a2eVikiqLEk=
+        fake-public-key"}}],"userListStatus":[{"azureUserName":"userABC","status":"Invalid"},{"azureUserName":"userXYZ","status":"Active"}],"lastValidation":"2023-05-22T19:49:23Z","detailedStatus":"AllActive","detailedStatusMessage":"Failed
+        to update users on following nodes:  ","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1882'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 May 2023 19:49:39 GMT
+      etag:
+      - '"ff0440d9-0000-0100-0000-646bc7450000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster bmckeyset show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1036-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001","name":"cli-test-bmcks-000001","type":"microsoft.networkcloud/clusters/bmckeysets","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m15-e4f14334258d-hostedresources-49660092/providers/microsoft.extendedlocation/customlocations/m15-e4f14334258d-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-22T19:48:38.4151306Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-22T19:49:25.402787Z"},"properties":{"azureGroupId":"testGroup","expiration":"2024-01-31T23:59:59.008Z","privilegeLevel":"ReadOnly","userList":[{"azureUserName":"userXYZ","description":"UserDesc","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQCYnWX/sth0/ikG/d+ahWdO4sTp1stHP1jnEcxt0Vr4YcoKYh6cic2yZr3Mjb4NxcuJKAw4kmJ7bSRl5na8MEJkSFyMberQaqapahv+lx7Pm8ZTZVlVcvq0Q83yrHA/62RNtLqLF03RaTaBMrNXZoC76euPEHK4LNgk9UxhTfE0GDHGHOHGRafh24pTgVhyd7nSTuYyY+OlIfv6J726wGsRFZ8OXtE7xfHEtfzsFJBpf15YOEEtdrIQ0w+xj53nO2FOk+gLhExxlfj4gizQZPXtNI+nM7d25rlZWQW4RngFAvon63/3HNELCEHmAaEPpoAQpgESl19AtTQzUf5hl3RAyL75CM7V95/NcUG0UJ+3t1wI+Kc3WpTkHZmbcgOBYSi6+JPpmqB/oxEkjDUIvyyenLB9UFyTj8keQ2vCYzaTBLjcndDJWFYM+MbKHCSx/XxZXDkFiPQeLgkWixFAWLmufnwULIx/tr/VRdQFSZI6MoUmfUqaQhv7a2eVikiqLEk=
+        fake-public-key"}}],"userListStatus":[{"azureUserName":"userABC","status":"Invalid"},{"azureUserName":"userXYZ","status":"Active"}],"lastValidation":"2023-05-22T19:49:23Z","detailedStatus":"AllActive","detailedStatusMessage":"Failed
+        to update users on following nodes:  ","provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1882'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 May 2023 19:49:39 GMT
+      etag:
+      - '"ff0440d9-0000-0100-0000-646bc7450000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster bmckeyset list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1036-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/bmcKeySetTest1","name":"bmcKeySetTest1","type":"microsoft.networkcloud/clusters/bmckeysets","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m15-e4f14334258d-hostedresources-49660092/providers/microsoft.extendedlocation/customlocations/m15-e4f14334258d-cstm-loc","type":"CustomLocation"},"tags":{"key1":"myvalue1","key2":"myvalue2"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-22T16:28:40.886915Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-22T19:49:27.2317098Z"},"properties":{"provisioningState":"Succeeded","azureGroupId":"testGroup","expiration":"2023-12-31T23:59:59.008Z","privilegeLevel":"Administrator","userList":[{"azureUserName":"userABC","description":"UserDesc","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQCYnWX/sth0/ikG/d+ahWdO4sTp1stHP1jnEcxt0Vr4YcoKYh6cic2yZr3Mjb4NxcuJKAw4kmJ7bSRl5na8MEJkSFyMberQaqapahv+lx7Pm8ZTZVlVcvq0Q83yrHA/62RNtLqLF03RaTaBMrNXZoC76euPEHK4LNgk9UxhTfE0GDHGHOHGRafh24pTgVhyd7nSTuYyY+OlIfv6J726wGsRFZ8OXtE7xfHEtfzsFJBpf15YOEEtdrIQ0w+xj53nO2FOk+gLhExxlfj4gizQZPXtNI+nM7d25rlZWQW4RngFAvon63/3HNELCEHmAaEPpoAQpgESl19AtTQzUf5hl3RAyL75CM7V95/NcUG0UJ+3t1wI+Kc3WpTkHZmbcgOBYSi6+JPpmqB/oxEkjDUIvyyenLB9UFyTj8keQ2vCYzaTBLjcndDJWFYM+MbKHCSx/XxZXDkFiPQeLgkWixFAWLmufnwULIx/tr/VRdQFSZI6MoUmfUqaQhv7a2eVikiqLEk=
+        fake-public-key"}}],"userListStatus":[{"azureUserName":"userABC","status":"Active"}],"lastValidation":"2023-05-22T19:49:23Z","detailedStatus":"AllActive","detailedStatusMessage":"Failed
+        to update users on following nodes:  "}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/bmcKeySetTest2","name":"bmcKeySetTest2","type":"microsoft.networkcloud/clusters/bmckeysets","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m15-e4f14334258d-hostedresources-49660092/providers/microsoft.extendedlocation/customlocations/m15-e4f14334258d-cstm-loc","type":"CustomLocation"},"tags":{"key1":"myvalue1","key2":"myvalue2"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-22T16:45:01.2113816Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-22T19:49:24.6781625Z"},"properties":{"provisioningState":"Succeeded","azureGroupId":"testGroup","expiration":"2023-12-31T23:59:59.008Z","privilegeLevel":"ReadOnly","userList":[{"azureUserName":"userABC","description":"UserDesc","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQCYnWX/sth0/ikG/d+ahWdO4sTp1stHP1jnEcxt0Vr4YcoKYh6cic2yZr3Mjb4NxcuJKAw4kmJ7bSRl5na8MEJkSFyMberQaqapahv+lx7Pm8ZTZVlVcvq0Q83yrHA/62RNtLqLF03RaTaBMrNXZoC76euPEHK4LNgk9UxhTfE0GDHGHOHGRafh24pTgVhyd7nSTuYyY+OlIfv6J726wGsRFZ8OXtE7xfHEtfzsFJBpf15YOEEtdrIQ0w+xj53nO2FOk+gLhExxlfj4gizQZPXtNI+nM7d25rlZWQW4RngFAvon63/3HNELCEHmAaEPpoAQpgESl19AtTQzUf5hl3RAyL75CM7V95/NcUG0UJ+3t1wI+Kc3WpTkHZmbcgOBYSi6+JPpmqB/oxEkjDUIvyyenLB9UFyTj8keQ2vCYzaTBLjcndDJWFYM+MbKHCSx/XxZXDkFiPQeLgkWixFAWLmufnwULIx/tr/VRdQFSZI6MoUmfUqaQhv7a2eVikiqLEk=
+        fake-public-key"}}],"userListStatus":[{"azureUserName":"userABC","status":"Active"}],"lastValidation":"2023-05-22T19:49:23Z","detailedStatus":"AllActive","detailedStatusMessage":"Failed
+        to update users on following nodes:  "}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmmks-rjoaugddr","name":"cli-test-bmmks-rjoaugddr","type":"microsoft.networkcloud/clusters/bmckeysets","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m15-e4f14334258d-hostedresources-49660092/providers/microsoft.extendedlocation/customlocations/m15-e4f14334258d-cstm-loc","type":"CustomLocation"},"tags":{"key1":"myvalue1","key2":"myvalue2"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-22T16:51:18.0861144Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-22T19:49:26.6222904Z"},"properties":{"provisioningState":"Succeeded","azureGroupId":"testGroup","expiration":"2023-12-31T23:59:59.008Z","privilegeLevel":"ReadOnly","userList":[{"azureUserName":"userABC","description":"UserDesc","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQCYnWX/sth0/ikG/d+ahWdO4sTp1stHP1jnEcxt0Vr4YcoKYh6cic2yZr3Mjb4NxcuJKAw4kmJ7bSRl5na8MEJkSFyMberQaqapahv+lx7Pm8ZTZVlVcvq0Q83yrHA/62RNtLqLF03RaTaBMrNXZoC76euPEHK4LNgk9UxhTfE0GDHGHOHGRafh24pTgVhyd7nSTuYyY+OlIfv6J726wGsRFZ8OXtE7xfHEtfzsFJBpf15YOEEtdrIQ0w+xj53nO2FOk+gLhExxlfj4gizQZPXtNI+nM7d25rlZWQW4RngFAvon63/3HNELCEHmAaEPpoAQpgESl19AtTQzUf5hl3RAyL75CM7V95/NcUG0UJ+3t1wI+Kc3WpTkHZmbcgOBYSi6+JPpmqB/oxEkjDUIvyyenLB9UFyTj8keQ2vCYzaTBLjcndDJWFYM+MbKHCSx/XxZXDkFiPQeLgkWixFAWLmufnwULIx/tr/VRdQFSZI6MoUmfUqaQhv7a2eVikiqLEk=
+        fake-public-key"}}],"userListStatus":[{"azureUserName":"userABC","status":"Active"}],"lastValidation":"2023-05-22T19:49:23Z","detailedStatus":"AllActive","detailedStatusMessage":"Failed
+        to update users on following nodes:  "}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmmks-piqx3qaq6","name":"cli-test-bmmks-piqx3qaq6","type":"microsoft.networkcloud/clusters/bmckeysets","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m15-e4f14334258d-hostedresources-49660092/providers/microsoft.extendedlocation/customlocations/m15-e4f14334258d-cstm-loc","type":"CustomLocation"},"tags":{"key1":"myvalue1","key2":"myvalue2"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-22T16:53:08.6904405Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-22T19:49:26.0795088Z"},"properties":{"provisioningState":"Succeeded","azureGroupId":"testGroup","expiration":"2023-12-31T23:59:59.008Z","privilegeLevel":"ReadOnly","userList":[{"azureUserName":"userABC","description":"UserDesc","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQCYnWX/sth0/ikG/d+ahWdO4sTp1stHP1jnEcxt0Vr4YcoKYh6cic2yZr3Mjb4NxcuJKAw4kmJ7bSRl5na8MEJkSFyMberQaqapahv+lx7Pm8ZTZVlVcvq0Q83yrHA/62RNtLqLF03RaTaBMrNXZoC76euPEHK4LNgk9UxhTfE0GDHGHOHGRafh24pTgVhyd7nSTuYyY+OlIfv6J726wGsRFZ8OXtE7xfHEtfzsFJBpf15YOEEtdrIQ0w+xj53nO2FOk+gLhExxlfj4gizQZPXtNI+nM7d25rlZWQW4RngFAvon63/3HNELCEHmAaEPpoAQpgESl19AtTQzUf5hl3RAyL75CM7V95/NcUG0UJ+3t1wI+Kc3WpTkHZmbcgOBYSi6+JPpmqB/oxEkjDUIvyyenLB9UFyTj8keQ2vCYzaTBLjcndDJWFYM+MbKHCSx/XxZXDkFiPQeLgkWixFAWLmufnwULIx/tr/VRdQFSZI6MoUmfUqaQhv7a2eVikiqLEk=
+        fake-public-key"}}],"userListStatus":[{"azureUserName":"userABC","status":"Active"}],"lastValidation":"2023-05-22T19:49:23Z","detailedStatus":"AllActive","detailedStatusMessage":"Failed
+        to update users on following nodes:  "}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmmks-brsbvzy2d","name":"cli-test-bmmks-brsbvzy2d","type":"microsoft.networkcloud/clusters/bmckeysets","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m15-e4f14334258d-hostedresources-49660092/providers/microsoft.extendedlocation/customlocations/m15-e4f14334258d-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-22T17:06:45.4716677Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-22T19:49:25.407607Z"},"properties":{"azureGroupId":"testGroup","expiration":"2023-12-31T23:59:59.008Z","privilegeLevel":"ReadOnly","userList":[{"azureUserName":"userABC","description":"UserDesc","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQCYnWX/sth0/ikG/d+ahWdO4sTp1stHP1jnEcxt0Vr4YcoKYh6cic2yZr3Mjb4NxcuJKAw4kmJ7bSRl5na8MEJkSFyMberQaqapahv+lx7Pm8ZTZVlVcvq0Q83yrHA/62RNtLqLF03RaTaBMrNXZoC76euPEHK4LNgk9UxhTfE0GDHGHOHGRafh24pTgVhyd7nSTuYyY+OlIfv6J726wGsRFZ8OXtE7xfHEtfzsFJBpf15YOEEtdrIQ0w+xj53nO2FOk+gLhExxlfj4gizQZPXtNI+nM7d25rlZWQW4RngFAvon63/3HNELCEHmAaEPpoAQpgESl19AtTQzUf5hl3RAyL75CM7V95/NcUG0UJ+3t1wI+Kc3WpTkHZmbcgOBYSi6+JPpmqB/oxEkjDUIvyyenLB9UFyTj8keQ2vCYzaTBLjcndDJWFYM+MbKHCSx/XxZXDkFiPQeLgkWixFAWLmufnwULIx/tr/VRdQFSZI6MoUmfUqaQhv7a2eVikiqLEk=
+        fake-public-key"}}],"userListStatus":[{"azureUserName":"userABC","status":"Active"}],"lastValidation":"2023-05-22T19:49:23Z","detailedStatus":"AllActive","detailedStatusMessage":"Failed
+        to update users on following nodes:  ","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmmks-fel5x27wj","name":"cli-test-bmmks-fel5x27wj","type":"microsoft.networkcloud/clusters/bmckeysets","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m15-e4f14334258d-hostedresources-49660092/providers/microsoft.extendedlocation/customlocations/m15-e4f14334258d-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-22T17:17:18.347882Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-22T19:49:26.0753763Z"},"properties":{"azureGroupId":"testGroup","expiration":"2023-12-31T23:59:59.008Z","privilegeLevel":"ReadOnly","userList":[{"azureUserName":"userABC","description":"UserDesc","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQCYnWX/sth0/ikG/d+ahWdO4sTp1stHP1jnEcxt0Vr4YcoKYh6cic2yZr3Mjb4NxcuJKAw4kmJ7bSRl5na8MEJkSFyMberQaqapahv+lx7Pm8ZTZVlVcvq0Q83yrHA/62RNtLqLF03RaTaBMrNXZoC76euPEHK4LNgk9UxhTfE0GDHGHOHGRafh24pTgVhyd7nSTuYyY+OlIfv6J726wGsRFZ8OXtE7xfHEtfzsFJBpf15YOEEtdrIQ0w+xj53nO2FOk+gLhExxlfj4gizQZPXtNI+nM7d25rlZWQW4RngFAvon63/3HNELCEHmAaEPpoAQpgESl19AtTQzUf5hl3RAyL75CM7V95/NcUG0UJ+3t1wI+Kc3WpTkHZmbcgOBYSi6+JPpmqB/oxEkjDUIvyyenLB9UFyTj8keQ2vCYzaTBLjcndDJWFYM+MbKHCSx/XxZXDkFiPQeLgkWixFAWLmufnwULIx/tr/VRdQFSZI6MoUmfUqaQhv7a2eVikiqLEk=
+        fake-public-key"}}],"userListStatus":[{"azureUserName":"userABC","status":"Active"}],"lastValidation":"2023-05-22T19:49:23Z","detailedStatus":"AllActive","detailedStatusMessage":"Failed
+        to update users on following nodes:  ","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmmks-qu5mxsatk","name":"cli-test-bmmks-qu5mxsatk","type":"microsoft.networkcloud/clusters/bmckeysets","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m15-e4f14334258d-hostedresources-49660092/providers/microsoft.extendedlocation/customlocations/m15-e4f14334258d-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-22T17:18:57.8981505Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-22T19:49:26.4021468Z"},"properties":{"azureGroupId":"testGroup","expiration":"2023-12-31T23:59:59.008Z","privilegeLevel":"ReadOnly","userList":[{"azureUserName":"userABC","description":"UserDesc","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQCYnWX/sth0/ikG/d+ahWdO4sTp1stHP1jnEcxt0Vr4YcoKYh6cic2yZr3Mjb4NxcuJKAw4kmJ7bSRl5na8MEJkSFyMberQaqapahv+lx7Pm8ZTZVlVcvq0Q83yrHA/62RNtLqLF03RaTaBMrNXZoC76euPEHK4LNgk9UxhTfE0GDHGHOHGRafh24pTgVhyd7nSTuYyY+OlIfv6J726wGsRFZ8OXtE7xfHEtfzsFJBpf15YOEEtdrIQ0w+xj53nO2FOk+gLhExxlfj4gizQZPXtNI+nM7d25rlZWQW4RngFAvon63/3HNELCEHmAaEPpoAQpgESl19AtTQzUf5hl3RAyL75CM7V95/NcUG0UJ+3t1wI+Kc3WpTkHZmbcgOBYSi6+JPpmqB/oxEkjDUIvyyenLB9UFyTj8keQ2vCYzaTBLjcndDJWFYM+MbKHCSx/XxZXDkFiPQeLgkWixFAWLmufnwULIx/tr/VRdQFSZI6MoUmfUqaQhv7a2eVikiqLEk=
+        fake-public-key"}}],"userListStatus":[{"azureUserName":"userABC","status":"Active"}],"lastValidation":"2023-05-22T19:49:23Z","detailedStatus":"AllActive","detailedStatusMessage":"Failed
+        to update users on following nodes:  ","provisioningState":"Succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001","name":"cli-test-bmcks-000001","type":"microsoft.networkcloud/clusters/bmckeysets","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m15-e4f14334258d-hostedresources-49660092/providers/microsoft.extendedlocation/customlocations/m15-e4f14334258d-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-22T19:48:38.4151306Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-22T19:49:25.402787Z"},"properties":{"azureGroupId":"testGroup","expiration":"2024-01-31T23:59:59.008Z","privilegeLevel":"ReadOnly","userList":[{"azureUserName":"userXYZ","description":"UserDesc","sshPublicKey":{"keyData":"ssh-rsa
+        AAAAB3NzaC1yc2EAAAADAQABAAABgQCYnWX/sth0/ikG/d+ahWdO4sTp1stHP1jnEcxt0Vr4YcoKYh6cic2yZr3Mjb4NxcuJKAw4kmJ7bSRl5na8MEJkSFyMberQaqapahv+lx7Pm8ZTZVlVcvq0Q83yrHA/62RNtLqLF03RaTaBMrNXZoC76euPEHK4LNgk9UxhTfE0GDHGHOHGRafh24pTgVhyd7nSTuYyY+OlIfv6J726wGsRFZ8OXtE7xfHEtfzsFJBpf15YOEEtdrIQ0w+xj53nO2FOk+gLhExxlfj4gizQZPXtNI+nM7d25rlZWQW4RngFAvon63/3HNELCEHmAaEPpoAQpgESl19AtTQzUf5hl3RAyL75CM7V95/NcUG0UJ+3t1wI+Kc3WpTkHZmbcgOBYSi6+JPpmqB/oxEkjDUIvyyenLB9UFyTj8keQ2vCYzaTBLjcndDJWFYM+MbKHCSx/XxZXDkFiPQeLgkWixFAWLmufnwULIx/tr/VRdQFSZI6MoUmfUqaQhv7a2eVikiqLEk=
+        fake-public-key"}}],"userListStatus":[{"azureUserName":"userABC","status":"Invalid"},{"azureUserName":"userXYZ","status":"Active"}],"lastValidation":"2023-05-22T19:49:23Z","detailedStatus":"AllActive","detailedStatusMessage":"Failed
+        to update users on following nodes:  ","provisioningState":"Succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '14765'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 May 2023 19:49:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster bmckeyset delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --cluster-name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1036-azure-x86_64-with-glibc2.29)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001?api-version=2022-12-12-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/38c0df50-5758-49ba-8516-9ab6c11ed357*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB?api-version=2022-12-12-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 May 2023 19:49:41 GMT
+      etag:
+      - '"ff04b2ee-0000-0100-0000-646bc7550000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/38c0df50-5758-49ba-8516-9ab6c11ed357*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB?api-version=2022-12-12-preview
+      mise-correlation-id:
+      - 9b2f8c25-381b-4c93-b1e7-709f81e417bc
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster bmckeyset delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --cluster-name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1036-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/38c0df50-5758-49ba-8516-9ab6c11ed357*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/38c0df50-5758-49ba-8516-9ab6c11ed357*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB","name":"38c0df50-5758-49ba-8516-9ab6c11ed357*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001","status":"Deleting","startTime":"2023-05-22T19:49:41.1604923Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '590'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 May 2023 19:49:41 GMT
+      etag:
+      - '"43015d50-0000-0100-0000-646bc7550000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster bmckeyset delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --cluster-name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1036-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/38c0df50-5758-49ba-8516-9ab6c11ed357*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/38c0df50-5758-49ba-8516-9ab6c11ed357*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB","name":"38c0df50-5758-49ba-8516-9ab6c11ed357*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001","status":"Succeeded","startTime":"2023-05-22T19:49:41.1604923Z","endTime":"2023-05-22T19:50:01.9379486Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '650'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 May 2023 19:50:11 GMT
+      etag:
+      - '"43012659-0000-0100-0000-646bc7690000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster bmckeyset delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --cluster-name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1036-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/38c0df50-5758-49ba-8516-9ab6c11ed357*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/38c0df50-5758-49ba-8516-9ab6c11ed357*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB","name":"38c0df50-5758-49ba-8516-9ab6c11ed357*CF780CF3BEA8385ED94A4C695CD569450733E0D5EF9BECB87F8F86A0F80E6FEB","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.NetworkCloud/clusters/m15-e4f14334258d/bmcKeySets/cli-test-bmcks-000001","status":"Succeeded","startTime":"2023-05-22T19:49:41.1604923Z","endTime":"2023-05-22T19:50:01.9379486Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '650'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 May 2023 19:50:11 GMT
+      etag:
+      - '"43012659-0000-0100-0000-646bc7690000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1

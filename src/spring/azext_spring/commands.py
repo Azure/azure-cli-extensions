@@ -323,6 +323,7 @@ def load_command_table(self, _):
         g.custom_command('clear', 'gateway_clear', supports_no_wait=True)
         g.custom_command('create', 'gateway_create', table_transformer=transform_spring_cloud_gateway_output)
         g.custom_command('delete', 'gateway_delete', confirmation=True)
+        g.custom_command('restart', 'gateway_restart', confirmation='Are you sure you want to perform this operation?', supports_no_wait=True)
         g.custom_command('sync-cert', 'gateway_sync_cert', confirmation='Your gateway will be restarted to use the latest certificate.\n' +
                          'Are you sure you want to perform this operation?', supports_no_wait=True)
 

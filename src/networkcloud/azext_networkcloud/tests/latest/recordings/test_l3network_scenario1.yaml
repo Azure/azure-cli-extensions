@@ -1,0 +1,612 @@
+interactions:
+- request:
+    body: '{"extendedLocation": {"name": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-6ef92725/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc",
+      "type": "CustomLocation"}, "location": "eastus", "properties": {"hybridAksIpamEnabled":
+      "True", "hybridAksPluginType": "DPDK", "interfaceName": "eth0", "ipAllocationType":
+      "DualStack", "ipv4ConnectedPrefix": "10.1.100.0/24", "ipv6ConnectedPrefix":
+      "fd01:1::0/64", "l3IsolationDomainId": "/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain1",
+      "vlan": 1001}, "tags": {"tag1": "tag1"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud l3network create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '660'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --extended-location --location --hybrid-aks-ipam-enabled --hybrid-aks-plugin-type
+        --interface-name --ip-allocation-type --ipv4-connected-prefix --ipv6-connected-prefix
+        --l3-isolation-domain-id --vlan --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l3Networks/cli-test-l3-000001?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l3Networks/cli-test-l3-000001","name":"cli-test-l3-000001","type":"microsoft.networkcloud/l3networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-6ef92725/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T21:18:55.1688434Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-15T21:18:55.1688434Z"},"properties":{"provisioningState":"Accepted","hybridAksIpamEnabled":"True","hybridAksPluginType":"DPDK","interfaceName":"eth0","ipAllocationType":"DualStack","ipv4ConnectedPrefix":"10.1.100.0/24","ipv6ConnectedPrefix":"fd01:1::0/64","l3IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain1","vlan":1001}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/ac1fc159-1cdf-4e20-915b-e1867696d02d*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2?api-version=2022-12-12-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '1125'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 21:18:55 GMT
+      etag:
+      - '"5507f495-0000-0100-0000-6462a1bf0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 95d2fc12-fdff-4ddb-a9a3-6c2919676a28
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud l3network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --extended-location --location --hybrid-aks-ipam-enabled --hybrid-aks-plugin-type
+        --interface-name --ip-allocation-type --ipv4-connected-prefix --ipv6-connected-prefix
+        --l3-isolation-domain-id --vlan --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/ac1fc159-1cdf-4e20-915b-e1867696d02d*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/ac1fc159-1cdf-4e20-915b-e1867696d02d*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2","name":"ac1fc159-1cdf-4e20-915b-e1867696d02d*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l3Networks/cli-test-l3-000001","status":"Accepted","startTime":"2023-05-15T21:18:55.2106944Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '563'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 21:18:55 GMT
+      etag:
+      - '"b80145d9-0000-0100-0000-6462a1bf0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud l3network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --extended-location --location --hybrid-aks-ipam-enabled --hybrid-aks-plugin-type
+        --interface-name --ip-allocation-type --ipv4-connected-prefix --ipv6-connected-prefix
+        --l3-isolation-domain-id --vlan --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/ac1fc159-1cdf-4e20-915b-e1867696d02d*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/ac1fc159-1cdf-4e20-915b-e1867696d02d*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2","name":"ac1fc159-1cdf-4e20-915b-e1867696d02d*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l3Networks/cli-test-l3-000001","status":"Succeeded","startTime":"2023-05-15T21:18:55.2106944Z","endTime":"2023-05-15T21:19:00.4357523Z","error":{},"properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '634'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 21:19:26 GMT
+      etag:
+      - '"b80147d9-0000-0100-0000-6462a1c40000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud l3network create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --extended-location --location --hybrid-aks-ipam-enabled --hybrid-aks-plugin-type
+        --interface-name --ip-allocation-type --ipv4-connected-prefix --ipv6-connected-prefix
+        --l3-isolation-domain-id --vlan --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l3Networks/cli-test-l3-000001?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l3Networks/cli-test-l3-000001","name":"cli-test-l3-000001","type":"microsoft.networkcloud/l3networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-6ef92725/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T21:18:55.1688434Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T21:19:02.2880127Z"},"properties":{"provisioningState":"Succeeded","hybridAksIpamEnabled":"True","hybridAksPluginType":"DPDK","interfaceName":"eth0","ipAllocationType":"DualStack","ipv4ConnectedPrefix":"10.1.100.0/24","ipv6ConnectedPrefix":"fd01:1::0/64","l3IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain1","vlan":1001,"clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/linquan-sim-rg/providers/Microsoft.NetworkCloud/clusters/simulator","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1451'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 21:19:26 GMT
+      etag:
+      - '"5507f795-0000-0100-0000-6462a1c60000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"tags": {"tag1": "tag1", "tag2": "tag2update"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud l3network update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '48'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --tags --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l3Networks/cli-test-l3-000001?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l3Networks/cli-test-l3-000001","name":"cli-test-l3-000001","type":"microsoft.networkcloud/l3networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-6ef92725/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T21:18:55.1688434Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-15T21:19:27.4577897Z"},"properties":{"provisioningState":"Succeeded","hybridAksIpamEnabled":"True","hybridAksPluginType":"DPDK","interfaceName":"eth0","ipAllocationType":"DualStack","ipv4ConnectedPrefix":"10.1.100.0/24","ipv6ConnectedPrefix":"fd01:1::0/64","l3IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain1","vlan":1001,"clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/linquan-sim-rg/providers/Microsoft.NetworkCloud/clusters/simulator","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1451'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 21:19:28 GMT
+      etag:
+      - '"55072796-0000-0100-0000-6462a1df0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud l3network show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l3Networks/cli-test-l3-000001?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l3Networks/cli-test-l3-000001","name":"cli-test-l3-000001","type":"microsoft.networkcloud/l3networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-6ef92725/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T21:18:55.1688434Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-15T21:19:27.4577897Z"},"properties":{"provisioningState":"Succeeded","hybridAksIpamEnabled":"True","hybridAksPluginType":"DPDK","interfaceName":"eth0","ipAllocationType":"DualStack","ipv4ConnectedPrefix":"10.1.100.0/24","ipv6ConnectedPrefix":"fd01:1::0/64","l3IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain1","vlan":1001,"clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/linquan-sim-rg/providers/Microsoft.NetworkCloud/clusters/simulator","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1451'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 21:19:28 GMT
+      etag:
+      - '"55072796-0000-0100-0000-6462a1df0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud l3network list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/l3Networks?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/syzehra-sim-1/providers/Microsoft.NetworkCloud/l3Networks/l3networksy1","name":"l3networksy1","type":"microsoft.networkcloud/l3networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-4deb0127/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-labs","LabEnvironment":"simulator","ResourceType":"l3Network"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-03-13T16:09:59.889044Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-03-13T17:43:50.9523433Z"},"properties":{"provisioningState":"Failed","hybridAksIpamEnabled":"True","hybridAksPluginType":"DPDK","ipAllocationType":"DualStack","ipv4ConnectedPrefix":"10.1.154.1","ipv6ConnectedPrefix":"fda0:d59c:da0b:9a::/64","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m15-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/m15-l3domain-1","vlan":567}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/l3Networks/l3network-530","name":"l3network-530","type":"microsoft.networkcloud/l3networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m16-1-9c522075177c-hostedresources-07abb5ff/providers/microsoft.extendedlocation/customlocations/m16-1-9c522075177c-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"l3network","ManagedBy":"nc-labs","LabEnvironment":"m16-1","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-05-09T06:05:38.6546818Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-09T06:08:35.6046892Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"vlan-530","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/m16-1-l3domain-2","ipAllocationType":"IPV4","ipv4ConnectedPrefix":"10.1.90.0/24","vlan":530,"hybridAksPluginType":"DPDK","hybridAksIpamEnabled":"False","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/clusters/m16-1-9c522075177c","hybridAksClustersAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/pipelinehaks-xEaZHs8atcaIPQ"],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/l3Networks/l3network-535","name":"l3network-535","type":"microsoft.networkcloud/l3networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m16-1-9c522075177c-hostedresources-07abb5ff/providers/microsoft.extendedlocation/customlocations/m16-1-9c522075177c-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"l3network","ManagedBy":"nc-labs","LabEnvironment":"m16-1","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-05-09T06:05:41.5271162Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-10T12:04:26.285629Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"vlan-535","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/m16-1-l3domain-2","ipAllocationType":"IPV4","ipv4ConnectedPrefix":"10.1.100.0/24","vlan":535,"hybridAksPluginType":"DPDK","hybridAksIpamEnabled":"False","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/clusters/m16-1-9c522075177c","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/l3Networks/l3network-537","name":"l3network-537","type":"microsoft.networkcloud/l3networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m16-1-9c522075177c-hostedresources-07abb5ff/providers/microsoft.extendedlocation/customlocations/m16-1-9c522075177c-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-labs","LabEnvironment":"m16-1","ResourceType":"l3Network"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-09T12:12:49.5039345Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-09T12:13:07.6034087Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"vlan-537","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/m16-1-l3domain-2","ipAllocationType":"IPV4","ipv4ConnectedPrefix":"10.1.104.0/24","ipv6ConnectedPrefix":"fda0:d59c:da0a:168::/64","vlan":537,"hybridAksPluginType":"SRIOV","hybridAksIpamEnabled":"True","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/clusters/m16-1-9c522075177c","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/l3Networks/l3network-538","name":"l3network-538","type":"microsoft.networkcloud/l3networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m16-1-9c522075177c-hostedresources-07abb5ff/providers/microsoft.extendedlocation/customlocations/m16-1-9c522075177c-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-labs","LabEnvironment":"m16-1","ResourceType":"l3Network"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-09T12:13:57.5059434Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-09T12:14:08.0092682Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"vlan-538","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/m16-1-l3domain-2","ipAllocationType":"IPV4","ipv4ConnectedPrefix":"10.1.106.0/24","ipv6ConnectedPrefix":"fda0:d59c:da0a:16a::/64","vlan":538,"hybridAksPluginType":"SRIOV","hybridAksIpamEnabled":"True","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/clusters/m16-1-9c522075177c","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/l3Networks/l3network-560","name":"l3network-560","type":"microsoft.networkcloud/l3networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m16-1-9c522075177c-hostedresources-07abb5ff/providers/microsoft.extendedlocation/customlocations/m16-1-9c522075177c-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-labs","LabEnvironment":"m16-1","ResourceType":"l3Network"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-11T20:44:09.6125142Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-11T20:44:53.4039386Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"vlan-560","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/m16-1-l3domain-1","ipAllocationType":"IPV4","ipv4ConnectedPrefix":"10.1.147.0/24","ipv6ConnectedPrefix":"fda0:d59c:da0a:193::/64","vlan":560,"hybridAksPluginType":"SRIOV","hybridAksIpamEnabled":"True","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/clusters/m16-1-9c522075177c"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/l3Networks/l3network-561","name":"l3network-561","type":"microsoft.networkcloud/l3networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m16-1-9c522075177c-hostedresources-07abb5ff/providers/microsoft.extendedlocation/customlocations/m16-1-9c522075177c-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-labs","LabEnvironment":"m16-1","ResourceType":"l3Network"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-11T20:46:34.0149104Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-11T20:46:51.0931785Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"vlan-561","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/m16-1-l3domain-1","ipAllocationType":"IPV4","ipv4ConnectedPrefix":"10.1.148.0/24","ipv6ConnectedPrefix":"fda0:d59c:da0a:194::/64","vlan":561,"hybridAksPluginType":"SRIOV","hybridAksIpamEnabled":"True","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/clusters/m16-1-9c522075177c","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/l3Networks/l3network-502","name":"l3network-502","type":"microsoft.networkcloud/l3networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m16-1-9c522075177c-hostedresources-07abb5ff/providers/microsoft.extendedlocation/customlocations/m16-1-9c522075177c-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-labs","LabEnvironment":"m16-1","ResourceType":"l3Network"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-11T23:56:35.976497Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-11T23:56:48.0685307Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"vlan-502","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/m16-1-l3domain-1","ipAllocationType":"IPV4","ipv4ConnectedPrefix":"10.1.34.0/24","ipv6ConnectedPrefix":"fda0:d59c:da0a:122::/64","vlan":502,"hybridAksPluginType":"SRIOV","hybridAksIpamEnabled":"True","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/clusters/m16-1-9c522075177c","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/l3Networks/l3network-503","name":"l3network-503","type":"microsoft.networkcloud/l3networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/m16-1-9c522075177c-hostedresources-07abb5ff/providers/microsoft.extendedlocation/customlocations/m16-1-9c522075177c-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-labs","LabEnvironment":"m16-1","ResourceType":"l3Network"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-11T23:56:57.0170717Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-11T23:57:05.5730514Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"vlan-503","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/m16-1-l3domain-1","ipAllocationType":"IPV4","ipv4ConnectedPrefix":"10.1.36.0/24","ipv6ConnectedPrefix":"fda0:d59c:da0a:124::/64","vlan":503,"hybridAksPluginType":"SRIOV","hybridAksIpamEnabled":"True","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/m16-1-cluster/providers/Microsoft.NetworkCloud/clusters/m16-1-9c522075177c"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/l3Networks/l3Networkmikepvm","name":"l3Networkmikepvm","type":"microsoft.networkcloud/l3networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"key1":"myvalue1","key2":"myvalue2"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T20:05:18.082584Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T21:12:41.7285977Z"},"properties":{"provisioningState":"Succeeded","hybridAksIpamEnabled":"True","hybridAksPluginType":"DPDK","interfaceName":"eth0","ipAllocationType":"DualStack","ipv4ConnectedPrefix":"10.1.100.0/24","ipv6ConnectedPrefix":"fd01:1::0/64","l3IsolationDomainId":"//subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain1","vlan":1001,"clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/clusters/simulator","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mbashtovaya-sim2-rg/providers/Microsoft.NetworkCloud/virtualMachines/mikepvm1"],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitestd73duvbzijikmg4exrualhb3rijs6cmfqqhbspbvejs66ppc5dutnvl3spiidetnzstv/providers/Microsoft.NetworkCloud/l3Networks/cli-test-l3-4lrgjkw3wz36","name":"cli-test-l3-4lrgjkw3wz36","type":"microsoft.networkcloud/l3networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-106b4111/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T21:09:34.183334Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-15T21:19:27.4577897Z"},"properties":{"provisioningState":"Succeeded","hybridAksIpamEnabled":"True","hybridAksPluginType":"DPDK","interfaceName":"eth0","ipAllocationType":"DualStack","ipv4ConnectedPrefix":"10.1.100.0/24","ipv6ConnectedPrefix":"fd01:1::0/64","l3IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain1","vlan":1001,"clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/linquan-sim-rg/providers/Microsoft.NetworkCloud/clusters/simulator","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkCloud/l3Networks/rg2l3test5network","name":"rg2l3test5network","type":"microsoft.networkcloud/l3networks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-427177bf/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-04-21T16:29:18.7249247Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-04-21T16:45:52.7312663Z"},"properties":{"provisioningState":"Failed","interfaceName":"vlan-55","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rajeshwari-preflight/providers/Microsoft.NetworkFabric/IsolationDomains/isodomain-55","ipAllocationType":"IPV4","ipv4ConnectedPrefix":"10.121.5.0/24","vlan":55,"hybridAksPluginType":"HostDevice","hybridAksIpamEnabled":"False"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/l3Networks/l3network-535","name":"l3network-535","type":"microsoft.networkcloud/l3networks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"l3network","ManagedBy":"nc-labs","LabEnvironment":"j18","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-05-02T06:59:28.5494222Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-05T20:42:31.2803425Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"vlan-535","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j18-l3domain-2","ipAllocationType":"IPV4","ipv4ConnectedPrefix":"10.6.100.0/24","vlan":535,"hybridAksPluginType":"DPDK","hybridAksIpamEnabled":"False","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/virtualMachines/pipelinevmHjfxOFWK0XXjvw"],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/l3Networks/l3network-530","name":"l3network-530","type":"microsoft.networkcloud/l3networks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"ResourceType":"l3network","ManagedBy":"nc-labs","LabEnvironment":"j18","ResourceTest":"deployment"},"systemData":{"createdBy":"de975306-d24e-4dec-9d3b-ef05c66f0075","createdByType":"Application","createdAt":"2023-05-02T06:59:33.7840574Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-05T15:42:33.7751937Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"vlan-530","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j18-l3domain-2","ipAllocationType":"IPV4","ipv4ConnectedPrefix":"10.6.90.0/24","vlan":530,"hybridAksPluginType":"DPDK","hybridAksIpamEnabled":"False","hybridAksClustersAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/pipelinehaks-HjfxOFWK0XXjvw","/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/mattjtest-haks2"],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/l3Networks/l3network-509","name":"l3network-509","type":"microsoft.networkcloud/l3networks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"ManagedBy":"nc-labs","LabEnvironment":"j18","ResourceType":"l3Network"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-02T17:23:06.5903572Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-02T22:34:43.3295422Z"},"properties":{"provisioningState":"Succeeded","interfaceName":"vlan-509","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j18-l3domain-1","ipAllocationType":"IPV4","ipv4ConnectedPrefix":"10.6.48.0/24","ipv6ConnectedPrefix":"fda0:d59c:da0a:630::/64","vlan":509,"hybridAksPluginType":"SRIOV","hybridAksIpamEnabled":"True","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/l3Networks/mattj-l3n-527","name":"mattj-l3n-527","type":"microsoft.networkcloud/l3networks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-03T16:13:22.835009Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-05T15:42:37.8623978Z"},"properties":{"provisioningState":"Succeeded","hybridAksIpamEnabled":"False","hybridAksPluginType":"SRIOV","interfaceName":"vlan-527","ipAllocationType":"IPV4","ipv4ConnectedPrefix":"10.6.84.0/24","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j18-l3domain-1","vlan":527,"hybridAksClustersAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.HybridContainerService/provisionedClusters/mattjtest-haks2"],"virtualMachinesAssociatedIds":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/virtualMachines/mattjtestvm1"],"clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3","detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/l3Networks/l3network-568","name":"l3network-568","type":"microsoft.networkcloud/l3networks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-08T18:59:06.756052Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-10T15:06:12.7890793Z"},"properties":{"provisioningState":"Succeeded","hybridAksIpamEnabled":"False","hybridAksPluginType":"OSDevice","interfaceName":"l3n568","ipAllocationType":"DualStack","ipv4ConnectedPrefix":"10.6.155.0/28","ipv6ConnectedPrefix":"fda0:d59c:da0a:69b::/64","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j18-l3domain-2","vlan":568,"hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-j18-c0d28c8f7cd3-zvy0v/providers/Microsoft.NetworkCloud/l3Networks/l3network-502","name":"l3network-502","type":"microsoft.networkcloud/l3networks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"CleanupFrequency":"Daily","ManagedBy":"nc-resource-testing","Purpose":"QA"},"systemData":{"createdBy":"76a1c3a1-1aaa-4cbe-b809-1b4f9dfe41e0","createdByType":"Application","createdAt":"2023-05-15T15:53:31.8202168Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T15:53:43.7069395Z"},"properties":{"provisioningState":"Succeeded","hybridAksPluginType":"OSDevice","ipAllocationType":"DualStack","ipv4ConnectedPrefix":"10.6.34.0/24","ipv6ConnectedPrefix":"fda0:d59c:da0a:622::/64","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j18-l3domain-1","vlan":502,"hybridAksIpamEnabled":"True","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","interfaceName":"l3netw-6a28b","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-j18-c0d28c8f7cd3-zvy0v/providers/Microsoft.NetworkCloud/l3Networks/l3network-503","name":"l3network-503","type":"microsoft.networkcloud/l3networks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"CleanupFrequency":"Daily","ManagedBy":"nc-resource-testing","Purpose":"QA"},"systemData":{"createdBy":"76a1c3a1-1aaa-4cbe-b809-1b4f9dfe41e0","createdByType":"Application","createdAt":"2023-05-15T15:54:03.5399806Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T15:54:17.1904358Z"},"properties":{"provisioningState":"Succeeded","hybridAksPluginType":"OSDevice","ipAllocationType":"DualStack","ipv4ConnectedPrefix":"10.6.36.0/24","ipv6ConnectedPrefix":"fda0:d59c:da0a:624::/64","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j18-l3domain-1","vlan":503,"hybridAksIpamEnabled":"True","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","interfaceName":"l3netw-b70b5","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-j18-c0d28c8f7cd3-flekj/providers/Microsoft.NetworkCloud/l3Networks/l3network-504","name":"l3network-504","type":"microsoft.networkcloud/l3networks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"CleanupFrequency":"Daily","ManagedBy":"nc-resource-testing","Purpose":"QA"},"systemData":{"createdBy":"76a1c3a1-1aaa-4cbe-b809-1b4f9dfe41e0","createdByType":"Application","createdAt":"2023-05-15T17:27:37.8452194Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T17:27:49.1872489Z"},"properties":{"provisioningState":"Succeeded","hybridAksPluginType":"OSDevice","ipAllocationType":"DualStack","ipv4ConnectedPrefix":"10.6.38.0/24","ipv6ConnectedPrefix":"fda0:d59c:da0a:626::/64","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j18-l3domain-1","vlan":504,"hybridAksIpamEnabled":"True","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded","interfaceName":"l3netw-6db69","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3"}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/nc-resource-testing-j18-c0d28c8f7cd3-flekj/providers/Microsoft.NetworkCloud/l3Networks/l3network-505","name":"l3network-505","type":"microsoft.networkcloud/l3networks","location":"eastus2euap","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/j18-c0d28c8f7cd3-hostedresources-3781ac00/providers/microsoft.extendedlocation/customlocations/j18-c0d28c8f7cd3-cstm-loc","type":"CustomLocation"},"tags":{"CleanupFrequency":"Daily","ManagedBy":"nc-resource-testing","Purpose":"QA"},"systemData":{"createdBy":"76a1c3a1-1aaa-4cbe-b809-1b4f9dfe41e0","createdByType":"Application","createdAt":"2023-05-15T17:28:09.9235739Z","lastModifiedBy":"319f651f-7ddb-4fc6-9857-7aef9250bd05","lastModifiedByType":"Application","lastModifiedAt":"2023-05-15T17:28:19.8752128Z"},"properties":{"provisioningState":"Succeeded","hybridAksPluginType":"OSDevice","ipAllocationType":"DualStack","ipv4ConnectedPrefix":"10.6.40.0/24","ipv6ConnectedPrefix":"fda0:d59c:da0a:628::/64","l3IsolationDomainId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.ManagedNetworkFabric/l3IsolationDomains/j18-l3domain-1","vlan":505,"hybridAksIpamEnabled":"True","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"interfaceName":"l3netw-0c755","clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/j18-cluster/providers/Microsoft.NetworkCloud/clusters/j18-c0d28c8f7cd3","detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '36540'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 21:19:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - f62aad66-9bad-4731-bb17-6216558e7638
+      - e2e50927-b404-42b4-bb98-9bfa005da973
+      - f0b8c36a-f0f2-4faf-84d2-f8e6486f9530
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud l3network list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l3Networks?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l3Networks/cli-test-l3-000001","name":"cli-test-l3-000001","type":"microsoft.networkcloud/l3networks","location":"eastus","extendedLocation":{"name":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/simulator-hostedresources-6ef92725/providers/microsoft.extendedlocation/customlocations/simulator-cstm-loc","type":"CustomLocation"},"tags":{"tag1":"tag1","tag2":"tag2update"},"systemData":{"createdBy":"REDACTED","createdByType":"User","createdAt":"2023-05-15T21:18:55.1688434Z","lastModifiedBy":"REDACTED","lastModifiedByType":"User","lastModifiedAt":"2023-05-15T21:19:27.4577897Z"},"properties":{"provisioningState":"Succeeded","hybridAksIpamEnabled":"True","hybridAksPluginType":"DPDK","interfaceName":"eth0","ipAllocationType":"DualStack","ipv4ConnectedPrefix":"10.1.100.0/24","ipv6ConnectedPrefix":"fd01:1::0/64","l3IsolationDomainId":"/subscriptions/fabricsubs/resourceGroups/fabric-rg/providers/Microsoft.NetworkFabric/L3IsolationDomains/l3isolationdomain1","vlan":1001,"clusterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/linquan-sim-rg/providers/Microsoft.NetworkCloud/clusters/simulator","hybridAksClustersAssociatedIds":[],"virtualMachinesAssociatedIds":[],"detailedStatus":"Available","detailedStatusMessage":"all
+        resource creation succeeded"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1463'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 21:19:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-original-request-ids:
+      - 8246cbb1-e089-42fd-957c-186c613030a0
+      - 8bfff394-ac69-417e-89eb-c51d35d168a3
+      - 422fd4e1-c54c-4a7c-856f-38593079037e
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud l3network delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l3Networks/cli-test-l3-000001?api-version=2022-12-12-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f638f213-b21f-40bd-ae99-b09c25b5c062*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2?api-version=2022-12-12-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 21:19:31 GMT
+      etag:
+      - '"55072996-0000-0100-0000-6462a1e30000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f638f213-b21f-40bd-ae99-b09c25b5c062*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2?api-version=2022-12-12-preview
+      mise-correlation-id:
+      - 088f3117-4895-415a-965e-5cd1c928ca77
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14997'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud l3network delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f638f213-b21f-40bd-ae99-b09c25b5c062*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f638f213-b21f-40bd-ae99-b09c25b5c062*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2","name":"f638f213-b21f-40bd-ae99-b09c25b5c062*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l3Networks/cli-test-l3-000001","status":"Deleting","startTime":"2023-05-15T21:19:31.2431539Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '563'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 21:19:31 GMT
+      etag:
+      - '"b801b4d9-0000-0100-0000-6462a1e30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud l3network delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f638f213-b21f-40bd-ae99-b09c25b5c062*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f638f213-b21f-40bd-ae99-b09c25b5c062*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2","name":"f638f213-b21f-40bd-ae99-b09c25b5c062*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l3Networks/cli-test-l3-000001","status":"Succeeded","startTime":"2023-05-15T21:19:31.2431539Z","endTime":"2023-05-15T21:19:37.9545859Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '623'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 21:20:01 GMT
+      etag:
+      - '"b801e0d9-0000-0100-0000-6462a1e90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud l3network delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group -y
+      User-Agent:
+      - AZURECLI/2.48.1 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.0-1037-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f638f213-b21f-40bd-ae99-b09c25b5c062*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2?api-version=2022-12-12-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/f638f213-b21f-40bd-ae99-b09c25b5c062*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2","name":"f638f213-b21f-40bd-ae99-b09c25b5c062*628829710AF64DF1815E463A54703476B6913DD61BD63B7B79F611BF804038B2","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000002/providers/Microsoft.NetworkCloud/l3Networks/cli-test-l3-000001","status":"Succeeded","startTime":"2023-05-15T21:19:31.2431539Z","endTime":"2023-05-15T21:19:37.9545859Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '623'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 15 May 2023 21:20:01 GMT
+      etag:
+      - '"b801e0d9-0000-0100-0000-6462a1e90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+version: 1
