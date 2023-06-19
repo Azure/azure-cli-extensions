@@ -28,7 +28,7 @@ def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
     raw_parameters = locals()
     containerapp_base_decorator = get_containerapp_base_decorator(cmd, raw_parameters)
     containerapp_base_decorator.validate_subscription_registered()
-    return containerapp_base_decorator.delete()
+    return containerapp_base_decorator.delete_containerapp()
 
 
 def create_containerapp(cmd,
