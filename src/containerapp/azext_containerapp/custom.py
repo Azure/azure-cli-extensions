@@ -1010,7 +1010,7 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None):
     )
     containerapp_base_decorator.validate_subscription_registered()
 
-    return containerapp_base_decorator.list_containerapp(resource_group_name, managed_env)
+    return containerapp_base_decorator.list_containerapp()
 
 
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):

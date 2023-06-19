@@ -12,7 +12,7 @@ import time
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
-    ValidationError)
+    ValidationError, ResourceNotFoundError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 
 from knack.log import get_logger
@@ -55,7 +55,7 @@ from ._utils import (_ensure_location_allowed,
                      ensure_workload_profile_supported, _generate_secret_volume_name,
                      parse_service_bindings, check_unique_bindings, AppType,
                      create_deserializer, process_loaded_yaml, load_yaml_file, get_linker_client,
-                     _validate_subscription_registered, _get_existing_secrets)
+                     _validate_subscription_registered)
 from ._validators import validate_create, validate_revision_suffix
 
 from ._constants import (CONTAINER_APPS_RP,
@@ -97,10 +97,11 @@ class BaseContainerAppDecorator:
     def update_containerapp(self, containerapp_def):
         raise NotImplementedError()
 
-    def list_containerapp(self, resource_group_name=None, managed_env=None):
+    def list_containerapp(self):
         try:
-            containerapps = []
-            if resource_group_name is None:
+            resource_group_name = self.get_argument_resource_group_name()
+            managed_env = self.get_argument_managed_env()
+            if self.get_argument_resource_group_name() is None:
                 containerapps = self.client.list_by_subscription(cmd=self.cmd)
             else:
                 containerapps = self.client.list_by_resource_group(cmd=self.cmd, resource_group_name=resource_group_name)
@@ -128,8 +129,7 @@ class BaseContainerAppDecorator:
 
     def delete_containerapp(self):
         try:
-            return self.client.delete(cmd=self.cmd, name=self.get_argument_name(), resource_group_name=self.get_argument_resource_group_name(),
-                                             no_wait=self.get_argument_no_wait())
+            return self.client.delete(cmd=self.cmd, name=self.get_argument_name(), resource_group_name=self.get_argument_resource_group_name(), no_wait=self.get_argument_no_wait())
         except CLIError as e:
             handle_raw_exception(e)
 
@@ -314,6 +314,7 @@ class BaseContainerAppDecorator:
     def set_argument_service_connectors_def_list(self, service_connectors_def_list):
         self.set_param("service_connectors_def_list", service_connectors_def_list)
 
+
 class ContainerAppCreateDecorator(BaseContainerAppDecorator, ABC):
     def __init__(
         self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
@@ -347,12 +348,11 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator, ABC):
 
         try:
             managed_env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=managed_env_rg, name=managed_env_name)
-        except:
+        except ResourceNotFoundError:
             pass
 
         if not managed_env_info:
-            raise ValidationError(
-                "The environment '{}' does not exist. Specify a valid environment".format(self.get_argument_managed_env()))
+            raise ValidationError("The environment '{}' does not exist. Specify a valid environment".format(self.get_argument_managed_env()))
 
         location = managed_env_info["location"]
         _ensure_location_allowed(self.cmd, location, CONTAINER_APPS_RP, "containerApps")
@@ -566,8 +566,8 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator, ABC):
         else:
             target_port = self.get_argument_target_port() or "<port>"
             not self.get_argument_disable_warnings() and logger.warning("\nContainer app created. To access it over HTTPS, enable ingress: "
-                                                               "az containerapp ingress enable -n %s -g %s --type external --target-port %s"
-                                                               " --transport auto\n", self.get_argument_name(), self.get_argument_resource_group_name(), target_port)
+                                                                        "az containerapp ingress enable -n %s -g %s --type external --target-port %s"
+                                                                        " --transport auto\n", self.get_argument_name(), self.get_argument_resource_group_name(), target_port)
 
         if self.get_argument_service_connectors_def_list() is not None:
             linker_client = get_linker_client(self.cmd)
@@ -656,7 +656,7 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator, ABC):
 
         try:
             env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
-        except:
+        except ResourceNotFoundError:
             pass
 
         if not env_info:
