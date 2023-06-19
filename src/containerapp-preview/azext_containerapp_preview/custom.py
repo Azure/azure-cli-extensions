@@ -5,52 +5,28 @@
 from knack.log import get_logger
 
 from ._clients import ContainerAppClient
-from .containerapp_decorator import ContainerAppPreviewCreateDecorator
-from ._utils import (_get_azext_module, GA_CONTAINERAPP_EXTENSION_NAME)
+from .containerapp_decorator import ContainerAppPreviewCreateDecorator, get_containerapp_base_decorator
 
 logger = get_logger(__name__)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
     raw_parameters = locals()
-    azext_decorator = _get_azext_module(GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp.containerapp_decorator")
-
-    containerapp_base_decorator = azext_decorator.BaseContainerAppDecorator(
-        cmd=cmd,
-        client=ContainerAppClient,
-        raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
-    )
+    containerapp_base_decorator = get_containerapp_base_decorator(cmd, raw_parameters)
     containerapp_base_decorator.validate_subscription_registered()
-
     return containerapp_base_decorator.show_containerapp()
 
 
 def list_containerapp(cmd, resource_group_name=None, managed_env=None):
     raw_parameters = locals()
-    azext_decorator = _get_azext_module(GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp.containerapp_decorator")
-
-    containerapp_base_decorator = azext_decorator.BaseContainerAppDecorator(
-        cmd=cmd,
-        client=ContainerAppClient,
-        raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
-    )
+    containerapp_base_decorator = get_containerapp_base_decorator(cmd, raw_parameters)
     containerapp_base_decorator.validate_subscription_registered()
-
     return containerapp_base_decorator.list_containerapp()
 
 
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
     raw_parameters = locals()
-    azext_decorator = _get_azext_module(GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp.containerapp_decorator")
-
-    containerapp_base_decorator = azext_decorator.BaseContainerAppDecorator(
-        cmd=cmd,
-        client=ContainerAppClient,
-        raw_parameters=raw_parameters,
-        models="azext_containerapp._sdk_models"
-    )
+    containerapp_base_decorator = get_containerapp_base_decorator(cmd, raw_parameters)
     containerapp_base_decorator.validate_subscription_registered()
     return containerapp_base_decorator.delete()
 
