@@ -17,6 +17,6 @@ def load_command_table(self, _):
     with self.command_group('containerapp') as g:
         g.custom_show_command('show', 'show_containerapp', table_transformer=azext_commands.transform_containerapp_output, is_preview=True)
         g.custom_command('list', 'list_containerapp', table_transformer=azext_commands.transform_containerapp_list_output, is_preview=True)
-        g.custom_command('create', 'create_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory(), table_transformer=azext_commands.transform_containerapp_output, is_preview=True)
+        g.custom_command('delete', 'delete_containerapp', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory(), is_preview=True)
         # g.custom_command('update', 'update_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory(), table_transformer=azext_commands.transform_containerapp_output)
         g.custom_command('create', 'create_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory(), table_transformer=azext_commands.transform_containerapp_output, is_preview=True)

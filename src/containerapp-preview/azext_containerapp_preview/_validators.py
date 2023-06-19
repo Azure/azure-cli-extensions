@@ -14,7 +14,7 @@ def validate_env_name_or_id(cmd, namespace):
     environment_type = None
 
     if namespace.__dict__.get("environment_type"):
-        environment_type = namespace.managed_environment_type
+        environment_type = namespace.environment_type
 
     if namespace.managed_env:
         if "connectedEnvironments" in namespace.managed_env:

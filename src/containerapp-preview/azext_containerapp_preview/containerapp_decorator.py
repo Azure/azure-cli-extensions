@@ -91,7 +91,7 @@ class ContainerAppPreviewCreateDecorator(_get_azext_module(GA_CONTAINERAPP_EXTEN
             return ManagedEnvironmentClient
 
     def get_yaml_containerapp(self):
-        load_file = self.azext_default_utils.load_yaml_file(self.get_yaml())
+        load_file = self.azext_default_utils.load_yaml_file(self.get_argument_yaml())
         return self.azext_default_utils.process_loaded_yaml(load_file)
 
     def get_argument_environment_type(self):
