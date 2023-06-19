@@ -475,8 +475,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             values_data = yaml.load(stream, Loader=yaml.SafeLoader)
 
         with open(values_schema, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            schema_data = data
+            schema_data = json.load(f)
 
         try:
             deploy_params_dict = self.traverse_dict(values_data, DEPLOYMENT_PARAMETER_MAPPING_REGEX)
