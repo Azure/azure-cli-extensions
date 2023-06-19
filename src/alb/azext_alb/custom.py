@@ -13,6 +13,7 @@ from .aaz.latest.network.alb.association import Create as _AssociationCreate
 
 logger = get_logger(__name__)
 
+
 class AssociationCreate(_AssociationCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
