@@ -5,10 +5,22 @@ from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.azclierror import ValidationError, RequiredArgumentMissingError
 from msrestazure.tools import parse_resource_id
 
-from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient
+from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ContainerAppClient
 from ._utils import (_get_azext_module, GA_CONTAINERAPP_EXTENSION_NAME)
 
 logger = get_logger(__name__)
+
+
+def get_containerapp_base_decorator(cmd, raw_parameters):
+    azext_decorator = _get_azext_module(GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp.containerapp_decorator")
+
+    containerapp_base_decorator = azext_decorator.BaseContainerAppDecorator(
+        cmd=cmd,
+        client=ContainerAppClient,
+        raw_parameters=raw_parameters,
+        models="azext_containerapp._sdk_models"
+    )
+    return containerapp_base_decorator
 
 
 class ContainerAppPreviewCreateDecorator(_get_azext_module(GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp.containerapp_decorator").ContainerAppCreateDecorator):
@@ -47,8 +59,7 @@ class ContainerAppPreviewCreateDecorator(_get_azext_module(GA_CONTAINERAPP_EXTEN
         if self.get_argument_yaml():
             yaml_containerapp = self.get_yaml_containerapp()
             if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
-                raise ValidationError(
-                    'Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+                raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
             env = self.azext_default_utils.safe_get(yaml_containerapp, "properties", "environmentId")
             if not env:
                 raise RequiredArgumentMissingError(
@@ -63,15 +74,13 @@ class ContainerAppPreviewCreateDecorator(_get_azext_module(GA_CONTAINERAPP_EXTEN
         parsed_env = parse_resource_id(env)
 
         # Validate environment type
-        if parsed_env['resource_type'] == "connectedEnvironments":
+        if parsed_env.get('resource_type') == "connectedEnvironments":
             if environment_type == "managed":
-                logger.warning(
-                    "User passed a connectedEnvironment resource id but did not specify --environment-type connected. Using environment type connected.")
+                logger.warning("User passed a connectedEnvironment resource id but did not specify --environment-type connected. Using environment type connected.")
                 environment_type = "connected"
         else:
             if environment_type == "connected":
-                logger.warning(
-                    "User passed a managedEnvironment resource id but specified --environment-type connected. Using environment type managed.")
+                logger.warning("User passed a managedEnvironment resource id but specified --environment-type connected. Using environment type managed.")
 
         self.set_argument_environment_type(environment_type)
         self.set_argument_managed_env(env)
