@@ -9,16 +9,18 @@
 BaremetalMachineKeyset tests scenarios
 """
 
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .config import CONFIG
 
 
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
+    pass
 
 
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
+    pass
 
 
 def call_scenario1(test):
@@ -103,7 +105,7 @@ class BaremetalMachineKeysetScenarioTest(ScenarioTest):
             'extendedLocation': CONFIG.get('BAREMETALMACHINE_KEYSET', 'extended_location'),
             'tags': CONFIG.get('BAREMETALMACHINE_KEYSET', 'tags'),
             'tagsUpdate': CONFIG.get('BAREMETALMACHINE_KEYSET', 'tags_update'),
-            "azureGroupId": CONFIG.get('BAREMETALMACHINE_KEYSET', 'azure_group_id'),
+            "azureGroupId":  CONFIG.get('BAREMETALMACHINE_KEYSET', 'azure_group_id'),
             'expiration': CONFIG.get('BAREMETALMACHINE_KEYSET', 'expiration'),
             "jumpHostsAllowed": CONFIG.get('BAREMETALMACHINE_KEYSET', 'jump_hosts_allowed'),
             "jumpHostsAllowedUpdate": CONFIG.get('BAREMETALMACHINE_KEYSET', 'jump_hosts_allowed_update'),

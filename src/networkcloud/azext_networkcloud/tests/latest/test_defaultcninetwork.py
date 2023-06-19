@@ -15,10 +15,12 @@ from .config import CONFIG
 
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
+    pass
 
 
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
+    pass
 
 
 def call_scenario1(test):
@@ -100,7 +102,7 @@ class DefaultCNINetworkScenarioTest(ScenarioTest):
             'extendedLocation': CONFIG.get('DEFAULT_CNI_NETWORK', 'extended_location'),
             'tags': CONFIG.get('DEFAULT_CNI_NETWORK', 'tags'),
             'tagsUpdate': CONFIG.get('DEFAULT_CNI_NETWORK', 'tags_update'),
-            "type": CONFIG.get('DEFAULT_CNI_NETWORK', 'type'),
+            "type":  CONFIG.get('DEFAULT_CNI_NETWORK', 'type'),
             'vlan': CONFIG.get('DEFAULT_CNI_NETWORK', 'vlan'),
             "ipAllocationType": CONFIG.get('DEFAULT_CNI_NETWORK', 'ip_allocation_type'),
             "cniBgpConfiguration": CONFIG.get('DEFAULT_CNI_NETWORK', 'cni_bgp_configuration'),

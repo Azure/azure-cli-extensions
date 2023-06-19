@@ -15,10 +15,12 @@ from .config import CONFIG
 
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
+    pass
 
 
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
+    pass
 
 
 def call_scenario1(test):
@@ -99,7 +101,7 @@ class TrunkedNetworkScenarioTest(ScenarioTest):
             'extendedLocation': CONFIG.get('TRUNKED_NETWORK', 'extended_location'),
             'tags': CONFIG.get('TRUNKED_NETWORK', 'tags'),
             'tagsUpdate': CONFIG.get('TRUNKED_NETWORK', 'tags_update'),
-            "type": CONFIG.get('TRUNKED_NETWORK', 'type'),
+            "type":  CONFIG.get('TRUNKED_NETWORK', 'type'),
             'vlans': CONFIG.get('TRUNKED_NETWORK', 'vlans'),
             "interfaceName": CONFIG.get('TRUNKED_NETWORK', 'interface_name'),
             "hybridAksPluginType": CONFIG.get('TRUNKED_NETWORK', 'hybrid_aks_plugin_type'),

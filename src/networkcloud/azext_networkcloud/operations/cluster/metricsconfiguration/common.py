@@ -1,4 +1,3 @@
-
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -13,7 +12,7 @@ the default value to "default".
 
 
 class ClusterMetricsConfiguration:
-    ''' Common custom class cluster's metrics configuration CRUD operations'''
+    """Common custom class cluster's metrics configuration CRUD operations"""
 
     @classmethod
     def _build_arguments_schema(cls, args_schema):
@@ -25,5 +24,5 @@ class ClusterMetricsConfiguration:
 
     @classmethod
     def pre_operations(cls, args):
-        ''' "default" is the default name for the metrics configuration name '''
+        """ "default" is the default name for the metrics configuration name"""
         args.metrics_configuration_name = "default"

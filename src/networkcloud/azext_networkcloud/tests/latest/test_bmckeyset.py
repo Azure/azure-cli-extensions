@@ -9,17 +9,19 @@
 BMCKeySet tests scenarios
 """
 
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 
 from .config import CONFIG
 
 
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
+    pass
 
 
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
+    pass
 
 
 def call_scenario1(test):
@@ -98,7 +100,7 @@ class BMCKeySetScenarioTest(ScenarioTest):
             'extendedLocation': CONFIG.get('BMC_KEYSET', 'extended_location'),
             'tags': CONFIG.get('BMC_KEYSET', 'tags'),
             'tagsUpdate': CONFIG.get('BMC_KEYSET', 'tags_update'),
-            "azureGroupId": CONFIG.get('BMC_KEYSET', 'azure_group_id'),
+            "azureGroupId":  CONFIG.get('BMC_KEYSET', 'azure_group_id'),
             'expiration': CONFIG.get('BMC_KEYSET', 'expiration'),
             'expirationUpdate': CONFIG.get('BMC_KEYSET', 'expirationUpdate'),
             "privilegeLevel": CONFIG.get('BMC_KEYSET', 'privilege_level'),

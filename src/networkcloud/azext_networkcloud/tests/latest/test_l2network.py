@@ -15,10 +15,12 @@ from .config import CONFIG
 
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
+    pass
 
 
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
+    pass
 
 
 def call_scenario1(test):
@@ -100,7 +102,7 @@ class L2NetworkScenarioTest(ScenarioTest):
             'extendedLocation': CONFIG.get('L2_NETWORK', 'extended_location'),
             'tags': CONFIG.get('L2_NETWORK', 'tags'),
             'tagsUpdate': CONFIG.get('L2_NETWORK', 'tags_update'),
-            "type": CONFIG.get('L2_NETWORK', 'type'),
+            "type":  CONFIG.get('L2_NETWORK', 'type'),
             "interfaceName": CONFIG.get('L2_NETWORK', 'interface_name'),
             "hybridAksPluginType": CONFIG.get('L2_NETWORK', 'hybrid_aks_plugin_type'),
             "l2_isolation_domain_id": CONFIG.get('L2_NETWORK', 'l2_isolation_domain_id'),

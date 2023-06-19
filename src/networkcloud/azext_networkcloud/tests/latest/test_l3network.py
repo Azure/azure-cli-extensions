@@ -15,10 +15,12 @@ from .config import CONFIG
 
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
+    pass
 
 
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
+    pass
 
 
 def call_scenario1(test):
@@ -102,7 +104,7 @@ class L3NetworkScenarioTest(ScenarioTest):
             'extendedLocation': CONFIG.get('L3_NETWORK', 'extended_location'),
             'tags': CONFIG.get('L3_NETWORK', 'tags'),
             'tagsUpdate': CONFIG.get('L3_NETWORK', 'tags_update'),
-            "type": CONFIG.get('L3_NETWORK', 'type'),
+            "type":  CONFIG.get('L3_NETWORK', 'type'),
             'vlan': CONFIG.get('L3_NETWORK', 'vlan'),
             "ipAllocationType": CONFIG.get('L3_NETWORK', 'ip_allocation_type'),
             "hybridAksPluginType": CONFIG.get('L3_NETWORK', 'hybrid_aks_plugin_type'),
