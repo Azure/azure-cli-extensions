@@ -531,7 +531,6 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         """
         new_schema = {}
         no_schema_list = []
-        print(result)
         for deploy_param in result:
             node = full_schema
             for path_list in result[deploy_param]:
