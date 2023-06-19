@@ -160,10 +160,10 @@ def load_arguments(self, _):
                    help='(Enterprise Tier Only) Enable Application Configuration Service.')
         c.argument('application_configuration_service_generation',
                    arg_group="Application Configuration Service",
-                   type=ConfigurationServiceGeneration,
+                   arg_type=get_enum_type(ConfigurationServiceGeneration),
                    options_list=['--application-configuration-service-generation', '--acs-gen'],
                    validator=validate_acs_create,
-                   help='(Enterprise Tier Only) Application Configuration Service Generation to enable. Allowed values are: ' + ', '.join(list(ConfigurationServiceGeneration)))
+                   help='(Enterprise Tier Only) Application Configuration Service Generation to enable.')
         c.argument('enable_application_live_view',
                    action='store_true',
                    options_list=['--enable-application-live-view', '--enable-alv'],
@@ -819,7 +819,7 @@ def load_arguments(self, _):
 
     for scope in ['create', 'update']:
         with self.argument_context('spring application-configuration-service {}'.format(scope)) as c:
-            c.argument('generation', type=ConfigurationServiceGeneration, help='Generation. Allowed values are: ' + ', '.join(list(ConfigurationServiceGeneration)))
+            c.argument('generation', arg_type=get_enum_type(ConfigurationServiceGeneration), help='Generation.')
 
     for scope in ['add', 'update']:
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:

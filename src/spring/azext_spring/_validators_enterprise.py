@@ -348,18 +348,7 @@ def _is_valid_app_and_profile_name(pattern):
 def validate_acs_create(namespace):
     if namespace.application_configuration_service_generation is not None:
         if namespace.enable_application_configuration_service is False:
-            raise ArgumentUsageError("--application_configuration_service_generation can only be set when enable application configuration service.")
-
-
-def validate_acs_create_or_update(namespace):
-    _validate_acs_generation(namespace)
-
-
-def _validate_acs_generation(namespace):
-    if namespace.generation is None:
-        return
-    if (namespace.generation not in list(ConfigurationServiceGeneration)):
-        raise InvalidArgumentValueError("Allowed generation are: " + ', '.join(list(ConfigurationServiceGeneration)))
+            raise ArgumentUsageError("--application-configuration-service-generation can only be set when enable application configuration service.")
 
 
 def validate_gateway_update(namespace):

@@ -956,6 +956,14 @@ helps['spring application-configuration-service create'] = """
           text: az spring application-configuration-service create -s MyService -g MyResourceGroup
 """
 
+helps['spring application-configuration-service update'] = """
+    type: command
+    short-summary: Update Application Configuration Service.
+    examples:
+        - name: Update Application Configuration Service.
+          text: az spring application-configuration-service update -s MyService -g MyResourceGroup --generation Gen2
+"""
+
 helps['spring application-configuration-service delete'] = """
     type: command
     short-summary: Delete Application Configuration Service.

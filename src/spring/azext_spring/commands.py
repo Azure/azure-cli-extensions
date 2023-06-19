@@ -30,7 +30,7 @@ from ._transformers import (transform_spring_table_output,
                             transform_container_registry_output)
 from ._validators import validate_app_insights_command_not_supported_tier
 from ._marketplace import (transform_marketplace_plan_output)
-from ._validators_enterprise import (validate_acs_create_or_update, validate_gateway_update, validate_api_portal_update, validate_dev_tool_portal, validate_customized_accelerator, validate_central_build_instance)
+from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update, validate_dev_tool_portal, validate_customized_accelerator, validate_central_build_instance)
 from ._app_managed_identity_validator import (validate_app_identity_remove_or_warning,
                                               validate_app_identity_assign_or_warning)
 
@@ -303,8 +303,8 @@ def load_command_table(self, _):
                               table_transformer=transform_application_configuration_service_output)
         g.custom_command('bind', 'application_configuration_service_bind')
         g.custom_command('unbind', 'application_configuration_service_unbind')
-        g.custom_command('create', 'application_configuration_service_create', validator=validate_acs_create_or_update, table_transformer=transform_application_configuration_service_output)
-        g.custom_command('update', 'application_configuration_service_update', validator=validate_acs_create_or_update, table_transformer=transform_application_configuration_service_output)
+        g.custom_command('create', 'application_configuration_service_create', table_transformer=transform_application_configuration_service_output)
+        g.custom_command('update', 'application_configuration_service_update', table_transformer=transform_application_configuration_service_output)
         g.custom_command('delete', 'application_configuration_service_delete', confirmation=True)
 
     with self.command_group('spring application-configuration-service git repo',
