@@ -511,10 +511,11 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                 elif isinstance(v, str) and re.search(target, v):  # If the value is a string + matches target regex
                     match = re.search(target, v)  # Take the match i.e, foo from {deployParameter.foo}
                     result[match.group(1)] = path + [k]  # Add it to the result dictionary with its path as the value
-            if isinstance(node, list):  # If the popped item is a list
-                for i in node:
-                    if isinstance(i, dict):
-                        stack.append((i, path))  # Add it to the stack with its path
+                elif isinstance(v, list):
+                    for i in v:
+                        if isinstance(i, str) and re.search(target, i):
+                            match = re.search(target, i)
+                            result[match.group(1)] = path + [k]
         return result
 
     def search_schema(self, result, full_schema):
@@ -530,16 +531,21 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         param full_schema: The schema to search through.
         """
         new_schema = {}
+        no_schema_list = []
+        print(result)
         for deploy_param in result:
             node = full_schema
             for path_list in result[deploy_param]:
                 if "properties" in node.keys():
                     node = node["properties"][path_list]
                 else:
-                    print("No schema found for deployment parameter: ", deploy_param, ", we default to type string.")
+                    no_schema_list.append(deploy_param)
                     new_schema.update({deploy_param: {"type": "string"}})
             if deploy_param not in new_schema:
                 new_schema.update({deploy_param: {"type": node.get('type', None)}})
+        if no_schema_list:
+            print("No schema found for deployment parameter(s):", no_schema_list)
+            print("We default these parameters to type string")
         return new_schema
 
     def _replace_values_with_deploy_params(
