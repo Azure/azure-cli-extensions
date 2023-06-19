@@ -2269,6 +2269,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         return tierStr
 
+    def get_nodepool_taints(self) -> Union[List[str], None]:
+        """Obtain the value of nodepool_taints.
+
+        :return: dictionary or None
+        """
+
+        return self.agentpool_context.get_nodepool_taints()
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
