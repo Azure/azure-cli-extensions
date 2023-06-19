@@ -15,10 +15,12 @@ from .config import CONFIG
 
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
+    pass
 
 
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
+    pass
 
 
 def call_scenario1(test):
@@ -134,7 +136,6 @@ def step_update(test, checks=None):
         '--tags {tagsUpdate} --resource-group {rg}')
 
 
-# VirtualMachine has a different name regex. The commonly used pattern "cli-test-vm-" cannot be used as the dashes are not accepted.
 class VirtualMachineScenarioTest(ScenarioTest):
     '''VirtualMachine scenario test'''
 

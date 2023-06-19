@@ -23,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2023-05-01-preview"],
         ]
     }
 
@@ -124,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-05-01-preview",
                     required=True,
                 ),
             }
@@ -194,6 +194,10 @@ class Show(AAZCommand):
             properties.admin_username = AAZStrType(
                 serialized_name="adminUsername",
                 flags={"required": True},
+            )
+            properties.availability_zone = AAZStrType(
+                serialized_name="availabilityZone",
+                flags={"read_only": True},
             )
             properties.bare_metal_machine_id = AAZStrType(
                 serialized_name="bareMetalMachineId",
