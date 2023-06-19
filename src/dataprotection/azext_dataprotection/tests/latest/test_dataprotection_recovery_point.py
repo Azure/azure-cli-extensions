@@ -9,11 +9,11 @@
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
-class JobScenarioTest(ScenarioTest):
+class RecoveryPointScenarioTest(ScenarioTest):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.kwargs.update({
+    def setUp(test):
+        super().setUp()
+        test.kwargs.update({
             'location': 'centraluseuap',
             'rg': 'clitest-dpp-rg',
             'vaultName': 'clitest-bkp-vault-persistent-bi-donotdelete',

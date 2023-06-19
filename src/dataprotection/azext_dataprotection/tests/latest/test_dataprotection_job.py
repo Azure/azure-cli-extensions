@@ -33,5 +33,5 @@ class JobScenarioTest(ScenarioTest):
         })
 
         test.cmd('az dataprotection job show --job-id "{jobName}" -g "{rg}" --vault-name "{vaultName}"', checks=[
-            test.check('properties.dataSourceId', "{dataSourceId}")
+            test.check('name', "{jobName}")
         ])

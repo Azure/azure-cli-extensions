@@ -11,12 +11,15 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 class ResourceGuardScenarioTest(ScenarioTest):
 
-    @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='clitestdataprotection_resourceguard_')
-    def test_dataprotection_resource_guard_create_and_delete(test):
+    def setUp(test):
+        super().setUp()
         test.kwargs.update({
-            'resourceGuardName':'cli-test-resource-guard',
+            'resourceGuardName':'clitest-resource-guard',
         })
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='clitest-dpp-resourceguard-', location='centraluseuap')
+    def test_dataprotection_resource_guard_create_and_delete(test):
         test.cmd('az dataprotection resource-guard create -g "{rg}" -n "{resourceGuardName}"', checks=[
             test.check('name', "{resourceGuardName}")
         ])
@@ -29,10 +32,9 @@ class ResourceGuardScenarioTest(ScenarioTest):
         test.cmd('az dataprotection resource-guard delete -g "{rg}" -n "{resourceGuardName}" -y')
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='clitestdataprotection_resourceguard_')
+    @ResourceGroupPreparer(name_prefix='clitest-dpp-resourceguard-', location='centraluseuap')
     def test_dataprotection_resource_guard_update(test):
         test.kwargs.update({
-            'resourceGuardName':'cli-test-resource-guard',
             'resourceType': 'Microsoft.RecoveryServices/vaults'
         })
         test.cmd('az dataprotection resource-guard create -g "{rg}" -n "{resourceGuardName}"', checks=[

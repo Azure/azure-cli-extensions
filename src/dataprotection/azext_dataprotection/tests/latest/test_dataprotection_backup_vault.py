@@ -11,13 +11,16 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 class BackupVaultScenarioTest(ScenarioTest):
 
-    @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='clitestdataprotection_backupvault_')
-    def test_dataprotection_backup_vault_create_and_delete(test):
+    def setUp(test):
+        super().setUp()
         test.kwargs.update({
-            'vaultName': 'cli-test-backup-vault',
-            'location': 'eastus'
+            'location': 'centraluseuap',
+            'vaultName': 'cli-test-backup-vault'
         })
+
+    @AllowLargeResponse()
+    @ResourceGroupPreparer(name_prefix='clitest-dpp-backupvault-', location='centraluseuap')
+    def test_dataprotection_backup_vault_create_and_delete(test):
         test.cmd('az dataprotection backup-vault create '
                 '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
                 '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type "SystemAssigned" '
@@ -40,12 +43,8 @@ class BackupVaultScenarioTest(ScenarioTest):
         test.cmd('az dataprotection backup-vault delete -g "{rg}" --vault-name "{vaultName}" -y')
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='clitestdataprotection_backupvault_')
+    @ResourceGroupPreparer(name_prefix='clitest-dpp-backupvault-', location='centraluseuap')
     def test_dataprotection_backup_vault_update(test):
-        test.kwargs.update({
-            'vaultName': 'cli-test-backup-vault',
-            'location': 'eastus'
-        })
         test.cmd('az dataprotection backup-vault create '
                 '-g "{rg}" --vault-name "{vaultName}" -l "{location}" '
                 '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type "SystemAssigned" '

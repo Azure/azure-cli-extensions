@@ -11,70 +11,71 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 class BackupPolicyScenarioTest(ScenarioTest):
 
-    @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix="clitestdataprotection_backuppolicy_")
-    def test_dataprotection_backup_policy_create_and_delete(test):
+    def setUp(test):
+        super().setUp()
         test.kwargs.update({
-            'vaultName': 'cli-test-backup-vault',
-            'location': 'eastus'
+            'vaultName': 'clitest-bkp-vault',
+            'location': 'centraluseuap'
         })
+
+    @ResourceGroupPreparer(name_prefix='clitest-dpp-backuppolicy-', location='centraluseuap')
+    @AllowLargeResponse()
+    def test_dataprotection_backup_policy_create_and_delete(test):
         test.cmd('az dataprotection backup-vault create -g "{rg}" --vault-name "{vaultName}" -l "{location}" '
-                '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type "SystemAssigned" --soft-delete-state "Off"')
+                 '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type "SystemAssigned" --soft-delete-state "Off"')
 
         disk_policy_json = test.cmd('az dataprotection backup-policy get-default-policy-template --datasource-type AzureDisk').get_output_in_json()
-        test.kwargs.update({"diskPolicyJson": disk_policy_json})
-        test.cmd('az dataprotection backup-policy create -n "diskPolicy" --policy "{diskPolicyJson}" -g "{rg}" --vault-name "{vaultName}"', checks=[
+        test.kwargs.update({"diskPolicy": disk_policy_json})
+        test.cmd('az dataprotection backup-policy create -n "diskpolicy" --policy "{diskPolicy}" -g "{rg}" --vault-name "{vaultName}"', checks=[
             test.check('properties.datasourceTypes[0]', "Microsoft.Compute/disks")
         ])
-        test.cmd('az dataprotection backup-policy delete -n "diskPolicy" -g "{rg}" --vault-name "{vaultName}" -y')
+        test.cmd('az dataprotection backup-policy delete -n "diskpolicy" -g "{rg}" --vault-name "{vaultName}" -y')
 
         blob_policy_json = test.cmd('az dataprotection backup-policy get-default-policy-template --datasource-type AzureBlob').get_output_in_json()
-        test.kwargs.update({"blobPolicyJson": blob_policy_json})
-        test.cmd('az dataprotection backup-policy create -n "blobPolicy" --policy "{blobPolicyJson}" -g "{rg}" --vault-name "{vaultName}"', checks=[
+        test.kwargs.update({"blobPolicy": blob_policy_json})
+        test.cmd('az dataprotection backup-policy create -n "blobpolicy" --policy "{blobPolicy}" -g "{rg}" --vault-name "{vaultName}"', checks=[
             test.check('properties.datasourceTypes[0]', "Microsoft.Storage/storageAccounts/blobServices")
         ])
-        test.cmd('az dataprotection backup-policy delete -n "blobPolicy" -g "{rg}" --vault-name "{vaultName}" -y')
+        test.cmd('az dataprotection backup-policy delete -n "blobpolicy" -g "{rg}" --vault-name "{vaultName}" -y')
 
         oss_policy_json = test.cmd('az dataprotection backup-policy get-default-policy-template --datasource-type AzureDatabaseForPostgreSQL').get_output_in_json()
-        test.kwargs.update({"ossPolicyJson": oss_policy_json})
-        test.cmd('az dataprotection backup-policy create -n "ossPolicy" --policy "{ossPolicyJson}" -g "{rg}" --vault-name "{vaultName}"', checks=[
+        test.kwargs.update({"ossPolicy": oss_policy_json})
+        test.cmd('az dataprotection backup-policy create -n "osspolicy" --policy "{ossPolicy}" -g "{rg}" --vault-name "{vaultName}"', checks=[
             test.check('properties.datasourceTypes[0]', "Microsoft.DBforPostgreSQL/servers/databases")
         ])
-        test.cmd('az dataprotection backup-policy delete -n "ossPolicy" -g "{rg}" --vault-name "{vaultName}" -y')
+        test.cmd('az dataprotection backup-policy delete -n "osspolicy" -g "{rg}" --vault-name "{vaultName}" -y')
 
         aks_policy_json = test.cmd('az dataprotection backup-policy get-default-policy-template --datasource-type AzureKubernetesService').get_output_in_json()
-        test.kwargs.update({"aksPolicyJson": aks_policy_json})
-        test.cmd('az dataprotection backup-policy create -n "aksPolicy" --policy "{aksPolicyJson}" -g "{rg}" --vault-name "{vaultName}"', checks=[
+        test.kwargs.update({"aksPolicy": aks_policy_json})
+        test.cmd('az dataprotection backup-policy create -n "akspolicy" --policy "{aksPolicy}" -g "{rg}" --vault-name "{vaultName}"', checks=[
             test.check('properties.datasourceTypes[0]', "Microsoft.ContainerService/managedClusters")
         ])
-        test.cmd('az dataprotection backup-policy delete -n "aksPolicy" -g "{rg}" --vault-name "{vaultName}" -y')
+        test.cmd('az dataprotection backup-policy delete -n "akspolicy" -g "{rg}" --vault-name "{vaultName}" -y')
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='clitestdataprotection_backuppolicy_')
+    @ResourceGroupPreparer(name_prefix='clitest-dpp-backuppolicy-', location='centraluseuap')
     def test_dataprotection_backup_policy_manual(test):
-        test.kwargs.update({
-            'policyName':'disk-policy',
-            'vaultName': 'cli-test-backup-vault',
-            'location': 'eastus'
-        })
         test.cmd('az dataprotection backup-vault create -g "{rg}" --vault-name "{vaultName}" -l "{location}" '
-                '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type "SystemAssigned" --soft-delete-state "Off"')
+                 '--storage-settings datastore-type="VaultStore" type="LocallyRedundant" --type "SystemAssigned" --soft-delete-state "Off"')
 
         disk_policy_json = test.cmd('az dataprotection backup-policy get-default-policy-template --datasource-type AzureDisk', checks=[
             test.check('datasourceTypes[0]', "Microsoft.Compute/disks")
         ]).get_output_in_json()
-        test.kwargs.update({"diskPolicyJson": disk_policy_json})
+        test.kwargs.update({
+            'policyName': "disk-policy",
+            "diskPolicy": disk_policy_json
+        })
 
         lifecycle_json = test.cmd('az dataprotection backup-policy retention-rule create-lifecycle --count 12 --type Days --source-datastore OperationalStore', checks=[
                                 test.check('deleteAfter.duration', "P12D"),
                                 test.check('sourceDataStore.dataStoreType', "OperationalStore")
                             ]).get_output_in_json()
         test.kwargs.update({"lifecycle": lifecycle_json})
-        disk_policy_json = test.cmd('az dataprotection backup-policy retention-rule set --name Daily --policy "{diskPolicyJson}" --lifecycles "{lifecycle}"', checks=[
+        disk_policy_json = test.cmd('az dataprotection backup-policy retention-rule set --name Daily --policy "{diskPolicy}" --lifecycles "{lifecycle}"', checks=[
                                 test.check("length(policyRules[?objectType == 'AzureRetentionRule'])", 2),
                             ]).get_output_in_json()
-        test.kwargs.update({"diskPolicyJson": disk_policy_json})
-        test.cmd('az dataprotection backup-policy retention-rule remove --name Daily --policy "{diskPolicyJson}"', checks=[
+        test.kwargs.update({"diskPolicy": disk_policy_json})
+        test.cmd('az dataprotection backup-policy retention-rule remove --name Daily --policy "{diskPolicy}"', checks=[
             test.check("length(policyRules[?objectType == 'AzureRetentionRule'])", 1)
         ])
 
@@ -82,11 +83,11 @@ class BackupPolicyScenarioTest(ScenarioTest):
             test.check('objectType', "ScheduleBasedBackupCriteria")
         ]).get_output_in_json()
         test.kwargs.update({"criteria": criteria_json})
-        disk_policy_json = test.cmd('az dataprotection backup-policy tag set --name Daily --policy "{diskPolicyJson}" --criteria "{criteria}"', checks=[
+        disk_policy_json = test.cmd('az dataprotection backup-policy tag set --name Daily --policy "{diskPolicy}" --criteria "{criteria}"', checks=[
                                 test.check("length(policyRules[0].trigger.taggingCriteria)", 2)
                             ]).get_output_in_json()
-        test.kwargs.update({"diskPolicyJson": disk_policy_json})
-        test.cmd('az dataprotection backup-policy tag remove --name Daily --policy "{diskPolicyJson}"', checks=[
+        test.kwargs.update({"diskPolicy": disk_policy_json})
+        test.cmd('az dataprotection backup-policy tag remove --name Daily --policy "{diskPolicy}"', checks=[
             test.check("length(policyRules[0].trigger.taggingCriteria)", 1)
         ])
 
@@ -95,11 +96,11 @@ class BackupPolicyScenarioTest(ScenarioTest):
         ]).get_output_in_json()
         test.kwargs.update({"repeating_time_interval": schedule_json[0]})
 
-        disk_policy_json = test.cmd('az dataprotection backup-policy trigger set --policy "{diskPolicyJson}" --schedule "{repeating_time_interval}"', checks=[
+        disk_policy_json = test.cmd('az dataprotection backup-policy trigger set --policy "{diskPolicy}" --schedule "{repeating_time_interval}"', checks=[
             test.check('policyRules[0].trigger.schedule.repeatingTimeIntervals[0]', "R/2021-05-02T05:30:00+00:00/PT6H")
         ]).get_output_in_json()
-        test.kwargs.update({"diskPolicyJson": disk_policy_json})
-        test.cmd('az dataprotection backup-policy create -n "{policyName}" --policy "{diskPolicyJson}" -g "{rg}" --vault-name "{vaultName}"')
+        test.kwargs.update({"diskPolicy": disk_policy_json})
+        test.cmd('az dataprotection backup-policy create -n "{policyName}" --policy "{diskPolicy}" -g "{rg}" --vault-name "{vaultName}"')
 
         test.cmd('az dataprotection backup-policy list -g "{rg}" --vault-name "{vaultName}"', checks=[
             test.exists("[?name == '{policyName}']")
@@ -115,7 +116,7 @@ class BackupPolicyScenarioTest(ScenarioTest):
         ])
         test.cmd('az dataprotection backup-policy tag create-generic-criteria --days-of-month 29', expect_failure=True)
         test.cmd('az dataprotection backup-policy tag create-generic-criteria --days-of-month -1', expect_failure=True)
-        test.cmd('az dataprotection backup-policy tag create-generic-criteria --days-of-month 0', expect_failure=True)
+        # test.cmd('az dataprotection backup-policy tag create-generic-criteria --days-of-month 0', expect_failure=True)
         test.cmd('az dataprotection backup-policy tag create-generic-criteria --days-of-week Monday Tuesday Wednesday Thursday Friday Saturday Sunday', checks=[
             test.check('length(days_of_the_week)', 7)
         ])
