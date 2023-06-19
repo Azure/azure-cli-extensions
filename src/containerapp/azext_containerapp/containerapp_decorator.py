@@ -179,6 +179,9 @@ class BaseContainerAppDecorator:
     def get_argument_managed_env(self):
         return self.get_param("managed_env")
 
+    def set_argument_managed_env(self, managed_env):
+        self.set_param("managed_env", managed_env)
+
     def get_argument_min_replicas(self):
         return self.get_param("min_replicas")
 
