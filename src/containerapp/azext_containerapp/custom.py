@@ -92,7 +92,7 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      check_managed_cert_name_availability, prepare_managed_certificate_envelop,
                      get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported, _generate_secret_volume_name,
                      parse_service_bindings, get_linker_client, check_unique_bindings,
-                     get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, AppType)
+                     get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, trigger_workflow, AppType)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -2767,6 +2767,15 @@ def create_or_update_github_action(cmd,
 
     branch = _validate_github(repo, branch, token)
 
+    # Need to trigger the workflow manually if it already exists (performing an update)
+    try:
+        workflow_name = GitHubActionClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
+        if workflow_name is not None:
+            trigger_workflow(token, repo, workflow_name, branch)
+            return
+    except:  # pylint: disable=bare-except
+        pass
+
     source_control_info = None
 
     try:
@@ -2822,7 +2831,20 @@ def create_or_update_github_action(cmd,
         logger.warning("Creating Github action...")
         r = GitHubActionClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, github_action_envelope=source_control_info, headers=headers, no_wait=no_wait)
         if not no_wait:
-            await_github_action(token, repo, r["properties"]["githubActionConfiguration"]["workflowName"])
+            WORKFLOW_POLL_RETRY = 3
+            WORKFLOW_POLL_SLEEP = 10
+            
+            # Poll for the workflow file just created (may take up to 30s)
+            for x in range (0, WORKFLOW_POLL_RETRY):
+                time.sleep(WORKFLOW_POLL_SLEEP)
+                workflow_name = GitHubActionClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
+                if workflow_name is not None:
+                    await_github_action(token, repo, workflow_name)
+                    return r
+
+            raise ValidationError(
+                    "Failed to find workflow file for Container App '{}' in .github/workflow folder for repo '{}'. ".format(name, repo) +
+                    "If this file was removed, please use the 'az containerapp github-action delete' command to disconnect the removed workflow file connection.")
         return r
     except Exception as e:
         handle_raw_exception(e)

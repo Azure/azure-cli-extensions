@@ -45,7 +45,6 @@ from ._utils import (
     repo_url_to_name,
     get_container_app_if_exists,
     get_containerapps_job_if_exists,
-    trigger_workflow,
     _ensure_location_allowed,
     register_provider_if_needed,
     validate_environment_location,
@@ -1040,14 +1039,6 @@ def _create_github_action(
         service_principal_client_secret,
         service_principal_tenant_id,
     ) = sp
-
-    # need to trigger the workflow manually if it already exists (performing an update)
-    try:
-        action = GitHubActionClient.show(cmd=app.cmd, resource_group_name=app.resource_group.name, name=app.name)
-        if action:
-            trigger_workflow(token, repo, action["properties"]["githubActionConfiguration"]["workflowName"], branch)
-    except:  # pylint: disable=bare-except
-        pass
 
     create_or_update_github_action(
         cmd=app.cmd,
