@@ -1380,7 +1380,7 @@ def create_managed_environment(cmd,
         managed_env_def["properties"]["vnetConfiguration"]["internal"] = True
 
     if mtls_peer_authentication_enabled is not None:
-        managed_env_def["properties"]["peerAuthentication"]["mtls"]["enabled"] = mtls_peer_authentication_enabled
+        safe_set(managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=mtls_peer_authentication_enabled)
     try:
         r = ManagedEnvironmentClient.create(
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=managed_env_def, no_wait=no_wait)
@@ -3541,7 +3541,7 @@ def enable_cors_policy(cmd, name, resource_group_name, allowed_origins, allowed_
     try:
         r = ContainerAppClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch, no_wait=no_wait)
-        return r['properties']['configuration']['ingress']['corsPolicy']
+        return safe_get(r, "properties", "configuration", "ingress", "corsPolicy", default={})
     except Exception as e:
         handle_raw_exception(e)
 
@@ -3563,7 +3563,7 @@ def disable_cors_policy(cmd, name, resource_group_name, no_wait=False):
     try:
         r = ContainerAppClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch, no_wait=no_wait)
-        return r['properties']['configuration']['ingress']
+        return safe_get(r, "properties", "configuration", "ingress", default={})
     except Exception as e:
         handle_raw_exception(e)
 
@@ -3607,7 +3607,7 @@ def update_cors_policy(cmd, name, resource_group_name, allowed_origins=None, all
     try:
         r = ContainerAppClient.update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch, no_wait=no_wait)
-        return r['properties']['configuration']['ingress']['corsPolicy']
+        return safe_get(r, "properties", "configuration", "ingress", "corsPolicy", default={})
     except Exception as e:
         handle_raw_exception(e)
 
@@ -3625,9 +3625,9 @@ def show_cors_policy(cmd, name, resource_group_name):
         raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
 
     try:
-        return containerapp_def["properties"]["configuration"]['ingress']["corsPolicy"]
+        return safe_get(containerapp_def, "properties", "configuration", "ingress", "corsPolicy", default={})
     except Exception as e:
-        raise ValidationError("CORS must be enabled to enable CORS policy. Try running `az containerapp cors enable -h` for more info.") from e
+        raise ValidationError("CORS must be enabled to enable CORS policy. Try running `az containerapp ingress cors enable -h` for more info.") from e
 
 
 def show_registry(cmd, name, resource_group_name, server):
