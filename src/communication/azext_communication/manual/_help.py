@@ -196,7 +196,7 @@ helps['communication user-identity user create'] = """
     examples:
       - name: Create ACS user
         text: |-
-               az communication identity user create
+               az communication user-identity user create
 """
 
 helps['communication user-identity user delete'] = """
@@ -205,7 +205,7 @@ helps['communication user-identity user delete'] = """
     examples:
       - name: Delete ACS user
         text: |-
-               az communication identity user delete --user "8:acs:xxxxxx"
+               az communication user-identity user delete --user "8:acs:xxxxxx"
 """
 
 helps['communication user-identity issue-access-token'] = """
@@ -252,7 +252,7 @@ helps['communication user-identity token get-for-teams-user'] = """
     examples:
       - name: Get token for teams user
         text: |-
-               az communication identity token get-for-teams-user --aad-token "aad-123-xyz" --client "app-id-123-xyz" --aad-user "uid"
+               az communication user-identity token get-for-teams-user --aad-token "aad-123-xyz" --client "app-id-123-xyz" --aad-user "uid"
 """
 
 helps['communication sms'] = """
