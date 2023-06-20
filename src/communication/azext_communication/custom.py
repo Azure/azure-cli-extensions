@@ -8,6 +8,11 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
+try:
+    from .manual.custom import *  # noqa: F403
+except ImportError:
+    pass
+
 from azext_communication.aaz.latest.communication.identity import Assign as _IdentityAssign
 from azext_communication.aaz.latest.communication.identity import Remove as _IdentityRemove
 from azext_communication.aaz.latest.communication._create import Create as _CommunicationCreate
