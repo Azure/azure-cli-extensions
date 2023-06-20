@@ -17,7 +17,7 @@ from azure.cli.core.azclierror import (
     ResourceNotFoundError,
     InvalidTemplateError
 )
-
+# this should probably be incorporated into each other class, not be on its own
 class TestErrorMessages(unittest.TestCase):
     def test_invalid_chart(self):
         with self.assertRaises(InvalidTemplateError):
@@ -26,6 +26,23 @@ class TestErrorMessages(unittest.TestCase):
     #     with self.assertRaises(InvalidTemplateError):
     #         CnfNfdGenerator.get_chart_mapping_schema(self, "test")
             
+class TestExtractChart(unittest.TestCase):
+    pass
+class TestGenerateChartValueMappings(unittest.TestCase):
+    pass
+class TestGetChartMappingSchema(unittest.TestCase):
+    pass
+class TestFindPatternMatchesInChart(unittest.TestCase):
+    pass
+
+class TestGenerateNFApplicationConfig(unittest.TestCase):
+    pass
+
+class TestGetArtifactList(unittest.TestCase):
+    pass
+class TestWriteFilesToOutput(unittest.TestCase):
+    pass
+
 # class AosmScenarioTest(ScenarioTest):
 #     @ResourceGroupPreparer(name_prefix="cli_test_aosm")
 #     def test__aosm(self, resource_group):

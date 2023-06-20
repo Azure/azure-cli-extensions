@@ -1,0 +1,22 @@
+name: Run Unit + Integration Tests
+
+on:
+  push:
+    branches: [add-aosm-extension]
+  pull_request:
+    branches: [add-aosm-extension]
+
+jobs:
+  check_tests:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/azure-cli/tools:latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Setup azdev
+        run: |
+          # Pretend we have a valid git repo to satisfy azdev.
+          mkdir .git
+          azdev setup -c EDGE -r . -e aosm
+      - name: Check Test
+        run: azdev test aosm
