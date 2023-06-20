@@ -2,9 +2,9 @@ Release History
 ===============
 1.14.0
 ---
-* Add new command -- `az spring application-configuration-service create --generation` to support creating Application Configuration Service with different generation
-* Add new command -- `az spring application-configuration-service update --generation` to support updating Application Configuration Service to different generation
-* Add new command -- `az spring application-configuration-service git repo add --ca-cert-name` to support binding certificate to Application Configuration Service Gen2
+* Add new command `az spring application-configuration-service create --generation` to support creating Application Configuration Service with different generation
+* Add new command `az spring application-configuration-service update --generation` to support updating Application Configuration Service to different generation
+* Add new command `az spring application-configuration-service git repo add --ca-cert-name` to support binding certificate to Application Configuration Service Gen2
 
 1.13.3
 ---
