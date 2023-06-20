@@ -94,6 +94,8 @@ def _check_service_configuration(cmd, resource_uri, port):
     if port:
         return serviceConfig['port'] == int(port)
     else:
+        if serviceConfig['port'] != 22:
+            logger.warning(f"Port parameter was not specified, ssh connection will execute on default port, 22.")
         return True
 
 
@@ -113,7 +115,7 @@ def _create_default_endpoint(cmd, resource_uri):
         if e.reason == "Forbidden":
              raise azclierror.UnauthorizedError("Client is not authorized to create the default connectivity " +
                                                f"endpoint for \'{vm_name}\' in Resource Group \'{resource_group}\'. " +
-                                               "This is a one-time operation that must be performed by someone with " +
+                                               "This is a one-time operation that must be performed by an account with " +
                                                "Owner or Contributor role to allow connections to the target resource.",
                                                consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
         raise azclierror.UnclassifiedUserFault(f"Unable to create Default Endpoint for {vm_name} in {resource_group}."
