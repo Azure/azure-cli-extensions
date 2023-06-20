@@ -2833,9 +2833,9 @@ def create_or_update_github_action(cmd,
         if not no_wait:
             WORKFLOW_POLL_RETRY = 3
             WORKFLOW_POLL_SLEEP = 10
-            
+
             # Poll for the workflow file just created (may take up to 30s)
-            for x in range (0, WORKFLOW_POLL_RETRY):
+            for _ in range(0, WORKFLOW_POLL_RETRY):
                 time.sleep(WORKFLOW_POLL_SLEEP)
                 workflow_name = GitHubActionClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
                 if workflow_name is not None:
@@ -2843,8 +2843,8 @@ def create_or_update_github_action(cmd,
                     return r
 
             raise ValidationError(
-                    "Failed to find workflow file for Container App '{}' in .github/workflow folder for repo '{}'. ".format(name, repo) +
-                    "If this file was removed, please use the 'az containerapp github-action delete' command to disconnect the removed workflow file connection.")
+                "Failed to find workflow file for Container App '{}' in .github/workflow folder for repo '{}'. ".format(name, repo) +
+                "If this file was removed, please use the 'az containerapp github-action delete' command to disconnect the removed workflow file connection.")
         return r
     except Exception as e:
         handle_raw_exception(e)

@@ -1246,7 +1246,7 @@ class GitHubActionClient():
                 r_json = r.json()
 
                 # See if any workflow file matches the expected naming pattern (including either .yml or .yaml)
-                workflow_file = [x for x in r_json if re.match(".*AutoDeployTrigger.*\.y.?ml", x["name"])]
+                workflow_file = [x for x in r_json if x["name"].startswith(container_app_name) and re.match(r'.*AutoDeployTrigger.*\.y.?ml', x["name"])]
                 if len(workflow_file) == 1:
                     return workflow_file[0]["name"].replace(".yaml", "").replace(".yml", "")
         except:  # pylint: disable=bare-except
