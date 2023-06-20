@@ -491,22 +491,17 @@ def _fetch_compatible_windows_os_urn(source_vm):
 
 def _suse_image_selector(distro):
     fetch_urn_command = 'az vm image list --publisher SUSE --offer {offer} --sku gen1 --verbose --all --query "[].urn | reverse(sort(@))" -o json'.format(offer=distro)
-    # logger.info('Fetching compatible SUSE OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))
 
     # Raise exception when not finding SUSE image
     if not urns:
         raise SuseNotAvailableError()
 
-    # logger.debug('Fetched urns: \n%s', urns)
-    # Returning the first URN as it is the latest image with no special use like HPC or SAP
-    # logger.debug('Return the first URN : %s', urns[0])
     return urns[0]
 
 
 def _suse_image_selector_gen2(distro):
     fetch_urn_command = 'az vm image list --publisher SUSE --offer {offer} --sku gen2 --verbose --all --query "[].urn | reverse(sort(@))" -o json'.format(offer=distro)
-    # logger.info('Fetching compatible SUSE OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))
 
     # Raise exception when not finding SUSE image

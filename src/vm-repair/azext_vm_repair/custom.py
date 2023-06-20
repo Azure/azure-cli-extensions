@@ -45,7 +45,7 @@ from .repair_utils import (
     _check_n_start_vm,
     _check_existing_rg
 )
-from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError, CommandCanceledByUserError
+from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingResourceNotFoundError, CommandCanceledByUserError
 logger = get_logger(__name__)
 
 
@@ -676,7 +676,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     password_characters = string.ascii_lowercase + string.digits + string.ascii_uppercase
     repair_password = ''.join(secrets.choice(password_characters) for i in range(password_length))
 
-    username_length = 13
+    username_length = 20
     username_characters = string.ascii_lowercase + string.digits
     repair_username = ''.join(secrets.choice(username_characters) for i in range(username_length))
 
@@ -693,17 +693,14 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
 
     repair_vm_name = create_out['repair_vm_name']
     copy_disk_name = create_out['copied_disk_name']
-    copy_disk_id = create_out['copied_disk_uri']
     repair_group_name = create_out['repair_resource_group']
-    resource_tag = create_out['resource_tag']
-    created_resources = create_out['created_resources']
 
     logger.info('Running fstab run command')
 
     try:
         run_out = run(cmd, repair_vm_name, repair_group_name, run_id='linux-alar2', parameters=["fstab"])
 
-    except Exception as e:
+    except Exception:
         logger.info('fstab run command errored')
         if existing_rg:
             _clean_up_resources(repair_group_name, confirm=True)

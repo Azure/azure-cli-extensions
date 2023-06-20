@@ -379,7 +379,6 @@ def validate_vm_username(username, is_linux):
 
 
 def validate_repair_and_restore(cmd, namespace):
-    import json
     check_extension_version(EXTENSION_NAME)
 
     logger.info('Validating repair and restore parameters...')
@@ -423,9 +422,7 @@ def validate_repair_and_restore(cmd, namespace):
     else:
         logger.debug('The source VM\'s OS disk is not encrypted')
 
-    namespace.repair_username = "azureuser"
     validate_vm_username(namespace.repair_username, is_linux)
-    namespace.repair_password = "!AzureUser@123"
     validate_vm_password(namespace.repair_password, is_linux)
     # Prompt input for public ip usage
     namespace.associate_public_ip = False

@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from ._validators import validate_create, validate_restore, validate_run, validate_reset_nic, validate_repair_and_restore
+from ._validators import validate_create, validate_restore, validate_run, validate_reset_nic
 
 
 # pylint: disable=too-many-locals, too-many-statements
