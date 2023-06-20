@@ -1056,6 +1056,7 @@ def _create_github_action(
         service_principal_tenant_id=service_principal_tenant_id,
         image=app.image,
         context_path=context_path,
+        trigger_existing_workflow=True,
     )
 
 

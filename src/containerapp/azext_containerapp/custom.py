@@ -2753,6 +2753,7 @@ def create_or_update_github_action(cmd,
                                    service_principal_client_id=None,
                                    service_principal_client_secret=None,
                                    service_principal_tenant_id=None,
+                                   trigger_existing_workflow=False,
                                    no_wait=False):
     if not token and not login_with_github:
         raise_missing_token_suggestion()
@@ -2767,15 +2768,6 @@ def create_or_update_github_action(cmd,
 
     branch = _validate_github(repo, branch, token)
 
-    # Need to trigger the workflow manually if it already exists (performing an update)
-    try:
-        workflow_name = GitHubActionClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
-        if workflow_name is not None:
-            trigger_workflow(token, repo, workflow_name, branch)
-            return
-    except:  # pylint: disable=bare-except
-        pass
-
     source_control_info = None
 
     try:
@@ -2785,6 +2777,16 @@ def create_or_update_github_action(cmd,
         if not service_principal_client_id or not service_principal_client_secret or not service_principal_tenant_id:
             raise RequiredArgumentMissingError('Service principal client ID, secret and tenant ID are required to add github actions for the first time. Please create one using the command \"az ad sp create-for-rbac --name {{name}} --role contributor --scopes /subscriptions/{{subscription}}/resourceGroups/{{resourceGroup}} --sdk-auth\"') from ex
         source_control_info = SourceControlModel
+
+    # Need to trigger the workflow manually if it already exists (performing an update)
+    try:
+        workflow_name = GitHubActionClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
+        if workflow_name is not None:
+            if trigger_existing_workflow:
+                trigger_workflow(token, repo, workflow_name, branch)
+            return source_control_info
+    except:  # pylint: disable=bare-except
+        pass
 
     source_control_info["properties"]["repoUrl"] = repo_url
     source_control_info["properties"]["branch"] = branch

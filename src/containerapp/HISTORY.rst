@@ -10,6 +10,7 @@ Upcoming
 * 'az containerapp service': add support for creation and deletion of kafka
 * 'az containerapp create': --registry-server support registry with custom port
 * Add regex to fix validation for containerapp name
+* 'az containerapp up': fix issue where --source throws KeyError
 
 0.3.33
 ++++++
