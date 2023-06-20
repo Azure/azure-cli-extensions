@@ -6,6 +6,8 @@ Release History
 Upcoming
 ++++++
 * 'az containerapp job execution show/list': improve table output format
+* Add 'az containerapp ingress cors' for CORS support
+* 'az container app env create/update': support --enable-mtls parameter
 
 0.3.33
 ++++++
