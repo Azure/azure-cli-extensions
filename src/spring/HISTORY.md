@@ -34,7 +34,6 @@ Release History
 1.12.2
 ---
 * Add default `enabled_state` for `az spring config-server set` in Standard Counsumption tier.
->>>>>>> main
 
 1.12.1
 ---
