@@ -15,6 +15,15 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
+def args_type_assignment(user_assigned_flag, system_assigned_flag):
+    if system_assigned_flag and user_assigned_flag:
+        return "SystemAssigned,UserAssigned"
+    if system_assigned_flag:
+        return "SystemAssigned"
+    if user_assigned_flag:
+        return "UserAssigned"
+    return "None"
+
 
 class IdentityAssign(_IdentityAssign):
     @classmethod
@@ -61,12 +70,7 @@ class IdentityAssign(_IdentityAssign):
             user_dict.update(current_user_assigned_identities)
             args.user_assigned_identities = user_dict
 
-        if system_assigned_flag and user_assigned_flag:
-            args.type = "SystemAssigned,UserAssigned"
-        elif system_assigned_flag:
-            args.type = "SystemAssigned"
-        else:
-            args.type = "UserAssigned"
+        args.type = args_type_assignment(user_assigned_flag, system_assigned_flag)
 
 
 class IdentityRemove(_IdentityRemove):
@@ -134,15 +138,7 @@ class IdentityRemove(_IdentityRemove):
                 user_dict[str(identity)] = {}
             args.user_assigned_identities = user_dict
 
-        if system_assigned_flag and user_assigned_flag:
-            args.type = "SystemAssigned,UserAssigned"
-        elif system_assigned_flag:
-            args.type = "SystemAssigned"
-        elif user_assigned_flag:
-            args.type = "UserAssigned"
-        else:
-            args.type = "None"
-
+        args.type = args_type_assignment(user_assigned_flag, system_assigned_flag)
 
 class CommunicationCreate(_CommunicationCreate):
     @classmethod
@@ -151,10 +147,8 @@ class CommunicationCreate(_CommunicationCreate):
         from azure.cli.core.aaz import AAZListArg, AAZStrArg
         args_schema.assign_identity = AAZListArg(
             options=["--assign-identity"],
-            help="""Space-separated identities to assign. Use '[system]'
-                to refer to the system assigned identity. Default: '[system] fsfsfsf'""",
-            required=False,
-            default=["[system]"]
+            help="""Space-separated identities to assign. Use '[system]' to refer to the system assigned identity or a resource id to refer to a user assigned identity""",
+            required=False
         )
         args_schema.assign_identity.Element = AAZStrArg()
         args_schema.identity._registered = False
@@ -177,9 +171,4 @@ class CommunicationCreate(_CommunicationCreate):
         if user_assigned_flag:
             args.identity.user_assigned_identities = user_dict
 
-        if system_assigned_flag and user_assigned_flag:
-            args.identity.type = "SystemAssigned,UserAssigned"
-        elif system_assigned_flag:
-            args.identity.type = "SystemAssigned"
-        else:
-            args.identity.type = "UserAssigned"
+        args.identity.type = args_type_assignment(user_assigned_flag, system_assigned_flag)
