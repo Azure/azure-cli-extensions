@@ -24,7 +24,7 @@ def load_command_table(self, _):
 def _load_identity_token_command_table(self):
     identity_arguments = ['connection_string']
 
-    with self.command_group('communication identity user', client_factory=cf_communication_identity, 
+    with self.command_group('communication identity user', client_factory=cf_communication_identity,
                             deprecate_info=self.deprecate(target='communication identity user', redirect='communication user-identity user')) as g:
         g.communication_custom_command('create', "communication_identity_create_user", identity_arguments)
         g.communication_custom_command('delete', "communication_identity_delete_user", identity_arguments, confirmation=True)
@@ -34,7 +34,7 @@ def _load_identity_token_command_table(self):
         g.communication_custom_command('issue', "communication_identity_issue_access_token", identity_arguments)
         g.communication_custom_command('revoke', "communication_identity_revoke_access_tokens", identity_arguments, confirmation=True)
         g.communication_custom_command('get-for-teams-user', "communication_identity_get_token_for_teams_user", identity_arguments)
-        
+
     with self.command_group('communication user-identity user', client_factory=cf_communication_identity, is_preview=True) as g:
         g.communication_custom_command('create', "communication_identity_create_user", identity_arguments)
         g.communication_custom_command('delete', "communication_identity_delete_user", identity_arguments, confirmation=True)

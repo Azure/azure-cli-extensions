@@ -14,6 +14,7 @@ from azext_communication.custom import IdentityAssign
 from azext_communication.custom import IdentityRemove
 from azext_communication.custom import CommunicationCreate
 
+
 def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group('communication'):
         self.command_table['communication identity assign'] = IdentityAssign(loader=self)

@@ -13,12 +13,8 @@ from azext_communication.aaz.latest.communication.identity import Remove as _Ide
 from azext_communication.aaz.latest.communication._create import Create as _CommunicationCreate
 from knack.log import get_logger
 
-try:
-    from .manual.custom import *  # noqa: F403
-except ImportError:
-    pass
-
 logger = get_logger(__name__)
+
 
 class IdentityAssign(_IdentityAssign):
     @classmethod
@@ -27,7 +23,8 @@ class IdentityAssign(_IdentityAssign):
         from azure.cli.core.aaz import AAZListArg, AAZStrArg
         args_schema.identities = AAZListArg(
             options=["--identities"],
-            help="Space-separated identities to assign. Use '[system]' to refer to the system assigned identity. Default: '[system]'",
+            help="""Space-separated identities to assign. Use
+                '[system]' to refer to the system assigned identity. Default: '[system]'""",
             required=False,
             default=["[system]"]
         )
@@ -44,10 +41,9 @@ class IdentityAssign(_IdentityAssign):
         current_user_assigned_identities = instance.identity.user_assigned_identities
         current_user_assigned_identities = dict.fromkeys(current_user_assigned_identities.keys(), {})
         args = self.ctx.args
-        
         system_assigned_flag = False
         user_assigned_flag = False
-        user_dict = dict()
+        user_dict = {}
 
         if "SystemAssigned" in str(current_identity_type):
             system_assigned_flag = True
@@ -60,17 +56,18 @@ class IdentityAssign(_IdentityAssign):
             else:
                 user_assigned_flag = True
                 user_dict[str(identity)] = {}
-        
+
         if user_assigned_flag:
             user_dict.update(current_user_assigned_identities)
             args.user_assigned_identities = user_dict
-        
+
         if system_assigned_flag and user_assigned_flag:
             args.type = "SystemAssigned,UserAssigned"
         elif system_assigned_flag:
             args.type = "SystemAssigned"
         else:
             args.type = "UserAssigned"
+
 
 class IdentityRemove(_IdentityRemove):
     @classmethod
@@ -108,33 +105,35 @@ class IdentityRemove(_IdentityRemove):
         if "UserAssigned" in str(current_identity_type):
             user_assigned_flag = True
 
-        user_dict = dict()
+        user_dict = {}
 
         for identity in args.identities:
             if str(identity) == "*":
                 system_assigned_flag = False
                 user_assigned_flag = False
             elif str(identity) == "[system]" or str(identity) == "system":
-                if system_assigned_flag == True:
+                if system_assigned_flag is True:
                     system_assigned_flag = False
                 else:
                     logger.warning("The resource does not currently have a system assigned managed identity.")
                     raise Exception
-            else: # case for user identity
+            else:  # case for user identity
                 if str(identity) in current_assigned_identities:
                     print("hey")
                     current_assigned_identities.pop(str(identity))
                 else:
-                    logger.warning("The following identity was not found as a managed identity for the current resource: " + str(identity))
+                    logger.warning(
+                        'The following was not found as a managed identity for the current resource: %s', str(identity)
+                    )
                     raise Exception
-                
+
         if len(current_assigned_identities) == 0:
             user_assigned_flag = False
         else:
             for identity in current_assigned_identities:
                 user_dict[str(identity)] = {}
             args.user_assigned_identities = user_dict
-        
+
         if system_assigned_flag and user_assigned_flag:
             args.type = "SystemAssigned,UserAssigned"
         elif system_assigned_flag:
@@ -143,7 +142,8 @@ class IdentityRemove(_IdentityRemove):
             args.type = "UserAssigned"
         else:
             args.type = "None"
-        
+
+
 class CommunicationCreate(_CommunicationCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -151,7 +151,8 @@ class CommunicationCreate(_CommunicationCreate):
         from azure.cli.core.aaz import AAZListArg, AAZStrArg
         args_schema.assign_identity = AAZListArg(
             options=["--assign-identity"],
-            help="Space-separated identities to assign. Use '[system]' to refer to the system assigned identity. Default: '[system] fsfsfsf'",
+            help="""Space-separated identities to assign. Use '[system]'
+                to refer to the system assigned identity. Default: '[system] fsfsfsf'""",
             required=False,
             default=["[system]"]
         )
@@ -159,12 +160,12 @@ class CommunicationCreate(_CommunicationCreate):
         args_schema.identity._registered = False
         args_schema.identity._required = False
         return args_schema
-    
+
     def pre_operations(self):
         args = self.ctx.args
         system_assigned_flag = False
         user_assigned_flag = False
-        user_dict = dict()
+        user_dict = {}
 
         for identity in args.assign_identity:
             if str(identity) == "[system]" or str(identity) == "system":
@@ -172,14 +173,13 @@ class CommunicationCreate(_CommunicationCreate):
             else:
                 user_assigned_flag = True
                 user_dict[str(identity)] = {}
-        
+
         if user_assigned_flag:
             args.identity.user_assigned_identities = user_dict
-        
+
         if system_assigned_flag and user_assigned_flag:
             args.identity.type = "SystemAssigned,UserAssigned"
         elif system_assigned_flag:
             args.identity.type = "SystemAssigned"
         else:
             args.identity.type = "UserAssigned"
-
