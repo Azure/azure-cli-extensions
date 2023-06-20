@@ -19,6 +19,13 @@ from .action import (
     AddUserAccountAuthInfo,
 )
 
+PASSWORDLESS_SOURCE_RESOURCES = [
+    RESOURCE.WebApp,
+    RESOURCE.ContainerApp,
+    RESOURCE.SpringCloud,
+    RESOURCE.SpringCloudDeprecated
+]
+
 PASSWORDLESS_TARGET_RESOURCES = [
     RESOURCE.Postgres,
     RESOURCE.PostgresFlexible,
@@ -34,7 +41,7 @@ SUPPORTED_AUTH_TYPE[RESOURCE.Local] = {
     RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
 }
 
-for resourceType in [RESOURCE.WebApp, RESOURCE.ContainerApp, RESOURCE.SpringCloud, RESOURCE.SpringCloudDeprecated]:
+for resourceType in PASSWORDLESS_SOURCE_RESOURCES:
     SUPPORTED_AUTH_TYPE[resourceType] = {
         RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
         RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
