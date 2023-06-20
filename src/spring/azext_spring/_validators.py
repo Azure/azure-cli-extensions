@@ -107,7 +107,7 @@ def _check_tanzu_components_not_enable(cmd, namespace):
     if namespace.enable_application_accelerator:
         raise ArgumentUsageError('--enable-application-accelerator {}'.format(suffix))
     if namespace.application_configuration_service_generation:
-        raise ArgumentUsageError('--application_configuration_service_generation {}'.format(suffix))
+        raise ArgumentUsageError('--application-configuration-service-generation {}'.format(suffix))
 
 
 def validate_instance_count(namespace):
