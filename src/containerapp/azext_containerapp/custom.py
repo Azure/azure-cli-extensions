@@ -1302,7 +1302,7 @@ def create_managed_environment(cmd,
                                certificate_file=None,
                                certificate_password=None,
                                enable_workload_profiles=False,
-                               mtls_peer_authentication_enabled=None,
+                               mtls_enabled=None,
                                no_wait=False):
     if zone_redundant:
         if not infrastructure_subnet_resource_id:
@@ -1379,8 +1379,8 @@ def create_managed_environment(cmd,
             raise ValidationError('Infrastructure subnet resource ID needs to be supplied for internal only environments.')
         managed_env_def["properties"]["vnetConfiguration"]["internal"] = True
 
-    if mtls_peer_authentication_enabled is not None:
-        safe_set(managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=mtls_peer_authentication_enabled)
+    if mtls_enabled is not None:
+        safe_set(managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=mtls_enabled)
     try:
         r = ManagedEnvironmentClient.create(
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=managed_env_def, no_wait=no_wait)
@@ -1415,7 +1415,7 @@ def update_managed_environment(cmd,
                                workload_profile_name=None,
                                min_nodes=None,
                                max_nodes=None,
-                               mtls_peer_authentication_enabled=None,
+                               mtls_enabled=None,
                                no_wait=False):
     if logs_destination == "log-analytics" or logs_customer_id or logs_key:
         if logs_destination != "log-analytics":
@@ -1486,8 +1486,8 @@ def update_managed_environment(cmd,
 
         safe_set(env_def, "properties", "workloadProfiles", value=workload_profiles)
 
-    if mtls_peer_authentication_enabled is not None:
-        safe_set(env_def, "properties", "peerAuthentication", "mtls", "enabled", value=mtls_peer_authentication_enabled)
+    if mtls_enabled is not None:
+        safe_set(env_def, "properties", "peerAuthentication", "mtls", "enabled", value=mtls_enabled)
 
     try:
         r = ManagedEnvironmentClient.update(

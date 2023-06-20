@@ -179,7 +179,7 @@ def load_arguments(self, _):
         c.argument('certificate_password', options_list=['--custom-domain-certificate-password', '--certificate-password'], help='The certificate file password for the environment\'s custom domain.')
 
     with self.argument_context('containerapp env', arg_group='Peer Authentication') as c:
-        c.argument('mtls_peer_authentication_enabled', arg_type=get_three_state_flag(), options_list=['--enable-mtls'], help='Boolean indicating if mTLS peer authentication is enabled for the environment.')
+        c.argument('mtls_enabled', arg_type=get_three_state_flag(), options_list=['--enable-mtls'], help='Boolean indicating if mTLS peer authentication is enabled for the environment.')
 
     with self.argument_context('containerapp service') as c:
         c.argument('service_name', options_list=['--name', '-n'], help="The service name.")

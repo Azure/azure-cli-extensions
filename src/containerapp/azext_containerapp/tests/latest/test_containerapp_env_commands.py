@@ -460,6 +460,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
+    @live_only() # passes live but hits CannotOverwriteExistingCassetteException when run from recording
     def test_containerapp_env_mtls(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
@@ -482,7 +483,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.peerAuthentication.mtls.enabled', True),
         ])
 
-        self.cmd('containerapp env update -g {} -n {} --enable-mtls'.format(resource_group, env_name))
+        self.cmd('containerapp env update -g {} -n {} --enable-mtls false'.format(resource_group, env_name))
 
         while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
             time.sleep(5)
