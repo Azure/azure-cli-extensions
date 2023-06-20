@@ -14,8 +14,8 @@ class BackupPolicyScenarioTest(ScenarioTest):
     def setUp(test):
         super().setUp()
         test.kwargs.update({
+            'location': 'centraluseuap',
             'vaultName': 'clitest-bkp-vault',
-            'location': 'centraluseuap'
         })
 
     @ResourceGroupPreparer(name_prefix='clitest-dpp-backuppolicy-', location='centraluseuap')

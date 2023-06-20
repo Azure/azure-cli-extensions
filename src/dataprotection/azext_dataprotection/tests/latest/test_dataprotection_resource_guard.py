@@ -14,6 +14,7 @@ class ResourceGuardScenarioTest(ScenarioTest):
     def setUp(test):
         super().setUp()
         test.kwargs.update({
+            'location': 'centraluseuap',
             'resourceGuardName':'clitest-resource-guard',
         })
 
