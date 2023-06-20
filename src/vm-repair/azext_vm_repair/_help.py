@@ -99,5 +99,5 @@ helps['vm repair repair-and-restore'] = """
     examples:
         - name: Repair and restore a VM.
           text: >
-            az vm repair repair-and-restore --name "vmrepairtest" --resource-group "MyResourceGroup" --verbose
+            az vm repair repair-and-restore --name vmrepairtest --resource-group MyResourceGroup --verbose
 """
