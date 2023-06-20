@@ -1102,12 +1102,12 @@ helps['containerapp ingress sticky-sessions show'] = """
 
 helps['containerapp ingress cors'] = """
     type: group
-    short-summary: Commands to set CORS policy for a container app.
+    short-summary: Commands to manage CORS policy for a container app.
 """
 
 helps['containerapp ingress cors enable'] = """
     type: command
-    short-summary: Commands to enable CORS policy for a container app.
+    short-summary: Enable CORS policy for a container app.
     examples:
     - name: Set allowed origins and allowed methods for a container app.
       text: |
@@ -1119,7 +1119,7 @@ helps['containerapp ingress cors enable'] = """
 
 helps['containerapp ingress cors disable'] = """
     type: command
-    short-summary: Commands to disable CORS policy for a container app.
+    short-summary: Disable CORS policy for a container app.
     examples:
     - name: Disable CORS policy for a container app.
       text: |
@@ -1128,7 +1128,7 @@ helps['containerapp ingress cors disable'] = """
 
 helps['containerapp ingress cors update'] = """
     type: command
-    short-summary: Commands to update CORS policy for a container app.
+    short-summary: Update CORS policy for a container app.
     examples:
     - name: Update allowed origins and allowed methods for a container app while keeping other cors settings.
       text: |
@@ -1137,7 +1137,7 @@ helps['containerapp ingress cors update'] = """
 
 helps['containerapp ingress cors show'] = """
     type: command
-    short-summary: Commands to show CORS policy for a container app.
+    short-summary: Show CORS policy for a container app.
     examples:
     - name: Show CORS policy for a container app.
       text: |
