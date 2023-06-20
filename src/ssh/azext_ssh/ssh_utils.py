@@ -46,6 +46,8 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         retry_attempt = 0
         retry_attempts_allowed = 0
         successful_connection = False
+        ssh_process = None
+        connection_duration = None
 
         # Get ssh client before starting the clean up process in case there is an error in getting client.
         command = [get_ssh_client_path('ssh', op_info.ssh_client_folder), op_info.get_host(), "-l", op_info.local_user]
@@ -73,11 +75,8 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
                                                 const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
 
             connection_duration = (time.time() - connection_duration) / 60
-            ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInMinutes': connection_duration}
-            if ssh_process.poll() == 0:
-                ssh_connection_data['Context.Default.AzureCLI.SSHConnectionStatus'] = "Success"
+            if ssh_process and ssh_process.poll() == 0:
                 successful_connection = True
-            telemetry.add_extension_event('ssh', ssh_connection_data)
             if op_info.new_service_config and service_config_delay_error and ssh_process.poll() == 255:
                 retry_attempts_allowed = 1
                 if retry_attempt == 1:
@@ -85,6 +84,10 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
             retry_attempt += 1
 
     finally:
+        ssh_connection_data = {'Context.Default.AzureCLI.SSHConnectionDurationInMinutes': connection_duration}
+        if successful_connection:
+            ssh_connection_data['Context.Default.AzureCLI.SSHConnectionStatus'] = "Success"
+        telemetry.add_extension_event('ssh', ssh_connection_data)
         # Even if something fails between the creation of the credentials and the end of the ssh connection, we
         # want to make sure that all credentials are cleaned up.
         do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
