@@ -8,6 +8,7 @@ Release History
 * Migrate control plane operations to aaz
 * Upgrade control plane api version to 2023-04-01-preview
 
+
 1.6.1
 ++++++
  * Update Rooms sdk version to 1.0.0 and remove from preview mode
