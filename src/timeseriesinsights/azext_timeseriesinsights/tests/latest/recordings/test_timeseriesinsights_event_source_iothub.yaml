@@ -20,22 +20,22 @@ interactions:
       - --resource-group --location --name --sku --data-retention-time --partition-key-properties
         --storage-limit-exceeded-behavior
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.46.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.10.10
+        (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31) VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004?api-version=2020-05-15
   response:
     body:
-      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2021-01-27T05:51:32.5854423+00:00","provisioningState":"Accepted","dataAccessId":"d5b21d91-3e1c-445a-84eb-b318c9314226","dataAccessFqdn":"d5b21d91-3e1c-445a-84eb-b318c9314226.env.timeseries.azure.com","requestApiVersion":"2020-05-15"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004","name":"cli-test-tsi-env000004","type":"Microsoft.TimeSeriesInsights/Environments"}'
+      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2023-03-28T10:17:52.6793109Z","provisioningState":"Succeeded","dataAccessId":"2a560f62-aa54-422e-83d8-9327bd59a980","dataAccessFqdn":"2a560f62-aa54-422e-83d8-9327bd59a980.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004","name":"cli-test-tsi-env000004","type":"Microsoft.TimeSeriesInsights/Environments"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '794'
+      - '693'
       content-type:
       - application/json
       date:
-      - Wed, 27 Jan 2021 05:51:33 GMT
+      - Tue, 28 Mar 2023 10:17:53 GMT
       expires:
       - '-1'
       pragma:
@@ -47,106 +47,10 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1194'
+      - '1198'
     status:
       code: 201
       message: Created
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - tsi environment gen1 create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --location --name --sku --data-retention-time --partition-key-properties
-        --storage-limit-exceeded-behavior
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004?api-version=2020-05-15
-  response:
-    body:
-      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2021-01-27T05:51:32.5854423Z","provisioningState":"Creating","requestApiVersion":"2020-05-15","dataAccessId":"d5b21d91-3e1c-445a-84eb-b318c9314226","dataAccessFqdn":"d5b21d91-3e1c-445a-84eb-b318c9314226.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004","name":"cli-test-tsi-env000004","type":"Microsoft.TimeSeriesInsights/Environments"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '789'
-      content-type:
-      - application/json
-      date:
-      - Wed, 27 Jan 2021 05:52:04 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - tsi environment gen1 create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - --resource-group --location --name --sku --data-retention-time --partition-key-properties
-        --storage-limit-exceeded-behavior
-      User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004?api-version=2020-05-15
-  response:
-    body:
-      string: '{"sku":{"name":"S1","capacity":1},"kind":"Gen1","location":"westus","tags":null,"properties":{"dataRetentionTime":"P31D","storageLimitExceededBehavior":"PauseIngress","partitionKeyProperties":[{"name":"DeviceId1","type":"String"}],"creationTime":"2021-01-27T05:51:32.5854423Z","provisioningState":"Succeeded","requestApiVersion":"2020-05-15","dataAccessId":"d5b21d91-3e1c-445a-84eb-b318c9314226","dataAccessFqdn":"d5b21d91-3e1c-445a-84eb-b318c9314226.env.timeseries.azure.com"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004","name":"cli-test-tsi-env000004","type":"Microsoft.TimeSeriesInsights/Environments"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '790'
-      content-type:
-      - application/json
-      date:
-      - Wed, 27 Jan 2021 05:52:34 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
 - request:
     body: null
     headers:
@@ -161,24 +65,22 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-resource/12.0.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitsi.rg000001?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitsi.rg000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001","name":"clitsi.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2021-01-27T05:51:13Z"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001","name":"clitsi.rg000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","date":"2023-03-28T10:17:49Z"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '428'
+      - '308'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jan 2021 05:52:36 GMT
+      - Tue, 28 Mar 2023 10:17:53 GMT
       expires:
       - '-1'
       pragma:
@@ -196,10 +98,11 @@ interactions:
     body: '{"location": "westus", "properties": {"eventHubEndpoints": {"events": {"retentionTimeInDays":
       1, "partitionCount": 4}}, "storageEndpoints": {"$default": {"sasTtlAsIso8601":
       "PT1H", "connectionString": "", "containerName": ""}}, "messagingEndpoints":
-      {"fileNotifications": {"ttlAsIso8601": "PT1H", "maxDeliveryCount": 10}}, "enableFileUploadNotifications":
-      false, "cloudToDevice": {"maxDeliveryCount": 10, "defaultTtlAsIso8601": "PT1H",
-      "feedback": {"lockDurationAsIso8601": "PT5S", "ttlAsIso8601": "PT1H", "maxDeliveryCount":
-      10}}}, "sku": {"name": "S1", "capacity": 1}}'
+      {"fileNotifications": {"lockDurationAsIso8601": "PT5S", "ttlAsIso8601": "PT1H",
+      "maxDeliveryCount": 10}}, "enableFileUploadNotifications": false, "cloudToDevice":
+      {"maxDeliveryCount": 10, "defaultTtlAsIso8601": "PT1H", "feedback": {"lockDurationAsIso8601":
+      "PT5S", "ttlAsIso8601": "PT1H", "maxDeliveryCount": 10}}}, "sku": {"name": "S1",
+      "capacity": 1}}'
     headers:
       Accept:
       - application/json
@@ -210,32 +113,30 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '570'
+      - '603'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-iothub/0.12.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-iothub/2.3.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003?api-version=2020-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003?api-version=2022-04-30-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","name":"cli-test-tsi-iothub000003","type":"Microsoft.Devices/IotHubs","location":"westus","tags":{},"subscriptionid":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","resourcegroup":"clitsi.rg000001","properties":{"state":"Activating","provisioningState":"Accepted","eventHubEndpoints":{"events":{"retentionTimeInDays":1,"partitionCount":4},"operationsMonitoringEvents":{"retentionTimeInDays":1,"partitionCount":4}},"storageEndpoints":{"$default":{"sasTtlAsIso8601":"PT1H","connectionString":"","containerName":""}},"messagingEndpoints":{"fileNotifications":{"lockDurationAsIso8601":"PT1M","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"enableFileUploadNotifications":false,"cloudToDevice":{"maxDeliveryCount":10,"defaultTtlAsIso8601":"PT1H","feedback":{"lockDurationAsIso8601":"PT5S","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"features":"None"},"sku":{"name":"S1","tier":"Standard","capacity":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","name":"cli-test-tsi-iothub000003","type":"Microsoft.Devices/IotHubs","location":"westus","tags":{},"subscriptionid":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","resourcegroup":"clitsi.rg000001","properties":{"provisioningState":"Accepted","eventHubEndpoints":{"events":{"retentionTimeInDays":1,"partitionCount":4}},"storageEndpoints":{"$default":{"sasTtlAsIso8601":"PT1H","connectionString":"","containerName":""}},"messagingEndpoints":{"fileNotifications":{"lockDurationAsIso8601":"PT5S","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"enableFileUploadNotifications":false,"cloudToDevice":{"maxDeliveryCount":10,"defaultTtlAsIso8601":"PT1H","feedback":{"lockDurationAsIso8601":"PT5S","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"features":"None","allowedFqdnList":[]},"sku":{"name":"S1","tier":"Standard","capacity":1}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/operationResults/b3NfaWhfOGVkNmQxZTctZWVhNy00YjAyLWE0NjUtYThkMDc3ZTRiYWY5?api-version=2020-03-01&operationSource=os_ih&asyncinfo
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/locations/westus/operationResults/aWQ9b3NfaWhfNjhjYThjNjQtYzgzNi00NGJjLWIxODgtYjQ5OGY0NDI5ZGE4O3JlZ2lvbj13ZXN0dXM=?api-version=2022-04-30-preview&operationSource=other&asyncinfo
       cache-control:
       - no-cache
       content-length:
-      - '1162'
+      - '970'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jan 2021 05:52:44 GMT
+      - Tue, 28 Mar 2023 10:17:57 GMT
       expires:
       - '-1'
       pragma:
@@ -255,7 +156,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -265,10 +166,10 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-iothub/0.12.0 Azure-SDK-For-Python AZURECLI/2.18.0
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-iothub/2.3.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/operationResults/b3NfaWhfOGVkNmQxZTctZWVhNy00YjAyLWE0NjUtYThkMDc3ZTRiYWY5?api-version=2020-03-01&operationSource=os_ih&asyncinfo
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/locations/westus/operationResults/aWQ9b3NfaWhfNjhjYThjNjQtYzgzNi00NGJjLWIxODgtYjQ5OGY0NDI5ZGE4O3JlZ2lvbj13ZXN0dXM=?api-version=2022-04-30-preview&operationSource=other&asyncinfo
   response:
     body:
       string: '{"status":"Running"}'
@@ -280,7 +181,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jan 2021 05:53:15 GMT
+      - Tue, 28 Mar 2023 10:18:27 GMT
       expires:
       - '-1'
       pragma:
@@ -302,7 +203,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -312,10 +213,10 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-iothub/0.12.0 Azure-SDK-For-Python AZURECLI/2.18.0
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-iothub/2.3.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/operationResults/b3NfaWhfOGVkNmQxZTctZWVhNy00YjAyLWE0NjUtYThkMDc3ZTRiYWY5?api-version=2020-03-01&operationSource=os_ih&asyncinfo
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/locations/westus/operationResults/aWQ9b3NfaWhfNjhjYThjNjQtYzgzNi00NGJjLWIxODgtYjQ5OGY0NDI5ZGE4O3JlZ2lvbj13ZXN0dXM=?api-version=2022-04-30-preview&operationSource=other&asyncinfo
   response:
     body:
       string: '{"status":"Running"}'
@@ -327,7 +228,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jan 2021 05:53:45 GMT
+      - Tue, 28 Mar 2023 10:18:57 GMT
       expires:
       - '-1'
       pragma:
@@ -349,7 +250,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -359,10 +260,10 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-iothub/0.12.0 Azure-SDK-For-Python AZURECLI/2.18.0
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-iothub/2.3.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/operationResults/b3NfaWhfOGVkNmQxZTctZWVhNy00YjAyLWE0NjUtYThkMDc3ZTRiYWY5?api-version=2020-03-01&operationSource=os_ih&asyncinfo
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/locations/westus/operationResults/aWQ9b3NfaWhfNjhjYThjNjQtYzgzNi00NGJjLWIxODgtYjQ5OGY0NDI5ZGE4O3JlZ2lvbj13ZXN0dXM=?api-version=2022-04-30-preview&operationSource=other&asyncinfo
   response:
     body:
       string: '{"status":"Running"}'
@@ -374,7 +275,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jan 2021 05:54:17 GMT
+      - Tue, 28 Mar 2023 10:19:28 GMT
       expires:
       - '-1'
       pragma:
@@ -396,7 +297,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -406,57 +307,10 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-iothub/0.12.0 Azure-SDK-For-Python AZURECLI/2.18.0
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-iothub/2.3.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/operationResults/b3NfaWhfOGVkNmQxZTctZWVhNy00YjAyLWE0NjUtYThkMDc3ZTRiYWY5?api-version=2020-03-01&operationSource=os_ih&asyncinfo
-  response:
-    body:
-      string: '{"status":"Running"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '20'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jan 2021 05:54:47 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - iot hub create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g -n
-      User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-iothub/0.12.0 Azure-SDK-For-Python AZURECLI/2.18.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/operationResults/b3NfaWhfOGVkNmQxZTctZWVhNy00YjAyLWE0NjUtYThkMDc3ZTRiYWY5?api-version=2020-03-01&operationSource=os_ih&asyncinfo
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/locations/westus/operationResults/aWQ9b3NfaWhfNjhjYThjNjQtYzgzNi00NGJjLWIxODgtYjQ5OGY0NDI5ZGE4O3JlZ2lvbj13ZXN0dXM=?api-version=2022-04-30-preview&operationSource=other&asyncinfo
   response:
     body:
       string: '{"status":"Succeeded"}'
@@ -468,7 +322,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jan 2021 05:55:18 GMT
+      - Tue, 28 Mar 2023 10:19:58 GMT
       expires:
       - '-1'
       pragma:
@@ -490,7 +344,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -500,23 +354,23 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-iothub/0.12.0 Azure-SDK-For-Python AZURECLI/2.18.0
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-iothub/2.3.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003?api-version=2020-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003?api-version=2022-04-30-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","name":"cli-test-tsi-iothub000003","type":"Microsoft.Devices/IotHubs","location":"westus","tags":{},"subscriptionid":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","resourcegroup":"clitsi.rg000001","etag":"AAAACNt4bz8=","properties":{"locations":[{"location":"West
-        US","role":"primary"},{"location":"East US","role":"secondary"}],"state":"Active","provisioningState":"Succeeded","ipFilterRules":[],"hostName":"cli-test-tsi-iothub000003.azure-devices.net","eventHubEndpoints":{"events":{"retentionTimeInDays":1,"partitionCount":4,"partitionIds":["0","1","2","3"],"path":"cli-test-tsi-iothub000003","endpoint":"sb://iothub-ns-cli-test-t-7652510-139f5cce7f.servicebus.windows.net/"}},"routing":{"endpoints":{"serviceBusQueues":[],"serviceBusTopics":[],"eventHubs":[],"storageContainers":[]},"routes":[],"fallbackRoute":{"name":"$fallback","source":"DeviceMessages","condition":"true","endpointNames":["events"],"isEnabled":true}},"storageEndpoints":{"$default":{"sasTtlAsIso8601":"PT1H","connectionString":"","containerName":""}},"messagingEndpoints":{"fileNotifications":{"lockDurationAsIso8601":"PT1M","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"enableFileUploadNotifications":false,"cloudToDevice":{"maxDeliveryCount":10,"defaultTtlAsIso8601":"PT1H","feedback":{"lockDurationAsIso8601":"PT5S","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"features":"None"},"sku":{"name":"S1","tier":"Standard","capacity":1},"identity":{"type":"None"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","name":"cli-test-tsi-iothub000003","type":"Microsoft.Devices/IotHubs","location":"westus","tags":{},"subscriptionid":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","resourcegroup":"clitsi.rg000001","etag":"AAAADH1YjoI=","properties":{"locations":[{"location":"West
+        US","role":"primary"},{"location":"East US","role":"secondary"}],"state":"Active","provisioningState":"Succeeded","ipFilterRules":[],"hostName":"cli-test-tsi-iothub000003.azure-devices.net","eventHubEndpoints":{"events":{"retentionTimeInDays":1,"partitionCount":4,"partitionIds":["0","1","2","3"],"path":"cli-test-tsi-iothub000003","endpoint":"sb://iothub-ns-cli-test-t-24886146-1fb4095686.servicebus.windows.net/"}},"routing":{"endpoints":{"serviceBusQueues":[],"serviceBusTopics":[],"eventHubs":[],"storageContainers":[],"cosmosDBSqlCollections":[]},"routes":[],"fallbackRoute":{"name":"$fallback","source":"DeviceMessages","condition":"true","endpointNames":["events"],"isEnabled":true}},"storageEndpoints":{"$default":{"sasTtlAsIso8601":"PT1H","connectionString":"","containerName":""}},"messagingEndpoints":{"fileNotifications":{"lockDurationAsIso8601":"PT5S","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"enableFileUploadNotifications":false,"cloudToDevice":{"maxDeliveryCount":10,"defaultTtlAsIso8601":"PT1H","feedback":{"lockDurationAsIso8601":"PT5S","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"features":"None","allowedFqdnList":[]},"sku":{"name":"S1","tier":"Standard","capacity":1},"identity":{"type":"None"},"systemData":{"createdAt":"2023-03-28T10:17:57.1666667Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1700'
+      - '1692'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jan 2021 05:55:18 GMT
+      - Tue, 28 Mar 2023 10:19:59 GMT
       expires:
       - '-1'
       pragma:
@@ -550,16 +404,14 @@ interactions:
       ParameterSetName:
       - -g --hub-name --query --output
       User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-iothub/0.12.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-iothub/2.3.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003/listkeys?api-version=2020-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003/listkeys?api-version=2022-04-30-preview
   response:
     body:
-      string: '{"value":[{"keyName":"iothubowner","primaryKey":"YJjD4vGgflnT+CTilmQpYGVW+jZ+1KLNEVoxQaD7B8E=","secondaryKey":"p9x84klIfLgVFaP7HdV/YpMBrOirQTrGwlGjoZXZonM=","rights":"RegistryWrite,
-        ServiceConnect, DeviceConnect"},{"keyName":"service","primaryKey":"4aZ8gDU+3nCxByJhoNLqI9L4B4+bDptyLzM2ORz2nxc=","secondaryKey":"ZWtP9hh5on/5I81HjkUPbJDikr2w6BUjlO4ekv6vSO4=","rights":"ServiceConnect"},{"keyName":"device","primaryKey":"qvFqV0l3jQ9FXRC/Y+4axC7Nrd/WfmWTMYuxYBRQSdM=","secondaryKey":"vAQD9OB3ETLBztH4I6bSe1FJHnMM8Ja7CxCrQ4qP/Fk=","rights":"DeviceConnect"},{"keyName":"registryRead","primaryKey":"BnNBcVKx5kfMwMcYU/NPuUOkos59VOtuQrFbCZuq3ak=","secondaryKey":"5/gzWXneLPfQzXRstN1MTcccpRR8wXOr2S37XckjUqc=","rights":"RegistryRead"},{"keyName":"registryReadWrite","primaryKey":"ivtsDfGb9k0LU9mnuChY0WZmwYwlwuha3xw4PVu3KXg=","secondaryKey":"6zK4rS/cPZyuq8k9q+G32x213XyQe0b/VNYOWbQSitk=","rights":"RegistryWrite"}]}'
+      string: '{"value":[{"keyName":"iothubowner","primaryKey":"4zRZSrvNF/cHElBOvTxjkUt9U4bJoMKu3bQPKGqcWXA=","secondaryKey":"q9S7THTDeFevUGHcH5XqVzWIkmpcuLg9vBob0iItQeI=","rights":"RegistryWrite,
+        ServiceConnect, DeviceConnect"},{"keyName":"service","primaryKey":"494LmQ4nln3jNDuyCSie1llc1daBLNlfR2Sn6y1lUUg=","secondaryKey":"B0y1/qjIChbA+4JcEI0cQyf434iaEds+OcvP4wGWoKM=","rights":"ServiceConnect"},{"keyName":"device","primaryKey":"v1e60X1LrCMimDI+T/iyoT1teNqV5bajjYkLOXpzV/s=","secondaryKey":"cTepab/3/53ZQZA60/Af5csnS/oz5rk7/lL0XUOUkKA=","rights":"DeviceConnect"},{"keyName":"registryRead","primaryKey":"66EDyM+NFUdgG0/5DLjgh3ZCAoMpgf+Bh9BXKSZQ+UM=","secondaryKey":"1SvvJFn7GE8S+Xdj+vMYgM6OsgdvphkgzLtw4E6Cs4M=","rights":"RegistryRead"},{"keyName":"registryReadWrite","primaryKey":"1MJdYVmp90EgUWKanVOl/9mRKZAQFf+9NAiqb3F8us8=","secondaryKey":"52I9EXE+w3ewKAoTBzkrEyXoJ2v/ZIqDoifRQra7Q0Y=","rights":"RegistryWrite"}]}'
     headers:
       cache-control:
       - no-cache
@@ -568,7 +420,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jan 2021 05:55:20 GMT
+      - Tue, 28 Mar 2023 10:19:59 GMT
       expires:
       - '-1'
       pragma:
@@ -592,7 +444,7 @@ interactions:
     body: '{"location": "westus", "kind": "Microsoft.IoTHub", "properties": {"eventSourceResourceId":
       "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003",
       "iotHubName": "cli-test-tsi-iothub000003", "consumerGroupName": "cgn", "keyName":
-      "iothubowner", "sharedAccessKey": "YJjD4vGgflnT+CTilmQpYGVW+jZ+1KLNEVoxQaD7B8E="}}'
+      "iothubowner", "sharedAccessKey": "4zRZSrvNF/cHElBOvTxjkUt9U4bJoMKu3bQPKGqcWXA="}}'
     headers:
       Accept:
       - application/json
@@ -603,29 +455,29 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '461'
+      - '403'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g --environment-name --name --location --consumer-group-name --iot-hub-name
         --key-name --shared-access-key --event-source-resource-id
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.46.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.10.10
+        (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31) VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventSources/cli-test-tsi-es000002?api-version=2020-05-15
   response:
     body:
-      string: '{"kind":"Microsoft.IoTHub","location":"westus","tags":null,"properties":{"eventSourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","iotHubName":"cli-test-tsi-iothub000003","consumerGroupName":"cgn","keyName":"iothubowner","creationTime":"2021-01-27T05:55:27.0403868Z","provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventsources/cli-test-tsi-es000002","name":"cli-test-tsi-es000002","type":"Microsoft.TimeSeriesInsights/Environments/EventSources"}'
+      string: '{"kind":"Microsoft.IoTHub","location":"westus","tags":null,"properties":{"eventSourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","iotHubName":"cli-test-tsi-iothub000003","consumerGroupName":"cgn","keyName":"iothubowner","creationTime":"2023-03-28T10:20:02.2980470Z","provisioningState":"Succeeded","ingressStartAt":{"type":"EarliestAvailable"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventsources/cli-test-tsi-es000002","name":"cli-test-tsi-es000002","type":"Microsoft.TimeSeriesInsights/Environments/EventSources"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '835'
+      - '755'
       content-type:
       - application/json
       date:
-      - Wed, 27 Jan 2021 05:55:28 GMT
+      - Tue, 28 Mar 2023 10:20:01 GMT
       expires:
       - '-1'
       pragma:
@@ -641,7 +493,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1193'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -659,22 +511,22 @@ interactions:
       ParameterSetName:
       - -g --environment-name --name --timestamp-property-name
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.46.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.10.10
+        (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31) VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventSources/cli-test-tsi-es000002?api-version=2020-05-15
   response:
     body:
-      string: '{"kind":"Microsoft.IoTHub","location":"westus","tags":null,"properties":{"eventSourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","iotHubName":"cli-test-tsi-iothub000003","consumerGroupName":"cgn","keyName":"iothubowner","creationTime":"2021-01-27T05:55:27.0403868Z","provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventsources/cli-test-tsi-es000002","name":"cli-test-tsi-es000002","type":"Microsoft.TimeSeriesInsights/Environments/EventSources"}'
+      string: '{"kind":"Microsoft.IoTHub","location":"westus","tags":null,"properties":{"eventSourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","iotHubName":"cli-test-tsi-iothub000003","consumerGroupName":"cgn","keyName":"iothubowner","creationTime":"2023-03-28T10:20:02.2980470Z","provisioningState":"Succeeded","ingressStartAt":{"type":"EarliestAvailable"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventsources/cli-test-tsi-es000002","name":"cli-test-tsi-es000002","type":"Microsoft.TimeSeriesInsights/Environments/EventSources"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '835'
+      - '755'
       content-type:
       - application/json
       date:
-      - Wed, 27 Jan 2021 05:55:30 GMT
+      - Tue, 28 Mar 2023 10:20:02 GMT
       expires:
       - '-1'
       pragma:
@@ -710,22 +562,22 @@ interactions:
       ParameterSetName:
       - -g --environment-name --name --timestamp-property-name
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.46.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.10.10
+        (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31) VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventSources/cli-test-tsi-es000002?api-version=2020-05-15
   response:
     body:
-      string: '{"kind":"Microsoft.IoTHub","location":"westus","tags":null,"properties":{"eventSourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","iotHubName":"cli-test-tsi-iothub000003","consumerGroupName":"cgn","keyName":"iothubowner","creationTime":"2021-01-27T05:55:27.0403868Z","provisioningState":"Succeeded","timestampPropertyName":"timestampProp"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventsources/cli-test-tsi-es000002","name":"cli-test-tsi-es000002","type":"Microsoft.TimeSeriesInsights/Environments/EventSources"}'
+      string: '{"kind":"Microsoft.IoTHub","location":"westus","tags":null,"properties":{"eventSourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","iotHubName":"cli-test-tsi-iothub000003","consumerGroupName":"cgn","keyName":"iothubowner","creationTime":"2023-03-28T10:20:02.2980470Z","provisioningState":"Succeeded","ingressStartAt":{"type":"EarliestAvailable"},"timestampPropertyName":"timestampProp"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventsources/cli-test-tsi-es000002","name":"cli-test-tsi-es000002","type":"Microsoft.TimeSeriesInsights/Environments/EventSources"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '875'
+      - '795'
       content-type:
       - application/json
       date:
-      - Wed, 27 Jan 2021 05:55:31 GMT
+      - Tue, 28 Mar 2023 10:20:03 GMT
       expires:
       - '-1'
       pragma:
@@ -741,7 +593,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '1198'
     status:
       code: 200
       message: OK
@@ -759,12 +611,10 @@ interactions:
       ParameterSetName:
       - -g --hub-name -n --renew-key --query --output
       User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-resource/12.0.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: HEAD
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitsi.rg000001?api-version=2020-10-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitsi.rg000001?api-version=2022-09-01
   response:
     body:
       string: ''
@@ -774,7 +624,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 05:55:31 GMT
+      - Tue, 28 Mar 2023 10:20:03 GMT
       expires:
       - '-1'
       pragma:
@@ -798,18 +648,16 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '36'
+      - '37'
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
       ParameterSetName:
       - -g --hub-name -n --renew-key --query --output
       User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-iothub/0.12.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-iothub/2.3.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/checkNameAvailability?api-version=2020-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/checkNameAvailability?api-version=2022-04-30-preview
   response:
     body:
       string: '{"nameAvailable":false,"reason":"AlreadyExists","message":"IotHub name
@@ -818,11 +666,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '116'
+      - '117'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jan 2021 05:55:33 GMT
+      - Tue, 28 Mar 2023 10:20:03 GMT
       expires:
       - '-1'
       pragma:
@@ -838,7 +686,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1199'
     status:
       code: 200
       message: OK
@@ -856,25 +704,23 @@ interactions:
       ParameterSetName:
       - -g --hub-name -n --renew-key --query --output
       User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-iothub/0.12.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-iothub/2.3.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003?api-version=2020-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003?api-version=2022-04-30-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","name":"cli-test-tsi-iothub000003","type":"Microsoft.Devices/IotHubs","location":"westus","tags":{},"subscriptionid":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","resourcegroup":"clitsi.rg000001","etag":"AAAACNt4bz8=","properties":{"locations":[{"location":"West
-        US","role":"primary"},{"location":"East US","role":"secondary"}],"state":"Active","provisioningState":"Succeeded","ipFilterRules":[],"hostName":"cli-test-tsi-iothub000003.azure-devices.net","eventHubEndpoints":{"events":{"retentionTimeInDays":1,"partitionCount":4,"partitionIds":["0","1","2","3"],"path":"cli-test-tsi-iothub000003","endpoint":"sb://iothub-ns-cli-test-t-7652510-139f5cce7f.servicebus.windows.net/"}},"routing":{"endpoints":{"serviceBusQueues":[],"serviceBusTopics":[],"eventHubs":[],"storageContainers":[]},"routes":[],"fallbackRoute":{"name":"$fallback","source":"DeviceMessages","condition":"true","endpointNames":["events"],"isEnabled":true}},"storageEndpoints":{"$default":{"sasTtlAsIso8601":"PT1H","connectionString":"","containerName":""}},"messagingEndpoints":{"fileNotifications":{"lockDurationAsIso8601":"PT1M","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"enableFileUploadNotifications":false,"cloudToDevice":{"maxDeliveryCount":10,"defaultTtlAsIso8601":"PT1H","feedback":{"lockDurationAsIso8601":"PT5S","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"features":"None"},"sku":{"name":"S1","tier":"Standard","capacity":1},"identity":{"type":"None"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","name":"cli-test-tsi-iothub000003","type":"Microsoft.Devices/IotHubs","location":"westus","tags":{},"subscriptionid":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","resourcegroup":"clitsi.rg000001","etag":"AAAADH1YjoI=","properties":{"locations":[{"location":"West
+        US","role":"primary"},{"location":"East US","role":"secondary"}],"state":"Active","provisioningState":"Succeeded","ipFilterRules":[],"hostName":"cli-test-tsi-iothub000003.azure-devices.net","eventHubEndpoints":{"events":{"retentionTimeInDays":1,"partitionCount":4,"partitionIds":["0","1","2","3"],"path":"cli-test-tsi-iothub000003","endpoint":"sb://iothub-ns-cli-test-t-24886146-1fb4095686.servicebus.windows.net/"}},"routing":{"endpoints":{"serviceBusQueues":[],"serviceBusTopics":[],"eventHubs":[],"storageContainers":[],"cosmosDBSqlCollections":[]},"routes":[],"fallbackRoute":{"name":"$fallback","source":"DeviceMessages","condition":"true","endpointNames":["events"],"isEnabled":true}},"storageEndpoints":{"$default":{"sasTtlAsIso8601":"PT1H","connectionString":"","containerName":""}},"messagingEndpoints":{"fileNotifications":{"lockDurationAsIso8601":"PT5S","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"enableFileUploadNotifications":false,"cloudToDevice":{"maxDeliveryCount":10,"defaultTtlAsIso8601":"PT1H","feedback":{"lockDurationAsIso8601":"PT5S","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"features":"None","allowedFqdnList":[]},"sku":{"name":"S1","tier":"Standard","capacity":1},"identity":{"type":"None"},"systemData":{"createdAt":"2023-03-28T10:17:57.1666667Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1700'
+      - '1692'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jan 2021 05:55:33 GMT
+      - Tue, 28 Mar 2023 10:20:04 GMT
       expires:
       - '-1'
       pragma:
@@ -908,16 +754,14 @@ interactions:
       ParameterSetName:
       - -g --hub-name -n --renew-key --query --output
       User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-iothub/0.12.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-iothub/2.3.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003/listkeys?api-version=2020-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003/listkeys?api-version=2022-04-30-preview
   response:
     body:
-      string: '{"value":[{"keyName":"iothubowner","primaryKey":"YJjD4vGgflnT+CTilmQpYGVW+jZ+1KLNEVoxQaD7B8E=","secondaryKey":"p9x84klIfLgVFaP7HdV/YpMBrOirQTrGwlGjoZXZonM=","rights":"RegistryWrite,
-        ServiceConnect, DeviceConnect"},{"keyName":"service","primaryKey":"4aZ8gDU+3nCxByJhoNLqI9L4B4+bDptyLzM2ORz2nxc=","secondaryKey":"ZWtP9hh5on/5I81HjkUPbJDikr2w6BUjlO4ekv6vSO4=","rights":"ServiceConnect"},{"keyName":"device","primaryKey":"qvFqV0l3jQ9FXRC/Y+4axC7Nrd/WfmWTMYuxYBRQSdM=","secondaryKey":"vAQD9OB3ETLBztH4I6bSe1FJHnMM8Ja7CxCrQ4qP/Fk=","rights":"DeviceConnect"},{"keyName":"registryRead","primaryKey":"BnNBcVKx5kfMwMcYU/NPuUOkos59VOtuQrFbCZuq3ak=","secondaryKey":"5/gzWXneLPfQzXRstN1MTcccpRR8wXOr2S37XckjUqc=","rights":"RegistryRead"},{"keyName":"registryReadWrite","primaryKey":"ivtsDfGb9k0LU9mnuChY0WZmwYwlwuha3xw4PVu3KXg=","secondaryKey":"6zK4rS/cPZyuq8k9q+G32x213XyQe0b/VNYOWbQSitk=","rights":"RegistryWrite"}]}'
+      string: '{"value":[{"keyName":"iothubowner","primaryKey":"4zRZSrvNF/cHElBOvTxjkUt9U4bJoMKu3bQPKGqcWXA=","secondaryKey":"q9S7THTDeFevUGHcH5XqVzWIkmpcuLg9vBob0iItQeI=","rights":"RegistryWrite,
+        ServiceConnect, DeviceConnect"},{"keyName":"service","primaryKey":"494LmQ4nln3jNDuyCSie1llc1daBLNlfR2Sn6y1lUUg=","secondaryKey":"B0y1/qjIChbA+4JcEI0cQyf434iaEds+OcvP4wGWoKM=","rights":"ServiceConnect"},{"keyName":"device","primaryKey":"v1e60X1LrCMimDI+T/iyoT1teNqV5bajjYkLOXpzV/s=","secondaryKey":"cTepab/3/53ZQZA60/Af5csnS/oz5rk7/lL0XUOUkKA=","rights":"DeviceConnect"},{"keyName":"registryRead","primaryKey":"66EDyM+NFUdgG0/5DLjgh3ZCAoMpgf+Bh9BXKSZQ+UM=","secondaryKey":"1SvvJFn7GE8S+Xdj+vMYgM6OsgdvphkgzLtw4E6Cs4M=","rights":"RegistryRead"},{"keyName":"registryReadWrite","primaryKey":"1MJdYVmp90EgUWKanVOl/9mRKZAQFf+9NAiqb3F8us8=","secondaryKey":"52I9EXE+w3ewKAoTBzkrEyXoJ2v/ZIqDoifRQra7Q0Y=","rights":"RegistryWrite"}]}'
     headers:
       cache-control:
       - no-cache
@@ -926,7 +770,235 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 27 Jan 2021 05:55:34 GMT
+      - Tue, 28 Mar 2023 10:20:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "tags": {}, "etag": "AAAADH1YjoI=", "properties":
+      {"authorizationPolicies": [{"keyName": "service", "primaryKey": "494LmQ4nln3jNDuyCSie1llc1daBLNlfR2Sn6y1lUUg=",
+      "secondaryKey": "B0y1/qjIChbA+4JcEI0cQyf434iaEds+OcvP4wGWoKM=", "rights": "ServiceConnect"},
+      {"keyName": "device", "primaryKey": "v1e60X1LrCMimDI+T/iyoT1teNqV5bajjYkLOXpzV/s=",
+      "secondaryKey": "cTepab/3/53ZQZA60/Af5csnS/oz5rk7/lL0XUOUkKA=", "rights": "DeviceConnect"},
+      {"keyName": "registryRead", "primaryKey": "66EDyM+NFUdgG0/5DLjgh3ZCAoMpgf+Bh9BXKSZQ+UM=",
+      "secondaryKey": "1SvvJFn7GE8S+Xdj+vMYgM6OsgdvphkgzLtw4E6Cs4M=", "rights": "RegistryRead"},
+      {"keyName": "registryReadWrite", "primaryKey": "1MJdYVmp90EgUWKanVOl/9mRKZAQFf+9NAiqb3F8us8=",
+      "secondaryKey": "52I9EXE+w3ewKAoTBzkrEyXoJ2v/ZIqDoifRQra7Q0Y=", "rights": "RegistryWrite"},
+      {"keyName": "iothubowner", "primaryKey": "SyVpOosZ6SaIUQ3I49GDSWN1B3Ip5cede6aTTPa3xoY=",
+      "secondaryKey": "q9S7THTDeFevUGHcH5XqVzWIkmpcuLg9vBob0iItQeI=", "rights": "RegistryWrite,
+      ServiceConnect, DeviceConnect"}], "allowedFqdnList": [], "ipFilterRules": [],
+      "eventHubEndpoints": {"events": {"retentionTimeInDays": 1, "partitionCount":
+      4}}, "routing": {"endpoints": {"serviceBusQueues": [], "serviceBusTopics": [],
+      "eventHubs": [], "storageContainers": [], "cosmosDBSqlCollections": []}, "routes":
+      [], "fallbackRoute": {"name": "$fallback", "source": "DeviceMessages", "condition":
+      "true", "endpointNames": ["events"], "isEnabled": true}}, "storageEndpoints":
+      {"$default": {"sasTtlAsIso8601": "PT1H", "connectionString": "", "containerName":
+      ""}}, "messagingEndpoints": {"fileNotifications": {"lockDurationAsIso8601":
+      "PT5S", "ttlAsIso8601": "PT1H", "maxDeliveryCount": 10}}, "enableFileUploadNotifications":
+      false, "cloudToDevice": {"maxDeliveryCount": 10, "defaultTtlAsIso8601": "PT1H",
+      "feedback": {"lockDurationAsIso8601": "PT5S", "ttlAsIso8601": "PT1H", "maxDeliveryCount":
+      10}}, "features": "None"}, "sku": {"name": "S1", "capacity": 1}, "identity":
+      {"type": "None"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - iot hub policy renew-key
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1993'
+      Content-Type:
+      - application/json
+      If-Match:
+      - '{''IF-MATCH'': ''AAAADH1YjoI=''}'
+      ParameterSetName:
+      - -g --hub-name -n --renew-key --query --output
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-iothub/2.3.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003?api-version=2022-04-30-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","name":"cli-test-tsi-iothub000003","type":"Microsoft.Devices/IotHubs","location":"westus","tags":{},"subscriptionid":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","resourcegroup":"clitsi.rg000001","etag":"AAAADH1YjoI=","properties":{"operationsMonitoringProperties":{"events":{"None":"None","Connections":"None","DeviceTelemetry":"None","C2DCommands":"None","DeviceIdentityOperations":"None","FileUploadOperations":"None","Routes":"None"}},"provisioningState":"Accepted","authorizationPolicies":[{"keyName":"service","primaryKey":"494LmQ4nln3jNDuyCSie1llc1daBLNlfR2Sn6y1lUUg=","secondaryKey":"B0y1/qjIChbA+4JcEI0cQyf434iaEds+OcvP4wGWoKM=","rights":"ServiceConnect"},{"keyName":"device","primaryKey":"v1e60X1LrCMimDI+T/iyoT1teNqV5bajjYkLOXpzV/s=","secondaryKey":"cTepab/3/53ZQZA60/Af5csnS/oz5rk7/lL0XUOUkKA=","rights":"DeviceConnect"},{"keyName":"registryRead","primaryKey":"66EDyM+NFUdgG0/5DLjgh3ZCAoMpgf+Bh9BXKSZQ+UM=","secondaryKey":"1SvvJFn7GE8S+Xdj+vMYgM6OsgdvphkgzLtw4E6Cs4M=","rights":"RegistryRead"},{"keyName":"registryReadWrite","primaryKey":"1MJdYVmp90EgUWKanVOl/9mRKZAQFf+9NAiqb3F8us8=","secondaryKey":"52I9EXE+w3ewKAoTBzkrEyXoJ2v/ZIqDoifRQra7Q0Y=","rights":"RegistryWrite"},{"keyName":"iothubowner","primaryKey":"SyVpOosZ6SaIUQ3I49GDSWN1B3Ip5cede6aTTPa3xoY=","secondaryKey":"q9S7THTDeFevUGHcH5XqVzWIkmpcuLg9vBob0iItQeI=","rights":"RegistryWrite,
+        ServiceConnect, DeviceConnect"}],"ipFilterRules":[],"eventHubEndpoints":{"events":{"retentionTimeInDays":1,"partitionCount":4},"operationsMonitoringEvents":{"retentionTimeInDays":1,"partitionCount":4,"partitionIds":["0","1","2","3"],"path":"cli-test-tsi-iothub000003-operationmonitoring","endpoint":"sb://iothub-ns-cli-test-t-24886146-1fb4095686.servicebus.windows.net/","internalAuthorizationPolicies":[{"ClaimType":"SharedAccessKey","ClaimValue":"None","KeyName":"scaleunitsend-8cd8379c-7cf9-4a39-8f31-c605a45c4eb4-iothub","PrimaryKey":"nOLg7PztRbNPmuUwdgKBvEHCnGWje/vcBvmFOTnNMsU=","SecondaryKey":"w6ylY4hTTi9VM+0+MxUqHf72JIeMysfn0XyUbI9qTT0=","Rights":["Send"],"CreatedTime":"Tue,
+        28 Mar 2023 10:19:34 GMT","ModifiedTime":"Tue, 28 Mar 2023 10:19:34 GMT"},{"ClaimType":"SharedAccessKey","ClaimValue":"None","KeyName":"owner-edc35617-fd26-4ee4-a505-609443485a76-iothub","PrimaryKey":"QJIDfnEmdmi4XdVOyZZSSILS9tpamizBA5sIQBalYiI=","SecondaryKey":"Ez68OIzHFR7r616odWGBqBpxOzokmTvjHrkHT3KY2p0=","Rights":["Listen","Manage","Send"],"CreatedTime":"Tue,
+        28 Mar 2023 10:19:34 GMT","ModifiedTime":"Tue, 28 Mar 2023 10:19:34 GMT"}],"authorizationPolicies":[{"ClaimType":"SharedAccessKey","ClaimValue":"None","KeyName":"iothubowner","PrimaryKey":"4zRZSrvNF/cHElBOvTxjkUt9U4bJoMKu3bQPKGqcWXA=","SecondaryKey":"q9S7THTDeFevUGHcH5XqVzWIkmpcuLg9vBob0iItQeI=","Rights":["Listen"],"CreatedTime":"Tue,
+        28 Mar 2023 10:19:34 GMT","ModifiedTime":"Tue, 28 Mar 2023 10:19:34 GMT"},{"ClaimType":"SharedAccessKey","ClaimValue":"None","KeyName":"service","PrimaryKey":"494LmQ4nln3jNDuyCSie1llc1daBLNlfR2Sn6y1lUUg=","SecondaryKey":"B0y1/qjIChbA+4JcEI0cQyf434iaEds+OcvP4wGWoKM=","Rights":["Listen"],"CreatedTime":"Tue,
+        28 Mar 2023 10:19:34 GMT","ModifiedTime":"Tue, 28 Mar 2023 10:19:34 GMT"}]}},"routing":{"endpoints":{"serviceBusQueues":[],"serviceBusTopics":[],"eventHubs":[],"storageContainers":[],"cosmosDBSqlCollections":[]},"routes":[],"fallbackRoute":{"name":"$fallback","source":"DeviceMessages","condition":"true","endpointNames":["events"],"isEnabled":true}},"storageEndpoints":{"$default":{"sasTtlAsIso8601":"PT1H","connectionString":"","containerName":""}},"messagingEndpoints":{"fileNotifications":{"lockDurationAsIso8601":"PT5S","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"enableFileUploadNotifications":false,"cloudToDevice":{"maxDeliveryCount":10,"defaultTtlAsIso8601":"PT1H","feedback":{"lockDurationAsIso8601":"PT5S","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"features":"None","allowedFqdnList":[]},"sku":{"name":"S1","tier":"Standard","capacity":1},"identity":{"type":"None"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/locations/westus/operationResults/aWQ9b3NfaWhfZDZmM2E4N2ItY2Q4MS00ZTdjLWEwMTktNjlhOWU3YjE1ZmYwO3JlZ2lvbj13ZXN0dXM=?api-version=2022-04-30-preview&operationSource=other&asyncinfo
+      cache-control:
+      - no-cache
+      content-length:
+      - '4082'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 28 Mar 2023 10:20:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '4999'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - iot hub policy renew-key
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --hub-name -n --renew-key --query --output
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-iothub/2.3.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/locations/westus/operationResults/aWQ9b3NfaWhfZDZmM2E4N2ItY2Q4MS00ZTdjLWEwMTktNjlhOWU3YjE1ZmYwO3JlZ2lvbj13ZXN0dXM=?api-version=2022-04-30-preview&operationSource=other&asyncinfo
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 28 Mar 2023 10:20:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - iot hub policy renew-key
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --hub-name -n --renew-key --query --output
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-iothub/2.3.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003?api-version=2022-04-30-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","name":"cli-test-tsi-iothub000003","type":"Microsoft.Devices/IotHubs","location":"westus","tags":{},"subscriptionid":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","resourcegroup":"clitsi.rg000001","etag":"AAAADH1YjsM=","properties":{"locations":[{"location":"West
+        US","role":"primary"},{"location":"East US","role":"secondary"}],"state":"Active","provisioningState":"Succeeded","ipFilterRules":[],"hostName":"cli-test-tsi-iothub000003.azure-devices.net","eventHubEndpoints":{"events":{"retentionTimeInDays":1,"partitionCount":4,"partitionIds":["0","1","2","3"],"path":"cli-test-tsi-iothub000003","endpoint":"sb://iothub-ns-cli-test-t-24886146-1fb4095686.servicebus.windows.net/"}},"routing":{"endpoints":{"serviceBusQueues":[],"serviceBusTopics":[],"eventHubs":[],"storageContainers":[],"cosmosDBSqlCollections":[]},"routes":[],"fallbackRoute":{"name":"$fallback","source":"DeviceMessages","condition":"true","endpointNames":["events"],"isEnabled":true}},"storageEndpoints":{"$default":{"sasTtlAsIso8601":"PT1H","connectionString":"","containerName":""}},"messagingEndpoints":{"fileNotifications":{"lockDurationAsIso8601":"PT5S","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"enableFileUploadNotifications":false,"cloudToDevice":{"maxDeliveryCount":10,"defaultTtlAsIso8601":"PT1H","feedback":{"lockDurationAsIso8601":"PT5S","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"features":"None","allowedFqdnList":[]},"sku":{"name":"S1","tier":"Standard","capacity":1},"identity":{"type":"None"},"systemData":{"createdAt":"2023-03-28T10:17:57.1666667Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1692'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 28 Mar 2023 10:20:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - iot hub policy renew-key
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --hub-name -n --renew-key --query --output
+      User-Agent:
+      - AZURECLI/2.46.0 azsdk-python-azure-mgmt-iothub/2.3.0 Python/3.10.10 (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31)
+        VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003/IotHubKeys/iothubowner/listkeys?api-version=2022-04-30-preview
+  response:
+    body:
+      string: '{"keyName":"iothubowner","primaryKey":"SyVpOosZ6SaIUQ3I49GDSWN1B3Ip5cede6aTTPa3xoY=","secondaryKey":"q9S7THTDeFevUGHcH5XqVzWIkmpcuLg9vBob0iItQeI=","rights":"RegistryWrite,
+        ServiceConnect, DeviceConnect"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '203'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 28 Mar 2023 10:20:39 GMT
       expires:
       - '-1'
       pragma:
@@ -947,236 +1019,6 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"location": "westus", "tags": {}, "etag": "AAAACNt4bz8=", "properties":
-      {"authorizationPolicies": [{"keyName": "service", "primaryKey": "4aZ8gDU+3nCxByJhoNLqI9L4B4+bDptyLzM2ORz2nxc=",
-      "secondaryKey": "ZWtP9hh5on/5I81HjkUPbJDikr2w6BUjlO4ekv6vSO4=", "rights": "ServiceConnect"},
-      {"keyName": "device", "primaryKey": "qvFqV0l3jQ9FXRC/Y+4axC7Nrd/WfmWTMYuxYBRQSdM=",
-      "secondaryKey": "vAQD9OB3ETLBztH4I6bSe1FJHnMM8Ja7CxCrQ4qP/Fk=", "rights": "DeviceConnect"},
-      {"keyName": "registryRead", "primaryKey": "BnNBcVKx5kfMwMcYU/NPuUOkos59VOtuQrFbCZuq3ak=",
-      "secondaryKey": "5/gzWXneLPfQzXRstN1MTcccpRR8wXOr2S37XckjUqc=", "rights": "RegistryRead"},
-      {"keyName": "registryReadWrite", "primaryKey": "ivtsDfGb9k0LU9mnuChY0WZmwYwlwuha3xw4PVu3KXg=",
-      "secondaryKey": "6zK4rS/cPZyuq8k9q+G32x213XyQe0b/VNYOWbQSitk=", "rights": "RegistryWrite"},
-      {"keyName": "iothubowner", "primaryKey": "cogK6BYpC2mhJW6wrpJdwKD/HwIDvnEMCi9hOFUQDqk=",
-      "secondaryKey": "p9x84klIfLgVFaP7HdV/YpMBrOirQTrGwlGjoZXZonM=", "rights": "RegistryWrite,
-      ServiceConnect, DeviceConnect"}], "ipFilterRules": [], "eventHubEndpoints":
-      {"events": {"retentionTimeInDays": 1, "partitionCount": 4}}, "routing": {"endpoints":
-      {"serviceBusQueues": [], "serviceBusTopics": [], "eventHubs": [], "storageContainers":
-      []}, "routes": [], "fallbackRoute": {"name": "$fallback", "source": "DeviceMessages",
-      "condition": "true", "endpointNames": ["events"], "isEnabled": true}}, "storageEndpoints":
-      {"$default": {"sasTtlAsIso8601": "PT1H", "connectionString": "", "containerName":
-      ""}}, "messagingEndpoints": {"fileNotifications": {"lockDurationAsIso8601":
-      "PT1M", "ttlAsIso8601": "PT1H", "maxDeliveryCount": 10}}, "enableFileUploadNotifications":
-      false, "cloudToDevice": {"maxDeliveryCount": 10, "defaultTtlAsIso8601": "PT1H",
-      "feedback": {"lockDurationAsIso8601": "PT5S", "ttlAsIso8601": "PT1H", "maxDeliveryCount":
-      10}}, "features": "None"}, "sku": {"name": "S1", "capacity": 1}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - iot hub policy renew-key
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '1910'
-      Content-Type:
-      - application/json; charset=utf-8
-      If-Match:
-      - '{''IF-MATCH'': ''AAAACNt4bz8=''}'
-      ParameterSetName:
-      - -g --hub-name -n --renew-key --query --output
-      User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-iothub/0.12.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003?api-version=2020-03-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","name":"cli-test-tsi-iothub000003","type":"Microsoft.Devices/IotHubs","location":"westus","tags":{},"subscriptionid":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","resourcegroup":"clitsi.rg000001","etag":"AAAACNt4bz8=","properties":{"operationsMonitoringProperties":{"events":{"None":"None","Connections":"None","DeviceTelemetry":"None","C2DCommands":"None","DeviceIdentityOperations":"None","FileUploadOperations":"None","Routes":"None"}},"provisioningState":"Accepted","authorizationPolicies":[{"keyName":"service","primaryKey":"4aZ8gDU+3nCxByJhoNLqI9L4B4+bDptyLzM2ORz2nxc=","secondaryKey":"ZWtP9hh5on/5I81HjkUPbJDikr2w6BUjlO4ekv6vSO4=","rights":"ServiceConnect"},{"keyName":"device","primaryKey":"qvFqV0l3jQ9FXRC/Y+4axC7Nrd/WfmWTMYuxYBRQSdM=","secondaryKey":"vAQD9OB3ETLBztH4I6bSe1FJHnMM8Ja7CxCrQ4qP/Fk=","rights":"DeviceConnect"},{"keyName":"registryRead","primaryKey":"BnNBcVKx5kfMwMcYU/NPuUOkos59VOtuQrFbCZuq3ak=","secondaryKey":"5/gzWXneLPfQzXRstN1MTcccpRR8wXOr2S37XckjUqc=","rights":"RegistryRead"},{"keyName":"registryReadWrite","primaryKey":"ivtsDfGb9k0LU9mnuChY0WZmwYwlwuha3xw4PVu3KXg=","secondaryKey":"6zK4rS/cPZyuq8k9q+G32x213XyQe0b/VNYOWbQSitk=","rights":"RegistryWrite"},{"keyName":"iothubowner","primaryKey":"cogK6BYpC2mhJW6wrpJdwKD/HwIDvnEMCi9hOFUQDqk=","secondaryKey":"p9x84klIfLgVFaP7HdV/YpMBrOirQTrGwlGjoZXZonM=","rights":"RegistryWrite,
-        ServiceConnect, DeviceConnect"}],"ipFilterRules":[],"eventHubEndpoints":{"events":{"retentionTimeInDays":1,"partitionCount":4},"operationsMonitoringEvents":{"retentionTimeInDays":1,"partitionCount":4,"partitionIds":["0","1","2","3"],"path":"cli-test-tsi-iothub000003-operationmonitoring","endpoint":"sb://iothub-ns-cli-test-t-7652510-139f5cce7f.servicebus.windows.net/","internalAuthorizationPolicies":[{"ClaimType":"SharedAccessKey","ClaimValue":"None","KeyName":"scaleunitsend-4b608f2f-2a94-4c23-ae4a-00c1a8aba9b6-iothub","PrimaryKey":"3AMEV85FNoa7R0JFfNVS+39QIHKKsqQr6pgOdAoUkJ4=","SecondaryKey":"QXwGQuebkOXfz78fk+iMxfBfTeta5n7x8sxeGT2yWRA=","Rights":["Send"],"CreatedTime":"Wed,
-        27 Jan 2021 05:54:23 GMT","ModifiedTime":"Wed, 27 Jan 2021 05:54:23 GMT"},{"ClaimType":"SharedAccessKey","ClaimValue":"None","KeyName":"owner-a4fdcdcc-2a65-47c5-b62f-deed909dabbd-iothub","PrimaryKey":"hO5JeacYmnC0T9rKvPzgc4aOpkpCt8D697h8CarxIAU=","SecondaryKey":"q87/aZ2TtC3oL2e02IXGA/GgvhMcVqDYk8A0PePzqi0=","Rights":["Listen","Manage","Send"],"CreatedTime":"Wed,
-        27 Jan 2021 05:54:23 GMT","ModifiedTime":"Wed, 27 Jan 2021 05:54:23 GMT"}],"authorizationPolicies":[{"ClaimType":"SharedAccessKey","ClaimValue":"None","KeyName":"iothubowner","PrimaryKey":"YJjD4vGgflnT+CTilmQpYGVW+jZ+1KLNEVoxQaD7B8E=","SecondaryKey":"p9x84klIfLgVFaP7HdV/YpMBrOirQTrGwlGjoZXZonM=","Rights":["Listen"],"CreatedTime":"Wed,
-        27 Jan 2021 05:54:23 GMT","ModifiedTime":"Wed, 27 Jan 2021 05:54:23 GMT"},{"ClaimType":"SharedAccessKey","ClaimValue":"None","KeyName":"service","PrimaryKey":"4aZ8gDU+3nCxByJhoNLqI9L4B4+bDptyLzM2ORz2nxc=","SecondaryKey":"ZWtP9hh5on/5I81HjkUPbJDikr2w6BUjlO4ekv6vSO4=","Rights":["Listen"],"CreatedTime":"Wed,
-        27 Jan 2021 05:54:23 GMT","ModifiedTime":"Wed, 27 Jan 2021 05:54:23 GMT"}]}},"routing":{"endpoints":{"serviceBusQueues":[],"serviceBusTopics":[],"eventHubs":[],"storageContainers":[],"cosmosDBSqlCollections":[]},"routes":[],"fallbackRoute":{"name":"$fallback","source":"DeviceMessages","condition":"true","endpointNames":["events"],"isEnabled":true}},"storageEndpoints":{"$default":{"sasTtlAsIso8601":"PT1H","connectionString":"","containerName":""}},"messagingEndpoints":{"fileNotifications":{"lockDurationAsIso8601":"PT1M","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"enableFileUploadNotifications":false,"cloudToDevice":{"maxDeliveryCount":10,"defaultTtlAsIso8601":"PT1H","feedback":{"lockDurationAsIso8601":"PT5S","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"features":"None"},"sku":{"name":"S1","tier":"Standard","capacity":1}}'
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/operationResults/b3NfaWhfOGFkYmNkYWItMTUxNy00YWYxLTk1ZGMtYzgxMTc5MTk1MTMz?api-version=2020-03-01&operationSource=os_ih&asyncinfo
-      cache-control:
-      - no-cache
-      content-length:
-      - '4150'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jan 2021 05:55:37 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '4999'
-    status:
-      code: 201
-      message: Created
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - iot hub policy renew-key
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --hub-name -n --renew-key --query --output
-      User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-iothub/0.12.0 Azure-SDK-For-Python AZURECLI/2.18.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Devices/operationResults/b3NfaWhfOGFkYmNkYWItMTUxNy00YWYxLTk1ZGMtYzgxMTc5MTk1MTMz?api-version=2020-03-01&operationSource=os_ih&asyncinfo
-  response:
-    body:
-      string: '{"status":"Succeeded"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '22'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jan 2021 05:56:09 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - iot hub policy renew-key
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g --hub-name -n --renew-key --query --output
-      User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-iothub/0.12.0 Azure-SDK-For-Python AZURECLI/2.18.0
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003?api-version=2020-03-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","name":"cli-test-tsi-iothub000003","type":"Microsoft.Devices/IotHubs","location":"westus","tags":{},"subscriptionid":"0b1f6471-1bf0-4dda-aec3-cb9272f09590","resourcegroup":"clitsi.rg000001","etag":"AAAACNt7YLs=","properties":{"locations":[{"location":"West
-        US","role":"primary"},{"location":"East US","role":"secondary"}],"state":"Active","provisioningState":"Succeeded","ipFilterRules":[],"hostName":"cli-test-tsi-iothub000003.azure-devices.net","eventHubEndpoints":{"events":{"retentionTimeInDays":1,"partitionCount":4,"partitionIds":["0","1","2","3"],"path":"cli-test-tsi-iothub000003","endpoint":"sb://iothub-ns-cli-test-t-7652510-139f5cce7f.servicebus.windows.net/"}},"routing":{"endpoints":{"serviceBusQueues":[],"serviceBusTopics":[],"eventHubs":[],"storageContainers":[]},"routes":[],"fallbackRoute":{"name":"$fallback","source":"DeviceMessages","condition":"true","endpointNames":["events"],"isEnabled":true}},"storageEndpoints":{"$default":{"sasTtlAsIso8601":"PT1H","connectionString":"","containerName":""}},"messagingEndpoints":{"fileNotifications":{"lockDurationAsIso8601":"PT1M","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"enableFileUploadNotifications":false,"cloudToDevice":{"maxDeliveryCount":10,"defaultTtlAsIso8601":"PT1H","feedback":{"lockDurationAsIso8601":"PT5S","ttlAsIso8601":"PT1H","maxDeliveryCount":10}},"features":"None"},"sku":{"name":"S1","tier":"Standard","capacity":1},"identity":{"type":"None"}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1700'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jan 2021 05:56:10 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - iot hub policy renew-key
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - -g --hub-name -n --renew-key --query --output
-      User-Agent:
-      - python/3.8.7 (Windows-10-10.0.19041-SP0) msrest/0.6.18 msrest_azure/0.6.3
-        azure-mgmt-iothub/0.12.0 Azure-SDK-For-Python AZURECLI/2.18.0
-      accept-language:
-      - en-US
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003/IotHubKeys/iothubowner/listkeys?api-version=2020-03-01
-  response:
-    body:
-      string: '{"keyName":"iothubowner","primaryKey":"cogK6BYpC2mhJW6wrpJdwKD/HwIDvnEMCi9hOFUQDqk=","secondaryKey":"p9x84klIfLgVFaP7HdV/YpMBrOirQTrGwlGjoZXZonM=","rights":"RegistryWrite,
-        ServiceConnect, DeviceConnect"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '203'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Wed, 27 Jan 2021 05:56:11 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
-    status:
-      code: 200
-      message: OK
-- request:
     body: null
     headers:
       Accept:
@@ -1190,22 +1032,22 @@ interactions:
       ParameterSetName:
       - -g --environment-name --name --shared-access-key --tags --timestamp-property-name
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.46.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.10.10
+        (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31) VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventSources/cli-test-tsi-es000002?api-version=2020-05-15
   response:
     body:
-      string: '{"kind":"Microsoft.IoTHub","location":"westus","tags":null,"properties":{"eventSourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","iotHubName":"cli-test-tsi-iothub000003","consumerGroupName":"cgn","keyName":"iothubowner","creationTime":"2021-01-27T05:55:27.0403868Z","provisioningState":"Succeeded","timestampPropertyName":"timestampProp"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventsources/cli-test-tsi-es000002","name":"cli-test-tsi-es000002","type":"Microsoft.TimeSeriesInsights/Environments/EventSources"}'
+      string: '{"kind":"Microsoft.IoTHub","location":"westus","tags":null,"properties":{"eventSourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","iotHubName":"cli-test-tsi-iothub000003","consumerGroupName":"cgn","keyName":"iothubowner","creationTime":"2023-03-28T10:20:02.2980470Z","provisioningState":"Succeeded","ingressStartAt":{"type":"EarliestAvailable"},"timestampPropertyName":"timestampProp"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventsources/cli-test-tsi-es000002","name":"cli-test-tsi-es000002","type":"Microsoft.TimeSeriesInsights/Environments/EventSources"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '875'
+      - '795'
       content-type:
       - application/json
       date:
-      - Wed, 27 Jan 2021 05:56:13 GMT
+      - Tue, 28 Mar 2023 10:20:40 GMT
       expires:
       - '-1'
       pragma:
@@ -1214,10 +1056,6 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
     status:
@@ -1228,7 +1066,7 @@ interactions:
       "properties": {"timestampPropertyName": "DeviceId1", "eventSourceResourceId":
       "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003",
       "iotHubName": "cli-test-tsi-iothub000003", "consumerGroupName": "cgn", "keyName":
-      "iothubowner", "sharedAccessKey": "cogK6BYpC2mhJW6wrpJdwKD/HwIDvnEMCi9hOFUQDqk="}}'
+      "iothubowner", "sharedAccessKey": "SyVpOosZ6SaIUQ3I49GDSWN1B3Ip5cede6aTTPa3xoY="}}'
     headers:
       Accept:
       - application/json
@@ -1239,28 +1077,28 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '524'
+      - '466'
       Content-Type:
       - application/json
       ParameterSetName:
       - -g --environment-name --name --shared-access-key --tags --timestamp-property-name
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.46.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.10.10
+        (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31) VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventSources/cli-test-tsi-es000002?api-version=2020-05-15
   response:
     body:
-      string: '{"kind":"Microsoft.IoTHub","location":"westus","tags":{"test":"tag"},"properties":{"timestampPropertyName":"DeviceId1","eventSourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","iotHubName":"cli-test-tsi-iothub000003","consumerGroupName":"cgn","keyName":"iothubowner","creationTime":"2021-01-27T05:55:27.0403868Z","provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventsources/cli-test-tsi-es000002","name":"cli-test-tsi-es000002","type":"Microsoft.TimeSeriesInsights/Environments/EventSources"}'
+      string: '{"kind":"Microsoft.IoTHub","location":"westus","tags":{"test":"tag"},"properties":{"timestampPropertyName":"DeviceId1","eventSourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","iotHubName":"cli-test-tsi-iothub000003","consumerGroupName":"cgn","keyName":"iothubowner","creationTime":"2023-03-28T10:20:02.2980470Z","provisioningState":"Succeeded","ingressStartAt":{"type":"EarliestAvailable"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventsources/cli-test-tsi-es000002","name":"cli-test-tsi-es000002","type":"Microsoft.TimeSeriesInsights/Environments/EventSources"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '881'
+      - '801'
       content-type:
       - application/json
       date:
-      - Wed, 27 Jan 2021 05:56:18 GMT
+      - Tue, 28 Mar 2023 10:20:41 GMT
       expires:
       - '-1'
       pragma:
@@ -1269,14 +1107,10 @@ interactions:
       - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '1190'
     status:
       code: 200
       message: OK
@@ -1294,22 +1128,22 @@ interactions:
       ParameterSetName:
       - -g --environment-name
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.46.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.10.10
+        (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31) VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventSources?api-version=2020-05-15
   response:
     body:
-      string: '{"value":[{"kind":"Microsoft.IoTHub","location":"westus","tags":{"test":"tag"},"properties":{"timestampPropertyName":"DeviceId1","eventSourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","iotHubName":"cli-test-tsi-iothub000003","consumerGroupName":"cgn","keyName":"iothubowner","creationTime":"2021-01-27T05:55:27.0403868Z","provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventsources/cli-test-tsi-es000002","name":"cli-test-tsi-es000002","type":"Microsoft.TimeSeriesInsights/Environments/EventSources"}]}'
+      string: '{"value":[{"kind":"Microsoft.IoTHub","location":"westus","tags":{"test":"tag"},"properties":{"timestampPropertyName":"DeviceId1","eventSourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","iotHubName":"cli-test-tsi-iothub000003","consumerGroupName":"cgn","keyName":"iothubowner","creationTime":"2023-03-28T10:20:02.2980470Z","provisioningState":"Succeeded","ingressStartAt":{"type":"EarliestAvailable"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventsources/cli-test-tsi-es000002","name":"cli-test-tsi-es000002","type":"Microsoft.TimeSeriesInsights/Environments/EventSources"}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '893'
+      - '813'
       content-type:
       - application/json
       date:
-      - Wed, 27 Jan 2021 05:56:20 GMT
+      - Tue, 28 Mar 2023 10:20:42 GMT
       expires:
       - '-1'
       pragma:
@@ -1341,22 +1175,22 @@ interactions:
       ParameterSetName:
       - -g --environment-name -n
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.46.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.10.10
+        (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31) VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventSources/cli-test-tsi-es000002?api-version=2020-05-15
   response:
     body:
-      string: '{"kind":"Microsoft.IoTHub","location":"westus","tags":{"test":"tag"},"properties":{"timestampPropertyName":"DeviceId1","eventSourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","iotHubName":"cli-test-tsi-iothub000003","consumerGroupName":"cgn","keyName":"iothubowner","creationTime":"2021-01-27T05:55:27.0403868Z","provisioningState":"Succeeded"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventsources/cli-test-tsi-es000002","name":"cli-test-tsi-es000002","type":"Microsoft.TimeSeriesInsights/Environments/EventSources"}'
+      string: '{"kind":"Microsoft.IoTHub","location":"westus","tags":{"test":"tag"},"properties":{"timestampPropertyName":"DeviceId1","eventSourceResourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.Devices/IotHubs/cli-test-tsi-iothub000003","iotHubName":"cli-test-tsi-iothub000003","consumerGroupName":"cgn","keyName":"iothubowner","creationTime":"2023-03-28T10:20:02.2980470Z","provisioningState":"Succeeded","ingressStartAt":{"type":"EarliestAvailable"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventsources/cli-test-tsi-es000002","name":"cli-test-tsi-es000002","type":"Microsoft.TimeSeriesInsights/Environments/EventSources"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '881'
+      - '801'
       content-type:
       - application/json
       date:
-      - Wed, 27 Jan 2021 05:56:21 GMT
+      - Tue, 28 Mar 2023 10:20:44 GMT
       expires:
       - '-1'
       pragma:
@@ -1390,8 +1224,8 @@ interactions:
       ParameterSetName:
       - -g --environment-name -n --yes
       User-Agent:
-      - AZURECLI/2.18.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.8.7
-        (Windows-10-10.0.19041-SP0)
+      - AZURECLI/2.46.0 azsdk-python-timeseriesinsightsclient/unknown Python/3.10.10
+        (Linux-5.15.0-1034-azure-x86_64-with-glibc2.31) VSTS_7b238909-6802-4b65-b90d-184bca47f458_build_261_0
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitsi.rg000001/providers/Microsoft.TimeSeriesInsights/environments/cli-test-tsi-env000004/eventSources/cli-test-tsi-es000002?api-version=2020-05-15
   response:
@@ -1403,7 +1237,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Wed, 27 Jan 2021 05:56:31 GMT
+      - Tue, 28 Mar 2023 10:20:47 GMT
       expires:
       - '-1'
       pragma:
@@ -1415,7 +1249,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '14997'
     status:
       code: 200
       message: OK
