@@ -164,6 +164,7 @@ class DataprotectionScenarioTest(ScenarioTest):
             trigger_backup(self)
             trigger_restore(self)
             trigger_restore_as_files(self)
-            delete_backup(self)
         except Exception as e:
             raise e
+        finally:
+            delete_backup(self)
