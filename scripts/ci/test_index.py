@@ -14,15 +14,17 @@ import hashlib
 import json
 import logging
 import os
+import shlex
 import shutil
+import subprocess
 import tempfile
 import unittest
 
 from packaging import version
-from util import SRC_PATH
 from wheel.install import WHEEL_INFO_RE
 
-from util import get_ext_metadata, get_whl_from_url, get_index_data
+from util import SRC_PATH
+from util import get_ext_metadata, get_whl_from_url, get_index_data, build_extension
 
 
 logger = logging.getLogger(__name__)
@@ -39,17 +41,61 @@ def get_sha256sum(a_file):
     return sha256.hexdigest()
 
 
-def check_min_version(extension_name, metadata):
-    if 'azext.minCliCoreVersion' not in metadata:
-        try:
-            azext_metadata = glob.glob(os.path.join(SRC_PATH, extension_name, 'azext_*', 'azext_metadata.json'))[0]
-            with open(azext_metadata, 'r') as f:
-                metadata = json.load(f)
-                if not metadata.get('azext.minCliCoreVersion'):
-                    raise AssertionError(f'{extension_name} can not get azext.minCliCoreVersion')
-        except Exception as e:
-            logger.error(f'{extension_name} can not get azext.minCliCoreVersion: {e}')
-            raise e
+def check_min_version_from_local_whl(ext_name, whl_file):
+    try:
+        build_extension(ext_name)
+        extensions_dir = tempfile.mkdtemp()
+        extract_dir = tempfile.mkdtemp(dir=extensions_dir)
+        whl_file = glob.glob(whl_file)[0]
+        local_metadata = get_ext_metadata(extract_dir, whl_file, ext_name)
+        if 'azext.minCliCoreVersion' not in local_metadata:
+            raise AssertionError(f'{ext_name} can not get azext.minCliCoreVersion')
+    except Exception as e:
+        logger.error(f'{ext_name} can not get azext.minCliCoreVersion: {e}')
+        raise e
+
+
+def get_all_tests():
+    all_tests = []
+    for src_d in os.listdir(SRC_PATH):
+        src_d_full = os.path.join(SRC_PATH, src_d)
+        if not os.path.isdir(src_d_full):
+            continue
+        pkg_name = next((d for d in os.listdir(src_d_full) if d.startswith('azext_')), None)
+
+        # If running in Travis CI, only run tests for edited extensions
+        commit_range = os.environ.get('TRAVIS_COMMIT_RANGE')
+        if commit_range and not subprocess.check_output(
+                ['git', '--no-pager', 'diff', '--name-only', commit_range, '--', src_d_full]):
+            continue
+
+        # Running in Azure DevOps
+        cmd_tpl = 'git --no-pager diff --name-only origin/{commit_start} {commit_end} -- {code_dir}'
+        ado_branch_last_commit = os.environ.get('ADO_PULL_REQUEST_LATEST_COMMIT')
+        ado_target_branch = os.environ.get('ADO_PULL_REQUEST_TARGET_BRANCH')
+        if ado_branch_last_commit and ado_target_branch:
+            if ado_branch_last_commit == '$(System.PullRequest.SourceCommitId)':
+                # default value if ADO_PULL_REQUEST_LATEST_COMMIT not set in ADO
+                continue
+            elif ado_target_branch == '$(System.PullRequest.TargetBranch)':
+                # default value if ADO_PULL_REQUEST_TARGET_BRANCH not set in ADO
+                continue
+            else:
+                cmd = cmd_tpl.format(commit_start=ado_target_branch, commit_end=ado_branch_last_commit,
+                                     code_dir=src_d_full)
+                if not subprocess.check_output(shlex.split(cmd)):
+                    continue
+
+        # Find the package and check it has tests
+        # /mnt/vss/_work/1/s/src/healthcareapis/azext_healthcareapis/tests
+        test_dir = os.path.isdir(os.path.join(src_d_full, pkg_name, 'tests'))
+        if pkg_name and test_dir:
+            # [('azext_healthcareapis', '/mnt/vss/_work/1/s/src/healthcareapis')]
+            all_tests.append((pkg_name, src_d_full))
+    logger.info(f'ado_branch_last_commit: {ado_branch_last_commit}, '
+                f'ado_target_branch: {ado_target_branch}, '
+                f'detect which extension need to test: {all_tests}.')
+    return all_tests
 
 
 class TestIndex(unittest.TestCase):
@@ -182,7 +228,7 @@ class TestIndex(unittest.TestCase):
 
             try:
                 # check key properties exists
-                check_min_version(ext_name, metadata)
+                self.assertIn('azext.minCliCoreVersion', metadata)
             except AssertionError as ex:
                 if ext_name in historical_extensions:
                     threshold_version = historical_extensions[ext_name]
@@ -208,6 +254,12 @@ class TestIndex(unittest.TestCase):
                                  "{}".format(item['filename'], json.dumps(metadata, indent=2, sort_keys=True,
                                                                           separators=(',', ': '))))
 
+        # Find all the modified extensions and check min version from local whl
+        all_tests = get_all_tests()
+        for pkg_name, pkg_dir in all_tests:
+            ext_name = pkg_dir.split('/')[-1]
+            local_metadata = check_min_version_from_local_whl(ext_name, os.path.join('.', 'dist', '*.whl'))
+            self.assertIn('azext.minCliCoreVersion', local_metadata)
         shutil.rmtree(extensions_dir)
 
 

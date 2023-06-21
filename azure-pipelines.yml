@@ -97,6 +97,9 @@ jobs:
       export CI="ADO"
       python ./scripts/ci/test_index.py -v
     displayName: "Verify Extensions Index"
+    env:
+      ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
+      ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
 - job: SourceTests
   displayName: "Integration Tests, Build Tests"
