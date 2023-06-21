@@ -819,7 +819,7 @@ def load_arguments(self, _):
 
     for scope in ['create', 'update']:
         with self.argument_context('spring application-configuration-service {}'.format(scope)) as c:
-            c.argument('generation', arg_type=get_enum_type(ConfigurationServiceGeneration), help='Generation.')
+            c.argument('generation', arg_type=get_enum_type(ConfigurationServiceGeneration), help='Generation of Application Configuration Service.')
 
     for scope in ['add', 'update']:
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
