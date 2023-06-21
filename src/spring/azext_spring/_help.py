@@ -956,6 +956,14 @@ helps['spring application-configuration-service create'] = """
           text: az spring application-configuration-service create -s MyService -g MyResourceGroup
 """
 
+helps['spring application-configuration-service update'] = """
+    type: command
+    short-summary: Update Application Configuration Service.
+    examples:
+        - name: Update Application Configuration Service.
+          text: az spring application-configuration-service update -s MyService -g MyResourceGroup --generation Gen2
+"""
+
 helps['spring application-configuration-service delete'] = """
     type: command
     short-summary: Delete Application Configuration Service.
@@ -1060,6 +1068,14 @@ helps['spring gateway update'] = """
     examples:
         - name: Update gateway property.
           text: az spring gateway update -s MyService -g MyResourceGroup --assign-endpoint true --https-only true
+"""
+
+helps['spring gateway restart'] = """
+    type: command
+    short-summary: Restart Spring Cloud Gateway.
+    examples:
+        - name: Restart Spring Cloud Gateway.
+          text: az spring gateway restart -s MyService -g MyResourceGroup
 """
 
 helps['spring gateway sync-cert'] = """

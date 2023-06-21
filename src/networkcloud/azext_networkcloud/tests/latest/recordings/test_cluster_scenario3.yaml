@@ -1,0 +1,56 @@
+interactions:
+- request:
+    body: '{"skipValidationsForMachines": []}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - networkcloud cluster deploy
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '34'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --no-wait --name --resource-group --skip-validations-for-machines
+      User-Agent:
+      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.4 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test-delete-rg/providers/Microsoft.NetworkCloud/clusters/simulator/deploy?api-version=2022-12-12-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/e015c92a-a39c-44b6-a813-dc6489400e64*C0AA9CB8997C164101A6B3756DDB57985E3AEE3A9179B3156EFE2EF6F0778EB9?api-version=2022-12-12-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 24 May 2023 16:12:22 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetworkCloud/locations/EASTUS/operationStatuses/e015c92a-a39c-44b6-a813-dc6489400e64*C0AA9CB8997C164101A6B3756DDB57985E3AEE3A9179B3156EFE2EF6F0778EB9?api-version=2022-12-12-preview
+      mise-correlation-id:
+      - 1ac4e3c6-0e6b-488e-94e4-24cccac529ac
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 202
+      message: Accepted
+version: 1
