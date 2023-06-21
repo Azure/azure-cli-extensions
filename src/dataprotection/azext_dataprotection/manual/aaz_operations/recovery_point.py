@@ -42,11 +42,6 @@ class RecoveryPointList(_RecoveryPointList):
             import dateutil.parser
             if dateutil.parser.parse(start_time) > dateutil.parser.parse(end_time):
                 logger.warning("The argument --start-time is greater than --end-time.")
-        if start_time and end_time:
-            import dateutil.parser
-            if dateutil.parser.parse(start_time) > dateutil.parser.parse(end_time):
-                logger.warning("The argument --start-time is greater than --end-time.")
-
         rp_filter = ""
         if start_time:
             rp_filter += "startDate eq '" + start_time + "'"
