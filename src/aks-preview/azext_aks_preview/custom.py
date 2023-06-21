@@ -564,6 +564,7 @@ def aks_create(
     enable_node_restriction=False,
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
+    enable_network_observability=None,
     # nodepool
     crg_id=None,
     message_of_the_day=None,
@@ -746,6 +747,7 @@ def aks_update(
     guardrails_level=None,
     guardrails_version=None,
     guardrails_excluded_ns=None,
+    enable_network_observability=None,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
