@@ -17,7 +17,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 from .vendored_sdks.appplatform.v2023_05_01_preview.models import (ApmReference, CertificateReference)
-from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import ApmType
+from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
 
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
 from ._resource_quantity import \
@@ -343,6 +343,12 @@ def _is_valid_profile_name(profile):
 def _is_valid_app_and_profile_name(pattern):
     parts = pattern.split('/')
     return len(parts) == 2 and _is_valid_app_name(parts[0]) and _is_valid_profile_name(parts[1])
+
+
+def validate_acs_create(namespace):
+    if namespace.application_configuration_service_generation is not None:
+        if namespace.enable_application_configuration_service is False:
+            raise ArgumentUsageError("--application-configuration-service-generation can only be set when enable application configuration service.")
 
 
 def validate_gateway_update(namespace):

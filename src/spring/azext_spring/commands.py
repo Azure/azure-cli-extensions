@@ -304,6 +304,7 @@ def load_command_table(self, _):
         g.custom_command('bind', 'application_configuration_service_bind')
         g.custom_command('unbind', 'application_configuration_service_unbind')
         g.custom_command('create', 'application_configuration_service_create', table_transformer=transform_application_configuration_service_output)
+        g.custom_command('update', 'application_configuration_service_update', table_transformer=transform_application_configuration_service_output)
         g.custom_command('delete', 'application_configuration_service_delete', confirmation=True)
 
     with self.command_group('spring application-configuration-service git repo',
