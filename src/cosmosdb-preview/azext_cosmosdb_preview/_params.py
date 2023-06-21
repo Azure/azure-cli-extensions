@@ -76,10 +76,15 @@ def load_arguments(self, _):
             'managed-cassandra cluster update',
             'managed-cassandra cluster show',
             'managed-cassandra cluster delete',
+            'managed-cassandra cluster deallocate',
             'managed-cassandra cluster backup list',
             'managed-cassandra cluster backup show']:
         with self.argument_context(scope) as c:
             c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
+
+    # Managed Cassandra Cluster
+    with self.argument_context('managed-cassandra cluster deallocate') as c:
+        c.argument('force', options_list=['--force', '-f'], help="Force to deallocate the cluster", required=False)
 
     # Managed Cassandra Cluster
     for scope in [
@@ -96,6 +101,8 @@ def load_arguments(self, _):
             c.argument('gossip_certificates', help="A list of certificates that should be accepted by on-premise data centers.")
             c.argument('external_seed_nodes', nargs='+', validator=validate_seednodes, help="A list of ip addresses of the seed nodes of on-premise data centers.")
             c.argument('identity_type', options_list=['--identity-type'], arg_type=get_enum_type(['None', 'SystemAssigned']), help="Type of identity used for Customer Managed Disk Key.")
+            c.argument("cluster_type", options_list=['--cluster-type'], help="Type of the cluster, can be Production or NonProduction. If set to Production, operations on cluster might have restrictions.", arg_type=get_enum_type(['Production', 'NonProduction']))
+            c.argument('extensions', nargs='*', help="A set of extensions that will be effective on the cluster. It will replace the entire set of extensions with new set. Use \"\" to remove all. Now Available: cassandra-lucene-index.")
 
     # Managed Cassandra Cluster
     with self.argument_context('managed-cassandra cluster create') as c:
