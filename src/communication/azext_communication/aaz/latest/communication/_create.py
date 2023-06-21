@@ -16,9 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a new CommunicationService or update an existing CommunicationService.
+<<<<<<< HEAD
 
     :example: Create a communication resource with tags
         az communication create -n ResourceName -g ResourceGroup --location global --data-location unitedstates --tags "{tag:tag}"
+=======
+>>>>>>> 959e11493 (Migrating to AAZ Dev Tools for control plane operations)
     """
 
     _aaz_info = {
