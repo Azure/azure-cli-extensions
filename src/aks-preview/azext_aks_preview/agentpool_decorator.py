@@ -282,10 +282,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         else:
             node_taints = self.raw_param.get("node_taints")
 
-        # normalize, default is an empty list
-        if node_taints is not None:
-            node_taints = [x.strip() for x in (node_taints.split(",") if node_taints else [])]
-
         # keep None as None for update mode
         if node_taints is None and self.decorator_mode == DecoratorMode.CREATE:
             node_taints = []
