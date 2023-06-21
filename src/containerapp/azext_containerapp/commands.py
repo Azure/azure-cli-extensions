@@ -135,6 +135,10 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_postgres_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_postgres_service', confirmation=True, supports_no_wait=True)
 
+    with self.command_group('containerapp service kafka') as g:
+        g.custom_command('create', 'create_kafka_service', supports_no_wait=True)
+        g.custom_command('delete', 'delete_kafka_service', confirmation=True, supports_no_wait=True)
+
     with self.command_group('containerapp identity') as g:
         g.custom_command('assign', 'assign_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('remove', 'remove_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())

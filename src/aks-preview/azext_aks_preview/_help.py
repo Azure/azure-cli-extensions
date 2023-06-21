@@ -231,6 +231,9 @@ helps['aks create'] = """
               Used together with the "azure" network plugin.
               Requires either --pod-subnet-id or --network-plugin-mode=overlay.
               This flag is deprecated in favor of --network-dataplane=cilium.
+        - name: --enable-network-observability
+          type: bool
+          short-summary: Enable network observability on a cluster.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -1031,6 +1034,9 @@ helps['aks update'] = """
         - name: --guardrails-excluded-ns
           type: string
           short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails. Use "" to clear a previously non-empty list
+        - name: --enable-network-observability
+          type: bool
+          short-summary: Enable network observability on a cluster.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
