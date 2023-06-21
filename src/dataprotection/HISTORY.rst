@@ -2,12 +2,19 @@
 
 Release History
 ===============
-0.8.3
+0.9.1
 +++++
 * `az dataprotection backup-instance`: Migrated to AAZ-dev-tools
 * `az dataprotection backup-policy`: Migrated to AAZ-dev-tools
 * `az dataprotection resource-guard`: Migrated to AAZ-dev-tools
-* `az dataprotection restorable-time-range`: Migrated to AAZ-dev-tools=
+* `az dataprotection restorable-time-range`: Migrated to AAZ-dev-tools
+
+0.9.0
++++++
+* Add support for cross-subscription-restore for Dataprotection.
+* `az dataprotection backup-vault create`: Add parameter (`--cross-subscription-restore-state`/ `--csr-state`), allowing backup vault creation with the cross-subscription-restore state flag set.
+* `az dataprotection backup-vault update`: Add parameter (`--cross-subscription-restore-state`/ `--csr-state`), allowing updating the cross-subscription-restore state flag in backup vaults.
+* `az dataprotection backup-instance restore initialize-for-data-recovery-as-files`: Add parameter `--target-resource-id`, required for cross-subscription-restore of OSS Scenario as files.
 
 0.8.2
 +++++

@@ -58,6 +58,17 @@ class Update(AAZCommand):
             id_part="name",
         )
 
+        # define Arg Group "FeatureSettings"
+
+        _args_schema = cls._args_schema
+        _args_schema.cross_subscription_restore_state = AAZStrArg(
+            options=["--csr-state", "--cross-subscription-restore-state"],
+            arg_group="FeatureSettings",
+            help="CrossSubscriptionRestore state",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled", "PermanentlyDisabled": "PermanentlyDisabled"},
+        )
+
         # define Arg Group "Identity"
 
         _args_schema = cls._args_schema
@@ -370,8 +381,17 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("featureSettings", AAZObjectType)
                 properties.set_prop("monitoringSettings", AAZObjectType)
                 properties.set_prop("securitySettings", AAZObjectType)
+
+            feature_settings = _builder.get(".properties.featureSettings")
+            if feature_settings is not None:
+                feature_settings.set_prop("crossSubscriptionRestoreSettings", AAZObjectType)
+
+            cross_subscription_restore_settings = _builder.get(".properties.featureSettings.crossSubscriptionRestoreSettings")
+            if cross_subscription_restore_settings is not None:
+                cross_subscription_restore_settings.set_prop("state", AAZStrType, ".cross_subscription_restore_state")
 
             monitoring_settings = _builder.get(".properties.monitoringSettings")
             if monitoring_settings is not None:
