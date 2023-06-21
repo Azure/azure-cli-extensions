@@ -231,6 +231,9 @@ helps['aks create'] = """
               Used together with the "azure" network plugin.
               Requires either --pod-subnet-id or --network-plugin-mode=overlay.
               This flag is deprecated in favor of --network-dataplane=cilium.
+        - name: --enable-network-observability
+          type: bool
+          short-summary: Enable network observability on a cluster.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -538,6 +541,9 @@ helps['aks create'] = """
           type: bool
           short-summary: Enable Azure Service Mesh.
         - name: --enable-azuremonitormetrics
+          type: bool
+          short-summary: Enable Azure Monitor Metrics Profile
+        - name: --enable-azure-monitor-metrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
         - name: --azure-monitor-workspace-resource-id
@@ -963,6 +969,9 @@ helps['aks update'] = """
         - name: --enable-azuremonitormetrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
+        - name: --enable-azure-monitor-metrics
+          type: bool
+          short-summary: Enable Azure Monitor Metrics Profile
         - name: --azure-monitor-workspace-resource-id
           type: string
           short-summary: Resource ID of the Azure Monitor Workspace
@@ -979,6 +988,9 @@ helps['aks update'] = """
           type: bool
           short-summary: Enable Windows Recording Rules when enabling the Azure Monitor Metrics addon
         - name: --disable-azuremonitormetrics
+          type: bool
+          short-summary: Disable Azure Monitor Metrics Profile. This will delete all DCRA's associated with the cluster, any linked DCRs with the data stream = prometheus-stream and the recording rule groups created by the addon for this AKS cluster.
+        - name: --disable-azure-monitor-metrics
           type: bool
           short-summary: Disable Azure Monitor Metrics Profile. This will delete all DCRA's associated with the cluster, any linked DCRs with the data stream = prometheus-stream and the recording rule groups created by the addon for this AKS cluster.
         - name: --enable-node-restriction
@@ -1022,6 +1034,9 @@ helps['aks update'] = """
         - name: --guardrails-excluded-ns
           type: string
           short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails. Use "" to clear a previously non-empty list
+        - name: --enable-network-observability
+          type: bool
+          short-summary: Enable network observability on a cluster.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
