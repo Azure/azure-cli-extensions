@@ -3,13 +3,22 @@
 Release History
 ===============
 
+<<<<<<< HEAD
 1.6.1
 ++++++
  * Update Rooms sdk version to 1.0.0 and remove from preview mode
+=======
+2.0.0
+++++++
+* Migrate control plane operations to aaz
+* Upgrade control plane api version to 2023-04-01-preview
+
+>>>>>>> 3d4b31a13 (Updated HISTORY.rst)
 
 1.6.0
 ++++++
  * Update Rooms sdk version to 1.0.0b3
+
 
 1.5.2
 ++++++
