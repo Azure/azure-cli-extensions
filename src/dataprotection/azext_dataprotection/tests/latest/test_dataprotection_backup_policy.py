@@ -116,7 +116,7 @@ class BackupPolicyScenarioTest(ScenarioTest):
         ])
         test.cmd('az dataprotection backup-policy tag create-generic-criteria --days-of-month 29', expect_failure=True)
         test.cmd('az dataprotection backup-policy tag create-generic-criteria --days-of-month -1', expect_failure=True)
-        # test.cmd('az dataprotection backup-policy tag create-generic-criteria --days-of-month 0', expect_failure=True)
+        test.cmd('az dataprotection backup-policy tag create-generic-criteria --days-of-month 0', expect_failure=True)
         test.cmd('az dataprotection backup-policy tag create-generic-criteria --days-of-week Monday Tuesday Wednesday Thursday Friday Saturday Sunday', checks=[
             test.check('length(days_of_the_week)', 7)
         ])

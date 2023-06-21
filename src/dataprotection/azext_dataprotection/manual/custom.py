@@ -682,7 +682,7 @@ def dataprotection_backup_policy_create_generic_criteria(days_of_week=None, week
         for day_of_month in days_of_month:
             if day_of_month.isdigit():
                 day_of_month = int(day_of_month)
-                if day_of_month > 28:
+                if day_of_month > 28 or day_of_month < 1:
                     raise CLIError("Day of month should be between 1 and 28.")
                 days_of_month_criteria.append({
                     "date": day_of_month,

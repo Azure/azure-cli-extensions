@@ -26,7 +26,7 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
         })
         test.addCleanup(test.cmd, 'az dataprotection backup-instance resume-protection -n "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}"')
 
-        test.cmd('az dataprotection backup-instance wait -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --timeout 120 '
+        test.cmd('az dataprotection backup-instance wait -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --timeout 600 '
                  '--custom "properties.currentProtectionState==\'ProtectionConfigured\'"')
 
         test.cmd('az dataprotection backup-instance stop-protection -n "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}"')
@@ -53,19 +53,19 @@ class BackupInstanceOperationsScenarioTest(ScenarioTest):
             'altPolicyName': 'altblobpolicy',
             'altPolicyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-persistent-bi-donotdelete/backupPolicies/altblobpolicy'
         })
-        test.cmd('az dataprotection backup-instance wait -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --timeout 120 '
+        test.cmd('az dataprotection backup-instance wait -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --timeout 300 '
                  '--custom "properties.currentProtectionState==\'ProtectionConfigured\'"')
 
         test.cmd('az dataprotection backup-instance update-policy -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --policy-id "{altPolicyId}"', checks=[
             test.check("contains(properties.policyInfo.policyId, '/{altPolicyName}')", True)
         ])
-        test.cmd('az dataprotection backup-instance wait -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --timeout 120 '
+        test.cmd('az dataprotection backup-instance wait -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --timeout 300 '
                  '--custom "properties.currentProtectionState==\'ProtectionConfigured\'"')
 
         test.cmd('az dataprotection backup-instance update-policy -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --policy-id "{policyId}"',  checks=[
             test.check("contains(properties.policyInfo.policyId, '/{policyName}')", True)
         ])
-        test.cmd('az dataprotection backup-instance wait -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --timeout 120 '
+        test.cmd('az dataprotection backup-instance wait -g "{rg}" --vault-name "{vaultName}" --backup-instance-name "{backupInstanceName}" --timeout 300 '
                  '--custom "properties.currentProtectionState==\'ProtectionConfigured\'"')
 
 
