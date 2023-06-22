@@ -17,6 +17,8 @@ param networkFunctionDefinitionOfferingLocation string = '{{network_function_def
 
 param location string = '{{location}}'
 
+param nfviType string = '{{nfvi_type}}'
+
 param resourceGroupId string = resourceGroup().id
 
 {{bicep_params}}
@@ -34,7 +36,7 @@ resource nf_resource 'Microsoft.HybridNetwork/networkFunctions@2023-04-01-previe
     networkFunctionDefinitionGroupName: networkFunctionDefinitionGroupName
     networkFunctionDefinitionVersion: networkFunctionDefinitionVersion
     networkFunctionDefinitionOfferingLocation: networkFunctionDefinitionOfferingLocation
-    nfviType: 'AzureCore'
+    nfviType: nfviType
     nfviId: resourceGroupId
     allowSoftwareUpdate: true
     deploymentValues: string(deploymentValues)

@@ -239,7 +239,7 @@ def _generate_config(configuration_type: str, output_file: str = "input.json"):
 
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(config_as_dict)
-        if configuration_type in (CNF,VNF):
+        if configuration_type in (CNF, VNF):
             prtName = "definition"
         else:
             prtName = "design"
@@ -264,7 +264,7 @@ def build_design(cmd, client: HybridNetworkManagementClient, config_file: str):
 
     # Read the config from the given file
     config = _get_config_from_file(config_file=config_file, configuration_type=NSD)
-
+    assert isinstance(config, NSConfiguration)
     config.validate()
 
     # Generate the NSD and the artifact manifest.
@@ -344,14 +344,8 @@ def publish_design(
     )
 
 
-def _generate_nsd(config: NSDGenerator, api_clients):
-    """Generate a Network Service Design for the given type and config."""
-    if config:
-        nsd_generator = NSDGenerator(config)
-    else:
-        raise CLIInternalError("Generate NSD called without a config file")
-    deploy_parameters = _get_nfdv_deployment_parameters(config, api_clients)
-
+def _generate_nsd(config: NSConfiguration, api_clients: ApiClients):
+    """Generate a Network Service Design for the given config."""
     if os.path.exists(config.build_output_folder_name):
         carry_on = input(
             f"The folder {config.build_output_folder_name} already exists - delete it and continue? (y/n)"
@@ -360,17 +354,5 @@ def _generate_nsd(config: NSDGenerator, api_clients):
             raise UnclassifiedUserFault("User aborted! ")
 
         shutil.rmtree(config.build_output_folder_name)
-
-    nsd_generator.generate_nsd(deploy_parameters)
-
-
-def _get_nfdv_deployment_parameters(config: NSConfiguration, api_clients):
-    """Get the properties of the existing NFDV."""
-    NFDV_object = api_clients.aosm_client.network_function_definition_versions.get(
-        resource_group_name=config.publisher_resource_group_name,
-        publisher_name=config.publisher_name,
-        network_function_definition_group_name=config.network_function_definition_group_name,
-        network_function_definition_version_name=config.network_function_definition_version_name,
-    )
-
-    return NFDV_object.deploy_parameters
+    nsd_generator = NSDGenerator(api_clients, config)
+    nsd_generator.generate_nsd()

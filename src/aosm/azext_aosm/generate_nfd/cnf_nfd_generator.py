@@ -32,7 +32,7 @@ from azext_aosm.util.constants import (
     SCHEMA_PREFIX,
     SCHEMAS,
     IMAGE_PULL_SECRETS_START_STRING,
-    IMAGE_START_STRING
+    IMAGE_START_STRING,
 )
 from azext_aosm.util.utils import input_ack
 
@@ -222,7 +222,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
     def _read_top_level_values_yaml(
         self, helm_package: HelmPackageConfig
     ) -> Dict[str, Any]:
-        """Return a dictionary of the values.yaml|yml read from the root of the helm package.
+        """
+        Return a dictionary of the values.yaml|yml read from the root of the helm package.
 
         :param helm_package: The helm package to look in
         :type helm_package: HelmPackageConfig
@@ -387,16 +388,15 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         """
         Find pattern matches in Helm chart, using provided REGEX pattern.
 
-        param helm_package: The helm package config.
-        param start_string: The string to search for, either imagePullSecrets: or image:
+        :param helm_package: The helm package config.
+        :param start_string: The string to search for, either imagePullSecrets: or image:
 
-        If searching for imagePullSecrets,
-        returns list of lists containing image pull secrets paths,
-        e.g. Values.foo.bar.imagePullSecret
+        If searching for imagePullSecrets, returns list of lists containing image pull
+        secrets paths, e.g. Values.foo.bar.imagePullSecret
 
-        If searching for image,
-        returns list of tuples containing the list of image paths and the name and version of the image.
-        e.g. (Values.foo.bar.repoPath, foo, 1.2.3)
+        If searching for image, returns list of tuples containing the list of image
+        paths and the name and version of the image. e.g. (Values.foo.bar.repoPath, foo,
+        1.2.3)
         """
         chart_dir = os.path.join(self._tmp_folder_name, helm_package.name)
         matches = []
@@ -409,8 +409,16 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                         path = re.findall(IMAGE_PATH_REGEX, line)
                         # If "image:", search for chart name and version
                         if start_string == IMAGE_START_STRING:
-                            name_and_version = re.search(IMAGE_NAME_AND_VERSION_REGEX, line)
-                            matches.append((path, name_and_version.group(1), name_and_version.group(2)))
+                            name_and_version = re.search(
+                                IMAGE_NAME_AND_VERSION_REGEX, line
+                            )
+                            matches.append(
+                                (
+                                    path,
+                                    name_and_version.group(1),
+                                    name_and_version.group(2),
+                                )
+                            )
                         else:
                             matches += path
         return matches
@@ -423,8 +431,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         """
         Get the list of artifacts for the chart.
 
-        param helm_package: The helm package config. param image_line_matches: The list
-        of image line matches.
+        :param helm_package: The helm package config. 
+        :param image_line_matches: The list of image line matches.
         """
         artifact_list = []
         (chart_name, chart_version) = self.get_chart_name_and_version(helm_package)
@@ -478,7 +486,9 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             schema_data = json.load(f)
 
         try:
-            deploy_params_dict = self.traverse_dict(values_data, DEPLOYMENT_PARAMETER_MAPPING_REGEX)
+            deploy_params_dict = self.traverse_dict(
+                values_data, DEPLOYMENT_PARAMETER_MAPPING_REGEX
+            )
             new_schema = self.search_schema(deploy_params_dict, schema_data)
         except KeyError as e:
             raise InvalidTemplateError(
@@ -492,24 +502,39 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
     def traverse_dict(self, d, target):
         """
         Traverse the dictionary that is loaded from the file provided by path_to_mappings in the input.json.
+
         Returns a dictionary of all the values that match the target regex,
         with the key being the deploy parameter and the value being the path to the value.
         e.g. {"foo": ["global", "foo", "bar"]}
 
-        param d: The dictionary to traverse.
-        param target: The regex to search for.
+        :param d: The dictionary to traverse.
+        :param target: The regex to search for.
         """
         stack = [(d, [])]  # Initialize the stack with the dictionary and an empty path
         result = {}  # Initialize empty dictionary to store the results
         while stack:  # While there are still items in the stack
             # Pop the last item from the stack and unpack it into node (the dictionary) and path
             (node, path) = stack.pop()
-            for k, v in node.items():   # For each key-value pair in the popped item
-                if isinstance(v, dict):  # If the value is a dictionary
-                    stack.append((v, path + [k]))  # Add the dictionary to the stack with the path
-                elif isinstance(v, str) and re.search(target, v):  # If the value is a string + matches target regex
-                    match = re.search(target, v)  # Take the match i.e, foo from {deployParameter.foo}
-                    result[match.group(1)] = path + [k]  # Add it to the result dictionary with its path as the value
+            # For each key-value pair in the popped item
+            for k, v in node.items():
+                # If the value is a dictionary
+                if isinstance(v, dict):
+                    # Add the dictionary to the stack with the path
+                    stack.append(
+                        (v, path + [k])
+                    )
+                # If the value is a string + matches target regex
+                elif isinstance(v, str) and re.search(
+                    target, v
+                ):
+                    # Take the match i.e, foo from {deployParameter.foo}
+                    match = re.search(
+                        target, v
+                    )
+                    # Add it to the result dictionary with its path as the value
+                    result[match.group(1)] = path + [
+                        k
+                    ]
                 elif isinstance(v, list):
                     for i in v:
                         if isinstance(i, str) and re.search(target, i):
@@ -540,7 +565,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                     no_schema_list.append(deploy_param)
                     new_schema.update({deploy_param: {"type": "string"}})
             if deploy_param not in new_schema:
-                new_schema.update({deploy_param: {"type": node.get('type', None)}})
+                new_schema.update({deploy_param: {"type": node.get("type", None)}})
         if no_schema_list:
             print("No schema found for deployment parameter(s):", no_schema_list)
             print("We default these parameters to type string")
@@ -582,12 +607,14 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             elif isinstance(v, list):
                 final_values_mapping_dict[k] = []
                 for index, item in enumerate(v):
-                    param_name = f"{param_prefix}_{k}_{index}" if param_prefix else f"{k})_{index}"
+                    param_name = (
+                        f"{param_prefix}_{k}_{index}"
+                        if param_prefix
+                        else f"{k})_{index}"
+                    )
                     if isinstance(item, dict):
                         final_values_mapping_dict[k].append(
-                            self._replace_values_with_deploy_params(
-                                item, param_name
-                            )
+                            self._replace_values_with_deploy_params(item, param_name)
                         )
                     elif isinstance(v, (str, int, bool)):
                         replacement_value = f"{{deployParameters.{param_name}}}"
@@ -595,11 +622,13 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                     else:
                         raise ValueError(
                             f"Found an unexpected type {type(v)} of key {k} in "
-                            "values.yaml, cannot generate values mapping file.")                        
+                            "values.yaml, cannot generate values mapping file."
+                        )
             else:
                 raise ValueError(
                     f"Found an unexpected type {type(v)} of key {k} in values.yaml, "
-                    "cannot generate values mapping file.")
+                    "cannot generate values mapping file."
+                )
 
         return final_values_mapping_dict
 

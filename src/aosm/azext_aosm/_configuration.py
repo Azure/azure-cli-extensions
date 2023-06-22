@@ -58,6 +58,7 @@ DESCRIPTION_MAP: Dict[str, str] = {
         "Exising Network Function Definition Version Name. "
         "This can be created using the 'az aosm nfd' commands.",
     "network_function_definition_offering_location": "Offering location of the Network Function Definition",
+    "network_function_type": "Type of nf in the definition. Valid values are 'cnf' or 'vnf'",
     "helm_package_name": "Name of the Helm package",
     "path_to_chart":
         "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz",
@@ -123,6 +124,7 @@ class NSConfiguration:
     network_function_definition_offering_location: str = DESCRIPTION_MAP[
         "network_function_definition_offering_location"
     ]
+    network_function_type: str = DESCRIPTION_MAP["network_function_type"]
     nsdg_name: str = DESCRIPTION_MAP["nsdg_name"]
     nsd_version: str = DESCRIPTION_MAP["nsd_version"]
     nsdv_description: str = DESCRIPTION_MAP["nsdv_description"]
@@ -165,6 +167,8 @@ class NSConfiguration:
             raise ValueError(
                 "Network Function Definition Offering Location must be set"
             )
+        if self.network_function_type not in [CNF, VNF]:
+            raise ValueError("Network Function Type must be cnf or vnf")
         if self.nsdg_name == DESCRIPTION_MAP["nsdg_name"] or "":
             raise ValueError("NSDG name must be set")
         if self.nsd_version == DESCRIPTION_MAP["nsd_version"] or "":
