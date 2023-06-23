@@ -13,12 +13,20 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
+<<<<<<< HEAD
       - AzureCli/1.7.0b1 azsdk-python-communication-identity/1.3.1 Python/3.10.11
         (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
       - RgFKX8sq6gKDc377EdeILf3jgzCijxLOR8s04qluHkc=
       x-ms-date:
       - Fri, 07 Jul 2023 01:57:19 GMT
+=======
+      - AzureCli/2.0.0 azsdk-python-communication-identity/1.3.1 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      x-ms-content-sha256:
+      - RgFKX8sq6gKDc377EdeILf3jgzCijxLOR8s04qluHkc=
+      x-ms-date:
+      - Fri, 23 Jun 2023 17:15:11 GMT
+>>>>>>> ddcd2202f (Adding test recordings)
       x-ms-return-client-request-id:
       - 'true'
     method: POST
@@ -26,7 +34,11 @@ interactions:
   response:
     body:
       string: '{"identity": {"id": "sanitized"}, "accessToken": {"token": "sanitized",
+<<<<<<< HEAD
         "expiresOn": "2023-07-08T01:57:19.030344+00:00"}}'
+=======
+        "expiresOn": "2023-06-24T17:15:11.5164308+00:00"}}'
+>>>>>>> ddcd2202f (Adding test recordings)
     headers:
       api-supported-versions:
       - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
@@ -36,19 +48,33 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
+<<<<<<< HEAD
       - Fri, 07 Jul 2023 01:57:18 GMT
       ms-cv:
       - 2JvzKJwyJ0KE0zdboRtcRw.0
+=======
+      - Fri, 23 Jun 2023 17:15:11 GMT
+      ms-cv:
+      - IlhohfCo3UK1M1Z8EPxIKg.0
+>>>>>>> ddcd2202f (Adding test recordings)
       request-context:
       - appId=
       strict-transport-security:
       - max-age=2592000
       x-azure-ref:
+<<<<<<< HEAD
       - 0/nCnZAAAAABFj18ycCWIRqb9Op6pl5DsWVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
       - 108ms
+=======
+      - 0H9OVZAAAAACqmguGDyXJTLM8Mj21E4FHWVZSMzExMDAwMTE1MDA5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 105ms
+>>>>>>> ddcd2202f (Adding test recordings)
     status:
       code: 201
       message: Created
@@ -66,15 +92,25 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
+<<<<<<< HEAD
       - AzureCli/1.7.0b1 azsdk-python-communication-chat/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
       repeatability-request-id:
       - 2141d571-f710-4bb3-a7cb-27a66bd54652
+=======
+      - AzureCli/2.0.0 azsdk-python-communication-chat/1.1.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      repeatability-request-id:
+      - cc7d2bd8-06e1-4571-ae46-e2fcabe468b5
+>>>>>>> ddcd2202f (Adding test recordings)
     method: POST
     uri: https://sanitized.communication.azure.com/chat/threads?api-version=2021-09-07
   response:
     body:
       string: '{"chatThread": {"id": "sanitized", "topic": "thread-topic", "createdOn":
+<<<<<<< HEAD
         "2023-07-07T01:57:19Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
+=======
+        "2023-06-23T17:15:12Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
+>>>>>>> ddcd2202f (Adding test recordings)
         "communicationUser": {"id": "sanitized"}}}}'
     headers:
       api-supported-versions:
@@ -84,6 +120,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
+<<<<<<< HEAD
       - Fri, 07 Jul 2023 01:57:19 GMT
       location:
       - https://clitest000002.communication.azure.com/chat/threads/19%3AMQIciU3NyFturR76R8dSgjq4M2OK-B8r6Z-5-pRxBIc1@thread.v2
@@ -97,6 +134,21 @@ interactions:
       - CONFIG_NOCACHE
       x-processing-time:
       - 576ms
+=======
+      - Fri, 23 Jun 2023 17:15:12 GMT
+      location:
+      - https://clitest000002.communication.azure.com/chat/threads/19%3AZqPPClK7CazQD8lcyt_lwzVk_Oy3VmA5sTD8_wBXjFk1@thread.v2
+      ms-cv:
+      - dSx2C27Iyk+DtFuXE9j3Wg.0
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 0H9OVZAAAAAA05C8bRwnMTLNAjJsYVAAGWVZSMzExMDAwMTE1MDMzADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 454ms
+>>>>>>> ddcd2202f (Adding test recordings)
     status:
       code: 201
       message: Created
@@ -110,7 +162,11 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
+<<<<<<< HEAD
       - azsdk-python-communication-chat/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+=======
+      - azsdk-python-communication-chat/1.1.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+>>>>>>> ddcd2202f (Adding test recordings)
     method: GET
     uri: https://sanitized.communication.azure.com/chat/threads/sanitized/readReceipts?api-version=2021-09-07
   response:
@@ -124,6 +180,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
+<<<<<<< HEAD
       - Fri, 07 Jul 2023 01:57:19 GMT
       ms-cv:
       - p7wePnB1JkuKqFC3raMTcg.0
@@ -135,6 +192,19 @@ interactions:
       - CONFIG_NOCACHE
       x-processing-time:
       - 82ms
+=======
+      - Fri, 23 Jun 2023 17:15:12 GMT
+      ms-cv:
+      - tOf6ueBKZEmE66qp++Hrzg.0
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 0INOVZAAAAAA+VSzXFqr8SL0pG5iQ/As4WVZSMzExMDAwMTE1MDE3ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 118ms
+>>>>>>> ddcd2202f (Adding test recordings)
     status:
       code: 200
       message: OK
@@ -148,12 +218,17 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
+<<<<<<< HEAD
       - azsdk-python-communication-chat/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+=======
+      - azsdk-python-communication-chat/1.1.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+>>>>>>> ddcd2202f (Adding test recordings)
     method: GET
     uri: https://sanitized.communication.azure.com/chat/threads/sanitized/messages?api-version=2021-09-07
   response:
     body:
       string: '{"value": [{"id": "sanitized", "type": "topicUpdated", "sequenceId":
+<<<<<<< HEAD
         "2", "version": "1688695039777", "content": {"topic": "thread-topic", "initiatorCommunicationIdentifier":
         {"rawId": "sanitized", "communicationUser": {"id": "sanitized"}}}, "createdOn":
         "2023-07-07T01:57:19Z"}, {"id": "sanitized", "type": "participantAdded", "sequenceId":
@@ -161,6 +236,15 @@ interactions:
         {"rawId": "sanitized", "communicationUser": {"id": "sanitized"}}, "shareHistoryTime":
         "1970-01-01T00:00:00Z"}], "initiatorCommunicationIdentifier": {"rawId": "sanitized",
         "communicationUser": {"id": "sanitized"}}}, "createdOn": "2023-07-07T01:57:19Z"}]}'
+=======
+        "2", "version": "1687540512239", "content": {"topic": "thread-topic", "initiatorCommunicationIdentifier":
+        {"rawId": "sanitized", "communicationUser": {"id": "sanitized"}}}, "createdOn":
+        "2023-06-23T17:15:12Z"}, {"id": "sanitized", "type": "participantAdded", "sequenceId":
+        "1", "version": "1687540512155", "content": {"participants": [{"communicationIdentifier":
+        {"rawId": "sanitized", "communicationUser": {"id": "sanitized"}}, "shareHistoryTime":
+        "1970-01-01T00:00:00Z"}], "initiatorCommunicationIdentifier": {"rawId": "sanitized",
+        "communicationUser": {"id": "sanitized"}}}, "createdOn": "2023-06-23T17:15:12Z"}]}'
+>>>>>>> ddcd2202f (Adding test recordings)
     headers:
       api-supported-versions:
       - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2023-04-01-preview, 2023-07-01-preview
@@ -169,6 +253,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
+<<<<<<< HEAD
       - Fri, 07 Jul 2023 01:57:20 GMT
       ms-cv:
       - 6esJgq9t2EibtRo7RX3M5g.0
@@ -180,11 +265,28 @@ interactions:
       - CONFIG_NOCACHE
       x-processing-time:
       - 99ms
+=======
+      - Fri, 23 Jun 2023 17:15:12 GMT
+      ms-cv:
+      - F7328dPWWkqeuabLz0A1kg.0
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 0IdOVZAAAAAAStIKAZHO2Q6OusKxSEt//WVZSMzExMDAwMTE1MDI5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 101ms
+>>>>>>> ddcd2202f (Adding test recordings)
     status:
       code: 200
       message: OK
 - request:
+<<<<<<< HEAD
     body: '{"chatMessageId": "1688695039777"}'
+=======
+    body: '{"chatMessageId": "1687540512239"}'
+>>>>>>> ddcd2202f (Adding test recordings)
     headers:
       Accept:
       - application/json
@@ -197,7 +299,11 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
+<<<<<<< HEAD
       - azsdk-python-communication-chat/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+=======
+      - azsdk-python-communication-chat/1.1.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+>>>>>>> ddcd2202f (Adding test recordings)
     method: POST
     uri: https://sanitized.communication.azure.com/chat/threads/sanitized/readReceipts?api-version=2021-09-07
   response:
@@ -209,6 +315,7 @@ interactions:
       content-length:
       - '0'
       date:
+<<<<<<< HEAD
       - Fri, 07 Jul 2023 01:57:21 GMT
       ms-cv:
       - G7bkXBpVzUSXZAQLpekwVQ.0
@@ -220,6 +327,19 @@ interactions:
       - CONFIG_NOCACHE
       x-processing-time:
       - 229ms
+=======
+      - Fri, 23 Jun 2023 17:15:13 GMT
+      ms-cv:
+      - X06vuEx/EEeSCri8OXldhw.0
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 0IdOVZAAAAAAjHQFCIHo0RZvnWMUKx3M6WVZSMzExMDAwMTE1MDE3ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 283ms
+>>>>>>> ddcd2202f (Adding test recordings)
     status:
       code: 200
       message: OK
@@ -233,14 +353,23 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
+<<<<<<< HEAD
       - azsdk-python-communication-chat/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+=======
+      - azsdk-python-communication-chat/1.1.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+>>>>>>> ddcd2202f (Adding test recordings)
     method: GET
     uri: https://sanitized.communication.azure.com/chat/threads/sanitized/readReceipts?api-version=2021-09-07
   response:
     body:
       string: '{"value": [{"senderCommunicationIdentifier": {"rawId": "sanitized",
+<<<<<<< HEAD
         "communicationUser": {"id": "sanitized"}}, "chatMessageId": "1688695039777",
         "readOn": "2023-07-07T01:57:21Z"}]}'
+=======
+        "communicationUser": {"id": "sanitized"}}, "chatMessageId": "1687540512239",
+        "readOn": "2023-06-23T17:15:13Z"}]}'
+>>>>>>> ddcd2202f (Adding test recordings)
     headers:
       api-supported-versions:
       - 2021-03-07, 2021-04-05-preview6, 2021-09-07, 2023-04-01-preview, 2023-07-01-preview
@@ -249,6 +378,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
+<<<<<<< HEAD
       - Fri, 07 Jul 2023 01:57:21 GMT
       ms-cv:
       - TffjKBPKD0e2jp4xGeVWXw.0
@@ -260,6 +390,19 @@ interactions:
       - CONFIG_NOCACHE
       x-processing-time:
       - 84ms
+=======
+      - Fri, 23 Jun 2023 17:15:13 GMT
+      ms-cv:
+      - hxo+Li/qOUGyL5kuf/R0lg.0
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 0ItOVZAAAAADVjjZ6y+ysR6Ao7ihj5h5XWVZSMzExMDAwMTE1MDUxADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 186ms
+>>>>>>> ddcd2202f (Adding test recordings)
     status:
       code: 200
       message: OK

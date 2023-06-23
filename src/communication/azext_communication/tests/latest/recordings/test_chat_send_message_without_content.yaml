@@ -13,12 +13,20 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
+<<<<<<< HEAD
       - AzureCli/1.7.0b1 azsdk-python-communication-identity/1.3.1 Python/3.10.11
         (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
       - RgFKX8sq6gKDc377EdeILf3jgzCijxLOR8s04qluHkc=
       x-ms-date:
       - Fri, 07 Jul 2023 01:58:58 GMT
+=======
+      - AzureCli/2.0.0 azsdk-python-communication-identity/1.3.1 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      x-ms-content-sha256:
+      - RgFKX8sq6gKDc377EdeILf3jgzCijxLOR8s04qluHkc=
+      x-ms-date:
+      - Fri, 23 Jun 2023 17:11:24 GMT
+>>>>>>> ddcd2202f (Adding test recordings)
       x-ms-return-client-request-id:
       - 'true'
     method: POST
@@ -26,7 +34,11 @@ interactions:
   response:
     body:
       string: '{"identity": {"id": "sanitized"}, "accessToken": {"token": "sanitized",
+<<<<<<< HEAD
         "expiresOn": "2023-07-08T01:58:58.0528992+00:00"}}'
+=======
+        "expiresOn": "2023-06-24T17:11:25.2069699+00:00"}}'
+>>>>>>> ddcd2202f (Adding test recordings)
     headers:
       api-supported-versions:
       - 2020-07-20-preview2, 2021-02-22-preview1, 2021-03-07, 2021-10-31-preview,
@@ -36,19 +48,33 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
+<<<<<<< HEAD
       - Fri, 07 Jul 2023 01:58:57 GMT
       ms-cv:
       - JDe6avKDgESznU4Ih3Rqrw.0
+=======
+      - Fri, 23 Jun 2023 17:11:24 GMT
+      ms-cv:
+      - N13QfX4Ge0CckwabPmxckg.0
+>>>>>>> ddcd2202f (Adding test recordings)
       request-context:
       - appId=
       strict-transport-security:
       - max-age=2592000
       x-azure-ref:
+<<<<<<< HEAD
       - 0YXGnZAAAAABHghZZY9Y6TL/CfManX4o8WVZSMzExMDAwMTE1MDE3ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
       x-processing-time:
       - 104ms
+=======
+      - 0PNKVZAAAAACWTkQYhTjMSapxUDV64uywWVZSMzExMDAwMTE1MDQ5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 107ms
+>>>>>>> ddcd2202f (Adding test recordings)
     status:
       code: 201
       message: Created
@@ -66,15 +92,25 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
+<<<<<<< HEAD
       - AzureCli/1.7.0b1 azsdk-python-communication-chat/1.1.0 Python/3.10.11 (Windows-10-10.0.22621-SP0)
       repeatability-request-id:
       - 4acd1c3b-cdb5-464a-b53f-be61f13bd8c3
+=======
+      - AzureCli/2.0.0 azsdk-python-communication-chat/1.1.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
+      repeatability-request-id:
+      - 75f9f32a-4e84-4207-9daf-1c32bc97329e
+>>>>>>> ddcd2202f (Adding test recordings)
     method: POST
     uri: https://sanitized.communication.azure.com/chat/threads?api-version=2021-09-07
   response:
     body:
       string: '{"chatThread": {"id": "sanitized", "topic": "yet-another-topic", "createdOn":
+<<<<<<< HEAD
         "2023-07-07T01:58:58Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
+=======
+        "2023-06-23T17:11:25Z", "createdByCommunicationIdentifier": {"rawId": "sanitized",
+>>>>>>> ddcd2202f (Adding test recordings)
         "communicationUser": {"id": "sanitized"}}}}'
     headers:
       api-supported-versions:
@@ -84,6 +120,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
+<<<<<<< HEAD
       - Fri, 07 Jul 2023 01:58:58 GMT
       location:
       - https://clitest000002.communication.azure.com/chat/threads/19%3AgkFgUKuLu7rvHUVdMOJJxcwXhAOq4UJro1oPHT5e_Ec1@thread.v2
@@ -97,6 +134,21 @@ interactions:
       - CONFIG_NOCACHE
       x-processing-time:
       - 590ms
+=======
+      - Fri, 23 Jun 2023 17:11:25 GMT
+      location:
+      - https://clitest000002.communication.azure.com/chat/threads/19%3A4E8uCdi3lBYUusOjEnR9u77Tli9-EvCY7dMxD1ZkQPg1@thread.v2
+      ms-cv:
+      - Is4zbtArek+ovPujq2JCZw.0
+      strict-transport-security:
+      - max-age=2592000
+      x-azure-ref:
+      - 0PdKVZAAAAADpKJ+lI+JLRq9LFCEinIZUWVZSMzExMDAwMTE1MDMxADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      x-cache:
+      - CONFIG_NOCACHE
+      x-processing-time:
+      - 589ms
+>>>>>>> ddcd2202f (Adding test recordings)
     status:
       code: 201
       message: Created
