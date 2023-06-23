@@ -13,20 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin network-connection delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a Network Connections resource
+    """Delete a network connection.
 
     :example: Delete
-        az devcenter admin network-connection delete --name "{networkConnectionName}" --resource-group "rg1"
+        az devcenter admin network-connection delete --name "uswest3network" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/networkconnections/{}", "2023-04-01"],
         ]
     }
 
@@ -49,7 +48,7 @@ class Delete(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.network_connection_name = AAZStrArg(
             options=["-n", "--name", "--network-connection-name"],
-            help="Name of the Network Connection that can be applied to a Pool.",
+            help="Name of the network connection that can be applied to a pool.",
             required=True,
             id_part="name",
         )
@@ -144,7 +143,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }

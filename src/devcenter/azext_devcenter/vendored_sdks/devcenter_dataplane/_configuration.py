@@ -53,7 +53,7 @@ class DevCenterDataplaneClientConfiguration(Configuration):
         self.credential = credential
         self.project_name = project_name
         self.endpoint = endpoint
-        self.api_version = "2022-11-11-preview"
+        self.api_version = "2023-04-01"
         self.credential_scopes = kwargs.pop('credential_scopes', ['https://management.azure.com/.default'])
         kwargs.setdefault('sdk_moniker', 'devcenterdataplaneclient/{}'.format(VERSION))
         self._configure(**kwargs)

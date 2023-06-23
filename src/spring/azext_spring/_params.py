@@ -19,7 +19,8 @@ from ._validators import (validate_env, validate_cosmos_type, validate_resource_
                           validate_managed_environment, validate_dataplane_public_endpoint)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_source_path, validate_artifact_path, validate_build_create,
-                                     validate_build_update, validate_container_registry, validate_central_build_instance,
+                                     validate_build_update, validate_container_registry_create,
+                                     validate_container_registry_update, validate_central_build_instance,
                                      validate_builder_update, validate_build_pool_size, validate_build_service,
                                      validate_git_uri, validate_acc_git_url, validate_acc_git_refs, validate_acs_patterns, validate_config_file_patterns,
                                      validate_routes, validate_gateway_instance_count, validate_git_interval,
@@ -27,7 +28,10 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
                                      validate_build_env, validate_target_module, validate_runtime_version,
-                                     validate_acs_ssh_or_warn)
+                                     validate_acs_ssh_or_warn, validate_apm_properties, validate_apm_secrets,
+                                     validate_apm_not_exist, validate_apm_update, validate_apm_reference,
+                                     validate_apm_reference_and_enterprise_tier, validate_cert_reference,
+                                     validate_build_cert_reference, validate_acs_create)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
                              validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
@@ -37,7 +41,7 @@ from ._app_managed_identity_validator import (validate_create_app_with_user_iden
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
-from .vendored_sdks.appplatform.v2023_03_01_preview.models._app_platform_management_client_enums import (SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
+from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import (ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
 
 name_type = CLIArgumentType(options_list=[
@@ -152,10 +156,16 @@ def load_arguments(self, _):
         c.argument('enable_application_configuration_service',
                    action='store_true',
                    options_list=['--enable-application-configuration-service', '--enable-acs'],
+                   arg_group="Application Configuration Service",
                    help='(Enterprise Tier Only) Enable Application Configuration Service.')
+        c.argument('application_configuration_service_generation',
+                   arg_group="Application Configuration Service",
+                   arg_type=get_enum_type(ConfigurationServiceGeneration),
+                   options_list=['--application-configuration-service-generation', '--acs-gen'],
+                   validator=validate_acs_create,
+                   help='(Enterprise Tier Only) Application Configuration Service Generation to enable.')
         c.argument('enable_application_live_view',
                    action='store_true',
-                   is_preview=True,
                    options_list=['--enable-application-live-view', '--enable-alv'],
                    help='(Enterprise Tier Only) Enable Application Live View.')
         c.argument('enable_service_registry',
@@ -187,7 +197,6 @@ def load_arguments(self, _):
                         'List all plans by running `az spring list-marketplace-plan -o table`.')
         c.argument('enable_application_accelerator',
                    action='store_true',
-                   is_preview=True,
                    options_list=['--enable-application-accelerator', '--enable-app-acc'],
                    help='(Enterprise Tier Only) Enable Application Accelerator.')
         c.argument('managed_environment',
@@ -514,6 +523,11 @@ def load_arguments(self, _):
                 'build_cpu', arg_type=build_cpu_type, default="1")
             c.argument(
                 'build_memory', arg_type=build_memory_type, default="2Gi")
+            c.argument('apms', nargs='*', help='(Enterprise Tier Only) Space-separated APM names.',
+                       validator=validate_apm_reference_and_enterprise_tier)
+            c.argument('build_certificates', nargs='*',
+                       help='(Enterprise Tier Only) Space-separated certificate names, the certificates are used during build time.',
+                       validator=validate_build_cert_reference)
 
     with self.argument_context('spring app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)
@@ -705,14 +719,27 @@ def load_arguments(self, _):
     with self.argument_context('spring container-registry') as c:
         c.argument('service', service_name_type, validator=only_support_enterprise)
 
-    with self.argument_context('spring container-registry update') as c:
-        c.argument('name', help="The container registry name.", validator=validate_container_registry)
-        c.argument('server', help="The container registry sever.", validator=validate_container_registry)
-        c.argument('username', help="The container registry username.", validator=validate_container_registry)
-        c.argument('password', help="The container registry password.", validator=validate_container_registry)
+    with self.argument_context('spring container-registry create') as c:
+        c.argument('name', help="The container registry name.", validator=validate_container_registry_create)
+        c.argument('server', help="The container registry sever.", validator=validate_container_registry_create)
+        c.argument('username', help="The container registry username.", validator=validate_container_registry_create)
+        c.argument('password', help="The container registry password.", validator=validate_container_registry_create)
 
-    with self.argument_context('spring container-registry show') as c:
-        c.argument('name', help="The container registry name.")
+    with self.argument_context('spring container-registry update') as c:
+        c.argument('name', help="The container registry name.", validator=validate_container_registry_update)
+        c.argument('server', help="The container registry sever.", validator=validate_container_registry_update)
+        c.argument('username', help="The container registry username.", validator=validate_container_registry_update)
+        c.argument('password', help="The container registry password.", validator=validate_container_registry_update)
+
+    for scope in ['show', 'delete']:
+        with self.argument_context('spring container-registry {}'.format(scope)) as c:
+            c.argument('name', help="The container registry name.")
+
+    with self.argument_context('spring build-service') as c:
+        c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    with self.argument_context('spring build-service update') as c:
+        c.argument('registry_name', help="The container registry name.")
 
     with self.argument_context('spring build-service build') as c:
         c.argument('service', service_name_type, validator=validate_central_build_instance)
@@ -722,6 +749,8 @@ def load_arguments(self, _):
             c.argument('build_env', build_env_type)
             c.argument('source_path', arg_type=source_path_type, validator=validate_source_path)
             c.argument('artifact_path', help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_artifact_path)
+            c.argument('apms', nargs='*', help='Space-separated APM names.', validator=validate_apm_reference)
+            c.argument('certificates', nargs='*', help='Space-separated certificate names.', validator=validate_cert_reference)
             c.argument('disable_validation', arg_type=get_three_state_flag(), help='If true, disable jar validation.')
 
     with self.argument_context('spring build-service build create') as c:
@@ -788,6 +817,10 @@ def load_arguments(self, _):
         with self.argument_context('spring application-configuration-service {}'.format(scope)) as c:
             c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
 
+    for scope in ['create', 'update']:
+        with self.argument_context('spring application-configuration-service {}'.format(scope)) as c:
+            c.argument('generation', arg_type=get_enum_type(ConfigurationServiceGeneration), help='Generation of Application Configuration Service.')
+
     for scope in ['add', 'update']:
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
             c.argument('patterns',
@@ -804,6 +837,7 @@ def load_arguments(self, _):
             c.argument('host_key_algorithm', help='Host key algorithm of the added config.')
             c.argument('private_key', help='Private_key of the added config.', validator=validate_acs_ssh_or_warn)
             c.argument('host_key_check', help='Strict host key checking of the added config which is used in SSH authentication. If false, ignore errors with host key.')
+            c.argument('ca_cert_name', help='CA certificate name.')
 
     for scope in ['add', 'update', 'remove']:
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
@@ -839,6 +873,10 @@ def load_arguments(self, _):
                    help='Sensitive properties for environment variables. Once put, it will be encrypted and not returned.'
                         'Format "key[=value]" and separated by space.')
         c.argument('allowed_origins', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed origins to make cross-site requests. The special value `*` allows all domains.")
+        c.argument('allowed_origin_patterns',
+                   arg_group='Cross-origin Resource Sharing (CORS)',
+                   options_list=['--allowed-origin-patterns', '--allow-origin-patterns'],
+                   help="Comma-separated list of allowed origin patterns to make cross-site requests.")
         c.argument('allowed_methods', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed HTTP methods on cross-site requests. The special value `*` allows all methods.")
         c.argument('allowed_headers', arg_group='Cross-origin Resource Sharing (CORS)', help="Comma-separated list of allowed headers in cross-site requests. The special value `*` allows actual requests to send any header.")
         c.argument('max_age', arg_group='Cross-origin Resource Sharing (CORS)', type=int,
@@ -851,6 +889,8 @@ def load_arguments(self, _):
                    options_list=['--enable-certificate-verification', '--enable-cert-verify'],
                    help='If true, will verify certificate in TLS connection from gateway to app.')
         c.argument('certificate_names', arg_group='Client Certificate Authentication', help="Comma-separated list of certificate names in Azure Spring Apps.")
+        c.argument('addon_configs_json', arg_group='Add-on Configurations', help="JSON string of add-on configurations.")
+        c.argument('addon_configs_file', arg_group='Add-on Configurations', help="The file path of JSON string of add-on configurations.")
 
     for scope in ['spring gateway custom-domain',
                   'spring api-portal custom-domain']:
@@ -907,6 +947,50 @@ def load_arguments(self, _):
                   'spring build-service builder buildpack-binding delete']:
         with self.argument_context(scope) as c:
             c.argument('builder_name', help='The name for builder.', default="default")
+            c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    for scope in ['spring apm create']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='APM name.', validator=validate_apm_not_exist)
+
+    for scope in ['spring apm update']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='APM name.', validator=validate_apm_update)
+
+    for scope in ['spring apm create',
+                  'spring apm update']:
+        with self.argument_context(scope) as c:
+            c.argument('type', type=str,
+                       help='Required type for APM. Run "az spring apm list-support-types"'
+                            'to get all the supported APM types.')
+            c.argument('properties',
+                       help='Non-sensitive properties for APM. Format "key[=value]".',
+                       nargs='*',
+                       validator=validate_apm_properties)
+            c.argument('secrets',
+                       help='Sensitive properties for APM. '
+                            'Once put, it will be encrypted and never return to user. '
+                            'Format "key[=value]".',
+                       nargs='*',
+                       validator=validate_apm_secrets)
+
+    for scope in ['spring apm show',
+                  'spring apm enable-globally',
+                  'spring apm disable-globally',
+                  'spring apm delete']:
+        with self.argument_context(scope) as c:
+            c.argument('name', name_type, help='APM name.')
+
+    for scope in ['spring apm create',
+                  'spring apm update',
+                  'spring apm list',
+                  'spring apm list-support-types',
+                  'spring apm enable-globally',
+                  'spring apm disable-globally',
+                  'spring apm list-enabled-globally',
+                  'spring apm show',
+                  'spring apm delete']:
+        with self.argument_context(scope) as c:
             c.argument('service', service_name_type, validator=only_support_enterprise)
 
     for scope in ['spring application-accelerator predefined-accelerator list',

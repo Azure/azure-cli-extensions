@@ -56,6 +56,11 @@ class Create(AAZCommand):
         # define Arg Group "Cluster"
 
         _args_schema = cls._args_schema
+        _args_schema.identity = AAZObjectArg(
+            options=["--identity"],
+            arg_group="Cluster",
+            help="Identity of Cluster resource",
+        )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Cluster",
             help="The geo-location where the resource lives",
@@ -70,10 +75,25 @@ class Create(AAZCommand):
             help="Resource tags.",
         )
 
+        identity = cls._args_schema.identity
+        identity.type = AAZStrArg(
+            options=["type"],
+            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
+            required=True,
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned, UserAssigned": "SystemAssigned, UserAssigned", "UserAssigned": "UserAssigned"},
+        )
+        identity.user_assigned_identities = AAZDictArg(
+            options=["user-assigned-identities"],
+            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
+        )
+
+        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            blank={},
+        )
+
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
-
-        # define Arg Group "Identity"
 
         # define Arg Group "Properties"
 
@@ -212,10 +232,19 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("identity", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("identity", AAZObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+
+            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
+            if user_assigned_identities is not None:
+                user_assigned_identities.set_elements(AAZObjectType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -258,9 +287,7 @@ class Create(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.identity = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200.identity = AAZObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )

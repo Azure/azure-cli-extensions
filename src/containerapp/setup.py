@@ -28,7 +28,7 @@ except ImportError:
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
 
-VERSION = '0.3.31'
+VERSION = '0.3.33'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -47,7 +47,7 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = ['pycomposefile>=0.0.29']
+DEPENDENCIES = ['pycomposefile>=0.0.29', 'docker']
 
 # Install pack CLI to build runnable application images from source
 _ = get_pack_exec_path()

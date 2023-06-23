@@ -8,7 +8,7 @@ from azure.cli.core.commands import CliCommandType
 from azext_spring._utils import handle_asc_exception
 
 from ._client_factory import (cf_spring,
-                              cf_config_servers)
+                              cf_config_servers, cf_eureka_servers)
 from ._transformers import (transform_spring_table_output,
                             transform_app_table_output,
                             transform_spring_deployment_output,
@@ -24,7 +24,10 @@ from ._transformers import (transform_spring_table_output,
                             transform_predefined_accelerator_output,
                             transform_customized_accelerator_output,
                             transform_build_output,
-                            transform_build_result_output)
+                            transform_build_result_output,
+                            transform_apm_output,
+                            transform_apm_type_output,
+                            transform_container_registry_output)
 from ._validators import validate_app_insights_command_not_supported_tier
 from ._marketplace import (transform_marketplace_plan_output)
 from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update, validate_dev_tool_portal, validate_customized_accelerator, validate_central_build_instance)
@@ -61,6 +64,11 @@ def load_command_table(self, _):
 
     buildpack_binding_cmd_group = CliCommandType(
         operations_tmpl="azext_spring.buildpack_binding#{}",
+        client_factory=cf_spring
+    )
+
+    apm_cmd_group = CliCommandType(
+        operations_tmpl="azext_spring.apm#{}",
         client_factory=cf_spring
     )
 
@@ -132,11 +140,19 @@ def load_command_table(self, _):
         g.custom_command('renew-key', 'regenerate_keys')
         g.custom_command('list', 'list_keys')
 
+    with self.command_group('spring eureka-server', client_factory=cf_eureka_servers,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_show_command('show', 'eureka_get')
+        g.custom_command('enable', 'eureka_enable')
+        g.custom_command('disable', 'eureka_disable')
+
     with self.command_group('spring config-server', client_factory=cf_config_servers,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('set', 'config_set', supports_no_wait=True)
         g.custom_command('clear', 'config_delete')
         g.custom_show_command('show', 'config_get')
+        g.custom_command('enable', 'config_enable')
+        g.custom_command('disable', 'config_disable')
 
     with self.command_group('spring config-server git', client_factory=cf_config_servers,
                             supports_local_cache=True, exception_handler=handle_asc_exception) as g:
@@ -262,7 +278,7 @@ def load_command_table(self, _):
         g.custom_command('create', 'service_registry_create', table_transformer=transform_service_registry_output)
         g.custom_command('delete', 'service_registry_delete', confirmation=True)
 
-    with self.command_group('spring dev-tool', is_preview=True,
+    with self.command_group('spring dev-tool',
                             custom_command_type=dev_tool_portal_cmd_group,
                             exception_handler=handle_asc_exception) as g:
         g.custom_show_command('show', 'show',
@@ -271,7 +287,7 @@ def load_command_table(self, _):
         g.custom_command('update', 'update', table_transformer=transform_dev_tool_portal_output, validator=validate_dev_tool_portal, supports_no_wait=True)
         g.custom_command('delete', 'delete', supports_no_wait=True, confirmation=True)
 
-    with self.command_group('spring application-live-view', is_preview=True,
+    with self.command_group('spring application-live-view',
                             custom_command_type=application_live_view_cmd_group,
                             exception_handler=handle_asc_exception) as g:
         g.custom_show_command('show', 'show',
@@ -288,6 +304,7 @@ def load_command_table(self, _):
         g.custom_command('bind', 'application_configuration_service_bind')
         g.custom_command('unbind', 'application_configuration_service_unbind')
         g.custom_command('create', 'application_configuration_service_create', table_transformer=transform_application_configuration_service_output)
+        g.custom_command('update', 'application_configuration_service_update', table_transformer=transform_application_configuration_service_output)
         g.custom_command('delete', 'application_configuration_service_delete', confirmation=True)
 
     with self.command_group('spring application-configuration-service git repo',
@@ -306,6 +323,7 @@ def load_command_table(self, _):
         g.custom_command('clear', 'gateway_clear', supports_no_wait=True)
         g.custom_command('create', 'gateway_create', table_transformer=transform_spring_cloud_gateway_output)
         g.custom_command('delete', 'gateway_delete', confirmation=True)
+        g.custom_command('restart', 'gateway_restart', confirmation='Are you sure you want to perform this operation?', supports_no_wait=True)
         g.custom_command('sync-cert', 'gateway_sync_cert', confirmation='Your gateway will be restarted to use the latest certificate.\n' +
                          'Are you sure you want to perform this operation?', supports_no_wait=True)
 
@@ -351,7 +369,6 @@ def load_command_table(self, _):
 
     with self.command_group('spring application-accelerator',
                             custom_command_type=application_accelerator_cmd_group,
-                            is_preview=True,
                             exception_handler=handle_asc_exception) as g:
         g.custom_show_command('show', 'application_accelerator_show', table_transformer=transform_application_accelerator_output)
         g.custom_command('create', 'application_accelerator_create', table_transformer=transform_application_accelerator_output, supports_no_wait=True)
@@ -375,6 +392,19 @@ def load_command_table(self, _):
         g.custom_command('sync-cert', 'customized_accelerator_sync_cert', supports_no_wait=True, table_transformer=transform_customized_accelerator_output)
         g.custom_command('delete', 'customized_accelerator_delete', supports_no_wait=True)
 
+    with self.command_group('spring apm',
+                            custom_command_type=apm_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('create', 'create_or_update_apm', supports_no_wait=True)
+        g.custom_command('update', 'create_or_update_apm', supports_no_wait=True)
+        g.custom_show_command('show', 'apm_show')
+        g.custom_command('list', 'apm_list', table_transformer=transform_apm_output)
+        g.custom_command('delete', 'apm_delete', confirmation=True, supports_no_wait=True)
+        g.custom_command('list-support-types', 'list_support_apm_types', table_transformer=transform_apm_type_output)
+        g.custom_command('list-enabled-globally', 'list_apms_enabled_globally')
+        g.custom_command('enable-globally', 'enable_apm_globally', supports_no_wait=True)
+        g.custom_command('disable-globally', 'disable_apm_globally', supports_no_wait=True)
+
     with self.command_group('spring build-service builder',
                             custom_command_type=build_service_cmd_group,
                             exception_handler=handle_asc_exception) as g:
@@ -396,8 +426,11 @@ def load_command_table(self, _):
     with self.command_group('spring container-registry',
                             custom_command_type=build_service_cmd_group,
                             exception_handler=handle_asc_exception) as g:
-        g.custom_command('update', 'update_container_registry', supports_no_wait=True)
+        g.custom_command('create', 'create_or_update_container_registry', supports_no_wait=True)
+        g.custom_command('update', 'create_or_update_container_registry', supports_no_wait=True)
         g.custom_show_command('show', 'container_registry_show')
+        g.custom_show_command('list', 'container_registry_list', table_transformer=transform_container_registry_output)
+        g.custom_command('delete', 'container_registry_delete', supports_no_wait=True, confirmation=True)
 
     with self.command_group('spring build-service build',
                             custom_command_type=build_service_cmd_group,
@@ -414,8 +447,11 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'build_result_show')
         g.custom_show_command('list', 'build_result_list', table_transformer=transform_build_result_output)
 
-    with self.command_group('spring build-service', exception_handler=handle_asc_exception):
-        pass
+    with self.command_group('spring build-service',
+                            custom_command_type=build_service_cmd_group,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('update', 'update_build_service', supports_no_wait=True)
+        g.custom_show_command('show', 'build_service_show')
 
     with self.command_group('spring', exception_handler=handle_asc_exception):
         pass

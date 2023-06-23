@@ -67,6 +67,7 @@ from azext_aks_preview._helpers import (
     check_is_private_cluster,
     check_is_apiserver_vnet_integration_cluster,
     get_cluster_snapshot_by_snapshot_id,
+    setup_common_guardrails_profile
 )
 from azext_aks_preview._loadbalancer import create_load_balancer_profile
 from azext_aks_preview._loadbalancer import (
@@ -161,6 +162,15 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             ] = ensure_azure_monitor_profile_prerequisites
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
+
+    def get_guardrails_level(self) -> Union[str, None]:
+        return self.raw_param.get("guardrails_level")
+
+    def get_guardrails_excluded_namespaces(self) -> Union[str, None]:
+        return self.raw_param.get("guardrails_excluded_ns")
+
+    def get_guardrails_version(self) -> Union[str, None]:
+        return self.raw_param.get("guardrails_version")
 
     # pylint: disable=no-self-use
     def __validate_pod_identity_with_kubenet(self, mc, enable_pod_identity, enable_pod_identity_with_kubenet):
@@ -615,6 +625,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return bool(self.raw_param.get('enable_cilium_dataplane'))
+
+    def get_enable_network_observability(self) -> Optional[bool]:
+        """Get the value of enable_network_observability
+
+        :return: bool or None
+        """
+        return self.raw_param.get("enable_network_observability")
 
     def get_load_balancer_managed_outbound_ipv6_count(self) -> Union[int, None]:
         """Obtain the expected count of IPv6 managed outbound IPs.
@@ -1899,9 +1916,9 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: bool
         """
-        # print("_get_enable_azure_monitor_metrics being called...")
         # Read the original value passed by the command.
-        enable_azure_monitor_metrics = self.raw_param.get("enable_azuremonitormetrics")
+        # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
+        enable_azure_monitor_metrics = self.raw_param.get("enable_azure_monitor_metrics") or self.raw_param.get("enable_azuremonitormetrics")
         # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
@@ -1937,7 +1954,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         # Read the original value passed by the command.
-        disable_azure_monitor_metrics = self.raw_param.get("disable_azuremonitormetrics")
+        # TODO: should remove get value from disable_azuremonitormetrics once the option is removed
+        disable_azure_monitor_metrics = self.raw_param.get("disable_azure_monitor_metrics") or self.raw_param.get("disable_azuremonitormetrics")
         if disable_azure_monitor_metrics and self._get_enable_azure_monitor_metrics(False):
             raise MutuallyExclusiveArgumentError("Cannot specify --enable-azuremonitormetrics and --disable-azuremonitormetrics at the same time.")
         return disable_azure_monitor_metrics
@@ -2359,6 +2377,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         else:
             network_profile.network_dataplane = self.context.get_network_dataplane()
 
+        network_observability = self.context.get_enable_network_observability()
+        if network_observability is not None:
+            network_profile.monitoring = self.models.NetworkMonitoring(
+                enabled=network_observability
+            )
+
         return mc
 
     def set_up_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -2654,6 +2678,14 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
         return mc
 
+    def set_up_guardrails_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        excludedNamespaces = self.context.get_guardrails_excluded_namespaces()
+        version = self.context.get_guardrails_version()
+        level = self.context.get_guardrails_level()
+        # provided any value?
+        mc = setup_common_guardrails_profile(level, version, excludedNamespaces, mc, self.models)
+        return mc
+
     def set_up_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Set up azure service mesh for the ManagedCluster object.
 
@@ -2720,6 +2752,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_node_resource_group_profile(mc)
         # set up auto upgrade profile
         mc = self.set_up_auto_upgrade_profile(mc)
+        # set up guardrails profile
+        mc = self.set_up_guardrails_profile(mc)
         # set up azure service mesh profile
         mc = self.set_up_azure_service_mesh_profile(mc)
         # set up azure monitor profile
@@ -2986,6 +3020,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         pod_cidr = self.context.get_pod_cidr()
         if pod_cidr:
             mc.network_profile.pod_cidr = pod_cidr
+        return mc
+
+    def update_enable_network_observability_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update enable network observability of network profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        network_observability = self.context.get_enable_network_observability()
+        if network_observability is not None:
+            mc.network_profile.monitoring = self.models.NetworkMonitoring(
+                enabled=network_observability
+            )
         return mc
 
     def update_outbound_type_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -3295,7 +3343,14 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 mc.azure_monitor_profile = self.models.ManagedClusterAzureMonitorProfile()
             mc.azure_monitor_profile.metrics = self.models.ManagedClusterAzureMonitorProfileMetrics(enabled=False)
 
-        if (self.context.raw_param.get("enable_azuremonitormetrics") or self.context.raw_param.get("disable_azuremonitormetrics")):
+        # TODO: should remove get value from enable_azuremonitormetrics once the option is removed
+        # TODO: should remove get value from disable_azuremonitormetrics once the option is removed
+        if (
+            self.context.raw_param.get("enable_azure_monitor_metrics") or
+            self.context.raw_param.get("enable_azuremonitormetrics") or
+            self.context.raw_param.get("disable_azure_monitor_metrics") or
+            self.context.raw_param.get("disable_azuremonitormetrics")
+        ):
             ensure_azure_monitor_profile_prerequisites(
                 self.cmd,
                 self.context.get_subscription_id(),
@@ -3436,6 +3491,26 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.auto_upgrade_profile.node_os_upgrade_channel = node_os_upgrade_channel
         return mc
 
+    def update_guardrails_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update guardrails profile for the ManagedCluster object
+        :return: the ManagedCluster object
+        """
+
+        self._ensure_mc(mc)
+
+        excludedNamespaces = self.context.get_guardrails_excluded_namespaces()
+        version = self.context.get_guardrails_version()
+        level = self.context.get_guardrails_level()
+
+        mc = setup_common_guardrails_profile(level, version, excludedNamespaces, mc, self.models)
+
+        if level is not None:
+            mc.guardrails_profile.level = level
+        if version is not None:
+            mc.guardrails_profile.version = version
+
+        return mc
+
     def update_azure_service_mesh_profile(self, mc: ManagedCluster) -> ManagedCluster:
         """Update azure service mesh profile for the ManagedCluster object.
         """
@@ -3561,7 +3636,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_node_resource_group_profile(mc)
         # update auto upgrade profile
         mc = self.update_auto_upgrade_profile(mc)
+        # update guardrails_profile
+        mc = self.update_guardrails_profile(mc)
         # update auto upgrade profile
         mc = self.update_upgrade_settings(mc)
+        # update network_observability in network_profile
+        mc = self.update_enable_network_observability_in_network_profile(mc)
 
         return mc

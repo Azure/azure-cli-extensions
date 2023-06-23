@@ -120,6 +120,7 @@ def build_delete_request_initial(
     api_version = kwargs.pop('api_version', "2020-06-05-preview")  # type: str
     retain = kwargs.pop('retain', None)  # type: Optional[bool]
     force = kwargs.pop('force', None)  # type: Optional[bool]
+    deleteFromHost = kwargs.pop('deleteFromHost', None)  # type: Optional[bool]
 
     accept = "application/json"
     # Construct URL
@@ -139,6 +140,8 @@ def build_delete_request_initial(
         _query_parameters['retain'] = _SERIALIZER.query("retain", retain, 'bool')
     if force is not None:
         _query_parameters['force'] = _SERIALIZER.query("force", force, 'bool')
+    if deleteFromHost is not None:
+        _query_parameters['deleteFromHost'] = _SERIALIZER.query("deleteFromHost", deleteFromHost, 'bool')
 
     # Construct headers
     _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
@@ -714,6 +717,7 @@ class VirtualMachinesOperations(object):  # pylint: disable=too-many-public-meth
         virtual_machine_name,  # type: str
         retain=None,  # type: Optional[bool]
         force=None,  # type: Optional[bool]
+        deleteFromHost=None,  # type: Optional[bool]
         **kwargs  # type: Any
     ):
         # type: (...) -> None
@@ -733,6 +737,7 @@ class VirtualMachinesOperations(object):  # pylint: disable=too-many-public-meth
             api_version=api_version,
             retain=retain,
             force=force,
+            deleteFromHost=deleteFromHost,
             template_url=self._delete_initial.metadata['url'],
         )
         request = _convert_request(request)
@@ -762,6 +767,7 @@ class VirtualMachinesOperations(object):  # pylint: disable=too-many-public-meth
         virtual_machine_name,  # type: str
         retain=None,  # type: Optional[bool]
         force=None,  # type: Optional[bool]
+        deleteFromHost=None,  # type: Optional[bool]
         **kwargs  # type: Any
     ):
         # type: (...) -> LROPoller[None]
@@ -779,6 +785,8 @@ class VirtualMachinesOperations(object):  # pylint: disable=too-many-public-meth
         :param force: Forces the resource to be deleted from azure. The corresponding CR would be
          attempted to be deleted too. Default value is None.
         :type force: bool
+        :param deleteFromHost: Deletes the VM from the SCVMM. Default value is None.
+        :type deleteFromHost: bool
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -805,6 +813,7 @@ class VirtualMachinesOperations(object):  # pylint: disable=too-many-public-meth
                 virtual_machine_name=virtual_machine_name,
                 retain=retain,
                 force=force,
+                deleteFromHost=deleteFromHost,
                 api_version=api_version,
                 cls=lambda x,y,z: x,
                 **kwargs

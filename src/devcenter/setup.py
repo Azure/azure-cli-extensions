@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '0.1.2'
+VERSION = '1.0.1'
 try:
     from azext_devcenter.manual.version import VERSION
 except ImportError:
@@ -24,9 +24,10 @@ CLASSIFIERS = [
     'Intended Audience :: System Administrators',
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
     'License :: OSI Approved :: MIT License',
 ]
 

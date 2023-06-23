@@ -22,8 +22,8 @@ from .operations import ScheduleOperations
 from .operations import DevBoxOperations
 from .operations import EnvironmentsOperations
 from .operations import ArtifactsOperations
-from .operations import CatalogItemsOperations
-from .operations import CatalogItemVersionsOperations
+from .operations import CatalogsOperations
+from .operations import EnvironmentDefinitionsOperations
 from .operations import EnvironmentTypeOperations
 from .operations import NotificationSettingOperations
 from .. import models
@@ -75,11 +75,9 @@ class DevCenterDataplaneClient(object):
             self._client, self._config, self._serialize, self._deserialize)
         self.artifacts = ArtifactsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.catalog_item = CatalogItemsOperations(
+        self.catalogs = CatalogsOperations(
             self._client, self._config, self._serialize, self._deserialize)
-        self.catalog_items = CatalogItemsOperations(
-            self._client, self._config, self._serialize, self._deserialize)
-        self.catalog_item_versions = CatalogItemVersionsOperations(
+        self.environment_definitions = EnvironmentDefinitionsOperations(
             self._client, self._config, self._serialize, self._deserialize)
         self.environment_type = EnvironmentTypeOperations(
             self._client, self._config, self._serialize, self._deserialize)

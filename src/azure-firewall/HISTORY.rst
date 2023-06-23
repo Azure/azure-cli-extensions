@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.14.8
+++++++
+* `az network firewall policy`: Fix unhashable `--identity`
+
 0.14.7
 ++++++
 * `az network firewall policy create/update`: Add parameters `--private-ranges` and `--learn-ranges`

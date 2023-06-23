@@ -659,6 +659,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
         image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
         redis_ca_name = 'redis'
         postgres_ca_name = 'postgres'
+        kafka_ca_name = 'kafka'
 
         create_containerapp_env(self, env_name, resource_group)
 
@@ -667,6 +668,9 @@ class ContainerappServiceBindingTests(ScenarioTest):
 
         self.cmd('containerapp service postgres create -g {} -n {} --environment {}'.format(
             resource_group, postgres_ca_name, env_name))
+        
+        self.cmd('containerapp service kafka create -g {} -n {} --environment {}'.format(
+            resource_group, kafka_ca_name, env_name))
 
         self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
             resource_group, ca_name, env_name, image), checks=[
@@ -679,10 +683,24 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
         ])
 
-        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding'.format(
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka'.format(
             resource_group, ca_name, image), checks=[
             JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
-            JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding")
+            JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[2].name', "kafka")
+        ])
+
+        self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(
+            resource_group, postgres_ca_name, env_name))
+
+        self.cmd('containerapp service redis delete -g {} -n {} --yes'.format(
+            resource_group, redis_ca_name, env_name))
+        
+        self.cmd('containerapp service kafka delete -g {} -n {} --yes'.format(
+            resource_group, kafka_ca_name, env_name))
+
+        self.cmd('containerapp service list -g {} --environment {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
         ])
 
 
@@ -832,6 +850,15 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
 
+        app2 = self.create_random_name(prefix='aca', length=24)
+        self.cmd(f'containerapp create -g {resource_group} -n {app2} --registry-identity {identity_rid} --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io --revision-suffix test1')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app2}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.template.revisionSuffix", "test1"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+        ])
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
@@ -852,6 +879,52 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         self.cmd(f'containerapp create -g {resource_group} -n {app} --registry-identity "system" --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io')
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
+
+        app2 = self.create_random_name(prefix='aca', length=24)
+        self.cmd(f'containerapp create -g {resource_group} -n {app2} --registry-identity "system" --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io --revision-suffix test1')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app2}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.template.revisionSuffix", "test1"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_private_registry_port(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='aca', length=24)
+        acr = self.create_random_name(prefix='acr', length=24)
+        image_source = "mcr.microsoft.com/k8se/quickstart:latest"
+        image_name = f"{acr}.azurecr.io:443/k8se/quickstart:latest"
+
+        create_containerapp_env(self, env, resource_group)
+
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        self.cmd(f'acr import -n {acr} --source {image_source}')
+        password = self.cmd(f'acr credential show -n {acr} --query passwords[0].value').get_output_in_json()
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app}  --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io:443 --registry-username {acr} --registry-password {password}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io:443"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+            JMESPathCheck("properties.configuration.secrets[0].name", f"{acr}azurecrio-443-{acr}")
+        ])
+
+        app2 = self.create_random_name(prefix='aca', length=24)
+        image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
+        self.cmd(
+            f'containerapp create -g {resource_group} -n {app2}  --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io --registry-username {acr} --registry-password {password}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app2}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+            JMESPathCheck("properties.configuration.secrets[0].name", f"{acr}azurecrio-{acr}")
+        ])
 
 
 class ContainerappScaleTests(ScenarioTest):

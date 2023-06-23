@@ -13,23 +13,22 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin attached-network list",
-    is_preview=True,
 )
 class List(AAZCommand):
-    """List the attached network connections for a dev center or a project.
+    """List the attached network connections configured for a dev center or project.
 
     :example: List by dev center
         az devcenter admin attached-network list --dev-center-name "Contoso" --resource-group "rg1"
 
     :example: List by project
-        az devcenter admin attached-network list --project-name "{projectName}" --resource-group "rg1"
+        az devcenter admin attached-network list --project-name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/attachednetworks", "2022-11-11-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/attachednetworks", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/attachednetworks", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/attachednetworks", "2023-04-01"],
         ]
     }
 
@@ -50,11 +49,11 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
@@ -68,7 +67,7 @@ class List(AAZCommand):
         condition_1 = has_value(self.ctx.args.project_name) and has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         if condition_0:
             self.AttachedNetworksListByDevCenter(ctx=self.ctx)()
-        if condition_1:
+        elif condition_1:
             self.AttachedNetworksListByProject(ctx=self.ctx)()
         self.post_operations()
 
@@ -133,7 +132,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -285,7 +284,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }

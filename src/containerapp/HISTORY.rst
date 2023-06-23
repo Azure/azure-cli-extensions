@@ -2,6 +2,29 @@
 
 Release History
 ===============
+
+Upcoming
+++++++
+* 'az containerapp job execution show/list': improve table output format
+* 'az containerapp create/update': --yaml support properties for api-version 2023-04-01-preview (e.g. subPath, mountOptions)
+* 'az containerapp service': add support for creation and deletion of kafka
+* 'az containerapp create': --registry-server support registry with custom port
+* Add regex to fix validation for containerapp name
+
+0.3.33
+++++++
+* 'az containerapp create': fix --registry-identity "system" with --revision-suffix
+* 'az containerapp up': fix --target-port value not being propagated when buildpack is used to build image from --source
+* Fix for 'az containerapp job create' with --yaml option to create a Container App job
+* Support 'az containerapp job secret' to manage secrets for Container App jobs
+* Support 'az containerapp job identity' to manage identity for Container App jobs
+* Fix for issue with --user-assigned identity for Container App jobs where identities were getting split incorrectly
+* Add new parameters `--mi-system-assigned` and `--mi-user-assigned` to replace the deprecated parameters `--system-assigned` and `--user-assigned` for `az containerapp job create` command
+
+0.3.32
+++++++
+* Fix for 'az containerapp job update' command when updating Container App job with a trigger configuration
+
 0.3.31
 ++++++
 * Fix issue when using 'az containerapp up' to create a container app from a local source with a Dockerfile

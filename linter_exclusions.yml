@@ -121,6 +121,9 @@ aks create:
     enable_windows_recording_rules:
       rule_exclusions:
       - option_length_too_long
+    enable_network_observability:
+      rule_exclusions:
+      - option_length_too_long
 aks update:
   parameters:
     aad_admin_group_object_ids:
@@ -195,6 +198,9 @@ aks update:
     custom_ca_trust_certificates:
       rule_exclusions:
         - option_length_too_long
+    enable_network_observability:
+      rule_exclusions:
+      - option_length_too_long
 arcdata dc create:
   parameters:
     logs_ui_private_key_file:
@@ -233,6 +239,12 @@ sql mi-arc update:
     sync_secondary_to_commit:
       rule_exclusions:
       - option_length_too_long
+    tde_protector_private_key_file:
+      rule_exclusions:
+      - option_length_too_long
+    tde_protector_public_key_file:
+      rule_exclusions:
+      - option_length_too_long
 sql mi-arc create:
   parameters:
     sync_secondary_to_commit:
@@ -242,6 +254,12 @@ sql mi-arc create:
       rule_exclusions:
       - option_length_too_long
     volume_size_orchestrator_logs:
+      rule_exclusions:
+      - option_length_too_long
+    tde_protector_private_key_file:
+      rule_exclusions:
+      - option_length_too_long
+    tde_protector_public_key_file:
       rule_exclusions:
       - option_length_too_long
 attestation policy set:
@@ -385,6 +403,17 @@ databox job create:
     staging_storage_account:
       rule_exclusions:
       - option_length_too_long
+    transfer_configuration_type:
+      rule_exclusions:
+      - option_length_too_long
+    transfer_filter_details:
+      rule_exclusions:
+      - option_length_too_long
+databox job mark-devices-shipped:
+  parameters:
+    deliver_package_details:
+      rule_exclusions:
+        - option_length_too_long
 databricks workspace create:
   parameters:
     managed_resource_group:
@@ -647,6 +676,9 @@ desktopvirtualization workspace update:
 devcenter dev environment update:
   parameters:
     dev_center:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+    user_id:
       rule_exclusions:
       - no_parameter_defaults_for_update_commands
 devops project list:
@@ -1993,6 +2025,111 @@ network vwan update:
       rule_exclusions:
       - option_length_too_long
     security_provider_name:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud cloudservicesnetwork create:
+  parameters:
+    enable_default_egress_endpoints:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+      - option_length_too_long
+    additional_egress_endpoints:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud cloudservicesnetwork update:
+  parameters:
+    enable_default_egress_endpoints:
+      rule_exclusions:
+      - no_parameter_defaults_for_update_commands
+      - option_length_too_long
+    additional_egress_endpoints:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud cluster create:
+  parameters:
+    aggregator_or_single_rack_definition:
+      rule_exclusions:
+      - option_length_too_long
+    cluster_service_principal:
+      rule_exclusions:
+      - option_length_too_long
+    compute_deployment_threshold:
+      rule_exclusions:
+      - option_length_too_long
+    compute_rack_definitions:
+      rule_exclusions:
+      - option_length_too_long
+    managed_resource_group_configuration:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud cluster update:
+  parameters:      
+    aggregator_or_single_rack_definition:
+      rule_exclusions:
+      - option_length_too_long
+    cluster_service_principal:
+      rule_exclusions:
+      - option_length_too_long
+    compute_deployment_threshold:
+      rule_exclusions:
+      - option_length_too_long
+    compute_rack_definitions:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud cluster deploy:
+  parameters:      
+    skip_validations_for_machines:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud clustermanager create:
+  parameters:  
+    managed_resource_group_configuration:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud l3network create:
+  parameters:        
+    hybrid_aks_ipam_enabled:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud virtualmachine create:
+  parameters:        
+    isolate_emulator_thread:
+      rule_exclusions:
+      - option_length_too_long
+networkfabric controller create:
+  parameters:
+    workload_er_connections:
+      rule_exclusions:
+      - option_length_too_long
+networkfabric rack create:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric rack delete:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric device delete:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric interface delete:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric l3domain create:
+  parameters:
+    aggregate_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    connected_subnet_route_policy:
+      rule_exclusions:
+      - option_length_too_long
+    redistribute_connected_subnets:
+      rule_exclusions:
+      - option_length_too_long
+    redistribute_static_routes:
+      rule_exclusions:
+      - option_length_too_long
+networkfabric internalnetwork create:
+  parameters:
+    static_route_configuration:
       rule_exclusions:
       - option_length_too_long
 notification-hub authorization-rule create:

@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "devcenter admin check-name-availability",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage check name availability with devcenter
+    """Manage check name availability.
     """
     pass
 
