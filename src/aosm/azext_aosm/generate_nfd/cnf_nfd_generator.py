@@ -90,9 +90,6 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             self._tmp_folder_name = tmpdirname
             try:
                 for helm_package in self.config.helm_packages:
-                    # Turn Any type into HelmPackageConfig, to access properties on the object
-                    helm_package = HelmPackageConfig(**helm_package)
-
                     # Unpack the chart into the tmp folder
                     self._extract_chart(helm_package.path_to_chart)
 
@@ -570,6 +567,67 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             print("No schema found for deployment parameter(s):", no_schema_list)
             print("We default these parameters to type string")
         return new_schema
+
+    def _replace_values_with_deploy_params(
+        self,
+        values_yaml_dict,
+        param_prefix: Optional[str] = None,
+    ) -> Dict[Any, Any]:
+        """
+        Given the yaml dictionary read from values.yaml, replace all the values with {deploymentParameter.keyname}.
+
+        Thus creating a values mapping file if the user has not provided one in config.
+        """
+        logger.debug("Replacing values with deploy parameters")
+        final_values_mapping_dict: Dict[Any, Any] = {}
+        for k, v in values_yaml_dict.items():
+            # if value is a string and contains deployParameters.
+            logger.debug("Processing key %s", k)
+            param_name = k if param_prefix is None else f"{param_prefix}_{k}"
+            if isinstance(v, (str, int, bool)):
+                # Replace the parameter with {deploymentParameter.keyname}
+                if self.interactive:
+                    # Interactive mode. Prompt user to include or exclude parameters
+                    # This requires the enter key after the y/n input which isn't ideal
+                    if not input_ack("y", f"Expose parameter {param_name}? y/n "):
+                        logger.debug("Excluding parameter %s", param_name)
+                        final_values_mapping_dict.update({k: v})
+                        continue
+                replacement_value = f"{{deployParameters.{param_name}}}"
+
+                # add the schema for k (from the big schema) to the (smaller) schema
+                final_values_mapping_dict.update({k: replacement_value})
+            elif isinstance(v, dict):
+                final_values_mapping_dict[k] = self._replace_values_with_deploy_params(
+                    v, param_name
+                )
+            elif isinstance(v, list):
+                final_values_mapping_dict[k] = []
+                for index, item in enumerate(v):
+                    param_name = (
+                        f"{param_prefix}_{k}_{index}"
+                        if param_prefix
+                        else f"{k})_{index}"
+                    )
+                    if isinstance(item, dict):
+                        final_values_mapping_dict[k].append(
+                            self._replace_values_with_deploy_params(item, param_name)
+                        )
+                    elif isinstance(v, (str, int, bool)):
+                        replacement_value = f"{{deployParameters.{param_name}}}"
+                        final_values_mapping_dict[k].append(replacement_value)
+                    else:
+                        raise ValueError(
+                            f"Found an unexpected type {type(v)} of key {k} in "
+                            "values.yaml, cannot generate values mapping file."
+                        )
+            else:
+                raise ValueError(
+                    f"Found an unexpected type {type(v)} of key {k} in values.yaml, "
+                    "cannot generate values mapping file."
+                )
+
+        return final_values_mapping_dict
 
     def _replace_values_with_deploy_params(
         self,

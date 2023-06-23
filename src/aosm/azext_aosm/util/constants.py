@@ -10,8 +10,6 @@ CNF = "cnf"
 NSD = "nsd"
 SCHEMA = "schema"
 
-# TODO pk5: clean up these names
-
 # Names of files used in the repo
 NSD_DEFINITION_BICEP_SOURCE_TEMPLATE = "nsd_template.bicep"
 NSD_DEFINITION_BICEP_FILE = "nsd_definition.bicep"

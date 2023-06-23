@@ -16,7 +16,7 @@ from azure.cli.core.azclierror import (
 )
 from knack.log import get_logger
 
-from azext_aosm._client_factory import cf_resources
+from azext_aosm._client_factory import cf_resources, cf_acr_registries
 from azext_aosm._configuration import (
     CNFConfiguration,
     NFConfiguration,
@@ -156,11 +156,15 @@ def publish_definition(
     """
     print("Publishing definition.")
     api_clients = ApiClients(
-        aosm_client=client, resource_client=cf_resources(cmd.cli_ctx)
+        aosm_client=client,
+        resource_client=cf_resources(cmd.cli_ctx),
+        container_registry_client=cf_acr_registries(cmd.cli_ctx),
     )
+
     config = _get_config_from_file(
         config_file=config_file, configuration_type=definition_type
     )
+
     if definition_type == VNF:
         deployer = DeployerViaArm(api_clients, config=config)
         deployer.deploy_vnfd_from_bicep(
@@ -169,10 +173,18 @@ def publish_definition(
             manifest_bicep_path=manifest_file,
             manifest_parameters_json_file=manifest_parameters_json_file,
         )
+    elif definition_type == CNF:
+        deployer = DeployerViaArm(api_clients, config=config)
+        deployer.deploy_cnfd_from_bicep(
+            cli_ctx=cmd.cli_ctx,
+            bicep_path=definition_file,
+            parameters_json_file=parameters_json_file,
+            manifest_bicep_path=manifest_file,
+            manifest_parameters_json_file=manifest_parameters_json_file,
+        )
     else:
-        raise NotImplementedError(
-            "Publishing of CNF definitions is not yet implemented. \
-            You should manually deploy your bicep file and upload charts and images to your artifact store. "
+        raise ValueError(
+            f"Definition type must be either 'vnf' or 'cnf'. Definition type {definition_type} is not recognised."
         )
 
 
@@ -202,10 +214,12 @@ def delete_published_definition(
 
     delly = ResourceDeleter(api_clients, config)
     if definition_type == VNF:
-        delly.delete_vnf(clean=clean)
+        delly.delete_nfd(clean=clean)
+    elif definition_type == CNF:
+        delly.delete_nfd(clean=clean)
     else:
-        raise NotImplementedError(
-            "Deleting of published CNF definitions is not yet implemented."
+        raise ValueError(
+            f"Definition type must be either 'vnf' or 'cnf'. Definition type {definition_type} is not recognised."
         )
 
 

@@ -14,6 +14,7 @@ from knack.log import get_logger
 from azext_aosm.vendored_sdks.models import NFVIType
 
 from azext_aosm._configuration import NSConfiguration
+from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 from azext_aosm.util.constants import (
     CONFIG_MAPPINGS,
     NF_DEFINITION_BICEP_FILE,

@@ -37,26 +37,20 @@ DESCRIPTION_MAP: Dict[str, str] = {
         "Name of the storage account Artifact Store resource. Will be created if it "
         "does not exist.",
     "artifact_name": "Name of the artifact",
-    "file_path":
-        "Optional. File path of the artifact you wish to upload from your local disk. "
-        "Delete if not required.",
-    "blob_sas_url":
-        "Optional. SAS URL of the blob artifact you wish to copy to your Artifact Store. "
-        "Delete if not required.",
-    "artifact_version":
-        "Version of the artifact. For VHDs this must be in format A-B-C. "
-        "For ARM templates this must be in format A.B.C",
+    "file_path": "Optional. File path of the artifact you wish to upload from your local disk. "
+    "Delete if not required.",
+    "blob_sas_url": "Optional. SAS URL of the blob artifact you wish to copy to your Artifact Store. "
+    "Delete if not required.",
+    "artifact_version": "Version of the artifact. For VHDs this must be in format A-B-C. "
+    "For ARM templates this must be in format A.B.C",
     "nsdv_description": "Description of the NSDV",
-    "nsdg_name":
-        "Network Service Design Group Name. This is the collection of Network Service Design Versions. "
-        "Will be created if it does not exist.",
+    "nsdg_name": "Network Service Design Group Name. This is the collection of Network Service Design Versions. "
+    "Will be created if it does not exist.",
     "nsd_version": "Version of the NSD to be created. This should be in the format A.B.C",
-    "network_function_definition_group_name":
-        "Exising Network Function Definition Group Name. "
-        "This can be created using the 'az aosm nfd' commands.",
-    "network_function_definition_version_name":
-        "Exising Network Function Definition Version Name. "
-        "This can be created using the 'az aosm nfd' commands.",
+    "network_function_definition_group_name": "Exising Network Function Definition Group Name. "
+    "This can be created using the 'az aosm nfd' commands.",
+    "network_function_definition_version_name": "Exising Network Function Definition Version Name. "
+    "This can be created using the 'az aosm nfd' commands.",
     "network_function_definition_offering_location": "Offering location of the Network Function Definition",
     "network_function_type": "Type of nf in the definition. Valid values are 'cnf' or 'vnf'",
     "helm_package_name": "Name of the Helm package",
@@ -72,6 +66,7 @@ DESCRIPTION_MAP: Dict[str, str] = {
     "helm_depends_on":
         "Names of the Helm packages this package depends on. "
         "Leave as an empty array if no dependencies",
+    "source_registry_id": "Resource ID of the source acr registry from which to pull the image",
 }
 
 
@@ -303,6 +298,7 @@ class HelmPackageConfig:
 
 @dataclass
 class CNFConfiguration(NFConfiguration):
+    source_registry_id: str = DESCRIPTION_MAP["source_registry_id"]
     helm_packages: List[Any] = field(default_factory=lambda: [HelmPackageConfig()])
 
     def __post_init__(self):
@@ -311,9 +307,9 @@ class CNFConfiguration(NFConfiguration):
 
         Used when creating CNFConfiguration object from a loaded json config file.
         """
-        for package in self.helm_packages:
+        for package_index, package in enumerate(self.helm_packages):
             if isinstance(package, dict):
-                package = HelmPackageConfig(**dict(package))
+                self.helm_packages[package_index] = HelmPackageConfig(**dict(package))
 
     @property
     def build_output_folder_name(self) -> str:
@@ -324,6 +320,13 @@ class CNFConfiguration(NFConfiguration):
 def get_configuration(
     configuration_type: str, config_as_dict: Optional[Dict[Any, Any]] = None
 ) -> NFConfiguration or NSConfiguration:
+    """
+    Return the correct configuration object based on the type.
+
+    :param configuration_type: The type of configuration to return
+    :param config_as_dict: The configuration as a dictionary
+    :return: The configuration object
+    """
     if config_as_dict is None:
         config_as_dict = {}
 
