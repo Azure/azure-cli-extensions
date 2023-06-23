@@ -15,18 +15,6 @@ from datetime import datetime
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
-def setup(test):
-    test.kwargs.update({
-        "vaultname": "oss-clitest-vault",
-        "rgname": "oss-clitest-rg",
-        "ossserver": "oss-clitest-server",
-        "ossdb": "postgres",
-        "ossdbid": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DBforPostgreSQL/servers/oss-clitest-server/databases/postgres",
-        "policyid": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DataProtection/backupVaults/oss-clitest-vault/backupPolicies/oss-clitest-policy",
-        "secretstoreuri": "https://oss-clitest-keyvault.vault.azure.net/secrets/oss-clitest-secret",
-        "keyvaultid":  "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.KeyVault/vaults/oss-clitest-keyvault"
-    })
-
 def configure_backup(test):
     backup_instance_guid = "faec6818-0720-11ec-bd1b-c8f750f92764"
     backup_instance_json = test.cmd('az dataprotection backup-instance initialize --datasource-type AzureDatabaseForPostgreSQL'
@@ -37,7 +25,7 @@ def configure_backup(test):
         "backup_instance_name": backup_instance_json["backup_instance_name"]
     })
 
-    # run only in record mode - grant permission
+    # uncomment when running live, run only in record mode - grant permission
     # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDatabaseForPostgreSQL --permissions-scope Resource -g "{rgname}" --vault-name "{vaultname}" --operation Backup --backup-instance "{backup_instance_json}" --keyvault-id "{keyvaultid}" --yes')
 
     time.sleep(60)
@@ -153,24 +141,30 @@ def trigger_restore_as_files(test):
 def delete_backup(test):
     test.cmd('az dataprotection backup-instance delete -g "{rgname}" --vault-name "{vaultname}" -n "{backup_instance_name}" --yes')
 
-@AllowLargeResponse()
-def call_scenario(test):
-    setup(test)
-    try:
-        configure_backup(test)
-        update_protection(test)
-        stop_resume_protection(test)
-        trigger_backup(test)
-        trigger_restore(test)
-        trigger_restore_as_files(test)
-        delete_backup(test)
-    except Exception as e:
-        raise e
-
 # Test class for Scenario
 class DataprotectionScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
         super(DataprotectionScenarioTest, self).__init__(*args, **kwargs)
 
+    @AllowLargeResponse()
     def test_dataprotection_oss(self):
-        call_scenario(self)
+        self.kwargs.update({
+            "vaultname": "oss-clitest-vault",
+            "rgname": "oss-clitest-rg",
+            "ossserver": "oss-clitest-server",
+            "ossdb": "postgres",
+            "ossdbid": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DBforPostgreSQL/servers/oss-clitest-server/databases/postgres",
+            "policyid": "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.DataProtection/backupVaults/oss-clitest-vault/backupPolicies/oss-clitest-policy",
+            "secretstoreuri": "https://oss-clitest-keyvault.vault.azure.net/secrets/oss-clitest-secret",
+            "keyvaultid":  "/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/oss-clitest-rg/providers/Microsoft.KeyVault/vaults/oss-clitest-keyvault"
+        })
+        try:
+            configure_backup(self)
+            update_protection(self)
+            stop_resume_protection(self)
+            trigger_backup(self)
+            trigger_restore(self)
+            trigger_restore_as_files(self)
+            delete_backup(self)
+        except Exception as e:
+            raise e

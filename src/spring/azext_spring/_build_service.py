@@ -7,7 +7,7 @@
 
 import json
 from azure.cli.core.util import sdk_no_wait
-from .vendored_sdks.appplatform.v2023_03_01_preview import models
+from .vendored_sdks.appplatform.v2023_05_01_preview import models
 from ._buildservices_factory import BuildService
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -89,7 +89,7 @@ def builder_delete(cmd, client, resource_group, service, name, no_wait=False):
     return sdk_no_wait(no_wait, client.build_service_builder.begin_delete, resource_group, service, DEFAULT_BUILD_SERVICE_NAME, name)
 
 
-def update_container_registry(cmd, client, resource_group, service, name=None, server=None, username=None, password=None):
+def create_or_update_container_registry(cmd, client, resource_group, service, name=None, server=None, username=None, password=None):
     container_registry_properties = models.ContainerRegistryProperties(
         credentials=models.ContainerRegistryBasicCredentials(
             server=server,
@@ -105,8 +105,17 @@ def container_registry_show(cmd, client, resource_group, service, name=None):
     return client.container_registries.get(resource_group, service, name)
 
 
+def container_registry_delete(cmd, client, resource_group, service, name, no_wait=False):
+    return sdk_no_wait(no_wait, client.container_registries.begin_delete, resource_group, service, name)
+
+
+def container_registry_list(cmd, client, resource_group, service):
+    return client.container_registries.list(resource_group, service)
+
+
 def create_or_update_build(cmd, client, resource_group, service, name=None, builder=None, build_env=None,
-                           build_cpu=None, build_memory=None, source_path=None, artifact_path=None, disable_validation=None):
+                           build_cpu=None, build_memory=None, source_path=None, artifact_path=None,
+                           apms=None, certificates=None, disable_validation=None):
     build_service = BuildService(cmd, client, resource_group, service)
     kwargs = {
         'build_name': name,
@@ -116,6 +125,8 @@ def create_or_update_build(cmd, client, resource_group, service, name=None, buil
         'builder': builder,
         'source_path': source_path,
         'artifact_path': artifact_path,
+        'apms': apms,
+        'certificates': certificates,
         'disable_validation': disable_validation
     }
     build_service.build_and_get_result(4, **kwargs)
@@ -139,6 +150,20 @@ def build_result_show(cmd, client, resource_group, service, build_name=None, nam
 
 def build_result_list(cmd, client, resource_group, service, build_name=None):
     return client.build_service.list_build_results(resource_group, service, DEFAULT_BUILD_SERVICE_NAME, build_name)
+
+
+def update_build_service(cmd, client, resource_group, service, registry_name=None, no_wait=False):
+    subscription = get_subscription_id(cmd.cli_ctx)
+    service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(subscription, resource_group, service)
+    build_service_properties = models.BuildServiceProperties(
+        container_registry='{}/containerregistries/{}'.format(service_resource_id, registry_name) if registry_name else None)
+    build_service_resource = models.BuildService(
+        properties=build_service_properties)
+    return sdk_no_wait(no_wait, client.build_service.begin_create_or_update, resource_group, service, DEFAULT_BUILD_SERVICE_NAME, build_service_resource)
+
+
+def build_service_show(cmd, client, resource_group, service):
+    return client.build_service.get_build_service(resource_group, service, DEFAULT_BUILD_SERVICE_NAME)
 
 
 def _update_builder(builder_file, builder_json):

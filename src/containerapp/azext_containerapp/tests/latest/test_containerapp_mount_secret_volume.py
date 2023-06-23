@@ -36,8 +36,7 @@ class ContainerAppMountSecretTest(ScenarioTest):
         self.cmd(f'az containerapp create -g {resource_group} --environment {env} -n {app} --secrets {secretRef1}={secretValue1} {secretRef2}={secretValue2} --secret-volume-mount "mnt/secrets"')        
         
         self.cmd('containerapp show -g {} -n {}'.format(resource_group, app), checks=[
-            JMESPathCheck('properties.template.volumes[0].secrets[0].secretRef', secretRef1), 
-            JMESPathCheck('properties.template.volumes[0].secrets[0].path', secretRef1),       
-            JMESPathCheck('properties.template.volumes[0].secrets[1].secretRef', secretRef2),
-            JMESPathCheck('properties.template.volumes[0].secrets[1].path', secretRef2),              
+            JMESPathCheck('properties.template.volumes[0].storageType', 'Secret'), 
+            # --secret-volume-mount mounts all secrets, not specific secrets, therefore no secrets should be returned.
+            JMESPathCheck('properties.template.volumes[0].secrets', None)
         ])

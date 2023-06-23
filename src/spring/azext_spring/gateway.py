@@ -11,7 +11,7 @@ from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 
 from .custom import LOG_RUNNING_PROMPT
-from .vendored_sdks.appplatform.v2023_03_01_preview import models
+from .vendored_sdks.appplatform.v2023_05_01_preview import models
 from ._utils import get_spring_sku
 
 logger = get_logger(__name__)
@@ -49,6 +49,7 @@ def gateway_update(cmd, client, resource_group, service,
                    properties=None,
                    secrets=None,
                    allowed_origins=None,
+                   allowed_origin_patterns=None,
                    allowed_methods=None,
                    allowed_headers=None,
                    max_age=None,
@@ -56,6 +57,8 @@ def gateway_update(cmd, client, resource_group, service,
                    exposed_headers=None,
                    enable_certificate_verification=None,
                    certificate_names=None,
+                   addon_configs_json=None,
+                   addon_configs_file=None,
                    no_wait=False
                    ):
     gateway = client.gateways.get(resource_group, service, DEFAULT_NAME)
@@ -77,7 +80,7 @@ def gateway_update(cmd, client, resource_group, service,
         gateway.properties.api_metadata_properties, api_title, api_description, api_doc_location, api_version, server_url)
 
     cors_properties = _update_cors(
-        gateway.properties.cors_properties, allowed_origins, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers)
+        gateway.properties.cors_properties, allowed_origins, allowed_origin_patterns, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers)
 
     client_auth = _update_client_auth(client, resource_group, service,
                                       gateway.properties.client_auth, enable_certificate_verification, certificate_names)
@@ -90,6 +93,8 @@ def gateway_update(cmd, client, resource_group, service,
     update_apm_types = apm_types if apm_types is not None else gateway.properties.apm_types
     environment_variables = _update_envs(gateway.properties.environment_variables, properties, secrets)
 
+    addon_configs = _update_addon_configs(gateway.properties.addon_configs, addon_configs_json, addon_configs_file)
+
     model_properties = models.GatewayProperties(
         public=assign_endpoint if assign_endpoint is not None else gateway.properties.public,
         https_only=https_only if https_only is not None else gateway.properties.https_only,
@@ -99,6 +104,7 @@ def gateway_update(cmd, client, resource_group, service,
         apm_types=update_apm_types,
         environment_variables=environment_variables,
         client_auth=client_auth,
+        addon_configs=addon_configs,
         resource_requests=resource_requests)
 
     sku = models.Sku(name=gateway.sku.name, tier=gateway.sku.tier,
@@ -124,6 +130,10 @@ def gateway_clear(cmd, client, resource_group, service, no_wait=False):
     logger.warning(LOG_RUNNING_PROMPT)
     return sdk_no_wait(no_wait, client.gateways.begin_create_or_update,
                        resource_group, service, DEFAULT_NAME, gateway_resource)
+
+
+def gateway_restart(cmd, client, service, resource_group, no_wait=False):
+    return client.gateways.begin_restart(resource_group, service, DEFAULT_NAME)
 
 
 def gateway_sync_cert(cmd, client, service, resource_group, no_wait=False):
@@ -209,12 +219,14 @@ def _update_api_metadata(existing, api_title, api_description, api_documentation
     return api_metadata
 
 
-def _update_cors(existing, allowed_origins, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers):
-    if allowed_origins is None and allowed_methods is None and allowed_headers is None and max_age is None and allow_credentials is None and exposed_headers is None:
+def _update_cors(existing, allowed_origins, allowed_origin_patterns, allowed_methods, allowed_headers, max_age, allow_credentials, exposed_headers):
+    if allowed_origins is None and allowed_origin_patterns is None and allowed_methods is None and allowed_headers is None and max_age is None and allow_credentials is None and exposed_headers is None:
         return existing
     cors = existing if existing is not None else models.GatewayCorsProperties()
     if allowed_origins is not None:
         cors.allowed_origins = allowed_origins.split(",") if allowed_origins else None
+    if allowed_origin_patterns is not None:
+        cors.allowed_origin_patterns = allowed_origin_patterns.split(",") if allowed_origin_patterns else None
     if allowed_methods is not None:
         cors.allowed_methods = allowed_methods.split(",") if allowed_methods else None
     if allowed_headers is not None:
@@ -259,6 +271,21 @@ def _update_client_auth(client, resource_group, service, existing, enable_certif
             else:
                 raise InvalidArgumentValueError(f"Certificate {name} not found in Azure Spring Apps.")
     return client_auth
+
+
+def _update_addon_configs(existing, addon_configs_json, addon_configs_file):
+    if addon_configs_file is None and addon_configs_json is None:
+        return existing
+
+    raw_json = {}
+    if addon_configs_file is not None:
+        with open(addon_configs_file, 'r') as json_file:
+            raw_json = json.load(json_file)
+
+    if addon_configs_json is not None:
+        raw_json = json.loads(addon_configs_json)
+
+    return raw_json
 
 
 def _validate_route_config_not_exist(client, resource_group, service, name):

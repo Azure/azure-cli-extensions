@@ -45,7 +45,7 @@ from ._clients import ContainerAppClient, ManagedEnvironmentClient, WorkloadProf
 from ._client_factory import handle_raw_exception, providers_client_factory, cf_resource_groups, log_analytics_client_factory, log_analytics_shared_key_client_factory
 from ._constants import (MAXIMUM_CONTAINER_APP_NAME_LENGTH, SHORT_POLLING_INTERVAL_SECS, LONG_POLLING_INTERVAL_SECS,
                          LOG_ANALYTICS_RP, CONTAINER_APPS_RP, CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, ACR_IMAGE_SUFFIX,
-                         LOGS_STRING, PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS)
+                         LOGS_STRING, PENDING_STATUS, SUCCEEDED_STATUS, UPDATING_STATUS, DEV_SERVICE_LIST)
 from ._models import (ContainerAppCustomDomainEnvelope as ContainerAppCustomDomainEnvelopeModel,
                       ManagedCertificateEnvelop as ManagedCertificateEnvelopModel,
                       ServiceConnector as ServiceConnectorModel)
@@ -67,14 +67,11 @@ def register_provider_if_needed(cmd, rp_name):
 
 
 def validate_container_app_name(name, appType):
-    if (appType == AppType.ContainerAppJob.name):
-        if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
-            raise ValidationError(f"Container App Job names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
-                                  f"Please shorten {name}")
-    if (appType == AppType.ContainerApp.name):
-        if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
-            raise ValidationError(f"Container App Job names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
-                                  f"Please shorten {name}")
+    name_regex = re.compile(r'^(?=.{1,32}$)[a-z]((?!.*--)[-a-z0-9]*[a-z0-9])?$', re.IGNORECASE)
+    match = name_regex.match(name)
+
+    if not match:
+        raise ValidationError(f"Invalid {appType} name {name}. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_CONTAINER_APP_NAME_LENGTH} characters.")
 
 
 def retry_until_success(operation, err_txt, retry_limit, *args, **kwargs):
@@ -452,8 +449,9 @@ def process_service(cmd, resource_list, service_name, arg_dict, subscription_id,
                 if not containerapp_def:
                     raise ResourceNotFoundError(f"The service '{service_name}' does not exist")
 
-                configuration = containerapp_def["properties"]["configuration"]["service"]
-                if configuration is None or configuration["type"] not in ["redis", "postgres"]:
+                service_type = safe_get(containerapp_def, "properties", "configuration", "service", "type")
+
+                if service_type is None or service_type not in DEV_SERVICE_LIST:
                     raise ResourceNotFoundError(f"The service '{service_name}' does not exist")
 
                 service_bindings_def_list.append({
@@ -636,6 +634,7 @@ def store_as_secret_and_return_secret_ref(secrets_list, registry_user, registry_
         return registry_pass
     else:
         # If user passed in registry password
+        registry_server = registry_server.replace(':', '-')
         if urlparse(registry_server).hostname is not None:
             registry_secret_name = "{server}-{user}".format(server=urlparse(registry_server).hostname.replace('.', ''), user=registry_user.lower())
         else:
@@ -869,13 +868,16 @@ def _generate_log_analytics_if_not_provided(cmd, logs_customer_id, logs_key, loc
     return logs_customer_id, logs_key
 
 
-def _get_existing_secrets(cmd, resource_group_name, name, containerapp_def):
+def _get_existing_secrets(cmd, resource_group_name, name, containerapp_def, appType=AppType.ContainerApp):
     if "secrets" not in containerapp_def["properties"]["configuration"]:
         containerapp_def["properties"]["configuration"]["secrets"] = []
     else:
         secrets = []
         try:
-            secrets = ContainerAppClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)
+            if(appType == AppType.ContainerApp):
+                secrets = ContainerAppClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)
+            if(appType == AppType.ContainerAppJob):
+                secrets = ContainerAppsJobClient.list_secrets(cmd=cmd, resource_group_name=resource_group_name, name=name)
         except Exception as e:  # pylint: disable=broad-except
             handle_raw_exception(e)
 

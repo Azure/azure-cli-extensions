@@ -383,55 +383,6 @@ deleted.
 --vault-name "PratikPrivatePreviewVault1" --deleted
 """
 
-helps['dataprotection recovery-point'] = """
-    type: group
-    short-summary: Manage recovery point with dataprotection
-"""
-
-helps['dataprotection recovery-point list'] = """
-    type: command
-    short-summary: "Returns a list of Recovery Points for a DataSource in a vault."
-    examples:
-      - name: List Recovery Points in a Vault
-        text: |-
-               az dataprotection recovery-point list --backup-instance-name "testInstance1" --resource-group \
-"000pikumar" --vault-name "PratikPrivatePreviewVault1"
-"""
-
-helps['dataprotection recovery-point show'] = """
-    type: command
-    short-summary: "Gets a Recovery Point using recoveryPointId for a Datasource."
-    examples:
-      - name: Get Recovery Point
-        text: |-
-               az dataprotection recovery-point show --backup-instance-name "testInstance1" --recovery-point-id \
-"7fb2cddd-c5b3-44f6-a0d9-db3c4f9d5f25" --resource-group "000pikumar" --vault-name "PratikPrivatePreviewVault1"
-"""
-
-helps['dataprotection job'] = """
-    type: group
-    short-summary: Manage job with dataprotection
-"""
-
-helps['dataprotection job list'] = """
-    type: command
-    short-summary: "Returns list of jobs belonging to a backup vault."
-    examples:
-      - name: Get Jobs
-        text: |-
-               az dataprotection job list --resource-group "BugBash1" --vault-name "BugBashVaultForCCYv11"
-"""
-
-helps['dataprotection job show'] = """
-    type: command
-    short-summary: "Gets a job with id in a backup vault."
-    examples:
-      - name: Get Job
-        text: |-
-               az dataprotection job show --job-id "3c60cb49-63e8-4b21-b9bd-26277b3fdfae" --resource-group "BugBash1" \
---vault-name "BugBashVaultForCCYv11"
-"""
-
 helps['dataprotection restorable-time-range'] = """
     type: group
     short-summary: Manage restorable time range with dataprotection

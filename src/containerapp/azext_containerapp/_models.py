@@ -66,7 +66,8 @@ ContainerResources = {
 
 VolumeMount = {
     "volumeName": None,
-    "mountPath": None
+    "mountPath": None,
+    "subPath": None
 }
 
 Container = {
@@ -89,6 +90,7 @@ Volume = {
     "storageType": "EmptyDir",  # AzureFile, EmptyDir or Secret
     "storageName": None,   # None for EmptyDir or Secret, otherwise name of storage resource
     "secrets": None,  # [SecretVolumeItem]
+    "mountOptions": None,
 }
 
 ScaleRuleAuth = {
@@ -217,6 +219,7 @@ JobConfiguration = {
     "replicaRetryLimit": None,
     "manualTriggerConfig": None,  # ManualTriggerConfig
     "scheduleTriggerConfig": None,  # ScheduleTriggerConfig
+    "eventTriggerConfig": None,  # EventTriggerConfig
     "registries": None,  # [RegistryCredentials]
     "dapr": None
 }
@@ -282,7 +285,8 @@ ContainerAppsJob = {
     "properties": {
         "environmentId": None,
         "configuration": None,  # JobConfiguration
-        "template": None  # JobTemplate
+        "template": None,  # JobTemplate
+        "workloadProfileName": None
     },
     "tags": None
 }

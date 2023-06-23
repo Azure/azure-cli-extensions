@@ -219,6 +219,7 @@ class Wait(AAZWaitCommand):
             )
             extension_parameters.protected_settings = AAZObjectType(
                 serialized_name="protectedSettings",
+                flags={"secret": True},
             )
             extension_parameters.publisher = AAZStrType()
             extension_parameters.settings = AAZObjectType()

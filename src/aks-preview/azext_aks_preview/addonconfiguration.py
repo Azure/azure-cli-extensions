@@ -61,12 +61,16 @@ def enable_addons(cmd,
                   rotation_poll_interval=None,
                   no_wait=False,
                   dns_zone_resource_id=None,
-                  enable_msi_auth_for_monitoring=False,
+                  enable_msi_auth_for_monitoring=True,
                   enable_syslog=False,
                   data_collection_settings=None):
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
-    msi_auth = True if instance.service_principal_profile.client_id == "msi" else False
+    msi_auth = False
+    if instance.service_principal_profile.client_id == "msi":
+        msi_auth = True
+    else:
+        enable_msi_auth_for_monitoring = False
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     instance = update_addons(cmd, instance, subscription_id, resource_group_name, name, addons, enable=True,
@@ -139,17 +143,7 @@ def enable_addons(cmd,
         # adding a wait here since we rely on the result for role assignment
         result = LongRunningOperation(cmd.cli_ctx)(
             client.begin_create_or_update(resource_group_name, name, instance))
-        cloud_name = cmd.cli_ctx.cloud.name
-        # mdm metrics supported only in Azure Public cloud so add the role assignment only in this cloud
-        if monitoring_addon_enabled and cloud_name.lower() == 'azurecloud':
-            from msrestazure.tools import resource_id
-            cluster_resource_id = resource_id(
-                subscription=subscription_id,
-                resource_group=resource_group_name,
-                namespace='Microsoft.ContainerService', type='managedClusters',
-                name=name
-            )
-            add_monitoring_role_assignment(result, cluster_resource_id, cmd)
+
         if ingress_appgw_addon_enabled:
             add_ingress_appgw_addon_role_assignment(result, cmd)
         if enable_virtual_node:
@@ -177,7 +171,7 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                   enable,
                   check_enabled=True,
                   workspace_resource_id=None,
-                  enable_msi_auth_for_monitoring=False,
+                  enable_msi_auth_for_monitoring=True,
                   subnet_name=None,
                   appgw_name=None,
                   appgw_subnet_prefix=None,
@@ -198,6 +192,9 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
     addon_profiles = instance.addon_profiles or {}
 
     os_type = 'Linux'
+
+    if instance.service_principal_profile.client_id != "msi":
+        enable_msi_auth_for_monitoring = False
 
     # load model
     ManagedClusterAddonProfile = cmd.get_models(
@@ -262,9 +259,15 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                 workspace_resource_id = sanitize_loganalytics_ws_resource_id(
                     workspace_resource_id)
 
+                cloud_name = cmd.cli_ctx.cloud.name
+                if enable_msi_auth_for_monitoring and (cloud_name.lower() == 'ussec' or cloud_name.lower() == 'usnat'):
+                    if instance.identity is not None and instance.identity.type is not None and instance.identity.type == "userassigned":
+                        logger.warning("--enable_msi_auth_for_monitoring is not supported in %s cloud and continuing monitoring enablement without this flag.", cloud_name)
+                        enable_msi_auth_for_monitoring = False
+
                 addon_profile.config = {
                     logAnalyticsConstName: workspace_resource_id}
-                addon_profile.config[CONST_MONITORING_USING_AAD_MSI_AUTH] = enable_msi_auth_for_monitoring
+                addon_profile.config[CONST_MONITORING_USING_AAD_MSI_AUTH] = "true" if enable_msi_auth_for_monitoring else "false"
             elif addon == (CONST_VIRTUAL_NODE_ADDON_NAME + os_type):
                 if addon_profile.enabled and check_enabled:
                     raise CLIError('The virtual-node addon is already enabled for this managed cluster.\n'
@@ -346,39 +349,6 @@ def update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
     instance.service_principal_profile = None
 
     return instance
-
-
-def add_monitoring_role_assignment(result, cluster_resource_id, cmd):
-    service_principal_msi_id = None
-    # Check if service principal exists, if it does, assign permissions to service principal
-    # Else, provide permissions to MSI
-    if (
-            hasattr(result, 'service_principal_profile') and
-            hasattr(result.service_principal_profile, 'client_id') and
-            result.service_principal_profile.client_id != 'msi'
-    ):
-        logger.info('valid service principal exists, using it')
-        service_principal_msi_id = result.service_principal_profile.client_id
-        is_service_principal = True
-    elif (
-            (hasattr(result, 'addon_profiles')) and
-            (CONST_MONITORING_ADDON_NAME in result.addon_profiles) and
-            (hasattr(result.addon_profiles[CONST_MONITORING_ADDON_NAME], 'identity')) and
-            (hasattr(
-                result.addon_profiles[CONST_MONITORING_ADDON_NAME].identity, 'object_id'))
-    ):
-        logger.info('omsagent MSI exists, using it')
-        service_principal_msi_id = result.addon_profiles[CONST_MONITORING_ADDON_NAME].identity.object_id
-        is_service_principal = False
-
-    if service_principal_msi_id is not None:
-        if not add_role_assignment(cmd, 'Monitoring Metrics Publisher',
-                                   service_principal_msi_id, is_service_principal, scope=cluster_resource_id):
-            logger.warning('Could not create a role assignment for Monitoring addon. '
-                           'Are you an Owner on this subscription?')
-    else:
-        logger.warning('Could not find service principal or user assigned MSI for role'
-                       'assignment')
 
 
 def add_ingress_appgw_addon_role_assignment(result, cmd):

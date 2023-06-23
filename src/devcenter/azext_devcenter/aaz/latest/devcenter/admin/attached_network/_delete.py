@@ -13,20 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin attached-network delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete an attached network connection
+    """Delete an attached network connection.
 
     :example: Delete
-        az devcenter admin attached-network delete --attached-network-connection-name "{attachedNetworkConnectionName}" --dev-center-name "Contoso" --resource-group "rg1"
+        az devcenter admin attached-network delete --attached-network-connection-name "network-uswest3" --dev-center-name "Contoso" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/attachednetworks/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/attachednetworks/{}", "2023-04-01"],
         ]
     }
 
@@ -55,7 +54,7 @@ class Delete(AAZCommand):
         )
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
-            help="The name of the dev center. Use az configure -d dev-center=<dev_center_name> to configure a default.",
+            help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
             required=True,
             id_part="name",
         )
@@ -155,7 +154,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }

@@ -434,6 +434,39 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             self.cmd.cli_ctx, registry_name
         )
 
+    def _docker_push_to_container_registry(self, image_name, forced_acr_login=False):
+        from azure.cli.command_modules.acr.custom import acr_login
+        from azure.cli.core.profiles import ResourceType
+
+        command = ['docker', 'push', image_name]
+        logger.debug(f"Calling '{' '.join(command)}'")
+        logger.warning(f"Built image {image_name} locally using buildpacks, attempting to push to registry...")
+        try:
+            with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
+                _, stderr = process.communicate()
+                if process.returncode != 0:
+                    docker_push_error = stderr.decode('utf-8')
+                    if not forced_acr_login and ".azurecr.io/" in image_name and "unauthorized: authentication required" in docker_push_error:
+                        # Couldn't push to ACR because the user isn't authenticated. Let's try to login to ACR and retrigger the docker push
+                        logger.warning(f"The current user isn't authenticated to the {self.acr.name} ACR instance. Triggering an ACR login and retrying to push the image...")
+                        # Logic to login to ACR
+                        task_command_kwargs = {"resource_type": ResourceType.MGMT_CONTAINERREGISTRY, 'operation_group': 'webhooks'}
+                        old_command_kwargs = {}
+                        for key in task_command_kwargs:  # pylint: disable=consider-using-dict-items
+                            old_command_kwargs[key] = self.cmd.command_kwargs.get(key)
+                            self.cmd.command_kwargs[key] = task_command_kwargs[key]
+                        if self.acr and self.acr.name is not None:
+                            acr_login(self.cmd, self.acr.name)
+                        for k, v in old_command_kwargs.items():
+                            self.cmd.command_kwargs[k] = v
+
+                        self._docker_push_to_container_registry(image_name, True)
+                    else:
+                        raise CLIError(f"Error thrown when running 'docker push': {docker_push_error}")
+                logger.debug(f"Successfully pushed image {image_name} to the container registry.")
+        except Exception as ex:
+            raise CLIError(f"Unable to run 'docker push' command to push image to the container registry: {ex}") from ex
+
     def build_container_from_source_with_buildpack(self, image_name, source):  # pylint: disable=too-many-statements
         # Ensure that Docker is running
         if not is_docker_running():
@@ -470,6 +503,10 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             logger.debug(f"Determined the run image to use as {buildpack_run_image}.")
             command.extend(['--run-image', buildpack_run_image])
 
+        # If the user specifies a target port, pass it to the buildpack
+        if self.target_port:
+            command.extend(['--env', f"PORT={self.target_port}"])
+
         logger.debug(f"Calling '{' '.join(command)}'")
         try:
             is_non_supported_platform = False
@@ -500,18 +537,8 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         except Exception as ex:
             raise CLIError(f"Unable to run 'pack build' command to produce runnable application image: {ex}") from ex
 
-        # Run 'docker push' to push the image to the ACR
-        command = ['docker', 'push', image_name]
-        logger.debug(f"Calling '{' '.join(command)}'")
-        logger.warning(f"Built image {image_name} locally using buildpacks, attempting to push to registry...")
-        try:
-            with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as process:
-                _, stderr = process.communicate()
-                if process.returncode != 0:
-                    raise CLIError(f"Error thrown when running 'docker push': {stderr.decode('utf-8')}")
-                logger.debug(f"Successfully pushed image {image_name} to ACR.")
-        except Exception as ex:
-            raise CLIError(f"Unable to run 'docker push' command to push image to ACR: {ex}") from ex
+        # Run 'docker push' to push the image to the container registry
+        self._docker_push_to_container_registry(image_name, False)
 
     def build_container_from_source_with_acr_task(self, image_name, source):
         from azure.cli.command_modules.acr.task import acr_task_create, acr_task_run
@@ -950,18 +977,6 @@ def _get_registry_details(cmd, app: "ContainerApp", source):
     app.acr = AzureContainerRegistry(
         registry_name, ResourceGroup(cmd, registry_rg, None, None)
     )
-
-
-def _validate_containerapp_name(name):
-    is_valid = True
-    is_valid = is_valid and name.lower() == name
-    is_valid = is_valid and len(name) <= MAXIMUM_CONTAINER_APP_NAME_LENGTH
-    is_valid = is_valid and '--' not in name
-    name = name.replace('-', '')
-    is_valid = is_valid and name.isalnum()
-    is_valid = is_valid and name[0].isalpha()
-    if not is_valid:
-        raise ValidationError(f"Invalid Container App name {name}. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_CONTAINER_APP_NAME_LENGTH} characters.")
 
 
 # attempt to populate defaults for managed env, RG, ACR, etc

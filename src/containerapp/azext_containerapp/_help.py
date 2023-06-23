@@ -397,6 +397,11 @@ helps['containerapp service postgres'] = """
     short-summary: Commands to manage the postgres service for the Container Apps environment.
 """
 
+helps['containerapp service kafka'] = """
+    type: group
+    short-summary: Commands to manage the kafka service for the Container Apps environment.
+"""
+
 helps['containerapp service redis create'] = """
     type: command
     short-summary: Command to create the redis service.
@@ -407,6 +412,11 @@ helps['containerapp service postgres create'] = """
     short-summary: Command to create the postgres service.
 """
 
+helps['containerapp service kafka create'] = """
+    type: command
+    short-summary: Command to create the kafka service.
+"""
+
 helps['containerapp service redis delete'] = """
     type: command
     short-summary: Command to delete the redis service.
@@ -415,6 +425,11 @@ helps['containerapp service redis delete'] = """
 helps['containerapp service postgres delete'] = """
     type: command
     short-summary: Command to delete the postgres service.
+"""
+
+helps['containerapp service kafka delete'] = """
+    type: command
+    short-summary: Command to delete the kafka service.
 """
 
 helps['containerapp env update'] = """
@@ -719,6 +734,51 @@ helps['containerapp job stop'] = """
       text: az containerapp job stop -n MyContainerAppJob -g MyResourceGroup --execution-name-list MyContainerAppJob-66v9xh0,MyContainerAppJob-66v9xh1
 """
 
+# Container App Job Secret Commands
+helps['containerapp job secret'] = """
+    type: group
+    short-summary: Commands to manage secrets.
+"""
+
+helps['containerapp job secret show'] = """
+    type: command
+    short-summary: Show details of a secret.
+    examples:
+    - name: Show the details of a secret.
+      text: |
+          az containerapp job secret show -n MyContainerappjob -g MyResourceGroup --secret-name MySecret
+"""
+
+helps['containerapp job secret list'] = """
+    type: command
+    short-summary: List the secrets of a container app job.
+    examples:
+    - name: List the secrets of a container app job.
+      text: |
+          az containerapp job secret list -n MyContainerappjob -g MyResourceGroup
+"""
+
+helps['containerapp job secret remove'] = """
+    type: command
+    short-summary: Remove secrets from a container app job.
+    examples:
+    - name: Remove secrets from a container app job.
+      text: |
+          az containerapp job secret remove -n MyContainerappjob -g MyResourceGroup --secret-names MySecret MySecret2
+"""
+
+helps['containerapp job secret set'] = """
+    type: command
+    short-summary: Create/update secrets.
+    examples:
+    - name: Add secrets to a container app job.
+      text: |
+          az containerapp job secret set -n MyContainerappjob -g MyResourceGroup --secrets MySecretName1=MySecretValue1 MySecretName2=keyvaultref:https://example.vault.azure.net/secrets/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
+    - name: Update a secret.
+      text: |
+          az containerapp job secret set -n MyContainerappjob -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue MyExistingSecretName2=keyvaultref:https://example.vault.azure.net/secrets/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
+"""
+
 # Container App Job execution commands
 helps['containerapp job execution'] = """
     type: group
@@ -860,6 +920,60 @@ helps['containerapp identity show'] = """
     - name: Show managed identities.
       text: |
           az containerapp identity show -n myContainerapp -g MyResourceGroup
+"""
+
+helps['containerapp job identity'] = """
+    type: group
+    short-summary: Commands to manage managed identities for container app job.
+"""
+
+helps['containerapp job identity assign'] = """
+    type: command
+    short-summary: Assign managed identity to a container app job.
+    long-summary: Managed identities can be user assigned or system assigned.
+    examples:
+    - name: Assign system identity.
+      text: |
+          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --system-assigned
+    - name: Assign user identity.
+      text: |
+          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --user-assigned myUserIdentityName
+    - name: Assign user identity (from a different resource group than the containerapp job).
+      text: |
+          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --user-assigned myUserIdentityResourceId
+    - name: Assign system and user identity.
+      text: |
+          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --system-assigned --user-assigned myUserIdentityResourceId
+"""
+
+helps['containerapp job identity remove'] = """
+    type: command
+    short-summary: Remove a managed identity from a container app job.
+    examples:
+    - name: Remove system identity.
+      text: |
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --system-assigned
+    - name: Remove user identity.
+      text: |
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --user-assigned myUserIdentityName
+    - name: Remove system and user identity (from a different resource group than the containerapp job).
+      text: |
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --system-assigned --user-assigned myUserIdentityResourceId
+    - name: Remove all user identities.
+      text: |
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --user-assigned
+    - name: Remove system identity and all user identities.
+      text: |
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --system-assigned --user-assigned
+"""
+
+helps['containerapp job identity show'] = """
+    type: command
+    short-summary: Show managed identities of a container app job.
+    examples:
+    - name: Show managed identities.
+      text: |
+          az containerapp job identity show -n myContainerappjob -g MyResourceGroup
 """
 
 # Ingress Commands

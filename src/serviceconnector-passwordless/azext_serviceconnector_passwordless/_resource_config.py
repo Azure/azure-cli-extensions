@@ -6,6 +6,7 @@
 from azure.cli.command_modules.serviceconnector._resource_config import (
     RESOURCE,
     AUTH_TYPE,
+    SUPPORTED_AUTH_TYPE
 )
 from azure.cli.command_modules.serviceconnector.action import (
     AddSecretAuthInfo,
@@ -18,6 +19,13 @@ from .action import (
     AddUserAccountAuthInfo,
 )
 
+PASSWORDLESS_SOURCE_RESOURCES = [
+    RESOURCE.WebApp,
+    RESOURCE.ContainerApp,
+    RESOURCE.SpringCloud,
+    RESOURCE.SpringCloudDeprecated
+]
+
 PASSWORDLESS_TARGET_RESOURCES = [
     RESOURCE.Postgres,
     RESOURCE.PostgresFlexible,
@@ -26,35 +34,20 @@ PASSWORDLESS_TARGET_RESOURCES = [
 ]
 
 # pylint: disable=line-too-long
-SUPPORTED_AUTH_TYPE = {
-    RESOURCE.Local: {
-        RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
-        RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
-        RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
-        RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
-    },
-    RESOURCE.WebApp: {
-        RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
-        RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
-        RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
-        RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
-    },
-    RESOURCE.SpringCloud: {
-        RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
-        RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
-        RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
-        RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
-    },
-    RESOURCE.KubernetesCluster: {
-        RESOURCE.Postgres: [AUTH_TYPE.Secret],
-        RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret],
-        RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret],
-        RESOURCE.Sql: [AUTH_TYPE.Secret],
-    },
+SUPPORTED_AUTH_TYPE[RESOURCE.Local] = {
+    RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
+    RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
+    RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
+    RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
 }
-SUPPORTED_AUTH_TYPE[RESOURCE.ContainerApp] = SUPPORTED_AUTH_TYPE[RESOURCE.SpringCloud]
 
-SUPPORTED_AUTH_TYPE[RESOURCE.SpringCloudDeprecated] = SUPPORTED_AUTH_TYPE[RESOURCE.SpringCloud]
+for resourceType in PASSWORDLESS_SOURCE_RESOURCES:
+    SUPPORTED_AUTH_TYPE[resourceType] = {
+        RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
+        RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
+        RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
+        RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
+    }
 
 TARGET_RESOURCES_PARAMS = {
     RESOURCE.Postgres: {

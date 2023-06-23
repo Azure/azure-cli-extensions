@@ -7,24 +7,31 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-from .data_plane_endpoint_helper import get_project_data
+from .utils import get_project_data
+from ._validators import validate_endpoint
 
 # Data plane
 
 
-def cf_devcenter_dataplane(cli_ctx, dev_center, project_name=None):
+def cf_devcenter_dataplane(cli_ctx, endpoint=None, dev_center=None, project_name=None):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
     from azext_devcenter.vendored_sdks.devcenter_dataplane import (
         DevCenterDataplaneClient,
     )
 
-    project = get_project_data(cli_ctx, dev_center, project_name)
+    validate_endpoint(endpoint, dev_center)
 
-    # We need to set the project name even if we don't need this information
-    # since initializing DevCenterDataplaneClient requires this param
+    if endpoint is None and dev_center is not None:
+        project = get_project_data(cli_ctx, dev_center, project_name)
+
+        # We need to set the project name even if we don't need this information
+        # since initializing DevCenterDataplaneClient requires this param
+        if project_name is None:
+            project_name = project["name"]
+        endpoint = project["devCenterUri"]
+
     if project_name is None:
-        project_name = project["name"]
-    endpoint = project["devCenterUri"]
+        project_name = "placeholder"  # see comment above
 
     cli_ctx.cloud.endpoints.active_directory_resource_id = "https://devcenter.azure.com"
 
@@ -58,20 +65,16 @@ def cf_environment_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).environments
 
 
-def cf_catalog_item_dp(cli_ctx, dev_center, *_):
-    return cf_devcenter_dataplane(cli_ctx, dev_center).catalog_items
+def cf_catalog_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).catalogs
 
 
-def cf_catalog_item_version_dp(cli_ctx, dev_center, *_):
-    return cf_devcenter_dataplane(cli_ctx, dev_center).catalog_item_versions
+def cf_environment_definition_dp(cli_ctx, dev_center, *_):
+    return cf_devcenter_dataplane(cli_ctx, dev_center).environment_definitions
 
 
 def cf_environment_type_dp(cli_ctx, dev_center, *_):
     return cf_devcenter_dataplane(cli_ctx, dev_center).environment_type
-
-
-def cf_notification_setting_dp(cli_ctx, dev_center, *_):
-    return cf_devcenter_dataplane(cli_ctx, dev_center).notification_setting
 
 
 # Control plane

@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.4.2
+++++++++++++++++++
+* microsoft.azuremonitor.containers: ContainerInsights Extension Managed Identity Auth Enabled by default
+
 1.4.1
 ++++++++++++++++++
 * microsoft.azureml.kubernetes: Fix sslSecret parameter in update operation

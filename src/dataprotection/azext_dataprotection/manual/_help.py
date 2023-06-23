@@ -61,6 +61,8 @@ helps['dataprotection backup-instance update-msi-permissions'] = """
     examples:
       - name: Assign the required permissions needed to successfully enable backup for the datasource.
         text: az dataprotection backup-instance update-msi-permissions --backup-instance backup_inst.json --resource-group samarth_resource_group --vault-name samarthbackupvault --datasource-type AzureDisk --operation Backup --permissions-scope ResourceGroup
+      - name: Assign the required permissions needed to successfully enable restore for the datasource.
+        text: az dataprotection backup-instance update-msi-permissions --datasource-type AzureKubernetesService --operation Restore --permissions-scope Resource --resource-group sampleRG --vault-name samplevault --restore-request-object aksrestore.json --snapshot-resource-group-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/sampleRG
 """
 
 helps['dataprotection backup-policy get-default-policy-template'] = """
@@ -247,4 +249,20 @@ helps['dataprotection backup-instance restore trigger'] = """
     examples:
       - name: Trigger restore
         text: az dataprotection backup-instance restore trigger -g sarath-rg --vault-name sarath-vault --backup-instance-name {backup_instance_name} --restore-request-object restore_request.json
+"""
+
+helps['dataprotection backup-instance initialize-backupconfig'] = """
+    type: command
+    short-summary: Initialize JSON request body for initializing and configuring backup of an AzureKubernetesService resource.
+    examples:
+      - name: Initialize backup configuration
+        text: az dataprotection backup-instance initialize-backupconfig --datasource-type AzureKubernetesService --label-selectors key=val foo=bar --excluded-namespaces excludeNS1 excludeNS2
+"""
+
+helps['dataprotection backup-instance initialize-restoreconfig'] = """
+    type: command
+    short-summary: Initialize JSON request body for initializing and configuring restore of an AzureKubernetesService resource.
+    examples:
+      - name: Initialize restore configuration
+        text: az dataprotection backup-instance initialize-restoreconfig --datasource-type AzureKubernetesService
 """
