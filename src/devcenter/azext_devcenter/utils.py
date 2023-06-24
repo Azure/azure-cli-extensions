@@ -24,6 +24,7 @@ def get_project_arg(cli_ctx, dev_center_name, project_name=None):
     | extend devCenterArr = split(properties.devCenterId, '/')
     | extend devCenterName = devCenterArr[array_length(devCenterArr) -1]
     | where devCenterName =~ '{dev_center_name}'
+    | take 1
     | extend devCenterUri = properties.devCenterUri
     | project name,devCenterUri """
     options ={ "allowPartialScopes": True } # maximum of 5000 subs for cross tenant query
