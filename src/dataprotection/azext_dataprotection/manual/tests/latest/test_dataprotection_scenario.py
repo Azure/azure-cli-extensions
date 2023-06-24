@@ -11,8 +11,8 @@ def setup(test):
     test.kwargs.update({
         "vaultName": "cli-test-new-vault1",
         "rg": "sarath-rg",
-        "diskname": "cli-test-disk-new1",
-        "restorediskname": "cli-test-disk-new1-restored",
+        "diskname": "cli-test-disk-new",
+        "restorediskname": "cli-test-disk-new-restored",
         "policyname": "diskpolicy",
         "storagepolicyname": "storagepolicy",
         "resourceGuardName": "cli-test-resource-guard",
@@ -43,7 +43,7 @@ def setup(test):
 
     test.cmd('az dataprotection backup-vault update -g "{rg}" --vault-name "{vaultName}" --azure-monitor-alerts-for-job-failures disabled',checks=[
         test.check('properties.monitoringSettings.azureMonitorAlertSettings.alertsForAllJobFailures', 'Disabled')
-    ])         
+    ])
 
     disk_response = test.cmd('az disk create -g "{rg}" -n "{diskname}" --size-gb 4').get_output_in_json()
     storage_account_response = test.cmd('az storage account create -g "{rg}" -n "{storageaccountname}" -l centraluseuap').get_output_in_json()
@@ -140,12 +140,11 @@ def initialize_backup_instance(test):
 
 def assign_permissions_and_validate(test):
     # uncomment when running live, run only in record mode - grant permission
-
     # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDisk --operation Backup --permissions-scope Resource -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}" --yes').get_output_in_json()
     # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureBlob --operation Backup --permissions-scope Resource -g "{rg}" --vault-name "{vaultName}" --backup-instance "{storage_backup_instance_json}" --yes').get_output_in_json()
     # test.cmd('az dataprotection backup-instance update-msi-permissions --datasource-type AzureDatabaseForPostgreSQL --permissions-scope Resource -g "{serverrgname}" --vault-name "{servervaultname}" --operation Backup --backup-instance "{server_backup_instance_json}" --keyvault-id "{keyvaultid}" --yes')
     # test.cmd('az role assignment create --assignee "{principalId}" --role "Disk Restore Operator" --scope "{rgid}"')
-    time.sleep(120) # Wait for permissions to propagate
+    # time.sleep(120) # Wait for permissions to propagate
 
     test.cmd('az dataprotection backup-instance validate-for-backup -g "{rg}" --vault-name "{vaultName}" --backup-instance "{backup_instance_json}"', checks=[
         test.check('objectType', 'OperationJobExtendedInfo')
@@ -158,7 +157,6 @@ def assign_permissions_and_validate(test):
     ])
 
     # uncomment when running live, run only in record mode - reset firewall rule
-
     # test.cmd('az postgres server firewall-rule delete -g "{serverrgname}" -s "{ossserver}" -n AllowAllWindowsAzureIps --yes')
 
 
@@ -240,7 +238,7 @@ def trigger_disk_restore(test):
         job_status = job_response["properties"]["status"]
         if job_status not in ["Completed", "InProgress"]:
             raise Exception("Undefined job status received")
-
+        
 
 def delete_backup(test):
     test.cmd('az dataprotection backup-instance delete -g "{rg}" --vault-name "{vaultName}" -n "{backup_instance_name}" --yes')
@@ -254,7 +252,9 @@ def cleanup(test):
              ' -g "{rg}" --vault-name "{vaultName}" --yes')
     test.cmd('az disk delete --name "{diskname}" --resource-group "{rg}" --yes')
     test.cmd('az disk delete --name "{restorediskname}" --resource-group "{rg}" --yes')
-    test.cmd('az storage account delete --name "{storageaccountname}" --resource-group "{rg}" --yes')
+
+    # There is a scope lock on the storage account, specifying donotdelete.
+    # test.cmd('az storage account delete --name "{storageaccountname}" --resource-group "{rg}" --yes')
 
 
 @AllowLargeResponse()

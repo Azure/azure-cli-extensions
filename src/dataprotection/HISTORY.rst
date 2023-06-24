@@ -2,6 +2,25 @@
 
 Release History
 ===============
+0.8.2
++++++
+* No user-facing updates - quickfix making the `aaz_operations` folder a module.
+
+0.8.1
++++++
+* `az dataprotection recovery-point`: Migrated to AAZ-dev-tools
+* `az dataprotection job`: Migrated to AAZ-dev-tools
+
+0.8.0
++++++
+* Add support for new datasource type: AzureKubernetesService (for all relevant operations in `backup-instance`` and `backup-policy`)
+* `az dataprotection backup-instance initialize-backupconfig`: New command to create a backup configuration required for AzureKubernetesService backup.
+* `az dataprotection backup-instance initialize-restoreconfig`: New command to create a restore configuration required for AzureKubernetesService restore.
+* `az dataprotection backup-instance update-msi-permissions`: Added support for "Restore" operation.
+* `az dataprotection backup-instance initialize`: Add parameters `--friendly-name` and `--backup-configuration` for AzureKubernetesService support.
+* `az dataprotection backup-instance initialize-for-data-recovery`: Add parameter `--backup-instance-id`, adding support for Original Location Restore.
+* `az dataprotection backup-instance initialize-for-item-recovery`: Add parameter `--target-resource-id`, adding support for Alternate Location Restore.
+
 0.7.0
 ++++++
 * `az dataprotection backup-vault create`: Add support for optional `--immutability-state`, `--soft-delete-state`, `--soft-delete-retention` parameters, corresponding to new Immutable Vault and Enhanced Soft Delete features

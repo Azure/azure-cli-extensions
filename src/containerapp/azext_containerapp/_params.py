@@ -74,7 +74,7 @@ def load_arguments(self, _):
 
     # Env vars
     with self.argument_context('containerapp', arg_group='Environment variables') as c:
-        c.argument('set_env_vars', nargs='*', help="Add or update environment variable(s) in container. Existing environmentenvironment variables are not modified. Space-separated values in 'key=value' format. If stored as a secret, value must start with 'secretref:' followed by the secret name.")
+        c.argument('set_env_vars', nargs='*', help="Add or update environment variable(s) in container. Existing environment variables are not modified. Space-separated values in 'key=value' format. If stored as a secret, value must start with 'secretref:' followed by the secret name.")
         c.argument('remove_env_vars', nargs='*', help="Remove environment variable(s) from container. Space-separated environment variable names.")
         c.argument('replace_env_vars', nargs='*', help="Replace environment variable(s) in container. Other existing environment variables are removed. Space-separated values in 'key=value' format. If stored as a secret, value must start with 'secretref:' followed by the secret name.")
         c.argument('remove_all_env_vars', help="Remove all environment variable(s) from container..")
@@ -337,7 +337,7 @@ def load_arguments(self, _):
         c.argument('name', configured_default='name', id_part=None)
         c.argument('managed_env', configured_default='managed_env')
         c.argument('registry_server', configured_default='registry_server')
-        c.argument('source', help='Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using Oryx. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.')
+        c.argument('source', help='Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.')
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('browse', help='Open the app in a web browser after creation and deployment, if possible.')
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
@@ -440,3 +440,57 @@ def load_arguments(self, _):
         c.argument('workload_profile_type', help="The type of workload profile to update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
         c.argument('min_nodes', help="The minimum node count for the workload profile")
         c.argument('max_nodes', help="The maximum node count for the workload profile")
+
+    # Patch
+    with self.argument_context('containerapp patch') as c:
+        c.argument('resource_group_name', arg_type=resource_group_name_type)
+        c.argument('managed_env', options_list=['--environment', '-e'], help='Name or resource id of the Container App environment.')
+        c.argument('show_all', action='store_true', help='Show all patchable and unpatchable container apps')
+
+    # Container App job
+    with self.argument_context('containerapp job') as c:
+        c.argument('name', name_type, metavar='NAME', id_part='name', help=f"The name of the Container Apps Job. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_CONTAINER_APP_NAME_LENGTH} characters.")
+        c.argument('cron_expression', help='Cron expression. Only supported for trigger type "Schedule"')
+        c.argument('image', help="Container image, e.g. publisher/image-name:tag.")
+        c.argument('replica_completion_count', type=int, options_list=['--replica-completion-count', '--rcc'], help='Number of replicas that need to complete successfully for execution to succeed.')
+        c.argument('replica_retry_limit', type=int, help='Maximum number of retries before the replica fails.')
+        c.argument('replica_timeout', type=int, help='Maximum number of seconds a replica can execute.')
+        c.argument('parallelism', type=int, help='Maximum number of replicas to run per execution.')
+        c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile')
+        c.argument('min_executions', type=int, help="Minimum number of job executions that are created for a trigger, default 0.")
+        c.argument('max_executions', type=int, help="Maximum number of job executions that are created for a trigger, default 100.")
+        c.argument('polling_interval', type=int, help="Interval to check each event source in seconds. Defaults to 30s.", default=30)
+
+    with self.argument_context('containerapp job create') as c:
+        c.argument('system_assigned', options_list=['--mi-system-assigned', c.deprecate(target='--system-assigned', redirect='--mi-system-assigned', hide=True)], help='Boolean indicating whether to assign system-assigned identity.', action='store_true')
+        c.argument('trigger_type', help='Trigger type. Schedule | Event | Manual')
+        c.argument('user_assigned', options_list=['--mi-user-assigned', c.deprecate(target='--user-assigned', redirect='--mi-user-assigned', hide=True)], nargs='+', help='Space-separated user identities to be assigned.')
+
+    with self.argument_context('containerapp job', arg_group='Scale') as c:
+        c.argument('min_executions', type=int, help="Minimum number of job executions to run per polling interval.")
+        c.argument('max_executions', type=int, help="Maximum number of job executions to run per polling interval.")
+        c.argument('polling_interval', type=int, help="Interval to check each event source in seconds. Defaults to 30s.")
+        c.argument('scale_rule_type', options_list=['--scale-rule-type', '--srt'], help="The type of the scale rule.")
+
+    with self.argument_context('containerapp job stop') as c:
+        c.argument('job_execution_name', help='name of the specific job execution which needs to be stopped.')
+        c.argument('execution_name_list', help='comma separated list of job execution names.')
+
+    with self.argument_context('containerapp job execution') as c:
+        c.argument('name', id_part=None)
+        c.argument('job_execution_name', help='name of the specific job execution.')
+
+    with self.argument_context('containerapp job secret') as c:
+        c.argument('secrets', nargs='+', options_list=['--secrets', '-s'], help="A list of secret(s) for the container app job. Space-separated values in 'key=value' or 'key=keyvaultref:keyvaulturl,identityref:identity' format (where 'key' cannot be longer than 20 characters).")
+        c.argument('name', id_part=None, help="The name of the container app job for which the secret needs to be retrieved.")
+        c.argument('secret_name', id_part=None, help="The name of the secret to show.")
+        c.argument('secret_names', id_part=None, nargs='+', help="A list of secret(s) for the container app job. Space-separated secret values names.")
+        c.argument('show_values', action='store_true', help='Show the secret values.')
+        c.ignore('disable_max_length')
+
+    with self.argument_context('containerapp job identity') as c:
+        c.argument('user_assigned', nargs='+', help="Space-separated user identities.")
+        c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.", action='store_true')
+
+    with self.argument_context('containerapp job identity remove') as c:
+        c.argument('user_assigned', nargs='*', help="Space-separated user identities. If no user identities are specified, all user identities will be removed.")

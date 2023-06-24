@@ -1390,6 +1390,54 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_guardrails(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} ' \
+                     '--guardrails-level Warning --guardrails-version "v1.0.0" ' \
+                     '--enable-addons azure-policy --ssh-key-value={ssh_key_value} ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/GuardrailsPreview'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('guardrailsProfile.level', 'Warning'),
+            self.check('guardrailsProfile.version','v1.0.0')
+        ])
+    
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_update_with_guardrails(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys()
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --ssh-key-value={ssh_key_value} ' \
+                     '--enable-addons azure-policy '
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
+    
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
+                     '--guardrails-level Warning --guardrails-version "v1.0.0" ' \
+                     '--guardrails-excluded-ns test-ns1 ' \
+                     '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/GuardrailsPreview'
+        
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('guardrailsProfile.level', 'Warning'),
+            self.check('guardrailsProfile.version','v1.0.0'),
+            self.check('guardrailsProfile.excludedNamespaces[0]','test-ns1')
+        ])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_managed_disk(self, resource_group, resource_group_location):
         aks_name = self.create_random_name('cliakstest', 16)
         self.kwargs.update({
@@ -2756,7 +2804,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = f'aks create --resource-group={resource_group} --name={aks_name} --location={resource_group_location} ' \
                      '--enable-managed-identity ' \
                      '--enable-addons monitoring ' \
-                     '--enable-msi-auth-for-monitoring ' \
                      '--node-count 1 ' \
                      '--ssh-key-value={ssh_key_value} '
         create_cmd += f'--assign-identity {identity_id} ' if user_assigned_identity else ''
@@ -2765,7 +2812,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         response = self.cmd(create_cmd, checks=[
             self.check('addonProfiles.omsagent.enabled', True),
-            self.check('addonProfiles.omsagent.config.useAADAuth', 'True')
+            self.check('addonProfiles.omsagent.config.useAADAuth', 'true')
         ]).get_output_in_json()
 
         cluster_resource_id = response["id"]
@@ -2895,14 +2942,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             enable_monitoring_cmd = 'aks addon enable -a monitoring '
         else:
             enable_monitoring_cmd = 'aks enable-addons -a monitoring '
-        enable_monitoring_cmd += f'--resource-group={resource_group} --name={aks_name} ' \
-                                '--enable-msi-auth-for-monitoring '
+        enable_monitoring_cmd += f'--resource-group={resource_group} --name={aks_name} ' 
         if syslog_enabled:
             enable_monitoring_cmd += f'--enable-syslog '
 
         response = self.cmd(enable_monitoring_cmd, checks=[
             self.check('addonProfiles.omsagent.enabled', True),
-            self.check('addonProfiles.omsagent.config.useAADAuth', 'True')
+            self.check('addonProfiles.omsagent.config.useAADAuth', 'true')
         ]).get_output_in_json()
 
         cluster_resource_id = response["id"]
@@ -2963,8 +3009,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         response = self.cmd(create_cmd, checks=[
             self.check('addonProfiles.omsagent.enabled', True),
             self.exists(
-                'addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID'),
-            self.check('addonProfiles.omsagent.config.useAADAuth', 'False')
+                'addonProfiles.omsagent.config.logAnalyticsWorkspaceResourceID')
         ]).get_output_in_json()
 
         # make sure a DCR was not created

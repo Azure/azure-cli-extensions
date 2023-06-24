@@ -1,6 +1,6 @@
 interactions:
 - request:
-    body: '{}'
+    body: '{"validFrom": null, "validUntil": null}'
     headers:
       Accept:
       - application/json
@@ -9,53 +9,55 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '2'
+      - '39'
       Content-Type:
       - application/json
       Repeatability-First-Sent:
-      - '2022-12-05T20:10:25.201037Z'
+      - Fri, 26 May 2023 04:09:13 GMT
       Repeatability-Request-ID:
-      - dadcbb89-74d8-11ed-ac7d-a864f13124e5
+      - 130d1416-fb7b-11ed-9d62-8cf8c5abc371
       User-Agent:
-      - azsdk-python-communication-rooms/1.0.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.6 azsdk-python-communication-rooms/1.0.0b3 Python/3.8.0 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
-      - RBNvo1WzZ4oRRq0W9+hknpT7T8If536DEMBg9hyq/4o=
+      - vBTkhrLFogng0nIWoP6/XqO3xl87GjFK9aShkzc8E3g=
       x-ms-date:
-      - Mon, 05 Dec 2022 20:10:25 GMT
+      - Fri, 26 May 2023 04:09:13 GMT
       x-ms-return-client-request-id:
       - 'true'
     method: POST
-    uri: https://sanitized.communication.azure.com/rooms?api-version=2022-02-01
+    uri: https://sanitized.communication.azure.com/rooms?api-version=2023-03-31-preview
   response:
     body:
-      string: '{"id": "sanitized", "createdDateTime": "2022-12-05T20:10:26.4057697+00:00",
-        "validFrom": "2022-12-05T20:10:26.2883426+00:00", "validUntil": "2023-06-03T20:10:26.2883426+00:00",
-        "roomJoinPolicy": "InviteOnly", "participants": []}'
+      string: '{"id": "sanitized", "createdAt": "2023-05-26T04:09:14.434594+00:00",
+        "validFrom": "2023-05-26T04:09:14.3786081+00:00", "validUntil": "2023-11-22T04:09:14.3786081+00:00"}'
     headers:
+      api-deprecated-versions:
+      - '2021-04-07'
       api-supported-versions:
-      - 2021-04-07, 2022-02-01
+      - 2022-02-01, 2023-03-31-preview
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:10:26 GMT
+      - Fri, 26 May 2023 04:09:14 GMT
       location:
-      - '99427783755003361'
+      - '99464694112212247'
       ms-cv:
-      - hAvUH3IALE2Y0cIcfdLQvA.0
+      - yX1HvRlDW0aGE11AVfiDMw.0
       repeatability-result:
       - accepted
+      request-context:
+      - appId=
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0MVCOYwAAAACbi2jm2naHTJwpdsYjk1oKWVZSMzExMDAwMTE1MDIxADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 06jBwZAAAAAAoPI/T3F1oRKZbxsQLrTIZWVZSMzExMDAwMTE1MDUxADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
     status:
       code: 201
       message: Created
 - request:
-    body: '{"participants": [{"communicationIdentifier": {"communicationUser": {"id":
-      "sanitized"}}, "role": "Consumer"}]}'
+    body: '{"participants": {"sanitized": {"role": "Consumer"}}}'
     headers:
       Accept:
       - application/json
@@ -64,40 +66,42 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '111'
+      - '57'
       Content-Type:
-      - application/json
+      - application/merge-patch+json
       User-Agent:
-      - azsdk-python-communication-rooms/1.0.0b2 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AzureCli/1.6 azsdk-python-communication-rooms/1.0.0b3 Python/3.8.0 (Windows-10-10.0.22621-SP0)
       x-ms-content-sha256:
-      - 9yM+xm0r0m7guClX1Hr5BsENOLhDxuDrsToSVRqbc60=
+      - GGeywqkmwEbmvIr+M7fYvPtgLYHCAoJWqoApBN7ZlcA=
       x-ms-date:
-      - Mon, 05 Dec 2022 20:10:26 GMT
+      - Fri, 26 May 2023 04:09:14 GMT
       x-ms-return-client-request-id:
       - 'true'
-    method: POST
-    uri: https://sanitized.communication.azure.com/rooms/sanitized/participants:add?api-version=2022-02-01
+    method: PATCH
+    uri: https://sanitized.communication.azure.com/rooms/sanitized/participants?api-version=2023-03-31-preview
   response:
     body:
-      string: '{"error": {"code": "InvalidInput", "message": "Identifier format is
-        invalid."}}'
+      string: '{"error": {"code": "BadRequest", "message": "Invalid value for the
+        Participants."}}'
     headers:
       api-supported-versions:
-      - '2022-02-01'
+      - 2022-02-01, 2023-03-31-preview
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 05 Dec 2022 20:10:26 GMT
+      - Fri, 26 May 2023 04:09:14 GMT
       ms-cv:
-      - quPuWPZ0Ik+aqQNAC7B83A.0
+      - 4bo/XzFbtEW0Fbo/azBO/Q.0
+      request-context:
+      - appId=
       transfer-encoding:
       - chunked
       x-azure-ref:
-      - 0MlCOYwAAAAD1uszgy6UoRZrPgFZXTk3vWVZSMzExMDAwMTE1MDIzADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
+      - 06zBwZAAAAAAy9kkbHs4kQqeeYbR3uTEcWVZSMzExMDAwMTE1MDA5ADlmYzdiNTE5LWE4Y2MtNGY4OS05MzVlLWM5MTQ4YWUwOWU4MQ==
       x-cache:
       - CONFIG_NOCACHE
       x-ms-error-code:
-      - InvalidInput
+      - BadRequest
     status:
       code: 400
       message: Bad Request

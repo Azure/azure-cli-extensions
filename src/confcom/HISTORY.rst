@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.2.15
+* updating dmverity-vhd interface to be more flexible with output formats
+* bugfix for --print-existing-policy flag with parameter values
+
 0.2.14
 * changing the name of api_svn and framework_svn to api_version and framework_version
 * changing fragment versions to an integer instead of semver
