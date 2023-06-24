@@ -240,7 +240,7 @@ class Create(AAZCommand):
             if extension_parameters is not None:
                 extension_parameters.set_prop("autoUpgradeMinorVersion", AAZBoolType, ".auto_upgrade")
                 extension_parameters.set_prop("forceUpdateTag", AAZStrType, ".force_update_tag")
-                extension_parameters.set_prop("protectedSettings", AAZObjectType, ".protected_settings")
+                extension_parameters.set_prop("protectedSettings", AAZObjectType, ".protected_settings", typ_kwargs={"flags": {"secret": True}})
                 extension_parameters.set_prop("publisher", AAZStrType, ".publisher")
                 extension_parameters.set_prop("settings", AAZObjectType, ".settings")
                 extension_parameters.set_prop("type", AAZStrType, ".type")
@@ -324,6 +324,7 @@ class Create(AAZCommand):
             )
             extension_parameters.protected_settings = AAZObjectType(
                 serialized_name="protectedSettings",
+                flags={"secret": True},
             )
             extension_parameters.publisher = AAZStrType()
             extension_parameters.settings = AAZObjectType()

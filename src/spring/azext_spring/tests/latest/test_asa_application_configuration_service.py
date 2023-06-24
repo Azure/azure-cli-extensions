@@ -84,3 +84,5 @@ class ApplicationConfigurationServiceTest(ScenarioTest):
         self.cmd('spring application-configuration-service clear -g {rg} -s {serviceName}', checks=[
             self.check('properties.provisioningState', "Succeeded")
         ])
+
+        self.cmd('spring application-configuration-service update -g {rg} -s {serviceName} --generation Gen2', checks=[self.check('properties.provisioningState', "Succeeded") ])
