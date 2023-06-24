@@ -24,11 +24,11 @@ def get_project_arg(cli_ctx, dev_center_name, project_name=None):
     | extend devCenterArr = split(properties.devCenterId, '/')
     | extend devCenterName = devCenterArr[array_length(devCenterArr) -1]
     | where devCenterName =~ '{dev_center_name}'
-    | take 1
     | extend devCenterUri = properties.devCenterUri
     | project name,devCenterUri """
+    options ={ "allowPartialScopes": True }
 
-    content = {"query": query}
+    content = {"query": query, "options": options}
     request_url = f"{management_hostname}/providers/Microsoft.ResourceGraph/resources?api-version={api_version}"
 
     response = send_raw_request(
