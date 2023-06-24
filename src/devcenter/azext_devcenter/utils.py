@@ -26,7 +26,7 @@ def get_project_arg(cli_ctx, dev_center_name, project_name=None):
     | where devCenterName =~ '{dev_center_name}'
     | extend devCenterUri = properties.devCenterUri
     | project name,devCenterUri """
-    options ={ "allowPartialScopes": True }
+    options ={ "allowPartialScopes": True } # maximum of 5000 subs for cross tenant query
 
     content = {"query": query, "options": options}
     request_url = f"{management_hostname}/providers/Microsoft.ResourceGraph/resources?api-version={api_version}"
