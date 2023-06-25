@@ -20,26 +20,35 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 from .. import models as _models
 from .._vendor import _convert_request, _format_url_section
 T = TypeVar('T')
+JSONType = Any
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, HttpResponse], T, Dict[str, Any]], Any]]
 
 _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
 
-def build_get_request(
+def build_list_callback_url_request(
     subscription_id: str,
-    resource_group: str,
-    integration_service_environment_name: str,
+    resource_group_name: str,
+    workflow_name: str,
+    version_id: str,
+    trigger_name: str,
+    *,
+    json: JSONType = None,
+    content: Any = None,
     **kwargs: Any
 ) -> HttpRequest:
     api_version = kwargs.pop('api_version', "2019-05-01")  # type: str
+    content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
     # Construct URL
-    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.Logic/integrationServiceEnvironments/{integrationServiceEnvironmentName}/health/network")  # pylint: disable=line-too-long
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/versions/{versionId}/triggers/{triggerName}/listCallbackUrl")  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroup": _SERIALIZER.url("resource_group", resource_group, 'str'),
-        "integrationServiceEnvironmentName": _SERIALIZER.url("integration_service_environment_name", integration_service_environment_name, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "workflowName": _SERIALIZER.url("workflow_name", workflow_name, 'str'),
+        "versionId": _SERIALIZER.url("version_id", version_id, 'str'),
+        "triggerName": _SERIALIZER.url("trigger_name", trigger_name, 'str'),
     }
 
     _url = _format_url_section(_url, **path_format_arguments)
@@ -50,18 +59,22 @@ def build_get_request(
 
     # Construct headers
     _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    if content_type is not None:
+        _header_parameters['Content-Type'] = _SERIALIZER.header("content_type", content_type, 'str')
     _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
 
     return HttpRequest(
-        method="GET",
+        method="POST",
         url=_url,
         params=_query_parameters,
         headers=_header_parameters,
+        json=json,
+        content=content,
         **kwargs
     )
 
-class IntegrationServiceEnvironmentNetworkHealthOperations(object):
-    """IntegrationServiceEnvironmentNetworkHealthOperations operations.
+class WorkflowVersionTriggersOperations(object):
+    """WorkflowVersionTriggersOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -83,39 +96,56 @@ class IntegrationServiceEnvironmentNetworkHealthOperations(object):
         self._config = config
 
     @distributed_trace
-    def get(
+    def list_callback_url(
         self,
-        resource_group: str,
-        integration_service_environment_name: str,
+        resource_group_name: str,
+        workflow_name: str,
+        version_id: str,
+        trigger_name: str,
+        parameters: Optional["_models.GetCallbackUrlParameters"] = None,
         **kwargs: Any
-    ) -> Dict[str, "_models.IntegrationServiceEnvironmentSubnetNetworkHealth"]:
-        """Gets the integration service environment network health.
+    ) -> "_models.WorkflowTriggerCallbackUrl":
+        """Get the callback url for a trigger of a workflow version.
 
-        :param resource_group: The resource group.
-        :type resource_group: str
-        :param integration_service_environment_name: The integration service environment name.
-        :type integration_service_environment_name: str
+        :param resource_group_name: The resource group name.
+        :type resource_group_name: str
+        :param workflow_name: The workflow name.
+        :type workflow_name: str
+        :param version_id: The workflow versionId.
+        :type version_id: str
+        :param trigger_name: The workflow trigger name.
+        :type trigger_name: str
+        :param parameters: The callback URL parameters. Default value is None.
+        :type parameters: ~azure.mgmt.logic.models.GetCallbackUrlParameters
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: dict mapping str to IntegrationServiceEnvironmentSubnetNetworkHealth, or the result of
-         cls(response)
-        :rtype: dict[str, ~azure.mgmt.logic.models.IntegrationServiceEnvironmentSubnetNetworkHealth]
+        :return: WorkflowTriggerCallbackUrl, or the result of cls(response)
+        :rtype: ~azure.mgmt.logic.models.WorkflowTriggerCallbackUrl
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType[Dict[str, "_models.IntegrationServiceEnvironmentSubnetNetworkHealth"]]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkflowTriggerCallbackUrl"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
 
         api_version = kwargs.pop('api_version', "2019-05-01")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
-        
-        request = build_get_request(
+        if parameters is not None:
+            _json = self._serialize.body(parameters, 'GetCallbackUrlParameters')
+        else:
+            _json = None
+
+        request = build_list_callback_url_request(
             subscription_id=self._config.subscription_id,
-            resource_group=resource_group,
-            integration_service_environment_name=integration_service_environment_name,
+            resource_group_name=resource_group_name,
+            workflow_name=workflow_name,
+            version_id=version_id,
+            trigger_name=trigger_name,
             api_version=api_version,
-            template_url=self.get.metadata['url'],
+            content_type=content_type,
+            json=_json,
+            template_url=self.list_callback_url.metadata['url'],
         )
         request = _convert_request(request)
         request.url = self._client.format_url(request.url)
@@ -132,12 +162,12 @@ class IntegrationServiceEnvironmentNetworkHealthOperations(object):
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('{IntegrationServiceEnvironmentSubnetNetworkHealth}', pipeline_response)
+        deserialized = self._deserialize('WorkflowTriggerCallbackUrl', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    get.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.Logic/integrationServiceEnvironments/{integrationServiceEnvironmentName}/health/network"}  # type: ignore
+    list_callback_url.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/versions/{versionId}/triggers/{triggerName}/listCallbackUrl"}  # type: ignore
 

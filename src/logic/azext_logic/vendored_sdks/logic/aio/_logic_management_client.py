@@ -7,106 +7,108 @@
 # --------------------------------------------------------------------------
 
 from copy import deepcopy
-from typing import Any, TYPE_CHECKING
+from typing import Any, Awaitable, TYPE_CHECKING
 
 from msrest import Deserializer, Serializer
 
-from azure.core.rest import HttpRequest, HttpResponse
-from azure.mgmt.core import ARMPipelineClient
+from azure.core.rest import AsyncHttpResponse, HttpRequest
+from azure.mgmt.core import AsyncARMPipelineClient
 
-from . import models
+from .. import models
 from ._configuration import LogicManagementClientConfiguration
 from .operations import IntegrationAccountAgreementsOperations, IntegrationAccountAssembliesOperations, IntegrationAccountBatchConfigurationsOperations, IntegrationAccountCertificatesOperations, IntegrationAccountMapsOperations, IntegrationAccountPartnersOperations, IntegrationAccountSchemasOperations, IntegrationAccountSessionsOperations, IntegrationAccountsOperations, IntegrationServiceEnvironmentManagedApiOperationsOperations, IntegrationServiceEnvironmentManagedApisOperations, IntegrationServiceEnvironmentNetworkHealthOperations, IntegrationServiceEnvironmentSkusOperations, IntegrationServiceEnvironmentsOperations, Operations, WorkflowRunActionRepetitionsOperations, WorkflowRunActionRepetitionsRequestHistoriesOperations, WorkflowRunActionRequestHistoriesOperations, WorkflowRunActionScopeRepetitionsOperations, WorkflowRunActionsOperations, WorkflowRunOperationsOperations, WorkflowRunsOperations, WorkflowTriggerHistoriesOperations, WorkflowTriggersOperations, WorkflowVersionTriggersOperations, WorkflowVersionsOperations, WorkflowsOperations
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
-    from azure.core.credentials import TokenCredential
+    from azure.core.credentials_async import AsyncTokenCredential
 
 class LogicManagementClient:    # pylint: disable=too-many-instance-attributes
     """REST API for Azure Logic Apps.
 
     :ivar workflows: WorkflowsOperations operations
-    :vartype workflows: azure.mgmt.logic.operations.WorkflowsOperations
+    :vartype workflows: azure.mgmt.logic.aio.operations.WorkflowsOperations
     :ivar workflow_versions: WorkflowVersionsOperations operations
-    :vartype workflow_versions: azure.mgmt.logic.operations.WorkflowVersionsOperations
+    :vartype workflow_versions: azure.mgmt.logic.aio.operations.WorkflowVersionsOperations
     :ivar workflow_triggers: WorkflowTriggersOperations operations
-    :vartype workflow_triggers: azure.mgmt.logic.operations.WorkflowTriggersOperations
+    :vartype workflow_triggers: azure.mgmt.logic.aio.operations.WorkflowTriggersOperations
     :ivar workflow_version_triggers: WorkflowVersionTriggersOperations operations
     :vartype workflow_version_triggers:
-     azure.mgmt.logic.operations.WorkflowVersionTriggersOperations
+     azure.mgmt.logic.aio.operations.WorkflowVersionTriggersOperations
     :ivar workflow_trigger_histories: WorkflowTriggerHistoriesOperations operations
     :vartype workflow_trigger_histories:
-     azure.mgmt.logic.operations.WorkflowTriggerHistoriesOperations
+     azure.mgmt.logic.aio.operations.WorkflowTriggerHistoriesOperations
     :ivar workflow_runs: WorkflowRunsOperations operations
-    :vartype workflow_runs: azure.mgmt.logic.operations.WorkflowRunsOperations
+    :vartype workflow_runs: azure.mgmt.logic.aio.operations.WorkflowRunsOperations
     :ivar workflow_run_actions: WorkflowRunActionsOperations operations
-    :vartype workflow_run_actions: azure.mgmt.logic.operations.WorkflowRunActionsOperations
+    :vartype workflow_run_actions: azure.mgmt.logic.aio.operations.WorkflowRunActionsOperations
     :ivar workflow_run_action_repetitions: WorkflowRunActionRepetitionsOperations operations
     :vartype workflow_run_action_repetitions:
-     azure.mgmt.logic.operations.WorkflowRunActionRepetitionsOperations
+     azure.mgmt.logic.aio.operations.WorkflowRunActionRepetitionsOperations
     :ivar workflow_run_action_repetitions_request_histories:
      WorkflowRunActionRepetitionsRequestHistoriesOperations operations
     :vartype workflow_run_action_repetitions_request_histories:
-     azure.mgmt.logic.operations.WorkflowRunActionRepetitionsRequestHistoriesOperations
+     azure.mgmt.logic.aio.operations.WorkflowRunActionRepetitionsRequestHistoriesOperations
     :ivar workflow_run_action_request_histories: WorkflowRunActionRequestHistoriesOperations
      operations
     :vartype workflow_run_action_request_histories:
-     azure.mgmt.logic.operations.WorkflowRunActionRequestHistoriesOperations
+     azure.mgmt.logic.aio.operations.WorkflowRunActionRequestHistoriesOperations
     :ivar workflow_run_action_scope_repetitions: WorkflowRunActionScopeRepetitionsOperations
      operations
     :vartype workflow_run_action_scope_repetitions:
-     azure.mgmt.logic.operations.WorkflowRunActionScopeRepetitionsOperations
+     azure.mgmt.logic.aio.operations.WorkflowRunActionScopeRepetitionsOperations
     :ivar workflow_run_operations: WorkflowRunOperationsOperations operations
-    :vartype workflow_run_operations: azure.mgmt.logic.operations.WorkflowRunOperationsOperations
+    :vartype workflow_run_operations:
+     azure.mgmt.logic.aio.operations.WorkflowRunOperationsOperations
     :ivar integration_accounts: IntegrationAccountsOperations operations
-    :vartype integration_accounts: azure.mgmt.logic.operations.IntegrationAccountsOperations
+    :vartype integration_accounts: azure.mgmt.logic.aio.operations.IntegrationAccountsOperations
     :ivar integration_account_assemblies: IntegrationAccountAssembliesOperations operations
     :vartype integration_account_assemblies:
-     azure.mgmt.logic.operations.IntegrationAccountAssembliesOperations
+     azure.mgmt.logic.aio.operations.IntegrationAccountAssembliesOperations
     :ivar integration_account_batch_configurations: IntegrationAccountBatchConfigurationsOperations
      operations
     :vartype integration_account_batch_configurations:
-     azure.mgmt.logic.operations.IntegrationAccountBatchConfigurationsOperations
+     azure.mgmt.logic.aio.operations.IntegrationAccountBatchConfigurationsOperations
     :ivar integration_account_schemas: IntegrationAccountSchemasOperations operations
     :vartype integration_account_schemas:
-     azure.mgmt.logic.operations.IntegrationAccountSchemasOperations
+     azure.mgmt.logic.aio.operations.IntegrationAccountSchemasOperations
     :ivar integration_account_maps: IntegrationAccountMapsOperations operations
-    :vartype integration_account_maps: azure.mgmt.logic.operations.IntegrationAccountMapsOperations
+    :vartype integration_account_maps:
+     azure.mgmt.logic.aio.operations.IntegrationAccountMapsOperations
     :ivar integration_account_partners: IntegrationAccountPartnersOperations operations
     :vartype integration_account_partners:
-     azure.mgmt.logic.operations.IntegrationAccountPartnersOperations
+     azure.mgmt.logic.aio.operations.IntegrationAccountPartnersOperations
     :ivar integration_account_agreements: IntegrationAccountAgreementsOperations operations
     :vartype integration_account_agreements:
-     azure.mgmt.logic.operations.IntegrationAccountAgreementsOperations
+     azure.mgmt.logic.aio.operations.IntegrationAccountAgreementsOperations
     :ivar integration_account_certificates: IntegrationAccountCertificatesOperations operations
     :vartype integration_account_certificates:
-     azure.mgmt.logic.operations.IntegrationAccountCertificatesOperations
+     azure.mgmt.logic.aio.operations.IntegrationAccountCertificatesOperations
     :ivar integration_account_sessions: IntegrationAccountSessionsOperations operations
     :vartype integration_account_sessions:
-     azure.mgmt.logic.operations.IntegrationAccountSessionsOperations
+     azure.mgmt.logic.aio.operations.IntegrationAccountSessionsOperations
     :ivar integration_service_environments: IntegrationServiceEnvironmentsOperations operations
     :vartype integration_service_environments:
-     azure.mgmt.logic.operations.IntegrationServiceEnvironmentsOperations
+     azure.mgmt.logic.aio.operations.IntegrationServiceEnvironmentsOperations
     :ivar integration_service_environment_skus: IntegrationServiceEnvironmentSkusOperations
      operations
     :vartype integration_service_environment_skus:
-     azure.mgmt.logic.operations.IntegrationServiceEnvironmentSkusOperations
+     azure.mgmt.logic.aio.operations.IntegrationServiceEnvironmentSkusOperations
     :ivar integration_service_environment_network_health:
      IntegrationServiceEnvironmentNetworkHealthOperations operations
     :vartype integration_service_environment_network_health:
-     azure.mgmt.logic.operations.IntegrationServiceEnvironmentNetworkHealthOperations
+     azure.mgmt.logic.aio.operations.IntegrationServiceEnvironmentNetworkHealthOperations
     :ivar integration_service_environment_managed_apis:
      IntegrationServiceEnvironmentManagedApisOperations operations
     :vartype integration_service_environment_managed_apis:
-     azure.mgmt.logic.operations.IntegrationServiceEnvironmentManagedApisOperations
+     azure.mgmt.logic.aio.operations.IntegrationServiceEnvironmentManagedApisOperations
     :ivar integration_service_environment_managed_api_operations:
      IntegrationServiceEnvironmentManagedApiOperationsOperations operations
     :vartype integration_service_environment_managed_api_operations:
-     azure.mgmt.logic.operations.IntegrationServiceEnvironmentManagedApiOperationsOperations
+     azure.mgmt.logic.aio.operations.IntegrationServiceEnvironmentManagedApiOperationsOperations
     :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.logic.operations.Operations
+    :vartype operations: azure.mgmt.logic.aio.operations.Operations
     :param credential: Credential needed for the client to connect to Azure.
-    :type credential: ~azure.core.credentials.TokenCredential
+    :type credential: ~azure.core.credentials_async.AsyncTokenCredential
     :param subscription_id: The subscription id.
     :type subscription_id: str
     :param base_url: Service URL. Default value is "https://management.azure.com".
@@ -120,13 +122,13 @@ class LogicManagementClient:    # pylint: disable=too-many-instance-attributes
 
     def __init__(
         self,
-        credential: "TokenCredential",
+        credential: "AsyncTokenCredential",
         subscription_id: str,
         base_url: str = "https://management.azure.com",
         **kwargs: Any
     ) -> None:
         self._config = LogicManagementClientConfiguration(credential=credential, subscription_id=subscription_id, **kwargs)
-        self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
+        self._client = AsyncARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
@@ -165,14 +167,14 @@ class LogicManagementClient:    # pylint: disable=too-many-instance-attributes
         self,
         request: HttpRequest,
         **kwargs: Any
-    ) -> HttpResponse:
+    ) -> Awaitable[AsyncHttpResponse]:
         """Runs the network request through the client's chained policies.
 
         >>> from azure.core.rest import HttpRequest
         >>> request = HttpRequest("GET", "https://www.example.org/")
         <HttpRequest [GET], url: 'https://www.example.org/'>
-        >>> response = client._send_request(request)
-        <HttpResponse: 200 OK>
+        >>> response = await client._send_request(request)
+        <AsyncHttpResponse: 200 OK>
 
         For more information on this code flow, see https://aka.ms/azsdk/python/protocol/quickstart
 
@@ -180,22 +182,19 @@ class LogicManagementClient:    # pylint: disable=too-many-instance-attributes
         :type request: ~azure.core.rest.HttpRequest
         :keyword bool stream: Whether the response payload will be streamed. Defaults to False.
         :return: The response of your network call. Does not do error handling on your response.
-        :rtype: ~azure.core.rest.HttpResponse
+        :rtype: ~azure.core.rest.AsyncHttpResponse
         """
 
         request_copy = deepcopy(request)
         request_copy.url = self._client.format_url(request_copy.url)
         return self._client.send_request(request_copy, **kwargs)
 
-    def close(self):
-        # type: () -> None
-        self._client.close()
+    async def close(self) -> None:
+        await self._client.close()
 
-    def __enter__(self):
-        # type: () -> LogicManagementClient
-        self._client.__enter__()
+    async def __aenter__(self) -> "LogicManagementClient":
+        await self._client.__aenter__()
         return self
 
-    def __exit__(self, *exc_details):
-        # type: (Any) -> None
-        self._client.__exit__(*exc_details)
+    async def __aexit__(self, *exc_details) -> None:
+        await self._client.__aexit__(*exc_details)

@@ -27,19 +27,23 @@ _SERIALIZER.client_side_validation = False
 
 def build_get_request(
     subscription_id: str,
-    resource_group: str,
-    integration_service_environment_name: str,
+    resource_group_name: str,
+    workflow_name: str,
+    run_name: str,
+    operation_id: str,
     **kwargs: Any
 ) -> HttpRequest:
     api_version = kwargs.pop('api_version', "2019-05-01")  # type: str
 
     accept = "application/json"
     # Construct URL
-    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.Logic/integrationServiceEnvironments/{integrationServiceEnvironmentName}/health/network")  # pylint: disable=line-too-long
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/runs/{runName}/operations/{operationId}")  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroup": _SERIALIZER.url("resource_group", resource_group, 'str'),
-        "integrationServiceEnvironmentName": _SERIALIZER.url("integration_service_environment_name", integration_service_environment_name, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str'),
+        "workflowName": _SERIALIZER.url("workflow_name", workflow_name, 'str'),
+        "runName": _SERIALIZER.url("run_name", run_name, 'str'),
+        "operationId": _SERIALIZER.url("operation_id", operation_id, 'str'),
     }
 
     _url = _format_url_section(_url, **path_format_arguments)
@@ -60,8 +64,8 @@ def build_get_request(
         **kwargs
     )
 
-class IntegrationServiceEnvironmentNetworkHealthOperations(object):
-    """IntegrationServiceEnvironmentNetworkHealthOperations operations.
+class WorkflowRunOperationsOperations(object):
+    """WorkflowRunOperationsOperations operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -85,23 +89,28 @@ class IntegrationServiceEnvironmentNetworkHealthOperations(object):
     @distributed_trace
     def get(
         self,
-        resource_group: str,
-        integration_service_environment_name: str,
+        resource_group_name: str,
+        workflow_name: str,
+        run_name: str,
+        operation_id: str,
         **kwargs: Any
-    ) -> Dict[str, "_models.IntegrationServiceEnvironmentSubnetNetworkHealth"]:
-        """Gets the integration service environment network health.
+    ) -> "_models.WorkflowRun":
+        """Gets an operation for a run.
 
-        :param resource_group: The resource group.
-        :type resource_group: str
-        :param integration_service_environment_name: The integration service environment name.
-        :type integration_service_environment_name: str
+        :param resource_group_name: The resource group name.
+        :type resource_group_name: str
+        :param workflow_name: The workflow name.
+        :type workflow_name: str
+        :param run_name: The workflow run name.
+        :type run_name: str
+        :param operation_id: The workflow operation id.
+        :type operation_id: str
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: dict mapping str to IntegrationServiceEnvironmentSubnetNetworkHealth, or the result of
-         cls(response)
-        :rtype: dict[str, ~azure.mgmt.logic.models.IntegrationServiceEnvironmentSubnetNetworkHealth]
+        :return: WorkflowRun, or the result of cls(response)
+        :rtype: ~azure.mgmt.logic.models.WorkflowRun
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType[Dict[str, "_models.IntegrationServiceEnvironmentSubnetNetworkHealth"]]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.WorkflowRun"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
@@ -112,8 +121,10 @@ class IntegrationServiceEnvironmentNetworkHealthOperations(object):
         
         request = build_get_request(
             subscription_id=self._config.subscription_id,
-            resource_group=resource_group,
-            integration_service_environment_name=integration_service_environment_name,
+            resource_group_name=resource_group_name,
+            workflow_name=workflow_name,
+            run_name=run_name,
+            operation_id=operation_id,
             api_version=api_version,
             template_url=self.get.metadata['url'],
         )
@@ -132,12 +143,12 @@ class IntegrationServiceEnvironmentNetworkHealthOperations(object):
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
-        deserialized = self._deserialize('{IntegrationServiceEnvironmentSubnetNetworkHealth}', pipeline_response)
+        deserialized = self._deserialize('WorkflowRun', pipeline_response)
 
         if cls:
             return cls(pipeline_response, deserialized, {})
 
         return deserialized
 
-    get.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroup}/providers/Microsoft.Logic/integrationServiceEnvironments/{integrationServiceEnvironmentName}/health/network"}  # type: ignore
+    get.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Logic/workflows/{workflowName}/runs/{runName}/operations/{operationId}"}  # type: ignore
 
