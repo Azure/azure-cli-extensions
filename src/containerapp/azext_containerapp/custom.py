@@ -447,6 +447,7 @@ def create_containerapp(cmd,
                         user_assigned=None,
                         registry_identity=None,
                         workload_profile_name=None,
+                        termination_grace_period=None,
                         secret_volume_mount=None):
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name, AppType.ContainerApp.name)
@@ -667,6 +668,9 @@ def create_containerapp(cmd,
 
     if revision_suffix is not None and not is_registry_msi_system(registry_identity):
         template_def["revisionSuffix"] = revision_suffix
+    
+    if termination_grace_period is not None:
+        template_def["terminationGracePeriodSeconds"] = termination_grace_period
 
     containerapp_def = ContainerAppModel
     containerapp_def["location"] = location
@@ -763,6 +767,7 @@ def update_containerapp_logic(cmd,
                               ingress=None,
                               target_port=None,
                               workload_profile_name=None,
+                              termination_grace_period=None,
                               registry_server=None,
                               registry_user=None,
                               registry_pass=None,
@@ -880,6 +885,10 @@ def update_containerapp_logic(cmd,
     if revision_suffix is not None:
         new_containerapp["properties"]["template"] = {} if "template" not in new_containerapp["properties"] else new_containerapp["properties"]["template"]
         new_containerapp["properties"]["template"]["revisionSuffix"] = revision_suffix
+
+    if termination_grace_period is not None:
+        new_containerapp["properties"]["template"] = {} if "template" not in new_containerapp["properties"] else new_containerapp["properties"]["template"]
+        new_containerapp["properties"]["template"]["terminationGracePeriodSeconds"] = termination_grace_period
 
     if workload_profile_name:
         new_containerapp["properties"]["workloadProfileName"] = workload_profile_name
@@ -1220,6 +1229,7 @@ def update_containerapp(cmd,
                         args=None,
                         tags=None,
                         workload_profile_name=None,
+                        termination_grace_period=None,
                         no_wait=False,
                         secret_volume_mount=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
@@ -1250,6 +1260,7 @@ def update_containerapp(cmd,
                                      args=args,
                                      tags=tags,
                                      workload_profile_name=workload_profile_name,
+                                     termination_grace_period=termination_grace_period,
                                      no_wait=no_wait,
                                      secret_volume_mount=secret_volume_mount)
 
