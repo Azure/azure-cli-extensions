@@ -38,7 +38,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def _get_versions(self, location):
         """Return the previous and current Kubernetes minor release versions, such as ("1.11.6", "1.12.4")."""
         versions = self.cmd(
-            "az aks get-versions -l {} --query 'orchestrators[].orchestratorVersion'".format(location)).get_output_in_json()
+            "az aks get-versions -l {} --query 'values[*].patchVersions.keys(@)[]'".format(location)).get_output_in_json()
         # sort by semantic version, from newest to oldest
         versions = sorted(versions, key=version_to_tuple, reverse=True)
         upgrade_version = versions[0]
@@ -50,7 +50,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def _get_version_in_range(self, location: str, min_version: str, max_version: str) -> str:
         """Return the version which is greater than min_version and less than max_version."""
         versions = self.cmd(
-            "az aks get-versions -l {} --query 'orchestrators[].orchestratorVersion'".format(location)).get_output_in_json()
+            "az aks get-versions -l {} --query 'values[*].patchVersions.keys(@)[]'".format(location)).get_output_in_json()
         versions = sorted(versions, key=version_to_tuple, reverse=True)
         for version in versions:
             if version > min_version and version < max_version:
@@ -87,11 +87,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     def test_get_version(self):
         versions_cmd = 'aks get-versions -l westus2'
-        self.cmd(versions_cmd, checks=[
-            self.check(
-                'type', 'Microsoft.ContainerService/locations/orchestrators'),
-            self.check('orchestrators[0].orchestratorType', 'Kubernetes')
-        ])
+        versions = self.cmd(versions_cmd).get_output_in_json()
+        assert len(versions["values"]) > 0
 
     @AllowLargeResponse()
     def test_get_os_options(self):
