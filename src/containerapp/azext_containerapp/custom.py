@@ -3593,7 +3593,7 @@ def update_cors_policy(cmd, name, resource_group_name, allowed_origins=None, all
         raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
 
     if allowed_origins is not None and len(allowed_origins) == 0:
-        raise ValidationError("allowed-origins must be specified if provided.")
+        raise RequiredArgumentMissingError("allowed-origins must be specified if provided.")
 
     reset_max_age = False
     if max_age == "":

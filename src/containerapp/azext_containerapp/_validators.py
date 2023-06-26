@@ -211,6 +211,6 @@ def validate_cors_max_age(cmd, namespace):
 
             max_age = int(namespace.max_age)
             if max_age < 0:
-                raise ValidationError("max-age must be a positive integer.")
+                raise InvalidArgumentValueError("max-age must be a positive integer.")
         except ValueError:
-            raise ValidationError("max-age must be an integer.")
+            raise InvalidArgumentValueError("max-age must be an integer.")
