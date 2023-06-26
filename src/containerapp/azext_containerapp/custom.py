@@ -887,8 +887,7 @@ def update_containerapp_logic(cmd,
         new_containerapp["properties"]["template"]["revisionSuffix"] = revision_suffix
 
     if termination_grace_period is not None:
-        new_containerapp["properties"]["template"] = {} if "template" not in new_containerapp["properties"] else new_containerapp["properties"]["template"]
-        new_containerapp["properties"]["template"]["terminationGracePeriodSeconds"] = termination_grace_period
+        safe_set(new_containerapp, "properties", "template", "terminationGracePeriodSeconds", value=termination_grace_period)
 
     if workload_profile_name:
         new_containerapp["properties"]["workloadProfileName"] = workload_profile_name
