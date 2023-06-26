@@ -12,7 +12,7 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
                           validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress,
-                          validate_storage_name_or_id)
+                          validate_storage_name_or_id, validate_cors_max_age)
 from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION, MAXIMUM_CONTAINER_APP_NAME_LENGTH, LOG_TYPE_CONSOLE, LOG_TYPE_SYSTEM
 
 
@@ -178,6 +178,9 @@ def load_arguments(self, _):
         c.argument('certificate_file', options_list=['--custom-domain-certificate-file', '--certificate-file'], help='The filepath of the certificate file (.pfx or .pem) for the environment\'s custom domain. To manage certificates for container apps, use `az containerapp env certificate`.')
         c.argument('certificate_password', options_list=['--custom-domain-certificate-password', '--certificate-password'], help='The certificate file password for the environment\'s custom domain.')
 
+    with self.argument_context('containerapp env', arg_group='Peer Authentication') as c:
+        c.argument('mtls_enabled', arg_type=get_three_state_flag(), options_list=['--enable-mtls'], help='Boolean indicating if mTLS peer authentication is enabled for the environment.')
+
     with self.argument_context('containerapp service') as c:
         c.argument('service_name', options_list=['--name', '-n'], help="The service name.")
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
@@ -298,6 +301,14 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp ingress sticky-sessions') as c:
         c.argument('affinity', arg_type=get_enum_type(['sticky', 'none']), help='Whether the affinity for the container app is Sticky or None.')
+
+    with self.argument_context('containerapp ingress cors') as c:
+        c.argument('allowed_origins', nargs='*', options_list=['--allowed-origins', '-r'], help="A list of allowed origin(s) for the container app. Values are space-separated. Empty string to clear existing values.")
+        c.argument('allowed_methods', nargs='*', options_list=['--allowed-methods', '-m'], help="A list of allowed method(s) for the container app. Values are space-separated. Empty string to clear existing values.")
+        c.argument('allowed_headers', nargs='*', options_list=['--allowed-headers', '-a'], help="A list of allowed header(s) for the container app. Values are space-separated. Empty string to clear existing values.")
+        c.argument('expose_headers', nargs='*', options_list=['--expose-headers', '-e'], help="A list of expose header(s) for the container app. Values are space-separated. Empty string to clear existing values.")
+        c.argument('allow_credentials', options_list=['--allow-credentials'], arg_type=get_three_state_flag(), help='Whether the credential is allowed for the container app.')
+        c.argument('max_age', nargs='?', const='', validator=validate_cors_max_age, help="The maximum age of the allowed origin in seconds. Only postive integer or empty string are allowed. Empty string resets max_age to null.")
 
     with self.argument_context('containerapp secret') as c:
         c.argument('secrets', nargs='+', options_list=['--secrets', '-s'], help="A list of secret(s) for the container app. Space-separated values in 'key=value' or 'key=keyvaultref:keyvaulturl,identityref:identity' format (where 'key' cannot be longer than 20 characters).")

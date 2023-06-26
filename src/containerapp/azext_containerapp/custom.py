@@ -485,6 +485,11 @@ def create_containerapp(cmd,
     if not managed_env_info:
         raise ValidationError("The environment '{}' does not exist. Specify a valid environment".format(managed_env))
 
+    while not no_wait and safe_get(managed_env_info, "properties", "provisioningState", default="").lower() in ["inprogress", "updating"]:
+        logger.info("Waiting for environment provisioning to finish before creating container app")
+        time.sleep(5)
+        managed_env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=managed_env_rg, name=managed_env_name)
+
     location = managed_env_info["location"]
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "containerApps")
 
@@ -1314,6 +1319,7 @@ def create_managed_environment(cmd,
                                certificate_file=None,
                                certificate_password=None,
                                enable_workload_profiles=False,
+                               mtls_enabled=None,
                                no_wait=False):
     if zone_redundant:
         if not infrastructure_subnet_resource_id:
@@ -1390,6 +1396,8 @@ def create_managed_environment(cmd,
             raise ValidationError('Infrastructure subnet resource ID needs to be supplied for internal only environments.')
         managed_env_def["properties"]["vnetConfiguration"]["internal"] = True
 
+    if mtls_enabled is not None:
+        safe_set(managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=mtls_enabled)
     try:
         r = ManagedEnvironmentClient.create(
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=managed_env_def, no_wait=no_wait)
@@ -1424,6 +1432,7 @@ def update_managed_environment(cmd,
                                workload_profile_name=None,
                                min_nodes=None,
                                max_nodes=None,
+                               mtls_enabled=None,
                                no_wait=False):
     if logs_destination == "log-analytics" or logs_customer_id or logs_key:
         if logs_destination != "log-analytics":
@@ -1493,6 +1502,9 @@ def update_managed_environment(cmd,
             workload_profiles[idx] = profile
 
         safe_set(env_def, "properties", "workloadProfiles", value=workload_profiles)
+
+    if mtls_enabled is not None:
+        safe_set(env_def, "properties", "peerAuthentication", "mtls", "enabled", value=mtls_enabled)
 
     try:
         r = ManagedEnvironmentClient.update(
@@ -3519,6 +3531,120 @@ def show_ingress_sticky_session(cmd, name, resource_group_name):
         return containerapp_def["properties"]["configuration"]["ingress"]
     except Exception as e:
         raise ValidationError("Ingress must be enabled to enable sticky sessions. Try running `az containerapp ingress -h` for more info.") from e
+
+
+def enable_cors_policy(cmd, name, resource_group_name, allowed_origins, allowed_methods=None, allowed_headers=None, expose_headers=None, allow_credentials=None, max_age=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if not allowed_origins:
+        raise ValidationError("Allowed origins must be specified.")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    containerapp_patch = {}
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "allowedOrigins", value=allowed_origins)
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "allowedMethods", value=allowed_methods)
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "allowedHeaders", value=allowed_headers)
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "exposeHeaders", value=expose_headers)
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "allowCredentials", value=allow_credentials)
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "maxAge", value=max_age)
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch, no_wait=no_wait)
+        return safe_get(r, "properties", "configuration", "ingress", "corsPolicy", default={})
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def disable_cors_policy(cmd, name, resource_group_name, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    containerapp_patch = {}
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", value=None)
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch, no_wait=no_wait)
+        return safe_get(r, "properties", "configuration", "ingress", default={})
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def update_cors_policy(cmd, name, resource_group_name, allowed_origins=None, allowed_methods=None, allowed_headers=None, expose_headers=None, allow_credentials=None, max_age=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    if allowed_origins is not None and len(allowed_origins) == 0:
+        raise RequiredArgumentMissingError("allowed-origins must be specified if provided.")
+
+    reset_max_age = False
+    if max_age == "":
+        reset_max_age = True
+
+    containerapp_patch = {}
+    if allowed_origins is not None:
+        safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "allowedOrigins", value=allowed_origins)
+    if allowed_methods is not None:
+        safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "allowedMethods", value=allowed_methods)
+    if allowed_headers is not None:
+        safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "allowedHeaders", value=allowed_headers)
+    if expose_headers is not None:
+        safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "exposeHeaders", value=expose_headers)
+    if allow_credentials is not None:
+        safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "allowCredentials", value=allow_credentials)
+    if max_age is not None:
+        if reset_max_age:
+            safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "maxAge", value=None)
+        else:
+            safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "maxAge", value=max_age)
+
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch, no_wait=no_wait)
+        return safe_get(r, "properties", "configuration", "ingress", "corsPolicy", default={})
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_cors_policy(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    try:
+        return safe_get(containerapp_def, "properties", "configuration", "ingress", "corsPolicy", default={})
+    except Exception as e:
+        raise ValidationError("CORS must be enabled to enable CORS policy. Try running `az containerapp ingress cors enable -h` for more info.") from e
 
 
 def show_registry(cmd, name, resource_group_name, server):
