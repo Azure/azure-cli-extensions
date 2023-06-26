@@ -40,6 +40,9 @@ from ._models import (
     Volume as VolumeModel,
     VolumeMount as VolumeMountModel)
 
+from ._decorator_utils import (create_deserializer,
+                               process_loaded_yaml,
+                               load_yaml_file)
 from ._utils import (_ensure_location_allowed,
                      parse_secret_flags, store_as_secret_and_return_secret_ref, parse_env_var_flags,
                      _convert_object_from_snake_to_camel_case,
@@ -53,9 +56,8 @@ from ._utils import (_ensure_location_allowed,
                      safe_set, parse_metadata_flags, parse_auth_flags,
                      get_default_workload_profile_name_from_env,
                      ensure_workload_profile_supported, _generate_secret_volume_name,
-                     parse_service_bindings, check_unique_bindings, AppType,
-                     create_deserializer, process_loaded_yaml, load_yaml_file, get_linker_client,
-                     _validate_subscription_registered)
+                     parse_service_bindings, check_unique_bindings, AppType, get_linker_client,
+                     _validate_subscription_registered, safe_get)
 from ._validators import validate_create, validate_revision_suffix
 
 from ._constants import (CONTAINER_APPS_RP,
@@ -73,29 +75,13 @@ class BaseContainerAppDecorator:
         self.client = client
         self.models = models
 
-    def register_provider(self):
-        register_provider_if_needed(self.cmd, CONTAINER_APPS_RP)
+    def register_provider(self, *rp_name_list):
+        for rp in rp_name_list:
+            register_provider_if_needed(self.cmd, rp)
 
-    def validate_subscription_registered(self):
-        _validate_subscription_registered(self.cmd, CONTAINER_APPS_RP)
-
-    def validate_arguments(self):
-        raise NotImplementedError()
-
-    def construct_containerapp(self):
-        raise NotImplementedError()
-
-    def create_containerapp(self, containerapp_def):
-        raise NotImplementedError()
-
-    def construct_containerapp_for_post_process(self, containerapp_def, r):
-        raise NotImplementedError()
-
-    def post_process_containerapp(self, containerapp_def, r):
-        raise NotImplementedError()
-
-    def update_containerapp(self, containerapp_def):
-        raise NotImplementedError()
+    def validate_subscription_registered(self, *rp_name_list):
+        for rp in rp_name_list:
+            _validate_subscription_registered(self.cmd, rp)
 
     def list_containerapp(self):
         try:
@@ -318,7 +304,7 @@ class BaseContainerAppDecorator:
         self.set_param("service_connectors_def_list", service_connectors_def_list)
 
 
-class ContainerAppCreateDecorator(BaseContainerAppDecorator, ABC):
+class ContainerAppCreateDecorator(BaseContainerAppDecorator):
     def __init__(
         self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
     ):
@@ -356,6 +342,11 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator, ABC):
 
         if not managed_env_info:
             raise ValidationError("The environment '{}' does not exist. Specify a valid environment".format(self.get_argument_managed_env()))
+
+        while not self.get_argument_no_wait() and safe_get(managed_env_info, "properties", "provisioningState", default="").lower() in ["inprogress", "updating"]:
+            logger.info("Waiting for environment provisioning to finish before creating container app")
+            time.sleep(5)
+            managed_env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=managed_env_rg, name=managed_env_name)
 
         location = managed_env_info["location"]
         _ensure_location_allowed(self.cmd, location, CONTAINER_APPS_RP, "containerApps")
