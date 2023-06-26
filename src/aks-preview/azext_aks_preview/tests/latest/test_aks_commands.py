@@ -7252,6 +7252,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     
         # create
         create_cmd = 'aks create --resource-group={resource_group} --name={name} -k {k8s_version} -c 1 ' \
+                     '--ssh-key-value={ssh_key_value} ' \
                      '--aks-custom-headers x-ms-correlation-request-id=12345678-90ab-cdef-1234-567890abcdef'
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
