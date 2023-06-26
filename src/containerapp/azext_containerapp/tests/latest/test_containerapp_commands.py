@@ -863,6 +863,7 @@ class ContainerappRevisionTests(ScenarioTest):
 
         self.assertEqual(len([w for w in traffic_weight if "label" in w]), 0)
 
+
 class ContainerappAnonymousRegistryTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
@@ -1485,6 +1486,6 @@ class ContainerappOtherPropertyTests(ScenarioTest):
         terminationGracePeriodSeconds = 90
         create_containerapp_env(self, env, resource_group)
 
-        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env} --termination-grace-period-seconds {terminationGracePeriodSeconds}')
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env} --termination-grace-period {terminationGracePeriodSeconds}')
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.template.terminationGracePeriodSeconds", terminationGracePeriodSeconds)])

@@ -668,7 +668,7 @@ def create_containerapp(cmd,
 
     if revision_suffix is not None and not is_registry_msi_system(registry_identity):
         template_def["revisionSuffix"] = revision_suffix
-    
+
     if termination_grace_period is not None:
         template_def["terminationGracePeriodSeconds"] = termination_grace_period
 
