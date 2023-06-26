@@ -296,8 +296,8 @@ def _handle_relay_connection_delay(cmd, message):
     # must sleep for at least as long as the delay
     # otherwise the ssh connection will fail
     progress_bar = cmd.cli_ctx.get_progress_controller(True)
-    for x in range(0, consts.RELAY_CONNECTION_DELAY_IN_SECONDS + 1):
-        interval = float(1/consts.RELAY_CONNECTION_DELAY_IN_SECONDS)
+    for x in range(0, consts.SERVICE_CONNECTION_DELAY_IN_SECONDS + 1):
+        interval = float(1/consts.SERVICE_CONNECTION_DELAY_IN_SECONDS)
         progress_bar.add(message='{}:'.format(message),
                             value=interval * x, total_val=1.0)
         time.sleep(1)

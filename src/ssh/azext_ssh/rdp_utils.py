@@ -46,8 +46,8 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
             service_config_delay_error = False
             if retry_attempt == 1:
                 logger.warning(f"SSH connection failed, possibly caused by new service configuration setup. "
-                               f"Retrying the connection in {str(const.RELAY_CONNECTION_DELAY_IN_SECONDS)} seconds.")
-                time.sleep(const.RELAY_CONNECTION_DELAY_IN_SECONDS)
+                               f"Retrying the connection in {str(const.RETRY_DELAY_IN_SECONDS)} seconds.")
+                time.sleep(const.RETRY_DELAY_IN_SECONDS)
             ssh_process, print_ssh_logs = start_ssh_tunnel(ssh_info)
             ssh_connection_t0 = time.time()
             ssh_success, log_list, service_config_delay_error = wait_for_ssh_connection(ssh_process, print_ssh_logs)

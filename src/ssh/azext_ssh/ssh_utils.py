@@ -59,8 +59,8 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
             service_config_delay_error = False
             if retry_attempt == 1:
                 logger.warning(f"SSH connection failed, possibly caused by new service configuration setup. "
-                               f"Retrying the connection in {str(const.RELAY_CONNECTION_DELAY_IN_SECONDS)} seconds.")
-                time.sleep(const.RELAY_CONNECTION_DELAY_IN_SECONDS)
+                               f"Retrying the connection in {str(const.RETRY_DELAY_IN_SECONDS)} seconds.")
+                time.sleep(const.RETRY_DELAY_IN_SECONDS)
             connection_duration = time.time()
             try:
                 # pylint: disable=consider-using-with
