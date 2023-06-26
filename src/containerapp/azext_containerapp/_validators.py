@@ -201,3 +201,16 @@ def validate_ssh(cmd, namespace):
         _validate_revision_exists(cmd, namespace)
         _validate_replica_exists(cmd, namespace)
         _validate_container_exists(cmd, namespace)
+
+
+def validate_cors_max_age(cmd, namespace):
+    if namespace.max_age:
+        try:
+            if namespace.max_age == "":
+                return
+
+            max_age = int(namespace.max_age)
+            if max_age < 0:
+                raise InvalidArgumentValueError("max-age must be a positive integer.")
+        except ValueError:
+            raise InvalidArgumentValueError("max-age must be an integer.")
