@@ -149,7 +149,6 @@ class ContainerappIdentityTests(ScenarioTest):
             JMESPathCheck('type', 'None'),
         ])
 
-
 class ContainerappIngressTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -554,6 +553,63 @@ class ContainerappIngressTests(ScenarioTest):
 
         self.cmd('containerapp ingress access-restriction list -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('length(@)', 0),
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_cors_policy(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        create_containerapp_env(self, env_name, resource_group)
+
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress cors enable -g {} -n {} --allowed-origins "http://www.contoso.com" "https://www.contoso.com" --allowed-methods "GET" "POST" --allowed-headers "header1" "header2" --expose-headers "header3" "header4" --allow-credentials true --max-age 100'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(allowedOrigins)', 2),
+            JMESPathCheck('allowedOrigins[0]', "http://www.contoso.com"),
+            JMESPathCheck('allowedOrigins[1]', "https://www.contoso.com"),
+            JMESPathCheck('length(allowedMethods)', 2),
+            JMESPathCheck('allowedMethods[0]', "GET"),
+            JMESPathCheck('allowedMethods[1]', "POST"),
+            JMESPathCheck('length(allowedHeaders)', 2),
+            JMESPathCheck('allowedHeaders[0]', "header1"),
+            JMESPathCheck('allowedHeaders[1]', "header2"),
+            JMESPathCheck('length(exposeHeaders)', 2),
+            JMESPathCheck('exposeHeaders[0]', "header3"),
+            JMESPathCheck('exposeHeaders[1]', "header4"),
+            JMESPathCheck('allowCredentials', True),
+            JMESPathCheck('maxAge', 100),
+        ])
+
+        self.cmd('containerapp ingress cors update -g {} -n {} --allowed-origins "*" --allowed-methods "GET" --allowed-headers "header1" --expose-headers --allow-credentials false --max-age 0'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(allowedOrigins)', 1),
+            JMESPathCheck('allowedOrigins[0]', "*"),
+            JMESPathCheck('length(allowedMethods)', 1),
+            JMESPathCheck('allowedMethods[0]', "GET"),
+            JMESPathCheck('length(allowedHeaders)', 1),
+            JMESPathCheck('allowedHeaders[0]', "header1"),
+            JMESPathCheck('exposeHeaders', None),
+            JMESPathCheck('allowCredentials', False),
+            JMESPathCheck('maxAge', 0),
+        ])
+
+        self.cmd('containerapp ingress cors show -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(allowedOrigins)', 1),
+            JMESPathCheck('allowedOrigins[0]', "*"),
+            JMESPathCheck('length(allowedMethods)', 1),
+            JMESPathCheck('allowedMethods[0]', "GET"),
+            JMESPathCheck('length(allowedHeaders)', 1),
+            JMESPathCheck('allowedHeaders[0]', "header1"),
+            JMESPathCheck('exposeHeaders', None),
+            JMESPathCheck('allowCredentials', False),
+            JMESPathCheck('maxAge', 0),
+        ])
+
+        self.cmd('containerapp ingress cors disable -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('corsPolicy', None),
         ])
 
 

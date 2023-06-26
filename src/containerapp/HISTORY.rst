@@ -11,6 +11,8 @@ Upcoming
 * 'az containerapp create': --registry-server support registry with custom port
 * 'az containerapp create': fix containerapp create not waiting for ready environment
 * Add regex to fix validation for containerapp name
+* Add 'az containerapp ingress cors' for CORS support
+* 'az container app env create/update': support --enable-mtls parameter
 
 0.3.33
 ++++++
