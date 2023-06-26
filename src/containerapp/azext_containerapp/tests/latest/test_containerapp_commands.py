@@ -1143,6 +1143,7 @@ class ContainerappScaleTests(ScenarioTest):
                       action: "Allow"
               template:
                 revisionSuffix: myrevision
+                terminationGracePeriodSeconds: 90
                 containers:
                   - image: nginx
                     name: nginx
@@ -1185,6 +1186,7 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
+            JMESPathCheck("properties.template.terminationGracePeriodSeconds", 90),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
@@ -1214,7 +1216,7 @@ class ContainerappScaleTests(ScenarioTest):
                               weight: 100
                           transport: Auto
                       template:
-                        revisionSuffix: myrevision
+                        revisionSuffix: myrevision2
                         containers:
                           - image: nginx
                             name: nginx
@@ -1243,7 +1245,7 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
-            JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
+            JMESPathCheck("properties.template.revisionSuffix", "myrevision2"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
