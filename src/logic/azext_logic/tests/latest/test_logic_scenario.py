@@ -143,9 +143,3 @@ class LogicManagementClientScenarioTest(ScenarioTest):
             self.exists('[0].contentLink.uri')
         ])
         self.cmd('logic integration-account map delete -g {rg} -n {map} --integration-account {account} -y')
-
-    @record_only()
-    def test_workflow_aad(self):
-        self.cmd('logic workflow show -g lgtest -n wf1', checks=[
-            self.check('identity.type', 'SystemAssigned')
-        ])

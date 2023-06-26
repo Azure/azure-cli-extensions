@@ -5,6 +5,11 @@ Release History
 
 0.1.6
 ++++++
+* Add new command group `az logic integration-account map` to support manage integration account map
+* Upgrade SDK to fix deserialization errors
+
+0.1.6
+++++++
 * Add README.md link in help
 * Fix a syntax error in README.md
 
