@@ -5,6 +5,9 @@ Release History
 
 Upcoming
 ++++++
+
+0.3.34
+++++++
 * 'az containerapp job execution show/list': improve table output format
 * 'az containerapp create/update': --yaml support properties for api-version 2023-04-01-preview (e.g. subPath, mountOptions)
 * 'az containerapp service': add support for creation and deletion of kafka
