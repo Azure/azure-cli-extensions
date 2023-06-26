@@ -7237,3 +7237,47 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # delete
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
+    def test_aks_create_with_custom_headers(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        _, create_version = self._get_versions(resource_group_location)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'k8s_version': create_version,
+        })
+    
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} -k {k8s_version} -c 1 ' \
+                     '--aks-custom-headers x-ms-correlation-request-id=12345678-90ab-cdef-1234-567890abcdef'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # scale cluster
+        scale_cluster_cmd = 'aks scale --resource-group={resource_group} --name={name} ' \
+                    '-c 2 --aks-custom-headers x-ms-correlation-request-id=12345678-90ab-cdef-1234-567890abcdef'
+        self.cmd(scale_cluster_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # scale nodepool
+        scale_nodepool_cmd = 'aks nodepool scale --resource-group={resource_group} --cluster-name={name} --name=nodepool1 ' \
+                    '-c 1 --aks-custom-headers x-ms-correlation-request-id=12345678-90ab-cdef-1234-567890abcdef'
+        self.cmd(scale_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # show
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} ' \
+                   '--aks-custom-headers x-ms-correlation-request-id=12345678-90ab-cdef-1234-567890abcdef'
+        self.cmd(show_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
