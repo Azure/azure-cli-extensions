@@ -421,7 +421,6 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                     aks_rg_id = helper.get_rg_id_from_arm_id(datasource_arm_id)
                     aks_rg = aks_rg_id.split('/')[-1]
                     aks_cluster = aks_client.get(aks_rg, aks_name)
-                    # aks_cluster = aks_client.get(resource_group_name, aks_name)
                     datasource_principal_id = aks_cluster.identity.principal_id
                 else:
                     raise CLIError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
@@ -515,7 +514,6 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                     aks_rg_id = helper.get_rg_id_from_arm_id(datasource_arm_id)
                     aks_rg = aks_rg_id.split('/')[-1]
                     aks_cluster = aks_client.get(aks_rg, aks_name)
-                    # aks_cluster = aks_client.get(resource_group_name, aks_name)
                     datasource_principal_id = aks_cluster.identity.principal_id
                 else:
                     raise CLIError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
