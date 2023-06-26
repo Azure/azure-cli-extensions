@@ -1863,7 +1863,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
 
 def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argument
-    return client.list_orchestrators(location, resource_type='managedClusters')
+    return client.list_kubernetes_versions(location)
 
 
 def aks_get_os_options(cmd, client, location):    # pylint: disable=unused-argument
