@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - logic workflow show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.48.1 azsdk-python-mgmt-logic/10.0.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/lgtest/providers/Microsoft.Logic/workflows/wf1?api-version=2019-05-01
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","createdTime":"2023-06-26T02:34:20.53214Z","changedTime":"2023-06-26T02:35:32.3882186Z","state":"Enabled","version":"08585138599531032717","accessEndpoint":"https://prod-57.eastus.logic.azure.com:443/workflows/b978151f07bd4058aec3acd528211234","definition":{"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","contentVersion":"1.0.0.0","parameters":{"$connections":{"defaultValue":{},"type":"Object"}},"triggers":{"When_a_feed_item_is_published":{"recurrence":{"frequency":"Minute","interval":1},"evaluatedRecurrence":{"frequency":"Minute","interval":1},"splitOn":"@triggerBody()?[''value'']","type":"ApiConnection","inputs":{"host":{"connection":{"name":"@parameters(''$connections'')[''rss''][''connectionId'']"}},"method":"get","path":"/OnNewFeed","queries":{"feedUrl":"http://feeds.reuters.com/reuters/topNews"}}}},"actions":{},"outputs":{}},"parameters":{},"endpointsConfiguration":{"workflow":{"outgoingIpAddresses":[{"address":"13.92.98.111"},{"address":"40.121.91.41"},{"address":"40.114.82.191"},{"address":"23.101.139.153"},{"address":"23.100.29.190"},{"address":"23.101.136.201"},{"address":"104.45.153.81"},{"address":"23.101.132.208"},{"address":"52.226.216.197"},{"address":"52.226.216.187"},{"address":"40.76.151.25"},{"address":"40.76.148.50"},{"address":"20.84.29.29"},{"address":"20.84.29.18"},{"address":"40.76.174.83"},{"address":"40.76.174.39"}],"accessEndpointIpAddresses":[{"address":"137.135.106.54"},{"address":"40.117.99.79"},{"address":"40.117.100.228"},{"address":"137.116.126.165"},{"address":"52.226.216.209"},{"address":"40.76.151.124"},{"address":"20.84.29.150"},{"address":"40.76.174.148"}]},"connector":{"outgoingIpAddresses":[{"address":"40.71.249.139"},{"address":"40.71.249.205"},{"address":"40.114.40.132"},{"address":"40.71.11.80/28"},{"address":"40.71.15.160/27"},{"address":"52.188.157.160"},{"address":"20.88.153.176/28"},{"address":"20.88.153.192/27"},{"address":"52.151.221.184"},{"address":"52.151.221.119"}]}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/lgtest/providers/Microsoft.Logic/workflows/wf1","name":"wf1","type":"Microsoft.Logic/workflows","location":"eastus","identity":{"type":"SystemAssigned","principalId":"d37820de-597b-4ce3-8887-b2c37eb80b91","tenantId":"54826b22-38d6-4fb2-bad9-b7b93a3e9c5a"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2392'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 26 Jun 2023 02:38:19 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '19999'
+    status:
+      code: 200
+      message: OK
+version: 1
