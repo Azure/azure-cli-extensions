@@ -10,10 +10,11 @@ manifest = '''
   "resourceType": "Microsoft.Storage/storageAccounts",
   "parentResourceType": "Microsoft.Storage/storageAccounts",
   "datasourceType": "Microsoft.Storage/storageAccounts/blobServices",
-  "allowedRestoreModes": [ "PointInTimeBased" ],
-  "allowedRestoreTargetTypes": [ "OriginalLocation" ],
+  "allowedRestoreModes": [ "PointInTimeBased", "RecoveryPointBased" ],
+  "allowedRestoreTargetTypes": [ "OriginalLocation", "AlternateLocation" ],
   "itemLevelRecoveyEnabled": true,
-  "addBackupDatasourceParametersList": false,
+  "addBackupDatasourceParametersList": true,
+  "backupConfigurationRequired":  false,
   "addDataStoreParametersList": false,
   "friendlyNameRequired": false,
   "supportSecretStoreAuthentication": false,
@@ -24,12 +25,12 @@ manifest = '''
     }
   ],
   "policySettings": {
-    "supportedRetentionTags": [],
-    "supportedDatastoreTypes": [ "OperationalStore" ],
-    "disableAddRetentionRule": true,
-    "disableCustomRetentionTag": true,
-    "backupScheduleSupported": false,
-    "supportedBackupFrequency": [],
+    "supportedRetentionTags": [ "Weekly", "Monthly", "Yearly" ],
+    "supportedDatastoreTypes": [ "OperationalStore", "VaultStore" ],
+    "disableAddRetentionRule": false,
+    "disableCustomRetentionTag": false,
+    "backupScheduleSupported": true,
+    "supportedBackupFrequency": [ "Daily", "Weekly" ],
     "defaultPolicy": {
       "policyRules": [
         {

@@ -14,6 +14,7 @@ manifest = '''
   "allowedRestoreTargetTypes": [ "AlternateLocation", "OriginalLocation" ],
   "itemLevelRecoveyEnabled": true,
   "addBackupDatasourceParametersList": true,
+  "backupConfigurationRequired":  true,
   "addDataStoreParametersList": true,
   "friendlyNameRequired": true,
   "supportSecretStoreAuthentication": false,

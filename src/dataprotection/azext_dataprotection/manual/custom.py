@@ -106,21 +106,43 @@ def dataprotection_backup_instance_initialize_backupconfig(datasource_type, excl
                                                            included_resource_types=None, excluded_namespaces=None,
                                                            included_namespaces=None, label_selectors=None,
                                                            snapshot_volumes=None,
-                                                           include_cluster_scope_resources=None):
-    if snapshot_volumes is None:
-        snapshot_volumes = True
-    if include_cluster_scope_resources is None:
-        include_cluster_scope_resources = True
+                                                           include_cluster_scope_resources=None,
+                                                           vaulted_backup_containers=None,
+                                                           storage_account_name=None, storage_account_resource_group=None):
+    if datasource_type == "AzureKubernetesService":
+        if vaulted_backup_containers:
+            raise CLIError('Invalid argument --vaulted-backup-containers for given datasource type.')
+        if snapshot_volumes is None:
+            snapshot_volumes = True
+        if include_cluster_scope_resources is None:
+            include_cluster_scope_resources = True
+        return {
+            "object_type": "KubernetesClusterBackupDatasourceParameters",
+            "excluded_resource_types": excluded_resource_types,
+            "included_resource_types": included_resource_types,
+            "excluded_namespaces": excluded_namespaces,
+            "included_namespaces": included_namespaces,
+            "label_selectors": label_selectors,
+            "snapshot_volumes": snapshot_volumes,
+            "include_cluster_scope_resources": include_cluster_scope_resources
+        }
+    elif datasource_type == "AzureBlob":
+        if any([excluded_resource_types, included_resource_types, excluded_namespaces, included_namespaces, \
+            label_selectors, snapshot_volumes, include_cluster_scope_resources]):
+            raise CLIError('Invalid arguments --excluded-resource-type, --included-resource-type, --excluded-namespaces, '
+                           ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources '
+                           ' for given datasource type.')
+        if not vaulted_backup_containers:
+            raise CLIError('Please provide --vaulted-backup-containers argument for given workload type.')
 
-    return {
-        "excluded_resource_types": excluded_resource_types,
-        "included_resource_types": included_resource_types,
-        "excluded_namespaces": excluded_namespaces,
-        "included_namespaces": included_namespaces,
-        "label_selectors": label_selectors,
-        "snapshot_volumes": snapshot_volumes,
-        "include_cluster_scope_resources": include_cluster_scope_resources
-    }
+        return {
+            "object_type": "BlobBackupDatasourceParameters",
+            "containers_list": vaulted_backup_containers
+        }
+    else:
+        raise CLIError('Given datasource type is not supported currently. This command only supports "AzureBlob" or "AzureKubernetesService" '
+                       'datasource types.')
+
 
 
 def dataprotection_backup_instance_initialize(datasource_type, datasource_id, datasource_location, policy_id,
@@ -195,13 +217,29 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
         backup_instance_name = datasource_info["resource_name"] + "-" + datasource_info["resource_name"] + "-" + str(guid)
 
     if manifest["addBackupDatasourceParametersList"]:
-        if backup_configuration is None:
-            raise CLIError("Please input parameter backup-configuration for AKS cluster backup. \
+        if manifest["backupConfigurationRequired"] and backup_configuration is None:
+            raise CLIError("Please input parameter backup-configuration for given datasource type. \
                            Use command az dataprotection backup-instance initialize-backupconfig \
                            for creating the backup-configuration")
-        backup_configuration["object_type"] = "KubernetesClusterBackupDatasourceParameters"
-        policy_info["policy_parameters"]["backup_datasource_parameters_list"] = []
-        policy_info["policy_parameters"]["backup_datasource_parameters_list"].append(backup_configuration)
+        if backup_configuration:
+            if datasource_type == "AzureBlob":
+                for key in ['excluded_resource_types', 'included_resource_types', 'excluded_namespaces', 'included_namespaces', \
+                    'label_selectors', 'snapshot_volumes' 'include_cluster_scope_resources']:
+                    if key in backup_configuration:
+                        raise CLIError('Invalid arguments --excluded-resource-type, --included-resource-type, --excluded-namespaces, '
+                                    ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources '
+                                    ' for given datasource type. Please check the backup configuration.')
+
+            if datasource_type == "AzureKubernetesService":
+                    if "containers_list" in backup_configuration:
+                        raise CLIError('Invalid argument --vaulted-backup-containers for given datasource type. '
+                                       'Please check the backup configuration.')
+
+            if not policy_info["policy_parameters"]:
+                policy_info["policy_parameters"] = {}
+
+            policy_info["policy_parameters"]["backup_datasource_parameters_list"] = []
+            policy_info["policy_parameters"]["backup_datasource_parameters_list"].append(backup_configuration)
     else:
         if backup_configuration is not None:
             logger.warning("--backup-configuration is not required for the given DatasourceType, and will not be used")
@@ -421,7 +459,6 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                     aks_rg_id = helper.get_rg_id_from_arm_id(datasource_arm_id)
                     aks_rg = aks_rg_id.split('/')[-1]
                     aks_cluster = aks_client.get(aks_rg, aks_name)
-                    # aks_cluster = aks_client.get(resource_group_name, aks_name)
                     datasource_principal_id = aks_cluster.identity.principal_id
                 else:
                     raise CLIError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
@@ -515,7 +552,6 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                     aks_rg_id = helper.get_rg_id_from_arm_id(datasource_arm_id)
                     aks_rg = aks_rg_id.split('/')[-1]
                     aks_cluster = aks_client.get(aks_rg, aks_name)
-                    # aks_cluster = aks_client.get(resource_group_name, aks_name)
                     datasource_principal_id = aks_cluster.identity.principal_id
                 else:
                     raise CLIError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
