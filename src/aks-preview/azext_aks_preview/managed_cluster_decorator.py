@@ -84,6 +84,7 @@ from azext_aks_preview.agentpool_decorator import (
     AKSPreviewAgentPoolAddDecorator,
     AKSPreviewAgentPoolUpdateDecorator,
 )
+from azext_aks_preview._roleassignments import add_role_assignment
 from msrestazure.tools import is_valid_resource_id
 
 from dateutil.parser import parse
@@ -160,6 +161,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             external_functions[
                 "ensure_azure_monitor_profile_prerequisites"
             ] = ensure_azure_monitor_profile_prerequisites
+            # temp workaround for the breaking change caused by default API version bump of the auth SDK
+            external_functions["add_role_assignment"] = add_role_assignment
             self.__external_functions = SimpleNamespace(**external_functions)
         return self.__external_functions
 
