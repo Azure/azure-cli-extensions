@@ -644,6 +644,9 @@ helps['aks scale'] = """
         - name: --node-count -c
           type: int
           short-summary: Number of nodes in the Kubernetes node pool.
+        - name: --aks-custom-headers
+          type: string
+          short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
 """
 
 helps['aks upgrade'] = """
