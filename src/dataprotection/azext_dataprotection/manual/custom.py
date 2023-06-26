@@ -18,6 +18,7 @@ from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
 from azext_dataprotection.manual import backupcenter_helper, helpers as helper
 
+
 logger = get_logger(__name__)
 
 
@@ -140,8 +141,8 @@ def dataprotection_backup_instance_initialize_backupconfig(datasource_type, excl
             "containers_list": vaulted_backup_containers
         }
     else:
-        raise CLIError('Given datasource type is not supported currently. This command only supports "AzureBlob" or "AzureKubernetesService" '
-                       'datasource types.')
+        raise CLIError('Given datasource type is not supported currently. '
+                       'This command only supports "AzureBlob" or "AzureKubernetesService" datasource types.')
 
 
 
@@ -1040,7 +1041,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
                        ". Supported restore modes are " + ','.join(manifest["allowedRestoreModes"]))
 
     # Workload should allow for item level recovery
-    if manifest is not None and not manifest["itemLevelRecoveyEnabled"]:
+    if manifest is not None and not manifest["itemLevelRecoveryEnabled"]:
         raise CLIError("Specified DatasourceType " + datasource_type + " doesn't support Item Level Recovery")
 
     # Constructing the rest of the restore request object. No further validation is being done.
@@ -1067,23 +1068,34 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
             raise CLIError("Please specify either container list or prefix pattern.")
 
         if container_list is not None:
-            if len(container_list) > 10:
-                raise CLIError("A maximum of 10 containers can be restored. Please choose up to 10 containers.")
-            for container in container_list:
-                if container[0] == '$':
-                    raise CLIError("container name can not start with '$'. Please retry with different sets of containers.")
-                restore_criteria = {}
-                restore_criteria["object_type"] = "RangeBasedItemLevelRestoreCriteria"
-                restore_criteria["min_matching_value"] = container
-                restore_criteria["max_matching_value"] = container + "-0"
-
-                restore_criteria_list.append(restore_criteria)
+            if recovery_point_id:
+                if len(container_list) > 100:
+                    raise CLIError("A maximum of 100 containers can be restored for vaulted backup. Please choose up to 100 containers.")
+                for container in container_list:
+                    if container[0] == '$':
+                        raise CLIError("container name can not start with '$'. Please retry with different sets of containers.")
+                    restore_criteria = {}
+                    restore_criteria["object_type"] = "ItemPathBasedRestoreCriteria"
+                    restore_criteria["item_path"] = container
+                    restore_criteria["is_path_relative_to_backup_item"] = True
+                    restore_criteria_list.append(restore_criteria)
+            else:
+                if len(container_list) > 10:
+                    raise CLIError("A maximum of 10 containers can be restored. Please choose up to 10 containers.")
+                for container in container_list:
+                    if container[0] == '$':
+                        raise CLIError("container name can not start with '$'. Please retry with different sets of containers.")
+                    restore_criteria = {}
+                    restore_criteria["object_type"] = "RangeBasedItemLevelRestoreCriteria"
+                    restore_criteria["min_matching_value"] = container
+                    restore_criteria["max_matching_value"] = container + "-0"
+                    restore_criteria_list.append(restore_criteria)
 
         if from_prefix_pattern is not None or to_prefix_pattern is not None:
             if from_prefix_pattern is None or to_prefix_pattern is None or \
                len(from_prefix_pattern) != len(to_prefix_pattern) or len(from_prefix_pattern) > 10:
                 raise CLIError(
-                    "from-prefix-pattern and to-prefix-pattern should not be null, both of them should have "
+                    "From-prefix-pattern and to-prefix-pattern should not be null, both of them should have "
                     "equal length and can have a maximum of 10 patterns."
                 )
 
@@ -1106,7 +1118,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
                 regex_pattern = r"^[a-z0-9](?!.*--)[a-z0-9-]{1,61}[a-z0-9](\/.{1,60})*$"
                 if re.match(regex_pattern, from_prefix_pattern[index]) is None:
                     raise CLIError(
-                        "prefix patterns must start or end with a letter or number,"
+                        "Prefix patterns must start or end with a letter or number,"
                         "and can contain only lowercase letters, numbers, and the dash (-) character. "
                         "consecutive dashes are not permitted."
                         "Given pattern " + from_prefix_pattern[index] + " violates the above rule."
@@ -1114,7 +1126,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
 
                 if re.match(regex_pattern, to_prefix_pattern[index]) is None:
                     raise CLIError(
-                        "prefix patterns must start or end with a letter or number,"
+                        "Prefix patterns must start or end with a letter or number,"
                         "and can contain only lowercase letters, numbers, and the dash (-) character. "
                         "consecutive dashes are not permitted."
                         "Given pattern " + to_prefix_pattern[index] + " violates the above rule."
@@ -1124,7 +1136,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
                     if (from_prefix_pattern[index] <= from_prefix_pattern[compareindex] and to_prefix_pattern[index] >= from_prefix_pattern[compareindex]) or \
                        (from_prefix_pattern[index] >= from_prefix_pattern[compareindex] and from_prefix_pattern[index] <= to_prefix_pattern[compareindex]):
                         raise CLIError(
-                            "overlapping ranges are not allowed."
+                            "Overlapping ranges are not allowed."
                         )
 
             for index, _ in enumerate(from_prefix_pattern):
@@ -1136,7 +1148,7 @@ def restore_initialize_for_item_recovery(cmd, datasource_type, source_datastore,
                 restore_criteria_list.append(restore_criteria)
 
         if container_list is None and from_prefix_pattern is None and to_prefix_pattern is None:
-            raise CLIError("Provide ContainersList or Prefixes for Item Level Recovery")
+            raise CLIError("Provide container list or prefixes for item level recovery.")
 
     restore_request["restore_target_info"]["restore_criteria"] = restore_criteria_list
 

@@ -12,7 +12,7 @@ manifest = '''
   "datasourceType": "Microsoft.Storage/storageAccounts/blobServices",
   "allowedRestoreModes": [ "PointInTimeBased", "RecoveryPointBased" ],
   "allowedRestoreTargetTypes": [ "OriginalLocation", "AlternateLocation" ],
-  "itemLevelRecoveyEnabled": true,
+  "itemLevelRecoveryEnabled": true,
   "addBackupDatasourceParametersList": true,
   "backupConfigurationRequired":  false,
   "addDataStoreParametersList": false,

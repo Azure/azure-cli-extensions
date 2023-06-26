@@ -12,7 +12,7 @@ manifest = '''
   "datasourceType": "Microsoft.ContainerService/managedClusters",
   "allowedRestoreModes": [ "RecoveryPointBased" ],
   "allowedRestoreTargetTypes": [ "AlternateLocation", "OriginalLocation" ],
-  "itemLevelRecoveyEnabled": true,
+  "itemLevelRecoveryEnabled": true,
   "addBackupDatasourceParametersList": true,
   "backupConfigurationRequired":  true,
   "addDataStoreParametersList": true,

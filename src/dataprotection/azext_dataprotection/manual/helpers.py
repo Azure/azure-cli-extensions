@@ -41,7 +41,7 @@ def get_datasource_info(datasource_type, resource_id, resource_location):
 
     resource_uri = ""
 
-    if datasource_type == "AzureKubernetesService":
+    if not manifest['isProxyResource'] or manifest['enableDataSourceSetInfo']:
         resource_uri = resource_id
 
     return {
