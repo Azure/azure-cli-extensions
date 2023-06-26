@@ -8,6 +8,7 @@ import colorama
 from azure.cli.core import telemetry
 from azure.cli.core import azclierror
 from knack import log
+from . import constants as const
 
 logger = log.get_logger(__name__)
 
@@ -33,14 +34,13 @@ def handle_target_os_type(cmd, op_info):
         error_message = "SSH Login using AAD credentials is not currently supported for Windows."
         recommendation = colorama.Fore.YELLOW + "Please provide --local-user." + colorama.Style.RESET_ALL
         raise azclierror.RequiredArgumentMissingError(error_message, recommendation)
-    
-    '''
-    if agent_version:
-        major, minor, fix, build = agent_version.Split('.')
-        if int(major) < 1 or int(minor) < 29:
-            logger.warning(f"The target machine is using an old version of the agent {agent_version}." +
-                           "Please update to the latest version.")
-    '''
+
+    if op_info.is_arc() and agent_version:
+        major, minor, _, _ = agent_version.split('.', 4)
+        if int(major) < const.AGENT_MINIMUM_VERSION_MAJOR or int(minor) < const.AGENT_MINIMUM_VERSION_MINOR:
+            logger.warning(f"The version of the Arc Agent, {agent_version} running on the target machine is not "
+                           f"compatible with this version of ssh extension. Please update to the latest version.")
+
 
 def _get_azure_vm_os(cmd, resource_group_name, vm_name):
     from azure.cli.core.commands import client_factory

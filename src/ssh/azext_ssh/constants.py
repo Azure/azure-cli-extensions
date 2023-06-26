@@ -5,6 +5,8 @@
 from colorama import Fore
 from colorama import Style
 
+AGENT_MINIMUM_VERSION_MAJOR = 1
+AGENT_MINIMUM_VERSION_MINOR = 31
 CLIENT_PROXY_VERSION = "1.3.022941"
 CLIENT_PROXY_RELEASE = "release21-04-23"
 CLIENT_PROXY_STORAGE_URL = "https://sshproxysa.blob.core.windows.net"

@@ -56,7 +56,7 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         logger.debug("Running ssh command %s", ' '.join(command))
 
         while (retry_attempt <= retry_attempts_allowed and not successful_connection):
-            service_config_delay_error = False
+            service_config_delay_error_logs = False
             if retry_attempt == 1:
                 logger.warning(f"SSH connection failed, possibly caused by new service configuration setup. "
                                f"Retrying the connection in {str(const.RETRY_DELAY_IN_SECONDS)} seconds.")
@@ -66,7 +66,7 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
                 # pylint: disable=consider-using-with
                 if redirect_stderr:
                     ssh_process = subprocess.Popen(command, stderr=subprocess.PIPE, env=env, encoding='utf-8')
-                    service_config_delay_error = _read_ssh_logs(ssh_process, op_info, delete_cert, delete_keys)
+                    service_config_delay_error_logs = _read_ssh_logs(ssh_process, op_info, delete_cert, delete_keys)
                 else:
                     ssh_process = subprocess.Popen(command, env=env, encoding='utf-8')
                     _wait_to_delete_credentials(ssh_process, op_info, delete_cert, delete_keys)
@@ -78,7 +78,7 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
             connection_duration = (time.time() - connection_duration) / 60
             if ssh_process and ssh_process.poll() == 0:
                 successful_connection = True
-            if op_info.new_service_config and service_config_delay_error and ssh_process.poll() == 255:
+            if op_info.new_service_config and (service_config_delay_error_logs or (ssh_process.poll() == 255 and not redirect_stderr)):
                 retry_attempts_allowed = 1
                 if retry_attempt == 1:
                     logger.warning("SSH connection failure could still be due to Service Configuration update. "
