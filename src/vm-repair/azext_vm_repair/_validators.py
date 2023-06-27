@@ -427,7 +427,6 @@ def validate_repair_and_restore(cmd, namespace):
     # Prompt input for public ip usage
     namespace.associate_public_ip = False
 
-    # Validate repair run
-
+    # Validate repair run command
     source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
     is_linux = _is_linux_os(source_vm)

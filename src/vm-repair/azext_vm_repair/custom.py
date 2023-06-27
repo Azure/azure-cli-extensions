@@ -672,6 +672,9 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     import secrets
     import string
 
+    # Init command helper object
+    command = command_helper(logger, cmd, 'vm repair repair-and-restore')
+
     password_length = 30
     password_characters = string.ascii_lowercase + string.digits + string.ascii_uppercase
     repair_password = ''.join(secrets.choice(password_characters) for i in range(password_length))
@@ -701,7 +704,10 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
         run_out = run(cmd, repair_vm_name, repair_group_name, run_id='linux-alar2', parameters=["fstab"])
 
     except Exception:
-        logger.info('fstab run command errored')
+        command.set_status_error()
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = "Command failed when running fstab script."
+        command.message = "Command failed when running fstab script."
         if existing_rg:
             _clean_up_resources(repair_group_name, confirm=True)
         else:
@@ -712,7 +718,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     logger.info('run_out: %s', run_out)
 
     if run_out['script_status'] == 'ERROR':
-        logger.info('fstab run command errored')
+        logger.error('fstab script returned an error.')
         if existing_rg:
             _clean_up_resources(repair_group_name, confirm=True)
         else:
