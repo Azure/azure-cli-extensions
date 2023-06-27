@@ -14,7 +14,7 @@ from knack.log import get_logger
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
 from msrestazure.tools import parse_resource_id
-from .exceptions import SkuDoesNotSupportHyperV
+from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError, CommandCanceledByUserError
 
 from .command_helper_class import command_helper
 from .repair_utils import (
