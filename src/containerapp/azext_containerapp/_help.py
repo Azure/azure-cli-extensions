@@ -1115,6 +1115,50 @@ helps['containerapp ingress sticky-sessions show'] = """
           az containerapp ingress sticky-sessions show -n MyContainerapp -g MyResourceGroup
 """
 
+helps['containerapp ingress cors'] = """
+    type: group
+    short-summary: Commands to manage CORS policy for a container app.
+"""
+
+helps['containerapp ingress cors enable'] = """
+    type: command
+    short-summary: Enable CORS policy for a container app.
+    examples:
+    - name: Set allowed origins and allowed methods for a container app.
+      text: |
+          az containerapp ingress cors enable -n MyContainerapp -g MyResourceGroup --allowed-origins http://www.contoso.com https://www.contoso.com --allowed-methods GET POST
+    - name: Set allowed origins, allowed methods and allowed headers for a container app.
+      text: |
+          az containerapp ingress cors enable -n MyContainerapp -g MyResourceGroup --allowed-origins * --allowed-methods * --allowed-headers header1 header2
+"""
+
+helps['containerapp ingress cors disable'] = """
+    type: command
+    short-summary: Disable CORS policy for a container app.
+    examples:
+    - name: Disable CORS policy for a container app.
+      text: |
+          az containerapp ingress cors disable -n MyContainerapp -g MyResourceGroup
+"""
+
+helps['containerapp ingress cors update'] = """
+    type: command
+    short-summary: Update CORS policy for a container app.
+    examples:
+    - name: Update allowed origins and allowed methods for a container app while keeping other cors settings.
+      text: |
+          az containerapp ingress cors update -n MyContainerapp -g MyResourceGroup --allowed-origins http://www.contoso.com https://www.contoso.com --allowed-methods GET POST
+"""
+
+helps['containerapp ingress cors show'] = """
+    type: command
+    short-summary: Show CORS policy for a container app.
+    examples:
+    - name: Show CORS policy for a container app.
+      text: |
+          az containerapp ingress cors show -n MyContainerapp -g MyResourceGroup
+"""
+
 # Registry Commands
 helps['containerapp registry'] = """
     type: group
