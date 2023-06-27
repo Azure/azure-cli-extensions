@@ -14,7 +14,10 @@ def load_command_table(self, _):
         self.command_table['spatial-anchors-account create'] = SpatialAnchorsCreate(loader=self)
         self.command_table['spatial-anchors-account key renew'] = SpatialAnchorsKeyRenew(loader=self)
 
-    # with self.command_group('spatial-anchors-account key'):
+    with self.command_group('remote-rendering-account') as g:
+        from .custom import RemoteRenderingCreate, RemoteRenderingKeyRenew
+        self.command_table['remote-rendering-account create'] = RemoteRenderingCreate(loader=self)
+        self.command_table['remote-rendering-account key renew'] = RemoteRenderingKeyRenew(loader=self)
 
 
 

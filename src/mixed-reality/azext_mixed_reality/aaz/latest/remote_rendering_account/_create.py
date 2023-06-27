@@ -71,6 +71,12 @@ class Create(AAZCommand):
         # define Arg Group "RemoteRenderingAccount"
 
         _args_schema = cls._args_schema
+        _args_schema.identity = AAZObjectArg(
+            options=["--identity"],
+            arg_group="RemoteRenderingAccount",
+            help="The identity associated with this account",
+        )
+        cls._build_args_identity_create(_args_schema.identity)
         _args_schema.kind = AAZObjectArg(
             options=["--kind"],
             arg_group="RemoteRenderingAccount",
@@ -254,6 +260,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _CreateHelper._build_schema_identity_create(_builder.set_prop("identity", AAZObjectType, ".identity"))
             _CreateHelper._build_schema_sku_create(_builder.set_prop("kind", AAZObjectType, ".kind"))
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
