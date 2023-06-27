@@ -713,6 +713,7 @@ def aks_update(
     load_balancer_managed_outbound_ipv6_count=None,
     outbound_type=None,
     network_plugin_mode=None,
+    network_dataplane=None,
     pod_cidr=None,
     enable_pod_security_policy=False,
     disable_pod_security_policy=False,
