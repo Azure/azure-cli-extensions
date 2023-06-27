@@ -1143,6 +1143,7 @@ class ContainerappScaleTests(ScenarioTest):
                       action: "Allow"
               template:
                 revisionSuffix: myrevision
+                terminationGracePeriodSeconds: 90
                 containers:
                   - image: nginx
                     name: nginx
@@ -1185,6 +1186,7 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
+            JMESPathCheck("properties.template.terminationGracePeriodSeconds", 90),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
@@ -1214,7 +1216,7 @@ class ContainerappScaleTests(ScenarioTest):
                               weight: 100
                           transport: Auto
                       template:
-                        revisionSuffix: myrevision
+                        revisionSuffix: myrevision2
                         containers:
                           - image: nginx
                             name: nginx
@@ -1243,7 +1245,7 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
-            JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
+            JMESPathCheck("properties.template.revisionSuffix", "myrevision2"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
@@ -1473,3 +1475,20 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.maxReplicas", 3)
         ])
         clean_up_test_file(containerapp_file_name)
+
+
+class ContainerappOtherPropertyTests(ScenarioTest):
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_termination_grace_period_seconds(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='aca', length=24)
+        image = "mcr.microsoft.com/k8se/quickstart:latest"
+        terminationGracePeriodSeconds = 90
+        create_containerapp_env(self, env, resource_group)
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env} --termination-grace-period {terminationGracePeriodSeconds}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.template.terminationGracePeriodSeconds", terminationGracePeriodSeconds)])

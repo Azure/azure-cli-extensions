@@ -302,6 +302,9 @@ class BaseContainerAppDecorator:
     def set_argument_service_connectors_def_list(self, service_connectors_def_list):
         self.set_param("service_connectors_def_list", service_connectors_def_list)
 
+    def get_argument_termination_grace_period(self):
+        return self.get_param("termination_grace_period")
+
 
 class ContainerAppCreateDecorator(BaseContainerAppDecorator):
     def __init__(
@@ -499,6 +502,9 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
 
         if self.get_argument_revision_suffix() is not None and not is_registry_msi_system(self.get_argument_registry_identity()):
             template_def["revisionSuffix"] = self.get_argument_revision_suffix()
+
+        if self.get_argument_termination_grace_period() is not None:
+            template_def["terminationGracePeriodSeconds"] = self.get_argument_termination_grace_period()
 
         containerapp_def = ContainerAppModel
         containerapp_def["location"] = location
