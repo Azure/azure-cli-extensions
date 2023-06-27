@@ -5,6 +5,7 @@ Release History
 
 Upcoming
 ++++++
+* 'az containerapp create/update': --termination-grace-period support custom termination grace period
 
 0.3.34
 ++++++
