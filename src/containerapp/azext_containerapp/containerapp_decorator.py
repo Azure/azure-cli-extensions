@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except
-from abc import ABC
 from typing import Dict, Any
 
 from azure.cli.core.commands import AzCliCommand
@@ -701,4 +700,5 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             if not scale_def:
                 scale_def = ScaleModel
             scale_def["rules"] = [scale_rule_def]
-            return scale_def
+
+        return scale_def
