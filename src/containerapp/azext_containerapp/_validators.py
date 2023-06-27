@@ -41,7 +41,7 @@ def _is_number(s):
 
 def validate_revision_suffix(value):
     if value is not None:
-        # what does the following regex check? 
+        # what does the following regex check?
         # 1. ^[a-z0-9] - starts with a letter or number
         # 2. (?!.*-{2}) - does not contain '--'
         # 3. ([-a-z0-9]*[a-z0-9])? - ends with a letter or number and can contain '-' in between
