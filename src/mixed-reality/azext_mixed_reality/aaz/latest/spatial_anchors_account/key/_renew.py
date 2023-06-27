@@ -186,11 +186,11 @@ class Renew(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.primary_key = AAZStrType(
                 serialized_name="primaryKey",
-                flags={"secret": True, "read_only": True},
+                flags={"read_only": True},
             )
             _schema_on_200.secondary_key = AAZStrType(
                 serialized_name="secondaryKey",
-                flags={"secret": True, "read_only": True},
+                flags={"read_only": True},
             )
 
             return cls._schema_on_200
