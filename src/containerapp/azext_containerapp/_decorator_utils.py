@@ -48,7 +48,7 @@ def process_loaded_yaml(yaml_containerapp):
     if safe_get(yaml_containerapp, "identity", "userAssignedIdentities"):
         for identity in yaml_containerapp['identity']['userAssignedIdentities']:
             # properties (principalId and clientId) are readonly and create (PUT) will throw error if they are provided
-            # Update (PATCH) ignores them so it's okay to remove them as well
+            # Update (PATCH) ignores them, so it's okay to remove them as well
             yaml_containerapp['identity']['userAssignedIdentities'][identity] = {}
 
     nested_properties = ["provisioningState",
