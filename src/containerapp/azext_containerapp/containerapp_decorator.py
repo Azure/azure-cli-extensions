@@ -544,7 +544,9 @@ class ContainerAppCreateDecorator(BaseContainerAppDecorator):
             logger.info("Creating an acrpull role assignment for the system identity")
             system_sp = r["identity"]["principalId"]
             create_acrpull_role_assignment(self.cmd, self.get_argument_registry_server(), registry_identity=None, service_principal=system_sp)
-            safe_set(containerapp_def, "properties", "template", "containers", "image", value=self.get_argument_image())
+            containers_def = safe_get(containerapp_def, "properties", "template", "containers")
+            containers_def[0]["image"] = self.get_argument_image()
+
             safe_set(containerapp_def, "properties", "template", "revisionSuffix", value=self.get_argument_revision_suffix())
 
             registries_def = RegistryCredentialsModel
