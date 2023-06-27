@@ -5,6 +5,7 @@ Release History
 
 Upcoming
 ++++++
+* 'az containerapp create/update': --termination-grace-period support custom termination grace period
 
 0.3.34
 ++++++
@@ -17,7 +18,6 @@ Upcoming
 * Add 'az containerapp ingress cors' for CORS support
 * 'az container app env create/update': support --enable-mtls parameter
 * 'az containerapp up': fix issue where --repo throws KeyError
-* 'az containerapp create/update': --termination-grace-period support custom termination grace period
 
 0.3.33
 ++++++
