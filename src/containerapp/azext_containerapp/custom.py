@@ -92,7 +92,8 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      check_managed_cert_name_availability, prepare_managed_certificate_envelop,
                      get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported, _generate_secret_volume_name,
                      parse_service_bindings, get_linker_client, check_unique_bindings,
-                     get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, trigger_workflow, AppType)
+                     get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, trigger_workflow, AppType,
+                     format_location)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -4355,8 +4356,12 @@ def stream_environment_logs(cmd, resource_group_name, name, follow=False, tail=N
 
     env = show_managed_environment(cmd, name, resource_group_name)
     url = safe_get(env, "properties", "eventStreamEndpoint")
+
     if url is None:
-        ValidationError("Got null eventStreamEndpoint")
+        sub = get_subscription_id(cmd.cli_ctx)
+        base_url = f"https://{format_location(env['location'])}.azurecontainerapps.dev"
+        url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/managedEnvironments/{name}"
+               f"/eventstream")
 
     token_response = ManagedEnvironmentClient.get_auth_token(cmd, resource_group_name, name)
     token = token_response["properties"]["token"]
