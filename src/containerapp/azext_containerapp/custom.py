@@ -4354,13 +4354,12 @@ def stream_environment_logs(cmd, resource_group_name, name, follow=False, tail=N
             raise ValidationError("--tail must be between 0 and 300.")
 
     env = show_managed_environment(cmd, name, resource_group_name)
-    sub = get_subscription_id(cmd.cli_ctx)
+    url = safe_get(env, "properties", "eventStreamEndpoint")
+    if url is None:
+        ValidationError("Got null eventStreamEndpoint")
+
     token_response = ManagedEnvironmentClient.get_auth_token(cmd, resource_group_name, name)
     token = token_response["properties"]["token"]
-    base_url = f"https://{env['location']}.azurecontainerapps.dev"
-
-    url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/managedEnvironments/{name}"
-           f"/eventstream")
 
     logger.info("connecting to : %s", url)
     request_params = {"follow": str(follow).lower(),
