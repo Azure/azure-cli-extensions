@@ -12,10 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 ++++++
 
-0.5.145
+0.5.146
 +++++++
 * Vendor new SDK and bump API version to 2023-05-02-preview.
-* Add support for new snapshot command `az aks snapshot modify`
+* Add support for new snapshot command `az aks nodepool snapshot update`
 
 0.5.144
 +++++++
