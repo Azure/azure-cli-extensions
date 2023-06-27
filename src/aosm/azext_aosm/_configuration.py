@@ -47,10 +47,12 @@ DESCRIPTION_MAP: Dict[str, str] = {
     "nsdg_name": "Network Service Design Group Name. This is the collection of Network Service Design Versions. "
     "Will be created if it does not exist.",
     "nsd_version": "Version of the NSD to be created. This should be in the format A.B.C",
-    "network_function_definition_group_name": "Exising Network Function Definition Group Name. "
-    "This can be created using the 'az aosm nfd' commands.",
-    "network_function_definition_version_name": "Exising Network Function Definition Version Name. "
-    "This can be created using the 'az aosm nfd' commands.",
+    "network_function_definition_group_name":
+        "Existing Network Function Definition Group Name. "
+        "This can be created using the 'az aosm nfd' commands.",
+    "network_function_definition_version_name":
+        "Existing Network Function Definition Version Name. "
+        "This can be created using the 'az aosm nfd' commands.",
     "network_function_definition_offering_location": "Offering location of the Network Function Definition",
     "network_function_type": "Type of nf in the definition. Valid values are 'cnf' or 'vnf'",
     "helm_package_name": "Name of the Helm package",
@@ -66,7 +68,12 @@ DESCRIPTION_MAP: Dict[str, str] = {
     "helm_depends_on":
         "Names of the Helm packages this package depends on. "
         "Leave as an empty array if no dependencies",
-    "source_registry_id": "Resource ID of the source acr registry from which to pull the image",
+    "image_name_parameter":
+        "The parameter name in the VM ARM template which specifies the name of the "
+        "image to use for the VM.",
+    "source_registry_id": 
+        "Resource ID of the source acr registry from which to pull "
+        "the image",
 }
 
 
@@ -98,7 +105,8 @@ class NFConfiguration:
     @property
     def acr_manifest_name(self) -> str:
         """Return the ACR manifest name from the NFD name."""
-        return f"{self.nf_name}-acr-manifest-{self.version.replace('.', '-')}"
+        sanitized_nf_name = self.nf_name.lower().replace("_", "-")
+        return f"{sanitized_nf_name}-acr-manifest-{self.version.replace('.', '-')}"
 
 
 @dataclass
@@ -188,7 +196,8 @@ class NSConfiguration:
     @property
     def acr_manifest_name(self) -> str:
         """Return the ACR manifest name from the NFD name."""
-        return f"{self.network_function_name.lower().replace('_', '-')}-acr-manifest-{self.nsd_version.replace('.', '-')}"
+        sanitised_nf_name = self.network_function_name.lower().replace('_', '-')
+        return f"{sanitised_nf_name}-acr-manifest-{self.nsd_version.replace('.', '-')}"
 
     @property
     def nfvi_site_name(self) -> str:
@@ -219,6 +228,7 @@ class NSConfiguration:
 @dataclass
 class VNFConfiguration(NFConfiguration):
     blob_artifact_store_name: str = DESCRIPTION_MAP["blob_artifact_store_name"]
+    image_name_parameter: str = DESCRIPTION_MAP["image_name_parameter"]
     arm_template: Any = ArtifactConfig()
     vhd: Any = ArtifactConfig()
 
@@ -277,7 +287,8 @@ class VNFConfiguration(NFConfiguration):
     @property
     def sa_manifest_name(self) -> str:
         """Return the Storage account manifest name from the NFD name."""
-        return f"{self.nf_name}-sa-manifest-{self.version.replace('.', '-')}"
+        sanitized_nf_name = self.nf_name.lower().replace("_", "-")
+        return f"{sanitized_nf_name}-sa-manifest-{self.version.replace('.', '-')}"
 
     @property
     def build_output_folder_name(self) -> str:
