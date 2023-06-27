@@ -23,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2023-05-01-preview"],
         ]
     }
 
@@ -124,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-05-01-preview",
                     required=True,
                 ),
             }
@@ -191,7 +191,6 @@ class Show(AAZCommand):
             _ShowHelper._build_schema_rack_definition_read(properties.aggregator_or_single_rack_definition)
             properties.analytics_workspace_id = AAZStrType(
                 serialized_name="analyticsWorkspaceId",
-                flags={"required": True},
             )
             properties.available_upgrade_versions = AAZListType(
                 serialized_name="availableUpgradeVersions",
