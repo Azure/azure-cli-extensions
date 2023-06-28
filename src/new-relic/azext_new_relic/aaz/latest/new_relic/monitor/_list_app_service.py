@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListAppService(AAZCommand):
     """List the app service resources currently being monitored by the NewRelic resource.
+
+    :example: List the app service resources currently being monitored by the NewRelic resource.
+        az new-relic monitor list-app-service --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --user-email UserEmail@123.com --azure-resource-ids MyAzureResourceIds
     """
 
     _aaz_info = {
@@ -41,7 +44,7 @@ class ListAppService(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
+            options=["-n", "--name", "--monitor-name"],
             help="Name of the Monitors resource",
             required=True,
         )

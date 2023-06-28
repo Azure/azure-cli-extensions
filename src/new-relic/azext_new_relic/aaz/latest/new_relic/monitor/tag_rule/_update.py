@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a TagRule
+
+    :example: Update a TagRule.
+        az new-relic monitor tag-rule update --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default --log-rules {"send-aad-logs":"Enabled","send-subscription-logs":"Enabled","send-activity-logs":"Disabled","filtering-tags":[]}
     """
 
     _aaz_info = {

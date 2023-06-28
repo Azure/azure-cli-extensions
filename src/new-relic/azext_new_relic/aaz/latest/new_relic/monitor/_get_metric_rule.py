@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class GetMetricRule(AAZCommand):
     """Get metric rules
+
+    :example: Get metric rules.
+        az new-relic monitor get-metric-rule --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup --user-email UserEmail@123.com
     """
 
     _aaz_info = {
@@ -42,7 +45,7 @@ class GetMetricRule(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
+            options=["-n", "--name", "--monitor-name"],
             help="Name of the Monitors resource",
             required=True,
             id_part="name",

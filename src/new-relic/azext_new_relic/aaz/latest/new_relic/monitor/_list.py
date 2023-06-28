@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "new-relic monitor list",
 )
 class List(AAZCommand):
-    """List NewRelicMonitorResource resources by subscription ID
+    """List NewRelicMonitorResource resources
+
+    :example: List NewRelicMonitorResource resources by subscription ID
+        az new-relic monitor list
     """
 
     _aaz_info = {

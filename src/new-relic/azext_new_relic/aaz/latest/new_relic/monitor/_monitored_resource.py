@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class MonitoredResource(AAZCommand):
     """List the resources currently being monitored by the NewRelic monitor resource.
+
+    :example: List the resources currently being monitored by the NewRelic monitor resource.
+        az new-relic monitor monitored-resource --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup
     """
 
     _aaz_info = {
@@ -41,7 +44,7 @@ class MonitoredResource(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
+            options=["-n", "--name", "--monitor-name"],
             help="Name of the Monitors resource",
             required=True,
         )

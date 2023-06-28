@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class VmHostPayload(AAZCommand):
     """Returns the payload that needs to be passed in the request body for installing NewRelic agent on a VM.
+
+    :example: Get MonitorsVmHostPayload.
+        az monitor vm-host-payload --monitor-name MyNewRelicMonitor --resource-group MyResourceGroup
     """
 
     _aaz_info = {

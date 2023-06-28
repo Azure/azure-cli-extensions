@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListHost(AAZCommand):
     """List the compute vm resources currently being monitored by the NewRelic resource.
+
+    :example: List the compute vm resources currently being monitored by the NewRelic resource.
+        az new-relic monitor list-host --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --user-email UserEmail@123.com --vm-ids MyVmIds
     """
 
     _aaz_info = {
@@ -41,7 +44,7 @@ class ListHost(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
+            options=["-n", "--name", "--monitor-name"],
             help="Name of the Monitors resource",
             required=True,
         )

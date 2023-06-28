@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List TagRule resources by NewRelicMonitorResource
+
+    :example: List TagRule resources by NewRelicMonitorResource.
+        az new-relic monitor tag-rule list --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor
     """
 
     _aaz_info = {

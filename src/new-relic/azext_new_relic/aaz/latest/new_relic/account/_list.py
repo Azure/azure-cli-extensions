@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List all the existing accounts
+
+    :example: List all the existing accounts.
+        az new-relic account list --location eastus2euap --user-email UserEmail@123.com
     """
 
     _aaz_info = {

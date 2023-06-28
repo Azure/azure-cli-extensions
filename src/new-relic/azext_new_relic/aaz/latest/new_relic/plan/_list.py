@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List plans data
+
+    :example: List plans data.
+        az new-relic plan list --account-id MyAccountId --organization-id MyOrganizationId
     """
 
     _aaz_info = {

@@ -13,10 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "new-relic monitor tag-rule delete",
-    confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete a TagRule
+
+    :example: Delete a TagRule.
+        az new-relic monitor tag-rule delete --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a TagRule
+
+    :example: Get a TagRule.
+        az new-relic monitor tag-rule show --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default
     """
 
     _aaz_info = {

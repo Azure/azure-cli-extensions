@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a NewRelicMonitorResource
+
+    :example: Get a NewRelicMonitorResource.
+        az new-relic monitor show --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor
     """
 
     _aaz_info = {

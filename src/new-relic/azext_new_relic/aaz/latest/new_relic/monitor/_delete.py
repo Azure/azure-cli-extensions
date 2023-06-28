@@ -13,10 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "new-relic monitor delete",
-    confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete a NewRelicMonitorResource
+
+    :example: Delete a NewRelicMonitorResource.
+        az new-relic monitor delete --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --user-email UserEmail@123.com
     """
 
     _aaz_info = {

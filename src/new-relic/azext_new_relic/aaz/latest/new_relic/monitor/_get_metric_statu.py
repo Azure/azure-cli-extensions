@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class GetMetricStatu(AAZCommand):
     """Get metric status
+
+    :example: Get metric status.
+        az new-relic monitor get-metric-statu --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --user-email UserEmail@123.com --azure-resource-ids MyAzureResourceIds
     """
 
     _aaz_info = {
@@ -42,7 +45,7 @@ class GetMetricStatu(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
+            options=["-n", "--name", "--monitor-name"],
             help="Name of the Monitors resource",
             required=True,
             id_part="name",
