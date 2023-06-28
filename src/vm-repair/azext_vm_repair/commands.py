@@ -16,3 +16,4 @@ def load_command_table(self, _):
         g.custom_command('run', 'run', validator=validate_run)
         g.custom_command('list-scripts', 'list_scripts')
         g.custom_command('reset-nic', 'reset_nic', is_preview=True, validator=validate_reset_nic)
+        g.custom_command('repair-and-restore', 'repair_and_restore', is_preview=True)

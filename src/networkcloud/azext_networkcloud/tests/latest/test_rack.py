@@ -9,17 +9,19 @@
 Rack test scenarios
 """
 
-from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .config import CONFIG
 
 
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
+    pass
 
 
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
+    pass
 
 
 def call_scenario1(test):
