@@ -1,5 +1,12 @@
 Release History
 ===============
+2.0.0
+-----
+* Move Microsoft.HybridCompute, Microsoft.HybridConnectivity, and Microsoft.ConnectedVMwarevSphere SDKs to AAZ
+* Update Microsoft.HybridConnectivity SDK to stable version
+* Add support to update Service Configuration at runtime
+* Add --yes-without-prompt parameter for updating Service Configuration in automation scenarios
+
 1.1.5
 -----
 * Fix issue of getting vm network interface `publicIPAddress` ref 
