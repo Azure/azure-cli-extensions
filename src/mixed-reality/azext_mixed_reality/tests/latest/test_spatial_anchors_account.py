@@ -30,7 +30,7 @@ class SpatialAnchorsAccountScenarioTest(ScenarioTest):
 
         # Create with more parameters
         self.cmd('spatial-anchors-account create -g {rg} -n {account_name1} '
-                 '--storage-account-name {storage_account_name} --tag tag=tag',
+                 '--storage-account-name {storage_account_name} --tag tag=tag --kind name=P3',
                  checks=[self.exists('tags'),
                          self.check('storageAccountName', '{storage_account_name}')])
 

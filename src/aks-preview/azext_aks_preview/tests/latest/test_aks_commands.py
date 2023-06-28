@@ -38,7 +38,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def _get_versions(self, location):
         """Return the previous and current Kubernetes minor release versions, such as ("1.11.6", "1.12.4")."""
         versions = self.cmd(
-            "az aks get-versions -l {} --query 'orchestrators[].orchestratorVersion'".format(location)).get_output_in_json()
+            "az aks get-versions -l {} --query 'values[*].patchVersions.keys(@)[]'".format(location)).get_output_in_json()
         # sort by semantic version, from newest to oldest
         versions = sorted(versions, key=version_to_tuple, reverse=True)
         upgrade_version = versions[0]
@@ -50,7 +50,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def _get_version_in_range(self, location: str, min_version: str, max_version: str) -> str:
         """Return the version which is greater than min_version and less than max_version."""
         versions = self.cmd(
-            "az aks get-versions -l {} --query 'orchestrators[].orchestratorVersion'".format(location)).get_output_in_json()
+            "az aks get-versions -l {} --query 'values[*].patchVersions.keys(@)[]'".format(location)).get_output_in_json()
         versions = sorted(versions, key=version_to_tuple, reverse=True)
         for version in versions:
             if version > min_version and version < max_version:
@@ -87,11 +87,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     def test_get_version(self):
         versions_cmd = 'aks get-versions -l westus2'
-        self.cmd(versions_cmd, checks=[
-            self.check(
-                'type', 'Microsoft.ContainerService/locations/orchestrators'),
-            self.check('orchestrators[0].orchestratorType', 'Kubernetes')
-        ])
+        versions = self.cmd(versions_cmd).get_output_in_json()
+        assert len(versions["values"]) > 0
 
     @AllowLargeResponse()
     def test_get_os_options(self):
@@ -7235,6 +7232,51 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('networkProfile.monitoring.enabled', True),
+        ])
+
+        # delete
+        self.cmd(
+            'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='eastus', preserve_default_location=True)
+    def test_aks_create_with_custom_headers(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        _, create_version = self._get_versions(resource_group_location)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'k8s_version': create_version,
+        })
+    
+        # create
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} -k {k8s_version} -c 1 ' \
+                     '--ssh-key-value={ssh_key_value} ' \
+                     '--aks-custom-headers x-ms-correlation-request-id=12345678-90ab-cdef-1234-567890abcdef'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # scale cluster
+        scale_cluster_cmd = 'aks scale --resource-group={resource_group} --name={name} ' \
+                    '-c 2 --aks-custom-headers x-ms-correlation-request-id=12345678-90ab-cdef-1234-567890abcdef'
+        self.cmd(scale_cluster_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # scale nodepool
+        scale_nodepool_cmd = 'aks nodepool scale --resource-group={resource_group} --cluster-name={name} --name=nodepool1 ' \
+                    '-c 1 --aks-custom-headers x-ms-correlation-request-id=12345678-90ab-cdef-1234-567890abcdef'
+        self.cmd(scale_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # show
+        show_cmd = 'aks show --resource-group={resource_group} --name={name} ' \
+                   '--aks-custom-headers x-ms-correlation-request-id=12345678-90ab-cdef-1234-567890abcdef'
+        self.cmd(show_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
         ])
 
         # delete

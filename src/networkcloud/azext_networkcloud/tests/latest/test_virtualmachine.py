@@ -10,15 +10,18 @@ VirtualMachine tests scenarios
 """
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .config import CONFIG
 
 
 def setup_scenario1(test):
     ''' Env setup_scenario1 '''
+    pass
 
 
 def cleanup_scenario1(test):
     '''Env cleanup_scenario1 '''
+    pass
 
 
 def call_scenario1(test):
@@ -51,12 +54,12 @@ def step_create(test, checks=None):
              'name={extendedLocation} type="CustomLocation" --location {location} '
              '--admin-username {adminUserName} --boot-method {bootMethod} '
              '--cloud-services-network-attachment  attached-network-id={attachedNetworkID} '
-             '--cpu-cores {cpuCores} --isolate-emulator-thread {isolateEmulatorThread} '
+             '--cpu-cores {cpuCores} '
              '--memory-size {memorySize} --network-attachments {networkAttachments} '
              '--network-data {networkData} --placement-hints {placementHints} '
              '--ssh-key-values {sshKeyValues} --storage-profile disk-size={diskSize} create-option={createOpt} '
              ' delete-option={deleteOpt} --tags {tags} '
-             '--user-data {userData} --virtio-interface {virtioInterface} '
+             '--user-data {userData} --vm-device-model {vmDeviceModel} '
              '--vm-image {vmName} --vm-image-repository-credentials password={password} '
              'registry-url={registryURL} username={userName} --resource-group {rg}', checks=checks)
 
@@ -134,7 +137,6 @@ def step_update(test, checks=None):
         '--tags {tagsUpdate} --resource-group {rg}')
 
 
-# VirtualMachine has a different name regex. The commonly used pattern "cli-test-vm-" cannot be used as the dashes are not accepted.
 class VirtualMachineScenarioTest(ScenarioTest):
     '''VirtualMachine scenario test'''
 
@@ -148,7 +150,6 @@ class VirtualMachineScenarioTest(ScenarioTest):
             'bootMethod': CONFIG.get('VIRTUALMACHINE', 'boot_method'),
             'attachedNetworkID': CONFIG.get('VIRTUALMACHINE', 'attached_network_id'),
             'cpuCores': CONFIG.get('VIRTUALMACHINE', 'cpu_cores'),
-            'isolateEmulatorThread': CONFIG.get('VIRTUALMACHINE', 'isolate_emulator_thread'),
             'memorySize': CONFIG.get('VIRTUALMACHINE', 'memory_size'),
             'networkAttachments': CONFIG.get('VIRTUALMACHINE', 'network_attachments'),
             'networkData': CONFIG.get('VIRTUALMACHINE', 'network_data'),
@@ -160,13 +161,14 @@ class VirtualMachineScenarioTest(ScenarioTest):
             'tags': CONFIG.get('VIRTUALMACHINE', 'tags'),
             'tagsUpdate': CONFIG.get('VIRTUALMACHINE', 'tags_update'),
             'userData': CONFIG.get('VIRTUALMACHINE', 'user_data'),
-            'virtioInterface': CONFIG.get('VIRTUALMACHINE', 'virtio_interface'),
+            'vmDeviceModel': CONFIG.get('VIRTUALMACHINE', 'vm_device_model'),
             'vmName': CONFIG.get('VIRTUALMACHINE', 'vm_name'),
             'password': CONFIG.get('VIRTUALMACHINE', 'password'),
             'registryURL': CONFIG.get('VIRTUALMACHINE', 'registry_url'),
             'userName': CONFIG.get('VIRTUALMACHINE', 'user_name'),
         })
 
+    @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitest_rg'[:7], key='rg', parameter_name='rg')
     def test_virtualmachine_scenario1(self):
         ''' test scenario for VirtualMachine CRUD operations'''
