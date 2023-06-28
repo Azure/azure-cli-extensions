@@ -7,6 +7,7 @@
 import unittest
 import json
 import logging
+import os
 # from unittest.mock import Mock, patch
 
 from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
@@ -19,13 +20,15 @@ from azure.cli.core.azclierror import (
     InvalidTemplateError
 )
 
+mock_cnf_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mock_cnf")
+cnf_config_file = os.path.join(mock_cnf_folder, "config_file.json")
+
 # Instantiate CNF with faked config file
-with open("azext_aosm/tests/latest/mock_cnf/config_file.json", "r", encoding="utf-8") as f:
+with open(cnf_config_file, "r", encoding="utf-8") as f:
     config_as_dict = json.loads(f.read())
-config = CNFConfiguration(**config_as_dict)
+config = CNFConfiguration(config_file=cnf_config_file, **config_as_dict)
 test_cnf = CnfNfdGenerator(config)
 invalid_helm_package = test_cnf.config.helm_packages[0]
-invalid_helm_package = HelmPackageConfig(**invalid_helm_package)
 
 
 # pylint: disable=protected-access

@@ -8,3 +8,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from azext_aosm.generate_nsd.nsd_generator import NSDGenerator
+
+class TestNSDGenerator():
+    def test_create(self):
+        pass
