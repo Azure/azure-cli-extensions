@@ -18,7 +18,7 @@ class StorageCommandsLoader(AzCommandsLoader):
 
         register_resource_type('latest', CUSTOM_DATA_STORAGE, '2018-03-28')
         register_resource_type('latest', CUSTOM_DATA_STORAGE_ADLS, '2019-02-02-preview')
-        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2021-09-01')
+        register_resource_type('latest', CUSTOM_MGMT_STORAGE, '2022-09-01')
         register_resource_type('latest', CUSTOM_DATA_STORAGE_FILESHARE, '2020-02-10')
         register_resource_type('latest', CUSTOM_DATA_STORAGE_FILEDATALAKE, '2020-06-12')
 

@@ -7,6 +7,10 @@ Release History
 * Add support to update Service Configuration at runtime
 * Add --yes-without-prompt parameter for updating Service Configuration in automation scenarios
 
+1.1.6
+-----
+* Fix issue of getting `publicIPAddress` error for `az ssh vm` CLI command  
+
 1.1.5
 -----
 * Fix issue of getting vm network interface `publicIPAddress` ref 

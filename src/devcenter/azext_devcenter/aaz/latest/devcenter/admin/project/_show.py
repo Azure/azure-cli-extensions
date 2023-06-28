@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "devcenter admin project show",
-    is_preview=True,
 )
 class Show(AAZCommand):
-    """Get a specific project.
+    """Get a project.
 
-    :example: Show
-        az devcenter admin project show --name "{projectName}" --resource-group "rg1"
+    :example: Get
+        az devcenter admin project show --name "DevProject" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2022-11-11-preview",
+        "version": "2023-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2023-04-01"],
         ]
     }
 
@@ -122,7 +121,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }
@@ -184,6 +183,9 @@ class Show(AAZCommand):
             properties.dev_center_uri = AAZStrType(
                 serialized_name="devCenterUri",
                 flags={"read_only": True},
+            )
+            properties.max_dev_boxes_per_user = AAZIntType(
+                serialized_name="maxDevBoxesPerUser",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",

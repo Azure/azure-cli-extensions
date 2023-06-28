@@ -1,0 +1,3411 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"createMode": "Default", "administratorLogin":
+      "cli000003", "administratorLoginPassword": "Cli1@asvrct", "serverVersion": "5.0",
+      "nodeGroupSpecs": [{"sku": "M40", "diskSizeGB": 128, "enableHa": true, "kind":
+      "Shard", "nodeCount": 2}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '273'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --resource-group --location --administrator-login --administrator-login-password
+        --server-version --shard-node-tier --shard-node-ha --shard-node-disk-size-gb
+        --shard-node-count
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {\n},\n  \"location\": \"eastus\",\n  \"properties\": {\n    \"provisioningState\":
+        \"InProgress\",\n    \"clusterStatus\": \"Provisioning\",\n    \"administratorLogin\":
+        \"cli000003\",\n    \"serverVersion\": \"5.0\",\n    \"nodeGroupSpecs\": [\n
+        \     {\n        \"name\": \"\",\n        \"kind\": \"Shard\",\n        \"sku\":
+        \"M40\",\n        \"diskSizeGB\": 128,\n        \"enableHa\": true,\n        \"nodeCount\":
+        2\n      }\n    ],\n    \"connectionString\": \"mongodb+srv://<user>:<password>@cli000002.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\",\n
+        \   \"earliestRestoreTime\": null\n  }\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '850'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:31:35 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 6c23a03c-a2bb-41f2-86c0-608d02132e3c
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --location --administrator-login --administrator-login-password
+        --server-version --shard-node-tier --shard-node-ha --shard-node-disk-size-gb
+        --shard-node-count
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66\",\n
+        \ \"name\": \"4fca9049-3781-409d-ae28-cc2862a2bb66\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:31:35 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:31:35 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - e8636a89-2fd3-460e-8405-21e5fffbd865
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --location --administrator-login --administrator-login-password
+        --server-version --shard-node-tier --shard-node-ha --shard-node-disk-size-gb
+        --shard-node-count
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66\",\n
+        \ \"name\": \"4fca9049-3781-409d-ae28-cc2862a2bb66\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:31:35 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:32:05 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 7d282509-ce96-41b6-9760-efb50727e5c3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --location --administrator-login --administrator-login-password
+        --server-version --shard-node-tier --shard-node-ha --shard-node-disk-size-gb
+        --shard-node-count
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66\",\n
+        \ \"name\": \"4fca9049-3781-409d-ae28-cc2862a2bb66\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:31:35 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:32:37 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 4812fc4f-54f3-4f65-8c35-eb5d38a4921a
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --location --administrator-login --administrator-login-password
+        --server-version --shard-node-tier --shard-node-ha --shard-node-disk-size-gb
+        --shard-node-count
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66\",\n
+        \ \"name\": \"4fca9049-3781-409d-ae28-cc2862a2bb66\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:31:35 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:33:07 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - d8b76da5-5818-4ae0-b055-c4d17ba73886
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --location --administrator-login --administrator-login-password
+        --server-version --shard-node-tier --shard-node-ha --shard-node-disk-size-gb
+        --shard-node-count
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66\",\n
+        \ \"name\": \"4fca9049-3781-409d-ae28-cc2862a2bb66\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:31:35 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:33:37 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - a9b52f4d-44cc-4aae-bf28-d22e21636759
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --location --administrator-login --administrator-login-password
+        --server-version --shard-node-tier --shard-node-ha --shard-node-disk-size-gb
+        --shard-node-count
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66\",\n
+        \ \"name\": \"4fca9049-3781-409d-ae28-cc2862a2bb66\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:31:35 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:34:07 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 6a3e9f49-6b94-48cd-965b-67a89f652169
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --location --administrator-login --administrator-login-password
+        --server-version --shard-node-tier --shard-node-ha --shard-node-disk-size-gb
+        --shard-node-count
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66\",\n
+        \ \"name\": \"4fca9049-3781-409d-ae28-cc2862a2bb66\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:31:35 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:34:37 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - f82870bb-0838-4fd6-b294-789fb10c9151
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --location --administrator-login --administrator-login-password
+        --server-version --shard-node-tier --shard-node-ha --shard-node-disk-size-gb
+        --shard-node-count
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66\",\n
+        \ \"name\": \"4fca9049-3781-409d-ae28-cc2862a2bb66\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:31:35 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:35:08 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - e2640032-8099-4a3c-b9f9-62745cf46e56
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --location --administrator-login --administrator-login-password
+        --server-version --shard-node-tier --shard-node-ha --shard-node-disk-size-gb
+        --shard-node-count
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66\",\n
+        \ \"name\": \"4fca9049-3781-409d-ae28-cc2862a2bb66\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:31:35 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:35:38 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 28957c6f-13d5-49ff-93c1-1e55c95c21dc
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --location --administrator-login --administrator-login-password
+        --server-version --shard-node-tier --shard-node-ha --shard-node-disk-size-gb
+        --shard-node-count
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66\",\n
+        \ \"name\": \"4fca9049-3781-409d-ae28-cc2862a2bb66\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:31:35 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:36:08 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 3dcf3f37-e526-4bbd-8e12-95c02630ecfa
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --location --administrator-login --administrator-login-password
+        --server-version --shard-node-tier --shard-node-ha --shard-node-disk-size-gb
+        --shard-node-count
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66\",\n
+        \ \"name\": \"4fca9049-3781-409d-ae28-cc2862a2bb66\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:31:35 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:36:38 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 44ad74e4-23c1-4cbc-b307-8c201f9d62fe
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --location --administrator-login --administrator-login-password
+        --server-version --shard-node-tier --shard-node-ha --shard-node-disk-size-gb
+        --shard-node-count
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66\",\n
+        \ \"name\": \"4fca9049-3781-409d-ae28-cc2862a2bb66\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:31:35 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:37:10 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 46db9363-bbab-45ef-b9a6-0cb2dfddf341
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --location --administrator-login --administrator-login-password
+        --server-version --shard-node-tier --shard-node-ha --shard-node-disk-size-gb
+        --shard-node-count
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66\",\n
+        \ \"name\": \"4fca9049-3781-409d-ae28-cc2862a2bb66\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:31:35 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:37:40 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 2714394e-a5d9-48ec-a9de-5b4fd6cd5360
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --location --administrator-login --administrator-login-password
+        --server-version --shard-node-tier --shard-node-ha --shard-node-disk-size-gb
+        --shard-node-count
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66\",\n
+        \ \"name\": \"4fca9049-3781-409d-ae28-cc2862a2bb66\",\n  \"status\": \"Succeeded\",\n
+        \ \"startTime\": \"2023-04-17 20:31:35 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '301'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:38:10 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4fca9049-3781-409d-ae28-cc2862a2bb66?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 576e0c3d-128c-4dd2-8f72-b865d92a9eaa
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --location --administrator-login --administrator-login-password
+        --server-version --shard-node-tier --shard-node-ha --shard-node-disk-size-gb
+        --shard-node-count
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {\n},\n  \"location\": \"eastus\",\n  \"properties\": {\n    \"provisioningState\":
+        \"Succeeded\",\n    \"clusterStatus\": \"Ready\",\n    \"administratorLogin\":
+        \"cli000003\",\n    \"serverVersion\": \"5.0\",\n    \"nodeGroupSpecs\": [\n
+        \     {\n        \"name\": \"\",\n        \"kind\": \"Shard\",\n        \"sku\":
+        \"M40\",\n        \"diskSizeGB\": 128,\n        \"enableHa\": true,\n        \"nodeCount\":
+        2\n      }\n    ],\n    \"connectionString\": \"mongodb+srv://<user>:<password>@cli000002.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\",\n
+        \   \"earliestRestoreTime\": null\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '842'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:38:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 901b39f4-9615-4fad-9db0-6a2d07970af1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {\n},\n  \"location\": \"eastus\",\n  \"properties\": {\n    \"provisioningState\":
+        \"Succeeded\",\n    \"clusterStatus\": \"Ready\",\n    \"administratorLogin\":
+        \"cli000003\",\n    \"serverVersion\": \"5.0\",\n    \"nodeGroupSpecs\": [\n
+        \     {\n        \"name\": \"\",\n        \"kind\": \"Shard\",\n        \"sku\":
+        \"M40\",\n        \"diskSizeGB\": 128,\n        \"enableHa\": true,\n        \"nodeCount\":
+        2\n      }\n    ],\n    \"connectionString\": \"mongodb+srv://<user>:<password>@cli000002.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\",\n
+        \   \"earliestRestoreTime\": null\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '842'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:38:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - deaa2a65-703d-4f14-890f-ae46259d662f
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"startIpAddress": "10.0.0.120", "endIpAddress": "10.0.0.130"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster firewall rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '78'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --resource-group --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002/firewallRules/cli000004?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002/firewallRules/cli000004\",\n
+        \ \"name\": \"cli000004\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters/firewallRules\",\n
+        \ \"properties\": {\n    \"provisioningState\": \"InProgress\",\n    \"startIpAddress\":
+        \"10.0.0.120\",\n    \"endIpAddress\": \"10.0.0.130\"\n  }\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/c149aa25-06c4-4c26-9a57-86647ecb522f?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '416'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:38:12 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/c149aa25-06c4-4c26-9a57-86647ecb522f?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - f2704323-044a-4d20-98e0-81054c5a53c7
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster firewall rule create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/c149aa25-06c4-4c26-9a57-86647ecb522f?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/c149aa25-06c4-4c26-9a57-86647ecb522f\",\n
+        \ \"name\": \"c149aa25-06c4-4c26-9a57-86647ecb522f\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:38:13 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/c149aa25-06c4-4c26-9a57-86647ecb522f?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:38:13 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/c149aa25-06c4-4c26-9a57-86647ecb522f?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 45c8929e-478a-49fd-a1cd-dacbcd4c0408
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster firewall rule create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/c149aa25-06c4-4c26-9a57-86647ecb522f?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/c149aa25-06c4-4c26-9a57-86647ecb522f\",\n
+        \ \"name\": \"c149aa25-06c4-4c26-9a57-86647ecb522f\",\n  \"status\": \"Succeeded\",\n
+        \ \"startTime\": \"2023-04-17 20:38:13 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/c149aa25-06c4-4c26-9a57-86647ecb522f?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '301'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:38:43 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/c149aa25-06c4-4c26-9a57-86647ecb522f?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 649b68db-4a45-4236-8943-c00b38603628
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster firewall rule create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002/firewallRules/cli000004?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002/firewallRules/cli000004\",\n
+        \ \"name\": \"cli000004\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters/firewallRules\",\n
+        \ \"properties\": {\n    \"provisioningState\": \"Succeeded\",\n    \"startIpAddress\":
+        \"10.0.0.120\",\n    \"endIpAddress\": \"10.0.0.130\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '415'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:38:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 9ad83cc5-1e61-43d7-b063-aa49ee0adce8
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster firewall rule update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002/firewallRules/cli000004?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002/firewallRules/cli000004\",\n
+        \ \"name\": \"cli000004\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters/firewallRules\",\n
+        \ \"properties\": {\n    \"provisioningState\": \"Succeeded\",\n    \"startIpAddress\":
+        \"10.0.0.120\",\n    \"endIpAddress\": \"10.0.0.130\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '415'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:38:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - b1f2ad77-477c-44d2-ae86-707ac6db435e
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"startIpAddress": "10.0.0.120", "endIpAddress": "10.0.0.140"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster firewall rule update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '78'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --cluster-name --resource-group --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002/firewallRules/cli000004?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002/firewallRules/cli000004\",\n
+        \ \"name\": \"cli000004\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters/firewallRules\",\n
+        \ \"properties\": {\n    \"provisioningState\": \"InProgress\",\n    \"startIpAddress\":
+        \"10.0.0.120\",\n    \"endIpAddress\": \"10.0.0.140\"\n  }\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/fbeb8c1f-d761-475d-9e9d-277ea57da746?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '416'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:38:45 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/fbeb8c1f-d761-475d-9e9d-277ea57da746?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 8aa7affb-c668-458b-97de-c9a458c3aec4
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster firewall rule update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/fbeb8c1f-d761-475d-9e9d-277ea57da746?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/fbeb8c1f-d761-475d-9e9d-277ea57da746\",\n
+        \ \"name\": \"fbeb8c1f-d761-475d-9e9d-277ea57da746\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:38:45 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/fbeb8c1f-d761-475d-9e9d-277ea57da746?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:38:45 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/fbeb8c1f-d761-475d-9e9d-277ea57da746?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 9ec97856-bf15-4e55-8472-14c14715d453
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster firewall rule update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/fbeb8c1f-d761-475d-9e9d-277ea57da746?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/fbeb8c1f-d761-475d-9e9d-277ea57da746\",\n
+        \ \"name\": \"fbeb8c1f-d761-475d-9e9d-277ea57da746\",\n  \"status\": \"Succeeded\",\n
+        \ \"startTime\": \"2023-04-17 20:38:45 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/fbeb8c1f-d761-475d-9e9d-277ea57da746?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '301'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:39:16 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/fbeb8c1f-d761-475d-9e9d-277ea57da746?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 9dd92c6c-c60c-4d27-a09a-614b182ee695
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster firewall rule update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --rule-name --start-ip-address --end-ip-address
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002/firewallRules/cli000004?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002/firewallRules/cli000004\",\n
+        \ \"name\": \"cli000004\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters/firewallRules\",\n
+        \ \"properties\": {\n    \"provisioningState\": \"Succeeded\",\n    \"startIpAddress\":
+        \"10.0.0.120\",\n    \"endIpAddress\": \"10.0.0.140\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '415'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:39:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 8f57f988-fe2f-4e91-acff-3f22c2bfd103
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster firewall rule show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group --rule-name
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002/firewallRules/cli000004?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002/firewallRules/cli000004\",\n
+        \ \"name\": \"cli000004\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters/firewallRules\",\n
+        \ \"properties\": {\n    \"provisioningState\": \"Succeeded\",\n    \"startIpAddress\":
+        \"10.0.0.120\",\n    \"endIpAddress\": \"10.0.0.140\"\n  }\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '415'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:39:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - cbf80c21-4fe6-40de-89f7-bd13d46259c0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster firewall rule list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --cluster-name --resource-group
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002/firewallRules?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"value\": [\n    {\n      \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002/firewallRules/cli000004\",\n
+        \     \"name\": \"cli000004\",\n      \"type\": \"Microsoft.DocumentDB/mongoClusters/firewallRules\",\n
+        \     \"properties\": {\n        \"provisioningState\": \"Succeeded\",\n        \"startIpAddress\":
+        \"10.0.0.120\",\n        \"endIpAddress\": \"10.0.0.140\"\n      }\n    }\n
+        \ ]\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '476'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:39:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 4b1159db-7747-45dc-ac33-801003b1add9
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster firewall rule delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -c -g --rule-name --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002/firewallRules/blah?api-version=2023-03-01-preview
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      date:
+      - Mon, 17 Apr 2023 20:39:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 63bb444f-d9e4-4676-a191-8c8589e972e8
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster firewall rule delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -c -g --rule-name --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002/firewallRules/cli000004?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/af3bd79d-dfb8-4d64-a092-106bc40d7dfa?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '2'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:39:20 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/af3bd79d-dfb8-4d64-a092-106bc40d7dfa?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 6fa82143-bc21-4624-ab72-90b3def46192
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster firewall rule delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --rule-name --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/af3bd79d-dfb8-4d64-a092-106bc40d7dfa?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/af3bd79d-dfb8-4d64-a092-106bc40d7dfa\",\n
+        \ \"name\": \"af3bd79d-dfb8-4d64-a092-106bc40d7dfa\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:39:21 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/af3bd79d-dfb8-4d64-a092-106bc40d7dfa?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:39:20 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/af3bd79d-dfb8-4d64-a092-106bc40d7dfa?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 8c016f7c-d1bc-4744-a22a-7c57f8acd1cb
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster firewall rule delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --rule-name --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/af3bd79d-dfb8-4d64-a092-106bc40d7dfa?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/af3bd79d-dfb8-4d64-a092-106bc40d7dfa\",\n
+        \ \"name\": \"af3bd79d-dfb8-4d64-a092-106bc40d7dfa\",\n  \"status\": \"Succeeded\",\n
+        \ \"startTime\": \"2023-04-17 20:39:21 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/af3bd79d-dfb8-4d64-a092-106bc40d7dfa?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '301'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:39:50 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/af3bd79d-dfb8-4d64-a092-106bc40d7dfa?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 11bd8d5c-5449-4c5e-82b1-3c4432ed9c7b
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster firewall rule delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --rule-name --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/af3bd79d-dfb8-4d64-a092-106bc40d7dfa?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{
+
+        }'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/af3bd79d-dfb8-4d64-a092-106bc40d7dfa?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '3'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:39:50 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/af3bd79d-dfb8-4d64-a092-106bc40d7dfa?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 774f886f-fab1-4ef4-8f2f-613e0366b62c
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_cosmosdb_mongocluster_firewall000001/providers/Microsoft.DocumentDB/mongoClusters/cli000002\",\n
+        \ \"name\": \"cli000002\",\n  \"type\": \"Microsoft.DocumentDB/mongoClusters\",\n
+        \ \"tags\": {\n},\n  \"location\": \"eastus\",\n  \"properties\": {\n    \"provisioningState\":
+        \"Dropping\",\n    \"clusterStatus\": \"Dropping\",\n    \"administratorLogin\":
+        \"cli000003\",\n    \"serverVersion\": \"5.0\",\n    \"nodeGroupSpecs\": [\n
+        \     {\n        \"name\": \"\",\n        \"kind\": \"Shard\",\n        \"sku\":
+        \"M40\",\n        \"diskSizeGB\": 128,\n        \"enableHa\": true,\n        \"nodeCount\":
+        2\n      }\n    ],\n    \"connectionString\": \"mongodb+srv://<user>:<password>@cli000002.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000\",\n
+        \   \"earliestRestoreTime\": null\n  }\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '844'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:39:52 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 4f43bc7b-0ae8-4d73-92a1-04ab0510dc0b
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c\",\n
+        \ \"name\": \"4931f187-9d58-4035-b113-70a02534869c\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:39:52 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:39:52 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - faa9cc40-1bce-44af-b687-9933a38c62b5
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c\",\n
+        \ \"name\": \"4931f187-9d58-4035-b113-70a02534869c\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:39:52 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:40:22 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 51de8a5c-c76f-41a0-a804-b4f1156f61d9
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c\",\n
+        \ \"name\": \"4931f187-9d58-4035-b113-70a02534869c\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:39:52 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:40:53 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 9b948edc-85b8-4408-ba9c-6623d0c68805
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c\",\n
+        \ \"name\": \"4931f187-9d58-4035-b113-70a02534869c\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:39:52 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:41:23 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - e52e255e-e0db-4e80-8fbd-19b6a0697d11
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c\",\n
+        \ \"name\": \"4931f187-9d58-4035-b113-70a02534869c\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:39:52 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:41:54 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 3b75519e-591a-4155-a1dc-0247e5d1839b
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c\",\n
+        \ \"name\": \"4931f187-9d58-4035-b113-70a02534869c\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:39:52 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:42:24 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - c19ea4a2-a1ab-488d-b9b1-da983367905a
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c\",\n
+        \ \"name\": \"4931f187-9d58-4035-b113-70a02534869c\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:39:52 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:42:54 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 353a31d5-ab41-498a-b673-e5678851ed02
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c\",\n
+        \ \"name\": \"4931f187-9d58-4035-b113-70a02534869c\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:39:52 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:43:24 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - fef89475-07b6-4ce9-88bb-5d4faae65bcc
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c\",\n
+        \ \"name\": \"4931f187-9d58-4035-b113-70a02534869c\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:39:52 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:43:54 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 1cfbc475-0366-4d0d-b1b4-28c6d0e0d592
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c\",\n
+        \ \"name\": \"4931f187-9d58-4035-b113-70a02534869c\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:39:52 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:44:25 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 006df04a-a857-4ce4-aefa-c4be775bf5e1
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c\",\n
+        \ \"name\": \"4931f187-9d58-4035-b113-70a02534869c\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:39:52 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:44:55 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 97ff01b9-3252-492d-bc15-2585d23b36ba
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c\",\n
+        \ \"name\": \"4931f187-9d58-4035-b113-70a02534869c\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:39:52 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:45:26 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - d76e9e5d-d273-4e22-a4ad-42edac310d70
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c\",\n
+        \ \"name\": \"4931f187-9d58-4035-b113-70a02534869c\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:39:52 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:45:56 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 3a057737-4265-4077-b18c-fc87e8d4ace8
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c\",\n
+        \ \"name\": \"4931f187-9d58-4035-b113-70a02534869c\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:39:52 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:46:27 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 0cfd2cae-b405-4fab-be8f-904696e8634d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c\",\n
+        \ \"name\": \"4931f187-9d58-4035-b113-70a02534869c\",\n  \"status\": \"InProgress\",\n
+        \ \"startTime\": \"2023-04-17 20:39:52 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '302'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:46:57 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 656c670d-5418-4bb1-9d1f-4f90e9734077
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c\",\n
+        \ \"name\": \"4931f187-9d58-4035-b113-70a02534869c\",\n  \"status\": \"Succeeded\",\n
+        \ \"startTime\": \"2023-04-17 20:39:52 +0000\"\n}"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '301'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:47:27 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 77f7e6df-4a80-4f1d-821d-bdb6f9e53ed9
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - cosmosdb mongocluster delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -c -g --yes
+      User-Agent:
+      - AZURECLI/2.47.0 azsdk-python-mgmt-cosmosdb/0.7.0 Python/3.10.2 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+  response:
+    body:
+      string: '{
+
+        }'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterAzureAsyncOperation/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '3'
+      content-security-policy:
+      - default-src 'none'; base-uri 'self'; block-all-mixed-content; connect-src
+        'self'; font-src 'self'; form-action 'self'; img-src 'self'; script-src 'self';
+        style-src 'self'; upgrade-insecure-requests
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Apr 2023 20:47:27 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DocumentDB/locations/eastus/mongoClusterOperationResults/4931f187-9d58-4035-b113-70a02534869c?api-version=2023-03-01-preview
+      pragma:
+      - no-cache
+      referrer-policy:
+      - same-origin
+      request-id:
+      - 6a0b1d17-ef84-468c-b225-6e5f0834a4af
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding,Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-download-options:
+      - noopen
+      x-frame-options:
+      - DENY
+      x-permitted-cross-domain-policies:
+      - none
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1

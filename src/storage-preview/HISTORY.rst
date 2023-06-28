@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.8.4(2023-04-27)
+++++++++++++++++++
+* Bump azure_mgmt_storage to 2022_09_01 and remove commands supported in azure cli
+
 0.8.3(2022-05-24)
 ++++++++++++++++++
 * `az storage account create/update`: Rename `--key-vault-federated-identity-client-id` to `--key-vault-federated-client-id`

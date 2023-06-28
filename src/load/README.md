@@ -1,5 +1,5 @@
-# Azure CLI Load Extension #
-This is an extension to Azure CLI to create and manage Azure Load testing resources.
+# Azure CLI Load Testing Extension #
+This is an extension to Azure CLI to create and manage Azure Load Testing resources.
 
 ## How to use ##
 
@@ -8,7 +8,7 @@ Install this extension using the below CLI command
 az extension add --name load
 ```
 
-### Create Azure load testing resource ###
+### Create Azure Load Testing resource ###
 
 ```
 az load create \
@@ -55,7 +55,7 @@ az load create \
 ---
 <br/>
 
-### Update Azure load testing resource ###
+### Update Azure Load Testing resource ###
 
 ```
 az load update \
@@ -88,7 +88,7 @@ az load update \
 ---
 <br/>
 
-### List Azure load testing resources ###
+### List Azure Load Testing resources ###
 
 ```
 az load list \
@@ -101,7 +101,7 @@ az load list
 ---
 <br/>
 
-### Show Azure load testing resource ###
+### Show Azure Load Testing resource ###
 
 ```
 az load show \
@@ -116,7 +116,7 @@ az load show \
 ---
 <br/>
 
-### Delete Azure load testing resource ###
+### Delete Azure Load Testing resource ###
 
 ```
 az load delete \

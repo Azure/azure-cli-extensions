@@ -77,12 +77,6 @@ def load_arguments(self, _):
             help="Disabling container stdio will disable the ability to see the output of the container in the terminal for Confidential ACI",
         )
         c.argument(
-            "use_json",
-            options_list=("--json", "-j"),
-            required=False,
-            help="Output in JSON format",
-        )
-        c.argument(
             "diff",
             options_list=("--diff", "-d"),
             required=False,
@@ -95,7 +89,7 @@ def load_arguments(self, _):
             help="Validate that the image used to generate the CCE Policy for a sidecar container will be allowed by its generated policy",
         )
         c.argument(
-            "print-existing-policy",
+            "print_existing_policy",
             options_list=("--print-existing-policy"),
             required=False,
             action="store_true",
