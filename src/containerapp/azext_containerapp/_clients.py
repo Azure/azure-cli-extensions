@@ -1226,6 +1226,34 @@ class GitHubActionClient():
                 logger.warning('Containerapp github action successfully deleted')
         return
 
+    @classmethod
+    def get_workflow_name(cls, cmd, repo, branch_name, container_app_name, token):
+        # Fetch files in the .github/workflows folder using the GitHub API
+        # https://docs.github.com/en/rest/repos/contents#get-repository-content
+        workflows_folder_name = ".github/workflows"
+        url_fmt = "{}/repos/{}/contents/{}?ref={}"
+        request_url = url_fmt.format(
+            "https://api.github.com",
+            repo,
+            workflows_folder_name,
+            branch_name)
+
+        import re
+        try:
+            headers = ["Authorization=Bearer {}".format(token)]
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url, headers=headers)
+            if r.status_code == 200:
+                r_json = r.json()
+
+                # See if any workflow file matches the expected naming pattern (including either .yml or .yaml)
+                workflow_file = [x for x in r_json if x["name"].startswith(container_app_name) and re.match(r'.*AutoDeployTrigger.*\.y.?ml', x["name"])]
+                if len(workflow_file) == 1:
+                    return workflow_file[0]["name"].replace(".yaml", "").replace(".yml", "")
+        except:  # pylint: disable=bare-except
+            pass
+
+        return None
+
 
 class DaprComponentClient():
     @classmethod

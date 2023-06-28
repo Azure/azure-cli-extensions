@@ -135,6 +135,10 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_postgres_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_postgres_service', confirmation=True, supports_no_wait=True)
 
+    with self.command_group('containerapp service kafka') as g:
+        g.custom_command('create', 'create_kafka_service', supports_no_wait=True)
+        g.custom_command('delete', 'delete_kafka_service', confirmation=True, supports_no_wait=True)
+
     with self.command_group('containerapp identity') as g:
         g.custom_command('assign', 'assign_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('remove', 'remove_managed_identity', supports_no_wait=True, exception_handler=ex_handler_factory())
@@ -177,6 +181,12 @@ def load_command_table(self, _):
         g.custom_command('set', 'set_ip_restriction', exception_handler=ex_handler_factory())
         g.custom_command('remove', 'remove_ip_restriction')
         g.custom_show_command('list', 'show_ip_restrictions')
+
+    with self.command_group('containerapp ingress cors') as g:
+        g.custom_command('enable', 'enable_cors_policy', exception_handler=ex_handler_factory())
+        g.custom_command('disable', 'disable_cors_policy', exception_handler=ex_handler_factory())
+        g.custom_command('update', 'update_cors_policy', exception_handler=ex_handler_factory())
+        g.custom_show_command('show', 'show_cors_policy')
 
     with self.command_group('containerapp registry') as g:
         g.custom_command('set', 'set_registry', exception_handler=ex_handler_factory())
