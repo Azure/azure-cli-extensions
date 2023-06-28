@@ -58,8 +58,8 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         while (retry_attempt <= retry_attempts_allowed and not successful_connection):
             service_config_delay_error_logs = False
             if retry_attempt == 1:
-                logger.warning(f"SSH connection failed, possibly caused by new service configuration setup. "
-                               f"Retrying the connection in {str(const.RETRY_DELAY_IN_SECONDS)} seconds.")
+                logger.warning("SSH connection failed, possibly caused by new service configuration setup. "
+                               "Retrying the connection in %d seconds.", const.RETRY_DELAY_IN_SECONDS)
                 time.sleep(const.RETRY_DELAY_IN_SECONDS)
             connection_duration = time.time()
             try:
@@ -73,16 +73,17 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
             except OSError as e:
                 colorama.init()
                 raise azclierror.BadRequestError(f"Failed to run ssh command with error: {str(e)}.",
-                                                const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
+                                                 const.RECOMMENDATION_SSH_CLIENT_NOT_FOUND)
 
             connection_duration = (time.time() - connection_duration) / 60
             if ssh_process and ssh_process.poll() == 0:
                 successful_connection = True
-            if op_info.new_service_config and (service_config_delay_error_logs or (ssh_process.poll() == 255 and not redirect_stderr)):
-                retry_attempts_allowed = 1
-                if retry_attempt == 1:
-                    logger.warning("SSH connection failure could still be due to Service Configuration update. "
-                                   "Please re-run command.")
+            if op_info.new_service_config:
+                if (service_config_delay_error_logs or (ssh_process.poll() == 255 and not redirect_stderr)):
+                    retry_attempts_allowed = 1
+                    if retry_attempt == 1:
+                        logger.warning("SSH connection failure could still be due to Service Configuration update. "
+                                       "Please re-run command.")
             retry_attempt += 1
 
     finally:

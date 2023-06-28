@@ -19,7 +19,6 @@ from azure.cli.core import telemetry
 from azure.cli.core import azclierror
 from azure.mgmt.core.tools import resource_id, parse_resource_id
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.core.commands import LongRunningOperation
 from knack import log
 from knack.prompting import prompt_y_n
 
@@ -30,9 +29,8 @@ logger = log.get_logger(__name__)
 
 
 # Get the Access Details to connect to Arc Connectivity platform from the HybridConnectivity RP
-def get_relay_information(cmd, resource_group, vm_name, resource_type, certificate_validity_in_seconds, port, yes_without_prompt):
-    from .aaz.latest.hybrid_connectivity.endpoint import ListCredential
-
+def get_relay_information(cmd, resource_group, vm_name, resource_type,
+                          certificate_validity_in_seconds, port, yes_without_prompt):
     if not certificate_validity_in_seconds or \
        certificate_validity_in_seconds > consts.RELAY_INFO_MAXIMUM_DURATION_IN_SECONDS:
         certificate_validity_in_seconds = consts.RELAY_INFO_MAXIMUM_DURATION_IN_SECONDS
@@ -40,11 +38,11 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
     namespace = resource_type.split('/', 1)[0]
     arc_type = resource_type.split('/', 1)[1]
     resource_uri = resource_id(subscription=get_subscription_id(cmd.cli_ctx), resource_group=resource_group,
-                                 namespace=namespace, type=arc_type, name=vm_name)
-    
+                               namespace=namespace, type=arc_type, name=vm_name)
+
     cred = None
     new_service_config = False
-    try: 
+    try:
         cred = _list_credentials(cmd, resource_uri, certificate_validity_in_seconds)
     except ResourceNotFoundError:
         _create_default_endpoint(cmd, resource_uri)
@@ -82,6 +80,7 @@ def _check_service_configuration(cmd, resource_uri, port):
         'service_configuration_name': 'SSH'
     }
     serviceConfig = None
+    # pylint: disable=broad-except
     try:
         serviceConfig = ShowServiceConfig(cli_ctx=cmd.cli_ctx)(command_args=show_service_config_args)
     except Exception:
@@ -93,12 +92,12 @@ def _check_service_configuration(cmd, resource_uri, port):
         return None
     if port:
         return serviceConfig['port'] == int(port)
-    else:
-        if serviceConfig['port'] != 22:
-            logger.warning("The Service Configuration endpoint is set to a non-default port. "
-                           "To either update the Service Configuration or connect using the non-default port, "
-                           "please use the -Port parameter. %s", consts.RECOMMENDATION_ALLOW_PORTS)
-        return True
+
+    if serviceConfig['port'] != 22:
+        logger.warning("The Service Configuration endpoint is set to a non-default port. "
+                       "To either update the Service Configuration or connect using the non-default port, "
+                       "please use the -Port parameter. %s", consts.RECOMMENDATION_ALLOW_PORTS)
+    return True
 
 
 def _create_default_endpoint(cmd, resource_uri):
@@ -115,11 +114,12 @@ def _create_default_endpoint(cmd, resource_uri):
     except HttpResponseError as e:
         colorama.init()
         if e.reason == "Forbidden":
-             raise azclierror.UnauthorizedError(f"Client is not authorized to create a default connectivity "
-                                                f"endpoint for \'{vm_name}\' in Resource Group \'{resource_group}\'. "
-                                                f"This is a one-time operation that must be performed by an account with "
-                                                f"Owner or Contributor role to allow connections to the target resource.",
-                                                consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
+            raise azclierror.UnauthorizedError(f"Client is not authorized to create a default connectivity "
+                                               f"endpoint for \'{vm_name}\' in Resource Group \'{resource_group}\'. "
+                                               f"This is a one-time operation that must be performed by "
+                                               f"an account with Owner or Contributor role to allow "
+                                               f"connections to the target resource.",
+                                               consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
         raise azclierror.UnclassifiedUserFault(f"Failed to create default endpoint for the target Arc Server. "
                                                f"\n{consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT}"
                                                f"\nError: {str(e)}")
@@ -128,14 +128,14 @@ def _create_default_endpoint(cmd, resource_uri):
         raise azclierror.UnclassifiedUserFault(f"Failed to create default endpoint for the target Arc Server. "
                                                f"\n{consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT}"
                                                f"\nError: {str(e)}")
-    
+
     return endpoint
 
 
 def _create_service_configuration(cmd, resource_uri, port, yes_without_prompt):
     from .aaz.latest.hybrid_connectivity.endpoint.service_configuration import Create as CreateServiceConfig
-    prompt = (f"The port {port} that you are trying to connect to is not allowed " 
-              f"for SSH connections for this resource. Would you like to update " 
+    prompt = (f"The port {port} that you are trying to connect to is not allowed "
+              f"for SSH connections for this resource. Would you like to update "
               f"the current Service Configuration in the endpoint to allow connections to port {port}?")
     if not port:
         port = '22'
@@ -147,7 +147,7 @@ def _create_service_configuration(cmd, resource_uri, port, yes_without_prompt):
     if not yes_without_prompt and not prompt_y_n(prompt):
         raise azclierror.ClientRequestError(f"SSH connection is not enabled in the target port {port}",
                                             consts.RECOMMENDATION_ALLOW_PORTS)
-            
+
     create_service_conf_args = {
         'endpoint_name': 'default',
         'resource_uri': resource_uri,
@@ -162,18 +162,19 @@ def _create_service_configuration(cmd, resource_uri, port, yes_without_prompt):
         vm_name = parse_resource_id(resource_uri)["name"]
         resource_group = parse_resource_id(resource_uri)["resource_group"]
         if e.reason == "Forbidden":
-             raise azclierror.UnauthorizedError(f"Client is not authorized to create or update the Service Configuration "
-                                                f"endpoint for \'{vm_name}\' in the Resource Group \'{resource_group}\'. "
-                                                f"This is an operation that must be performed by an account with Owner or "
-                                                f"Contributor role to allow SSH connections to the specified port {port}. ",
-                                                consts.RECOMMENDATION_ALLOW_PORTS)
-        raise azclierror.UnclassifiedUserFault(f"Failed to create service configuration to allow SSH connections to port {port} "
-                                               f"on the endpoint for {vm_name} in the Resource Group {resource_group}"
-                                               f"\nError: {str(e)}")
-    except:
-        raise azclierror.UnclassifiedUserFault(f"Failed to create service configuration to allow SSH connections to port {port} "
-                                               f"on the endpoint for {vm_name} in the Resource Group {resource_group}"
-                                               f"\nError: {str(e)}")
+            raise azclierror.UnauthorizedError(f"Client is not authorized to create or update the Service "
+                                               f"Configuration endpoint for \'{vm_name}\' in the Resource "
+                                               f"Group \'{resource_group}\'. This is an operation that "
+                                               f"must be performed by an account with Owner or Contributor "
+                                               f"role to allow SSH connections to the specified port {port}. ",
+                                               consts.RECOMMENDATION_ALLOW_PORTS)
+        raise azclierror.UnclassifiedUserFault(f"Failed to create service configuration to allow SSH "
+                                               f"connections to port {port} on the endpoint for {vm_name} "
+                                               f"in the Resource Group {resource_group}\nError: {str(e)}")
+    except Exception as e:
+        raise azclierror.UnclassifiedUserFault(f"Failed to create service configuration to allow SSH connections "
+                                               f"to port {port} on the endpoint for {vm_name} in the Resource "
+                                               f"Group {resource_group}\nError: {str(e)}")
     return serviceConfig
 
 
@@ -183,11 +184,11 @@ def _list_credentials(cmd, resource_uri, certificate_validity_in_seconds):
     list_cred_args = {
         'endpoint_name': 'default',
         'resource_uri': resource_uri,
-        'expiresin':certificate_validity_in_seconds,
+        'expiresin': certificate_validity_in_seconds,
         'service_name': "SSH"
     }
 
-    return ListCredential(cli_ctx=cmd.cli_ctx)(command_args=list_cred_args)  
+    return ListCredential(cli_ctx=cmd.cli_ctx)(command_args=list_cred_args)
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
@@ -297,10 +298,10 @@ def _handle_relay_connection_delay(cmd, message):
     # otherwise the ssh connection will fail
     progress_bar = cmd.cli_ctx.get_progress_controller(True)
     for x in range(0, consts.SERVICE_CONNECTION_DELAY_IN_SECONDS + 1):
-        interval = float(1/consts.SERVICE_CONNECTION_DELAY_IN_SECONDS)
-        progress_bar.add(message='{}:'.format(message),
-                            value=interval * x, total_val=1.0)
+        interval = float(1 / consts.SERVICE_CONNECTION_DELAY_IN_SECONDS)
+        progress_bar.add(message=f"{message}:",
+                         value=interval * x, total_val=1.0)
         time.sleep(1)
-    progress_bar.add(message='{}: complete'.format(message), 
-                        value=1.0, total_val=1.0)
+    progress_bar.add(message=f"{message}: complete",
+                     value=1.0, total_val=1.0)
     progress_bar.end()

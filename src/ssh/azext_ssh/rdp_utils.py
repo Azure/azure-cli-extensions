@@ -45,8 +45,8 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
         while (retry_attempt <= retry_attempts_allowed and not ssh_success):
             service_config_delay_error = False
             if retry_attempt == 1:
-                logger.warning(f"SSH connection failed, possibly caused by new service configuration setup. "
-                               f"Retrying the connection in {str(const.RETRY_DELAY_IN_SECONDS)} seconds.")
+                logger.warning("SSH connection failed, possibly caused by new service configuration setup. "
+                               "Retrying the connection in %d seconds.", const.RETRY_DELAY_IN_SECONDS)
                 time.sleep(const.RETRY_DELAY_IN_SECONDS)
             ssh_process, print_ssh_logs = start_ssh_tunnel(ssh_info)
             ssh_connection_t0 = time.time()
@@ -56,10 +56,10 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
                 if retry_attempt == 1:
                     logger.warning("SSH connection failure could still be due to Service Configuration update. "
                                    "Please re-run command.")
-            retry_attempt += 1 
+            retry_attempt += 1
 
         ssh_utils.do_cleanup(delete_keys, delete_cert, ssh_info.delete_credentials, ssh_info.cert_file,
-                            ssh_info.private_key_file, ssh_info.public_key_file) 
+                             ssh_info.private_key_file, ssh_info.public_key_file)
         if ssh_success and ssh_process.poll() is None:
             call_rdp(local_port)
 

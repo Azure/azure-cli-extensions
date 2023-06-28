@@ -12,6 +12,7 @@ from . import constants as const
 
 logger = log.get_logger(__name__)
 
+
 # Send target OS type telemetry and check if authentication options are valid for that OS.
 def handle_target_os_type(cmd, op_info):
     os_type = None
@@ -27,7 +28,7 @@ def handle_target_os_type(cmd, op_info):
     if os_type:
         logger.debug("Target OS Type: %s", os_type)
         telemetry.add_extension_event('ssh', {'Context.Default.AzureCLI.TargetOSType': os_type})
-    
+
     # Note 2: This is a temporary check while AAD login is not enabled for Windows.
     if os_type and os_type.lower() == 'windows' and not op_info.local_user:
         colorama.init()
@@ -38,8 +39,9 @@ def handle_target_os_type(cmd, op_info):
     if op_info.is_arc() and agent_version:
         major, minor, _, _ = agent_version.split('.', 4)
         if int(major) < const.AGENT_MINIMUM_VERSION_MAJOR or int(minor) < const.AGENT_MINIMUM_VERSION_MINOR:
-            logger.warning(f"The version of the Arc Agent, {agent_version} running on the target machine is not "
-                           f"compatible with this version of ssh extension. Please update to the latest version.")
+            logger.warning("The version of the Arc Agent, %s running on the target machine is not "
+                           "compatible with this version of ssh extension. Please update to the latest version.",
+                           agent_version)
 
 
 def _get_azure_vm_os(cmd, resource_group_name, vm_name):
@@ -66,9 +68,9 @@ def _get_arc_server_os(cmd, resource_group_name, vm_name):
     os_type = None
     agent_version = None
     get_args = {
-            'resource_group': resource_group_name,
-            'machine_name': vm_name
-        }
+        'resource_group': resource_group_name,
+        'machine_name': vm_name
+    }
     # pylint: disable=broad-except
     try:
         arc_server = ArcServerShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
@@ -77,7 +79,7 @@ def _get_arc_server_os(cmd, resource_group_name, vm_name):
 
     if arc_server and arc_server.get('osName', None):
         os_type = arc_server['osName']
-    
+
     if arc_server and arc_server.get('properties'):
         agent_version = arc_server.get('properties').get('agentVersion')
 
@@ -90,9 +92,9 @@ def _get_connected_vmware_os(cmd, resource_group_name, vm_name):
     os_type = None
     agent_version = None
     get_args = {
-            'resource_group': resource_group_name,
-            'virtual_machine_name': vm_name
-        }
+        'resource_group': resource_group_name,
+        'virtual_machine_name': vm_name
+    }
     # pylint: disable=broad-except
     try:
         vmware = VMwarevSphereShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
@@ -101,7 +103,7 @@ def _get_connected_vmware_os(cmd, resource_group_name, vm_name):
 
     if vmware and vmware.get("osProfile") and vmware.get("osProfile").get("osType"):
         os_type = vmware.get("osProfile").get("osType")
-    
+
     if vmware and vmware.get("properties") and vmware.get("properties").get('guestAgentProfile') and\
        vmware.get("properties").get('guestAgentProfile').get('agentVersion'):
         agent_version = vmware.get("properties").get('guestAgentProfile').get('agentVersion')

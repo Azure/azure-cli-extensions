@@ -147,8 +147,9 @@ def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, p
     if not resource_type:
         resource_type = const.ARC_RESOURCE_TYPE_PLACEHOLDER
 
-    ssh_vm(cmd, resource_group_name, vm_name, None, public_key_file, private_key_file, False, local_user, cert_file,
-           port, ssh_client_folder, delete_credentials, resource_type, ssh_proxy_folder, winrdp, yes_without_prompt, ssh_args)
+    ssh_vm(cmd, resource_group_name, vm_name, None, public_key_file, private_key_file,
+           False, local_user, cert_file, port, ssh_client_folder, delete_credentials,
+           resource_type, ssh_proxy_folder, winrdp, yes_without_prompt, ssh_args)
 
 
 def _do_ssh_op(cmd, op_info, op_call):
@@ -187,11 +188,9 @@ def _do_ssh_op(cmd, op_info, op_call):
     try:
         if op_info.is_arc():
             op_info.proxy_path = connectivity_utils.get_client_side_proxy(op_info.ssh_proxy_folder)
-            (op_info.relay_info, op_info.new_service_config) = connectivity_utils.get_relay_information(cmd, 
-                                                                          op_info.resource_group_name,
-                                                                          op_info.vm_name, op_info.resource_type,
-                                                                          cert_lifetime, op_info.port,
-                                                                          op_info.yes_without_prompt)
+            (op_info.relay_info, op_info.new_service_config) = connectivity_utils.get_relay_information(
+                cmd, op_info.resource_group_name, op_info.vm_name, op_info.resource_type,
+                cert_lifetime, op_info.port, op_info.yes_without_prompt)
     except Exception as e:
         if delete_keys or delete_cert:
             logger.debug("An error occured before operation concluded. Deleting generated keys: %s %s %s",

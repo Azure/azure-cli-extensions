@@ -37,7 +37,8 @@ def load_arguments(self, _):
                          'Default to .clientsshproxy folder in user\'s home directory if not provided.'))
         c.argument('winrdp', options_list=['--winrdp', '--rdp'], help=('Start RDP connection over SSH.'),
                    action='store_true')
-        c.argument('yes_without_prompt', options_list=['--yes-without-prompt', '--yes', '-y'], help='Update service configuration without prompting user')
+        c.argument('yes_without_prompt', options_list=['--yes-without-prompt', '--yes', '-y'],
+                   help='Update service configuration without prompting user')
         c.positional('ssh_args', nargs='*', help='Additional arguments passed to OpenSSH')
 
     with self.argument_context('ssh config') as c:
@@ -104,5 +105,6 @@ def load_arguments(self, _):
                          'Default to .clientsshproxy folder in user\'s home directory if not provided.'))
         c.argument('winrdp', options_list=['--winrdp', '--rdp'], help=('Start RDP connection over SSH.'),
                    action='store_true')
-        c.argument('yes_without_prompt', options_list=['--yes-without-prompt', '--yes', '-y'], help='Update service configuration without prompting user')
+        c.argument('yes_without_prompt', options_list=['--yes-without-prompt', '--yes', '-y'],
+                   help='Update service configuration without prompting user')
         c.positional('ssh_args', nargs='*', help='Additional arguments passed to OpenSSH')

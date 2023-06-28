@@ -193,6 +193,7 @@ class ConfigSession():
         oschmod.set_mode(relay_info_path, 0o644)
         # pylint: disable=broad-except
         try:
+            # pylint: disable=unsubscriptable-object
             expiration = datetime.datetime.fromtimestamp(self.relay_info['expiresOn'])
             expiration = expiration.strftime("%Y-%m-%d %I:%M:%S %p")
             print_styled_text((Style.SUCCESS, f"Generated relay information {relay_info_path} is valid until "
