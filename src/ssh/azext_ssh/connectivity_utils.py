@@ -96,7 +96,7 @@ def _check_service_configuration(cmd, resource_uri, port):
     if serviceConfig['port'] != 22:
         logger.warning("The Service Configuration endpoint is set to a non-default port. "
                        "To either update the Service Configuration or connect using the non-default port, "
-                       "please use the -Port parameter. %s", consts.RECOMMENDATION_ALLOW_PORTS)
+                       "please use the -Port parameter")
     return True
 
 
@@ -118,16 +118,13 @@ def _create_default_endpoint(cmd, resource_uri):
                                                f"endpoint for \'{vm_name}\' in Resource Group \'{resource_group}\'. "
                                                f"This is a one-time operation that must be performed by "
                                                f"an account with Owner or Contributor role to allow "
-                                               f"connections to the target resource.",
-                                               consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
+                                               f"connections to the target resource.")
         raise azclierror.UnclassifiedUserFault(f"Failed to create default endpoint for the target Arc Server. "
-                                               f"\nError: {str(e)}",
-                                               f"\n{consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT}")
+                                               f"\nError: {str(e)}")
     except Exception as e:
         colorama.init()
         raise azclierror.UnclassifiedUserFault(f"Failed to create default endpoint for the target Arc Server. "
-                                               f"\nError: {str(e)}",
-                                               f"\n{consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT}")
+                                               f"\nError: {str(e)}")
 
     return endpoint
 
@@ -139,14 +136,12 @@ def _create_service_configuration(cmd, resource_uri, port, yes_without_prompt):
               f"the current Service Configuration in the endpoint to allow connections to port {port}?")
     if not port:
         port = '22'
-        prompt = (f"Port 22 is not allowed for SSH connections in this resource. Would you like to update "
-                  f"the current Service Configuration in the endpoint to allow connections to port 22? If you "
-                  f"would like to update the Service Configuration to allow connections to a different port, "
-                  f"please provide the -Port parameter or manually set up the Service Configuration. "
-                  f"{consts.RECOMMENDATION_ALLOW_PORTS}")
+        prompt = ("Port 22 is not allowed for SSH connections in this resource. Would you like to update "
+                  "the current Service Configuration in the endpoint to allow connections to port 22? If you "
+                  "would like to update the Service Configuration to allow connections to a different port, "
+                  "please provide the -Port parameter or manually set up the Service Configuration.")
     if not yes_without_prompt and not prompt_y_n(prompt):
-        raise azclierror.ClientRequestError(f"SSH connection is not enabled in the target port {port}",
-                                            consts.RECOMMENDATION_ALLOW_PORTS)
+        raise azclierror.ClientRequestError(f"SSH connection is not enabled in the target port {port}.")
 
     create_service_conf_args = {
         'endpoint_name': 'default',
@@ -166,8 +161,7 @@ def _create_service_configuration(cmd, resource_uri, port, yes_without_prompt):
                                                f"Configuration endpoint for \'{vm_name}\' in the Resource "
                                                f"Group \'{resource_group}\'. This is an operation that "
                                                f"must be performed by an account with Owner or Contributor "
-                                               f"role to allow SSH connections to the specified port {port}. ",
-                                               consts.RECOMMENDATION_ALLOW_PORTS)
+                                               f"role to allow SSH connections to the specified port {port}.")
         raise azclierror.UnclassifiedUserFault(f"Failed to create service configuration to allow SSH "
                                                f"connections to port {port} on the endpoint for {vm_name} "
                                                f"in the Resource Group {resource_group}\nError: {str(e)}")
