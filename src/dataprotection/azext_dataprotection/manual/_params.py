@@ -67,6 +67,9 @@ def load_arguments(self, _):
                    help="Boolean parameter to decide whether cluster scope resources are included for restore. By default this is taken as true.")
         c.argument('vaulted_backup_containers', type=str, nargs='+', options_list=["--vaulted-backup-container", "--vaulted-backup-containers"],
                    help="List of containers to be backed up inside the VaultStore. Use this parameter for DatasourceType AzureBlob.")
+        c.argument('include_all_containers', arg_type=get_three_state_flag(),
+                   help='Switch parameter to include all containers to be backed up inside the VaultStore. Use this parameter for DatasourceType AzureBlob.')
+        c.argument('storage_account_name', type=str, help='Storage account where the Datasource is present. Use this parameter for DatasourceType AzureBlob.')
 
     with self.argument_context('dataprotection backup-instance initialize') as c:
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")

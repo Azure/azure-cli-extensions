@@ -109,7 +109,8 @@ def dataprotection_backup_instance_initialize_backupconfig(datasource_type, excl
                                                            snapshot_volumes=None,
                                                            include_cluster_scope_resources=None,
                                                            vaulted_backup_containers=None,
-                                                           storage_account_name=None, storage_account_resource_group=None):
+                                                           include_all_containers=None,
+                                                           storage_account_name=None):
     if datasource_type == "AzureKubernetesService":
         if vaulted_backup_containers:
             raise CLIError('Invalid argument --vaulted-backup-containers for given datasource type.')
@@ -133,13 +134,34 @@ def dataprotection_backup_instance_initialize_backupconfig(datasource_type, excl
             raise CLIError('Invalid arguments --excluded-resource-type, --included-resource-type, --excluded-namespaces, '
                            ' --included-namespaces, --label-selectors, --snapshot-volumes, --include-cluster-scope-resources '
                            ' for given datasource type.')
-        if not vaulted_backup_containers:
-            raise CLIError('Please provide --vaulted-backup-containers argument for given workload type.')
-
-        return {
-            "object_type": "BlobBackupDatasourceParameters",
-            "containers_list": vaulted_backup_containers
-        }
+        if vaulted_backup_containers:
+            return {
+                "object_type": "BlobBackupDatasourceParameters",
+                "containers_list": vaulted_backup_containers
+            }
+        elif include_all_containers:
+            if storage_account_name:
+                # Find a way to import and use list_container function ?
+                from azure.cli.core import get_default_cli
+                import os
+                az_cli = get_default_cli()
+                az_cli.invoke(
+                    f"storage container list --auth-mode login --account-name {storage_account_name} --query [].name".split(),
+                    out_file=open(os.devnull, 'w')
+                )
+                if az_cli.result.error:
+                    raise CLIError('Error fetching container list for given storage account.')
+                containers_list = az_cli.result.result
+                return {
+                    "object_type": "BlobBackupDatasourceParameters",
+                    "containers_list": containers_list
+                }
+            else:
+                raise CLIError('Please input --storage-account-name and --storage-account-resource-group parameters '
+                               'for fetching all vaulted containers.')
+        else:
+            raise CLIError('Please provide --vaulted-backup-containers argument or --include-all-containers argument '
+                           'for given workload type.')
     else:
         raise CLIError('Given datasource type is not supported currently. '
                        'This command only supports "AzureBlob" or "AzureKubernetesService" datasource types.')
