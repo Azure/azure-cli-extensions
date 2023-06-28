@@ -26,9 +26,9 @@ class SshCustomCommandTest(unittest.TestCase):
 
         cmd.cli_ctx.data = {'safe_params': []}
         
-        custom.ssh_vm(cmd, "rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", False, "type", "proxy", False, ['-vvv'])
+        custom.ssh_vm(cmd, "rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", False, "type", "proxy", False, False, ['-vvv'])
 
-        mock_info.assert_called_once_with("rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", ['-vvv'], False, "type", "proxy", None, False)
+        mock_info.assert_called_once_with("rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", ['-vvv'], False, "type", "proxy", None, False, False)
         mock_assert.assert_called_once_with("rg", "vm", "ip", "type", "cert", "username")
         mock_type.assert_called_once_with(cmd, ssh_info)
         mock_do_op.assert_called_once_with(cmd, ssh_info, ssh_utils.start_ssh_connection)
@@ -46,9 +46,9 @@ class SshCustomCommandTest(unittest.TestCase):
 
         cmd.cli_ctx.data = {'safe_params': []}
         
-        custom.ssh_vm(cmd, "rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", False, "type", "proxy", True, ['-vvv'])
+        custom.ssh_vm(cmd, "rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", False, "type", "proxy", True, False, ['-vvv'])
 
-        mock_info.assert_called_once_with("rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", ['-vvv'], False, "type", "proxy", None, True)
+        mock_info.assert_called_once_with("rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", ['-vvv'], False, "type", "proxy", None, True, False)
         mock_assert.assert_called_once_with("rg", "vm", "ip", "type", "cert", "username")
         mock_type.assert_called_once_with(cmd, ssh_info)
         mock_do_op.assert_called_once_with(cmd, ssh_info, rdp_utils.start_rdp_connection)
@@ -64,9 +64,9 @@ class SshCustomCommandTest(unittest.TestCase):
 
         cmd.cli_ctx.data = {'safe_params': ['--debug']}
         
-        custom.ssh_vm(cmd, "rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", False, "type", "proxy", False, [])
+        custom.ssh_vm(cmd, "rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", False, "type", "proxy", False, False, [])
 
-        mock_info.assert_called_once_with("rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", ['-vvv'], False, "type", "proxy", None, False)
+        mock_info.assert_called_once_with("rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", ['-vvv'], False, "type", "proxy", None, False, False)
         mock_assert.assert_called_once_with("rg", "vm", "ip", "type", "cert", "username")
         mock_type.assert_called_once_with(cmd, ssh_info)
         mock_do_op.assert_called_once_with(cmd, ssh_info, ssh_utils.start_ssh_connection)
@@ -83,9 +83,9 @@ class SshCustomCommandTest(unittest.TestCase):
         cmd.cli_ctx.data = {'safe_params': []}
         mock_info.return_value = ssh_info
 
-        custom.ssh_vm(cmd, "rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", True, "type", "proxy", False, [])
+        custom.ssh_vm(cmd, "rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", True, "type", "proxy", False, False, [])
 
-        mock_info.assert_called_once_with("rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", [], True, "type", "proxy", None, False)
+        mock_info.assert_called_once_with("rg", "vm", "ip", "public", "private", False, "username", "cert", "port", "ssh_folder", [], True, "type", "proxy", None, False, False)
         mock_assert.assert_called_once_with("rg", "vm", "ip", "type", "cert", "username")
         mock_type.assert_called_once_with(cmd, ssh_info)
         mock_op.assert_called_once_with(cmd, ssh_info, ssh_utils.start_ssh_connection)
@@ -161,9 +161,9 @@ class SshCustomCommandTest(unittest.TestCase):
     @mock.patch('azext_ssh.custom.ssh_vm')
     def test_ssh_arc(self, mock_vm):
         cmd = mock.Mock()
-        custom.ssh_arc(cmd, "rg", "vm", "pub", "priv", "user", "cert", "port", None, "client", False, "proxy", False, [])
+        custom.ssh_arc(cmd, "rg", "vm", "pub", "priv", "user", "cert", "port", None, "client", False, "proxy", False, False, [])
 
-        mock_vm.assert_called_once_with(cmd, "rg", "vm", None, "pub", "priv", False, "user", "cert", "port", "client", False, 'arc_resource_type_placeholder', "proxy", False, [])
+        mock_vm.assert_called_once_with(cmd, "rg", "vm", None, "pub", "priv", False, "user", "cert", "port", "client", False, 'arc_resource_type_placeholder', "proxy", False, False, [])
 
     def test_ssh_cert_no_args(self):
         cmd = mock.Mock()
@@ -360,7 +360,7 @@ class SshCustomCommandTest(unittest.TestCase):
         cmd.cli_ctx.cloud = mock.Mock()
         cmd.cli_ctx.cloud.name = "azurecloud"
 
-        op_info = ssh_info.SSHSession(None, None, "1.2.3.4", None, None, False, None, None, None, None, None, None, "Microsoft.Compute/virtualMachines", None, None, False, None)
+        op_info = ssh_info.SSHSession(None, None, "1.2.3.4", None, None, False, None, None, None, None, None, None, "Microsoft.Compute/virtualMachines", None, None, False, False)
         op_info.public_key_file = "publicfile"
         op_info.private_key_file = "privatefile"
         op_info.ssh_client_folder = "/client/folder"
@@ -408,7 +408,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_op = mock.Mock()
         mock_ip.return_value = None
 
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, None, None, None, None, "Microsoft.Compute/virtualMachines", None, None, False)
+        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, None, None, None, None, "Microsoft.Compute/virtualMachines", None, None, False, False)
 
         self.assertRaises(
             azclierror.ResourceNotFoundError, custom._do_ssh_op, cmd, op_info, mock_op)
@@ -423,10 +423,11 @@ class SshCustomCommandTest(unittest.TestCase):
     @mock.patch('azext_ssh.custom._check_or_create_public_private_files')
     @mock.patch('azext_ssh.custom._get_and_write_certificate')
     def test_do_ssh_op_arc_local_user(self, mock_get_cert, mock_check_keys, mock_start_ssh, mock_get_relay_info, mock_get_proxy):
+        mock_get_relay_info.return_value = ('relay', False)
         cmd = mock.Mock()      
         mock_op = mock.Mock()
 
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, [], False, "Microsoft.HybridCompute/machines", None, None, False, None)
+        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, [], False, "Microsoft.HybridCompute/machines", None, None, False, False)
         op_info.private_key_file = "priv"
         op_info.cert_file = "cert"
         op_info.ssh_client_folder = "client"
@@ -435,7 +436,7 @@ class SshCustomCommandTest(unittest.TestCase):
         custom._do_ssh_op(cmd, op_info, mock_op)
         
         mock_get_proxy.assert_called_once_with('proxy')
-        mock_get_relay_info.assert_called_once_with(cmd, 'rg', 'vm', 'Microsoft.HybridCompute/machines', None, "port", None)
+        mock_get_relay_info.assert_called_once_with(cmd, 'rg', 'vm', 'Microsoft.HybridCompute/machines', None, "port", False)
         mock_op.assert_called_once_with(op_info, False, False)
         mock_get_cert.assert_not_called()
         mock_check_keys.assert_not_called()
@@ -454,7 +455,7 @@ class SshCustomCommandTest(unittest.TestCase):
                                     mock_join, mock_principal, mock_get_relay_info, mock_get_proxy):
 
         mock_get_proxy.return_value = '/path/to/proxy'
-        mock_get_relay_info.return_value = 'relay'
+        mock_get_relay_info.return_value = ('relay', False)
         cmd = mock.Mock()
         cmd.cli_ctx = mock.Mock()
         cmd.cli_ctx.cloud = mock.Mock()
@@ -471,7 +472,7 @@ class SshCustomCommandTest(unittest.TestCase):
 
         mock_op = mock.Mock()
 
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, "port", None, [], False, "Microsoft.HybridCompute/machines", None, None, False, None)
+        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, None, None, "port", None, [], False, "Microsoft.HybridCompute/machines", None, None, False, False)
         op_info.public_key_file = "publicfile"
         op_info.private_key_file = "privatefile"
         op_info.ssh_client_folder = "client"
@@ -486,7 +487,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_get_mod_exp.assert_called_once_with("public")
         mock_write_cert.assert_called_once_with("certificate", "public-aadcert.pub")
         mock_get_proxy.assert_called_once_with('proxy')
-        mock_get_relay_info.assert_called_once_with(cmd, 'rg', 'vm', 'Microsoft.HybridCompute/machines', 3600)
+        mock_get_relay_info.assert_called_once_with(cmd, 'rg', 'vm', 'Microsoft.HybridCompute/machines', 3600, 'port', False)
         mock_op.assert_called_once_with(op_info, False, True)
     
     if __name__ == '__main__':

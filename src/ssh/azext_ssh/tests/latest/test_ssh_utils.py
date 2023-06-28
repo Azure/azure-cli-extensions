@@ -19,7 +19,7 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch('platform.system')
     def test_start_ssh_connection_compute_aad_windows(self, mock_system, mock_copy_env, mock_call, mock_path, mock_read, mock_cleanup):
 
-        op_info = ssh_info.SSHSession("rg", "vm", "ip", None, None, False, "user", None, "port", None, ['arg1', 'arg2', 'arg3'], False, "Microsof.Compute/virtualMachines", None, None, False)
+        op_info = ssh_info.SSHSession("rg", "vm", "ip", None, None, False, "user", None, "port", None, ['arg1', 'arg2', 'arg3'], False, "Microsof.Compute/virtualMachines", None, None, False, False)
         op_info.public_key_file = "pub"
         op_info.private_key_file = "priv"
         op_info.cert_file = "cert"
@@ -51,7 +51,7 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch('platform.system')
     def test_start_ssh_connection_compute_local_linux(self, mock_system, mock_copy_env, mock_call, mock_path, mock_wait, mock_cleanup):
 
-        op_info = ssh_info.SSHSession("rg", "vm", "ip", None, None, False, "user", None, "port", None, ['arg1', 'arg2', 'arg3'], False, "Microsoft.Compute/virtualMachines", None, None, False)
+        op_info = ssh_info.SSHSession("rg", "vm", "ip", None, None, False, "user", None, "port", None, ['arg1', 'arg2', 'arg3'], False, "Microsoft.Compute/virtualMachines", None, None, False, False)
         op_info.public_key_file = "pub"
         op_info.private_key_file = "priv"
         op_info.cert_file = "cert"
@@ -85,7 +85,7 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch('platform.system')
     def test_start_ssh_connection_arc_aad_windows(self, mock_platform, mock_relay_str, mock_call, mock_copy_env, mock_path, mock_read, mock_cleanup):
         
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, ['arg1'], False, "Microsoft.HybridCompute/machines", None, None, False)
+        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, ['arg1'], False, "Microsoft.HybridCompute/machines", None, None, False, False)
         op_info.public_key_file = "pub"
         op_info.private_key_file = "priv"
         op_info.cert_file = "cert"
@@ -122,7 +122,7 @@ class SSHUtilsTests(unittest.TestCase):
     @mock.patch('platform.system')
     def test_start_ssh_connection_arc_local_linux(self, mock_platform, mock_relay_str, mock_call, mock_copy_env, mock_path, mock_wait, mock_cleanup):
         
-        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, ['arg1'], False, "Microsoft.HybridCompute/machines", None, None, False)
+        op_info = ssh_info.SSHSession("rg", "vm", None, None, None, False, "user", None, "port", None, ['arg1'], False, "Microsoft.HybridCompute/machines", None, None, False, False)
         op_info.public_key_file = "pub"
         op_info.private_key_file = "priv"
         op_info.cert_file = "cert"
