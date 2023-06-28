@@ -18,9 +18,10 @@ logger = log.get_logger(__name__)
 
 class SSHSession():
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, resource_group_name, vm_name, ssh_ip, public_key_file, private_key_file,
-                 use_private_ip, local_user, cert_file, port, ssh_client_folder, ssh_args,
-                 delete_credentials, resource_type, ssh_proxy_folder, credentials_folder, winrdp, yes_without_prompt):
+    def __init__(self, resource_group_name, vm_name, ssh_ip, public_key_file,
+                 private_key_file, use_private_ip, local_user, cert_file, port,
+                 ssh_client_folder, ssh_args, delete_credentials, resource_type,
+                 ssh_proxy_folder, credentials_folder, winrdp, yes_without_prompt):
         self.resource_group_name = resource_group_name
         self.vm_name = vm_name
         self.ip = ssh_ip
@@ -82,9 +83,10 @@ class SSHSession():
 
 class ConfigSession():
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, config_path, resource_group_name, vm_name, ssh_ip, public_key_file,
-                 private_key_file, overwrite, use_private_ip, local_user, cert_file, port,
-                 resource_type, credentials_folder, ssh_proxy_folder, ssh_client_folder):
+    def __init__(self, config_path, resource_group_name, vm_name, ssh_ip,
+                 public_key_file, private_key_file, overwrite, use_private_ip,
+                 local_user, cert_file, port, resource_type, credentials_folder,
+                 ssh_proxy_folder, ssh_client_folder, yes_without_prompt):
         self.config_path = os.path.abspath(config_path)
         self.resource_group_name = resource_group_name
         self.vm_name = vm_name
@@ -97,7 +99,7 @@ class ConfigSession():
         self.proxy_path = None
         self.relay_info = None
         self.relay_info_path = None
-        self.yes_without_prompt = False
+        self.yes_without_prompt = yes_without_prompt
         self.public_key_file = os.path.abspath(public_key_file) if public_key_file else None
         self.private_key_file = os.path.abspath(private_key_file) if private_key_file else None
         self.cert_file = os.path.abspath(cert_file) if cert_file else None

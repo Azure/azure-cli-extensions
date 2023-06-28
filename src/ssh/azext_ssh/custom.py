@@ -69,7 +69,7 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
 def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=None,
                public_key_file=None, private_key_file=None, overwrite=False, use_private_ip=False,
                local_user=None, cert_file=None, port=None, resource_type=None, credentials_folder=None,
-               ssh_proxy_folder=None, ssh_client_folder=None):
+               ssh_proxy_folder=None, ssh_client_folder=None, yes_without_prompt=False):
 
     # If user provides their own key pair, certificate will be written in the same folder as public key.
     if (public_key_file or private_key_file) and credentials_folder:
@@ -77,9 +77,10 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
                                             "--public-key-file/-p or --private-key-file/-i.")
     _assert_args(resource_group_name, vm_name, ssh_ip, resource_type, cert_file, local_user)
 
-    config_session = ssh_info.ConfigSession(config_path, resource_group_name, vm_name, ssh_ip, public_key_file,
-                                            private_key_file, overwrite, use_private_ip, local_user, cert_file, port,
-                                            resource_type, credentials_folder, ssh_proxy_folder, ssh_client_folder)
+    config_session = ssh_info.ConfigSession(config_path, resource_group_name, vm_name, ssh_ip,
+                                            public_key_file, private_key_file, overwrite, use_private_ip,
+                                            local_user, cert_file, port, resource_type, credentials_folder,
+                                            ssh_proxy_folder, ssh_client_folder, yes_without_prompt)
     op_call = ssh_utils.write_ssh_config
 
     config_session.resource_type = resource_type_utils.decide_resource_type(cmd, config_session)

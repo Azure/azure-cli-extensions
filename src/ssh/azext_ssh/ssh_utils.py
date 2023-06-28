@@ -35,7 +35,7 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         # When connecting to a local user on a host with a banner, output gets messed up if stderr redirected.
         # If user expects logs to be printed, do not redirect logs. In some ocasions output gets messed up.
         redirect_stderr = set(['-v', '-vv', '-vvv']).isdisjoint(ssh_arg_list) and \
-            (delete_cert or op_info.delete_credentials or op_info.new_service_config)
+            (delete_cert or op_info.delete_credentials)
         if redirect_stderr:
             ssh_arg_list = ['-v'] + ssh_arg_list
 
@@ -66,7 +66,8 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
                 # pylint: disable=consider-using-with
                 if redirect_stderr:
                     ssh_process = subprocess.Popen(command, stderr=subprocess.PIPE, env=env, encoding='utf-8')
-                    service_config_delay_error_logs = _read_ssh_logs(ssh_process, op_info, delete_cert, delete_keys)
+                    service_config_delay_error_logs = _check_ssh_logs_for_common_errors(ssh_process, op_info,
+                                                                                        delete_cert, delete_keys)
                 else:
                     ssh_process = subprocess.Popen(command, env=env, encoding='utf-8')
                     _wait_to_delete_credentials(ssh_process, op_info, delete_cert, delete_keys)
@@ -78,12 +79,12 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
             connection_duration = (time.time() - connection_duration) / 60
             if ssh_process and ssh_process.poll() == 0:
                 successful_connection = True
-            if op_info.new_service_config:
-                if (service_config_delay_error_logs or (ssh_process.poll() == 255 and not redirect_stderr)):
-                    retry_attempts_allowed = 1
-                    if retry_attempt == 1:
-                        logger.warning("SSH connection failure could still be due to Service Configuration update. "
-                                       "Please re-run command.")
+            if op_info.new_service_config and \
+                    (service_config_delay_error_logs or (ssh_process.poll() == 255 and not redirect_stderr)):
+                retry_attempts_allowed = 1
+                if retry_attempt == 1:
+                    logger.warning("SSH connection failure could still be due to Service Configuration update. "
+                                   "Please re-run command.")
             retry_attempt += 1
 
     finally:
@@ -111,7 +112,7 @@ def write_ssh_config(config_info, delete_keys, delete_cert):
         f.write('\n'.join(config_text))
 
 
-def _read_ssh_logs(ssh_sub, op_info, delete_cert, delete_keys):
+def _check_ssh_logs_for_common_errors(ssh_sub, op_info, delete_cert, delete_keys):
     log_list = []
     connection_established = False
     t0 = time.time()
@@ -133,13 +134,13 @@ def _read_ssh_logs(ssh_sub, op_info, delete_cert, delete_keys):
             do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
                        op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
 
-        if not connection_established and \
-           time.time() - t0 > const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS:
-            do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
-                       op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
-
         next_line = ssh_sub.stderr.readline()
 
+    if not connection_established and \
+            time.time() - t0 > const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS and \
+            not service_config_delay_error:
+        do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
+                   op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
     ssh_sub.wait()
     return service_config_delay_error
 

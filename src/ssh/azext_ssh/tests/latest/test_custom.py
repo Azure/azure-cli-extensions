@@ -123,10 +123,10 @@ class SshCustomCommandTest(unittest.TestCase):
         ]
         mock_join.side_effect = ['az_ssh_config/rg-vm', 'path/to/az_ssh_config/rg-vm']
 
-        custom.ssh_config(cmd, "config", "rg", "vm", "ip", "pub", "priv", True, False, "user", "cert", "port", "type", None, "proxy", "client")
+        custom.ssh_config(cmd, "config", "rg", "vm", "ip", "pub", "priv", True, False, "user", "cert", "port", "type", None, "proxy", "client", False)
 
         mock_join.assert_has_calls(expected_join_calls)
-        mock_info.assert_called_once_with("config", "rg", "vm", "ip", "pub", "priv", True, False, "user", "cert", "port", "type", None, "proxy", "client")
+        mock_info.assert_called_once_with("config", "rg", "vm", "ip", "pub", "priv", True, False, "user", "cert", "port", "type", None, "proxy", "client", False)
         mock_type.assert_called_once_with(cmd, config_info)
         mock_assert.assert_called_once_with("rg", "vm", "ip", "type", "cert", "user")
         mock_do_op.assert_called_once_with(cmd, config_info, ssh_utils.write_ssh_config)
@@ -144,10 +144,10 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_isdir.return_value = True
         mock_dirname.return_value = "config_folder"
 
-        custom.ssh_config(cmd, "config", "rg", "vm", "ip", None, None, True, False, "user", "cert", "port", "type", "cred", "proxy", "client")
+        custom.ssh_config(cmd, "config", "rg", "vm", "ip", None, None, True, False, "user", "cert", "port", "type", "cred", "proxy", "client", False)
         
         mock_type.assert_called_once_with(cmd, config_info)
-        mock_info.assert_called_once_with("config", "rg", "vm", "ip", None, None, True, False, "user", "cert", "port", "type", "cred", "proxy", "client")
+        mock_info.assert_called_once_with("config", "rg", "vm", "ip", None, None, True, False, "user", "cert", "port", "type", "cred", "proxy", "client", False)
         mock_assert.assert_called_once_with("rg", "vm", "ip", "type", "cert", "user")
         mock_op.assert_called_once_with(cmd, config_info, ssh_utils.write_ssh_config)
 
@@ -389,7 +389,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_op = mock.Mock()
         mock_ip.return_value = "1.2.3.4"
 
-        op_info = ssh_info.ConfigSession("config", "rg", "vm", None, None, None, False, False, "username", None, None, "Microsoft.Compute/virtualMachines", None, None, None)
+        op_info = ssh_info.ConfigSession("config", "rg", "vm", None, None, None, False, False, "username", None, None, "Microsoft.Compute/virtualMachines", None, None, None, False)
         op_info.public_key_file = "publicfile"
         op_info.private_key_file = "privatefile"
         op_info.cert_file = "cert"

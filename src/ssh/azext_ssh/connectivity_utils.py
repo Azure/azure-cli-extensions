@@ -121,13 +121,13 @@ def _create_default_endpoint(cmd, resource_uri):
                                                f"connections to the target resource.",
                                                consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
         raise azclierror.UnclassifiedUserFault(f"Failed to create default endpoint for the target Arc Server. "
-                                               f"\n{consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT}"
-                                               f"\nError: {str(e)}")
+                                               f"\nError: {str(e)}",
+                                               f"\n{consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT}")
     except Exception as e:
         colorama.init()
         raise azclierror.UnclassifiedUserFault(f"Failed to create default endpoint for the target Arc Server. "
-                                               f"\n{consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT}"
-                                               f"\nError: {str(e)}")
+                                               f"\nError: {str(e)}",
+                                               f"\n{consts.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT}")
 
     return endpoint
 
