@@ -418,8 +418,9 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                     aks_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient, subscription_id=subscription_id)
                     aks_client = getattr(aks_client, 'managed_clusters')
                     aks_name = helper.get_resource_name_from_backup_instance(backup_instance, 'DataSource')
-
-                    aks_cluster = aks_client.get(resource_group_name, aks_name)
+                    aks_rg_id = helper.get_rg_id_from_arm_id(datasource_arm_id)
+                    aks_rg = aks_rg_id.split('/')[-1]
+                    aks_cluster = aks_client.get(aks_rg, aks_name)
                     datasource_principal_id = aks_cluster.identity.principal_id
                 else:
                     raise CLIError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
@@ -510,8 +511,9 @@ def dataprotection_backup_instance_update_msi_permissions(cmd, resource_group_na
                     aks_client = get_mgmt_service_client(cmd.cli_ctx, ContainerServiceClient, subscription_id=subscription_id)
                     aks_client = getattr(aks_client, 'managed_clusters')
                     aks_name = helper.get_resource_name_from_restore_request_object(restore_request_object, 'DataSource')
-
-                    aks_cluster = aks_client.get(resource_group_name, aks_name)
+                    aks_rg_id = helper.get_rg_id_from_arm_id(datasource_arm_id)
+                    aks_rg = aks_rg_id.split('/')[-1]
+                    aks_cluster = aks_client.get(aks_rg, aks_name)
                     datasource_principal_id = aks_cluster.identity.principal_id
                 else:
                     raise CLIError("Datasource-over-X permissions can currently only be set for Datasource type AzureKubernetesService")
@@ -680,7 +682,7 @@ def dataprotection_backup_policy_create_generic_criteria(days_of_week=None, week
         for day_of_month in days_of_month:
             if day_of_month.isdigit():
                 day_of_month = int(day_of_month)
-                if day_of_month > 28:
+                if day_of_month > 28 or day_of_month < 1:
                     raise CLIError("Day of month should be between 1 and 28.")
                 days_of_month_criteria.append({
                     "date": day_of_month,
