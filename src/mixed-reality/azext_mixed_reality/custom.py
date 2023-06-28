@@ -49,9 +49,9 @@ class SpatialAnchorsKeyRenew(_SpatialAnchorsKeyRenew):
         args_schema.key = AAZStrArg(
             options=["--key", "-k"],
             help="Key to be regenerated.",
-            default="primary"
+            default="primary",
+            enum={"primary": "primary", "secondary": "secondary"}
         )
-        args_schema.key.enum = AAZArgEnum({"primary":"primary", "secondary":"secondary"})
         args_schema.serial._registered = False
         return args_schema
 
@@ -59,7 +59,6 @@ class SpatialAnchorsKeyRenew(_SpatialAnchorsKeyRenew):
         args = self.ctx.args
         if has_value(args.key):
             args.serial = 1 if str(args.key).lower() == 'primary' else 2
-            del args.key
 
 
 class RemoteRenderingKeyRenew(_RemoteRenderingKeyRenew):
@@ -70,9 +69,9 @@ class RemoteRenderingKeyRenew(_RemoteRenderingKeyRenew):
         args_schema.key = AAZStrArg(
             options=["--key", "-k"],
             help="Key to be regenerated.",
-            default="primary"
+            default="primary",
+            enum={"primary": "primary", "secondary": "secondary"}
         )
-        args_schema.key.enum = AAZArgEnum({"primary":"primary", "secondary":"secondary"})
         args_schema.serial._registered = False
         return args_schema
 
@@ -80,4 +79,3 @@ class RemoteRenderingKeyRenew(_RemoteRenderingKeyRenew):
         args = self.ctx.args
         if has_value(args.key):
             args.serial = 1 if str(args.key).lower() == 'primary' else 2
-            del args.key
