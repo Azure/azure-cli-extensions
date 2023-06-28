@@ -11,7 +11,16 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 ++++++
-* Vendor new SDK and bump API version to 2023-05-02-preview.
+
+0.5.145
++++++++
+* Add support for option --aks-custom-headers to some aks commands
+  * aks get-credentials
+  * aks nodepool scale
+  * aks nodepool update
+  * aks enable-addons
+  * aks show
+  * aks scale
 
 0.5.144
 +++++++
@@ -19,6 +28,7 @@ Pending
 
 0.5.143
 +++++++
+* Vendor new SDK and bump API version to 2023-05-02-preview.
 * Add `--enable-network-observability` flag to `az aks create` and `az aks update`.
 
 0.5.142

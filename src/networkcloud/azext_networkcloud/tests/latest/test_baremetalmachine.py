@@ -95,6 +95,34 @@ def call_scenario5(test):
     cleanup_scenario5(test)
 
 
+def setup_scenario6(test):
+    pass
+
+
+def cleanup_scenario6(test):
+    pass
+
+
+def call_scenario6(test):
+    setup_scenario6(test)
+    step_replace(test, checks=[])
+    cleanup_scenario6(test)
+
+
+def setup_scenario7(test):
+    pass
+
+
+def cleanup_scenario7(test):
+    pass
+
+
+def call_scenario7(test):
+    setup_scenario7(test)
+    step_validate_hardware(test, checks=[])
+    cleanup_scenario7(test)
+
+
 def step_show(test, checks=None):
     '''BareMetalMachine show operation'''
     if checks is None:
@@ -202,7 +230,7 @@ def step_replace(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az networkcloud baremetalmachine replace --name {nameReplace} --resource-group {rgValidate} --bmc-credentials {bmcCreds} --bmc-mac-address {bmcMacAddress} --boot-mac-address {bootMacAddress} --machine-name {newBmmName} --serial-number {serialNumber}')
+        'az networkcloud baremetalmachine replace --name {nameReplace} --resource-group {rgReplace} --bmc-credentials {bmcCreds} --bmc-mac-address {bmcMacAddress} --boot-mac-address {bootMacAddress} --machine-name {newBmmName} --serial-number {serialNumber}')
 
 
 def step_validate_hardware(test, checks=None):
@@ -230,10 +258,10 @@ class BareMetalMachineScenarioTest1(ScenarioTest):
             'nameRunCommand': CONFIG.get('BAREMETALMACHINE', 'name_run_command'),
             'nameRunDataExtract': CONFIG.get('BAREMETALMACHINE', 'name_run_data_extract'),
             'nameRunReadCommand': CONFIG.get('BAREMETALMACHINE', 'name_run_read_command'),
-            'rgCommands': CONFIG.get('BAREMETALMACHINE', 'resource_group_commands'),
             'runCommandArguments': CONFIG.get('BAREMETALMACHINE', 'run_command_arguments'),
             'dataExtractCommands': CONFIG.get('BAREMETALMACHINE', 'data_extract_commands'),
             'runReadCommands': CONFIG.get('BAREMETALMACHINE', 'run_read_commands'),
+            'rgCommands': CONFIG.get('BAREMETALMACHINE', 'resource_group_commands'),
             'limitTimeSeconds': CONFIG.get('BAREMETALMACHINE', 'limit_time_seconds'),
             'script': CONFIG.get('BAREMETALMACHINE', 'script'),
             'nameCordon': CONFIG.get('BAREMETALMACHINE', 'name_cordon'),
@@ -244,8 +272,15 @@ class BareMetalMachineScenarioTest1(ScenarioTest):
             'rgPower': CONFIG.get('BAREMETALMACHINE', 'resource_group_power'),
             'skipShutdown': CONFIG.get('BAREMETALMACHINE', 'skip_shutdown'),
             'nameReimage': CONFIG.get('BAREMETALMACHINE', 'name_reimage'),
+            'nameReplace': CONFIG.get('BAREMETALMACHINE', 'name_replace'),
             'nameValidate': CONFIG.get('BAREMETALMACHINE', 'name_validate'),
             'rgValidate': CONFIG.get('BAREMETALMACHINE', 'resource_group_validate'),
+            'rgReplace': CONFIG.get('BAREMETALMACHINE', 'resource_group_replace'),
+            'bmcCreds': CONFIG.get('BAREMETALMACHINE', 'bmc_creds'),
+            'bmcMacAddress': CONFIG.get('BAREMETALMACHINE', 'bmc_mac_address'),
+            'bootMacAddress': CONFIG.get('BAREMETALMACHINE', 'boot_mac_address'),
+            'serialNumber': CONFIG.get('BAREMETALMACHINE', 'serial_number'),
+            'newBmmName': CONFIG.get('BAREMETALMACHINE', 'new_bmm_name'),
             'validationCategory': CONFIG.get('BAREMETALMACHINE', 'validation_category'),
         })
 
@@ -271,3 +306,7 @@ class BareMetalMachineScenarioTest1(ScenarioTest):
     def test_bmm_reimage_scenario1(self):
         ''' test scenario for BareMetalMachine reimage operation'''
         call_scenario5(self)
+
+    def test_bmm_replace_scenario1(self):
+        ''' test scenario for BareMetalMachine replace operation'''
+        call_scenario6(self)
