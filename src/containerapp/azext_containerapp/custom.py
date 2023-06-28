@@ -92,7 +92,8 @@ from ._utils import (_validate_subscription_registered, _ensure_location_allowed
                      check_managed_cert_name_availability, prepare_managed_certificate_envelop,
                      get_default_workload_profile_name_from_env, get_default_workload_profiles, ensure_workload_profile_supported, _generate_secret_volume_name,
                      parse_service_bindings, get_linker_client, check_unique_bindings,
-                     get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, AppType)
+                     get_current_mariner_tags, patchable_check, get_pack_exec_path, is_docker_running, trigger_workflow, AppType,
+                     format_location)
 from ._validators import validate_create, validate_revision_suffix
 from ._ssh_utils import (SSH_DEFAULT_ENCODING, WebSocketConnection, read_ssh, get_stdin_writer, SSH_CTRL_C_MSG,
                          SSH_BACKUP_ENCODING)
@@ -100,7 +101,8 @@ from ._constants import (MAXIMUM_SECRET_LENGTH, MICROSOFT_SECRET_SETTING_NAME, F
                          GOOGLE_SECRET_SETTING_NAME, TWITTER_SECRET_SETTING_NAME, APPLE_SECRET_SETTING_NAME, CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, HELLO_WORLD_IMAGE, LOG_TYPE_SYSTEM, LOG_TYPE_CONSOLE,
                          MANAGED_CERTIFICATE_RT, PRIVATE_CERTIFICATE_RT, PENDING_STATUS, SUCCEEDED_STATUS, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
-                         DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME)
+                         DEV_POSTGRES_CONTAINER_NAME, DEV_REDIS_IMAGE, DEV_REDIS_SERVICE_TYPE, DEV_REDIS_CONTAINER_NAME, DEV_KAFKA_CONTAINER_NAME,
+                         DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_SERVICE_LIST)
 
 logger = get_logger(__name__)
 
@@ -178,7 +180,7 @@ def list_all_services(cmd, environment_name, resource_group_name):
 
     for service in services:
         service_type = safe_get(service, "properties", "configuration", "service", "type", default="")
-        if service_type in ["redis", "postgres"]:
+        if service_type in DEV_SERVICE_LIST:
             dev_service_list.append(service)
 
     return dev_service_list
@@ -204,6 +206,17 @@ def create_postgres_service(cmd, service_name, environment_name, resource_group_
 
 def delete_postgres_service(cmd, service_name, resource_group_name, no_wait=False):
     return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_POSTGRES_SERVICE_TYPE)
+
+
+def create_kafka_service(cmd, service_name, environment_name, resource_group_name, no_wait=False,
+                         disable_warnings=True):
+    return DevServiceUtils.create_service(cmd, service_name, environment_name, resource_group_name, no_wait,
+                                          disable_warnings, DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE,
+                                          DEV_KAFKA_CONTAINER_NAME)
+
+
+def delete_kafka_service(cmd, service_name, resource_group_name, no_wait=False):
+    return DevServiceUtils.delete_service(cmd, service_name, resource_group_name, no_wait, DEV_KAFKA_SERVICE_TYPE)
 
 
 def update_containerapp_yaml(cmd, name, resource_group_name, file_name, from_revision=None, no_wait=False):
@@ -435,6 +448,7 @@ def create_containerapp(cmd,
                         user_assigned=None,
                         registry_identity=None,
                         workload_profile_name=None,
+                        termination_grace_period=None,
                         secret_volume_mount=None):
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name, AppType.ContainerApp.name)
@@ -472,6 +486,11 @@ def create_containerapp(cmd,
 
     if not managed_env_info:
         raise ValidationError("The environment '{}' does not exist. Specify a valid environment".format(managed_env))
+
+    while not no_wait and safe_get(managed_env_info, "properties", "provisioningState", default="").lower() in ["inprogress", "updating"]:
+        logger.info("Waiting for environment provisioning to finish before creating container app")
+        time.sleep(5)
+        managed_env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=managed_env_rg, name=managed_env_name)
 
     location = managed_env_info["location"]
     _ensure_location_allowed(cmd, location, CONTAINER_APPS_RP, "containerApps")
@@ -651,6 +670,9 @@ def create_containerapp(cmd,
     if revision_suffix is not None and not is_registry_msi_system(registry_identity):
         template_def["revisionSuffix"] = revision_suffix
 
+    if termination_grace_period is not None:
+        template_def["terminationGracePeriodSeconds"] = termination_grace_period
+
     containerapp_def = ContainerAppModel
     containerapp_def["location"] = location
     containerapp_def["identity"] = identity_def
@@ -746,6 +768,7 @@ def update_containerapp_logic(cmd,
                               ingress=None,
                               target_port=None,
                               workload_profile_name=None,
+                              termination_grace_period=None,
                               registry_server=None,
                               registry_user=None,
                               registry_pass=None,
@@ -863,6 +886,9 @@ def update_containerapp_logic(cmd,
     if revision_suffix is not None:
         new_containerapp["properties"]["template"] = {} if "template" not in new_containerapp["properties"] else new_containerapp["properties"]["template"]
         new_containerapp["properties"]["template"]["revisionSuffix"] = revision_suffix
+
+    if termination_grace_period is not None:
+        safe_set(new_containerapp, "properties", "template", "terminationGracePeriodSeconds", value=termination_grace_period)
 
     if workload_profile_name:
         new_containerapp["properties"]["workloadProfileName"] = workload_profile_name
@@ -1203,6 +1229,7 @@ def update_containerapp(cmd,
                         args=None,
                         tags=None,
                         workload_profile_name=None,
+                        termination_grace_period=None,
                         no_wait=False,
                         secret_volume_mount=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
@@ -1233,6 +1260,7 @@ def update_containerapp(cmd,
                                      args=args,
                                      tags=tags,
                                      workload_profile_name=workload_profile_name,
+                                     termination_grace_period=termination_grace_period,
                                      no_wait=no_wait,
                                      secret_volume_mount=secret_volume_mount)
 
@@ -1302,6 +1330,7 @@ def create_managed_environment(cmd,
                                certificate_file=None,
                                certificate_password=None,
                                enable_workload_profiles=False,
+                               mtls_enabled=None,
                                no_wait=False):
     if zone_redundant:
         if not infrastructure_subnet_resource_id:
@@ -1378,6 +1407,8 @@ def create_managed_environment(cmd,
             raise ValidationError('Infrastructure subnet resource ID needs to be supplied for internal only environments.')
         managed_env_def["properties"]["vnetConfiguration"]["internal"] = True
 
+    if mtls_enabled is not None:
+        safe_set(managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=mtls_enabled)
     try:
         r = ManagedEnvironmentClient.create(
             cmd=cmd, resource_group_name=resource_group_name, name=name, managed_environment_envelope=managed_env_def, no_wait=no_wait)
@@ -1412,6 +1443,7 @@ def update_managed_environment(cmd,
                                workload_profile_name=None,
                                min_nodes=None,
                                max_nodes=None,
+                               mtls_enabled=None,
                                no_wait=False):
     if logs_destination == "log-analytics" or logs_customer_id or logs_key:
         if logs_destination != "log-analytics":
@@ -1481,6 +1513,9 @@ def update_managed_environment(cmd,
             workload_profiles[idx] = profile
 
         safe_set(env_def, "properties", "workloadProfiles", value=workload_profiles)
+
+    if mtls_enabled is not None:
+        safe_set(env_def, "properties", "peerAuthentication", "mtls", "enabled", value=mtls_enabled)
 
     try:
         r = ManagedEnvironmentClient.update(
@@ -2741,6 +2776,7 @@ def create_or_update_github_action(cmd,
                                    service_principal_client_id=None,
                                    service_principal_client_secret=None,
                                    service_principal_tenant_id=None,
+                                   trigger_existing_workflow=False,
                                    no_wait=False):
     if not token and not login_with_github:
         raise_missing_token_suggestion()
@@ -2764,6 +2800,16 @@ def create_or_update_github_action(cmd,
         if not service_principal_client_id or not service_principal_client_secret or not service_principal_tenant_id:
             raise RequiredArgumentMissingError('Service principal client ID, secret and tenant ID are required to add github actions for the first time. Please create one using the command \"az ad sp create-for-rbac --name {{name}} --role contributor --scopes /subscriptions/{{subscription}}/resourceGroups/{{resourceGroup}} --sdk-auth\"') from ex
         source_control_info = SourceControlModel
+
+    # Need to trigger the workflow manually if it already exists (performing an update)
+    try:
+        workflow_name = GitHubActionClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
+        if workflow_name is not None:
+            if trigger_existing_workflow:
+                trigger_workflow(token, repo, workflow_name, branch)
+            return source_control_info
+    except:  # pylint: disable=bare-except
+        pass
 
     source_control_info["properties"]["repoUrl"] = repo_url
     source_control_info["properties"]["branch"] = branch
@@ -2810,7 +2856,20 @@ def create_or_update_github_action(cmd,
         logger.warning("Creating Github action...")
         r = GitHubActionClient.create_or_update(cmd=cmd, resource_group_name=resource_group_name, name=name, github_action_envelope=source_control_info, headers=headers, no_wait=no_wait)
         if not no_wait:
-            await_github_action(token, repo, r["properties"]["githubActionConfiguration"]["workflowName"])
+            WORKFLOW_POLL_RETRY = 3
+            WORKFLOW_POLL_SLEEP = 10
+
+            # Poll for the workflow file just created (may take up to 30s)
+            for _ in range(0, WORKFLOW_POLL_RETRY):
+                time.sleep(WORKFLOW_POLL_SLEEP)
+                workflow_name = GitHubActionClient.get_workflow_name(cmd=cmd, repo=repo, branch_name=branch, container_app_name=name, token=token)
+                if workflow_name is not None:
+                    await_github_action(token, repo, workflow_name)
+                    return r
+
+            raise ValidationError(
+                "Failed to find workflow file for Container App '{}' in .github/workflow folder for repo '{}'. ".format(name, repo) +
+                "If this file was removed, please use the 'az containerapp github-action delete' command to disconnect the removed workflow file connection.")
         return r
     except Exception as e:
         handle_raw_exception(e)
@@ -3509,6 +3568,120 @@ def show_ingress_sticky_session(cmd, name, resource_group_name):
         raise ValidationError("Ingress must be enabled to enable sticky sessions. Try running `az containerapp ingress -h` for more info.") from e
 
 
+def enable_cors_policy(cmd, name, resource_group_name, allowed_origins, allowed_methods=None, allowed_headers=None, expose_headers=None, allow_credentials=None, max_age=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    if not allowed_origins:
+        raise ValidationError("Allowed origins must be specified.")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    containerapp_patch = {}
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "allowedOrigins", value=allowed_origins)
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "allowedMethods", value=allowed_methods)
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "allowedHeaders", value=allowed_headers)
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "exposeHeaders", value=expose_headers)
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "allowCredentials", value=allow_credentials)
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "maxAge", value=max_age)
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch, no_wait=no_wait)
+        return safe_get(r, "properties", "configuration", "ingress", "corsPolicy", default={})
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def disable_cors_policy(cmd, name, resource_group_name, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    containerapp_patch = {}
+    safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", value=None)
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch, no_wait=no_wait)
+        return safe_get(r, "properties", "configuration", "ingress", default={})
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def update_cors_policy(cmd, name, resource_group_name, allowed_origins=None, allowed_methods=None, allowed_headers=None, expose_headers=None, allow_credentials=None, max_age=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    if allowed_origins is not None and len(allowed_origins) == 0:
+        raise RequiredArgumentMissingError("allowed-origins must be specified if provided.")
+
+    reset_max_age = False
+    if max_age == "":
+        reset_max_age = True
+
+    containerapp_patch = {}
+    if allowed_origins is not None:
+        safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "allowedOrigins", value=allowed_origins)
+    if allowed_methods is not None:
+        safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "allowedMethods", value=allowed_methods)
+    if allowed_headers is not None:
+        safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "allowedHeaders", value=allowed_headers)
+    if expose_headers is not None:
+        safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "exposeHeaders", value=expose_headers)
+    if allow_credentials is not None:
+        safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "allowCredentials", value=allow_credentials)
+    if max_age is not None:
+        if reset_max_age:
+            safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "maxAge", value=None)
+        else:
+            safe_set(containerapp_patch, "properties", "configuration", "ingress", "corsPolicy", "maxAge", value=max_age)
+
+    try:
+        r = ContainerAppClient.update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_patch, no_wait=no_wait)
+        return safe_get(r, "properties", "configuration", "ingress", "corsPolicy", default={})
+    except Exception as e:
+        handle_raw_exception(e)
+
+
+def show_cors_policy(cmd, name, resource_group_name):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError(f"The containerapp '{name}' does not exist in group '{resource_group_name}'")
+
+    try:
+        return safe_get(containerapp_def, "properties", "configuration", "ingress", "corsPolicy", default={})
+    except Exception as e:
+        raise ValidationError("CORS must be enabled to enable CORS policy. Try running `az containerapp ingress cors enable -h` for more info.") from e
+
+
 def show_registry(cmd, name, resource_group_name, server):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
@@ -4182,13 +4355,16 @@ def stream_environment_logs(cmd, resource_group_name, name, follow=False, tail=N
             raise ValidationError("--tail must be between 0 and 300.")
 
     env = show_managed_environment(cmd, name, resource_group_name)
-    sub = get_subscription_id(cmd.cli_ctx)
+    url = safe_get(env, "properties", "eventStreamEndpoint")
+
+    if url is None:
+        sub = get_subscription_id(cmd.cli_ctx)
+        base_url = f"https://{format_location(env['location'])}.azurecontainerapps.dev"
+        url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/managedEnvironments/{name}"
+               f"/eventstream")
+
     token_response = ManagedEnvironmentClient.get_auth_token(cmd, resource_group_name, name)
     token = token_response["properties"]["token"]
-    base_url = f"https://{env['location']}.azurecontainerapps.dev"
-
-    url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/managedEnvironments/{name}"
-           f"/eventstream")
 
     logger.info("connecting to : %s", url)
     request_params = {"follow": str(follow).lower(),
@@ -4248,12 +4424,10 @@ def containerapp_up(cmd,
     from ._up_utils import (_validate_up_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
                             ResourceGroup, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
                             _get_registry_details, _create_github_action, _set_up_defaults, up_output,
-                            check_env_name_on_rg, get_token, _validate_containerapp_name, _has_dockerfile)
+                            check_env_name_on_rg, get_token, _has_dockerfile)
     from ._github_oauth import cache_github_token
     HELLOWORLD = "mcr.microsoft.com/k8se/quickstart"
     dockerfile = "Dockerfile"  # for now the dockerfile name must be "Dockerfile" (until GH actions API is updated)
-
-    _validate_containerapp_name(name)
 
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     _validate_up_args(cmd, source, image, repo, registry_server)

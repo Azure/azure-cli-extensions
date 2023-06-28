@@ -397,6 +397,11 @@ helps['containerapp service postgres'] = """
     short-summary: Commands to manage the postgres service for the Container Apps environment.
 """
 
+helps['containerapp service kafka'] = """
+    type: group
+    short-summary: Commands to manage the kafka service for the Container Apps environment.
+"""
+
 helps['containerapp service redis create'] = """
     type: command
     short-summary: Command to create the redis service.
@@ -407,6 +412,11 @@ helps['containerapp service postgres create'] = """
     short-summary: Command to create the postgres service.
 """
 
+helps['containerapp service kafka create'] = """
+    type: command
+    short-summary: Command to create the kafka service.
+"""
+
 helps['containerapp service redis delete'] = """
     type: command
     short-summary: Command to delete the redis service.
@@ -415,6 +425,11 @@ helps['containerapp service redis delete'] = """
 helps['containerapp service postgres delete'] = """
     type: command
     short-summary: Command to delete the postgres service.
+"""
+
+helps['containerapp service kafka delete'] = """
+    type: command
+    short-summary: Command to delete the kafka service.
 """
 
 helps['containerapp env update'] = """
@@ -1098,6 +1113,50 @@ helps['containerapp ingress sticky-sessions show'] = """
     - name: Show a container app's Sticky affinity configuration.
       text: |
           az containerapp ingress sticky-sessions show -n MyContainerapp -g MyResourceGroup
+"""
+
+helps['containerapp ingress cors'] = """
+    type: group
+    short-summary: Commands to manage CORS policy for a container app.
+"""
+
+helps['containerapp ingress cors enable'] = """
+    type: command
+    short-summary: Enable CORS policy for a container app.
+    examples:
+    - name: Set allowed origins and allowed methods for a container app.
+      text: |
+          az containerapp ingress cors enable -n MyContainerapp -g MyResourceGroup --allowed-origins http://www.contoso.com https://www.contoso.com --allowed-methods GET POST
+    - name: Set allowed origins, allowed methods and allowed headers for a container app.
+      text: |
+          az containerapp ingress cors enable -n MyContainerapp -g MyResourceGroup --allowed-origins * --allowed-methods * --allowed-headers header1 header2
+"""
+
+helps['containerapp ingress cors disable'] = """
+    type: command
+    short-summary: Disable CORS policy for a container app.
+    examples:
+    - name: Disable CORS policy for a container app.
+      text: |
+          az containerapp ingress cors disable -n MyContainerapp -g MyResourceGroup
+"""
+
+helps['containerapp ingress cors update'] = """
+    type: command
+    short-summary: Update CORS policy for a container app.
+    examples:
+    - name: Update allowed origins and allowed methods for a container app while keeping other cors settings.
+      text: |
+          az containerapp ingress cors update -n MyContainerapp -g MyResourceGroup --allowed-origins http://www.contoso.com https://www.contoso.com --allowed-methods GET POST
+"""
+
+helps['containerapp ingress cors show'] = """
+    type: command
+    short-summary: Show CORS policy for a container app.
+    examples:
+    - name: Show CORS policy for a container app.
+      text: |
+          az containerapp ingress cors show -n MyContainerapp -g MyResourceGroup
 """
 
 # Registry Commands

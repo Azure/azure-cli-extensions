@@ -7808,6 +7808,8 @@ class Template(_serialization.Model):
 
     :ivar revision_suffix: User friendly suffix that is appended to the revision name.
     :vartype revision_suffix: str
+    :ivar termination_grace_period_seconds: Gracefully shut down periods in seconds for the revision
+    :vartype termination_grace_period_seconds: int
     :ivar init_containers: List of specialized containers that run before app containers.
     :vartype init_containers: list[~azure.mgmt.appcontainers.models.InitContainer]
     :ivar containers: List of container definitions for the Container App.
@@ -7822,6 +7824,7 @@ class Template(_serialization.Model):
 
     _attribute_map = {
         "revision_suffix": {"key": "revisionSuffix", "type": "str"},
+        "termination_grace_period_seconds": {"key": "terminationGracePeriodSeconds", "type": "int"},
         "init_containers": {"key": "initContainers", "type": "[InitContainer]"},
         "containers": {"key": "containers", "type": "[Container]"},
         "scale": {"key": "scale", "type": "Scale"},
@@ -7833,6 +7836,7 @@ class Template(_serialization.Model):
         self,
         *,
         revision_suffix: Optional[str] = None,
+        termination_grace_period_seconds: Optional[int] = None,
         init_containers: Optional[List["_models.InitContainer"]] = None,
         containers: Optional[List["_models.Container"]] = None,
         scale: Optional["_models.Scale"] = None,
@@ -7843,6 +7847,8 @@ class Template(_serialization.Model):
         """
         :keyword revision_suffix: User friendly suffix that is appended to the revision name.
         :paramtype revision_suffix: str
+        :keyword termination_grace_period_seconds: Gracefully shut down periods in seconds for the revision
+        :paramtype termination_grace_period_seconds: int
         :keyword init_containers: List of specialized containers that run before app containers.
         :paramtype init_containers: list[~azure.mgmt.appcontainers.models.InitContainer]
         :keyword containers: List of container definitions for the Container App.
@@ -7856,6 +7862,7 @@ class Template(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.revision_suffix = revision_suffix
+        self.termination_grace_period_seconds = termination_grace_period_seconds
         self.init_containers = init_containers
         self.containers = containers
         self.scale = scale
@@ -8088,6 +8095,8 @@ class Volume(_serialization.Model):
     :ivar secrets: List of secrets to be added in volume. If no secrets are provided, all secrets
      in collection will be added to volume.
     :vartype secrets: list[~azure.mgmt.appcontainers.models.SecretVolumeItem]
+    :ivar mount_options: Mount options for the AzureFile type volume.
+    :vartype mount_options: str
     """
 
     _attribute_map = {
@@ -8095,6 +8104,7 @@ class Volume(_serialization.Model):
         "storage_type": {"key": "storageType", "type": "str"},
         "storage_name": {"key": "storageName", "type": "str"},
         "secrets": {"key": "secrets", "type": "[SecretVolumeItem]"},
+        "mount_options": {"key": "mountOptions", "type": "str"},
     }
 
     def __init__(
@@ -8104,6 +8114,7 @@ class Volume(_serialization.Model):
         storage_type: Optional[Union[str, "_models.StorageType"]] = None,
         storage_name: Optional[str] = None,
         secrets: Optional[List["_models.SecretVolumeItem"]] = None,
+        mount_options: Optional[str] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -8117,12 +8128,15 @@ class Volume(_serialization.Model):
         :keyword secrets: List of secrets to be added in volume. If no secrets are provided, all
          secrets in collection will be added to volume.
         :paramtype secrets: list[~azure.mgmt.appcontainers.models.SecretVolumeItem]
+        :keyword mount_options: Mount options for the AzureFile type  volume.
+        :paramtype mount_options: str
         """
         super().__init__(**kwargs)
         self.name = name
         self.storage_type = storage_type
         self.storage_name = storage_name
         self.secrets = secrets
+        self.mount_options = mount_options
 
 
 class VolumeMount(_serialization.Model):
@@ -8133,24 +8147,38 @@ class VolumeMount(_serialization.Model):
     :ivar mount_path: Path within the container at which the volume should be mounted.Must not
      contain ':'.
     :vartype mount_path: str
+    :ivar sub_path: Path within the volume from which the container's volume should be mounted.
+    :vartype sub_path: str
     """
 
     _attribute_map = {
         "volume_name": {"key": "volumeName", "type": "str"},
         "mount_path": {"key": "mountPath", "type": "str"},
+        "sub_path": {"key": "subPath", "type": "str"}
     }
 
-    def __init__(self, *, volume_name: Optional[str] = None, mount_path: Optional[str] = None, **kwargs: Any) -> None:
+    def __init__(
+            self,
+            *,
+            volume_name: Optional[str] = None,
+            mount_path: Optional[str] = None,
+            sub_path: Optional[str] = None,
+            **kwargs: Any
+    ) -> None:
         """
         :keyword volume_name: This must match the Name of a Volume.
         :paramtype volume_name: str
         :keyword mount_path: Path within the container at which the volume should be mounted.Must not
          contain ':'.
         :paramtype mount_path: str
+        :keyword sub_path: Path within the volume from which the container's volume should be mounted.
+         Defaults to "" (volume's root).
+        :paramtype sub_path: str
         """
         super().__init__(**kwargs)
         self.volume_name = volume_name
         self.mount_path = mount_path
+        self.sub_path = sub_path
 
 
 class WorkloadProfile(_serialization.Model):
