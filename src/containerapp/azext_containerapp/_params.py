@@ -12,7 +12,7 @@ from azure.cli.core.commands.parameters import (resource_group_name_type, get_lo
 
 from ._validators import (validate_memory, validate_cpu, validate_managed_env_name_or_id, validate_registry_server,
                           validate_registry_user, validate_registry_pass, validate_target_port, validate_ingress,
-                          validate_storage_name_or_id)
+                          validate_storage_name_or_id, validate_cors_max_age)
 from ._constants import UNAUTHENTICATED_CLIENT_ACTION, FORWARD_PROXY_CONVENTION, MAXIMUM_CONTAINER_APP_NAME_LENGTH, LOG_TYPE_CONSOLE, LOG_TYPE_SYSTEM
 
 
@@ -120,6 +120,7 @@ def load_arguments(self, _):
         c.argument('traffic_weights', nargs='*', options_list=['--traffic-weight'], help="A list of revision weight(s) for the container app. Space-separated values in 'revision_name=weight' format. For latest revision, use 'latest=weight'")
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="Name of the workload profile to run the app on.", is_preview=True)
         c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets", is_preview=True)
+        c.argument('termination_grace_period', type=int, options_list=['--termination-grace-period', '--tgp'], help="Duration in seconds a replica is given to gracefully shut down before it is forcefully terminated. (Default: 30)", is_preview=True)
 
     with self.argument_context('containerapp create', arg_group='Identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
@@ -141,6 +142,7 @@ def load_arguments(self, _):
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help='The friendly name for the workload profile', is_preview=True)
         c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets", is_preview=True)
+        c.argument('termination_grace_period', type=int, options_list=['--termination-grace-period', '--tgp'], help="Duration in seconds a replica is given to gracefully shut down before it is forcefully terminated. (Default: 30)", is_preview=True)
 
     # Springboard
     with self.argument_context('containerapp update', arg_group='Service Binding') as c:
@@ -177,6 +179,9 @@ def load_arguments(self, _):
         c.argument('hostname', options_list=['--custom-domain-dns-suffix', '--dns-suffix'], help='The DNS suffix for the environment\'s custom domain.')
         c.argument('certificate_file', options_list=['--custom-domain-certificate-file', '--certificate-file'], help='The filepath of the certificate file (.pfx or .pem) for the environment\'s custom domain. To manage certificates for container apps, use `az containerapp env certificate`.')
         c.argument('certificate_password', options_list=['--custom-domain-certificate-password', '--certificate-password'], help='The certificate file password for the environment\'s custom domain.')
+
+    with self.argument_context('containerapp env', arg_group='Peer Authentication') as c:
+        c.argument('mtls_enabled', arg_type=get_three_state_flag(), options_list=['--enable-mtls'], help='Boolean indicating if mTLS peer authentication is enabled for the environment.')
 
     with self.argument_context('containerapp service') as c:
         c.argument('service_name', options_list=['--name', '-n'], help="The service name.")
@@ -252,6 +257,7 @@ def load_arguments(self, _):
         c.argument('service_principal_client_secret', help='The service principal client secret.')
         c.argument('service_principal_tenant_id', help='The service principal tenant ID.')
         c.argument('image', options_list=['--image', '-i'], help="Container image name that the Github Action should use. Defaults to the Container App name.")
+        c.ignore('trigger_existing_workflow')
 
     with self.argument_context('containerapp github-action delete') as c:
         c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line')
@@ -298,6 +304,14 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp ingress sticky-sessions') as c:
         c.argument('affinity', arg_type=get_enum_type(['sticky', 'none']), help='Whether the affinity for the container app is Sticky or None.')
+
+    with self.argument_context('containerapp ingress cors') as c:
+        c.argument('allowed_origins', nargs='*', options_list=['--allowed-origins', '-r'], help="A list of allowed origin(s) for the container app. Values are space-separated. Empty string to clear existing values.")
+        c.argument('allowed_methods', nargs='*', options_list=['--allowed-methods', '-m'], help="A list of allowed method(s) for the container app. Values are space-separated. Empty string to clear existing values.")
+        c.argument('allowed_headers', nargs='*', options_list=['--allowed-headers', '-a'], help="A list of allowed header(s) for the container app. Values are space-separated. Empty string to clear existing values.")
+        c.argument('expose_headers', nargs='*', options_list=['--expose-headers', '-e'], help="A list of expose header(s) for the container app. Values are space-separated. Empty string to clear existing values.")
+        c.argument('allow_credentials', options_list=['--allow-credentials'], arg_type=get_three_state_flag(), help='Whether the credential is allowed for the container app.')
+        c.argument('max_age', nargs='?', const='', validator=validate_cors_max_age, help="The maximum age of the allowed origin in seconds. Only postive integer or empty string are allowed. Empty string resets max_age to null.")
 
     with self.argument_context('containerapp secret') as c:
         c.argument('secrets', nargs='+', options_list=['--secrets', '-s'], help="A list of secret(s) for the container app. Space-separated values in 'key=value' or 'key=keyvaultref:keyvaulturl,identityref:identity' format (where 'key' cannot be longer than 20 characters).")

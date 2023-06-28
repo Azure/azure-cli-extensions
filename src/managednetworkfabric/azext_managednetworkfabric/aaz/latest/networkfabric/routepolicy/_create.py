@@ -548,61 +548,19 @@ class Create(AAZCommand):
 
             ip_community_properties = cls._schema_on_200_201.properties.statements.Element.action.ip_community_properties
             ip_community_properties.add = AAZObjectType()
+            _CreateHelper._build_schema_ip_community_id_list_read(ip_community_properties.add)
             ip_community_properties.delete = AAZObjectType()
+            _CreateHelper._build_schema_ip_community_id_list_read(ip_community_properties.delete)
             ip_community_properties.set = AAZObjectType()
-
-            add = cls._schema_on_200_201.properties.statements.Element.action.ip_community_properties.add
-            add.ip_community_ids = AAZListType(
-                serialized_name="ipCommunityIds",
-            )
-
-            ip_community_ids = cls._schema_on_200_201.properties.statements.Element.action.ip_community_properties.add.ip_community_ids
-            ip_community_ids.Element = AAZStrType()
-
-            delete = cls._schema_on_200_201.properties.statements.Element.action.ip_community_properties.delete
-            delete.ip_community_ids = AAZListType(
-                serialized_name="ipCommunityIds",
-            )
-
-            ip_community_ids = cls._schema_on_200_201.properties.statements.Element.action.ip_community_properties.delete.ip_community_ids
-            ip_community_ids.Element = AAZStrType()
-
-            set = cls._schema_on_200_201.properties.statements.Element.action.ip_community_properties.set
-            set.ip_community_ids = AAZListType(
-                serialized_name="ipCommunityIds",
-            )
-
-            ip_community_ids = cls._schema_on_200_201.properties.statements.Element.action.ip_community_properties.set.ip_community_ids
-            ip_community_ids.Element = AAZStrType()
+            _CreateHelper._build_schema_ip_community_id_list_read(ip_community_properties.set)
 
             ip_extended_community_properties = cls._schema_on_200_201.properties.statements.Element.action.ip_extended_community_properties
             ip_extended_community_properties.add = AAZObjectType()
+            _CreateHelper._build_schema_ip_extended_community_id_list_read(ip_extended_community_properties.add)
             ip_extended_community_properties.delete = AAZObjectType()
+            _CreateHelper._build_schema_ip_extended_community_id_list_read(ip_extended_community_properties.delete)
             ip_extended_community_properties.set = AAZObjectType()
-
-            add = cls._schema_on_200_201.properties.statements.Element.action.ip_extended_community_properties.add
-            add.ip_extended_community_ids = AAZListType(
-                serialized_name="ipExtendedCommunityIds",
-            )
-
-            ip_extended_community_ids = cls._schema_on_200_201.properties.statements.Element.action.ip_extended_community_properties.add.ip_extended_community_ids
-            ip_extended_community_ids.Element = AAZStrType()
-
-            delete = cls._schema_on_200_201.properties.statements.Element.action.ip_extended_community_properties.delete
-            delete.ip_extended_community_ids = AAZListType(
-                serialized_name="ipExtendedCommunityIds",
-            )
-
-            ip_extended_community_ids = cls._schema_on_200_201.properties.statements.Element.action.ip_extended_community_properties.delete.ip_extended_community_ids
-            ip_extended_community_ids.Element = AAZStrType()
-
-            set = cls._schema_on_200_201.properties.statements.Element.action.ip_extended_community_properties.set
-            set.ip_extended_community_ids = AAZListType(
-                serialized_name="ipExtendedCommunityIds",
-            )
-
-            ip_extended_community_ids = cls._schema_on_200_201.properties.statements.Element.action.ip_extended_community_properties.set.ip_extended_community_ids
-            ip_extended_community_ids.Element = AAZStrType()
+            _CreateHelper._build_schema_ip_extended_community_id_list_read(ip_extended_community_properties.set)
 
             condition = cls._schema_on_200_201.properties.statements.Element.condition
             condition.ip_community_ids = AAZListType(
@@ -649,6 +607,46 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
+
+    _schema_ip_community_id_list_read = None
+
+    @classmethod
+    def _build_schema_ip_community_id_list_read(cls, _schema):
+        if cls._schema_ip_community_id_list_read is not None:
+            _schema.ip_community_ids = cls._schema_ip_community_id_list_read.ip_community_ids
+            return
+
+        cls._schema_ip_community_id_list_read = _schema_ip_community_id_list_read = AAZObjectType()
+
+        ip_community_id_list_read = _schema_ip_community_id_list_read
+        ip_community_id_list_read.ip_community_ids = AAZListType(
+            serialized_name="ipCommunityIds",
+        )
+
+        ip_community_ids = _schema_ip_community_id_list_read.ip_community_ids
+        ip_community_ids.Element = AAZStrType()
+
+        _schema.ip_community_ids = cls._schema_ip_community_id_list_read.ip_community_ids
+
+    _schema_ip_extended_community_id_list_read = None
+
+    @classmethod
+    def _build_schema_ip_extended_community_id_list_read(cls, _schema):
+        if cls._schema_ip_extended_community_id_list_read is not None:
+            _schema.ip_extended_community_ids = cls._schema_ip_extended_community_id_list_read.ip_extended_community_ids
+            return
+
+        cls._schema_ip_extended_community_id_list_read = _schema_ip_extended_community_id_list_read = AAZObjectType()
+
+        ip_extended_community_id_list_read = _schema_ip_extended_community_id_list_read
+        ip_extended_community_id_list_read.ip_extended_community_ids = AAZListType(
+            serialized_name="ipExtendedCommunityIds",
+        )
+
+        ip_extended_community_ids = _schema_ip_extended_community_id_list_read.ip_extended_community_ids
+        ip_extended_community_ids.Element = AAZStrType()
+
+        _schema.ip_extended_community_ids = cls._schema_ip_extended_community_id_list_read.ip_extended_community_ids
 
 
 __all__ = ["Create"]

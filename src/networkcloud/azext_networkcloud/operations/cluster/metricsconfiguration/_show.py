@@ -1,4 +1,3 @@
-
 # --------------------------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
@@ -12,16 +11,17 @@ This custom code inherits from generate cluster metrics configuration functions.
 """
 
 from azure.cli.core.aaz import register_callback
-from azext_networkcloud.aaz.latest.networkcloud.cluster.metricsconfiguration._show import \
-    Show
+from azext_networkcloud.aaz.latest.networkcloud.cluster.metricsconfiguration._show import (
+    Show as _Show,
+)
 from .common import ClusterMetricsConfiguration
 
 # This custom code inherits from generate cluster metrics configuration functions. It is integrated into the generated code via:
 #   cli-ext/v20221212preview/ext/src/networkcloud/azext_networkcloud/commands.py
 
 
-class ClusterMetricsConfigurationShow(Show):
-    ''' Custom class for show operation of cluster's metrics configuration '''
+class Show(_Show):
+    """Custom class for show operation of cluster's metrics configuration"""
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
