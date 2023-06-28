@@ -13,7 +13,8 @@
 
 from azure.cli.core.commands.parameters import (
     resource_group_name_type,
-    file_type
+    file_type,
+    get_enum_type
 )
 from azext_datamigration.action import (
     AddSourceSqlConnection,
@@ -62,6 +63,25 @@ def load_arguments(self, _):
         c.argument('output_folder', type=str, help='Default: %LocalAppData%/Microsoft/SqlLoginMigrations) Folder where logs will be written.')
         c.argument('aad_domain_name', type=str, help='Required if Windows logins are included in the list of logins to be migrated.')
         c.argument('config_file_path', type=file_type, completer=FilesCompleter(), help='Path of the ConfigFile')
+
+    with self.argument_context('datamigration tde-migration') as c:
+        c.argument('source_sql_connection_string', options_list=["--source-sql-connection-string", "--srcsqlcs"], type=str, help='Connection string for the source SQL instance, using the formal connection string format.')
+        c.argument('target_subscription_id', options_list=["--target-subscription-id", "--tgtsubscription"], type=str, help='Subscription Id of the target Azure SQL server.')
+        c.argument('target_resource_group_name', options_list=["--target-resource-group-name", "--tgtrg"], type=str, help='Resource group name of the target Azure SQL server.')
+        c.argument('target_managed_instance_name', options_list=["--target-managed-instance-name", "--tgtname"], type=str, help='Name of the Azure SQL Server.')
+        c.argument('network_share_path', options_list=["--network-share-path", "--networkpath"], type=str, help='Network share path.')
+        c.argument('network_share_domain', options_list=["--network-share-domain", "--networkdomain"], type=str, help='Network share domain.')
+        c.argument('network_share_user_name', options_list=["--network-share-user-name", "--networkuser"], type=str, help='Network share user name.')
+        c.argument('network_share_password', options_list=["--network-share-password", "--networkpw"], type=str, help='Network share password.')
+        c.argument('database_name', nargs='+', options_list=["--database-name", "--dbname"], help='Source database name.')
+
+    with self.argument_context('datamigration sql-server-schema') as c:
+        c.argument('action', type=str, arg_type=get_enum_type(["MigrateSchema", "GenerateScript", "DeploySchema"]), help='Select one schema migration action. MigrateSchema is to migrate the database objects to Azure SQL Database target. GenerateScript is to generate an editable TSQL schema script that can be used to run on the target to deploy the objects. DeploySchema is to run the TSQL script generated from -GenerateScript action on the target to deploy the objects.')
+        c.argument('src_sql_connection_str', type=str, help='Connection string for the source SQL instance, using the formal connection string format.')
+        c.argument('tgt_sql_connection_str', type=str, help='Connection string for the target SQL instance, using the formal connection string format.')
+        c.argument('input_script_file_path', type=file_type, completer=FilesCompleter(), help='Location of an editable TSQL schema script. Use this parameter only with DeploySchema Action.')
+        c.argument('output_folder', type=str, help='Default: %LocalAppData%/Microsoft/SqlSchemaMigration) Folder where logs will be written and the generated TSQL schema script by GenerateScript Action.')
+        c.argument('config_file_path', type=file_type, completer=FilesCompleter(), help='Path of the ConfigFile. Accepted parameter names in configfile.json is Action, sourceConnectionString, targetConnectionString, inputScriptFilePath and outputFolder.')
 
     with self.argument_context('datamigration register-integration-runtime') as c:
         c.argument('auth_key', type=str, help='AuthKey of SQL Migration Service')

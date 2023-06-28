@@ -45,7 +45,7 @@ class ArtifactsOperations(object):
         self._deserialize = deserializer
         self._config = config
 
-    def list_by_environment(
+    def list(
         self,
         environment_name,  # type: str
         user_id="me",  # type: str
@@ -69,7 +69,7 @@ class ArtifactsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):
@@ -79,7 +79,7 @@ class ArtifactsOperations(object):
 
             if not next_link:
                 # Construct URL
-                url = self.list_by_environment.metadata['url']  # type: ignore
+                url = self.list.metadata['url']  # type: ignore
                 path_format_arguments = {
                     'endpoint': self._serialize.url("self._config.endpoint", self._config.endpoint, 'str', skip_quote=True),
                     'projectName': self._serialize.url("self._config.project_name", self._config.project_name, 'str', max_length=63, min_length=3, pattern=r'^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$'),
@@ -127,7 +127,7 @@ class ArtifactsOperations(object):
         return ItemPaged(
             get_next, extract_data
         )
-    list_by_environment.metadata = {'url': '/projects/{projectName}/users/{userId}/environments/{environmentName}/artifacts'}  # type: ignore
+    list.metadata = {'url': '/projects/{projectName}/users/{userId}/environments/{environmentName}/artifacts'}  # type: ignore
 
     def list_by_path(
         self,
@@ -156,7 +156,7 @@ class ArtifactsOperations(object):
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
-        api_version = "2022-11-11-preview"
+        api_version = "2023-04-01"
         accept = "application/json"
 
         def prepare_request(next_link=None):

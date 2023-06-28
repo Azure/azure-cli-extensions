@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules/{}", "2022-11-11-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules/{}", "2023-04-01"],
         ]
     }
 
@@ -48,7 +48,7 @@ class Wait(AAZWaitCommand):
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
-            help="The name of the project. Use az configure -d project=<project_name> to configure a default.",
+            help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
             id_part="name",
         )
@@ -143,7 +143,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-11-preview",
+                    "api-version", "2023-04-01",
                     required=True,
                 ),
             }

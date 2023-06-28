@@ -15,8 +15,8 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2022-11-01-preview"
-CURRENT_API_VERSION = "2022-11-01-preview"
+PREVIEW_API_VERSION = "2023-04-01-preview"
+CURRENT_API_VERSION = "2023-04-01-preview"
 POLLING_TIMEOUT = 600  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -196,7 +196,7 @@ class ContainerAppClient():
         r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(container_app_envelope))
 
         if no_wait:
-            return r.json()
+            return
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
             response = poll_results(cmd, operation_url)
@@ -540,7 +540,7 @@ class ManagedEnvironmentClient():
         r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(managed_environment_envelope))
 
         if no_wait:
-            return r.json()
+            return
         elif r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
             if "managedEnvironmentOperationStatuses" in operation_url:
@@ -892,6 +892,259 @@ class WorkloadProfileClient():
         return r.json().get("value")
 
 
+class ContainerAppsJobClient():
+    @classmethod
+    def create_or_update(cls, cmd, resource_group_name, name, containerapp_job_envelope, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = CURRENT_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(containerapp_job_envelope))
+
+        if no_wait:
+            return r.json()
+        elif r.status_code == 201:
+            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
+            request_url = url_fmt.format(
+                management_hostname.strip('/'),
+                sub_id,
+                resource_group_name,
+                name,
+                api_version)
+            return poll(cmd, request_url, "inprogress")
+
+        return r.json()
+
+    @classmethod
+    def update(cls, cmd, resource_group_name, name, containerapp_job_envelope, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+
+        api_version = CURRENT_API_VERSION
+
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PATCH", request_url, body=json.dumps(containerapp_job_envelope))
+
+        if no_wait:
+            return r.json()
+        elif r.status_code == 202:
+            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
+            request_url = url_fmt.format(
+                management_hostname.strip('/'),
+                sub_id,
+                resource_group_name,
+                name,
+                api_version)
+            response = poll_results(cmd, request_url)
+            if response is None:
+                raise ResourceNotFoundError("Could not find a container App Job")
+            else:
+                return response
+
+        return r.json()
+
+    @classmethod
+    def show(cls, cmd, resource_group_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = CURRENT_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        return r.json()
+
+    @classmethod
+    def list_by_subscription(cls, cmd, formatter=lambda x: x):
+        app_list = []
+
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = CURRENT_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        request_url = "{}/subscriptions/{}/providers/Microsoft.App/jobs?api-version={}".format(
+            management_hostname.strip('/'),
+            sub_id,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        j = r.json()
+        for app in j["value"]:
+            formatted = formatter(app)
+            app_list.append(formatted)
+
+        return app_list
+
+    @classmethod
+    def list_by_resource_group(cls, cmd, resource_group_name, formatter=lambda x: x):
+        app_list = []
+
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = CURRENT_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        j = r.json()
+        for app in j["value"]:
+            formatted = formatter(app)
+            app_list.append(formatted)
+
+        return app_list
+
+    @classmethod
+    def delete(cls, cmd, resource_group_name, name, no_wait=False):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = CURRENT_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
+
+        if no_wait:
+            return  # API doesn't return JSON (it returns no content)
+        elif r.status_code in [200, 201, 202, 204]:
+            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}?api-version={}"
+            request_url = url_fmt.format(
+                management_hostname.strip('/'),
+                sub_id,
+                resource_group_name,
+                name,
+                api_version)
+
+            if r.status_code == 202:
+                from azure.cli.core.azclierror import ResourceNotFoundError
+                try:
+                    poll(cmd, request_url, "cancelled")
+                except ResourceNotFoundError:
+                    pass
+                logger.warning('Containerapps job successfully deleted')
+
+    @classmethod
+    def start_job(cls, cmd, resource_group_name, name, containerapp_job_start_envelope):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = CURRENT_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}/start?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+        if containerapp_job_start_envelope is None:
+            r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        else:
+            r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(containerapp_job_start_envelope))
+
+        return r.json()
+
+    @classmethod
+    def stop_job(cls, cmd, resource_group_name, name, job_execution_name, job_execution_names=None):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = CURRENT_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+
+        if not job_execution_name:
+            url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}/stop?api-version={}"
+            request_url = url_fmt.format(
+                management_hostname.strip('/'),
+                sub_id,
+                resource_group_name,
+                name,
+                api_version)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}/stop/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            job_execution_name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(job_execution_names))
+        return r.json()
+
+    @classmethod
+    def get_executions(cls, cmd, resource_group_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = CURRENT_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}/executions?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        return r.json()
+
+    @classmethod
+    def get_single_execution(cls, cmd, resource_group_name, name, job_execution_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = CURRENT_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}/executions/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            job_execution_name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        return r.json()
+
+    @classmethod
+    def list_secrets(cls, cmd, resource_group_name, name):
+
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        api_version = CURRENT_API_VERSION
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}/listSecrets?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=None)
+        return r.json()
+
+
 class GitHubActionClient():
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, github_action_envelope, headers, no_wait=False):
@@ -972,6 +1225,34 @@ class GitHubActionClient():
                     pass
                 logger.warning('Containerapp github action successfully deleted')
         return
+
+    @classmethod
+    def get_workflow_name(cls, cmd, repo, branch_name, container_app_name, token):
+        # Fetch files in the .github/workflows folder using the GitHub API
+        # https://docs.github.com/en/rest/repos/contents#get-repository-content
+        workflows_folder_name = ".github/workflows"
+        url_fmt = "{}/repos/{}/contents/{}?ref={}"
+        request_url = url_fmt.format(
+            "https://api.github.com",
+            repo,
+            workflows_folder_name,
+            branch_name)
+
+        import re
+        try:
+            headers = ["Authorization=Bearer {}".format(token)]
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url, headers=headers)
+            if r.status_code == 200:
+                r_json = r.json()
+
+                # See if any workflow file matches the expected naming pattern (including either .yml or .yaml)
+                workflow_file = [x for x in r_json if x["name"].startswith(container_app_name) and re.match(r'.*AutoDeployTrigger.*\.y.?ml', x["name"])]
+                if len(workflow_file) == 1:
+                    return workflow_file[0]["name"].replace(".yaml", "").replace(".yml", "")
+        except:  # pylint: disable=bare-except
+            pass
+
+        return None
 
 
 class DaprComponentClient():

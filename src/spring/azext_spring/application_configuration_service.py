@@ -11,8 +11,8 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 from knack.log import get_logger
 from msrestazure.tools import resource_id
-
-from .vendored_sdks.appplatform.v2023_03_01_preview import models
+from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import (GitImplementation, ConfigurationServiceGeneration)
+from .vendored_sdks.appplatform.v2023_05_01_preview import models
 
 APPLICATION_CONFIGURATION_SERVICE_NAME = "applicationConfigurationService"
 RESOURCE_ID = "resourceId"
@@ -23,8 +23,27 @@ DEFAULT_NAME = "default"
 logger = get_logger(__name__)
 
 
-def application_configuration_service_create(cmd, client, service, resource_group):
-    acs_resource = models.ConfigurationServiceResource()
+def application_configuration_service_create(cmd, client, service, resource_group,
+                                             generation=None):
+    if generation is None:
+        generation = ConfigurationServiceGeneration.GEN1
+
+    properties = models.ConfigurationServiceProperties(generation=generation)
+    acs_resource = models.ConfigurationServiceResource(properties=properties)
+    logger.warning("Create with generation {}".format(acs_resource.properties.generation))
+    return client.configuration_services.begin_create_or_update(resource_group, service, DEFAULT_NAME, acs_resource)
+
+
+def application_configuration_service_update(cmd, client, service, resource_group,
+                                             generation=None):
+    acs_resource = client.configuration_services.get(resource_group, service, DEFAULT_NAME)
+    if generation is not None:
+        acs_resource.properties.generation = generation
+        logger.warning("Updating with generation {}".format(generation))
+    else:
+        acs_resource.properties.generation = ConfigurationServiceGeneration.GEN1
+        logger.warning("Default generation will be Gen1")
+    logger.warning(acs_resource.properties.generation)
     return client.configuration_services.begin_create_or_update(resource_group, service, DEFAULT_NAME, acs_resource)
 
 
@@ -38,8 +57,8 @@ def application_configuration_service_show(cmd, client, service, resource_group)
 
 def application_configuration_service_clear(cmd, client, service, resource_group):
     logger.warn("Please make sure no patterns are used in your apps.")
-    properties = models.ConfigurationServiceGitProperty()
-    acs_resource = models.ConfigurationServiceResource(properties=properties)
+    acs_resource = client.configuration_services.get(resource_group, service, DEFAULT_NAME)
+    acs_resource.properties.settings = models.ConfigurationServiceSettings()
     return client.configuration_services.begin_create_or_update(resource_group, service, DEFAULT_NAME, acs_resource)
 
 
@@ -52,9 +71,10 @@ def application_configuration_service_git_add(cmd, client, service, resource_gro
                                               host_key_algorithm=None,
                                               private_key=None,
                                               host_key_check=None,
+                                              ca_cert_name=None,
                                               no_wait=False):
     repo = models.ConfigurationServiceGitRepository(name=name, patterns=patterns, uri=uri, label=label)
-    repo = _replace_repo_with_input(repo, patterns, uri, label, search_paths, username, password, host_key, host_key_algorithm, private_key, host_key_check)
+    repo = _replace_repo_with_input(repo, patterns, uri, label, search_paths, username, password, host_key, host_key_algorithm, private_key, host_key_check, _get_cert_resource_id_by_name(cmd, resource_group, service, ca_cert_name))
 
     acs_resource = _get_or_default_acs_resource(client, resource_group, service)
     repos = acs_resource.properties.settings.git_property.repositories
@@ -80,10 +100,11 @@ def application_configuration_service_git_update(cmd, client, service, resource_
                                                  host_key_algorithm=None,
                                                  private_key=None,
                                                  host_key_check=None,
+                                                 ca_cert_name=None,
                                                  no_wait=False):
     acs_resource = _get_or_default_acs_resource(client, resource_group, service)
     repo = _get_existing_repo(acs_resource.properties.settings.git_property.repositories, name)
-    repo = _replace_repo_with_input(repo, patterns, uri, label, search_paths, username, password, host_key, host_key_algorithm, private_key, host_key_check)
+    repo = _replace_repo_with_input(repo, patterns, uri, label, search_paths, username, password, host_key, host_key_algorithm, private_key, host_key_check, _get_cert_resource_id_by_name(cmd, resource_group, service, ca_cert_name))
 
     _validate_acs_settings(client, resource_group, service, acs_resource.properties.settings)
 
@@ -152,7 +173,15 @@ def _get_app_addon_configs_with_acs(addon_configs):
     return addon_configs
 
 
-def _replace_repo_with_input(repo, patterns, uri, label, search_paths, username, password, host_key, host_key_algorithm, private_key, strict_host_key_checking):
+def _get_cert_resource_id_by_name(cmd, resource_group, service, ca_cert_name):
+    ca_cert_resource_id = None
+    if ca_cert_name:
+        subscription = get_subscription_id(cmd.cli_ctx)
+        ca_cert_resource_id = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/certificates/{}".format(subscription, resource_group, service, ca_cert_name)
+    return ca_cert_resource_id
+
+
+def _replace_repo_with_input(repo, patterns, uri, label, search_paths, username, password, host_key, host_key_algorithm, private_key, strict_host_key_checking, ca_cert_resource_id):
     if patterns:
         patterns = patterns.split(",")
     if search_paths:
@@ -170,6 +199,7 @@ def _replace_repo_with_input(repo, patterns, uri, label, search_paths, username,
     repo.host_key_algorithm = host_key_algorithm or repo.host_key_algorithm
     repo.private_key = private_key or repo.private_key
     repo.strict_host_key_checking = strict_host_key_checking or repo.strict_host_key_checking
+    repo.ca_cert_resource_id = ca_cert_resource_id or repo.ca_cert_resource_id
     return repo
 
 

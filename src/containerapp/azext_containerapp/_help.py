@@ -55,6 +55,12 @@ helps['containerapp create'] = """
                                     "cloud=AzurePublicCloud" \\
                                     "queueLength": "5" "queueName": "foo" \\
               --scale-rule-auth "connection=my-connection-string-secret-name"
+    - name: Create a container app with secrets and mounts them in a volume.
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+              --image my-app:v1.0 --environment MyContainerappEnv \\
+              --secrets mysecret=secretvalue1 anothersecret="secret value 2" \\
+              --secret-volume-mount "mnt/secrets"
 """
 
 helps['containerapp update'] = """
@@ -371,6 +377,61 @@ helps['containerapp env create'] = """
               --location eastus2
 """
 
+helps['containerapp service'] = """
+    type: group
+    short-summary: Commands to manage services available within the environment.
+"""
+
+helps['containerapp service list'] = """
+    type: command
+    short-summary: List all services within the environment.
+"""
+
+helps['containerapp service redis'] = """
+    type: group
+    short-summary: Commands to manage the redis service for the Container Apps environment.
+"""
+
+helps['containerapp service postgres'] = """
+    type: group
+    short-summary: Commands to manage the postgres service for the Container Apps environment.
+"""
+
+helps['containerapp service kafka'] = """
+    type: group
+    short-summary: Commands to manage the kafka service for the Container Apps environment.
+"""
+
+helps['containerapp service redis create'] = """
+    type: command
+    short-summary: Command to create the redis service.
+"""
+
+helps['containerapp service postgres create'] = """
+    type: command
+    short-summary: Command to create the postgres service.
+"""
+
+helps['containerapp service kafka create'] = """
+    type: command
+    short-summary: Command to create the kafka service.
+"""
+
+helps['containerapp service redis delete'] = """
+    type: command
+    short-summary: Command to delete the redis service.
+"""
+
+helps['containerapp service postgres delete'] = """
+    type: command
+    short-summary: Command to delete the postgres service.
+"""
+
+helps['containerapp service kafka delete'] = """
+    type: command
+    short-summary: Command to delete the kafka service.
+"""
+
 helps['containerapp env update'] = """
     type: command
     short-summary: Update a Container Apps environment.
@@ -544,6 +605,202 @@ helps['containerapp env workload-profile set'] = """
           az containerapp env workload-profile set -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 2
 """
 
+helps['containerapp env workload-profile add'] = """
+    type: command
+    short-summary: Create a workload profile in a Container Apps environment
+    examples:
+    - name: Create a workload profile in a Container Apps environment
+      text: |
+          az containerapp env workload-profile add -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 2
+"""
+
+helps['containerapp env workload-profile update'] = """
+    type: command
+    short-summary: Update an existing workload profile in a Container Apps environment
+    examples:
+    - name: Update an existing workload profile in a Container Apps environment
+      text: |
+          az containerapp env workload-profile update -g MyResourceGroup -n MyEnvironment --workload-profile-name my-wlp --workload-profile-type D4 --min-nodes 1 --max-nodes 3
+"""
+
+# Container Apps Job Commands
+helps['containerapp job'] = """
+    type: group
+    short-summary: Commands to manage Container Apps jobs.
+"""
+
+helps['containerapp job create'] = """
+    type: command
+    short-summary: Create a container apps job.
+    examples:
+    - name: Create a container apps job with Trigger Type as Manual.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --trigger-type Manual \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --image imageName \\
+              --workload-profile-name my-wlp
+    - name: Create a container apps job with Trigger Type as Schedule.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --trigger-type Schedule \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --cron-expression \"*/1 * * * *\" \\
+              --image imageName
+    - name: Create a container apps job with Trigger Type as Event.
+      text: |
+          az containerapp job create -n MyContainerappsjob -g MyResourceGroup \\
+              --trigger-type Event \\
+              --replica-timeout 5 \\
+              --replica-retry-limit 2 \\
+              --replica-completion-count 1 \\
+              --parallelism 1 \\
+              --polling-interval 30 \\
+              --min-executions 0 \\
+              --max-executions 1 \\
+              --scale-rule-name queueJob \\
+              --scale-rule-type azure-queue \\
+              --scale-rule-metadata "accountName=mystorageaccountname" \\
+                                    "cloud=AzurePublicCloud" \\
+                                    "queueLength": "5" "queueName": "foo" \\
+              --scale-rule-auth "connection=my-connection-string-secret-name" \\
+              --image imageName
+"""
+
+helps['containerapp job update'] = """
+    type: command
+    short-summary: Update a Container Apps Job.
+    examples:
+    - name: Update a job's replica timeout.
+      text: |
+          az containerapp job update -n MyContainerAppJob -g MyResourceGroup \\
+              --replica-timeout 10
+"""
+
+helps['containerapp job delete'] = """
+    type: command
+    short-summary: Delete a Container Apps Job.
+    examples:
+    - name: Delete a job.
+      text: az containerapp job delete -n MyContainerAppJob -g MyResourceGroup
+"""
+
+helps['containerapp job show'] = """
+    type: command
+    short-summary: Show details of a Container Apps Job.
+    examples:
+    - name: Show the details of a job.
+      text: |
+          az containerapp job show -n MyContainerAppJob -g MyResourceGroup
+"""
+
+helps['containerapp job list'] = """
+    type: command
+    short-summary: List Container Apps Job by subscription or resource group.
+    examples:
+    - name: List jobs in the current subscription.
+      text: |
+          az containerapp job list
+    - name: List environments by resource group.
+      text: |
+          az containerapp job list -g MyResourceGroup
+"""
+
+helps['containerapp job start'] = """
+    type: command
+    short-summary: Start a Container Apps Job execution.
+    examples:
+    - name: Start a job execution.
+      text: az containerapp job start -n MyContainerAppJob -g MyResourceGroup
+    - name: Start a job with different image and configurations.
+      text: az containerapp job start -n MyContainerAppJob -g MyResourceGroup --image MyImageName --cpu 0.5 --memory 1.0Gi
+"""
+
+helps['containerapp job stop'] = """
+    type: command
+    short-summary: Stops a Container Apps Job execution.
+    examples:
+    - name: Stop a job execution.
+      text: az containerapp job stop -n MyContainerAppJob -g MyResourceGroup
+    - name: Stop a job execution giving a specific job execution name.
+      text: az containerapp job stop -n MyContainerAppJob -g MyResourceGroup --job-execution-name MyContainerAppJob-66v9xh0
+    - name: Stop multiple job executions giving a list of execution names.
+      text: az containerapp job stop -n MyContainerAppJob -g MyResourceGroup --execution-name-list MyContainerAppJob-66v9xh0,MyContainerAppJob-66v9xh1
+"""
+
+# Container App Job Secret Commands
+helps['containerapp job secret'] = """
+    type: group
+    short-summary: Commands to manage secrets.
+"""
+
+helps['containerapp job secret show'] = """
+    type: command
+    short-summary: Show details of a secret.
+    examples:
+    - name: Show the details of a secret.
+      text: |
+          az containerapp job secret show -n MyContainerappjob -g MyResourceGroup --secret-name MySecret
+"""
+
+helps['containerapp job secret list'] = """
+    type: command
+    short-summary: List the secrets of a container app job.
+    examples:
+    - name: List the secrets of a container app job.
+      text: |
+          az containerapp job secret list -n MyContainerappjob -g MyResourceGroup
+"""
+
+helps['containerapp job secret remove'] = """
+    type: command
+    short-summary: Remove secrets from a container app job.
+    examples:
+    - name: Remove secrets from a container app job.
+      text: |
+          az containerapp job secret remove -n MyContainerappjob -g MyResourceGroup --secret-names MySecret MySecret2
+"""
+
+helps['containerapp job secret set'] = """
+    type: command
+    short-summary: Create/update secrets.
+    examples:
+    - name: Add secrets to a container app job.
+      text: |
+          az containerapp job secret set -n MyContainerappjob -g MyResourceGroup --secrets MySecretName1=MySecretValue1 MySecretName2=keyvaultref:https://example.vault.azure.net/secrets/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
+    - name: Update a secret.
+      text: |
+          az containerapp job secret set -n MyContainerappjob -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue MyExistingSecretName2=keyvaultref:https://example.vault.azure.net/secrets/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
+"""
+
+# Container App Job execution commands
+helps['containerapp job execution'] = """
+    type: group
+    short-summary: Commands to view executions of a Container App Job.
+"""
+
+helps['containerapp job execution list'] = """
+    type: command
+    short-summary: Get list of all executions of a Container App Job.
+    examples:
+    - name: List of all executions of a Container App Job.
+      text: az containerapp job execution list -n MyContainerAppJob -g MyResourceGroup
+"""
+
+helps['containerapp job execution show'] = """
+    type: command
+    short-summary: Get execution of a Container App Job.
+    examples:
+    - name: Get execution of a Container App Job.
+      text: az containerapp job execution show -n MyContainerAppJob -g MyResourceGroup --job-execution-name MyContainerAppJob-66v9xh0
+"""
+
 # Certificates Commands
 helps['containerapp env certificate'] = """
     type: group
@@ -665,6 +922,60 @@ helps['containerapp identity show'] = """
           az containerapp identity show -n myContainerapp -g MyResourceGroup
 """
 
+helps['containerapp job identity'] = """
+    type: group
+    short-summary: Commands to manage managed identities for container app job.
+"""
+
+helps['containerapp job identity assign'] = """
+    type: command
+    short-summary: Assign managed identity to a container app job.
+    long-summary: Managed identities can be user assigned or system assigned.
+    examples:
+    - name: Assign system identity.
+      text: |
+          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --system-assigned
+    - name: Assign user identity.
+      text: |
+          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --user-assigned myUserIdentityName
+    - name: Assign user identity (from a different resource group than the containerapp job).
+      text: |
+          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --user-assigned myUserIdentityResourceId
+    - name: Assign system and user identity.
+      text: |
+          az containerapp job identity assign -n myContainerappjob -g MyResourceGroup --system-assigned --user-assigned myUserIdentityResourceId
+"""
+
+helps['containerapp job identity remove'] = """
+    type: command
+    short-summary: Remove a managed identity from a container app job.
+    examples:
+    - name: Remove system identity.
+      text: |
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --system-assigned
+    - name: Remove user identity.
+      text: |
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --user-assigned myUserIdentityName
+    - name: Remove system and user identity (from a different resource group than the containerapp job).
+      text: |
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --system-assigned --user-assigned myUserIdentityResourceId
+    - name: Remove all user identities.
+      text: |
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --user-assigned
+    - name: Remove system identity and all user identities.
+      text: |
+          az containerapp job identity remove -n myContainerappjob -g MyResourceGroup --system-assigned --user-assigned
+"""
+
+helps['containerapp job identity show'] = """
+    type: command
+    short-summary: Show managed identities of a container app job.
+    examples:
+    - name: Show managed identities.
+      text: |
+          az containerapp job identity show -n myContainerappjob -g MyResourceGroup
+"""
+
 # Ingress Commands
 helps['containerapp ingress'] = """
     type: group
@@ -778,6 +1089,76 @@ helps['containerapp ingress access-restriction list'] = """
           az containerapp ingress access-restriction list -n MyContainerapp -g MyResourceGroup
 """
 
+helps['containerapp ingress sticky-sessions'] = """
+    type: group
+    short-summary: Commands to set Sticky session affinity for a container app.
+"""
+
+helps['containerapp ingress sticky-sessions set'] = """
+    type: command
+    short-summary: Configure Sticky session for a container app.
+    examples:
+    - name: Set affinity to sticky for a container app.
+      text: |
+          az containerapp ingress sticky-sessions set -n MyContainerapp -g MyResourceGroup --affinity sticky
+    - name: Set affinity to none for a container app.
+      text: |
+          az containerapp ingress sticky-sessions set -n MyContainerapp -g MyResourceGroup --affinity none
+"""
+
+helps['containerapp ingress sticky-sessions show'] = """
+    type: command
+    short-summary: Show the Affinity for a container app.
+    examples:
+    - name: Show a container app's Sticky affinity configuration.
+      text: |
+          az containerapp ingress sticky-sessions show -n MyContainerapp -g MyResourceGroup
+"""
+
+helps['containerapp ingress cors'] = """
+    type: group
+    short-summary: Commands to manage CORS policy for a container app.
+"""
+
+helps['containerapp ingress cors enable'] = """
+    type: command
+    short-summary: Enable CORS policy for a container app.
+    examples:
+    - name: Set allowed origins and allowed methods for a container app.
+      text: |
+          az containerapp ingress cors enable -n MyContainerapp -g MyResourceGroup --allowed-origins http://www.contoso.com https://www.contoso.com --allowed-methods GET POST
+    - name: Set allowed origins, allowed methods and allowed headers for a container app.
+      text: |
+          az containerapp ingress cors enable -n MyContainerapp -g MyResourceGroup --allowed-origins * --allowed-methods * --allowed-headers header1 header2
+"""
+
+helps['containerapp ingress cors disable'] = """
+    type: command
+    short-summary: Disable CORS policy for a container app.
+    examples:
+    - name: Disable CORS policy for a container app.
+      text: |
+          az containerapp ingress cors disable -n MyContainerapp -g MyResourceGroup
+"""
+
+helps['containerapp ingress cors update'] = """
+    type: command
+    short-summary: Update CORS policy for a container app.
+    examples:
+    - name: Update allowed origins and allowed methods for a container app while keeping other cors settings.
+      text: |
+          az containerapp ingress cors update -n MyContainerapp -g MyResourceGroup --allowed-origins http://www.contoso.com https://www.contoso.com --allowed-methods GET POST
+"""
+
+helps['containerapp ingress cors show'] = """
+    type: command
+    short-summary: Show CORS policy for a container app.
+    examples:
+    - name: Show CORS policy for a container app.
+      text: |
+          az containerapp ingress cors show -n MyContainerapp -g MyResourceGroup
+"""
+
 # Registry Commands
 helps['containerapp registry'] = """
     type: group
@@ -860,10 +1241,10 @@ helps['containerapp secret set'] = """
     examples:
     - name: Add secrets to a container app.
       text: |
-          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MySecretName1=MySecretValue1 MySecretName2=MySecretValue2
+          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MySecretName1=MySecretValue1 MySecretName2=keyvaultref:https://example.vault.azure.net/secrets/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
     - name: Update a secret.
       text: |
-          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue
+          az containerapp secret set -n MyContainerapp -g MyResourceGroup --secrets MyExistingSecretName=MyNewSecretValue MyExistingSecretName2=keyvaultref:https://example.vault.azure.net/secrets/mysecret,identityref:/subscriptions/sub/resourceGroups/rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myidentity
 """
 
 helps['containerapp github-action'] = """
@@ -1238,4 +1619,64 @@ helps['containerapp compose create'] = """
           az containerapp compose create -g MyResourceGroup \\
               --environment MyContainerappEnv \\
               --compose-file-path "path/to/docker-compose.yml"
+"""
+
+# Patch commands
+helps['containerapp patch'] = """
+    type: group
+    short-summary: Patch Azure Container Apps. Patching is only available for the apps built using the source to cloud feature. See https://aka.ms/aca-local-source-to-cloud
+"""
+
+helps['containerapp patch list'] = """
+   type: command
+   short-summary: List container apps that can be patched. Patching is only available for the apps built using the source to cloud feature. See https://aka.ms/aca-local-source-to-cloud
+   examples:
+    - name: List patchable container apps in the current subscription.
+      text: |
+          az containerapp patch list
+    - name: List patchable container apps by resource group.
+      text: |
+          az containerapp patch list -g MyResourceGroup
+    - name: List patchable container apps by managed environment.
+      text: |
+          az containerapp patch list -g MyResourceGroup --environment MyContainerAppEnv
+    - name: List patchable and unpatchable container apps by managed environment with the show-all option.
+      text: |
+          az containerapp patch list -g MyResourceGroup --environment MyContainerAppEnv --show-all
+"""
+
+helps['containerapp patch apply'] = """
+    type: command
+    short-summary: List and apply container apps to be patched. Patching is only available for the apps built using the source to cloud feature. See https://aka.ms/aca-local-source-to-cloud
+    examples:
+    - name: List patchable container apps in the current subscription and apply patch.
+      text: |
+          az containerapp patch apply
+    - name: List patchable container apps by resource group and apply patch.
+      text: |
+          az containerapp patch apply -g MyResourceGroup
+    - name: List patchable container apps by managed environment and apply patch.
+      text: |
+          az containerapp patch apply -g MyResourceGroup --environment MyContainerAppEnv
+    - name: List patchable and unpatchable container apps by managed environment with the show-all option and apply patch for patchable container apps.
+      text: |
+          az containerapp patch apply -g MyResourceGroup --environment MyContainerAppEnv --show-all
+"""
+
+helps['containerapp patch interactive'] = """
+    type: command
+    short-summary: List and select container apps to be patched in an interactive way. Patching is only available for the apps built using the source to cloud feature. See https://aka.ms/aca-local-source-to-cloud
+    examples:
+    - name: List patchable container apps in the current subscription and apply patch interactively.
+      text: |
+          az containerapp patch interactive
+    - name: List patchable container apps by resource group and apply patch interactively.
+      text: |
+          az containerapp patch interactive -g MyResourceGroup
+    - name: List patchable container apps by managed environment and apply patch interactively.
+      text: |
+          az containerapp patch interactive -g MyResourceGroup --environment MyContainerAppEnv
+    - name: List patchable and unpatchable container apps by managed environment with the show-all option and apply patch for patchable container apps interactively.
+      text: |
+          az containerapp patch interactive -g MyResourceGroup --environment MyContainerAppEnv --show-all
 """

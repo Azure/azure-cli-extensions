@@ -1,5 +1,91 @@
 Release History
 ===============
+1.14.0
+---
+* Add new command `az spring application-configuration-service create --generation` to support creating Application Configuration Service with different generation
+* Add new command `az spring application-configuration-service update --generation` to support updating Application Configuration Service to different generation
+* Add new command `az spring application-configuration-service git repo add --ca-cert-name` to support binding certificate to Application Configuration Service Gen2
+
+1.13.3
+---
+* Add arguments `--allowed-origin-patterns`, `--addon-configs-json` and `--addon-configs-file` in `az spring gateway update`.
+* Add new command `az spring gateway restart` to restart Spring Cloud Gateway.
+
+1.13.2
+---
+* Add argument `--build-certificates` in `az spring app deploy`.
+
+1.13.1
+---
+* Fix the parameter `--no-wait` of the command -- `az spring build-service update`.
+
+1.13.0
+---
+* Add new command -- `az spring apm show` to show the APM resource.
+* Add new command -- `az spring apm create` to create APM resource.
+* Add new command -- `az spring apm update` to update APM resource.
+* Add new command -- `az spring apm delete` to delete APM resource.
+* Add new command -- `az spring apm enable-globally` to enable an APM globally.
+* Add new command -- `az spring apm disable-globally` to disable an APM globally.
+* Add new command -- `az spring apm list-support-types` to list all the supported APM types.
+* Add new command -- `az spring apm list` to list all the APM resources.
+* Add new command -- `az spring apm list-enabled-globally` to list all the APMs enabled globally.
+
+1.12.2
+---
+* Add default `enabled_state` for `az spring config-server set` in Standard Counsumption tier.
+
+1.12.1
+---
+* Add new command -- `az spring eureka-server show` to show the Eureka server resource in consumption tier.
+* Add new command -- `az spring eureka-server enable` to enable the Eureka server resource in consumption tier.
+* Add new command -- `az spring eureka-server disable` to disable the Eureka server resource in consumption tier.
+* Add new command -- `az spring config-server enable` to enable the Config server resource in consumption tier.
+* Add new command -- `az spring config-server disable` to disable the Config server resource in consumption tier.
+
+1.12.0
+---
+* Add new command `az spring container-registry create` to craete container registry resource.
+* Add new command `az spring container-registry delete` to delete container registry resource.
+* Add new command `az spring container-registry list` to list all the container registry resources.
+* Add new command `az spring build-service update` to update build service.
+* Add new command `az spring build-service show` to show build service resource.
+* Add new parameter `--workload-profile` for `az spring app create` and `az spring app update`.
+
+1.11.3
+---
+* Fix `az spring create` command with `--container-registry-server`, `--container-registry-username` and `--container-registry-password`.
+* Fix the help message for parameter `--sku` of `az spring create` and `az spring update` commands.
+
+1.11.2
+---
+* Refine `az spring app create` command from 3 steps to 2 steps.
+
+1.11.1
+---
+* Add argument `--ca-cert-name` in `az spring application-accelerator customized-accelerator update` and command `az spring application-accelerator customized-accelerator sync-cert`.
+* Support client cert validation for customized accelerator with CA certificate.
+* Add arguments `--enable-cert-verify` and `--certificate-names` in `az spring gateway update` and command `az spring gateway sync-cert`.
+* Support client cert validation for Spring Cloud Gateway.
+
+1.11.0
+---
+* Deprecate parameter `--enable-log-stream-public-endpoint` when creating/updating service 
+* Add new parameter `--enable-dataplane-public-endpoint` when creating/updating service 
+
+1.10.0
+---
+* Print more logs for app deployment
+
+1.9.2
+---
+* Fix `ingress_read_timeout` and `session_max_age` validation error
+
+1.9.1
+---
+* Support subPath for bring your own persistent storage feature.
+* Add new parameter `--enable-sub-path` into `az spring append-persistent-storage` to enable subPath feature.
+
 1.9.0
 ---
 * Add new command -- `az spring build-service build create` to create the build resource when using your own container registry.
@@ -12,11 +98,6 @@ Release History
 * Add new command -- `az spring container-registry update` to update container registry resource.
 * Add new command -- `az spring container-registry show` to show the container registry resource.
 * Add new parameters -- `--disable-build-service`, `--container-registry-server`, `--container-registry-username` and `--container-registry-password` when creating service.
-
-1.8.1
----
-* Support `--ca-cert-name` and `--sync-cert` in `az spring application-accelerator customized-accelerator`.
-* Support client cert validation for customized accelerator with CA certificate.
 
 1.8.0
 ---

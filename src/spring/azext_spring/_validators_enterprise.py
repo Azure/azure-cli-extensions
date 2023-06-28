@@ -13,9 +13,11 @@ from azure.core.exceptions import ResourceNotFoundError
 from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError)
+from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
-from .vendored_sdks.appplatform.v2023_03_01_preview.models._app_platform_management_client_enums import ApmType
+from .vendored_sdks.appplatform.v2023_05_01_preview.models import (ApmReference, CertificateReference)
+from .vendored_sdks.appplatform.v2023_05_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
 
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
 from ._resource_quantity import \
@@ -123,12 +125,6 @@ def validate_build_service(namespace):
             raise InvalidArgumentValueError(
                 "Conflict detected: '--registry-server', '--registry-username' and '--registry-password' "
                 "can not be set with '--disable-build-service'.")
-        if namespace.disable_build_service:
-            namespace.disable_app_insights = True
-            if namespace.app_insights or namespace.app_insights_key:
-                raise InvalidArgumentValueError(
-                    "Conflict detected: '--app-insights' or '--app-insights-key' "
-                    "can not be set with '--disable-build-service'.")
     else:
         if namespace.disable_build_service or namespace.registry_server or namespace.registry_username or namespace.registry_password is not None:
             raise InvalidArgumentValueError("The build service is only supported with enterprise tier.")
@@ -245,10 +241,29 @@ def validate_artifact_path(namespace):
             "https://aka.ms/ascdependencies for more details")
 
 
-def validate_container_registry(cmd, namespace):
+def validate_container_registry_update(cmd, namespace):
+    validate_container_registry(namespace)
+    client = get_client(cmd)
+    try:
+        client.container_registries.get(namespace.resource_group, namespace.service, namespace.name)
+    except ResourceNotFoundError:
+        raise ClientRequestError('Container Registry {} does not exist.'.format(namespace.name))
+
+
+def validate_container_registry_create(cmd, namespace):
+    validate_container_registry(namespace)
+    client = get_client(cmd)
+    try:
+        container_registry = client.container_registries.get(namespace.resource_group, namespace.service, namespace.name)
+        if container_registry is not None:
+            raise ClientRequestError('Container Registry {} already exists.'.format(namespace.name))
+    except ResourceNotFoundError:
+        pass
+
+
+def validate_container_registry(namespace):
     if not namespace.name or not namespace.username or not namespace.password or not namespace.server:
         raise InvalidArgumentValueError('The --name, --server, --username and --password must be provided.')
-    validate_central_build_instance(cmd, namespace)
 
 
 def validate_cpu(namespace):
@@ -328,6 +343,12 @@ def _is_valid_profile_name(profile):
 def _is_valid_app_and_profile_name(pattern):
     parts = pattern.split('/')
     return len(parts) == 2 and _is_valid_app_name(parts[0]) and _is_valid_profile_name(parts[1])
+
+
+def validate_acs_create(namespace):
+    if namespace.application_configuration_service_generation is not None:
+        if namespace.enable_application_configuration_service is False:
+            raise ArgumentUsageError("--application-configuration-service-generation can only be set when enable application configuration service.")
 
 
 def validate_gateway_update(namespace):
@@ -459,3 +480,109 @@ def validate_customized_accelerator(namespace):
     validate_acc_git_refs(namespace)
     if namespace.accelerator_tags is not None:
         namespace.accelerator_tags = namespace.accelerator_tags.split(",") if namespace.accelerator_tags else []
+
+
+def validate_apm_properties(namespace):
+    """ Extracts multiple space-separated properties in key[=value] format """
+    if isinstance(namespace.properties, list):
+        properties_dict = {}
+        for item in namespace.properties:
+            properties_dict.update(validate_tag(item))
+        namespace.properties = properties_dict
+
+
+def validate_apm_secrets(namespace):
+    """ Extracts multiple space-separated secrets in key[=value] format """
+    if isinstance(namespace.secrets, list):
+        secrets_dict = {}
+        for item in namespace.secrets:
+            secrets_dict.update(validate_tag(item))
+        namespace.secrets = secrets_dict
+
+
+def validate_apm_not_exist(cmd, namespace):
+    client = get_client(cmd)
+    try:
+        apm_resource = client.apms.get(namespace.resource_group, namespace.service, namespace.name)
+        if apm_resource is not None:
+            raise ClientRequestError('APM {} already exists '
+                                     'in resource group {}, service {}. You can edit it by update command.'
+                                     .format(namespace.name, namespace.resource_group, namespace.service))
+    except ResourceNotFoundError:
+        # Excepted case
+        pass
+
+
+def validate_apm_update(cmd, namespace):
+    client = get_client(cmd)
+    try:
+        client.apms.get(namespace.resource_group, namespace.service, namespace.name)
+    except ResourceNotFoundError:
+        raise ClientRequestError('APM {} does not exist.'.format(namespace.name))
+
+
+def validate_apm_reference(cmd, namespace):
+    apm_names = namespace.apms
+
+    if not apm_names:
+        return
+
+    service_resource_id = get_service_resource_id(cmd, namespace)
+
+    result = []
+    for apm_name in apm_names:
+        resource_id = '{}/apms/{}'.format(service_resource_id, apm_name)
+        apm_reference = ApmReference(resource_id=resource_id)
+        result.append(apm_reference)
+
+    namespace.apms = result
+
+
+def validate_apm_reference_and_enterprise_tier(cmd, namespace):
+    if namespace.apms is not None and namespace.resource_group and namespace.service and not is_enterprise_tier(
+            cmd, namespace.resource_group, namespace.service):
+        raise ArgumentUsageError("'--apms' only supports for Enterprise tier Spring instance.")
+
+    validate_apm_reference(cmd, namespace)
+
+
+def get_service_resource_id(cmd, namespace):
+    subscription = get_subscription_id(cmd.cli_ctx)
+    service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(
+        subscription, namespace.resource_group, namespace.service)
+    return service_resource_id
+
+
+def validate_cert_reference(cmd, namespace):
+    cert_names = namespace.certificates
+
+    if not cert_names:
+        return
+
+    result = []
+    get_cert_resource_id(cert_names, cmd, namespace, result)
+
+    namespace.certificates = result
+
+
+def get_cert_resource_id(cert_names, cmd, namespace, result):
+    service_resource_id = get_service_resource_id(cmd, namespace)
+    for cert_name in cert_names:
+        resource_id = '{}/certificates/{}'.format(service_resource_id, cert_name)
+        cert_reference = CertificateReference(resource_id=resource_id)
+        result.append(cert_reference)
+
+
+def validate_build_cert_reference(cmd, namespace):
+    cert_names = namespace.build_certificates
+    if cert_names is not None and namespace.resource_group and namespace.service and not is_enterprise_tier(
+            cmd, namespace.resource_group, namespace.service):
+        raise ArgumentUsageError("'--build-certificates' only supports for Enterprise tier Spring instance.")
+
+    if not cert_names:
+        return
+
+    result = []
+    get_cert_resource_id(cert_names, cmd, namespace, result)
+
+    namespace.build_certificates = result

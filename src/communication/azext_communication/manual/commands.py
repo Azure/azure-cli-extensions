@@ -97,12 +97,12 @@ def _load_rooms_command_table(self):
         g.communication_custom_command('create', 'communication_rooms_create_room', rooms_arguments)
         g.communication_custom_command('update', 'communication_rooms_update_room', rooms_arguments)
         g.communication_custom_command('delete', 'communication_rooms_delete_room', rooms_arguments, confirmation=True)
+        g.communication_custom_command('list', 'communication_rooms_list_rooms', rooms_arguments)
 
     # rooms participant management
     with self.command_group('communication rooms participant', client_factory=cf_communication_rooms, is_preview=True) as g:
         g.communication_custom_command('get', 'communication_rooms_get_participants', rooms_arguments)
-        g.communication_custom_command('add', 'communication_rooms_add_participants', rooms_arguments)
-        g.communication_custom_command('update', 'communication_rooms_update_participants', rooms_arguments)
+        g.communication_custom_command('add-or-update', 'communication_rooms_add_or_update_participants', rooms_arguments)
         g.communication_custom_command('remove', 'communication_rooms_remove_participants', rooms_arguments, confirmation=True)
 
 

@@ -2,6 +2,8 @@
 
 - [Microsoft Azure CLI 'confcom' Extension Examples and Security Policy Rules Documentation](#microsoft-azure-cli-confcom-extension-examples-and-security-policy-rules-documentation)
   - [Microsoft Azure CLI 'confcom' Extension Examples](#microsoft-azure-cli-confcom-extension-examples)
+  - [dmverity Layer Hashing](#dmverity-layer-hashing)
+  - [Security Policy Information Sources](#security-policy-information-sources)
   - [Security Policy Rules Documentation](#security-policy-rules-documentation)
     - [mount_device](#mount_device)
     - [unmount_device](#unmount_device)
@@ -17,7 +19,7 @@
     - [scratch_mount](#scratch_mount)
     - [scratch_unmount](#scratch_unmount)
     - [load_fragment](#load_fragment)
-    - [fragments](#fragments)
+    - [policy fragments](#policy-fragments)
     - [reason](#reason)
     - [A Sample Policy that Uses Framework](#a-sample-policy-that-uses-framework)
     - [allow_properties_access](#a-sample-policy-that-uses-framework)
@@ -25,6 +27,7 @@
     - [allow_runtime_logging](#a-sample-policy-that-uses-framework)
     - [allow_environment_variable_dropping](#allow_environment_variable_dropping)
     - [allow_unencrypted_scratch](#allow_unencrypted_scratch)
+    - [allow_capabilities_dropping](#allow_capabilities_dropping)
 
 ## Microsoft Azure CLI 'confcom' Extension Examples
 
@@ -37,66 +40,94 @@ Install the Azure CLI and Confidential Computing extension.
 
 See the most recently released version of `confcom` extension.
 
-    az extension list-available -o table | grep confcom
+```bash
+az extension list-available -o table | grep confcom
+```
 
 To add the most recent confcom extension, run:
 
-    az extension add --name confcom
+```bash
+az extension add --name confcom
+```
 
 Use the `--version` argument to specify a version to add.
+
+Run this to update to the latest version if an older version is already installed:
+
+```bash
+az extension update --name confcom
+```
 
 The `acipolicygen` command generates confidential computing security policies using an image, an input JSON file, or an ARM template. You can control the format of the generated policies using arguments. Note: It is recommended to use images with specific tags instead of the `latest` tag, as the `latest` tag can change at any time and images with different configurations may also have the latest tag.
 
 **Examples:**
 
-Example 1: The following command creates a CCE policy and outputs it to the command line: <br />
+Example 1: The following command creates a CCE policy and outputs it to the command line:
 
-    az confcom acipolicygen -a .\template.json --print-policy
+```bash
+az confcom acipolicygen -a .\template.json --print-policy
+```
 
 This command combines the information of images from the ARM template with other information such as mount, environment variables and commands from the ARM template to create a CCE policy.
 The `--print-policy` argument is included to display the policy on the command line rather than injecting it into the input ARM template.
 
-Example 2: This command injects a CCE policy into [ARM-template](arm.template.md) based on input from [parameters-file](template.parameters.md) so that there is no need to change the ARM template to pass variables into the CCE policy: <br />
+Example 2: This command injects a CCE policy into [ARM-template](arm.template.md) based on input from [parameters-file](template.parameters.md) so that there is no need to change the ARM template to pass variables into the CCE policy:
 
-    az confcom acipolicygen -a .\arm-template.json -p .\template.parameters.json
+```bash
+az confcom acipolicygen -a .\arm-template.json -p .\template.parameters.json
+```
 
-This is mainly for decoupling purposes so that an ARM template can remain the same and evolving variables can go into a different file.
+This is mainly for decoupling purposes so that an ARM template can remain the same and evolving variables can go into a different file. When a security policy gets injected into the ARM Template, the corresponding sha256 hash of the decoded security policy gets printed to the command line. This sha256 hash can be used for verifying the hostdata field of the SEV-SNP Attestation Report and/or used for key release policies using MAA (Microsoft Azure Attestation) or mHSM (managed Hardware Security Module)
 
 Example 3: This command takes the input of an ARM template to create a human-readable CCE policy in pretty print JSON format and output the result to the console.
-NOTE: Generating JSON policy is for use by the customer only, and is not used by ACI In most cases. The default REGO format security policy is required. <br />
+NOTE: Generating JSON policy is for use by the customer only, and is not used by ACI In most cases. The default REGO format security policy is required.
 
-    az confcom acipolicygen -a ".\arm_template" --outraw-pretty-print --json
+```bash
+az confcom acipolicygen -a ".\arm_template" --outraw-pretty-print
+```
 
 The default output of `acipolicygen` command is base64 encoded REGO format.
-This example uses the `--json` argument to generate output in JSON format, use `--outraw-pretty-print` to indicate decoding policy in clear text and in pretty print format and print result to console.
+This example uses `--outraw-pretty-print` to indicate decoding policy in clear text and in pretty print format and print result to console.
 
-Example 4: The following command takes the input of an ARM template to create a human-readable CCE policy in clear text and print to console: <br />
+Example 4: The following command takes the input of an ARM template to create a human-readable CCE policy in clear text and print to console:
 
-    az confcom acipolicygen -a ".\arm-template.json" --outraw
+```bash
+az confcom acipolicygen -a ".\arm-template.json" --outraw
+```
 
 Use `--outraw` argument to output policy in clear text compact REGO format.
 
-Example 5: Input an ARM template to create a human-readable CCE policy in pretty print REGO format and save the result to a file named ".\output-file.rego": <br />
+Example 5: Input an ARM template to create a human-readable CCE policy in pretty print REGO format and save the result to a file named ".\output-file.rego":
 
-    az confcom acipolicygen -a ".\arm-template" --outraw-pretty-print --save-to-file ".\output-file.rego"
+```bash
+az confcom acipolicygen -a ".\arm-template" --outraw-pretty-print --save-to-file ".\output-file.rego"
+```
 
-Example 6: Validate the policy present in the ARM template under "ccepolicy" and the containers within the ARM template are compatible. If they are incompatible, a list of reasons is given and the exit status code will be 2: <br />
+Example 6: Validate the policy present in the ARM template under "ccepolicy" and the containers within the ARM template are compatible. If they are incompatible, a list of reasons is given and the exit status code will be 2:
 
-    az confcom acipolicygen -a ".\arm-template.json" --diff
+```bash
+az confcom acipolicygen -a ".\arm-template.json" --diff
+```
 
 Example 7: Decode the existing CCE policy in ARM template and print to console in clear text.
 
-    az confcom acipolicygen -a ".\arm-template.json" --print-existing-policy
+```bash
+az confcom acipolicygen -a ".\arm-template.json" --print-existing-policy
+```
 
 Example 8: Generate a CCE policy using `--disable-stdio` argument.
 `--disable-stdio` argument disables container standard I/O access by setting `allow_stdio_access` to false.
 
-    az confcom acipolicygen -a ".\arm-template.json" --disable-stdio
+```bash
+az confcom acipolicygen -a ".\arm-template.json" --disable-stdio
+```
 
 Example 9: Inject a CCE policy into ARM template.
-This command adds the `--debug-mode` argument to enable executing /bin/sh and /bin/bash in the container group: <br />
+This command adds the `--debug-mode` argument to enable executing /bin/sh and /bin/bash in the container group:
 
-    az confcom acipolicygen -a .\sample-arm-input.json --debug-mode
+```bash
+az confcom acipolicygen -a .\sample-arm-input.json --debug-mode
+```
 
 In the above example, The `--debug-mode` modifies the following to allow users to shell into the container via portal or the command line:
 
@@ -127,14 +158,18 @@ See [A Sample Policy that Uses Framework](#a-sample-policy-that-uses-framework) 
     - allow_dump_stacks
     - allow_runtime_logging
 
-Example 10: The confidential computing extension CLI is designed in such a way that generating policy does not necessarily have to depend on network calls as long as users have the layers of the images they want to generate policies for saved in a tar file locally. See the following example: <br />
+Example 10: The confidential computing extension CLI is designed in such a way that generating policy does not necessarily have to depend on network calls as long as users have the layers of the images they want to generate policies for saved in a tar file locally. See the following example:
 
-    docker save ImageTag -o file.tar
+```bash
+docker save ImageTag -o file.tar
+```
 
 Disconnect from network and delete the local image from the docker daemon.
 Use the following command to generate CCE policy for the image.
 
-    az confcom acipolicygen -a .\sample-template-input.json --tar .\file.tar
+```bash
+az confcom acipolicygen -a .\sample-template-input.json --tar .\file.tar
+```
 
 Some users have unique scenarios such as cleanroom requirement.
 In this case, users can still generate security policies witout relying on network calls.
@@ -143,123 +178,159 @@ Users just need to make a tar file by using the `docker save` command above, inc
 When generating security policy without using `--tar` argument, the confcom extension CLI tool attemps to fetch the image remotely if it is not locally available.
 However, the CLI tool does not attempt to fetch remotely if `--tar` argument is used.
 
-Example 11: The process used in example 10 can also be used to save multiple images into the same tar file. See the following example: <br />
+Example 11: The process used in example 10 can also be used to save multiple images into the same tar file. See the following example:
 
-    docker save ImageTag1 ImageTag2 ImageTag3 -o file.tar
+```bash
+docker save ImageTag1 ImageTag2 ImageTag3 -o file.tar
+```
 
 Disconnect from network and delete the local image from the docker daemon.
 Use the following command to generate CCE policy for the image.
 
-    az confcom acipolicygen -a .\sample-template-input.json --tar .\file.tar
+```bash
+az confcom acipolicygen -a .\sample-template-input.json --tar .\file.tar
+```
 
-Example 12: If it is necessary to put images in their own tarballs, an external file can be used that maps images to their respective tarball paths. See the following example: <br />
+Example 12: If it is necessary to put images in their own tarballs, an external file can be used that maps images to their respective tarball paths. See the following example:
 
-    docker save image:tag1 -o file1.tar
-    docker save image:tag2 -o file2.tar
-    docker save image:tag3 -o file3.tar
+```bash
+docker save image:tag1 -o file1.tar
+docker save image:tag2 -o file2.tar
+docker save image:tag3 -o file3.tar
+```
 
 Create the following file (as an example named "tar_mappings.json")on the local filesystem:
 
-    ```json
-    {
-        "image:tag1": "./file1.tar",
-        "image:tag2": "./file2.tar",
-        "image:tag3": "./file3.tar",
-    }
-    ```
+```json
+{
+    "image:tag1": "./file1.tar",
+    "image:tag2": "./file2.tar",
+    "image:tag3": "./file3.tar",
+}
+```
 
 Disconnect from network and delete the local image from the docker daemon.
 Use the following command to generate CCE policy for the image.
 
-    az confcom acipolicygen -a .\sample-template-input.json --tar .\tar_mappings.json
+```bash
+az confcom acipolicygen -a .\sample-template-input.json --tar .\tar_mappings.json
+```
 
-Example 13: Some use cases necessitate the use of regular expressions to allow for environment variables where either their values are secret, or unknown at policy-generation time. For these cases, the workflow below can be used: <br />
+Example 13: Some use cases necessitate the use of regular expressions to allow for environment variables where either their values are secret, or unknown at policy-generation time. For these cases, the workflow below can be used:
 
 Create parameters in the ARM Template for each environment variable that has an unknown or secret value such as:
 
-    ```json
-    {
-        "parameters": {
-            "placeholderValue": {
-                "type": "string",
-                "metadata": {
-                    "description": "This value will not be placed in the template.json"
-                }
+```json
+{
+    "parameters": {
+        "placeholderValue": {
+            "type": "string",
+            "metadata": {
+                "description": "This value will not be placed in the template.json"
             }
-        },
-    }
-    ```
+        }
+    },
+}
+```
 
 Note that this parameter declaration does not have a "defaultValue". Once these parameters are defined, they may be used later in the ARM Template such as:
 
-    ```json
-    {
-        "environmentVariables": [
-            {
-                "name": "PATH",
-                "value": "/customized/path/value"
-            },
-            {
-                "name": "MY_SECRET",
-                "value": "[parameters('placeholderValue')]"
-            }
-        ]
-    }
-    ```
+```json
+{
+    "environmentVariables": [
+        {
+            "name": "PATH",
+            "value": "/customized/path/value"
+        },
+        {
+            "name": "MY_SECRET",
+            "value": "[parameters('placeholderValue')]"
+        }
+    ]
+}
+```
 
 The policy can then be generated with:
 
-    az confcom acipolicygen -a template.json
+```bash
+az confcom acipolicygen -a template.json
+```
 
 Because the ARM Template does not have a value defined for the "placeholderValue", the regular expression ".*" is used in the Rego policy. This allows for any value to be used. If the value is contained in a parameters file, that can be used when deploying such as:
 
-    az deployment group create --template-file "template.json" --parameters "parameters.json"
+```bash
+az deployment group create --template-file "template.json" --parameters "parameters.json"
+```
+
+## dmverity Layer Hashing
+
+To ensure the container that is being deployed is the intended container, the `confcom` tooling uses [dmverity hashing](https://www.kernel.org/doc/html/latest/admin-guide/device-mapper/verity.html). This is done by downloading the container locally with the Docker Daemon (or using a pre-downloaded tar file of the OCI image) and performing the dmverity hashing using the [dmverity-vhd tool](https://github.com/microsoft/hcsshim/tree/main/cmd/dmverity-vhd). These layer hashes are placed into the Rego security policy in the "layers" field of their respective container. Note that these dmverity layer hashes are different than the layer hashes reported by `docker image inspect`.
+
+### Mixed-mode Policy Generation
+
+An OCI image can be made available for policy generation in three ways:
+
+1. The image is in the local Docker Daemon and can be found either with its image and tag names or its sha256 hash.
+2. The image is in an accessible remote repository. Usually this is either Docker Hub or Azure Container Registry. Note that if the registry is private, you must log in prior to policy generation.
+3. The image is locally saved as a tar file in the form specified by `docker save`.
+
+Mixed-mode policy generation is available in the `confcom` tooling, meaning images within the same security policy can be in any of these three locations with no issues.
+
+## Security Policy Information Sources
+
+Each container in a security policy can get its information from two different sources:
+
+1. The image manifest. This can be explored using `docker image inspect`
+2. The ARM Template used to generate the security policy. This can be used for startup command, environment variables, etc.
+
+The `confcom` tooling uses the image manifest for default values and then adds or overwrites those values using what is found in the ARM Template. The API Reference for defining values in the [ARM Template can be found here](https://learn.microsoft.com/en-us/azure/templates/microsoft.containerinstance/containergroups?pivots=deployment-language-arm-template)
 
 ## Security Policy Rules Documentation
 
 Below is an example rego policy:
 
-    ```rego
-    package policy
+```rego
+package policy
 
-    import future.keywords.every
-    import future.keywords.in
+import future.keywords.every
+import future.keywords.in
 
-    api_svn := "0.10.0"
-    framework_svn := "0.1.0"
+api_version := "0.10.0"
+framework_version := "0.1.0"
 
-    fragments := [...]
+fragments := [...]
 
-    containers := [...]
+containers := [...]
 
-    allow_properties_access := false
-    allow_dump_stacks := false
-    allow_runtime_logging := false
-    allow_environment_variable_dropping := true
-    allow_unencrypted_scratch := false
+allow_properties_access := false
+allow_dump_stacks := false
+allow_runtime_logging := false
+allow_environment_variable_dropping := true
+allow_unencrypted_scratch := false
+allow_capabilities_dropping := true
 
 
 
-    mount_device := data.framework.mount_device
-    unmount_device := data.framework.unmount_device
-    mount_overlay := data.framework.mount_overlay
-    unmount_overlay := data.framework.unmount_overlay
-    create_container := data.framework.create_container
-    exec_in_container := data.framework.exec_in_container
-    exec_external := data.framework.exec_external
-    shutdown_container := data.framework.shutdown_container
-    signal_container_process := data.framework.signal_container_process
-    plan9_mount := data.framework.plan9_mount
-    plan9_unmount := data.framework.plan9_unmount
-    get_properties := data.framework.get_properties
-    dump_stacks := data.framework.dump_stacks
-    runtime_logging := data.framework.runtime_logging
-    load_fragment := data.framework.load_fragment
-    scratch_mount := data.framework.scratch_mount
-    scratch_unmount := data.framework.scratch_unmount
+mount_device := data.framework.mount_device
+unmount_device := data.framework.unmount_device
+mount_overlay := data.framework.mount_overlay
+unmount_overlay := data.framework.unmount_overlay
+create_container := data.framework.create_container
+exec_in_container := data.framework.exec_in_container
+exec_external := data.framework.exec_external
+shutdown_container := data.framework.shutdown_container
+signal_container_process := data.framework.signal_container_process
+plan9_mount := data.framework.plan9_mount
+plan9_unmount := data.framework.plan9_unmount
+get_properties := data.framework.get_properties
+dump_stacks := data.framework.dump_stacks
+runtime_logging := data.framework.runtime_logging
+load_fragment := data.framework.load_fragment
+scratch_mount := data.framework.scratch_mount
+scratch_unmount := data.framework.scratch_unmount
 
-    reason := {"errors": data.framework.errors}
-    ```
+reason := {"errors": data.framework.errors}
+```
 
 Every valid policy contain rules with the following names in the policy namespace.
 Each rule must return a Rego object with a member named allowed, which indicates whether the action is allowed by policy.
@@ -269,165 +340,165 @@ We document each rule as follow:
 
 Receives an input object with the following members:
 
-    ```json
-    {
-        "name": "mount_device",
-        "target": "<path>",
-        "deviceHash": "<dm-verity root hash>"
-    }
-    ```
+```json
+{
+    "name": "mount_device",
+    "target": "<path>",
+    "deviceHash": "<dm-verity root hash>"
+}
+```
 
 ## unmount_device
 
 Receives an input object with the following members:
 
-    ```json
-    {
-        "name": "unmount_device",
-        "unmountTarget": "<path>"
-    }
-    ```
+```json
+{
+    "name": "unmount_device",
+    "unmountTarget": "<path>"
+}
+```
 
 ## mount_overlay
 
 Describe the layers to mount:
 
-    ```json
-    {
-        "name": "mount_overlay",
-        "containerID": "<unique ID for the container>",
-        "layerPaths": [
-            "<path>",
-            "<path>",
-            "<path>",
-            /*...*/
-        ],
-        "target": "<target>"
-    }
-    ```
+```json
+{
+    "name": "mount_overlay",
+    "containerID": "<unique ID for the container>",
+    "layerPaths": [
+        "<path>",
+        "<path>",
+        "<path>",
+        /*...*/
+    ],
+    "target": "<target>"
+}
+```
 
 ## unmount_overlay
 
 Receives an input object with the following members:
 
-    ```json
-    {
-        "name": "unmount_overlay",
-        "unmountTarget": "<target>"
-    }
-    ```
+```json
+{
+    "name": "unmount_overlay",
+    "unmountTarget": "<target>"
+}
+```
 
 ## create_container
 
 Indicates whether the UVM is allowed to create a specific container with the exact parameters provided to the method.
 Provided in the following input object, the framework rule checks the exact parameters such as (command, environment variables, mounts etc.)
 
-    ```json
-    {
-        "name": "create_container",
-        "containerID": "<unique container ID>",
-        "argList": [
-            "<command>",
-            "<arg0>",
-            "<arg1>",
-            /*...*/
-        ],
-        "envList": [
-            "<env>=<value>",
-            /*...*/
-        ],
-        "workingDir": "<path>",
-        "sandboxDir": "<path>",
-        "hugePagesDir": "<path>",
-        "mounts": [
-            {
-                "destination": "<path>",
-                "options": [
-                    "<option0>",
-                    "<option1>",
-                    /*...*/
-                ],
-                "source": "<uri>",
-                "type": "<mount type>"},
-        ],
-        "privileged": "<true|false>"
-    }
-    ```
+```json
+{
+    "name": "create_container",
+    "containerID": "<unique container ID>",
+    "argList": [
+        "<command>",
+        "<arg0>",
+        "<arg1>",
+        /*...*/
+    ],
+    "envList": [
+        "<env>=<value>",
+        /*...*/
+    ],
+    "workingDir": "<path>",
+    "sandboxDir": "<path>",
+    "hugePagesDir": "<path>",
+    "mounts": [
+        {
+            "destination": "<path>",
+            "options": [
+                "<option0>",
+                "<option1>",
+                /*...*/
+            ],
+            "source": "<uri>",
+            "type": "<mount type>"},
+    ],
+    "privileged": "<true|false>"
+}
+```
 
 ## exec_in_container
 
 Determines if a process should be executed in a container.
 Receives an input object with the following elements:
 
-    ```json
-    {
-        "containerID": "<unique container ID>",
-        "argList": [
-            "<command>",
-            "<arg0>",
-            "<arg1>",
-            /*...*/
-        ],
-        "envList": [
-            "<env>=<value>",
-            /*...*/
-        ],
-        "workingDir": "<path>"
-    }
-    ```
+```json
+{
+    "containerID": "<unique container ID>",
+    "argList": [
+        "<command>",
+        "<arg0>",
+        "<arg1>",
+        /*...*/
+    ],
+    "envList": [
+        "<env>=<value>",
+        /*...*/
+    ],
+    "workingDir": "<path>"
+}
+```
 
 ## exec_external
 
 Determines if a process should be executed in the UVM.
 Receives an input object with the following elements:
 
-    ```json
-    {
-        "name": "exec_external",
-        "argList": [
-            "<command>",
-            "<arg0>",
-            "<arg1>",
-            /*...*/
-        ],
-        "envList": [
-            "<env>=<value>",
-            /*...*/
-        ],
-        "workingDir": "<path>"
-    }
-    ```
+```json
+{
+    "name": "exec_external",
+    "argList": [
+        "<command>",
+        "<arg0>",
+        "<arg1>",
+        /*...*/
+    ],
+    "envList": [
+        "<env>=<value>",
+        /*...*/
+    ],
+    "workingDir": "<path>"
+}
+```
 
 ## shutdown_container
 
 Receives an input object with the following elements:
 
-    ```json
-    {
-        "name": "shutdown_container",
-        "containerID": "<unique container ID>"
-    }
-    ```
+```json
+{
+    "name": "shutdown_container",
+    "containerID": "<unique container ID>"
+}
+```
 
 ## signal_container_process
 
 Describe the signal sent to the container.
 Receives an input object with the following elements:
 
-    ```json
-    {
-        "name": "signal_container_process",
-        "containerID": "<unique container ID>",
-        "signal": "<signal ID>",
-        "isInitProcess": "<true|false>",
-        "argList":  [
-            "<command>",
-            "<arg0>",
-            "<arg1>",
-            /*...*/
-        ]
-    }
-    ```
+```json
+{
+    "name": "signal_container_process",
+    "containerID": "<unique container ID>",
+    "signal": "<signal ID>",
+    "isInitProcess": "<true|false>",
+    "argList":  [
+        "<command>",
+        "<arg0>",
+        "<arg1>",
+        /*...*/
+    ]
+}
+```
 
 ## plan9_mount
 
@@ -437,52 +508,52 @@ A serious attack consists of overwriting attested directories on the UVM and the
 This rule contains a target that designates destination mount so that the mentioned attack does not happen.
 It receives an input with the following elements:
 
-    ```json
-    {
-        "name": "plan9_mount",
-        "target": "<target>"
-    }
-    ```
+```json
+{
+    "name": "plan9_mount",
+    "target": "<target>"
+}
+```
 
 ## plan9_unmount
 
 Receives an input with the following elements:
 
-    ```json
-    {
-        "name": "plan9_unmount",
-        "unmountTarget": "<target>"
-    }
-    ```
+```json
+{
+    "name": "plan9_unmount",
+    "unmountTarget": "<target>"
+}
+```
 
 ## scratch_mount
 
 Scratch is writable storage from the UVM to the container.
 It receives an input with the following elements:
 
-    ```json
-    {
-        "name": "scratch_mount",
-        "target": "<target>",
-        "encrypted": "true|false"
-    }
-    ```
+```json
+{
+    "name": "scratch_mount",
+    "target": "<target>",
+    "encrypted": "true|false"
+}
+```
 
 ## scratch_unmount
 
 Receives an input with the following elements:
 
-    ```json
-    {
-        "name": "scratch_unmount",
-        "unmountTarget": "<target>",
-    }
-    ```
+```json
+{
+    "name": "scratch_unmount",
+    "unmountTarget": "<target>",
+}
+```
 
 ## load_fragment
 
 This rule is used to determine whether a policy fragment can be loaded.
-See [policy fragments](#policy_fragments) for detailed explanation.
+See [policy fragments](#policy-fragments) for detailed explanation.
 
 ## policy fragments
 
@@ -499,23 +570,23 @@ For now, we will focus on the ACI sidecar use case.
 See the following example and how it defines a policy fragment.
 The following policy fragment states that my confidential computing environment should trust containers published by the DID `did:web:accdemo.github.io` on the feed named `accdemo/utilities`.
 
-    ```rego
-    fragments := [
-        {
-            "feed": "accdemo/utilities",
-            "iss": "did:web:accdemo.github.io",
-            "includes": [<"containers"|"fragments"|"external_processes"|"namespace">]
-        }
-    ]
-
-    default load_fragment := []
-    load_fragment := includes {
-        some fragment in fragments
-        input.iss == fragment.iss
-        input.feed == fragment.feed
-        includes := fragment.includes
+```rego
+fragments := [
+    {
+        "feed": "accdemo/utilities",
+        "iss": "did:web:accdemo.github.io",
+        "includes": [<"containers"|"fragments"|"external_processes"|"namespace">]
     }
-    ```
+]
+
+default load_fragment := []
+load_fragment := includes {
+    some fragment in fragments
+    input.iss == fragment.iss
+    input.feed == fragment.feed
+    includes := fragment.includes
+}
+```
 
 Every time a policy fragment is presented to the enclosing system (e.g. GCS), the enclosing system is provided with a COSE_Sign1 signed envelope.
 The header in the envelope contains the feed and the issuer and these information are included in the `input` context.
@@ -568,3 +639,7 @@ It then tests to see if that set satisfies any containers.
 ## allow_unencrypted_scratch
 
 This rule determines whether unencrypted writable storage from the UVM to the container is allowed.
+
+## allow_capabilities_dropping
+
+Whether to allow capabilities to be dropped in the same manner as allow_environment_variable_dropping.

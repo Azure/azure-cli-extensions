@@ -149,7 +149,6 @@ class ContainerappIdentityTests(ScenarioTest):
             JMESPathCheck('type', 'None'),
         ])
 
-
 class ContainerappIngressTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
@@ -556,6 +555,63 @@ class ContainerappIngressTests(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_cors_policy(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+
+        create_containerapp_env(self, env_name, resource_group)
+
+        self.cmd('containerapp create -g {} -n {} --environment {} --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+
+        self.cmd('containerapp ingress cors enable -g {} -n {} --allowed-origins "http://www.contoso.com" "https://www.contoso.com" --allowed-methods "GET" "POST" --allowed-headers "header1" "header2" --expose-headers "header3" "header4" --allow-credentials true --max-age 100'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(allowedOrigins)', 2),
+            JMESPathCheck('allowedOrigins[0]', "http://www.contoso.com"),
+            JMESPathCheck('allowedOrigins[1]', "https://www.contoso.com"),
+            JMESPathCheck('length(allowedMethods)', 2),
+            JMESPathCheck('allowedMethods[0]', "GET"),
+            JMESPathCheck('allowedMethods[1]', "POST"),
+            JMESPathCheck('length(allowedHeaders)', 2),
+            JMESPathCheck('allowedHeaders[0]', "header1"),
+            JMESPathCheck('allowedHeaders[1]', "header2"),
+            JMESPathCheck('length(exposeHeaders)', 2),
+            JMESPathCheck('exposeHeaders[0]', "header3"),
+            JMESPathCheck('exposeHeaders[1]', "header4"),
+            JMESPathCheck('allowCredentials', True),
+            JMESPathCheck('maxAge', 100),
+        ])
+
+        self.cmd('containerapp ingress cors update -g {} -n {} --allowed-origins "*" --allowed-methods "GET" --allowed-headers "header1" --expose-headers --allow-credentials false --max-age 0'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(allowedOrigins)', 1),
+            JMESPathCheck('allowedOrigins[0]', "*"),
+            JMESPathCheck('length(allowedMethods)', 1),
+            JMESPathCheck('allowedMethods[0]', "GET"),
+            JMESPathCheck('length(allowedHeaders)', 1),
+            JMESPathCheck('allowedHeaders[0]', "header1"),
+            JMESPathCheck('exposeHeaders', None),
+            JMESPathCheck('allowCredentials', False),
+            JMESPathCheck('maxAge', 0),
+        ])
+
+        self.cmd('containerapp ingress cors show -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('length(allowedOrigins)', 1),
+            JMESPathCheck('allowedOrigins[0]', "*"),
+            JMESPathCheck('length(allowedMethods)', 1),
+            JMESPathCheck('allowedMethods[0]', "GET"),
+            JMESPathCheck('length(allowedHeaders)', 1),
+            JMESPathCheck('allowedHeaders[0]', "header1"),
+            JMESPathCheck('exposeHeaders', None),
+            JMESPathCheck('allowCredentials', False),
+            JMESPathCheck('maxAge', 0),
+        ])
+
+        self.cmd('containerapp ingress cors disable -g {} -n {}'.format(resource_group, ca_name), checks=[
+            JMESPathCheck('corsPolicy', None),
+        ])
+
 
 class ContainerappDaprTests(ScenarioTest):
     @AllowLargeResponse(8192)
@@ -648,6 +704,62 @@ class ContainerappDaprTests(ScenarioTest):
             ])
 
 
+class ContainerappServiceBindingTests(ScenarioTest):
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="eastus2")
+    def test_containerapp_dev_service_binding_e2e(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+        image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+        redis_ca_name = 'redis'
+        postgres_ca_name = 'postgres'
+        kafka_ca_name = 'kafka'
+
+        create_containerapp_env(self, env_name, resource_group)
+
+        self.cmd('containerapp service redis create -g {} -n {} --environment {}'.format(
+            resource_group, redis_ca_name, env_name))
+
+        self.cmd('containerapp service postgres create -g {} -n {} --environment {}'.format(
+            resource_group, postgres_ca_name, env_name))
+        
+        self.cmd('containerapp service kafka create -g {} -n {} --environment {}'.format(
+            resource_group, kafka_ca_name, env_name))
+
+        self.cmd('containerapp create -g {} -n {} --environment {} --image {} --bind postgres:postgres_binding redis'.format(
+            resource_group, ca_name, env_name, image), checks=[
+            JMESPathCheck('properties.template.serviceBinds[0].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[1].name', "redis")
+        ])
+
+        self.cmd('containerapp update -g {} -n {} --unbind postgres_binding'.format(
+            resource_group, ca_name, image), checks=[
+            JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+        ])
+
+        self.cmd('containerapp update -g {} -n {} --bind postgres:postgres_binding kafka'.format(
+            resource_group, ca_name, image), checks=[
+            JMESPathCheck('properties.template.serviceBinds[0].name', "redis"),
+            JMESPathCheck('properties.template.serviceBinds[1].name', "postgres_binding"),
+            JMESPathCheck('properties.template.serviceBinds[2].name', "kafka")
+        ])
+
+        self.cmd('containerapp service postgres delete -g {} -n {} --yes'.format(
+            resource_group, postgres_ca_name, env_name))
+
+        self.cmd('containerapp service redis delete -g {} -n {} --yes'.format(
+            resource_group, redis_ca_name, env_name))
+        
+        self.cmd('containerapp service kafka delete -g {} -n {} --yes'.format(
+            resource_group, kafka_ca_name, env_name))
+
+        self.cmd('containerapp service list -g {} --environment {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('length(@)', 0),
+        ])
+
+
 class ContainerappEnvStorageTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @live_only()  # Passes locally but fails in CI
@@ -696,7 +808,7 @@ class ContainerappRevisionTests(ScenarioTest):
 
         create_containerapp_env(self, env_name, resource_group)
 
-        self.cmd('containerapp create -g {} -n {} --environment {} --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
+        self.cmd('containerapp create -g {} -n {} --environment {} --image mcr.microsoft.com/k8se/quickstart:latest --ingress external --target-port 80'.format(resource_group, ca_name, env_name))
 
         self.cmd('containerapp ingress show -g {} -n {}'.format(resource_group, ca_name, env_name), checks=[
             JMESPathCheck('external', True),
@@ -760,7 +872,7 @@ class ContainerappAnonymousRegistryTests(ScenarioTest):
 
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
-        image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+        image = "mcr.microsoft.com/k8se/quickstart:latest"
 
         create_containerapp_env(self, env, resource_group)
 
@@ -780,8 +892,8 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         app = self.create_random_name(prefix='aca', length=24)
         identity = self.create_random_name(prefix='id', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
-        image_source = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
-        image_name = f"{acr}.azurecr.io/azuredocs/containerapps-helloworld:latest"
+        image_source = "mcr.microsoft.com/k8se/quickstart:latest"
+        image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
 
         create_containerapp_env(self, env, resource_group)
 
@@ -794,6 +906,15 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
 
+        app2 = self.create_random_name(prefix='aca', length=24)
+        self.cmd(f'containerapp create -g {resource_group} -n {app2} --registry-identity {identity_rid} --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io --revision-suffix test1')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app2}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.template.revisionSuffix", "test1"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+        ])
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
     @live_only()  # encounters 'CannotOverwriteExistingCassetteException' only when run from recording (passes when run live)
@@ -803,8 +924,8 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         env = self.create_random_name(prefix='env', length=24)
         app = self.create_random_name(prefix='aca', length=24)
         acr = self.create_random_name(prefix='acr', length=24)
-        image_source = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
-        image_name = f"{acr}.azurecr.io/azuredocs/containerapps-helloworld:latest"
+        image_source = "mcr.microsoft.com/k8se/quickstart:latest"
+        image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
 
         create_containerapp_env(self, env, resource_group)
 
@@ -814,6 +935,52 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         self.cmd(f'containerapp create -g {resource_group} -n {app} --registry-identity "system" --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io')
 
         self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
+
+        app2 = self.create_random_name(prefix='aca', length=24)
+        self.cmd(f'containerapp create -g {resource_group} -n {app2} --registry-identity "system" --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io --revision-suffix test1')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app2}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.template.revisionSuffix", "test1"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_private_registry_port(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='aca', length=24)
+        acr = self.create_random_name(prefix='acr', length=24)
+        image_source = "mcr.microsoft.com/k8se/quickstart:latest"
+        image_name = f"{acr}.azurecr.io:443/k8se/quickstart:latest"
+
+        create_containerapp_env(self, env, resource_group)
+
+        self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled')
+        self.cmd(f'acr import -n {acr} --source {image_source}')
+        password = self.cmd(f'acr credential show -n {acr} --query passwords[0].value').get_output_in_json()
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app}  --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io:443 --registry-username {acr} --registry-password {password}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io:443"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+            JMESPathCheck("properties.configuration.secrets[0].name", f"{acr}azurecrio-443-{acr}")
+        ])
+
+        app2 = self.create_random_name(prefix='aca', length=24)
+        image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
+        self.cmd(
+            f'containerapp create -g {resource_group} -n {app2}  --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io --registry-username {acr} --registry-password {password}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app2}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+            JMESPathCheck("properties.configuration.secrets[0].name", f"{acr}azurecrio-{acr}")
+        ])
 
 
 class ContainerappScaleTests(ScenarioTest):
@@ -886,6 +1053,21 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].secretRef", "app-key"),
 
         ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --cpu 0.5 --no-wait')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.template.containers[0].resources.cpu", "0.5"),
+            JMESPathCheck("properties.template.scale.rules[0].name", "my-datadog-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.type", "datadog"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.queryValue", "7"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.age", "120"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.metricUnavailableValue", "0"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[0].triggerParameter", "apiKey"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[0].secretRef", "api-key"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].triggerParameter", "appKey"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.auth[1].secretRef", "app-key"),
+        ])
+
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="westeurope")
@@ -961,6 +1143,7 @@ class ContainerappScaleTests(ScenarioTest):
                       action: "Allow"
               template:
                 revisionSuffix: myrevision
+                terminationGracePeriodSeconds: 90
                 containers:
                   - image: nginx
                     name: nginx
@@ -976,6 +1159,15 @@ class ContainerappScaleTests(ScenarioTest):
                 scale:
                   minReplicas: 1
                   maxReplicas: 3
+                  rules:
+                  - http:
+                      auth:
+                      - secretRef: secretref
+                        triggerParameter: trigger
+                      metadata:
+                        concurrentRequests: '50'
+                        key: value
+                    name: http-scale-rule
             identity:
               type: UserAssigned
               userAssignedIdentities:
@@ -994,9 +1186,15 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
             JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
+            JMESPathCheck("properties.template.terminationGracePeriodSeconds", 90),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
-            JMESPathCheck("properties.template.scale.maxReplicas", 3)
+            JMESPathCheck("properties.template.scale.maxReplicas", 3),
+            JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.concurrentRequests", "50"),
+            JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
         ])
 
         # test environmentId
@@ -1018,7 +1216,7 @@ class ContainerappScaleTests(ScenarioTest):
                               weight: 100
                           transport: Auto
                       template:
-                        revisionSuffix: myrevision
+                        revisionSuffix: myrevision2
                         containers:
                           - image: nginx
                             name: nginx
@@ -1034,6 +1232,7 @@ class ContainerappScaleTests(ScenarioTest):
                         scale:
                           minReplicas: 1
                           maxReplicas: 3
+                          rules: []
                     """
         write_test_file(containerapp_file_name, containerapp_yaml_text)
 
@@ -1046,10 +1245,27 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange", "1.1.1.1/10"),
             JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
             JMESPathCheck("properties.environmentId", containerapp_env["id"]),
-            JMESPathCheck("properties.template.revisionSuffix", "myrevision"),
+            JMESPathCheck("properties.template.revisionSuffix", "myrevision2"),
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
-            JMESPathCheck("properties.template.scale.maxReplicas", 3)
+            JMESPathCheck("properties.template.scale.maxReplicas", 3),
+            JMESPathCheck("properties.template.scale.rules", None)
+        ])
+
+        # test update without environmentId
+        containerapp_yaml_text = f"""
+                            properties:
+                              template:
+                                revisionSuffix: myrevision3
+                            """
+        write_test_file(containerapp_file_name, containerapp_yaml_text)
+
+        self.cmd(f'containerapp update -n {app} -g {resource_group} --yaml {containerapp_file_name}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
+            JMESPathCheck("properties.template.revisionSuffix", "myrevision3")
         ])
         clean_up_test_file(containerapp_file_name)
 
@@ -1259,3 +1475,20 @@ class ContainerappScaleTests(ScenarioTest):
             JMESPathCheck("properties.template.scale.maxReplicas", 3)
         ])
         clean_up_test_file(containerapp_file_name)
+
+
+class ContainerappOtherPropertyTests(ScenarioTest):
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_termination_grace_period_seconds(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env = self.create_random_name(prefix='env', length=24)
+        app = self.create_random_name(prefix='aca', length=24)
+        image = "mcr.microsoft.com/k8se/quickstart:latest"
+        terminationGracePeriodSeconds = 90
+        create_containerapp_env(self, env, resource_group)
+
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --ingress external --target-port 80 --environment {env} --termination-grace-period {terminationGracePeriodSeconds}')
+
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.template.terminationGracePeriodSeconds", terminationGracePeriodSeconds)])

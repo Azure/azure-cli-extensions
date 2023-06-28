@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "devcenter admin project",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage project with devcenter
+    """Manage projects.
     """
     pass
 

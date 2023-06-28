@@ -21,7 +21,7 @@ from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
 from ._utils import (get_portal_uri, get_spring_sku, get_proxy_api_endpoint, BearerAuth)
 from knack.util import CLIError
-from .vendored_sdks.appplatform.v2023_03_01_preview import models, AppPlatformManagementClient
+from .vendored_sdks.appplatform.v2023_05_01_preview import models, AppPlatformManagementClient
 from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
@@ -81,7 +81,8 @@ def _update_application_insights_asc_create(cmd,
 
 def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
                   disable_app_insights=None, sku=None, tags=None, build_pool_size=None,
-                  enable_log_stream_public_endpoint=None, ingress_read_timeout=None, no_wait=False):
+                  enable_log_stream_public_endpoint=None, enable_dataplane_public_endpoint=None,
+                  ingress_read_timeout=None, no_wait=False):
     """
     TODO (jiec) app_insights_key, app_insights and disable_app_insights are marked as deprecated.
     Will be decommissioned in future releases.
@@ -90,7 +91,7 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
     updated_resource = models.ServiceResource()
     update_service_tags = False
     update_service_sku = False
-    update_log_stream_public_endpoint = False
+    update_dataplane_public_endpoint = False
 
     # update service sku
     if sku is not None:
@@ -102,11 +103,14 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
     updated_resource_properties = models.ClusterResourceProperties()
     updated_resource_properties.zone_redundant = None
 
-    if enable_log_stream_public_endpoint is not None:
+    if enable_log_stream_public_endpoint is not None or enable_dataplane_public_endpoint is not None:
+        val = enable_log_stream_public_endpoint if enable_log_stream_public_endpoint is not None else \
+            enable_dataplane_public_endpoint
         updated_resource_properties.vnet_addons = models.ServiceVNetAddons(
-            log_stream_public_endpoint=enable_log_stream_public_endpoint
+            data_plane_public_endpoint=val,
+            log_stream_public_endpoint=val
         )
-        update_log_stream_public_endpoint = True
+        update_dataplane_public_endpoint = True
     else:
         updated_resource_properties.vnet_addons = None
 
@@ -123,7 +127,8 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
         updated_resource.tags = tags
         update_service_tags = True
 
-    if update_service_tags is False and update_service_sku is False and update_log_stream_public_endpoint is False and (ingress_read_timeout is None):
+    if update_service_tags is False and update_service_sku is False and update_dataplane_public_endpoint is False and (
+            ingress_read_timeout is None):
         return resource
 
     updated_resource.properties = updated_resource_properties
@@ -243,7 +248,8 @@ def app_append_persistent_storage(cmd, client, resource_group, service, name,
                                   mount_path,
                                   share_name=None,
                                   mount_options=None,
-                                  read_only=None):
+                                  read_only=None,
+                                  enable_sub_path=None):
     resource = client.services.get(resource_group, service)
     storage_id = None
     if resource.sku.tier.upper() == 'STANDARDGEN2':
@@ -264,7 +270,8 @@ def app_append_persistent_storage(cmd, client, resource_group, service, name,
         share_name=share_name,
         mount_path=mount_path,
         mount_options=mount_options,
-        read_only=read_only)
+        read_only=read_only,
+        enable_sub_path=enable_sub_path)
 
     custom_persistent_disks.append(
         models.CustomPersistentDiskResource(
@@ -534,9 +541,9 @@ def app_tail_log_internal(cmd, client, resource_group, service, name,
 
     if timeout:
         t.join(timeout=timeout)
-
-    while t.is_alive():
-        sleep(5)  # so that ctrl+c can stop the command
+    else:
+        while t.is_alive():
+            sleep(5)  # so that ctrl+c can stop the command
 
     if exceptions:
         raise exceptions[0]
@@ -666,7 +673,47 @@ def validate_config_server_settings(client, resource_group, name, config_server_
         raise CLIError("Config Server settings contain error.")
 
 
+def eureka_get(cmd, client, resource_group, name):
+    return client.get(resource_group, name)
+
+
+def eureka_enable(cmd, client, resource_group, name):
+    eureka_server_properties = models.EurekaServerProperties(enabled_state="Enabled")
+    eureka_server_resource = models.EurekaServerResource(properties=eureka_server_properties)
+    return cached_put(cmd, client.begin_update_patch, eureka_server_resource, resource_group, name).result()
+
+
+def eureka_disable(cmd, client, resource_group, name):
+    eureka_server_properties = models.EurekaServerProperties(enabled_state="Disabled")
+    eureka_server_resource = models.EurekaServerResource(properties=eureka_server_properties)
+    return cached_put(cmd, client.begin_update_patch, eureka_server_resource, resource_group, name).result()
+
+
+def config_enable(cmd, client, resource_group, name):
+    config_server_resource = client.get(resource_group, name)
+    if not config_server_resource.properties.enabled_state:
+        raise CLIError("Only supported Standard consumption Tier.")
+
+    config_server_properties = models.ConfigServerProperties(enabled_state="Enabled")
+    config_server_resource = models.ConfigServerResource(properties=config_server_properties)
+    return cached_put(cmd, client.begin_update_patch, config_server_resource, resource_group, name).result()
+
+
+def config_disable(cmd, client, resource_group, name):
+    config_server_resource = client.get(resource_group, name)
+    if not config_server_resource.properties.enabled_state:
+        raise CLIError("Only supported Standard consumption Tier.")
+
+    config_server_properties = models.ConfigServerProperties(enabled_state="Disabled")
+    config_server_resource = models.ConfigServerResource(properties=config_server_properties)
+    return cached_put(cmd, client.begin_update_patch, config_server_resource, resource_group, name).result()
+
+
 def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
+    config_server_resource = client.get(resource_group, name)
+    if config_server_resource.properties.enabled_state and config_server_resource.properties.enabled_state == "Disabled":
+        raise CLIError("Config server is disabled.")
+
     def standardization(dic):
         new_dic = {}
         for k, v in dic.items():
@@ -705,7 +752,7 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
     config_property['repositories'] = repositories
     git_property = client._deserialize('ConfigServerGitProperty', config_property)
     config_server_settings = models.ConfigServerSettings(git_property=git_property)
-    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
+    config_server_properties = models.ConfigServerProperties(enabled_state="Enabled", config_server=config_server_settings)
 
     logger.warning("[1/2] Validating config server settings")
     validate_config_server_settings(client, resource_group, name, config_server_settings)
@@ -718,13 +765,14 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
 def config_get(cmd, client, resource_group, name):
     config_server_resource = client.get(resource_group, name)
 
-    if not config_server_resource.properties.config_server:
+    if not config_server_resource.properties.enabled_state and not config_server_resource.properties.config_server:
         raise CLIError("Config server not set.")
     return config_server_resource
 
 
 def config_delete(cmd, client, resource_group, name):
-    config_server_properties = models.ConfigServerProperties()
+    config_server_resource = client.get(resource_group, name)
+    config_server_properties = models.ConfigServerProperties(enabled_state=config_server_resource.properties.enabled_state)
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
     return client.begin_update_put(resource_group, name, config_server_resource)
 
@@ -738,6 +786,10 @@ def config_git_set(cmd, client, resource_group, name, uri,
                    host_key_algorithm=None,
                    private_key=None,
                    strict_host_key_checking=None):
+    config_server_resource = client.get(resource_group, name)
+    if config_server_resource.properties.enabled_state and config_server_resource.properties.enabled_state == "Disabled":
+        raise CLIError("Config server is disabled.")
+
     git_property = models.ConfigServerGitProperty(uri=uri)
 
     if search_paths:
@@ -753,7 +805,7 @@ def config_git_set(cmd, client, resource_group, name, uri,
     git_property.strict_host_key_checking = strict_host_key_checking
 
     config_server_settings = models.ConfigServerSettings(git_property=git_property)
-    config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
+    config_server_properties = models.ConfigServerProperties(enabled_state="Enabled", config_server=config_server_settings)
 
     logger.warning("[1/2] Validating config server settings")
     validate_config_server_settings(client, resource_group, name, config_server_settings)
