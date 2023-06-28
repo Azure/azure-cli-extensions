@@ -37,11 +37,16 @@ def handle_target_os_type(cmd, op_info):
         raise azclierror.RequiredArgumentMissingError(error_message, recommendation)
 
     if op_info.is_arc() and agent_version:
-        major, minor, _, _ = agent_version.split('.', 4)
-        if int(major) < const.AGENT_MINIMUM_VERSION_MAJOR or int(minor) < const.AGENT_MINIMUM_VERSION_MINOR:
-            logger.warning("The version of the Arc Agent, %s running on the target machine is not "
-                           "compatible with this version of ssh extension. Please update to the latest version.",
-                           agent_version)
+        # pylint: disable=broad-except
+        try:
+            major, minor, _, _ = agent_version.split('.', 4)
+            if int(major) < const.AGENT_MINIMUM_VERSION_MAJOR or int(minor) < const.AGENT_MINIMUM_VERSION_MINOR:
+                logger.warning("The version of the Arc Agent, %s running on the target machine "
+                               "is not compatible with this version of the ssh extension. "
+                               "Please update to the latest version.", agent_version)
+        except Exception:
+            # if there is some problem with the string handling of this check we don't want the execution to fail
+            return
 
 
 def _get_azure_vm_os(cmd, resource_group_name, vm_name):
