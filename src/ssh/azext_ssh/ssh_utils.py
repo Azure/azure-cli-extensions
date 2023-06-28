@@ -134,13 +134,13 @@ def _check_ssh_logs_for_common_errors(ssh_sub, op_info, delete_cert, delete_keys
             do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
                        op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
 
+        if not connection_established and \
+                time.time() - t0 > const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS:
+            do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
+                       op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
+
         next_line = ssh_sub.stderr.readline()
 
-    if not connection_established and \
-            time.time() - t0 > const.CLEANUP_TOTAL_TIME_LIMIT_IN_SECONDS and \
-            not service_config_delay_error:
-        do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
-                   op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
     ssh_sub.wait()
     return service_config_delay_error
 
