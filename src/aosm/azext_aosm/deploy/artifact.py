@@ -5,12 +5,18 @@
 """A module to handle interacting with artifacts."""
 from dataclasses import dataclass
 from typing import Union
-
-from azure.storage.blob import BlobClient, BlobType
+import subprocess
 from knack.log import get_logger
 from oras.client import OrasClient
 
-from azext_aosm._configuration import ArtifactConfig
+from azure.storage.blob import BlobClient, BlobType
+from azext_aosm._configuration import ArtifactConfig, HelmPackageConfig
+from azure.mgmt.containerregistry.models import (
+    ImportImageParameters,
+    ImportSource,
+)
+
+from azure.cli.core.commands import LongRunningOperation
 
 logger = get_logger(__name__)
 
@@ -24,27 +30,29 @@ class Artifact:
     artifact_version: str
     artifact_client: Union[BlobClient, OrasClient]
 
-    def upload(self, artifact_config: ArtifactConfig) -> None:
+    def upload(self, artifact_config: ArtifactConfig or HelmPackageConfig) -> None:
         """
         Upload aritfact.
 
         :param artifact_config: configuration for the artifact being uploaded
         """
         if type(self.artifact_client) == OrasClient:
-            self._upload_to_acr(artifact_config)
+            if type(artifact_config) == HelmPackageConfig:
+                self._upload_helm_to_acr(artifact_config)
+            elif type(artifact_config) == ArtifactConfig:
+                self._upload_arm_to_acr(artifact_config)
+            else:
+                raise ValueError(f"Unsupported artifact type: {type(artifact_config)}.")
         else:
             self._upload_to_storage_account(artifact_config)
 
-    def _upload_to_acr(self, artifact_config: ArtifactConfig) -> None:
+    def _upload_arm_to_acr(self, artifact_config: ArtifactConfig) -> None:
         """
-        Upload artifact to ACR.
+        Upload ARM artifact to ACR.
 
         :param artifact_config: configuration for the artifact being uploaded
         """
         assert type(self.artifact_client) == OrasClient
-
-        # If not included in config, the file path value will be the description of
-        # the field.
 
         if artifact_config.file_path:
             target = (
@@ -61,6 +69,27 @@ class Artifact:
                 "Copying artifacts is not implemented for ACR artifacts stores."
             )
 
+    def _upload_helm_to_acr(self, artifact_config: HelmPackageConfig) -> None:
+        """
+        Upload artifact to ACR.
+
+        :param artifact_config: configuration for the artifact being uploaded
+        """
+        chart_path = artifact_config.path_to_chart
+        registry = self.artifact_client.remote.hostname.replace("https://", "")
+        target_registry = f"oci://{registry}"
+        registry_name = registry.replace(".azurecr.io", "")
+
+        # az acr login --name "registry_name"
+        login_command = ["az", "acr", "login", "--name", registry_name]
+        subprocess.run(login_command, check=True)
+
+        logger.debug(f"Uploading {chart_path} to {target_registry}")
+
+        # helm push "$chart_path" "$target_registry"
+        push_command = ["helm", "push", chart_path, target_registry]
+        subprocess.run(push_command, check=True)
+
     def _upload_to_storage_account(self, artifact_config: ArtifactConfig) -> None:
         """
         Upload artifact to storage account.
@@ -68,6 +97,7 @@ class Artifact:
         :param artifact_config: configuration for the artifact being uploaded
         """
         assert type(self.artifact_client) == BlobClient
+        assert type(artifact_config) == ArtifactConfig
 
         # If the file path is given, upload the artifact, else, copy it from an existing blob.
         if artifact_config.file_path:
@@ -98,3 +128,54 @@ class Artifact:
                 raise RuntimeError(
                     f"{source_blob.blob_name} does not exist in {source_blob.account_name}."
                 )
+
+    def copy_image(
+        self,
+        cli_ctx,
+        container_registry_client,
+        source_registry_id,
+        source_image,
+        target_registry_resource_group_name,
+        target_registry_name,
+        mode="NoForce",
+    ):
+        """
+        Copy image from one ACR to another.
+
+        :param cli_ctx: CLI context
+        :param container_registry_client: container registry client
+        :param source_registry_id: source registry ID
+        :param source_image: source image
+        :param target_registry_resource_group_name: target registry resource group name
+        :param target_registry_name: target registry name
+        :param mode: mode for import
+        """
+        target_tags = [source_image]
+
+        source = ImportSource(resource_id=source_registry_id, source_image=source_image)
+
+        import_parameters = ImportImageParameters(
+            source=source,
+            target_tags=target_tags,
+            untagged_target_repositories=[],
+            mode=mode,
+        )
+        try:
+            result_poller = container_registry_client.begin_import_image(
+                resource_group_name=target_registry_resource_group_name,
+                registry_name=target_registry_name,
+                parameters=import_parameters,
+            )
+
+            LongRunningOperation(cli_ctx, "Importing image...")(result_poller)
+
+            logger.info(
+                "Successfully imported %s to %s", source_image, target_registry_name
+            )
+        except Exception as error:
+            logger.error(
+                "Failed to import %s to %s. Check if this image exists in the source registry or is already present in the target registry.",
+                source_image,
+                target_registry_name,
+            )
+            logger.debug(error, exc_info=True)

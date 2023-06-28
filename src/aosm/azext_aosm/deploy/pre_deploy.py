@@ -130,6 +130,29 @@ class PreDeployerViaSDK:
             location=self.config.location,
         )
 
+    def ensure_config_source_registry_exists(self) -> None:
+        """
+        Ensures that the source registry exists
+
+        Finds the parameters from self.config
+        """
+        logger.info(
+            "Check if the source registry %s exists",
+            self.config.source_registry_id,
+        )
+
+        # Assume that the registry id is of the form: /subscriptions/<sub_id>/resourceGroups/<rg_name>/providers/Microsoft.ContainerRegistry/registries/<registry_name>
+        source_registry_name = self.config.source_registry_id.split("/")[-1]
+        source_registry_resource_group_name = self.config.source_registry_id.split("/")[
+            -5
+        ]
+
+        # This will raise an error if the registry does not exist
+        self.api_clients.container_registry_client.get(
+            resource_group_name=source_registry_resource_group_name,
+            registry_name=source_registry_name,
+        )
+
     def ensure_artifact_store_exists(
         self,
         resource_group_name: str,
@@ -255,12 +278,41 @@ class PreDeployerViaSDK:
             "Creating network function definition group %s if it does not exist",
             nfdg_name,
         )
-        self.api_clients.aosm_client.network_function_definition_groups.begin_create_or_update(
-            resource_group_name=resource_group_name,
-            publisher_name=publisher_name,
-            network_function_definition_group_name=nfdg_name,
-            parameters=NetworkFunctionDefinitionGroup(location=location),
-        )
+
+        try:
+            self.api_clients.aosm_client.network_function_definition_groups.get(
+                resource_group_name=resource_group_name,
+                publisher_name=publisher_name,
+                network_function_definition_group_name=nfdg_name,
+            )
+            print(
+                f"Network function definition group {nfdg_name} exists in resource group {resource_group_name}"
+            )
+        except azure_exceptions.ResourceNotFoundError:
+            print(f"Create Network Function Definition Group {nfdg_name}")
+            poller = self.api_clients.aosm_client.network_function_definition_groups.begin_create_or_update(
+                resource_group_name=resource_group_name,
+                publisher_name=publisher_name,
+                network_function_definition_group_name=nfdg_name,
+                parameters=NetworkFunctionDefinitionGroup(location=location),
+            )
+
+            # Asking for result waits for provisioning state Succeeded before carrying
+            # on
+            nfdg: NetworkFunctionDefinitionGroup = poller.result()
+
+            if nfdg.provisioning_state != ProvisioningState.SUCCEEDED:
+                logger.debug(
+                    f"Failed to provision Network Function Definition Group: {nfdg.name}"
+                )
+                raise RuntimeError(
+                    f"Creation of Network Function Definition Group proceeded, but the provisioning"
+                    f" state returned is {nfdg.provisioning_state}. "
+                    f"\nAborting"
+                )
+            logger.debug(
+                f"Provisioning state of {nfdg_name}" f": {nfdg.provisioning_state}"
+            )
 
     def ensure_config_nfdg_exists(
         self,

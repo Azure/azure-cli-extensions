@@ -30,15 +30,15 @@ class ResourceDeleter:
         self.api_clients = api_clients
         self.config = config
 
-    def delete_vnf(self, clean: bool = False):
+    def delete_nfd(self, clean: bool = False):
         """
         Delete the NFDV and manifests.  If they don't exist it still reports them as
         deleted.
 
-        :param clean: Delete the NFDG, artifact stores and publisher too.     defaults
-                to False     Use with care.
+        :param clean: Delete the NFDG, artifact stores and publisher too. Defaults to False.
+        Use with care.
         """
-        assert isinstance(self.config, VNFConfiguration)
+
         if clean:
             print(
                 f"Are you sure you want to delete all resources associated with NFD {self.config.nf_name} including the artifact stores and publisher {self.config.publisher_name}?"
@@ -63,14 +63,17 @@ class ResourceDeleter:
                 return
 
         self.delete_nfdv()
-        self.delete_artifact_manifest("sa")
+
+        if isinstance(self.config, VNFConfiguration):
+            self.delete_artifact_manifest("sa")
         self.delete_artifact_manifest("acr")
 
         if clean:
             logger.info("Delete called for all resources.")
             self.delete_nfdg()
             self.delete_artifact_store("acr")
-            self.delete_artifact_store("sa")
+            if isinstance(self.config, VNFConfiguration):
+                self.delete_artifact_store("sa")
             self.delete_publisher()
 
     def delete_nsd(self):

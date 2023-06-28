@@ -37,27 +37,24 @@ DESCRIPTION_MAP: Dict[str, str] = {
         "Name of the storage account Artifact Store resource. Will be created if it "
         "does not exist.",
     "artifact_name": "Name of the artifact",
-    "file_path":
-        "Optional. File path of the artifact you wish to upload from your local disk. "
-        "Delete if not required.",
-    "blob_sas_url":
-        "Optional. SAS URL of the blob artifact you wish to copy to your Artifact Store. "
-        "Delete if not required.",
-    "artifact_version":
-        "Version of the artifact. For VHDs this must be in format A-B-C. "
-        "For ARM templates this must be in format A.B.C",
+    "file_path": "Optional. File path of the artifact you wish to upload from your local disk. "
+    "Delete if not required.",
+    "blob_sas_url": "Optional. SAS URL of the blob artifact you wish to copy to your Artifact Store. "
+    "Delete if not required.",
+    "artifact_version": "Version of the artifact. For VHDs this must be in format A-B-C. "
+    "For ARM templates this must be in format A.B.C",
     "nsdv_description": "Description of the NSDV",
-    "nsdg_name":
-        "Network Service Design Group Name. This is the collection of Network Service Design Versions. "
-        "Will be created if it does not exist.",
+    "nsdg_name": "Network Service Design Group Name. This is the collection of Network Service Design Versions. "
+    "Will be created if it does not exist.",
     "nsd_version": "Version of the NSD to be created. This should be in the format A.B.C",
     "network_function_definition_group_name":
-        "Exising Network Function Definition Group Name. "
+        "Existing Network Function Definition Group Name. "
         "This can be created using the 'az aosm nfd' commands.",
     "network_function_definition_version_name":
-        "Exising Network Function Definition Version Name. "
+        "Existing Network Function Definition Version Name. "
         "This can be created using the 'az aosm nfd' commands.",
     "network_function_definition_offering_location": "Offering location of the Network Function Definition",
+    "network_function_type": "Type of nf in the definition. Valid values are 'cnf' or 'vnf'",
     "helm_package_name": "Name of the Helm package",
     "path_to_chart":
         "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz",
@@ -71,6 +68,12 @@ DESCRIPTION_MAP: Dict[str, str] = {
     "helm_depends_on":
         "Names of the Helm packages this package depends on. "
         "Leave as an empty array if no dependencies",
+    "image_name_parameter":
+        "The parameter name in the VM ARM template which specifies the name of the "
+        "image to use for the VM.",
+    "source_registry_id": 
+        "Resource ID of the source acr registry from which to pull "
+        "the image",
 }
 
 
@@ -102,7 +105,8 @@ class NFConfiguration:
     @property
     def acr_manifest_name(self) -> str:
         """Return the ACR manifest name from the NFD name."""
-        return f"{self.nf_name}-acr-manifest-{self.version.replace('.', '-')}"
+        sanitized_nf_name = self.nf_name.lower().replace("_", "-")
+        return f"{sanitized_nf_name}-acr-manifest-{self.version.replace('.', '-')}"
 
 
 @dataclass
@@ -123,6 +127,7 @@ class NSConfiguration:
     network_function_definition_offering_location: str = DESCRIPTION_MAP[
         "network_function_definition_offering_location"
     ]
+    network_function_type: str = DESCRIPTION_MAP["network_function_type"]
     nsdg_name: str = DESCRIPTION_MAP["nsdg_name"]
     nsd_version: str = DESCRIPTION_MAP["nsd_version"]
     nsdv_description: str = DESCRIPTION_MAP["nsdv_description"]
@@ -165,6 +170,8 @@ class NSConfiguration:
             raise ValueError(
                 "Network Function Definition Offering Location must be set"
             )
+        if self.network_function_type not in [CNF, VNF]:
+            raise ValueError("Network Function Type must be cnf or vnf")
         if self.nsdg_name == DESCRIPTION_MAP["nsdg_name"] or "":
             raise ValueError("NSDG name must be set")
         if self.nsd_version == DESCRIPTION_MAP["nsd_version"] or "":
@@ -189,7 +196,8 @@ class NSConfiguration:
     @property
     def acr_manifest_name(self) -> str:
         """Return the ACR manifest name from the NFD name."""
-        return f"{self.network_function_name.lower().replace('_', '-')}-acr-manifest-{self.nsd_version.replace('.', '-')}"
+        sanitised_nf_name = self.network_function_name.lower().replace('_', '-')
+        return f"{sanitised_nf_name}-acr-manifest-{self.nsd_version.replace('.', '-')}"
 
     @property
     def nfvi_site_name(self) -> str:
@@ -220,6 +228,7 @@ class NSConfiguration:
 @dataclass
 class VNFConfiguration(NFConfiguration):
     blob_artifact_store_name: str = DESCRIPTION_MAP["blob_artifact_store_name"]
+    image_name_parameter: str = DESCRIPTION_MAP["image_name_parameter"]
     arm_template: Any = ArtifactConfig()
     vhd: Any = ArtifactConfig()
 
@@ -278,7 +287,8 @@ class VNFConfiguration(NFConfiguration):
     @property
     def sa_manifest_name(self) -> str:
         """Return the Storage account manifest name from the NFD name."""
-        return f"{self.nf_name}-sa-manifest-{self.version.replace('.', '-')}"
+        sanitized_nf_name = self.nf_name.lower().replace("_", "-")
+        return f"{sanitized_nf_name}-sa-manifest-{self.version.replace('.', '-')}"
 
     @property
     def build_output_folder_name(self) -> str:
@@ -299,6 +309,7 @@ class HelmPackageConfig:
 
 @dataclass
 class CNFConfiguration(NFConfiguration):
+    source_registry_id: str = DESCRIPTION_MAP["source_registry_id"]
     helm_packages: List[Any] = field(default_factory=lambda: [HelmPackageConfig()])
 
     def __post_init__(self):
@@ -307,9 +318,9 @@ class CNFConfiguration(NFConfiguration):
 
         Used when creating CNFConfiguration object from a loaded json config file.
         """
-        for package in self.helm_packages:
+        for package_index, package in enumerate(self.helm_packages):
             if isinstance(package, dict):
-                package = HelmPackageConfig(**dict(package))
+                self.helm_packages[package_index] = HelmPackageConfig(**dict(package))
 
     @property
     def build_output_folder_name(self) -> str:
@@ -320,6 +331,13 @@ class CNFConfiguration(NFConfiguration):
 def get_configuration(
     configuration_type: str, config_as_dict: Optional[Dict[Any, Any]] = None
 ) -> NFConfiguration or NSConfiguration:
+    """
+    Return the correct configuration object based on the type.
+
+    :param configuration_type: The type of configuration to return
+    :param config_as_dict: The configuration as a dictionary
+    :return: The configuration object
+    """
     if config_as_dict is None:
         config_as_dict = {}
 
