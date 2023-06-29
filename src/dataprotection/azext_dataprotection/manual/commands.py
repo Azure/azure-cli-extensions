@@ -8,8 +8,8 @@
 # pylint: disable=line-too-long
 
 from azext_dataprotection.manual._client_factory import cf_resource_graph_client
-from azure.cli.command_modules.storage._client_factory import cf_blob_service
 from ._exception_handler import exception_handler
+from azure.cli.command_modules.storage._client_factory import cf_blob_service
 
 
 def load_command_table(self, _):
@@ -32,7 +32,7 @@ def load_command_table(self, _):
     # from .aaz_operations.backup_instance import ValidateForBackup as BackupInstanceValidateBackup
     # self.command_table['dataprotection backup-instance validate-for-backup'] = BackupInstanceValidateBackup(loader=self)
 
-    with self.command_group('dataprotection backup-instance', exception_handler=exception_handler) as g:
+    with self.command_group('dataprotection backup-instance', exception_handler=exception_handler, client_factory=cf_blob_service) as g:
         g.custom_command('initialize-backupconfig', "dataprotection_backup_instance_initialize_backupconfig")
 
     with self.command_group('dataprotection backup-instance restore', exception_handler=exception_handler) as g:

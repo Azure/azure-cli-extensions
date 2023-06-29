@@ -46,7 +46,7 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
         # As a failsafe, ensure restored disk from previous run is deleted
         test.cmd('az disk delete --name "{restoreDiskName}" --resource-group "{rg}" --yes')
 
-        restore_request = test.cmd('az dataprotection backup-instance restore  initialize-for-data-recovery '
+        restore_request = test.cmd('az dataprotection backup-instance restore initialize-for-data-recovery '
                                    '--datasource-type "{dataSourceType}" --restore-location "{restoreLocation}" --source-datastore "{sourceDataStore}" '
                                    '--recovery-point-id "{recoveryPointId}" --target-resource-id "{restoreDiskId}"').get_output_in_json()
         test.kwargs.update({"restoreRequest": restore_request})

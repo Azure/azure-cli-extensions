@@ -103,14 +103,14 @@ def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource
     })
 
 
-def dataprotection_backup_instance_initialize_backupconfig(datasource_type, excluded_resource_types=None,
+def dataprotection_backup_instance_initialize_backupconfig(client, datasource_type, excluded_resource_types=None,
                                                            included_resource_types=None, excluded_namespaces=None,
                                                            included_namespaces=None, label_selectors=None,
                                                            snapshot_volumes=None,
                                                            include_cluster_scope_resources=None,
                                                            vaulted_backup_containers=None,
                                                            include_all_containers=None,
-                                                           storage_account_name=None):
+                                                           account_name=None):
     if datasource_type == "AzureKubernetesService":
         if vaulted_backup_containers:
             raise CLIError('Invalid argument --vaulted-backup-containers for given datasource type.')
@@ -140,18 +140,24 @@ def dataprotection_backup_instance_initialize_backupconfig(datasource_type, excl
                 "containers_list": vaulted_backup_containers
             }
         elif include_all_containers:
-            if storage_account_name:
+            from azure.cli.command_modules.storage.operations.blob import list_containers
+            containers_list = list_containers(client)
+            print(containers_list)
+            if account_name:
                 # Find a way to import and use list_container function ?
-                from azure.cli.core import get_default_cli
-                import os
-                az_cli = get_default_cli()
-                az_cli.invoke(
-                    f"storage container list --auth-mode login --account-name {storage_account_name} --query [].name".split(),
-                    out_file=open(os.devnull, 'w')
-                )
-                if az_cli.result.error:
-                    raise CLIError('Error fetching container list for given storage account.')
-                containers_list = az_cli.result.result
+                containers_list = list_containers(client)
+
+                # from azure.cli.core import get_default_cli
+                # import os
+                # az_cli = get_default_cli()
+                # az_cli.invoke(
+                #     f"storage container list --auth-mode login --account-name {storage_account_name} --query [].name".split(),
+                #     out_file=open(os.devnull, 'w')
+                # )
+                # if az_cli.result.error:
+                #     raise CLIError('Error fetching container list for given storage account.')
+                # containers_list = az_cli.result.result
+                # Verify and raise error if number of containers > 100
                 return {
                     "object_type": "BlobBackupDatasourceParameters",
                     "containers_list": containers_list
@@ -254,9 +260,9 @@ def dataprotection_backup_instance_initialize(datasource_type, datasource_id, da
                                     ' for given datasource type. Please check the backup configuration.')
 
             if datasource_type == "AzureKubernetesService":
-                    if "containers_list" in backup_configuration:
-                        raise CLIError('Invalid argument --vaulted-backup-containers for given datasource type. '
-                                       'Please check the backup configuration.')
+                if "containers_list" in backup_configuration:
+                    raise CLIError('Invalid argument --vaulted-backup-containers for given datasource type. '
+                                    'Please check the backup configuration.')
 
             if not policy_info["policy_parameters"]:
                 policy_info["policy_parameters"] = {}
