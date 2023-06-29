@@ -58,7 +58,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.account_creation_source = AAZStrArg(
-            options=["--account-creation-source"],
+            options=["--account-source", "--account-creation-source"],
             arg_group="Properties",
             help="Source of account creation",
             enum={"LIFTR": "LIFTR", "NEWRELIC": "NEWRELIC"},
