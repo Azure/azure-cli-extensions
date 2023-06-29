@@ -80,12 +80,15 @@ def get_enable_mi_for_db_linker_func(yes=False):
             source_object_id = source_handler.get_identity_pid()
             target_handler.identity_object_id = source_object_id
             try:
-                identity_info = run_cli_cmd(
-                    'az ad sp show --id {}'.format(source_object_id), 15, 10)
-                target_handler.identity_client_id = identity_info.get(
-                    'appId')
-                target_handler.identity_name = identity_info.get(
-                    'displayName')
+                if target_type in [RESOURCE.Sql]:
+                    target_handler.identity_name = source_handler.get_identity_name()
+                elif target_type in [RESOURCE.Postgres, RESOURCE.MysqlFlexible]:
+                    identity_info = run_cli_cmd(
+                        'az ad sp show --id {}'.format(source_object_id), 15, 10)
+                    target_handler.identity_client_id = identity_info.get(
+                        'appId')
+                    target_handler.identity_name = identity_info.get(
+                        'displayName')
             except CLIInternalError as e:
                 if 'AADSTS530003' in e.error_msg:
                     logger.warning(
@@ -867,6 +870,9 @@ class SourceHandler:
     def get_identity_pid(self):
         return
 
+    def get_identity_name(self):
+        return
+
 
 def output_is_none(output):
     return not output.stdout
@@ -878,6 +884,12 @@ class LocalHandler(SourceHandler):
 
 
 class SpringHandler(SourceHandler):
+    def get_identity_name(self):
+        segments = parse_resource_id(self.source_id)
+        spring = segments.get('name')
+        app = segments.get('child_name_1')
+        return '{}/apps/{}'.format(spring, app)
+
     def get_identity_pid(self):
         segments = parse_resource_id(self.source_id)
         sub = segments.get('subscription')
@@ -907,6 +919,11 @@ class SpringHandler(SourceHandler):
 
 
 class WebappHandler(SourceHandler):
+    def get_identity_name(self):
+        segments = parse_resource_id(self.source_id)
+        app_name = segments.get('name')
+        return app_name
+
     def get_identity_pid(self):
         logger.warning('Checking if WebApp enables System Identity...')
         identity = run_cli_cmd(
@@ -929,6 +946,11 @@ class WebappHandler(SourceHandler):
 
 
 class ContainerappHandler(SourceHandler):
+    def get_identity_name(self):
+        segments = parse_resource_id(self.source_id)
+        app_name = segments.get('name')
+        return app_name
+
     def get_identity_pid(self):
         logger.warning('Checking if Container App enables System Identity...')
         identity = run_cli_cmd(

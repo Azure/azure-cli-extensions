@@ -8,6 +8,7 @@ Release History
 * 'az containerapp create/update': --termination-grace-period support custom termination grace period
 * 'az containerapp env logs show': fix issue of constructing connection url
 * 'az containerapp create/update': --revision-suffix allow revision suffix to start with numbers
+* 'az containerapp create/show/list/delete': refactor with containerapp decorator
 
 0.3.34
 ++++++
