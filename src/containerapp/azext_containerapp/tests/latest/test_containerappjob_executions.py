@@ -59,3 +59,20 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         # get single execution for the job
         singleExecution = self.cmd("az containerapp job execution show --resource-group {} --name {} --job-execution-name {}".format(resource_group, job, execution['name'])).get_output_in_json()
         self.assertEqual(job in singleExecution['name'], True)
+        
+        # start a job execution and stop it
+        execution = self.cmd("az containerapp job start --resource-group {} --name {}".format(resource_group, job)).get_output_in_json()
+        if "id" in execution:
+            # check if the job execution id is in the response
+            self.assertEqual(job in execution['id'], True)
+        if "name" in execution:
+            # check if the job execution name is in the response
+            self.assertEqual(job in execution['name'], True)
+
+        # get list of all executions for the job
+        self.cmd("az containerapp job stop --resource-group {} --name {} --job-execution-name {}".format(resource_group, job, execution['name'])).get_output_in_json()
+        
+        # get stopped execution for the job and check status
+        singleExecution = self.cmd("az containerapp job execution show --resource-group {} --name {} --job-execution-name {}".format(resource_group, job, execution['name'])).get_output_in_json()
+        self.assertEqual(job in singleExecution['name'], True)
+        self.assertEqual(singleExecution['properties']['status'], "Stopped")
