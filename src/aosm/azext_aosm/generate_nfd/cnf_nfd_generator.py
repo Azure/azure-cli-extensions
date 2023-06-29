@@ -19,20 +19,20 @@ from knack.log import get_logger
 from azext_aosm._configuration import CNFConfiguration, HelmPackageConfig
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 from azext_aosm.util.constants import (
-    CNF_DEFINITION_BICEP_TEMPLATE,
-    CNF_DEFINITION_JINJA2_SOURCE_TEMPLATE,
-    CNF_MANIFEST_BICEP_TEMPLATE,
-    CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE,
-    CONFIG_MAPPINGS,
+    CNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
+    CNF_DEFINITION_JINJA2_SOURCE_TEMPLATE_FILENAME,
+    CNF_MANIFEST_BICEP_TEMPLATE_FILENAME,
+    CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE_FILENAME,
+    CONFIG_MAPPINGS_DIR_NAME,
     DEPLOYMENT_PARAMETER_MAPPING_REGEX,
+    DEPLOYMENT_PARAMETERS_FILENAME,
+    GENERATED_VALUES_MAPPINGS_DIR_NAME,
     IMAGE_NAME_AND_VERSION_REGEX,
     IMAGE_PATH_REGEX,
-    DEPLOYMENT_PARAMETERS,
-    GENERATED_VALUES_MAPPINGS,
-    SCHEMA_PREFIX,
-    SCHEMAS,
     IMAGE_PULL_SECRETS_START_STRING,
     IMAGE_START_STRING,
+    SCHEMA_PREFIX,
+    SCHEMAS_DIR_NAME,
 )
 from azext_aosm.util.utils import input_ack
 
@@ -58,17 +58,16 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         mapping file from the values.yaml in the helm package, and also requires the
         mapping file in config to be blank.
         """
-        super(NFDGenerator, self).__init__()
         self.config = config
         self.nfd_jinja2_template_path = os.path.join(
             os.path.dirname(__file__),
             "templates",
-            CNF_DEFINITION_JINJA2_SOURCE_TEMPLATE,
+            CNF_DEFINITION_JINJA2_SOURCE_TEMPLATE_FILENAME,
         )
         self.manifest_jinja2_template_path = os.path.join(
             os.path.dirname(__file__),
             "templates",
-            CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE,
+            CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE_FILENAME,
         )
         self.output_folder_name = self.config.build_output_folder_name
 
@@ -77,7 +76,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         self.deployment_parameter_schema = SCHEMA_PREFIX
 
         self._bicep_path = os.path.join(
-            self.output_folder_name, CNF_DEFINITION_BICEP_TEMPLATE
+            self.output_folder_name, CNF_DEFINITION_BICEP_TEMPLATE_FILENAME
         )
         self.interactive = interactive
         self._tmp_folder_name = ""
@@ -179,8 +178,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
         else:
             raise InvalidTemplateError(
-                f"ERROR: The helm package '{path}' is not a .tgz, .tar or .tar.gz file.\
-                Please fix this and run the command again."
+                f"ERROR: The helm package '{path}' is not a .tgz, .tar or .tar.gz file."
+                " Please fix this and run the command again."
             )
 
     def _generate_chart_value_mappings(self, helm_package: HelmPackageConfig) -> None:
@@ -203,11 +202,11 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         )
 
         # Write the mapping to a file
-        folder_name = os.path.join(self._tmp_folder_name, GENERATED_VALUES_MAPPINGS)
+        folder_name = os.path.join(self._tmp_folder_name, GENERATED_VALUES_MAPPINGS_DIR_NAME)
         os.makedirs(folder_name, exist_ok=True)
         mapping_filepath = os.path.join(
             self._tmp_folder_name,
-            GENERATED_VALUES_MAPPINGS,
+            GENERATED_VALUES_MAPPINGS_DIR_NAME,
             f"{helm_package.name}-generated-mapping.yaml",
         )
         with open(mapping_filepath, "w", encoding="UTF-8") as mapping_file:
@@ -254,7 +253,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             artifacts=self.artifacts,
         )
 
-        path = os.path.join(self._tmp_folder_name, CNF_MANIFEST_BICEP_TEMPLATE)
+        path = os.path.join(self._tmp_folder_name, CNF_MANIFEST_BICEP_TEMPLATE_FILENAME)
         with open(path, "w", encoding="utf-8") as f:
             f.write(bicep_contents)
 
@@ -269,11 +268,11 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             )
 
         bicep_contents: str = template.render(
-            deployParametersPath=os.path.join(SCHEMAS, DEPLOYMENT_PARAMETERS),
+            deployParametersPath=os.path.join(SCHEMAS_DIR_NAME, DEPLOYMENT_PARAMETERS_FILENAME),
             nf_application_configurations=self.nf_application_configurations,
         )
 
-        path = os.path.join(self._tmp_folder_name, CNF_DEFINITION_BICEP_TEMPLATE)
+        path = os.path.join(self._tmp_folder_name, CNF_DEFINITION_BICEP_TEMPLATE_FILENAME)
         with open(path, "w", encoding="utf-8") as f:
             f.write(bicep_contents)
 
@@ -284,7 +283,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
         logger.debug("Create deploymentParameters.json")
 
-        full_schema = os.path.join(self._tmp_folder_name, DEPLOYMENT_PARAMETERS)
+        full_schema = os.path.join(self._tmp_folder_name, DEPLOYMENT_PARAMETERS_FILENAME)
         with open(full_schema, "w", encoding="UTF-8") as f:
             json.dump(self.deployment_parameter_schema, f, indent=4)
 
@@ -296,16 +295,16 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         logger.info("Create NFD bicep %s", self.output_folder_name)
 
         os.mkdir(self.output_folder_name)
-        os.mkdir(os.path.join(self.output_folder_name, SCHEMAS))
+        os.mkdir(os.path.join(self.output_folder_name, SCHEMAS_DIR_NAME))
 
         # Copy the nfd and the manifest bicep files to the output folder
         tmp_nfd_bicep_path = os.path.join(
-            self._tmp_folder_name, CNF_DEFINITION_BICEP_TEMPLATE
+            self._tmp_folder_name, CNF_DEFINITION_BICEP_TEMPLATE_FILENAME
         )
         shutil.copy(tmp_nfd_bicep_path, self.output_folder_name)
 
         tmp_manifest_bicep_path = os.path.join(
-            self._tmp_folder_name, CNF_MANIFEST_BICEP_TEMPLATE
+            self._tmp_folder_name, CNF_MANIFEST_BICEP_TEMPLATE_FILENAME
         )
         shutil.copy(tmp_manifest_bicep_path, self.output_folder_name)
 
@@ -313,21 +312,21 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         # the output directory so that the user can edit them and re-run the build if
         # required
         if os.path.exists(
-            os.path.join(self._tmp_folder_name, GENERATED_VALUES_MAPPINGS)
+            os.path.join(self._tmp_folder_name, GENERATED_VALUES_MAPPINGS_DIR_NAME)
         ):
             generated_mappings_path = os.path.join(
-                self.output_folder_name, GENERATED_VALUES_MAPPINGS
+                self.output_folder_name, GENERATED_VALUES_MAPPINGS_DIR_NAME
             )
             shutil.copytree(
-                os.path.join(self._tmp_folder_name, GENERATED_VALUES_MAPPINGS),
+                os.path.join(self._tmp_folder_name, GENERATED_VALUES_MAPPINGS_DIR_NAME),
                 generated_mappings_path,
             )
 
         # Copy the JSON config mappings and deploymentParameters schema that are used
         # for the NFD to the output folder
-        tmp_config_mappings_path = os.path.join(self._tmp_folder_name, CONFIG_MAPPINGS)
+        tmp_config_mappings_path = os.path.join(self._tmp_folder_name, CONFIG_MAPPINGS_DIR_NAME)
         output_config_mappings_path = os.path.join(
-            self.output_folder_name, CONFIG_MAPPINGS
+            self.output_folder_name, CONFIG_MAPPINGS_DIR_NAME
         )
         shutil.copytree(
             tmp_config_mappings_path,
@@ -335,9 +334,9 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             dirs_exist_ok=True,
         )
 
-        tmp_schema_path = os.path.join(self._tmp_folder_name, DEPLOYMENT_PARAMETERS)
+        tmp_schema_path = os.path.join(self._tmp_folder_name, DEPLOYMENT_PARAMETERS_FILENAME)
         output_schema_path = os.path.join(
-            self.output_folder_name, SCHEMAS, DEPLOYMENT_PARAMETERS
+            self.output_folder_name, SCHEMAS_DIR_NAME, DEPLOYMENT_PARAMETERS_FILENAME
         )
         shutil.copy(
             tmp_schema_path,
@@ -368,7 +367,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             "valueMappingsPath": self.jsonify_value_mappings(helm_package),
         }
 
-    def _find_yaml_files(self, directory) -> Iterator[str]:
+    @staticmethod
+    def _find_yaml_files(directory) -> Iterator[str]:
         """
         Find all yaml files in given directory.
 
@@ -428,7 +428,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         """
         Get the list of artifacts for the chart.
 
-        :param helm_package: The helm package config. 
+        :param helm_package: The helm package config.
         :param image_line_matches: The list of image line matches.
         """
         artifact_list = []
@@ -466,14 +466,14 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         )
         if not os.path.exists(mappings_path):
             raise InvalidTemplateError(
-                f"ERROR: The helm package '{helm_package.name}' does not have a valid values mappings file. \
-                    The file at '{helm_package.path_to_mappings}' does not exist.\n\
-                    Please fix this and run the command again."
+                f"ERROR: The helm package '{helm_package.name}' does not have a valid values"
+                " mappings file. The file at '{helm_package.path_to_mappings}' does not exist."
+                "\nPlease fix this and run the command again."
             )
         if not os.path.exists(values_schema):
             raise InvalidTemplateError(
-                f"ERROR: The helm package '{helm_package.name}' is missing values.schema.json.\n\
-                Please fix this and run the command again."
+                f"ERROR: The helm package '{helm_package.name}' is missing values.schema.json."
+                "\nPlease fix this and run the command again."
             )
 
         with open(mappings_path, "r", encoding="utf-8") as stream:
@@ -489,14 +489,16 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             new_schema = self.search_schema(deploy_params_dict, schema_data)
         except KeyError as e:
             raise InvalidTemplateError(
-                f"ERROR: There is a problem with your schema or values for the helm package '{helm_package.name}'. \
-                    Please fix this and run the command again."
+                "ERROR: There is a problem with your schema or values for the helm"
+                f" package '{helm_package.name}'."
+                "\nPlease fix this and run the command again."
             ) from e
 
         logger.debug("Generated chart mapping schema for %s", helm_package.name)
         return new_schema
 
-    def traverse_dict(self, d, target):
+    @staticmethod
+    def traverse_dict(d, target):
         """
         Traverse the dictionary that is loaded from the file provided by path_to_mappings in the input.json.
 
@@ -517,21 +519,13 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                 # If the value is a dictionary
                 if isinstance(v, dict):
                     # Add the dictionary to the stack with the path
-                    stack.append(
-                        (v, path + [k])
-                    )
+                    stack.append((v, path + [k]))
                 # If the value is a string + matches target regex
-                elif isinstance(v, str) and re.search(
-                    target, v
-                ):
+                elif isinstance(v, str) and re.search(target, v):
                     # Take the match i.e, foo from {deployParameter.foo}
-                    match = re.search(
-                        target, v
-                    )
+                    match = re.search(target, v)
                     # Add it to the result dictionary with its path as the value
-                    result[match.group(1)] = path + [
-                        k
-                    ]
+                    result[match.group(1)] = path + [k]
                 elif isinstance(v, list):
                     for i in v:
                         if isinstance(i, str) and re.search(target, i):
@@ -539,7 +533,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                             result[match.group(1)] = path + [k]
         return result
 
-    def search_schema(self, result, full_schema):
+    @staticmethod
+    def search_schema(result, full_schema):
         """
         Search through provided schema for the types of the deployment parameters.
         This assumes that the type of the key will be the type of the deployment parameter.
@@ -698,8 +693,8 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
 
         if not os.path.exists(chart):
             raise InvalidTemplateError(
-                f"There is no Chart.yaml file in the helm package '{helm_package.name}'. \
-                    Please fix this and run the command again."
+                f"There is no Chart.yaml file in the helm package '{helm_package.name}'. "
+                "\nPlease fix this and run the command again."
             )
 
         with open(chart, "r", encoding="utf-8") as f:
@@ -709,8 +704,9 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
                 chart_version = data["version"]
             else:
                 raise FileOperationError(
-                    f"A name or version is missing from Chart.yaml in the helm package '{helm_package.name}'. \
-                        Please fix this and run the command again."
+                    "A name or version is missing from Chart.yaml in the helm package"
+                    f" '{helm_package.name}'."
+                    "\nPlease fix this and run the command again."
                 )
 
         return (chart_name, chart_version)
@@ -719,7 +715,7 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
         """Yaml->JSON values mapping file, then return path to it."""
         mappings_yaml = helm_package.path_to_mappings
 
-        mappings_folder_path = os.path.join(self._tmp_folder_name, CONFIG_MAPPINGS)
+        mappings_folder_path = os.path.join(self._tmp_folder_name, CONFIG_MAPPINGS_DIR_NAME)
         mappings_filename = f"{helm_package.name}-mappings.json"
 
         if not os.path.exists(mappings_folder_path):
@@ -734,4 +730,4 @@ class CnfNfdGenerator(NFDGenerator):  # pylint: disable=too-many-instance-attrib
             json.dump(data, file, indent=4)
 
         logger.debug("Generated parameter mappings for %s", helm_package.name)
-        return os.path.join(CONFIG_MAPPINGS, mappings_filename)
+        return os.path.join(CONFIG_MAPPINGS_DIR_NAME, mappings_filename)

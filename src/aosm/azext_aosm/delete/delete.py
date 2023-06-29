@@ -41,13 +41,16 @@ class ResourceDeleter:
 
         if clean:
             print(
-                f"Are you sure you want to delete all resources associated with NFD {self.config.nf_name} including the artifact stores and publisher {self.config.publisher_name}?"
+                "Are you sure you want to delete all resources associated with NFD"
+                f" {self.config.nf_name} including the artifact stores and publisher"
+                f" {self.config.publisher_name}?"
             )
             logger.warning(
                 "This command will fail if other NFD versions exist in the NFD group."
             )
             logger.warning(
-                "Only do this if you are SURE you are not sharing the publisher and artifact stores with other NFDs"
+                "Only do this if you are SURE you are not sharing the publisher and"
+                " artifact stores with other NFDs"
             )
             print("There is no undo.  Type the publisher name to confirm.")
             if not input_ack(self.config.publisher_name.lower(), "Confirm delete:"):
@@ -55,7 +58,9 @@ class ResourceDeleter:
                 return
         else:
             print(
-                f"Are you sure you want to delete the NFD Version {self.config.version} and associated manifests from group {self.config.nfdg_name} and publisher {self.config.publisher_name}?"
+                "Are you sure you want to delete the NFD Version"
+                f" {self.config.version} and associated manifests from group"
+                f" {self.config.nfdg_name} and publisher {self.config.publisher_name}?"
             )
             print("There is no undo. Type 'delete' to confirm")
             if not input_ack("delete", "Confirm delete:"):
@@ -85,7 +90,10 @@ class ResourceDeleter:
         assert isinstance(self.config, NSConfiguration)
 
         print(
-            f"Are you sure you want to delete the NSD Version {self.config.nsd_version}, the associated manifest {self.config.acr_manifest_name} and configuration group schema {self.config.cg_schema_name}?"
+            "Are you sure you want to delete the NSD Version"
+            f" {self.config.nsd_version}, the associated manifest"
+            f" {self.config.acr_manifest_name} and configuration group schema"
+            f" {self.config.cg_schema_name}?"
         )
         print("There is no undo. Type 'delete' to confirm")
         if not input_ack("delete", "Confirm delete:"):
@@ -97,7 +105,10 @@ class ResourceDeleter:
         self.delete_config_group_schema()
 
     def delete_nfdv(self):
-        message = f"Delete NFDV {self.config.version} from group {self.config.nfdg_name} and publisher {self.config.publisher_name}"
+        message = (
+            f"Delete NFDV {self.config.version} from group {self.config.nfdg_name} and"
+            f" publisher {self.config.publisher_name}"
+        )
         logger.debug(message)
         print(message)
         try:
@@ -111,13 +122,18 @@ class ResourceDeleter:
             print("Deleted NFDV.")
         except Exception:
             logger.error(
-                f"Failed to delete NFDV {self.config.version} from group {self.config.nfdg_name}"
+                "Failed to delete NFDV %s from group %s",
+                self.config.version,
+                self.config.nfdg_name,
             )
             raise
 
     def delete_nsdv(self):
         assert isinstance(self.config, NSConfiguration)
-        message = f"Delete NSDV {self.config.nsd_version} from group {self.config.nsdg_name} and publisher {self.config.publisher_name}"
+        message = (
+            f"Delete NSDV {self.config.nsd_version} from group"
+            f" {self.config.nsdg_name} and publisher {self.config.publisher_name}"
+        )
         logger.debug(message)
         print(message)
         try:
@@ -131,7 +147,9 @@ class ResourceDeleter:
             print("Deleted NSDV.")
         except Exception:
             logger.error(
-                f"Failed to delete NSDV {self.config.nsd_version} from group {self.config.nsdg_name}"
+                "Failed to delete NSDV %s from group %s",
+                self.config.nsd_version,
+                self.config.nsdg_name,
             )
             raise
 
@@ -154,7 +172,8 @@ class ResourceDeleter:
             from azure.cli.core.azclierror import CLIInternalError
 
             raise CLIInternalError(
-                "Delete artifact manifest called for invalid store type. Valid types are sa and acr."
+                "Delete artifact manifest called for invalid store type. Valid types"
+                " are sa and acr."
             )
         message = (
             f"Delete Artifact manifest {manifest_name} from artifact store {store_name}"
@@ -172,7 +191,9 @@ class ResourceDeleter:
             print("Deleted Artifact Manifest")
         except Exception:
             logger.error(
-                f"Failed to delete Artifact manifest {manifest_name} from artifact store {store_name}"
+                "Failed to delete Artifact manifest %s from artifact store %s",
+                manifest_name,
+                store_name,
             )
             raise
 
@@ -226,7 +247,8 @@ class ResourceDeleter:
             from azure.cli.core.azclierror import CLIInternalError
 
             raise CLIInternalError(
-                "Delete artifact store called for invalid store type. Valid types are sa and acr."
+                "Delete artifact store called for invalid store type. Valid types are"
+                " sa and acr."
             )
         message = f"Delete Artifact store {store_name}"
         logger.debug(message)
@@ -240,7 +262,7 @@ class ResourceDeleter:
             poller.result()
             print("Deleted Artifact Store")
         except Exception:
-            logger.error(f"Failed to delete Artifact store {store_name}")
+            logger.error("Failed to delete Artifact store %s", store_name)
             raise
 
     def delete_publisher(self) -> None:

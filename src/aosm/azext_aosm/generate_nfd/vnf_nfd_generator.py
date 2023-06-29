@@ -16,16 +16,16 @@ from knack.log import get_logger
 from azext_aosm._configuration import VNFConfiguration
 from azext_aosm.generate_nfd.nfd_generator_base import NFDGenerator
 from azext_aosm.util.constants import (
-    CONFIG_MAPPINGS,
-    DEPLOYMENT_PARAMETERS,
-    OPTIONAL_DEPLOYMENT_PARAMETERS_FILE,
+    CONFIG_MAPPINGS_DIR_NAME,
+    DEPLOYMENT_PARAMETERS_FILENAME,
+    OPTIONAL_DEPLOYMENT_PARAMETERS_FILENAME,
     OPTIONAL_DEPLOYMENT_PARAMETERS_HEADING,
     SCHEMA_PREFIX,
-    SCHEMAS,
-    TEMPLATE_PARAMETERS,
-    VHD_PARAMETERS,
-    VNF_DEFINITION_BICEP_TEMPLATE,
-    VNF_MANIFEST_BICEP_TEMPLATE,
+    SCHEMAS_DIR_NAME,
+    TEMPLATE_PARAMETERS_FILENAME,
+    VHD_PARAMETERS_FILENAME,
+    VNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
+    VNF_MANIFEST_BICEP_TEMPLATE_FILENAME,
 )
 from azext_aosm.util.utils import input_ack
 
@@ -61,10 +61,9 @@ class VnfNfdGenerator(NFDGenerator):
     """
 
     def __init__(self, config: VNFConfiguration, order_params: bool, interactive: bool):
-        super(NFDGenerator, self).__init__()
         self.config = config
-        self.bicep_template_name = VNF_DEFINITION_BICEP_TEMPLATE
-        self.manifest_template_name = VNF_MANIFEST_BICEP_TEMPLATE
+        self.bicep_template_name = VNF_DEFINITION_BICEP_TEMPLATE_FILENAME
+        self.manifest_template_name = VNF_MANIFEST_BICEP_TEMPLATE_FILENAME
 
         self.arm_template_path = self.config.arm_template.file_path
         self.output_folder_name = self.config.build_output_folder_name
@@ -154,11 +153,11 @@ class VnfNfdGenerator(NFDGenerator):
 
     def create_parameter_files(self) -> None:
         """Create the Deployment and Template json parameter files."""
-        schemas_folder_path = os.path.join(self.tmp_folder_name, SCHEMAS)
+        schemas_folder_path = os.path.join(self.tmp_folder_name, SCHEMAS_DIR_NAME)
         os.mkdir(schemas_folder_path)
         self.write_deployment_parameters(schemas_folder_path)
 
-        mappings_folder_path = os.path.join(self.tmp_folder_name, CONFIG_MAPPINGS)
+        mappings_folder_path = os.path.join(self.tmp_folder_name, CONFIG_MAPPINGS_DIR_NAME)
         os.mkdir(mappings_folder_path)
         self.write_template_parameters(mappings_folder_path)
         self.write_vhd_parameters(mappings_folder_path)
@@ -214,7 +213,7 @@ class VnfNfdGenerator(NFDGenerator):
         for key in vm_parameters_to_exclude:
             self.vm_parameters.pop(key, None)
 
-        deployment_parameters_path = os.path.join(folder_path, DEPLOYMENT_PARAMETERS)
+        deployment_parameters_path = os.path.join(folder_path, DEPLOYMENT_PARAMETERS_FILENAME)
 
         # Heading for the deployParameters schema
         deploy_parameters_full: Dict[str, Any] = SCHEMA_PREFIX
@@ -234,7 +233,7 @@ class VnfNfdGenerator(NFDGenerator):
         if not self.interactive:
             if nfd_parameters_with_default:
                 optional_deployment_parameters_path = os.path.join(
-                    folder_path, OPTIONAL_DEPLOYMENT_PARAMETERS_FILE
+                    folder_path, OPTIONAL_DEPLOYMENT_PARAMETERS_FILENAME
                 )
                 with open(
                     optional_deployment_parameters_path, "w", encoding="utf-8"
@@ -243,7 +242,7 @@ class VnfNfdGenerator(NFDGenerator):
                     _file.write(json.dumps(nfd_parameters_with_default, indent=4))
                 print(
                     "Optional ARM parameters detected. Created "
-                    f"{OPTIONAL_DEPLOYMENT_PARAMETERS_FILE} to help you choose which "
+                    f"{OPTIONAL_DEPLOYMENT_PARAMETERS_FILENAME} to help you choose which "
                     "to expose."
                 )
                 
@@ -253,7 +252,7 @@ class VnfNfdGenerator(NFDGenerator):
 
         :param folder_path: The folder to put this file in.
         """
-        logger.debug("Create %s", TEMPLATE_PARAMETERS)
+        logger.debug("Create %s", TEMPLATE_PARAMETERS_FILENAME)
         vm_parameters = (
             self.vm_parameters_ordered if self.order_params else self.vm_parameters
         )
@@ -267,7 +266,7 @@ class VnfNfdGenerator(NFDGenerator):
 
             template_parameters[key] = f"{{deployParameters.{key}}}"
 
-        template_parameters_path = os.path.join(folder_path, TEMPLATE_PARAMETERS)
+        template_parameters_path = os.path.join(folder_path, TEMPLATE_PARAMETERS_FILENAME)
 
         with open(template_parameters_path, "w", encoding="utf-8") as _file:
             _file.write(json.dumps(template_parameters, indent=4))
@@ -294,7 +293,7 @@ class VnfNfdGenerator(NFDGenerator):
             "azureDeployLocation": azureDeployLocation,
         }
 
-        vhd_parameters_path = os.path.join(folder_path, VHD_PARAMETERS)
+        vhd_parameters_path = os.path.join(folder_path, VHD_PARAMETERS_FILENAME)
         with open(vhd_parameters_path, "w", encoding="utf-8") as _file:
             _file.write(json.dumps(vhd_parameters, indent=4))
 
