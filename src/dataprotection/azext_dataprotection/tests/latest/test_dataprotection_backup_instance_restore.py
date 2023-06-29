@@ -91,7 +91,7 @@ class BackupInstanceRestoreScenarioTest(ScenarioTest):
             'restorePointInTime': restore_point_in_time
         })
 
-        restore_request = test.cmd('az dataprotection backup-instance restore  initialize-for-data-recovery '
+        restore_request = test.cmd('az dataprotection backup-instance restore initialize-for-data-recovery '
                                    '--datasource-type "{dataSourceType}" --restore-location "{restoreLocation}" --source-datastore "{sourceDataStore}" '
                                    '--point-in-time "{restorePointInTime}" --backup-instance-id "{backupInstanceId}"').get_output_in_json()
         test.kwargs.update({"restoreRequest": restore_request})
