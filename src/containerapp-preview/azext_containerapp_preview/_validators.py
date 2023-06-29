@@ -2,6 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from ._constants import MANAGED_ENVIRONMENT_TYPE, CONNECTED_ENVIRONMENT_TYPE
+
 
 def validate_env_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
@@ -18,13 +20,13 @@ def validate_env_name_or_id(cmd, namespace):
 
     if namespace.managed_env:
         if "connectedEnvironments" in namespace.managed_env:
-            environment_type = "connected"
+            environment_type = CONNECTED_ENVIRONMENT_TYPE
         if "managedEnvironments" in namespace.managed_env:
-            environment_type = "managed"
+            environment_type = MANAGED_ENVIRONMENT_TYPE
     if namespace.__dict__.get("custom_location") or namespace.__dict__.get("connected_cluster_id"):
-        environment_type = "connected"
+        environment_type = CONNECTED_ENVIRONMENT_TYPE
     # Validate resource id / format resource id
-    if environment_type == "connected":
+    if environment_type == CONNECTED_ENVIRONMENT_TYPE:
         if not is_valid_resource_id(namespace.managed_env):
             namespace.managed_env = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),
@@ -33,7 +35,7 @@ def validate_env_name_or_id(cmd, namespace):
                 type='connectedEnvironments',
                 name=namespace.managed_env
             )
-    elif environment_type == "managed":
+    elif environment_type == MANAGED_ENVIRONMENT_TYPE:
         if not is_valid_resource_id(namespace.managed_env):
             namespace.managed_env = resource_id(
                 subscription=get_subscription_id(cmd.cli_ctx),

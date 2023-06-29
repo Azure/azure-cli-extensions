@@ -1,3 +1,8 @@
+# coding=utf-8
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
 from typing import Dict, Any
 from knack.log import get_logger
 
@@ -28,22 +33,12 @@ class ContainerAppPreviewCreateDecorator(_get_azext_module(GA_CONTAINERAPP_EXTEN
         self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
     ):
         super().__init__(cmd, client, raw_parameters, models)
-
-        self.azext_default_utils = _get_azext_module(GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp._utils")
+        self.azext_decorator_utils = _get_azext_module(GA_CONTAINERAPP_EXTENSION_NAME, "azext_containerapp._decorator_utils")
 
     def construct_containerapp(self):
         containerapp_def = super().construct_containerapp()
         containerapp_def = self.set_up_extended_location(containerapp_def)
         return containerapp_def
-
-    def create_containerapp(self, containerapp_def):
-        return super().create_containerapp(containerapp_def)
-
-    def construct_containerapp_for_post_process(self, containerapp_def, r):
-        return super().construct_containerapp_for_post_process(containerapp_def, r)
-
-    def post_process_containerapp(self, containerapp_def, r):
-        return super().post_process_containerapp(containerapp_def, r)
 
     def set_up_extended_location(self, containerapp_def):
         parsed_env = parse_resource_id(self.get_argument_managed_env())  # custom_location check here perhaps
@@ -91,8 +86,8 @@ class ContainerAppPreviewCreateDecorator(_get_azext_module(GA_CONTAINERAPP_EXTEN
             return ManagedEnvironmentClient
 
     def get_yaml_containerapp(self):
-        load_file = self.azext_default_utils.load_yaml_file(self.get_argument_yaml())
-        return self.azext_default_utils.process_loaded_yaml(load_file)
+        load_file = self.azext_decorator_utils.load_yaml_file(self.get_argument_yaml())
+        return self.azext_decorator_utils.process_loaded_yaml(load_file)
 
     def get_argument_environment_type(self):
         return self.get_param("environment_type")
