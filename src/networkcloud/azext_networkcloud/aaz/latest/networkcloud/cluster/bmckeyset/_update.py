@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/bmckeysets/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/bmckeysets/{}", "2023-05-01-preview"],
         ]
     }
 
@@ -100,7 +100,7 @@ class Update(AAZCommand):
         _element = cls._args_schema.user_list.Element
         _element.azure_user_name = AAZStrArg(
             options=["azure-user-name"],
-            help="The Azure Active Directory user name (email name).",
+            help="The user name that will be used for access.",
             required=True,
         )
         _element.description = AAZStrArg(
@@ -212,7 +212,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-05-01-preview",
                     required=True,
                 ),
             }

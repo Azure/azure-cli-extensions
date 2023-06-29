@@ -3,10 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 #
 # --------------------------------------------------------------------------------------------
-# pylint: disable=wildcard-import,unused-wildcard-import,protected-access,duplicate-code
-# pylint: disable=anomalous-backslash-in-string
-# flake8: noqa
-
+# pylint: disable=protected-access,duplicate-code
 
 """
 This code inherits the auto-generated code for BMM run data extracts command, and adds retrieval
@@ -14,19 +11,16 @@ of custom properties. It also processes the output directory if given and downlo
 the results of the command.
 """
 
-
-from pathlib import Path
-
-from azure.cli.core.aaz import *
-from azure.cli.core.azclierror import FileOperationError
-
-from ...aaz.latest.networkcloud.baremetalmachine import \
-    RunDataExtract as _RunDataExtract
-from ..custom_properties import CustomActionProperties
+from azext_networkcloud.aaz.latest.networkcloud.baremetalmachine import (
+    RunDataExtract as _RunDataExtract,
+)
+from azext_networkcloud.operations.custom_properties import CustomActionProperties
+from azext_networkcloud.operations.run_command_options import RunCommandOptions
+from azure.cli.core.aaz import AAZObjectType, AAZStrArg, AAZStrArgFormat
 
 
-class RunDataExtract(_RunDataExtract):
-    '''Custom class for baremetalmachine run data extract command '''
+class RunDataExtract(RunCommandOptions, _RunDataExtract):
+    """Custom class for baremetalmachine run data extract command"""
 
     # Handle custom properties returned by the actions
     # when run data extract command is executed.
@@ -40,12 +34,10 @@ class RunDataExtract(_RunDataExtract):
         args_schema.output = AAZStrArg(
             options=["--output-directory"],
             arg_group="BareMetalMachineRunDataExtractsParameters",
-            help="The output directory where the script execution results will " +
-            "be downloaded to from storage blob. Accepts relative or qualified directory path.",
+            help="The output directory where the script execution results will "
+            + "be downloaded to from storage blob. Accepts relative or qualified directory path.",
             required=False,
-            fmt=AAZStrArgFormat(
-                pattern="^(.+)([^\/]*)$"
-            )
+            fmt=AAZStrArgFormat(pattern=r"^(.+)([^\/]*)$"),
         )
         return args_schema
 
@@ -54,27 +46,19 @@ class RunDataExtract(_RunDataExtract):
         yield self.BareMetalMachinesRunDataExtract(ctx=self.ctx)()
         self.post_operations()
 
-    def pre_operations(self):
-        args = self.ctx.args
-        output_directory = args.output
-        if has_value(args.output):
-            try:
-                Path(f"{output_directory}").mkdir(
-                    parents=True, exist_ok=True)
-            except OSError as ex:
-                raise FileOperationError(ex) from ex
-
-    class BareMetalMachinesRunDataExtract(_RunDataExtract.BareMetalMachinesRunDataExtracts):
-        '''Custom class for baremetalmachine run data extract command '''
+    class BareMetalMachinesRunDataExtract(
+        _RunDataExtract.BareMetalMachinesRunDataExtracts
+    ):
+        """Custom class for baremetalmachine run data extract command"""
 
         @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_200 = AAZObjectType()
+            cls._schema_on_200_201 = AAZObjectType()
             CustomActionProperties._build_schema_operation_status_result_read(
-                cls._schema_on_200)
+                cls._schema_on_200_201
+            )
 
-            return cls._schema_on_200
-
+            return cls._schema_on_200_201
