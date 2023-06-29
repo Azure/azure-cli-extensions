@@ -2095,7 +2095,92 @@ networkcloud virtualmachine create:
   parameters:        
     isolate_emulator_thread:
       rule_exclusions:
-      - option_length_too_long 
+      - option_length_too_long
+networkcloud kubernetescluster create:  
+  parameters:
+    control_plane_node_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    initial_agent_pool_configurations:
+      rule_exclusions:
+      - option_length_too_long
+    managed_resource_group_configuration:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud kubernetescluster update:  
+  parameters:
+    control_plane_node_configuration:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud kubernetescluster agentpool create:  
+  parameters:
+    attached_network_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    kubernetes_cluster_name:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud kubernetescluster agentpool delete:  
+  parameters:
+    kubernetes_cluster_name:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud kubernetescluster agentpool update:  
+  parameters:
+    kubernetes_cluster_name:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud kubernetescluster agentpool list:  
+  parameters:
+    kubernetes_cluster_name:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud kubernetescluster agentpool show:  
+  parameters:
+    kubernetes_cluster_name:
+      rule_exclusions:
+      - option_length_too_long
+networkcloud kubernetescluster agentpool wait:  
+  parameters:
+    kubernetes_cluster_name:
+      rule_exclusions:
+      - option_length_too_long
+networkfabric controller create:
+  parameters:
+    workload_er_connections:
+      rule_exclusions:
+      - option_length_too_long
+networkfabric rack create:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric rack delete:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric device delete:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric interface delete:
+  rule_exclusions:
+  - missing_command_test_coverage
+networkfabric l3domain create:
+  parameters:
+    aggregate_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
+    connected_subnet_route_policy:
+      rule_exclusions:
+      - option_length_too_long
+    redistribute_connected_subnets:
+      rule_exclusions:
+      - option_length_too_long
+    redistribute_static_routes:
+      rule_exclusions:
+      - option_length_too_long
+networkfabric internalnetwork create:
+  parameters:
+    static_route_configuration:
+      rule_exclusions:
+      - option_length_too_long
 notification-hub authorization-rule create:
   parameters:
     notification_hub_name:

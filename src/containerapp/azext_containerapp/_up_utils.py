@@ -45,7 +45,6 @@ from ._utils import (
     repo_url_to_name,
     get_container_app_if_exists,
     get_containerapps_job_if_exists,
-    trigger_workflow,
     _ensure_location_allowed,
     register_provider_if_needed,
     validate_environment_location,
@@ -979,18 +978,6 @@ def _get_registry_details(cmd, app: "ContainerApp", source):
     )
 
 
-def _validate_containerapp_name(name):
-    is_valid = True
-    is_valid = is_valid and name.lower() == name
-    is_valid = is_valid and len(name) <= MAXIMUM_CONTAINER_APP_NAME_LENGTH
-    is_valid = is_valid and '--' not in name
-    name = name.replace('-', '')
-    is_valid = is_valid and name.isalnum()
-    is_valid = is_valid and name[0].isalpha()
-    if not is_valid:
-        raise ValidationError(f"Invalid Container App name {name}. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_CONTAINER_APP_NAME_LENGTH} characters.")
-
-
 # attempt to populate defaults for managed env, RG, ACR, etc
 def _set_up_defaults(
     cmd,
@@ -1053,14 +1040,6 @@ def _create_github_action(
         service_principal_tenant_id,
     ) = sp
 
-    # need to trigger the workflow manually if it already exists (performing an update)
-    try:
-        action = GitHubActionClient.show(cmd=app.cmd, resource_group_name=app.resource_group.name, name=app.name)
-        if action:
-            trigger_workflow(token, repo, action["properties"]["githubActionConfiguration"]["workflowName"], branch)
-    except:  # pylint: disable=bare-except
-        pass
-
     create_or_update_github_action(
         cmd=app.cmd,
         name=app.name,
@@ -1077,6 +1056,7 @@ def _create_github_action(
         service_principal_tenant_id=service_principal_tenant_id,
         image=app.image,
         context_path=context_path,
+        trigger_existing_workflow=True,
     )
 
 

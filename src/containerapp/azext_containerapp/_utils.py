@@ -67,14 +67,11 @@ def register_provider_if_needed(cmd, rp_name):
 
 
 def validate_container_app_name(name, appType):
-    if (appType == AppType.ContainerAppJob.name):
-        if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
-            raise ValidationError(f"Container App Job names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
-                                  f"Please shorten {name}")
-    if (appType == AppType.ContainerApp.name):
-        if name and len(name) > MAXIMUM_CONTAINER_APP_NAME_LENGTH:
-            raise ValidationError(f"Container App Job names cannot be longer than {MAXIMUM_CONTAINER_APP_NAME_LENGTH}. "
-                                  f"Please shorten {name}")
+    name_regex = re.compile(r'^(?=.{1,32}$)[a-z]((?!.*--)[-a-z0-9]*[a-z0-9])?$', re.IGNORECASE)
+    match = name_regex.match(name)
+
+    if not match:
+        raise ValidationError(f"Invalid {appType} name {name}. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_CONTAINER_APP_NAME_LENGTH} characters.")
 
 
 def retry_until_success(operation, err_txt, retry_limit, *args, **kwargs):
