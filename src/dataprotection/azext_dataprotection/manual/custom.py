@@ -103,14 +103,14 @@ def dataprotection_backup_instance_validate_for_backup(cmd, vault_name, resource
     })
 
 
-def dataprotection_backup_instance_initialize_backupconfig(client, datasource_type, excluded_resource_types=None,
+def dataprotection_backup_instance_initialize_backupconfig(cmd, client, datasource_type, excluded_resource_types=None,
                                                            included_resource_types=None, excluded_namespaces=None,
                                                            included_namespaces=None, label_selectors=None,
                                                            snapshot_volumes=None,
                                                            include_cluster_scope_resources=None,
                                                            vaulted_backup_containers=None,
                                                            include_all_containers=None,
-                                                           account_name=None):
+                                                           storage_account_name=None, storage_account_resource_group=None):
     if datasource_type == "AzureKubernetesService":
         if vaulted_backup_containers:
             raise CLIError('Invalid argument --vaulted-backup-containers for given datasource type.')
@@ -140,24 +140,13 @@ def dataprotection_backup_instance_initialize_backupconfig(client, datasource_ty
                 "containers_list": vaulted_backup_containers
             }
         elif include_all_containers:
-            from azure.cli.command_modules.storage.operations.blob import list_containers
-            containers_list = list_containers(client)
-            print(containers_list)
-            if account_name:
-                # Find a way to import and use list_container function ?
-                containers_list = list_containers(client)
-
-                # from azure.cli.core import get_default_cli
-                # import os
-                # az_cli = get_default_cli()
-                # az_cli.invoke(
-                #     f"storage container list --auth-mode login --account-name {storage_account_name} --query [].name".split(),
-                #     out_file=open(os.devnull, 'w')
-                # )
-                # if az_cli.result.error:
-                #     raise CLIError('Error fetching container list for given storage account.')
-                # containers_list = az_cli.result.result
+            if storage_account_name and storage_account_resource_group:
+                from azure.cli.command_modules.storage.operations.blob import list_container_rm
+                container_list_generator = list_container_rm(cmd, client, storage_account_resource_group, storage_account_name)
+                containers_list = [container.name for container in list(container_list_generator)]
                 # Verify and raise error if number of containers > 100
+                # if len(containers_list) > 100:
+                #     raise CLIError('Storage account has more than 100 containers. Please select 100 containers or less for backup configuration.')
                 return {
                     "object_type": "BlobBackupDatasourceParameters",
                     "containers_list": containers_list
