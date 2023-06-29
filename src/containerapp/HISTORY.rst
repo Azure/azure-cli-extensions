@@ -3,7 +3,7 @@
 Release History
 ===============
 
-Upcoming
+0.3.35
 ++++++
 * 'az containerapp create/update': --termination-grace-period support custom termination grace period
 * 'az containerapp env logs show': fix issue of constructing connection url
