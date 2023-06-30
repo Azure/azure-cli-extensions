@@ -76,7 +76,7 @@ def load_command_table(self, _):
     from .aaz_operations.backup_policy import Create as BackupPolicyCreate
     self.command_table['dataprotection backup-policy create'] = BackupPolicyCreate(loader=self)
 
-    from .aaz_operations.recovery_point import RecoveryPointList
+    from .aaz_operations.recovery_point import List as RecoveryPointList
     self.command_table['dataprotection recovery-point list'] = RecoveryPointList(loader=self)
 
     from .aaz_operations.resource_guard import Create as ResourceGuardCreate, Update as ResourceGuardUpdate
@@ -86,5 +86,6 @@ def load_command_table(self, _):
     from .aaz_operations.restorable_time_range import Find as RestorableTimeRangeFind
     self.command_table['dataprotection restorable-time-range find'] = RestorableTimeRangeFind(loader=self)
 
-    from .aaz_operations.backup_vault import Update as BackupVaultUpdate
+    from .aaz_operations.backup_vault import Create as BackupVaultCreate, Update as BackupVaultUpdate
+    self.command_table['dataprotection backup-vault create'] = BackupVaultCreate(loader=self)
     self.command_table['dataprotection backup-vault update'] = BackupVaultUpdate(loader=self)
