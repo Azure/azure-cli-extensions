@@ -27,7 +27,6 @@ from azext_aosm.util.constants import (
     NSD_DEFINITION_JINJA2_SOURCE_TEMPLATE,
     SCHEMAS_DIR_NAME,
     TEMPLATES_DIR_NAME,
-    VNF,
 )
 from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.vendored_sdks.models import NetworkFunctionDefinitionVersion, NFVIType
