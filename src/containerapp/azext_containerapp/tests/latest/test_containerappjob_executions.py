@@ -69,7 +69,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             # check if the job execution name is in the response
             self.assertEqual(job in execution['name'], True)
 
-        # get list of all executions for the job
+        # stop the most recently started execution
         self.cmd("az containerapp job stop --resource-group {} --name {} --job-execution-name {}".format(resource_group, job, execution['name'])).get_output_in_json()
         
         # get stopped execution for the job and check status
