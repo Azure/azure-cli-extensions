@@ -166,12 +166,10 @@ class Create(AAZCommand):
             options=["option-a-properties"],
             help="Peering option A properties.",
         )
-        cls._build_args_option_a_properties_create(infrastructure_vpn_configuration.option_a_properties)
         infrastructure_vpn_configuration.option_b_properties = AAZObjectArg(
             options=["option-b-properties"],
             help="Option B configuration to be used for management vpn.",
         )
-        cls._build_args_option_b_properties_create(infrastructure_vpn_configuration.option_b_properties)
         infrastructure_vpn_configuration.peering_option = AAZStrArg(
             options=["peering-option"],
             help="Peering option list.",
@@ -179,23 +177,141 @@ class Create(AAZCommand):
             enum={"OptionA": "OptionA", "OptionB": "OptionB"},
         )
 
+        option_a_properties = cls._args_schema.managed_network_config.infrastructure_vpn_configuration.option_a_properties
+        option_a_properties.mtu = AAZIntArg(
+            options=["mtu"],
+            help="MTU to use for option A peering.",
+            fmt=AAZIntArgFormat(
+                maximum=9000,
+                minimum=1500,
+            ),
+        )
+        option_a_properties.peer_asn = AAZIntArg(
+            options=["peer-asn"],
+            help="Peer ASN number.Example : 28",
+            fmt=AAZIntArgFormat(
+                maximum=65535,
+                minimum=1,
+            ),
+        )
+        option_a_properties.primary_ipv4_prefix = AAZStrArg(
+            options=["primary-ipv4-prefix"],
+            help="IPv4 Address Prefix of CE-PE interconnect links. Example: 172.31.0.0/31. The values can be specified at the time of creation or can be updated afterwards. Any update to the values post-provisioning may disrupt traffic. The 1st and 3rd IPs are to be configured on CE1 and CE2 for Option B interfaces. The 2nd and 4th IPs are to be configured on PE1 and PE2 for Option B interfaces.",
+        )
+        option_a_properties.primary_ipv6_prefix = AAZStrArg(
+            options=["primary-ipv6-prefix"],
+            help="IPv6 Address Prefix of CE-PE interconnect links. Example: 3FFE:FFFF:0:CD30::a0/126. The values can be specified at the time of creation or can be updated afterwards. Any update to the values post-provisioning may disrupt traffic. The 1st and 3rd IPs are to be configured on CE1 and CE2 for Option B interfaces. The 2nd and 4th IPs are to be configured on PE1 and PE2 for Option B interfaces.",
+        )
+        option_a_properties.secondary_ipv4_prefix = AAZStrArg(
+            options=["secondary-ipv4-prefix"],
+            help="Secondary IPv4 Address Prefix of CE-PE interconnect links. Example: 172.31.0.20/31. The values can be specified at the time of creation or can be updated afterwards. Any update to the values post-provisioning may disrupt traffic. The 1st and 3rd IPs are to be configured on CE1 and CE2 for Option B interfaces. The 2nd and 4th IPs are to be configured on PE1 and PE2 for Option B interfaces.",
+        )
+        option_a_properties.secondary_ipv6_prefix = AAZStrArg(
+            options=["secondary-ipv6-prefix"],
+            help="Secondary IPv6 Address Prefix of CE-PE interconnect links. Example: 3FFE:FFFF:0:CD30::a4/126. The values can be specified at the time of creation or can be updated afterwards. Any update to the values post-provisioning may disrupt traffic. The 1st and 3rd IPs are to be configured on CE1 and CE2 for Option B interfaces. The 2nd and 4th IPs are to be configured on PE1 and PE2 for Option B interfaces.",
+        )
+        option_a_properties.vlan_id = AAZIntArg(
+            options=["vlan-id"],
+            help="Vlan identifier. Example : 501",
+            fmt=AAZIntArgFormat(
+                maximum=4095,
+                minimum=501,
+            ),
+        )
+
+        option_b_properties = cls._args_schema.managed_network_config.infrastructure_vpn_configuration.option_b_properties
+        option_b_properties.export_route_targets = AAZListArg(
+            options=["export-route-targets"],
+            help="Route Targets to be applied for outgoing routes from CE.",
+            required=True,
+        )
+        option_b_properties.import_route_targets = AAZListArg(
+            options=["import-route-targets"],
+            help="Route Targets to be applied for incoming routes into CE.",
+            required=True,
+        )
+
+        export_route_targets = cls._args_schema.managed_network_config.infrastructure_vpn_configuration.option_b_properties.export_route_targets
+        export_route_targets.Element = AAZStrArg()
+
+        import_route_targets = cls._args_schema.managed_network_config.infrastructure_vpn_configuration.option_b_properties.import_route_targets
+        import_route_targets.Element = AAZStrArg()
+
         workload_vpn_configuration = cls._args_schema.managed_network_config.workload_vpn_configuration
         workload_vpn_configuration.option_a_properties = AAZObjectArg(
             options=["option-a-properties"],
             help="Peering option A properties.",
         )
-        cls._build_args_option_a_properties_create(workload_vpn_configuration.option_a_properties)
         workload_vpn_configuration.option_b_properties = AAZObjectArg(
             options=["option-b-properties"],
             help="Option B configuration to be used for management vpn.",
         )
-        cls._build_args_option_b_properties_create(workload_vpn_configuration.option_b_properties)
         workload_vpn_configuration.peering_option = AAZStrArg(
             options=["peering-option"],
             help="Peering option list.",
             required=True,
             enum={"OptionA": "OptionA", "OptionB": "OptionB"},
         )
+
+        option_a_properties = cls._args_schema.managed_network_config.workload_vpn_configuration.option_a_properties
+        option_a_properties.mtu = AAZIntArg(
+            options=["mtu"],
+            help="MTU to use for option A peering.",
+            fmt=AAZIntArgFormat(
+                maximum=9000,
+                minimum=1500,
+            ),
+        )
+        option_a_properties.peer_asn = AAZIntArg(
+            options=["peer-asn"],
+            help="Peer ASN number.Example : 28",
+            fmt=AAZIntArgFormat(
+                maximum=65535,
+                minimum=1,
+            ),
+        )
+        option_a_properties.primary_ipv4_prefix = AAZStrArg(
+            options=["primary-ipv4-prefix"],
+            help="IPv4 Address Prefix of CE-PE interconnect links. Example: 172.31.0.0/31. The values can be specified at the time of creation or can be updated afterwards. Any update to the values post-provisioning may disrupt traffic. The 1st and 3rd IPs are to be configured on CE1 and CE2 for Option B interfaces. The 2nd and 4th IPs are to be configured on PE1 and PE2 for Option B interfaces.",
+        )
+        option_a_properties.primary_ipv6_prefix = AAZStrArg(
+            options=["primary-ipv6-prefix"],
+            help="IPv6 Address Prefix of CE-PE interconnect links. Example: 3FFE:FFFF:0:CD30::a0/126. The values can be specified at the time of creation or can be updated afterwards. Any update to the values post-provisioning may disrupt traffic. The 1st and 3rd IPs are to be configured on CE1 and CE2 for Option B interfaces. The 2nd and 4th IPs are to be configured on PE1 and PE2 for Option B interfaces.",
+        )
+        option_a_properties.secondary_ipv4_prefix = AAZStrArg(
+            options=["secondary-ipv4-prefix"],
+            help="Secondary IPv4 Address Prefix of CE-PE interconnect links. Example: 172.31.0.20/31. The values can be specified at the time of creation or can be updated afterwards. Any update to the values post-provisioning may disrupt traffic. The 1st and 3rd IPs are to be configured on CE1 and CE2 for Option B interfaces. The 2nd and 4th IPs are to be configured on PE1 and PE2 for Option B interfaces.",
+        )
+        option_a_properties.secondary_ipv6_prefix = AAZStrArg(
+            options=["secondary-ipv6-prefix"],
+            help="Secondary IPv6 Address Prefix of CE-PE interconnect links. Example: 3FFE:FFFF:0:CD30::a4/126. The values can be specified at the time of creation or can be updated afterwards. Any update to the values post-provisioning may disrupt traffic. The 1st and 3rd IPs are to be configured on CE1 and CE2 for Option B interfaces. The 2nd and 4th IPs are to be configured on PE1 and PE2 for Option B interfaces.",
+        )
+        option_a_properties.vlan_id = AAZIntArg(
+            options=["vlan-id"],
+            help="Vlan identifier. Example : 501",
+            fmt=AAZIntArgFormat(
+                maximum=4095,
+                minimum=501,
+            ),
+        )
+
+        option_b_properties = cls._args_schema.managed_network_config.workload_vpn_configuration.option_b_properties
+        option_b_properties.export_route_targets = AAZListArg(
+            options=["export-route-targets"],
+            help="Route Targets to be applied for outgoing routes from CE.",
+            required=True,
+        )
+        option_b_properties.import_route_targets = AAZListArg(
+            options=["import-route-targets"],
+            help="Route Targets to be applied for incoming routes into CE.",
+            required=True,
+        )
+
+        export_route_targets = cls._args_schema.managed_network_config.workload_vpn_configuration.option_b_properties.export_route_targets
+        export_route_targets.Element = AAZStrArg()
+
+        import_route_targets = cls._args_schema.managed_network_config.workload_vpn_configuration.option_b_properties.import_route_targets
+        import_route_targets.Element = AAZStrArg()
 
         ts_config = cls._args_schema.ts_config
         ts_config.password = AAZStrArg(
@@ -231,104 +347,6 @@ class Create(AAZCommand):
             required=True,
         )
         return cls._args_schema
-
-    _args_option_a_properties_create = None
-
-    @classmethod
-    def _build_args_option_a_properties_create(cls, _schema):
-        if cls._args_option_a_properties_create is not None:
-            _schema.mtu = cls._args_option_a_properties_create.mtu
-            _schema.peer_asn = cls._args_option_a_properties_create.peer_asn
-            _schema.primary_ipv4_prefix = cls._args_option_a_properties_create.primary_ipv4_prefix
-            _schema.primary_ipv6_prefix = cls._args_option_a_properties_create.primary_ipv6_prefix
-            _schema.secondary_ipv4_prefix = cls._args_option_a_properties_create.secondary_ipv4_prefix
-            _schema.secondary_ipv6_prefix = cls._args_option_a_properties_create.secondary_ipv6_prefix
-            _schema.vlan_id = cls._args_option_a_properties_create.vlan_id
-            return
-
-        cls._args_option_a_properties_create = AAZObjectArg()
-
-        option_a_properties_create = cls._args_option_a_properties_create
-        option_a_properties_create.mtu = AAZIntArg(
-            options=["mtu"],
-            help="MTU to use for option A peering. The value should be between 1500 to 9000. Default value is 1500.",
-            fmt=AAZIntArgFormat(
-                maximum=9000,
-                minimum=1500,
-            ),
-        )
-        option_a_properties_create.peer_asn = AAZIntArg(
-            options=["peer-asn"],
-            help="Peer ASN number. The value should be between 1 to 65535. Example : 28.",
-            fmt=AAZIntArgFormat(
-                maximum=65535,
-                minimum=1,
-            ),
-        )
-        option_a_properties_create.primary_ipv4_prefix = AAZStrArg(
-            options=["primary-ipv4-prefix"],
-            help="IPv4 Address Prefix of CE-PE interconnect links. Example : 172.31.0.0/31.",
-        )
-        option_a_properties_create.primary_ipv6_prefix = AAZStrArg(
-            options=["primary-ipv6-prefix"],
-            help="IPv6 Address Prefix of CE-PE interconnect links. Example : 3FFE:FFFF:0:CD30::a0/126.",
-        )
-        option_a_properties_create.secondary_ipv4_prefix = AAZStrArg(
-            options=["secondary-ipv4-prefix"],
-            help="Secondary IPv4 Address Prefix of CE-PE interconnect links. Example : 172.31.0.20/31.",
-        )
-        option_a_properties_create.secondary_ipv6_prefix = AAZStrArg(
-            options=["secondary-ipv6-prefix"],
-            help="Secondary IPv6 Address Prefix of CE-PE interconnect links. Example : 3FFE:FFFF:0:CD30::a4/126.",
-        )
-        option_a_properties_create.vlan_id = AAZIntArg(
-            options=["vlan-id"],
-            help="Vlan Id. The value should be between 501 to 4095. Example : 501.",
-            fmt=AAZIntArgFormat(
-                maximum=4095,
-                minimum=501,
-            ),
-        )
-
-        _schema.mtu = cls._args_option_a_properties_create.mtu
-        _schema.peer_asn = cls._args_option_a_properties_create.peer_asn
-        _schema.primary_ipv4_prefix = cls._args_option_a_properties_create.primary_ipv4_prefix
-        _schema.primary_ipv6_prefix = cls._args_option_a_properties_create.primary_ipv6_prefix
-        _schema.secondary_ipv4_prefix = cls._args_option_a_properties_create.secondary_ipv4_prefix
-        _schema.secondary_ipv6_prefix = cls._args_option_a_properties_create.secondary_ipv6_prefix
-        _schema.vlan_id = cls._args_option_a_properties_create.vlan_id
-
-    _args_option_b_properties_create = None
-
-    @classmethod
-    def _build_args_option_b_properties_create(cls, _schema):
-        if cls._args_option_b_properties_create is not None:
-            _schema.export_route_targets = cls._args_option_b_properties_create.export_route_targets
-            _schema.import_route_targets = cls._args_option_b_properties_create.import_route_targets
-            return
-
-        cls._args_option_b_properties_create = AAZObjectArg()
-
-        option_b_properties_create = cls._args_option_b_properties_create
-        option_b_properties_create.export_route_targets = AAZListArg(
-            options=["export-route-targets"],
-            help="Route Targets to be applied for outgoing routes from CE. Example: 65541:2001.",
-            required=True,
-        )
-        option_b_properties_create.import_route_targets = AAZListArg(
-            options=["import-route-targets"],
-            help="Route Targets to be applied for incoming routes into CE. Example: 65311:2001, 65412:2001.",
-            required=True,
-        )
-
-        export_route_targets = cls._args_option_b_properties_create.export_route_targets
-        export_route_targets.Element = AAZStrArg()
-
-        import_route_targets = cls._args_option_b_properties_create.import_route_targets
-        import_route_targets.Element = AAZStrArg()
-
-        _schema.export_route_targets = cls._args_option_b_properties_create.export_route_targets
-        _schema.import_route_targets = cls._args_option_b_properties_create.import_route_targets
 
     def _execute_operations(self):
         self.pre_operations()
@@ -460,15 +478,61 @@ class Create(AAZCommand):
 
             infrastructure_vpn_configuration = _builder.get(".properties.managementNetworkConfiguration.infrastructureVpnConfiguration")
             if infrastructure_vpn_configuration is not None:
-                _CreateHelper._build_schema_option_a_properties_create(infrastructure_vpn_configuration.set_prop("optionAProperties", AAZObjectType, ".option_a_properties"))
-                _CreateHelper._build_schema_option_b_properties_create(infrastructure_vpn_configuration.set_prop("optionBProperties", AAZObjectType, ".option_b_properties"))
+                infrastructure_vpn_configuration.set_prop("optionAProperties", AAZObjectType, ".option_a_properties")
+                infrastructure_vpn_configuration.set_prop("optionBProperties", AAZObjectType, ".option_b_properties")
                 infrastructure_vpn_configuration.set_prop("peeringOption", AAZStrType, ".peering_option", typ_kwargs={"flags": {"required": True}})
+
+            option_a_properties = _builder.get(".properties.managementNetworkConfiguration.infrastructureVpnConfiguration.optionAProperties")
+            if option_a_properties is not None:
+                option_a_properties.set_prop("mtu", AAZIntType, ".mtu")
+                option_a_properties.set_prop("peerASN", AAZIntType, ".peer_asn")
+                option_a_properties.set_prop("primaryIpv4Prefix", AAZStrType, ".primary_ipv4_prefix")
+                option_a_properties.set_prop("primaryIpv6Prefix", AAZStrType, ".primary_ipv6_prefix")
+                option_a_properties.set_prop("secondaryIpv4Prefix", AAZStrType, ".secondary_ipv4_prefix")
+                option_a_properties.set_prop("secondaryIpv6Prefix", AAZStrType, ".secondary_ipv6_prefix")
+                option_a_properties.set_prop("vlanId", AAZIntType, ".vlan_id")
+
+            option_b_properties = _builder.get(".properties.managementNetworkConfiguration.infrastructureVpnConfiguration.optionBProperties")
+            if option_b_properties is not None:
+                option_b_properties.set_prop("exportRouteTargets", AAZListType, ".export_route_targets", typ_kwargs={"flags": {"required": True}})
+                option_b_properties.set_prop("importRouteTargets", AAZListType, ".import_route_targets", typ_kwargs={"flags": {"required": True}})
+
+            export_route_targets = _builder.get(".properties.managementNetworkConfiguration.infrastructureVpnConfiguration.optionBProperties.exportRouteTargets")
+            if export_route_targets is not None:
+                export_route_targets.set_elements(AAZStrType, ".")
+
+            import_route_targets = _builder.get(".properties.managementNetworkConfiguration.infrastructureVpnConfiguration.optionBProperties.importRouteTargets")
+            if import_route_targets is not None:
+                import_route_targets.set_elements(AAZStrType, ".")
 
             workload_vpn_configuration = _builder.get(".properties.managementNetworkConfiguration.workloadVpnConfiguration")
             if workload_vpn_configuration is not None:
-                _CreateHelper._build_schema_option_a_properties_create(workload_vpn_configuration.set_prop("optionAProperties", AAZObjectType, ".option_a_properties"))
-                _CreateHelper._build_schema_option_b_properties_create(workload_vpn_configuration.set_prop("optionBProperties", AAZObjectType, ".option_b_properties"))
+                workload_vpn_configuration.set_prop("optionAProperties", AAZObjectType, ".option_a_properties")
+                workload_vpn_configuration.set_prop("optionBProperties", AAZObjectType, ".option_b_properties")
                 workload_vpn_configuration.set_prop("peeringOption", AAZStrType, ".peering_option", typ_kwargs={"flags": {"required": True}})
+
+            option_a_properties = _builder.get(".properties.managementNetworkConfiguration.workloadVpnConfiguration.optionAProperties")
+            if option_a_properties is not None:
+                option_a_properties.set_prop("mtu", AAZIntType, ".mtu")
+                option_a_properties.set_prop("peerASN", AAZIntType, ".peer_asn")
+                option_a_properties.set_prop("primaryIpv4Prefix", AAZStrType, ".primary_ipv4_prefix")
+                option_a_properties.set_prop("primaryIpv6Prefix", AAZStrType, ".primary_ipv6_prefix")
+                option_a_properties.set_prop("secondaryIpv4Prefix", AAZStrType, ".secondary_ipv4_prefix")
+                option_a_properties.set_prop("secondaryIpv6Prefix", AAZStrType, ".secondary_ipv6_prefix")
+                option_a_properties.set_prop("vlanId", AAZIntType, ".vlan_id")
+
+            option_b_properties = _builder.get(".properties.managementNetworkConfiguration.workloadVpnConfiguration.optionBProperties")
+            if option_b_properties is not None:
+                option_b_properties.set_prop("exportRouteTargets", AAZListType, ".export_route_targets", typ_kwargs={"flags": {"required": True}})
+                option_b_properties.set_prop("importRouteTargets", AAZListType, ".import_route_targets", typ_kwargs={"flags": {"required": True}})
+
+            export_route_targets = _builder.get(".properties.managementNetworkConfiguration.workloadVpnConfiguration.optionBProperties.exportRouteTargets")
+            if export_route_targets is not None:
+                export_route_targets.set_elements(AAZStrType, ".")
+
+            import_route_targets = _builder.get(".properties.managementNetworkConfiguration.workloadVpnConfiguration.optionBProperties.importRouteTargets")
+            if import_route_targets is not None:
+                import_route_targets.set_elements(AAZStrType, ".")
 
             terminal_server_configuration = _builder.get(".properties.terminalServerConfiguration")
             if terminal_server_configuration is not None:
@@ -596,54 +660,12 @@ class Create(AAZCommand):
                 serialized_name="infrastructureVpnConfiguration",
                 flags={"required": True},
             )
+            _CreateHelper._build_schema_vpn_configuration_properties_read(management_network_configuration.infrastructure_vpn_configuration)
             management_network_configuration.workload_vpn_configuration = AAZObjectType(
                 serialized_name="workloadVpnConfiguration",
                 flags={"required": True},
             )
-
-            infrastructure_vpn_configuration = cls._schema_on_200_201.properties.management_network_configuration.infrastructure_vpn_configuration
-            infrastructure_vpn_configuration.administrative_state = AAZStrType(
-                serialized_name="administrativeState",
-                flags={"read_only": True},
-            )
-            infrastructure_vpn_configuration.network_to_network_interconnect_id = AAZStrType(
-                serialized_name="networkToNetworkInterconnectId",
-                flags={"read_only": True},
-            )
-            infrastructure_vpn_configuration.option_a_properties = AAZObjectType(
-                serialized_name="optionAProperties",
-            )
-            _CreateHelper._build_schema_option_a_properties_read(infrastructure_vpn_configuration.option_a_properties)
-            infrastructure_vpn_configuration.option_b_properties = AAZObjectType(
-                serialized_name="optionBProperties",
-            )
-            _CreateHelper._build_schema_option_b_properties_read(infrastructure_vpn_configuration.option_b_properties)
-            infrastructure_vpn_configuration.peering_option = AAZStrType(
-                serialized_name="peeringOption",
-                flags={"required": True},
-            )
-
-            workload_vpn_configuration = cls._schema_on_200_201.properties.management_network_configuration.workload_vpn_configuration
-            workload_vpn_configuration.administrative_state = AAZStrType(
-                serialized_name="administrativeState",
-                flags={"read_only": True},
-            )
-            workload_vpn_configuration.network_to_network_interconnect_id = AAZStrType(
-                serialized_name="networkToNetworkInterconnectId",
-                flags={"read_only": True},
-            )
-            workload_vpn_configuration.option_a_properties = AAZObjectType(
-                serialized_name="optionAProperties",
-            )
-            _CreateHelper._build_schema_option_a_properties_read(workload_vpn_configuration.option_a_properties)
-            workload_vpn_configuration.option_b_properties = AAZObjectType(
-                serialized_name="optionBProperties",
-            )
-            _CreateHelper._build_schema_option_b_properties_read(workload_vpn_configuration.option_b_properties)
-            workload_vpn_configuration.peering_option = AAZStrType(
-                serialized_name="peeringOption",
-                flags={"required": True},
-            )
+            _CreateHelper._build_schema_vpn_configuration_properties_read(management_network_configuration.workload_vpn_configuration)
 
             racks = cls._schema_on_200_201.properties.racks
             racks.Element = AAZStrType()
@@ -706,75 +728,65 @@ class Create(AAZCommand):
 class _CreateHelper:
     """Helper class for Create"""
 
-    @classmethod
-    def _build_schema_option_a_properties_create(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("mtu", AAZIntType, ".mtu")
-        _builder.set_prop("peerASN", AAZIntType, ".peer_asn")
-        _builder.set_prop("primaryIpv4Prefix", AAZStrType, ".primary_ipv4_prefix")
-        _builder.set_prop("primaryIpv6Prefix", AAZStrType, ".primary_ipv6_prefix")
-        _builder.set_prop("secondaryIpv4Prefix", AAZStrType, ".secondary_ipv4_prefix")
-        _builder.set_prop("secondaryIpv6Prefix", AAZStrType, ".secondary_ipv6_prefix")
-        _builder.set_prop("vlanId", AAZIntType, ".vlan_id")
+    _schema_vpn_configuration_properties_read = None
 
     @classmethod
-    def _build_schema_option_b_properties_create(cls, _builder):
-        if _builder is None:
-            return
-        _builder.set_prop("exportRouteTargets", AAZListType, ".export_route_targets", typ_kwargs={"flags": {"required": True}})
-        _builder.set_prop("importRouteTargets", AAZListType, ".import_route_targets", typ_kwargs={"flags": {"required": True}})
-
-        export_route_targets = _builder.get(".exportRouteTargets")
-        if export_route_targets is not None:
-            export_route_targets.set_elements(AAZStrType, ".")
-
-        import_route_targets = _builder.get(".importRouteTargets")
-        if import_route_targets is not None:
-            import_route_targets.set_elements(AAZStrType, ".")
-
-    _schema_option_a_properties_read = None
-
-    @classmethod
-    def _build_schema_option_a_properties_read(cls, _schema):
-        if cls._schema_option_a_properties_read is not None:
-            _schema.bfd_configuration = cls._schema_option_a_properties_read.bfd_configuration
-            _schema.mtu = cls._schema_option_a_properties_read.mtu
-            _schema.peer_asn = cls._schema_option_a_properties_read.peer_asn
-            _schema.primary_ipv4_prefix = cls._schema_option_a_properties_read.primary_ipv4_prefix
-            _schema.primary_ipv6_prefix = cls._schema_option_a_properties_read.primary_ipv6_prefix
-            _schema.secondary_ipv4_prefix = cls._schema_option_a_properties_read.secondary_ipv4_prefix
-            _schema.secondary_ipv6_prefix = cls._schema_option_a_properties_read.secondary_ipv6_prefix
-            _schema.vlan_id = cls._schema_option_a_properties_read.vlan_id
+    def _build_schema_vpn_configuration_properties_read(cls, _schema):
+        if cls._schema_vpn_configuration_properties_read is not None:
+            _schema.administrative_state = cls._schema_vpn_configuration_properties_read.administrative_state
+            _schema.network_to_network_interconnect_id = cls._schema_vpn_configuration_properties_read.network_to_network_interconnect_id
+            _schema.option_a_properties = cls._schema_vpn_configuration_properties_read.option_a_properties
+            _schema.option_b_properties = cls._schema_vpn_configuration_properties_read.option_b_properties
+            _schema.peering_option = cls._schema_vpn_configuration_properties_read.peering_option
             return
 
-        cls._schema_option_a_properties_read = _schema_option_a_properties_read = AAZObjectType()
+        cls._schema_vpn_configuration_properties_read = _schema_vpn_configuration_properties_read = AAZObjectType()
 
-        option_a_properties_read = _schema_option_a_properties_read
-        option_a_properties_read.bfd_configuration = AAZObjectType(
+        vpn_configuration_properties_read = _schema_vpn_configuration_properties_read
+        vpn_configuration_properties_read.administrative_state = AAZStrType(
+            serialized_name="administrativeState",
+            flags={"read_only": True},
+        )
+        vpn_configuration_properties_read.network_to_network_interconnect_id = AAZStrType(
+            serialized_name="networkToNetworkInterconnectId",
+            flags={"read_only": True},
+        )
+        vpn_configuration_properties_read.option_a_properties = AAZObjectType(
+            serialized_name="optionAProperties",
+        )
+        vpn_configuration_properties_read.option_b_properties = AAZObjectType(
+            serialized_name="optionBProperties",
+        )
+        vpn_configuration_properties_read.peering_option = AAZStrType(
+            serialized_name="peeringOption",
+            flags={"required": True},
+        )
+
+        option_a_properties = _schema_vpn_configuration_properties_read.option_a_properties
+        option_a_properties.bfd_configuration = AAZObjectType(
             serialized_name="bfdConfiguration",
         )
-        option_a_properties_read.mtu = AAZIntType()
-        option_a_properties_read.peer_asn = AAZIntType(
+        option_a_properties.mtu = AAZIntType()
+        option_a_properties.peer_asn = AAZIntType(
             serialized_name="peerASN",
         )
-        option_a_properties_read.primary_ipv4_prefix = AAZStrType(
+        option_a_properties.primary_ipv4_prefix = AAZStrType(
             serialized_name="primaryIpv4Prefix",
         )
-        option_a_properties_read.primary_ipv6_prefix = AAZStrType(
+        option_a_properties.primary_ipv6_prefix = AAZStrType(
             serialized_name="primaryIpv6Prefix",
         )
-        option_a_properties_read.secondary_ipv4_prefix = AAZStrType(
+        option_a_properties.secondary_ipv4_prefix = AAZStrType(
             serialized_name="secondaryIpv4Prefix",
         )
-        option_a_properties_read.secondary_ipv6_prefix = AAZStrType(
+        option_a_properties.secondary_ipv6_prefix = AAZStrType(
             serialized_name="secondaryIpv6Prefix",
         )
-        option_a_properties_read.vlan_id = AAZIntType(
+        option_a_properties.vlan_id = AAZIntType(
             serialized_name="vlanId",
         )
 
-        bfd_configuration = _schema_option_a_properties_read.bfd_configuration
+        bfd_configuration = _schema_vpn_configuration_properties_read.option_a_properties.bfd_configuration
         bfd_configuration.interval = AAZIntType(
             flags={"read_only": True},
         )
@@ -782,44 +794,27 @@ class _CreateHelper:
             flags={"read_only": True},
         )
 
-        _schema.bfd_configuration = cls._schema_option_a_properties_read.bfd_configuration
-        _schema.mtu = cls._schema_option_a_properties_read.mtu
-        _schema.peer_asn = cls._schema_option_a_properties_read.peer_asn
-        _schema.primary_ipv4_prefix = cls._schema_option_a_properties_read.primary_ipv4_prefix
-        _schema.primary_ipv6_prefix = cls._schema_option_a_properties_read.primary_ipv6_prefix
-        _schema.secondary_ipv4_prefix = cls._schema_option_a_properties_read.secondary_ipv4_prefix
-        _schema.secondary_ipv6_prefix = cls._schema_option_a_properties_read.secondary_ipv6_prefix
-        _schema.vlan_id = cls._schema_option_a_properties_read.vlan_id
-
-    _schema_option_b_properties_read = None
-
-    @classmethod
-    def _build_schema_option_b_properties_read(cls, _schema):
-        if cls._schema_option_b_properties_read is not None:
-            _schema.export_route_targets = cls._schema_option_b_properties_read.export_route_targets
-            _schema.import_route_targets = cls._schema_option_b_properties_read.import_route_targets
-            return
-
-        cls._schema_option_b_properties_read = _schema_option_b_properties_read = AAZObjectType()
-
-        option_b_properties_read = _schema_option_b_properties_read
-        option_b_properties_read.export_route_targets = AAZListType(
+        option_b_properties = _schema_vpn_configuration_properties_read.option_b_properties
+        option_b_properties.export_route_targets = AAZListType(
             serialized_name="exportRouteTargets",
             flags={"required": True},
         )
-        option_b_properties_read.import_route_targets = AAZListType(
+        option_b_properties.import_route_targets = AAZListType(
             serialized_name="importRouteTargets",
             flags={"required": True},
         )
 
-        export_route_targets = _schema_option_b_properties_read.export_route_targets
+        export_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.export_route_targets
         export_route_targets.Element = AAZStrType()
 
-        import_route_targets = _schema_option_b_properties_read.import_route_targets
+        import_route_targets = _schema_vpn_configuration_properties_read.option_b_properties.import_route_targets
         import_route_targets.Element = AAZStrType()
 
-        _schema.export_route_targets = cls._schema_option_b_properties_read.export_route_targets
-        _schema.import_route_targets = cls._schema_option_b_properties_read.import_route_targets
+        _schema.administrative_state = cls._schema_vpn_configuration_properties_read.administrative_state
+        _schema.network_to_network_interconnect_id = cls._schema_vpn_configuration_properties_read.network_to_network_interconnect_id
+        _schema.option_a_properties = cls._schema_vpn_configuration_properties_read.option_a_properties
+        _schema.option_b_properties = cls._schema_vpn_configuration_properties_read.option_b_properties
+        _schema.peering_option = cls._schema_vpn_configuration_properties_read.peering_option
 
 
 __all__ = ["Create"]
