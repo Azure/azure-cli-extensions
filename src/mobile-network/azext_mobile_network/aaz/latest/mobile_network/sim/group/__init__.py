@@ -9,11 +9,11 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from ._bulk_delete_sims import *
+from ._bulk_upload_sims import *
 from ._create import *
 from ._delete import *
-from ._delete_sim import *
 from ._list import *
 from ._show import *
 from ._update import *
-from ._upload_sim import *
 from ._wait import *

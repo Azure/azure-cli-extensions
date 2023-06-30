@@ -14,8 +14,11 @@ from azure.cli.core.aaz import *
 @register_command(
     "mobile-network sim group bulk-delete-sims",
 )
-class DeleteSim(AAZCommand):
+class BulkDeleteSims(AAZCommand):
     """Bulk delete SIMs from a SIM group.
+
+    :example: Deleting multiple sims in a sim group
+        az mobile-network sim group bulk-delete-sims -g group --sim-group-name SimGroup --sims "sim01,sim02"
     """
 
     _aaz_info = {
@@ -72,7 +75,7 @@ class DeleteSim(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.SimBulkDelete(ctx=self.ctx)()
+        yield self.SimsBulkDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -87,7 +90,7 @@ class DeleteSim(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SimBulkDelete(AAZHttpOperation):
+    class SimsBulkDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -215,7 +218,7 @@ class DeleteSim(AAZCommand):
                 serialized_name="endTime",
             )
             _schema_on_200.error = AAZObjectType()
-            _DeleteSimHelper._build_schema_error_detail_read(_schema_on_200.error)
+            _BulkDeleteSimsHelper._build_schema_error_detail_read(_schema_on_200.error)
             _schema_on_200.id = AAZStrType()
             _schema_on_200.name = AAZStrType()
             _schema_on_200.percent_complete = AAZFloatType(
@@ -237,8 +240,8 @@ class DeleteSim(AAZCommand):
             pass
 
 
-class _DeleteSimHelper:
-    """Helper class for DeleteSim"""
+class _BulkDeleteSimsHelper:
+    """Helper class for BulkDeleteSims"""
 
     _schema_error_detail_read = None
 
@@ -291,4 +294,4 @@ class _DeleteSimHelper:
         _schema.target = cls._schema_error_detail_read.target
 
 
-__all__ = ["DeleteSim"]
+__all__ = ["BulkDeleteSims"]

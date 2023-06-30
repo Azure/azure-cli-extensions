@@ -14,8 +14,11 @@ from azure.cli.core.aaz import *
 @register_command(
     "mobile-network sim group bulk-upload-sims",
 )
-class UploadSim(AAZCommand):
+class BulkUploadSims(AAZCommand):
     """Bulk upload SIMs to a SIM group.
+
+    :example: Uploading multiple sims to a sim group
+        az mobile-network sim group bulk-upload-sims -g rg --sim-group-name SimGroup --sims [{name:bulk-upload-sim-01,authentication-key:00000000000000000000000000000000,operator-key-code:00000000000000000000000000000000,international-msi:0000000000},{name:bulk-upload-sim-02,authentication-key:00000000000000000000000000000001,operator-key-code:00000000000000000000000000000001,international-msi:0000000001}]
     """
 
     _aaz_info = {
@@ -86,14 +89,14 @@ class UploadSim(AAZCommand):
             options=["device-type"],
             help="An optional free-form text field that can be used to record the device type this SIM is associated with, for example 'Video camera'. The Azure portal allows SIMs to be grouped and filtered based on this value.",
         )
-        _element.integrated_circuit_card_identifier = AAZStrArg(
+        _element.icc_id = AAZStrArg(
             options=["icc-id"],
             help="The integrated circuit card ID (ICCID) for the SIM.",
             fmt=AAZStrArgFormat(
                 pattern="^[0-9]{10,20}$",
             ),
         )
-        _element.international_mobile_subscriber_identity = AAZStrArg(
+        _element.international_msi = AAZStrArg(
             options=["international-msi"],
             help="The international mobile subscriber identity (IMSI) for the SIM.",
             required=True,
@@ -179,7 +182,7 @@ class UploadSim(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.SimBulkUpload(ctx=self.ctx)()
+        yield self.SimsBulkUpload(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -194,7 +197,7 @@ class UploadSim(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SimBulkUpload(AAZHttpOperation):
+    class SimsBulkUpload(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -296,11 +299,11 @@ class UploadSim(AAZCommand):
 
             properties = _builder.get(".sims[].properties")
             if properties is not None:
-                properties.set_prop("authenticationKey", AAZStrType, ".authentication_key")
+                properties.set_prop("authenticationKey", AAZStrType, ".authentication_key", typ_kwargs={"flags": {"secret": True}})
                 properties.set_prop("deviceType", AAZStrType, ".device_type")
-                properties.set_prop("integratedCircuitCardIdentifier", AAZStrType, ".integrated_circuit_card_identifier")
-                properties.set_prop("internationalMobileSubscriberIdentity", AAZStrType, ".international_mobile_subscriber_identity", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("operatorKeyCode", AAZStrType, ".operator_key_code")
+                properties.set_prop("integratedCircuitCardIdentifier", AAZStrType, ".icc_id")
+                properties.set_prop("internationalMobileSubscriberIdentity", AAZStrType, ".international_msi", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("operatorKeyCode", AAZStrType, ".operator_key_code", typ_kwargs={"flags": {"secret": True}})
                 properties.set_prop("simPolicy", AAZObjectType, ".sim_policy")
                 properties.set_prop("staticIpConfiguration", AAZListType, ".static_ip_configuration")
 
@@ -354,7 +357,7 @@ class UploadSim(AAZCommand):
                 serialized_name="endTime",
             )
             _schema_on_200.error = AAZObjectType()
-            _UploadSimHelper._build_schema_error_detail_read(_schema_on_200.error)
+            _BulkUploadSimsHelper._build_schema_error_detail_read(_schema_on_200.error)
             _schema_on_200.id = AAZStrType()
             _schema_on_200.name = AAZStrType()
             _schema_on_200.percent_complete = AAZFloatType(
@@ -373,8 +376,8 @@ class UploadSim(AAZCommand):
             return cls._schema_on_200
 
 
-class _UploadSimHelper:
-    """Helper class for UploadSim"""
+class _BulkUploadSimsHelper:
+    """Helper class for BulkUploadSims"""
 
     _schema_error_detail_read = None
 
@@ -427,4 +430,4 @@ class _UploadSimHelper:
         _schema.target = cls._schema_error_detail_read.target
 
 
-__all__ = ["UploadSim"]
+__all__ = ["BulkUploadSims"]
