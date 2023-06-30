@@ -2724,6 +2724,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if taints is not None and self.mc.agent_pool_profiles is not None and len(self.mc.agent_pool_profiles) > 1:
             for agent_pool_profile in mc.agent_pool_profiles:
                 agent_pool_profile.node_taints = taints
+        return mc
 
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
