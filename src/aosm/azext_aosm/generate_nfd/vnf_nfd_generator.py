@@ -62,17 +62,15 @@ class VnfNfdGenerator(NFDGenerator):
 
     def __init__(self, config: VNFConfiguration, order_params: bool, interactive: bool):
         self.config = config
-        self.bicep_template_name = VNF_DEFINITION_BICEP_TEMPLATE_FILENAME
-        self.manifest_template_name = VNF_MANIFEST_BICEP_TEMPLATE_FILENAME
 
         self.arm_template_path = self.config.arm_template.file_path
         self.output_folder_name = self.config.build_output_folder_name
 
         self._bicep_path = os.path.join(
-            self.output_folder_name, self.bicep_template_name
+            self.output_folder_name, VNF_DEFINITION_BICEP_TEMPLATE_FILENAME
         )
         self._manifest_path = os.path.join(
-            self.output_folder_name, self.manifest_template_name
+            self.output_folder_name, VNF_MANIFEST_BICEP_TEMPLATE_FILENAME
         )
         self.order_params = order_params
         self.interactive = interactive
@@ -180,10 +178,10 @@ class VnfNfdGenerator(NFDGenerator):
 
         for key in vm_parameters:
             if key == self.config.image_name_parameter:
-                # There is only one correct answer for the image name, so don't ask the 
+                # There is only one correct answer for the image name, so don't ask the
                 # user, instead it is hardcoded in config mappings.
                 continue
-            
+
             # Order parameters into those without and then with defaults
             has_default_field = "defaultValue" in self.vm_parameters[key]
             has_default = (
@@ -245,7 +243,7 @@ class VnfNfdGenerator(NFDGenerator):
                     f"{OPTIONAL_DEPLOYMENT_PARAMETERS_FILENAME} to help you choose which "
                     "to expose."
                 )
-                
+
     def write_template_parameters(self, folder_path: str) -> None:
         """
         Write out the NFD templateParameters.json file.
@@ -306,10 +304,10 @@ class VnfNfdGenerator(NFDGenerator):
         logger.info("Create NFD bicep %s", self.output_folder_name)
         os.mkdir(self.output_folder_name)
 
-        bicep_path = os.path.join(code_dir, "templates", self.bicep_template_name)
+        bicep_path = os.path.join(code_dir, "templates", VNF_DEFINITION_BICEP_TEMPLATE_FILENAME)
         shutil.copy(bicep_path, self.output_folder_name)
 
-        manifest_path = os.path.join(code_dir, "templates", self.manifest_template_name)
+        manifest_path = os.path.join(code_dir, "templates", VNF_MANIFEST_BICEP_TEMPLATE_FILENAME)
         shutil.copy(manifest_path, self.output_folder_name)
         # Copy everything in the temp folder to the output folder
         shutil.copytree(
