@@ -292,7 +292,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 node_taints = self.agentpool.node_taints
         
         # this parameter does not need validation
-        return ["taint1=value1:NoSchedule", "taint2=value2:NoSchedule"]
+        return node_taints
     
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -488,6 +488,14 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         if allowed_host_ports is not None:
             agentpool.network_profile.allowed_host_ports = allowed_host_ports
         return agentpool
+    
+    def update_nodepool_taints(self, agentpool: AgentPool) -> AgentPool:
+        self._ensure_agentpool(agentpool)
+
+        node_taints = self.context.get_nodepool_taints()
+        if node_taints is not None:
+            agentpool.node_taints = node_taints
+        return agentpool
 
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
@@ -505,5 +513,8 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update network profile
         agentpool = self.update_network_profile(agentpool)
+
+        # update nodepool taints
+        agentpool = self.update_nodepool_taints(agentpool)
 
         return agentpool

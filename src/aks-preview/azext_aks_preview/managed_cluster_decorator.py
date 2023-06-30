@@ -2325,7 +2325,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         self._ensure_mc(mc)
 
         agentpool_profile = self.agentpool_decorator.construct_agentpool_profile_preview()
-        mc.agent_pool_profiles = [agentpool_profile]
         return mc
 
     def set_up_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
