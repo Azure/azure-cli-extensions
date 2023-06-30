@@ -113,7 +113,7 @@ class DeployerViaArm:
             # User has not passed in a bicep template, so we are deploying the default
             # one produced from building the NFDV using this CLI
             bicep_path = os.path.join(
-                self.config.build_output_folder_name,
+                self.config.output_directory_for_build,
                 VNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
             )
 

@@ -318,10 +318,10 @@ class VNFConfiguration(NFConfiguration):
         return f"{sanitized_nf_name}-sa-manifest-{self.version.replace('.', '-')}"
 
     @property
-    def build_output_folder_name(self) -> str:
+    def output_directory_for_build(self) -> Path:
         """Return the local folder for generating the bicep template to."""
-        arm_template_path = self.arm_template.file_path
-        return f"{NF_DEFINITION_OUTPUT_BICEP_PREFIX}{Path(str(arm_template_path)).stem}"
+        arm_template_name = Path(self.arm_template.file_path).stem
+        return Path(f"{NF_DEFINITION_OUTPUT_BICEP_PREFIX}{arm_template_name}")
 
 
 @dataclass
