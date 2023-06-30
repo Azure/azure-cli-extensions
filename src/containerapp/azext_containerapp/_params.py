@@ -121,6 +121,7 @@ def load_arguments(self, _):
         c.argument('workload_profile_name', options_list=['--workload-profile-name', '-w'], help="Name of the workload profile to run the app on.", is_preview=True)
         c.argument('secret_volume_mount', help="Path to mount all secrets e.g. mnt/secrets", is_preview=True)
         c.argument('termination_grace_period', type=int, options_list=['--termination-grace-period', '--tgp'], help="Duration in seconds a replica is given to gracefully shut down before it is forcefully terminated. (Default: 30)", is_preview=True)
+        c.argument('source', help="Local directory path containing the application source and Dockerfile for building the container image. Preview: If no Dockerfile is present, a container image is generated using buildpacks. If Docker is not running or buildpacks cannot be used, Oryx will be used to generate the image. See the supported Oryx runtimes here: https://github.com/microsoft/Oryx/blob/main/doc/supportedRuntimeVersions.md.")
 
     with self.argument_context('containerapp create', arg_group='Identity') as c:
         c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
@@ -134,6 +135,15 @@ def load_arguments(self, _):
         c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services(bindings) to be connected to this app. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
         c.argument('service_type', help="The service information for dev services.")
         c.ignore('service_type')
+
+    with self.argument_context('containerapp create', arg_group='Github Repo') as c:
+        c.argument('repo', help='Create an app via Github Actions. In the format: https://github.com/<owner>/<repository-name> or <owner>/<repository-name>')
+        c.argument('token', help='A Personal Access Token with write access to the specified repository. For more information: https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line. If not provided or not found in the cache (and using --repo), a browser page will be opened to authenticate with Github.')
+        c.argument('branch', options_list=['--branch', '-b'], help='The branch of the Github repo. Assumed to be the Github repo\'s default branch if not specified.')
+        c.argument('context_path', help='Path in the repo from which to run the docker build. Defaults to "./". Dockerfile is assumed to be named "Dockerfile" and in this directory.')
+        c.argument('service_principal_client_id', help='The service principal client ID. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-client-id", "--sp-cid"])
+        c.argument('service_principal_client_secret', help='The service principal client secret. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-client-secret", "--sp-sec"])
+        c.argument('service_principal_tenant_id', help='The service principal tenant ID. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-tenant-id", "--sp-tid"])
 
     with self.argument_context('containerapp show') as c:
         c.argument('show_secrets', help="Show Containerapp secrets.", action='store_true')

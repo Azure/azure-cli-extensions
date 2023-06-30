@@ -406,6 +406,7 @@ def create_containerapp(cmd,
                         resource_group_name,
                         yaml=None,
                         image=None,
+                        source=None,
                         container_name=None,
                         managed_env=None,
                         min_replicas=None,
@@ -448,11 +449,22 @@ def create_containerapp(cmd,
                         registry_identity=None,
                         workload_profile_name=None,
                         termination_grace_period=None,
-                        secret_volume_mount=None):
+                        secret_volume_mount=None,
+                        repo=None,
+                        token=None,
+                        branch=None,
+                        context_path=None,
+                        service_principal_client_id=None,
+                        service_principal_client_secret=None,
+                        service_principal_tenant_id=None):
+    from ._up_utils import (_validate_create_args,_reformat_image,_get_dockerfile_content, _get_ingress_and_target_port,ContainerApp,ResourceGroup,ContainerAppEnvironment, _get_registry_details, _create_github_action,
+                            get_token, _has_dockerfile)
+    from ._github_oauth import cache_github_token
     register_provider_if_needed(cmd, CONTAINER_APPS_RP)
     validate_container_app_name(name, AppType.ContainerApp.name)
     validate_create(registry_identity, registry_pass, registry_user, registry_server, no_wait)
     validate_revision_suffix(revision_suffix)
+    _validate_create_args(cmd, source, repo, registry_server, registry_user, registry_pass)
 
     if registry_identity and not is_registry_msi_system(registry_identity):
         logger.info("Creating an acrpull role assignment for the registry identity")
@@ -465,9 +477,12 @@ def create_containerapp(cmd,
                 startup_command or args or tags:
             not disable_warnings and logger.warning('Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         return create_containerapp_yaml(cmd=cmd, name=name, resource_group_name=resource_group_name, file_name=yaml, no_wait=no_wait)
-
+    imageNotProvided = False
     if not image:
+        imageNotProvided = True
         image = HELLO_WORLD_IMAGE
+    token = get_token(cmd, repo, token)
+    dockerfile = "Dockerfile"
 
     if managed_env is None:
         raise RequiredArgumentMissingError('Usage error: --environment is required if not using --yaml')
@@ -690,6 +705,24 @@ def create_containerapp(cmd,
         else:
             set_managed_identity(cmd, resource_group_name, containerapp_def, user_assigned=[registry_identity])
     try:
+        image = None if imageNotProvided else _reformat_image(source,repo,image)
+        resource_group = ResourceGroup(cmd, name=resource_group_name, location=location)
+        env = ContainerAppEnvironment(cmd, managed_env, resource_group, location=location)
+        app = ContainerApp(cmd, name, resource_group, None, image, env, target_port, registry_server, registry_user, registry_pass, env_vars, workload_profile_name, ingress)
+
+        if source or repo:
+            _get_registry_details(cmd,app,source) # fetch ACR creds from arguments registry arguments
+
+        if source and not _has_dockerfile(source, dockerfile):
+            pass
+        else:
+          dockerfile_content = _get_dockerfile_content(repo, branch, token, source, context_path, dockerfile)
+          ingress, target_port = _get_ingress_and_target_port(ingress, target_port, dockerfile_content)
+
+        app.create_acr_if_needed()
+        if source:
+            app.run_acr_build(dockerfile, source, quiet=False, build_from_source=not _has_dockerfile(source, dockerfile))
+            container_def["image"] = app.image
         r = ContainerAppClient.create_or_update(
             cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
 
@@ -731,7 +764,11 @@ def create_containerapp(cmd,
                 linker_client.linker.begin_create_or_update(resource_uri=r["id"],
                                                             parameters=item["parameters"],
                                                             linker_name=item["linker_name"]).result()
-
+        if repo:
+            _create_github_action(app, env, service_principal_client_id, service_principal_client_secret,
+                              service_principal_tenant_id, branch, token, repo, context_path)
+            cache_github_token(cmd, token, repo)
+            r = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
         return r
     except Exception as e:
         handle_raw_exception(e)

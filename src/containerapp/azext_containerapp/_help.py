@@ -61,6 +61,18 @@ helps['containerapp create'] = """
               --image my-app:v1.0 --environment MyContainerappEnv \\
               --secrets mysecret=secretvalue1 anothersecret="secret value 2" \\
               --secret-volume-mount "mnt/secrets"
+    - name: Create a container app from a dockerfile in a GitHub repo (setting up github actions)
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          --environment MyContainerappEnv --registry-server MyRegistryServer \\
+          --registry-user MyRegistryUser --registry-pass MyRegistryPass \\
+          --repo https://github.com/myAccount/myRepo
+    - name: Create a container app from a dockerfile in a local directory (or autogenerate a container if no dockerfile is found)
+      text: |
+          az containerapp create -n MyContainerapp -g MyResourceGroup \\
+          --environment MyContainerappEnv --registry-server MyRegistryServer \\
+          --registry-user MyRegistryUser --registry-pass MyRegistryPass \\
+          --source .
 """
 
 helps['containerapp update'] = """
