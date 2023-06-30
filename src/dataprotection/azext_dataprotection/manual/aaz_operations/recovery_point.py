@@ -8,9 +8,6 @@
 
 from azure.cli.core.aaz import AAZStrArg
 from azext_dataprotection.aaz.latest.dataprotection.recovery_point import List as _List
-from azext_dataprotection.aaz.latest.dataprotection.recovery_point import List as _RecoveryPointList
-from knack.log import get_logger
-from ..helpers import validate_recovery_point_datetime_format
 from knack.log import get_logger
 from ..helpers import validate_recovery_point_datetime_format
 
