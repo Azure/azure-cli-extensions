@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-12-preview",
+        "version": "2023-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks/{}", "2022-12-12-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks/{}", "2023-05-01-preview"],
         ]
     }
 
@@ -202,7 +202,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-12-preview",
+                    "api-version", "2023-05-01-preview",
                     required=True,
                 ),
             }
@@ -338,6 +338,10 @@ class _UpdateHelper:
         properties.additional_egress_endpoints = AAZListType(
             serialized_name="additionalEgressEndpoints",
         )
+        properties.associated_resource_ids = AAZListType(
+            serialized_name="associatedResourceIds",
+            flags={"read_only": True},
+        )
         properties.cluster_id = AAZStrType(
             serialized_name="clusterId",
             flags={"read_only": True},
@@ -377,6 +381,9 @@ class _UpdateHelper:
         additional_egress_endpoints = _schema_cloud_services_network_read.properties.additional_egress_endpoints
         additional_egress_endpoints.Element = AAZObjectType()
         cls._build_schema_egress_endpoint_read(additional_egress_endpoints.Element)
+
+        associated_resource_ids = _schema_cloud_services_network_read.properties.associated_resource_ids
+        associated_resource_ids.Element = AAZStrType()
 
         enabled_egress_endpoints = _schema_cloud_services_network_read.properties.enabled_egress_endpoints
         enabled_egress_endpoints.Element = AAZObjectType()

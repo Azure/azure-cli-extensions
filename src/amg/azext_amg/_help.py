@@ -67,7 +67,6 @@ helps['grafana data-source create'] = """
         - name: create a data source of Azure Monitor using Managed Identity
           text: |
             az grafana data-source create -n MyGrafana --definition '{
-              "uid": "5SjzhUu4n",
               "access": "proxy",
               "jsonData": {
                 "azureAuthType": "msi",
@@ -79,7 +78,6 @@ helps['grafana data-source create'] = """
         - name: create a data source of Azure Monitor using App Registration
           text: |
             az grafana data-source create -n MyGrafana --definition '{
-              "uid": "5SjzhUu4z",
               "name": "Azure Monitor-2",
               "type": "grafana-azure-monitor-datasource",
               "access": "proxy",
@@ -95,7 +93,6 @@ helps['grafana data-source create'] = """
         - name: create a data source of Azure Data Explorer using Managed Identity
           text: |
             az grafana data-source create -n MyGrafana --definition '{
-              "uid": "3JTnaUuVz",
               "name": "Azure Data Explorer Datasource-2",
               "type": "grafana-azure-data-explorer-datasource",
               "access": "proxy",
@@ -107,7 +104,6 @@ helps['grafana data-source create'] = """
         - name: create a data source of Azure Data Explorer using App Registration
           text: |
             az grafana data-source create -n MyGrafana --definition '{
-              "uid": "uEi-b8X4k",
               "name": "Azure Data Explorer Datasource-1",
               "type": "grafana-azure-data-explorer-datasource",
               "access": "proxy",
@@ -121,6 +117,37 @@ helps['grafana data-source create'] = """
                 }
               },
               "secureJsonData": { "azureClientSecret": "verySecret" }
+            }'
+        - name: create a data source of Azure Managed Prometheus using App Registration
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Managed Prometheus-1",
+              "type": "prometheus",
+              "access": "proxy",
+              "url": "https://myprom-abcd.westcentralus.prometheus.monitor.azure.com",
+              "jsonData": {
+                "httpMethod": "POST",
+                "azureCredentials": {
+                  "authType": "clientsecret",
+                  "azureCloud": "AzureCloud",
+                  "tenantId": "72f988bf-86f1-41af-91ab-111111111111",
+                  "clientId": "fb31a2f5-9122-4be9-9705-111111111111"
+                },
+                "timeInterval": "30s"
+              },
+              "secureJsonData": { "azureClientSecret": "verySecret" }
+            }'
+        - name: create a data source of Azure Managed Prometheus using managed identity
+          text: |
+            az grafana data-source create -n MyGrafana --definition '{
+              "name": "Azure Managed Prometheus-1",
+              "type": "prometheus",
+              "access": "proxy",
+              "url": "https://myprom-jryu.westcentralus.prometheus.monitor.azure.com",
+              "jsonData": {
+                "httpMethod": "POST",
+                "azureCredentials": { "authType": "msi" }
+              }
             }'
         - name: create a data source of Azure SQL
           text: |
