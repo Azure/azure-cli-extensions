@@ -4,6 +4,9 @@ Release History
 ===============
 0.9.1
 +++++
+* `az dataprotection update-msi-permissions`: Fixed bug in fetching AKS workload resource group
+* `az dataprotection backup-policy create-generic-criteria`: Bug-fix in day-of-month argument validation
+* `az dataprotection recovery-point`: Added user warning when start-time is after end-time
 * `az dataprotection backup-instance`: Migrated to AAZ-dev-tools
 * `az dataprotection backup-policy`: Migrated to AAZ-dev-tools
 * `az dataprotection resource-guard`: Migrated to AAZ-dev-tools
