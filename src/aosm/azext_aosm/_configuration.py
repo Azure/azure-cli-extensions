@@ -1,6 +1,3 @@
-## Disabling as every if statement in validate in NSConfig class has this condition
-# pylint: disable=simplifiable-condition
-
 import json
 import os
 from dataclasses import dataclass, field
@@ -11,70 +8,94 @@ from azure.cli.core.azclierror import InvalidArgumentValueError, ValidationError
 
 from azext_aosm.util.constants import (
     CNF,
-    DEFINITION_OUTPUT_BICEP_PREFIX,
-    NF_DEFINITION_JSON_FILE,
+    NF_DEFINITION_OUTPUT_BICEP_PREFIX,
+    NF_DEFINITION_JSON_FILENAME,
     NSD,
-    NSD_DEFINITION_OUTPUT_BICEP_PREFIX,
+    NSD_OUTPUT_BICEP_PREFIX,
     VNF,
 )
 
 DESCRIPTION_MAP: Dict[str, str] = {
-    "publisher_resource_group_name":
+    "publisher_resource_group_name": (
         "Resource group for the Publisher resource. "
-        "Will be created if it does not exist.",
-    "publisher_name":
+        "Will be created if it does not exist."
+    ),
+    "publisher_name": (
         "Name of the Publisher resource you want your definition published to. "
-        "Will be created if it does not exist.",
-    "publisher_name_nsd":
+        "Will be created if it does not exist."
+    ),
+    "publisher_name_nsd": (
         "Name of the Publisher resource you want your design published to. "
         "This should be the same as the publisher used for your NFDVs"
-    ,
+    ),
     "publisher_resource_group_name_nsd": "Resource group for the Publisher resource.",
     "nf_name": "Name of NF definition",
     "version": "Version of the NF definition",
-    "acr_artifact_store_name": "Name of the ACR Artifact Store resource. Will be created if it does not exist.",
+    "acr_artifact_store_name": (
+        "Name of the ACR Artifact Store resource. Will be created if it does not exist."
+    ),
     "location": "Azure location to use when creating resources.",
-    "blob_artifact_store_name":
+    "blob_artifact_store_name": (
         "Name of the storage account Artifact Store resource. Will be created if it "
-        "does not exist.",
+        "does not exist."
+    ),
     "artifact_name": "Name of the artifact",
-    "file_path": "Optional. File path of the artifact you wish to upload from your local disk. "
-    "Delete if not required.",
-    "blob_sas_url": "Optional. SAS URL of the blob artifact you wish to copy to your Artifact Store. "
-    "Delete if not required.",
-    "artifact_version": "Version of the artifact. For VHDs this must be in format A-B-C. "
-    "For ARM templates this must be in format A.B.C",
+    "file_path": (
+        "Optional. File path of the artifact you wish to upload from your local disk. "
+        "Delete if not required."
+    ),
+    "blob_sas_url": (
+        "Optional. SAS URL of the blob artifact you wish to copy to your Artifact"
+        " Store. Delete if not required."
+    ),
+    "artifact_version": (
+        "Version of the artifact. For VHDs this must be in format A-B-C. "
+        "For ARM templates this must be in format A.B.C"
+    ),
     "nsdv_description": "Description of the NSDV",
-    "nsdg_name": "Network Service Design Group Name. This is the collection of Network Service Design Versions. "
-    "Will be created if it does not exist.",
-    "nsd_version": "Version of the NSD to be created. This should be in the format A.B.C",
-    "network_function_definition_group_name":
+    "nsdg_name": (
+        "Network Service Design Group Name. This is the collection of Network Service"
+        " Design Versions. Will be created if it does not exist."
+    ),
+    "nsd_version": (
+        "Version of the NSD to be created. This should be in the format A.B.C"
+    ),
+    "network_function_definition_group_name": (
         "Existing Network Function Definition Group Name. "
-        "This can be created using the 'az aosm nfd' commands.",
-    "network_function_definition_version_name":
+        "This can be created using the 'az aosm nfd' commands."
+    ),
+    "network_function_definition_version_name": (
         "Existing Network Function Definition Version Name. "
-        "This can be created using the 'az aosm nfd' commands.",
-    "network_function_definition_offering_location": "Offering location of the Network Function Definition",
-    "network_function_type": "Type of nf in the definition. Valid values are 'cnf' or 'vnf'",
+        "This can be created using the 'az aosm nfd' commands."
+    ),
+    "network_function_definition_offering_location": (
+        "Offering location of the Network Function Definition"
+    ),
+    "network_function_type": (
+        "Type of nf in the definition. Valid values are 'cnf' or 'vnf'"
+    ),
     "helm_package_name": "Name of the Helm package",
-    "path_to_chart":
-        "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz",
-    "path_to_mappings":
+    "path_to_chart": (
+        "File path of Helm Chart on local disk. Accepts .tgz, .tar or .tar.gz"
+    ),
+    "path_to_mappings": (
         "File path of value mappings on local disk where chosen values are replaced "
         "with deploymentParameter placeholders. Accepts .yaml or .yml. If left as a "
         "blank string, a value mappings file will be generated with every value "
         "mapped to a deployment parameter. Use a blank string and --interactive on "
         "the build command to interactively choose which values to map."
-    ,
-    "helm_depends_on":
+    ),
+    "helm_depends_on": (
         "Names of the Helm packages this package depends on. "
-        "Leave as an empty array if no dependencies",
-    "image_name_parameter":
+        "Leave as an empty array if no dependencies"
+    ),
+    "image_name_parameter": (
         "The parameter name in the VM ARM template which specifies the name of the "
-        "image to use for the VM.",
-    "source_registry_id": 
-        "Resource ID of the source acr registry from which to pull "
-        "the image",
+        "image to use for the VM."
+    ),
+    "source_registry_id": (
+        "Resource ID of the source acr registry from which to pull the image"
+    ),
 }
 
 
@@ -85,8 +106,8 @@ class ArtifactConfig:
     file_path: Optional[str] = DESCRIPTION_MAP["file_path"]
     blob_sas_url: Optional[str] = DESCRIPTION_MAP["blob_sas_url"]
     version: str = DESCRIPTION_MAP["artifact_version"]
-    
-    
+
+
 @dataclass
 class Configuration:
     config_file: Optional[str] = None
@@ -161,6 +182,9 @@ class NSConfiguration(Configuration):
     def validate(self):
         """Validate that all of the configuration parameters are set."""
 
+        # Exemption for pylint as explicitly including the empty string makes the code clearer
+        # pylint: disable=simplifiable-condition
+
         if self.location == DESCRIPTION_MAP["location"] or "":
             raise ValueError("Location must be set")
         if self.publisher_name == DESCRIPTION_MAP["publisher_name_nsd"] or "":
@@ -207,7 +231,7 @@ class NSConfiguration(Configuration):
     def build_output_folder_name(self) -> str:
         """Return the local folder for generating the bicep template to."""
         current_working_directory = os.getcwd()
-        return f"{current_working_directory}/{NSD_DEFINITION_OUTPUT_BICEP_PREFIX}"
+        return f"{current_working_directory}/{NSD_OUTPUT_BICEP_PREFIX}"
 
     @property
     def resource_element_name(self) -> str:
@@ -222,7 +246,7 @@ class NSConfiguration(Configuration):
     @property
     def acr_manifest_name(self) -> str:
         """Return the ACR manifest name from the NFD name."""
-        sanitised_nf_name = self.network_function_name.lower().replace('_', '-')
+        sanitised_nf_name = self.network_function_name.lower().replace("_", "-")
         return f"{sanitised_nf_name}-acr-manifest-{self.nsd_version.replace('.', '-')}"
 
     @property
@@ -241,7 +265,7 @@ class NSConfiguration(Configuration):
         artifact = ArtifactConfig()
         artifact.version = self.nsd_version
         artifact.file_path = os.path.join(
-            self.build_output_folder_name, NF_DEFINITION_JSON_FILE
+            self.build_output_folder_name, NF_DEFINITION_JSON_FILENAME
         )
         return artifact
 
@@ -288,11 +312,13 @@ class VNFConfiguration(NFConfiguration):
 
         if "." in self.vhd.version or "-" not in self.vhd.version:
             raise ValidationError(
-                "Config validation error. VHD artifact version should be in format A-B-C"
+                "Config validation error. VHD artifact version should be in format"
+                " A-B-C"
             )
         if "." not in self.arm_template.version or "-" in self.arm_template.version:
             raise ValidationError(
-                "Config validation error. ARM template artifact version should be in format A.B.C"
+                "Config validation error. ARM template artifact version should be in"
+                " format A.B.C"
             )
         filepath_set = (
             self.vhd.file_path and self.vhd.file_path != DESCRIPTION_MAP["file_path"]
@@ -304,7 +330,8 @@ class VNFConfiguration(NFConfiguration):
         # If these are the same, either neither is set or both are, both of which are errors
         if filepath_set == sas_set:
             raise ValidationError(
-                "Config validation error. VHD config must have either a local filepath or a blob SAS URL"
+                "Config validation error. VHD config must have either a local filepath"
+                " or a blob SAS URL"
             )
 
         if filepath_set:
@@ -324,7 +351,7 @@ class VNFConfiguration(NFConfiguration):
     def build_output_folder_name(self) -> str:
         """Return the local folder for generating the bicep template to."""
         arm_template_path = self.arm_template.file_path
-        return f"{DEFINITION_OUTPUT_BICEP_PREFIX}{Path(str(arm_template_path)).stem}"
+        return f"{NF_DEFINITION_OUTPUT_BICEP_PREFIX}{Path(str(arm_template_path)).stem}"
 
 
 @dataclass
@@ -358,7 +385,7 @@ class CNFConfiguration(NFConfiguration):
     @property
     def build_output_folder_name(self) -> str:
         """Return the local folder for generating the bicep template to."""
-        return f"{DEFINITION_OUTPUT_BICEP_PREFIX}{self.nf_name}"
+        return f"{NF_DEFINITION_OUTPUT_BICEP_PREFIX}{self.nf_name}"
 
 
 def get_configuration(

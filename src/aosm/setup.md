@@ -44,6 +44,8 @@ azdev linter --include-whl-extensions aosm
 (Not written any tests yet)
 azdev test aosm
 ```
+The standard Python tool, `black`, is useful for automatically formatting your code.
+
 You can use python-static-checks in your dev environment if you want, to help you:
 ```bash
 pip3 install -U --index-url https://pkgs.dev.azure.com/msazuredev/AzureForOperators/_packaging/python/pypi/simple/ python-static-checks==4.0.0

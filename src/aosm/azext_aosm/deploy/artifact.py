@@ -3,20 +3,18 @@
 
 # pylint: disable=unidiomatic-typecheck
 """A module to handle interacting with artifacts."""
+import subprocess
 from dataclasses import dataclass
 from typing import Union
-import subprocess
-from knack.log import get_logger
-from oras.client import OrasClient
-
-from azure.storage.blob import BlobClient, BlobType
-from azext_aosm._configuration import ArtifactConfig, HelmPackageConfig
-from azure.mgmt.containerregistry.models import (
-    ImportImageParameters,
-    ImportSource,
-)
 
 from azure.cli.core.commands import LongRunningOperation
+from azure.mgmt.containerregistry.models import ImportImageParameters, ImportSource
+from azure.storage.blob import BlobClient, BlobType
+from knack.log import get_logger
+from knack.util import CLIError
+from oras.client import OrasClient
+
+from azext_aosm._configuration import ArtifactConfig, HelmPackageConfig
 
 logger = get_logger(__name__)
 
@@ -84,7 +82,7 @@ class Artifact:
         login_command = ["az", "acr", "login", "--name", registry_name]
         subprocess.run(login_command, check=True)
 
-        logger.debug(f"Uploading {chart_path} to {target_registry}")
+        logger.debug("Uploading %s to %s", chart_path, target_registry)
 
         # helm push "$chart_path" "$target_registry"
         push_command = ["helm", "push", chart_path, target_registry]
@@ -126,11 +124,12 @@ class Artifact:
                 )
             else:
                 raise RuntimeError(
-                    f"{source_blob.blob_name} does not exist in {source_blob.account_name}."
+                    f"{source_blob.blob_name} does not exist in"
+                    f" {source_blob.account_name}."
                 )
 
+    @staticmethod
     def copy_image(
-        self,
         cli_ctx,
         container_registry_client,
         source_registry_id,
@@ -172,9 +171,12 @@ class Artifact:
             logger.info(
                 "Successfully imported %s to %s", source_image, target_registry_name
             )
-        except Exception as error:
+        except CLIError as error:
             logger.error(
-                "Failed to import %s to %s. Check if this image exists in the source registry or is already present in the target registry.",
+                (
+                    "Failed to import %s to %s. Check if this image exists in the"
+                    " source registry or is already present in the target registry."
+                ),
                 source_image,
                 target_registry_name,
             )

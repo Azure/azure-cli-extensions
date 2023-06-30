@@ -13,24 +13,23 @@ from typing import Any, Dict, Optional
 
 from jinja2 import Template
 from knack.log import get_logger
-from azext_aosm.vendored_sdks.models import NFVIType
 
 from azext_aosm._configuration import NSConfiguration
 from azext_aosm.util.constants import (
-    CONFIG_MAPPINGS,
-    NF_DEFINITION_BICEP_FILE,
-    NF_TEMPLATE_BICEP_FILE,
-    NSD_ARTIFACT_MANIFEST_BICEP_FILE,
-    NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE,
-    NSD_CONFIG_MAPPING_FILE,
-    NSD_DEFINITION_BICEP_FILE,
-    NSD_DEFINITION_BICEP_SOURCE_TEMPLATE,
-    SCHEMAS,
-    TEMPLATES,
+    CONFIG_MAPPINGS_DIR_NAME,
+    NF_DEFINITION_BICEP_FILENAME,
+    NF_TEMPLATE_BICEP_FILENAME,
+    NSD_ARTIFACT_MANIFEST_BICEP_FILENAME,
+    NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE_FILENAME,
+    NSD_CONFIG_MAPPING_FILENAME,
+    NSD_BICEP_FILENAME,
+    NSD_SOURCE_TEMPLATE_BICEP_FILENAME,
+    SCHEMAS_DIR_NAME,
+    TEMPLATES_DIR_NAME,
     VNF,
 )
 from azext_aosm.util.management_clients import ApiClients
-from azext_aosm.vendored_sdks.models import NetworkFunctionDefinitionVersion
+from azext_aosm.vendored_sdks.models import NetworkFunctionDefinitionVersion, NFVIType
 
 logger = get_logger(__name__)
 
@@ -59,12 +58,12 @@ class NSDGenerator:
 
     def __init__(self, api_clients: ApiClients, config: NSConfiguration):
         self.config = config
-        self.nsd_bicep_template_name = NSD_DEFINITION_BICEP_SOURCE_TEMPLATE
-        self.nf_bicep_template_name = NF_TEMPLATE_BICEP_FILE
-        self.nsd_bicep_output_name = NSD_DEFINITION_BICEP_FILE
-        self.nfdv_parameter_name = \
+        self.nsd_bicep_template_name = NSD_SOURCE_TEMPLATE_BICEP_FILENAME
+        self.nf_bicep_template_name = NF_TEMPLATE_BICEP_FILENAME
+        self.nsd_bicep_output_name = NSD_BICEP_FILENAME
+        self.nfdv_parameter_name = (
             f"{self.config.network_function_definition_group_name.replace('-', '_')}_nfd_version"
-
+        )
         self.build_folder_name = self.config.build_output_folder_name
         nfdv = self._get_nfdv(config, api_clients)
         print("Finding the deploy parameters of the NFDV resource")
@@ -72,7 +71,9 @@ class NSDGenerator:
             raise NotImplementedError(
                 "NFDV has no deploy parameters, cannot generate NSD."
             )
-        self.deploy_parameters: Optional[Dict[str, Any]] = json.loads(nfdv.deploy_parameters)
+        self.deploy_parameters: Optional[Dict[str, Any]] = json.loads(
+            nfdv.deploy_parameters
+        )
 
     def _get_nfdv(
         self, config: NSConfiguration, api_clients
@@ -129,12 +130,14 @@ class NSDGenerator:
         # Add in the NFDV version as a parameter.
         description_string = (
             f"The version of the {self.config.network_function_definition_group_name} "
-            f"NFD to use.  This version must be compatable with (have the same "
-            f"parameters exposed as) "
+            "NFD to use.  This version must be compatable with (have the same "
+            "parameters exposed as) "
             f"{self.config.network_function_definition_version_name}."
         )
-        cgs_dict["properties"][self.nfdv_parameter_name] = \
-            {"type": "string", "description": description_string}
+        cgs_dict["properties"][self.nfdv_parameter_name] = {
+            "type": "string",
+            "description": description_string,
+        }
 
         managed_identity_description_string = (
             "The managed identity to use to deploy NFs within this SNS.  This should "
@@ -144,18 +147,22 @@ class NSDGenerator:
             "The az aosm tool only supports user assigned identities at present, "
             "you cannot use a System Assigned identity."
         )
-        cgs_dict["properties"]["managedIdentity"] = \
-            {"type": "string", "description": managed_identity_description_string}
+        cgs_dict["properties"]["managedIdentity"] = {
+            "type": "string",
+            "description": managed_identity_description_string,
+        }
 
         return cgs_dict
 
     def create_config_group_schema_files(self) -> None:
         """Create the Schema and configMappings json files."""
-        temp_schemas_folder_path = os.path.join(self.tmp_folder_name, SCHEMAS)
+        temp_schemas_folder_path = os.path.join(self.tmp_folder_name, SCHEMAS_DIR_NAME)
         os.mkdir(temp_schemas_folder_path)
         self.write_schema(temp_schemas_folder_path)
 
-        temp_mappings_folder_path = os.path.join(self.tmp_folder_name, CONFIG_MAPPINGS)
+        temp_mappings_folder_path = os.path.join(
+            self.tmp_folder_name, CONFIG_MAPPINGS_DIR_NAME
+        )
         os.mkdir(temp_mappings_folder_path)
         self.write_config_mappings(temp_mappings_folder_path)
 
@@ -165,14 +172,14 @@ class NSDGenerator:
 
         :param folder_path: The folder to put this file in.
         """
-        logger.debug(f"Create {self.config.cg_schema_name}.json")
+        logger.debug("Create %s.json", self.config.cg_schema_name)
 
         schema_path = os.path.join(folder_path, f"{self.config.cg_schema_name}.json")
 
         with open(schema_path, "w") as _file:
             _file.write(json.dumps(self.config_group_schema_dict, indent=4))
 
-        logger.debug(f"{schema_path} created")
+        logger.debug("%s created", schema_path)
 
     def write_config_mappings(self, folder_path: str) -> None:
         """
@@ -188,12 +195,12 @@ class NSDGenerator:
             for key in deploy_properties
         }
 
-        config_mappings_path = os.path.join(folder_path, NSD_CONFIG_MAPPING_FILE)
+        config_mappings_path = os.path.join(folder_path, NSD_CONFIG_MAPPING_FILENAME)
 
         with open(config_mappings_path, "w") as _file:
             _file.write(json.dumps(config_mappings, indent=4))
 
-        logger.debug(f"{config_mappings_path} created")
+        logger.debug("%s created", config_mappings_path)
 
     def write_nf_bicep(self) -> None:
         """Write out the Network Function bicep file."""
@@ -201,7 +208,6 @@ class NSDGenerator:
 
         bicep_deploymentValues = ""
 
-  
         if "properties" not in self.deploy_parameters:
             raise ValueError(
                 f"NFDV in {self.config.network_function_definition_group_name} has "
@@ -221,22 +227,30 @@ class NSDGenerator:
 
         self.generate_bicep(
             self.nf_bicep_template_name,
-            NF_DEFINITION_BICEP_FILE,
+            NF_DEFINITION_BICEP_FILENAME,
             {
                 "bicep_params": bicep_params,
                 "deploymentValues": bicep_deploymentValues,
                 "network_function_name": self.config.network_function_name,
                 "publisher_name": self.config.publisher_name,
-                "network_function_definition_group_name": self.config.network_function_definition_group_name,
-                "network_function_definition_version_parameter": self.nfdv_parameter_name,
-                "network_function_definition_offering_location": self.config.network_function_definition_offering_location,
+                "network_function_definition_group_name": (
+                    self.config.network_function_definition_group_name
+                ),
+                "network_function_definition_version_parameter": (
+                    self.nfdv_parameter_name
+                ),
+                "network_function_definition_offering_location": (
+                    self.config.network_function_definition_offering_location
+                ),
                 "location": self.config.location,
                 # Ideally we would use the network_function_type from reading the actual
                 # NF, as we do for deployParameters, but the SDK currently doesn't
                 # support this and needs to be rebuilt to do so.
-                "nfvi_type": NFVIType.AZURE_CORE
-                if self.config.network_function_type == VNF
-                else NFVIType.AZURE_ARC_KUBERNETES.value,
+                "nfvi_type": (
+                    NFVIType.AZURE_CORE
+                    if self.config.network_function_type == VNF
+                    else NFVIType.AZURE_ARC_KUBERNETES.value
+                ),
             },
         )
 
@@ -260,7 +274,9 @@ class NSDGenerator:
         logger.debug("Create NSD manifest")
 
         self.generate_bicep(
-            NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE, NSD_ARTIFACT_MANIFEST_BICEP_FILE, {}
+            NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE_FILENAME,
+            NSD_ARTIFACT_MANIFEST_BICEP_FILENAME,
+            {},
         )
 
     def generate_bicep(self, template_name, output_file_name, params) -> None:
@@ -274,7 +290,7 @@ class NSDGenerator:
 
         code_dir = os.path.dirname(__file__)
 
-        bicep_template_path = os.path.join(code_dir, TEMPLATES, template_name)
+        bicep_template_path = os.path.join(code_dir, TEMPLATES_DIR_NAME, template_name)
 
         with open(bicep_template_path, "r") as file:
             bicep_contents = file.read()
@@ -291,7 +307,6 @@ class NSDGenerator:
 
     def copy_to_output_folder(self) -> None:
         """Copy the bicep templates, config mappings and schema into the build output folder."""
-        code_dir = os.path.dirname(__file__)
 
         logger.info("Create NSD bicep %s", self.build_folder_name)
         os.mkdir(self.build_folder_name)
