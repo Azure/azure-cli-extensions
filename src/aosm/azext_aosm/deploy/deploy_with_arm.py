@@ -16,28 +16,27 @@ from azure.mgmt.resource.resources.models import DeploymentExtended
 from knack.log import get_logger
 
 from azext_aosm._configuration import (
+    CNFConfiguration,
     NFConfiguration,
     NSConfiguration,
     VNFConfiguration,
-    CNFConfiguration,
 )
-from azext_aosm.deploy.artifact_manifest import ArtifactManifestOperator
 from azext_aosm.deploy.artifact import Artifact
-from azext_aosm.util.management_clients import ApiClients
+from azext_aosm.deploy.artifact_manifest import ArtifactManifestOperator
 from azext_aosm.deploy.pre_deploy import PreDeployerViaSDK
 from azext_aosm.util.constants import (
     ARTIFACT_UPLOAD,
     BICEP_PUBLISH,
-    NF_DEFINITION_BICEP_FILE,
-    NSD,
-    NSD_ARTIFACT_MANIFEST_BICEP_FILE,
-    NSD_DEFINITION_BICEP_FILE,
-    CNF_DEFINITION_BICEP_TEMPLATE,
-    CNF_MANIFEST_BICEP_TEMPLATE,
     CNF,
+    CNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
+    CNF_MANIFEST_BICEP_TEMPLATE_FILENAME,
+    NF_DEFINITION_BICEP_FILENAME,
+    NSD,
+    NSD_ARTIFACT_MANIFEST_BICEP_FILENAME,
+    NSD_BICEP_FILENAME,
     VNF,
-    VNF_DEFINITION_BICEP_TEMPLATE,
-    VNF_MANIFEST_BICEP_TEMPLATE,
+    VNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
+    VNF_MANIFEST_BICEP_TEMPLATE_FILENAME,
     SOURCE_ACR_REGEX,
 )
 from azext_aosm.util.management_clients import ApiClients
@@ -69,7 +68,8 @@ class DeployerViaArm:
         self.config = config
         self.pre_deployer = PreDeployerViaSDK(api_clients, self.config)
 
-    def read_parameters_from_file(self, parameters_json_file: str) -> Dict[str, Any]:
+    @staticmethod
+    def read_parameters_from_file(parameters_json_file: str) -> Dict[str, Any]:
         """
         Read parameters from a file.
 
@@ -121,7 +121,7 @@ class DeployerViaArm:
                 # one produced from building the NFDV using this CLI
                 bicep_path = os.path.join(
                     self.config.build_output_folder_name,
-                    VNF_DEFINITION_BICEP_TEMPLATE,
+                    VNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
                 )
 
             if parameters_json_file:
@@ -148,10 +148,10 @@ class DeployerViaArm:
                     f"version {self.config.version}"
                 )
             message = (
-                f"Deploy bicep template for NFD {self.config.nf_name} "
-                f"version {self.config.version} "
-                f"into {self.config.publisher_resource_group_name} under publisher "
-                f"{self.config.publisher_name}"
+                f"Deploy bicep template for NFD {self.config.nf_name} version"
+                f" {self.config.version} into"
+                f" {self.config.publisher_resource_group_name} under publisher"
+                f" {self.config.publisher_name}"
             )
             print(message)
             logger.info(message)
@@ -252,14 +252,14 @@ class DeployerViaArm:
                 "vhdVersion": {"value": self.config.vhd.version},
                 "armTemplateVersion": {"value": self.config.arm_template.version},
             }
-        elif isinstance(self.config, CNFConfiguration):
+        if isinstance(self.config, CNFConfiguration):
             return {
                 "location": {"value": self.config.location},
                 "publisherName": {"value": self.config.publisher_name},
                 "acrArtifactStoreName": {"value": self.config.acr_artifact_store_name},
                 "acrManifestName": {"value": self.config.acr_manifest_name},
             }
-        elif isinstance(self.config, NSConfiguration):
+        if isinstance(self.config, NSConfiguration):
             return {
                 "location": {"value": self.config.location},
                 "publisherName": {"value": self.config.publisher_name},
@@ -301,7 +301,7 @@ class DeployerViaArm:
                 # default one produced from building the NFDV using this CLI
                 bicep_path = os.path.join(
                     self.config.build_output_folder_name,
-                    CNF_DEFINITION_BICEP_TEMPLATE,
+                    CNF_DEFINITION_BICEP_TEMPLATE_FILENAME,
                 )
 
             if parameters_json_file:
@@ -314,7 +314,7 @@ class DeployerViaArm:
                 parameters = self.construct_cnfd_parameters()
 
             logger.debug(
-                f"Parameters used for CNF definition bicep deployment: {parameters}"
+                "Parameters used for CNF definition bicep deployment: %s", parameters
             )
 
             # Create or check required resources
@@ -329,10 +329,10 @@ class DeployerViaArm:
                     f"version {self.config.version}"
                 )
             message = (
-                f"Deploy bicep template for NFD {self.config.nf_name} "
-                f"version {self.config.version} "
-                f"into {self.config.publisher_resource_group_name} under publisher "
-                f"{self.config.publisher_name}"
+                f"Deploy bicep template for NFD {self.config.nf_name} version"
+                f" {self.config.version} into"
+                f" {self.config.publisher_resource_group_name} under publisher"
+                f" {self.config.publisher_name}"
             )
             print(message)
             logger.info(message)
@@ -356,12 +356,6 @@ class DeployerViaArm:
             "/"
         )[-5]
         # Check whether the source registry has a namespace in the repository path
-        source_registry_match = re.search(
-            SOURCE_ACR_REGEX, 
-            self.config.source_registry_id
-        )
-        # Config validation has already checked and raised an error if the regex doesn't
-        # match
         source_registry_namespace: str = ""
         if self.config.source_registry_namespace:
             source_registry_namespace = f"{self.config.source_registry_namespace}/"
@@ -444,7 +438,7 @@ class DeployerViaArm:
                 # one produced from building the NSDV using this CLI
                 bicep_path = os.path.join(
                     self.config.build_output_folder_name,
-                    NSD_DEFINITION_BICEP_FILE,
+                    NSD_BICEP_FILENAME,
                 )
 
             if parameters_json_file:
@@ -477,7 +471,8 @@ class DeployerViaArm:
             logger.info(message)
             self.deploy_bicep_template(bicep_path, parameters)
             print(
-                f"Deployed NSD {self.config.nsdg_name} version {self.config.nsd_version}."
+                f"Deployed NSD {self.config.nsdg_name} "
+                f"version {self.config.nsd_version}."
             )
         if skip == ARTIFACT_UPLOAD:
             print("Skipping artifact upload")
@@ -495,7 +490,7 @@ class DeployerViaArm:
 
         # Convert the NF bicep to ARM
         arm_template_artifact_json = self.convert_bicep_to_arm(
-            os.path.join(self.config.build_output_folder_name, NF_DEFINITION_BICEP_FILE)
+            os.path.join(self.config.build_output_folder_name, NF_DEFINITION_BICEP_FILENAME)
         )
 
         with open(self.config.arm_template.file_path, "w", encoding="utf-8") as file:
@@ -520,11 +515,11 @@ class DeployerViaArm:
 
         if not manifest_bicep_path:
             if configuration_type == NSD:
-                file_name = NSD_ARTIFACT_MANIFEST_BICEP_FILE
+                file_name = NSD_ARTIFACT_MANIFEST_BICEP_FILENAME
             elif configuration_type == VNF:
-                file_name = VNF_MANIFEST_BICEP_TEMPLATE
+                file_name = VNF_MANIFEST_BICEP_TEMPLATE_FILENAME
             elif configuration_type == CNF:
-                file_name = CNF_MANIFEST_BICEP_TEMPLATE
+                file_name = CNF_MANIFEST_BICEP_TEMPLATE_FILENAME
 
             manifest_bicep_path = os.path.join(
                 self.config.build_output_folder_name,
@@ -618,9 +613,7 @@ class DeployerViaArm:
         :return: Output dictionary from the bicep template.
         """
         # Get current time from the time module and remove all digits after the decimal point
-        current_time = str(time.time()).split(".")[
-            0
-        ]  # pylint: disable=use-maxsplit-arg
+        current_time = str(time.time()).split(".", maxsplit=1)[0]
 
         # Add a timestamp to the deployment name to ensure it is unique
         deployment_name = f"AOSM_CLI_deployment_into_{resource_group}_{current_time}"
@@ -642,14 +635,18 @@ class DeployerViaArm:
         if validation_res.error:
             # Validation failed so don't even try to deploy
             logger.error(
-                "Template for resource group %s has failed validation. The message was: %s.\
-                See logs for additional details.",
+                (
+                    "Template for resource group %s has failed validation. The message"
+                    " was: %s. See logs for additional details."
+                ),
                 resource_group,
                 validation_res.error.message,
             )
             logger.debug(
-                "Template for resource group %s failed validation. \
-                Full error details: %s",
+                (
+                    "Template for resource group %s failed validation."
+                    " Full error details: %s"
+                ),
                 resource_group,
                 validation_res.error,
             )
@@ -684,10 +681,10 @@ class DeployerViaArm:
         if depl_props.provisioning_state != "Succeeded":
             logger.debug("Failed to provision: %s", depl_props)
             raise RuntimeError(
-                f"Deploy of template to resource group"
+                "Deploy of template to resource group"
                 f" {resource_group} proceeded but the provisioning"
-                f" state returned is {depl_props.provisioning_state}. "
-                f"\nAborting"
+                f" state returned is {depl_props.provisioning_state}."
+                "\nAborting"
             )
         logger.debug(
             "Provisioning state of deployment %s : %s",
@@ -697,7 +694,8 @@ class DeployerViaArm:
 
         return depl_props.outputs
 
-    def convert_bicep_to_arm(self, bicep_template_path: str) -> Any:
+    @staticmethod
+    def convert_bicep_to_arm(bicep_template_path: str) -> Any:
         """
         Convert a bicep template into an ARM template.
 
@@ -735,14 +733,16 @@ class DeployerViaArm:
                     stderr=subprocess.PIPE,
                 )
                 logger.debug("az bicep output: %s", str(bicep_output))
-            except subprocess.CalledProcessError as e:
+            except subprocess.CalledProcessError as err:
                 logger.error(
-                    "ARM template compilation failed! See logs for full "
-                    "output. The failing command was %s",
-                    e.cmd,
+                    (
+                        "ARM template compilation failed! See logs for full "
+                        "output. The failing command was %s"
+                    ),
+                    err.cmd,
                 )
-                logger.debug("bicep build stdout: %s", e.stdout)
-                logger.debug("bicep build stderr: %s", e.stderr)
+                logger.debug("bicep build stdout: %s", err.stdout)
+                logger.debug("bicep build stderr: %s", err.stderr)
                 raise
 
             with open(

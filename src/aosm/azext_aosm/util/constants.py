@@ -15,42 +15,43 @@ BICEP_PUBLISH = "bicep-publish"
 ARTIFACT_UPLOAD = "artifact-upload"
 
 # Names of files used in the repo
-NSD_DEFINITION_JINJA2_SOURCE_TEMPLATE = "nsd_template.bicep.j2"
-NSD_DEFINITION_BICEP_FILE = "nsd_definition.bicep"
+
 NF_TEMPLATE_JINJA2_SOURCE_TEMPLATE = "nf_template.bicep.j2"
-NF_DEFINITION_BICEP_FILE = "nf_definition.bicep"
-NF_DEFINITION_JSON_FILE = "nf_definition.json"
-NSD_DEFINITION_OUTPUT_BICEP_PREFIX = "nsd-bicep-templates"
-NSD_ARTIFACT_MANIFEST_BICEP_FILE = "artifact_manifest.bicep"
-NSD_ARTIFACT_MANIFEST_JSON_FILE = "artifact_manifest.json"
-DEFINITION_OUTPUT_BICEP_PREFIX = "nfd-bicep-"
-NSD_CONFIG_MAPPING_FILE = "configMappings.json"
-NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE = "artifact_manifest_template.bicep"
+NF_DEFINITION_BICEP_FILENAME = "nf_definition.bicep"
+NF_DEFINITION_JSON_FILENAME = "nf_definition.json"
+NF_DEFINITION_OUTPUT_BICEP_PREFIX = "nfd-bicep-"
+NSD_DEFINITION_JINJA2_SOURCE_TEMPLATE = "nsd_template.bicep.j2"
+NSD_BICEP_FILENAME = "nsd_definition.bicep"
+NSD_OUTPUT_BICEP_PREFIX = "nsd-bicep-templates"
+NSD_ARTIFACT_MANIFEST_BICEP_FILENAME = "artifact_manifest.bicep"
+NSD_ARTIFACT_MANIFEST_JSON_FILENAME = "artifact_manifest.json"
+NSD_CONFIG_MAPPING_FILENAME = "configMappings.json"
+NSD_ARTIFACT_MANIFEST_SOURCE_TEMPLATE_FILENAME = "artifact_manifest_template.bicep"
 
-VNF_DEFINITION_BICEP_TEMPLATE = "vnfdefinition.bicep"
-VNF_MANIFEST_BICEP_TEMPLATE = "vnfartifactmanifests.bicep"
+VNF_DEFINITION_BICEP_TEMPLATE_FILENAME = "vnfdefinition.bicep"
+VNF_MANIFEST_BICEP_TEMPLATE_FILENAME = "vnfartifactmanifests.bicep"
 
-CNF_DEFINITION_JINJA2_SOURCE_TEMPLATE = "cnfdefinition.bicep.j2"
-CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE = "cnfartifactmanifest.bicep.j2"
-CNF_DEFINITION_BICEP_TEMPLATE = "cnfdefinition.bicep"
-CNF_MANIFEST_BICEP_TEMPLATE = "cnfartifactmanifest.bicep"
+CNF_DEFINITION_JINJA2_SOURCE_TEMPLATE_FILENAME = "cnfdefinition.bicep.j2"
+CNF_MANIFEST_JINJA2_SOURCE_TEMPLATE_FILENAME = "cnfartifactmanifest.bicep.j2"
+CNF_DEFINITION_BICEP_TEMPLATE_FILENAME = "cnfdefinition.bicep"
+CNF_MANIFEST_BICEP_TEMPLATE_FILENAME = "cnfartifactmanifest.bicep"
 
 
-# Names of folder used in the repo
-CONFIG_MAPPINGS = "configMappings"
-SCHEMAS = "schemas"
-TEMPLATES = "templates"
-GENERATED_VALUES_MAPPINGS = "generatedValuesMappings"
+# Names of directories used in the repo
+CONFIG_MAPPINGS_DIR_NAME = "configMappings"
+SCHEMAS_DIR_NAME = "schemas"
+TEMPLATES_DIR_NAME = "templates"
+GENERATED_VALUES_MAPPINGS_DIR_NAME = "generatedValuesMappings"
 
-# Names of files when building NFDs/NSDs
-DEPLOYMENT_PARAMETERS = "deploymentParameters.json"
-OPTIONAL_DEPLOYMENT_PARAMETERS_FILE = "optionalDeploymentParameters.txt"
-TEMPLATE_PARAMETERS = "templateParameters.json"
-VHD_PARAMETERS = "vhdParameters.json"
+# Items used when building NFDs/NSDs
+DEPLOYMENT_PARAMETERS_FILENAME = "deploymentParameters.json"
+OPTIONAL_DEPLOYMENT_PARAMETERS_FILENAME = "optionalDeploymentParameters.txt"
+TEMPLATE_PARAMETERS_FILENAME = "templateParameters.json"
+VHD_PARAMETERS_FILENAME = "vhdParameters.json"
 OPTIONAL_DEPLOYMENT_PARAMETERS_HEADING = (
     "# The following parameters are optional as they have default values.\n"
     "# If you do not wish to expose them in the NFD, find and remove them from both\n"
-    f"# {DEPLOYMENT_PARAMETERS} and {TEMPLATE_PARAMETERS} (and {VHD_PARAMETERS} if\n"
+    f"# {DEPLOYMENT_PARAMETERS_FILENAME} and {TEMPLATE_PARAMETERS_FILENAME} (and {VHD_PARAMETERS_FILENAME} if\n"
     "they are there)\n"
     "# You can re-run the build command with the --order-params flag to order those\n"
     "# files with the optional parameters at the end of the file, and with the \n"
@@ -58,7 +59,6 @@ OPTIONAL_DEPLOYMENT_PARAMETERS_HEADING = (
 )
 
 # Deployment Schema
-
 SCHEMA_PREFIX = {
     "$schema": "https://json-schema.org/draft-07/schema#",
     "title": "DeployParametersSchema",
@@ -71,7 +71,7 @@ SCHEMA_PREFIX = {
 IMAGE_START_STRING = "image:"
 IMAGE_PATH_REGEX = r".Values\.([^\s})]*)"
 
-# To match the image name and version if imagePullSecrets: is present in the yaml file
+# To match the image name and version if 'imagePullSecrets:' is present in the yaml file
 IMAGE_PULL_SECRETS_START_STRING = "imagePullSecrets:"
 IMAGE_NAME_AND_VERSION_REGEX = r"\/([^\s]*):([^\s)\"}]*)"
 
