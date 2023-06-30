@@ -629,7 +629,6 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
         # location can have spaces for example 'East US'
         # and some workspaces it will be "eastus" hence remove the spaces and converting lowercase
         workspace_region = workspace_region.replace(" ", "").lower()
-        
     except HttpResponseError as ex:
         raise ex
 
@@ -655,7 +654,6 @@ def _ensure_container_insights_dcr_for_monitoring(cmd, subscription_id, cluster_
         else:
             # This will run if the above for loop was not broken out of. This means all three requests failed
             raise error
-    
     json_response = json.loads(r.text)
     for region_data in json_response["value"]:
         region_names_to_id[region_data["displayName"]] = region_data["name"]
