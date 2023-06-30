@@ -2272,10 +2272,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
     def get_nodepool_taints(self) -> Union[List[str], None]:
         """Obtain the value of nodepool_taints.
 
-        :return: dictionary or None
+        :return: list or None
         """
 
-        return self.agentpool_context.get_nodepool_taints()
+        # read the original value passed by the command
+        node_taints_str = self.raw_param.get("nodepool_taints")
+
+        if node_taints_str is not None:
+            node_taints = []
+            for taint in node_taints_str.split(','):
+                taint = taint.strip()
+                node_taints.append(taint)
+            # this parameter does not need validation
+            return node_taints
+        return None
 
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def __init__(
@@ -2708,6 +2718,13 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             )
         return mc
 
+    def set_up_nodepool_taints_mc(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+        taints = self.context.get_nodepool_taints()
+        if taints is not None and self.mc.agent_pool_profiles is not None and len(self.mc.agent_pool_profiles) > 1:
+            for agent_pool_profile in mc.agent_pool_profiles:
+                agent_pool_profile.node_taints = taints
+
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
 
@@ -2751,7 +2768,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_azure_service_mesh_profile(mc)
         # set up azure monitor profile
         mc = self.set_up_azure_monitor_profile(mc)
-
+        # update nodepool taints
+        mc = self.set_up_nodepool_taints_mc(mc)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
         return mc
@@ -3566,6 +3584,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
+    def update_nodepool_taints_mc(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+        taints = self.context.get_nodepool_taints()
+        if taints is not None and self.mc.agent_pool_profiles is not None and len(self.mc.agent_pool_profiles) > 1:
+            for agent_pool_profile in mc.agent_pool_profiles:
+                agent_pool_profile.node_taints = taints
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -3613,5 +3638,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_guardrails_profile(mc)
         # update auto upgrade profile
         mc = self.update_upgrade_settings(mc)
+        # update nodepool taints
+        mc = self.update_nodepool_taints_mc(mc)
 
         return mc

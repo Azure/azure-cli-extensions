@@ -240,26 +240,20 @@ def validate_nodepool_taints(namespace):
         return
 
     if taints is not None:
-        after_validation_taints = [x.strip() for x in (taints.split(",") if taints else [])]
+        for taint in taints.split(','):
+            validate_taint(taint)
 
-    if hasattr(namespace, 'nodepool_taints'):
-        namespace.nodepool_taints = after_validation_taints
-    else:
-        namespace.node_taints = after_validation_taints
-
-def validate_taints(namespace):
+def validate_taint(taint):
     """Validates that provided taint is a valid format"""
 
     regex = re.compile(
         r"^[a-zA-Z\d][\w\-\.\/]{0,252}=[a-zA-Z\d][\w\-\.]{0,62}:(NoSchedule|PreferNoSchedule|NoExecute)$")  # pylint: disable=line-too-long
 
-    if namespace.node_taints is not None and namespace.node_taints != '':
-        for taint in namespace.node_taints.split(','):
-            if taint == "":
-                continue
-            found = regex.findall(taint)
-            if not found:
-                raise CLIError('Invalid node taint: %s' % taint)
+    if taint == "":
+        return
+    found = regex.findall(taint)
+    if not found:
+        raise CLIError('Invalid node taint: %s' % taint)
 
 
 def validate_priority(namespace):

@@ -147,7 +147,7 @@ from azext_aks_preview._validators import (
     validate_ssh_key_for_update,
     validate_start_date,
     validate_start_time,
-    validate_taints,
+    validate_nodepool_taints,
     validate_user,
     validate_utc_offset,
     validate_vm_set_type,
@@ -595,7 +595,7 @@ def load_arguments(self, _):
         c.argument('spot_max_price', type=float, validator=validate_spot_max_price)
         c.argument('labels', nargs='*', validator=validate_nodepool_labels)
         c.argument('tags', tags_type)
-        c.argument('node_taints', validator=validate_taints)
+        c.argument('node_taints', validator=validate_nodepool_taints)
         c.argument('node_osdisk_type', arg_type=get_enum_type(node_os_disk_types))
         c.argument('node_osdisk_size', type=int)
         c.argument('max_surge', validator=validate_max_surge)
@@ -635,7 +635,7 @@ def load_arguments(self, _):
         c.argument('max_count', type=int, validator=validate_nodes_count)
         c.argument('labels', nargs='*', validator=validate_nodepool_labels)
         c.argument('tags', tags_type)
-        c.argument('node_taints', validator=validate_taints)
+        c.argument('node_taints', validator=validate_nodepool_taints)
         c.argument('max_surge', validator=validate_max_surge)
         c.argument('mode', arg_type=get_enum_type(node_mode_types))
         c.argument('scale_down_mode', arg_type=get_enum_type(scale_down_modes))

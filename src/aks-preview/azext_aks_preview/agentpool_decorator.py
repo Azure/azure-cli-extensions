@@ -269,30 +269,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                     tag=v,
                 ))
         return res
-
-    def get_nodepool_taints(self) -> Union[List[str], None]:
-        """Obtain the value of nodepool_taints.
-
-        :return: dictionary or None
-        """
-
-        # read the original value passed by the command
-        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
-            node_taints = self.raw_param.get("nodepool_taints")
-        else:
-            node_taints = self.raw_param.get("node_taints")
-
-        # keep None as None for update mode
-        if node_taints is None and self.decorator_mode == DecoratorMode.CREATE:
-            node_taints = []
-
-        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if self.agentpool and self.agentpool.node_taints is not None:
-                node_taints = self.agentpool.node_taints
-        
-        # this parameter does not need validation
-        return node_taints
     
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -488,14 +464,6 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         if allowed_host_ports is not None:
             agentpool.network_profile.allowed_host_ports = allowed_host_ports
         return agentpool
-    
-    def update_nodepool_taints(self, agentpool: AgentPool) -> AgentPool:
-        self._ensure_agentpool(agentpool)
-
-        node_taints = self.context.get_nodepool_taints()
-        if node_taints is not None:
-            agentpool.node_taints = node_taints
-        return agentpool
 
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
@@ -513,8 +481,5 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update network profile
         agentpool = self.update_network_profile(agentpool)
-
-        # update nodepool taints
-        agentpool = self.update_nodepool_taints(agentpool)
 
         return agentpool
