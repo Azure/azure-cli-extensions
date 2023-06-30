@@ -44,14 +44,37 @@ class TestExtractChart(unittest.TestCase):
 
 class TestCNF(unittest.TestCase):
     def test_build(self):
+        """
+        Test the build command for CNFs.
+        """
         starting_directory = os.getcwd()
         with TemporaryDirectory() as test_dir:
             os.chdir(test_dir)
 
             try:
                 build_definition(
-                    "cnf", 
+                    "cnf",
                     os.path.join(mock_cnf_folder, "input-nfconfigchart.json")
+                )
+                assert os.path.exists("nfd-bicep-ubuntu-template")
+            finally:
+                os.chdir(starting_directory)
+                
+    def test_no_mapping(self):
+        """
+        Test the build command for CNFs where no mapping file is supplied.
+
+        Also reorder the parameters.
+        """
+        starting_directory = os.getcwd()
+        with TemporaryDirectory() as test_dir:
+            os.chdir(test_dir)
+
+            try:
+                build_definition(
+                    "cnf",
+                    os.path.join(mock_cnf_folder, "input-nf-agent-cnf.json"),
+                    order_params=True
                 )
                 assert os.path.exists("nfd-bicep-ubuntu-template")
             finally:
