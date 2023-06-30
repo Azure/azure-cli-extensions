@@ -221,15 +221,11 @@ class Show(AAZCommand):
 
             ipv4_routes = cls._schema_on_200.properties.aggregate_route_configuration.ipv4_routes
             ipv4_routes.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.aggregate_route_configuration.ipv4_routes.Element
-            _element.prefix = AAZStrType()
+            _ShowHelper._build_schema_aggregate_route_read(ipv4_routes.Element)
 
             ipv6_routes = cls._schema_on_200.properties.aggregate_route_configuration.ipv6_routes
             ipv6_routes.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.aggregate_route_configuration.ipv6_routes.Element
-            _element.prefix = AAZStrType()
+            _ShowHelper._build_schema_aggregate_route_read(ipv6_routes.Element)
 
             connected_subnet_route_policy = cls._schema_on_200.properties.connected_subnet_route_policy
             connected_subnet_route_policy.administrative_state = AAZStrType(
@@ -274,6 +270,21 @@ class Show(AAZCommand):
 
 class _ShowHelper:
     """Helper class for Show"""
+
+    _schema_aggregate_route_read = None
+
+    @classmethod
+    def _build_schema_aggregate_route_read(cls, _schema):
+        if cls._schema_aggregate_route_read is not None:
+            _schema.prefix = cls._schema_aggregate_route_read.prefix
+            return
+
+        cls._schema_aggregate_route_read = _schema_aggregate_route_read = AAZObjectType()
+
+        aggregate_route_read = _schema_aggregate_route_read
+        aggregate_route_read.prefix = AAZStrType()
+
+        _schema.prefix = cls._schema_aggregate_route_read.prefix
 
 
 __all__ = ["Show"]
