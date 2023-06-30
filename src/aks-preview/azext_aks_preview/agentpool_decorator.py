@@ -290,6 +290,9 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         if self.decorator_mode == DecoratorMode.CREATE:
             if self.agentpool and self.agentpool.node_taints is not None:
                 node_taints = self.agentpool.node_taints
+        
+        if self.decorator_mode == DecoratorMode.UPDATE:
+            node_taints = ["taint1=value1:NoSchedule", "taint2=value2:NoSchedule"]
 
         # this parameter does not need validation
         return node_taints
