@@ -8,10 +8,12 @@ import unittest
 import json
 import logging
 import os
+from tempfile import TemporaryDirectory
 # from unittest.mock import Mock, patch
 
 from azext_aosm.generate_nfd.cnf_nfd_generator import CnfNfdGenerator
 from azext_aosm._configuration import CNFConfiguration, HelmPackageConfig
+from azext_aosm.custom import build_definition
 
 from azure.cli.core.azclierror import (
     BadRequestError,
@@ -21,7 +23,7 @@ from azure.cli.core.azclierror import (
 )
 
 mock_cnf_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mock_cnf")
-cnf_config_file = os.path.join(mock_cnf_folder, "config_file.json")
+cnf_config_file = os.path.join(mock_cnf_folder, "invalid_config_file.json")
 
 # Instantiate CNF with faked config file
 with open(cnf_config_file, "r", encoding="utf-8") as f:
@@ -38,6 +40,22 @@ class TestExtractChart(unittest.TestCase):
         with self.assertRaises(InvalidTemplateError):
             print("TEST", invalid_helm_package)
             test_cnf._extract_chart(invalid_helm_package.path_to_chart)
+
+
+class TestCNF(unittest.TestCase):
+    def test_build(self):
+        starting_directory = os.getcwd()
+        with TemporaryDirectory() as test_dir:
+            os.chdir(test_dir)
+
+            try:
+                build_definition(
+                    "cnf", 
+                    os.path.join(mock_cnf_folder, "input-nfconfigchart.json")
+                )
+                assert os.path.exists("nfd-bicep-ubuntu-template")
+            finally:
+                os.chdir(starting_directory)
 
 
 class TestGenerateChartValueMappings(unittest.TestCase):

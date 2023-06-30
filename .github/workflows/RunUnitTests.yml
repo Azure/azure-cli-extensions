@@ -17,6 +17,6 @@ jobs:
         run: |
           # Pretend we have a valid git repo to satisfy azdev.
           mkdir .git
-          azdev setup -c EDGE -r . -e aosm
+          azdev setup -r .
       - name: Check Test
         run: azdev test aosm

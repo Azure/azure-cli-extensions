@@ -90,11 +90,11 @@ class ArtifactConfig:
 @dataclass
 class Configuration:
     config_file: Optional[str] = None
-    
+
     def path_from_cli(self, path: str) -> str:
         """
         Convert path from config file to path from current directory.
-        
+
         We assume that the path supplied in the config file is relative to the 
         configuration file.  That isn't the same as the path relative to where ever the
         CLI is being run from.  This function fixes that up.
@@ -104,7 +104,11 @@ class Configuration:
         # If no path has been supplied we shouldn't try to update it.
         if path == "":
             return ""
-        
+
+        # If it is an absolute path then we don't need to monkey around with it.
+        if os.path.isabs(path):
+            return path
+
         return os.path.join(os.path.dirname(self.config_file), path)
 
 
