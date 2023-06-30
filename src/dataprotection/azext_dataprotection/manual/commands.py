@@ -8,8 +8,8 @@
 # pylint: disable=line-too-long
 
 from azext_dataprotection.manual._client_factory import cf_resource_graph_client
-from ._exception_handler import exception_handler
 from azure.cli.command_modules.storage._client_factory import cf_blob_container_mgmt
+from ._exception_handler import exception_handler
 
 
 def load_command_table(self, _):
