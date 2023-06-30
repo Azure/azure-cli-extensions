@@ -2,14 +2,17 @@
 
 Release History
 ===============
-0.9.2
+0.10.0
++++++
+* Added support for vaulted blob backup and restore
+* `az dataprotection backup-instance initialize-backupconfig`: Added parameters `--vaulted-backup-containers` to provide list of containers to backup
+* `az dataprotection backup-instance initialize-backupconfig`: Added parameters `--include-all-containers`, `--storage-account-name`, `storage-account-resource-group` to backup all containers in a storage storage-account-resource-group
+
+0.9.1
 +++++
 * `az dataprotection update-msi-permissions`: Fixed bug in fetching AKS workload resource group
 * `az dataprotection backup-policy create-generic-criteria`: Bug-fix in day-of-month argument validation
 * `az dataprotection recovery-point`: Added user warning when start-time is after end-time
-
-0.9.1
-+++++
 * `az dataprotection backup-instance`: Migrated to AAZ-dev-tools
 * `az dataprotection backup-policy`: Migrated to AAZ-dev-tools
 * `az dataprotection resource-guard`: Migrated to AAZ-dev-tools
