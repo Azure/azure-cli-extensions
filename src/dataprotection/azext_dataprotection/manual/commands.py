@@ -16,12 +16,14 @@ def load_command_table(self, _):
 
     # Manual backup-instance commmands
     with self.command_group('dataprotection backup-instance', exception_handler=exception_handler) as g:
-        g.custom_command('initialize-backupconfig', "dataprotection_backup_instance_initialize_backupconfig")
         g.custom_command('initialize-restoreconfig', "dataprotection_backup_instance_initialize_restoreconfig")
         g.custom_command('initialize', "dataprotection_backup_instance_initialize")
         g.custom_command('list-from-resourcegraph', 'dataprotection_backup_instance_list_from_resourcegraph', client_factory=cf_resource_graph_client)
         g.custom_command('update-msi-permissions', 'dataprotection_backup_instance_update_msi_permissions')
         g.custom_command('update-policy', "dataprotection_backup_instance_update_policy", supports_no_wait=True)
+
+    with self.command_group('dataprotection backup-instance', exception_handler=exception_handler, client_factory=cf_blob_container_mgmt) as g:
+        g.custom_command('initialize-backupconfig', "dataprotection_backup_instance_initialize_backupconfig")
 
     # Migrated to AAZ, using a function based override approach. Function-based override uses AAZ arg schema to validate input
     # but is less manageable. Needs manual management of params and help. Class-based override is manageable and brings everything
@@ -31,9 +33,6 @@ def load_command_table(self, _):
 
     # from .aaz_operations.backup_instance import ValidateForBackup as BackupInstanceValidateBackup
     # self.command_table['dataprotection backup-instance validate-for-backup'] = BackupInstanceValidateBackup(loader=self)
-
-    with self.command_group('dataprotection backup-instance', exception_handler=exception_handler, client_factory=cf_blob_container_mgmt) as g:
-        g.custom_command('initialize-backupconfig', "dataprotection_backup_instance_initialize_backupconfig")
 
     with self.command_group('dataprotection backup-instance restore', exception_handler=exception_handler) as g:
         g.custom_command('initialize-for-data-recovery', 'restore_initialize_for_data_recovery')
@@ -90,5 +89,6 @@ def load_command_table(self, _):
     from .aaz_operations.restorable_time_range import Find as RestorableTimeRangeFind
     self.command_table['dataprotection restorable-time-range find'] = RestorableTimeRangeFind(loader=self)
 
-    from .aaz_operations.backup_vault import Update as BackupVaultUpdate
+    from .aaz_operations.backup_vault import Create as BackupVaultCreate, Update as BackupVaultUpdate
+    self.command_table['dataprotection backup-vault create'] = BackupVaultCreate(loader=self)
     self.command_table['dataprotection backup-vault update'] = BackupVaultUpdate(loader=self)

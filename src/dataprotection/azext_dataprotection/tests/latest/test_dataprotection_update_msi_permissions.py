@@ -19,6 +19,7 @@ def create_vault_and_policy(test):
         checks=[
             test.exists('identity.principalId')
         ]).get_output_in_json()
+
     sp_list = []
     while backup_vault['identity']['principalId'] not in sp_list:
         sp_list = test.cmd('az ad sp list --display-name "{vaultName}" --query [].id').get_output_in_json()
