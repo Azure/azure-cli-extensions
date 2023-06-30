@@ -6,7 +6,7 @@
 # pylint: disable=protected-access
 # pylint: disable=line-too-long
 from azure.cli.core.aaz import AAZStrArg
-from azext_dataprotection.aaz.latest.dataprotection.recovery_point import List as _RecoveryPointList
+from azext_dataprotection.aaz.latest.dataprotection.recovery_point import List as _List
 from ..helpers import validate_recovery_point_datetime_format
 from knack.log import get_logger
 
@@ -14,7 +14,7 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 
-class RecoveryPointList(_RecoveryPointList):
+class List(_List):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
