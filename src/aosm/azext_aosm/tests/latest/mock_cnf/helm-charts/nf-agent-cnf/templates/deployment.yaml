@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nf-agent-cnf.fullname" . }}
+  labels:
+    {{- include "nf-agent-cnf.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "nf-agent-cnf.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "nf-agent-cnf.selectorLabels" . | nindent 8 }}
+        #aadpodidbinding: {{ .Values.nfagent.podIdentity }} - not using podidentity any more
+    spec:
+      # Copied imagePullSecrets from how afosas-aosm repo does it
+      imagePullSecrets: {{ mustToPrettyJson (ternary (list ) .Values.imagePullSecrets (kindIs "invalid" .Values.imagePullSecrets)) }}
+      serviceAccountName: {{ include "nf-agent-cnf.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          # Edited the image to point to the nf-agent image in the Artifact Store ACR
+          image: "{{ .Values.image.repository }}/pez-nfagent:879624"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          # Commented out otherwise kubernetes keeps restarting the pod thinking the probes have failed
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          # Gets the NF Agent config from the configMap - see nf-agent-config-map.yaml
+          volumeMounts:
+            - name: nfagent-config-volume
+              mountPath: /etc/nf-agent/config.yaml
+              subPath: config.yaml
+      volumes:
+        - name: nfagent-config-volume
+          configMap:
+            name: nfagent-config
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
