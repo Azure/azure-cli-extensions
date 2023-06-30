@@ -2721,7 +2721,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
     def set_up_nodepool_taints_mc(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
         taints = self.context.get_nodepool_taints()
-        if taints is not None and self.mc.agent_pool_profiles is not None and len(self.mc.agent_pool_profiles) > 1:
+        if taints is not None and mc.agent_pool_profiles is not None and len(mc.agent_pool_profiles) > 1:
             for agent_pool_profile in mc.agent_pool_profiles:
                 agent_pool_profile.node_taints = taints
         return mc
@@ -3588,7 +3588,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
     def update_nodepool_taints_mc(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
         taints = self.context.get_nodepool_taints()
-        if taints is not None and self.mc.agent_pool_profiles is not None and len(self.mc.agent_pool_profiles) > 1:
+        if taints is not None and mc.agent_pool_profiles is not None and len(mc.agent_pool_profiles) > 1:
             for agent_pool_profile in mc.agent_pool_profiles:
                 agent_pool_profile.node_taints = taints
 
