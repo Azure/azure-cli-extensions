@@ -7,7 +7,7 @@
 from argcomplete.completers import FilesCompleter
 from azure.cli.core import AzCommandsLoader
 
-from .util.constants import CNF, VNF
+from .util.constants import CNF, VNF, BICEP_PUBLISH, ARTIFACT_UPLOAD
 
 
 def load_arguments(self: AzCommandsLoader, _):
@@ -18,6 +18,7 @@ def load_arguments(self: AzCommandsLoader, _):
     )
 
     definition_type = get_enum_type([VNF, CNF])
+    skip_steps = get_enum_type([BICEP_PUBLISH, ARTIFACT_UPLOAD])
 
     # Set the argument context so these options are only available when this specific command
     # is called.
@@ -89,6 +90,9 @@ def load_arguments(self: AzCommandsLoader, _):
             completer=FilesCompleter(allowednames="*.json"),
             help="Optional path to a parameters file for the manifest definition file. Use to override publish of the built definition and config with alternative parameters.",
         )
+        c.argument(
+            "skip", arg_type=skip_steps, help="Optional skip steps"
+        )
 
     with self.argument_context("aosm nsd") as c:
         c.argument(
@@ -97,4 +101,7 @@ def load_arguments(self: AzCommandsLoader, _):
             type=file_type,
             completer=FilesCompleter(allowednames="*.json"),
             help="The path to the configuration file.",
+        )
+        c.argument(
+            "skip", arg_type=skip_steps, help="Optional skip steps"
         )

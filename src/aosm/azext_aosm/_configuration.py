@@ -2,6 +2,7 @@
 # pylint: disable=simplifiable-condition
 
 import os
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -15,6 +16,7 @@ from azext_aosm.util.constants import (
     NSD,
     NSD_DEFINITION_OUTPUT_BICEP_PREFIX,
     VNF,
+    SOURCE_ACR_REGEX
 )
 
 DESCRIPTION_MAP: Dict[str, str] = {
@@ -74,6 +76,12 @@ DESCRIPTION_MAP: Dict[str, str] = {
     "source_registry_id": 
         "Resource ID of the source acr registry from which to pull "
         "the image",
+    "source_registry_namespace": 
+        "Optional. Namespace of the repository of the source acr registry from which "
+        "to pull. For example if your repository is samples/prod/nginx then set this to"
+        " samples/prod . Leave blank if the image is in the root namespace."
+        "See https://learn.microsoft.com/en-us/azure/container-registry/"
+        "container-registry-best-practices#repository-namespaces for further details.",
 }
 
 
@@ -197,7 +205,9 @@ class NSConfiguration:
     def acr_manifest_name(self) -> str:
         """Return the ACR manifest name from the NFD name."""
         sanitised_nf_name = self.network_function_name.lower().replace('_', '-')
-        return f"{sanitised_nf_name}-acr-manifest-{self.nsd_version.replace('.', '-')}"
+        return (
+            f"{sanitised_nf_name}-nsd-acr-manifest-{self.nsd_version.replace('.', '-')}"
+        )
 
     @property
     def nfvi_site_name(self) -> str:
@@ -222,7 +232,7 @@ class NSConfiguration:
     @property
     def arm_template_artifact_name(self) -> str:
         """Return the artifact name for the ARM template."""
-        return f"{self.network_function_definition_group_name}_nfd_artifact"
+        return f"{self.network_function_definition_group_name}-nfd-artifact"
 
 
 @dataclass
@@ -310,6 +320,7 @@ class HelmPackageConfig:
 @dataclass
 class CNFConfiguration(NFConfiguration):
     source_registry_id: str = DESCRIPTION_MAP["source_registry_id"]
+    source_registry_namespace: str = DESCRIPTION_MAP["source_registry_namespace"]
     helm_packages: List[Any] = field(default_factory=lambda: [HelmPackageConfig()])
 
     def __post_init__(self):
@@ -327,6 +338,20 @@ class CNFConfiguration(NFConfiguration):
         """Return the local folder for generating the bicep template to."""
         return f"{DEFINITION_OUTPUT_BICEP_PREFIX}{self.nf_name}"
 
+    def validate(self):
+        """Validate the CNF config
+
+        :raises ValidationError: If source registry ID doesn't match the regex
+        """
+        if self.source_registry_id == DESCRIPTION_MAP["source_registry_id"]:
+            # Config has not been filled in. Don't validate.
+            return
+
+        source_registry_match = re.search(SOURCE_ACR_REGEX, self.source_registry_id)
+        if not source_registry_match or len(source_registry_match.groups()) < 2:
+            raise ValidationError(
+                "CNF config has an invalid source registry ID. Please run `az aosm "
+                "nfd generate-config` to see the valid formats.")
 
 def get_configuration(
     configuration_type: str, config_as_dict: Optional[Dict[Any, Any]] = None

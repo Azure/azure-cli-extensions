@@ -10,10 +10,14 @@ CNF = "cnf"
 NSD = "nsd"
 SCHEMA = "schema"
 
+# Skip steps
+BICEP_PUBLISH = "bicep-publish"
+ARTIFACT_UPLOAD = "artifact-upload"
+
 # Names of files used in the repo
-NSD_DEFINITION_BICEP_SOURCE_TEMPLATE = "nsd_template.bicep"
+NSD_DEFINITION_JINJA2_SOURCE_TEMPLATE = "nsd_template.bicep.j2"
 NSD_DEFINITION_BICEP_FILE = "nsd_definition.bicep"
-NF_TEMPLATE_BICEP_FILE = "nf_template.bicep"
+NF_TEMPLATE_JINJA2_SOURCE_TEMPLATE = "nf_template.bicep.j2"
 NF_DEFINITION_BICEP_FILE = "nf_definition.bicep"
 NF_DEFINITION_JSON_FILE = "nf_definition.json"
 NSD_DEFINITION_OUTPUT_BICEP_PREFIX = "nsd-bicep-templates"
@@ -72,3 +76,12 @@ IMAGE_PULL_SECRETS_START_STRING = "imagePullSecrets:"
 IMAGE_NAME_AND_VERSION_REGEX = r"\/([^\s]*):([^\s)\"}]*)"
 
 DEPLOYMENT_PARAMETER_MAPPING_REGEX = r"\{deployParameters.(.+?)\}"
+
+# Assume that the registry id is of the form:
+# /subscriptions/<sub_id>/resourceGroups/<rg_name>/providers/
+#   Microsoft.ContainerRegistry/registries/<registry_name>
+# This returns groups for the resource group name and registry name
+SOURCE_ACR_REGEX = (
+    r".*\/resourceGroups\/([^\/]*)\/providers\/Microsoft."
+    r"ContainerRegistry\/registries\/([^\/]*)"
+    )

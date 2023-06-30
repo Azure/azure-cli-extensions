@@ -4,19 +4,21 @@
 # pylint: disable=unidiomatic-typecheck
 """A module to handle interacting with artifacts."""
 from dataclasses import dataclass
-from typing import Union
+from typing import Union, List
 import subprocess
 from knack.log import get_logger
 from oras.client import OrasClient
+from azure.cli.core.commands import LongRunningOperation
+from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 
 from azure.storage.blob import BlobClient, BlobType
-from azext_aosm._configuration import ArtifactConfig, HelmPackageConfig
 from azure.mgmt.containerregistry.models import (
     ImportImageParameters,
     ImportSource,
 )
 
-from azure.cli.core.commands import LongRunningOperation
+from azext_aosm._configuration import ArtifactConfig, HelmPackageConfig
+
 
 logger = get_logger(__name__)
 
@@ -89,6 +91,12 @@ class Artifact:
         # helm push "$chart_path" "$target_registry"
         push_command = ["helm", "push", chart_path, target_registry]
         subprocess.run(push_command, check=True)
+        
+        # If we don't logout from the registry, future Artifact uploads to this ACR
+        # will fail with an UNAUTHORIZED error. There is no az acr logout command, but
+        # it is a wrapper around docker, so a call to docker logout will work.
+        logout_command = ["docker", "logout", registry]
+        subprocess.run(logout_command, check=True)
 
     def _upload_to_storage_account(self, artifact_config: ArtifactConfig) -> None:
         """
@@ -132,12 +140,13 @@ class Artifact:
     def copy_image(
         self,
         cli_ctx,
-        container_registry_client,
-        source_registry_id,
-        source_image,
-        target_registry_resource_group_name,
-        target_registry_name,
-        mode="NoForce",
+        container_registry_client: ContainerRegistryManagementClient,
+        source_registry_id: str,
+        source_image: str,
+        target_registry_resource_group_name: str,
+        target_registry_name: str,
+        target_tags: List[str],
+        mode: str = "NoForce",
     ):
         """
         Copy image from one ACR to another.
@@ -148,9 +157,10 @@ class Artifact:
         :param source_image: source image
         :param target_registry_resource_group_name: target registry resource group name
         :param target_registry_name: target registry name
+        :param target_tags: the list of tags to be applied to the imported image 
+                            should be of form: namepace/name:tag or name:tag
         :param mode: mode for import
         """
-        target_tags = [source_image]
 
         source = ImportSource(resource_id=source_registry_id, source_image=source_image)
 
@@ -174,7 +184,8 @@ class Artifact:
             )
         except Exception as error:
             logger.error(
-                "Failed to import %s to %s. Check if this image exists in the source registry or is already present in the target registry.",
+                "Failed to import %s to %s. Check if this image exists in the source "
+                "registry or is already present in the target registry.",
                 source_image,
                 target_registry_name,
             )
