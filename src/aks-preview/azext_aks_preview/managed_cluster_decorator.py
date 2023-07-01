@@ -3591,6 +3591,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if taints is not None and mc.agent_pool_profiles is not None and len(mc.agent_pool_profiles) > 1:
             for agent_pool_profile in mc.agent_pool_profiles:
                 agent_pool_profile.node_taints = taints
+        return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
