@@ -9,6 +9,8 @@ from knack import log
 from azure.cli.core import telemetry, azclierror
 from azure.mgmt.resource import ResourceManagementClient
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.core.exceptions import HttpResponseError
+from azure.cli.core.commands.client_factory import get_subscription_id
 
 from . import constants as consts
 
@@ -17,9 +19,11 @@ logger = log.get_logger(__name__)
 
 def _list_types_of_resources_with_provided_name(cmd, op_info):
     resource_client = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient)
+
     resources = resource_client.resources.list_by_resource_group(
         op_info.resource_group_name,
         filter=f"name eq '{op_info.vm_name}'")
+
     resource_types_present = set()
 
     while True:
@@ -29,6 +33,17 @@ def _list_types_of_resources_with_provided_name(cmd, op_info):
                 resource_types_present.add(resource.type.lower())
         except StopIteration:
             break
+        except HttpResponseError as e:
+            if e.reason == "Forbidden":
+                raise azclierror.ForbiddenError("The client does not have authorization to read resources over " +
+                                                f"the scope \'/subscriptions/{get_subscription_id(cmd.cli_ctx)}/" +
+                                                f"resourceGroups/{op_info.resource_group_name}\'",
+                                                consts.RECOMMENDATION_FORBIDDEN)
+            if e.error.code == "ResourceGroupNotFound":
+                raise azclierror.ResourceNotFoundError(f"Resource Group \'{op_info.resource_group_name}\' " +
+                                                       "could not be found.",
+                                                       consts.RECOMMENDATION_RESOURCE_NOT_FOUND)
+            raise
 
     return resource_types_present
 

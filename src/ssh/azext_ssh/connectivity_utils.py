@@ -14,7 +14,7 @@ from glob import glob
 import colorama
 
 from azure.cli.core.style import Style, print_styled_text
-from azure.core.exceptions import ResourceNotFoundError
+from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
 from azure.cli.core import telemetry
 from azure.cli.core import azclierror
 from azure.mgmt.core.tools import resource_id
@@ -22,7 +22,7 @@ from azure.cli.core.commands.client_factory import get_subscription_id
 from knack import log
 
 from . import file_utils
-from . import constants as consts
+from . import constants as const
 
 logger = log.get_logger(__name__)
 
@@ -33,8 +33,8 @@ def get_relay_information(cmd, resource_group, vm_name, resource_type, certifica
     client = cf_endpoint(cmd.cli_ctx)
 
     if not certificate_validity_in_seconds or \
-       certificate_validity_in_seconds > consts.RELAY_INFO_MAXIMUM_DURATION_IN_SECONDS:
-        certificate_validity_in_seconds = consts.RELAY_INFO_MAXIMUM_DURATION_IN_SECONDS
+       certificate_validity_in_seconds > const.RELAY_INFO_MAXIMUM_DURATION_IN_SECONDS:
+        certificate_validity_in_seconds = const.RELAY_INFO_MAXIMUM_DURATION_IN_SECONDS
 
     try:
         t0 = time.time()
@@ -68,12 +68,23 @@ def _create_default_endpoint(cmd, resource_group, vm_name, resource_type, client
     endpoint_resource = {"id": az_resource_id, "type_properties_type": "default"}
     try:
         client.create_or_update(resource_group, vm_name, resource_type, "default", endpoint_resource)
+    except HttpResponseError as e:
+        colorama.init()
+        if e.reason == "Forbidden":
+            raise azclierror.UnauthorizedError("Client is not authorized to create the default connectivity " +
+                                               f"endpoint for \'{vm_name}\' in Resource Group \'{resource_group}\'. " +
+                                               "This is a one-time operation that must be performed by someone with " +
+                                               "Owner or Contributor role to allow connections to the target resource.",
+                                               const.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
+
+        raise azclierror.UnclassifiedUserFault(f"Unable to create Default Endpoint for {vm_name} in {resource_group}."
+                                               f"\nError: {str(e)}",
+                                               const.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
     except Exception as e:
         colorama.init()
-        raise azclierror.UnauthorizedError(f"Unable to create Default Endpoint for {vm_name} in {resource_group}."
-                                           f"\nError: {str(e)}",
-                                           colorama.Fore.YELLOW + "Contact Owner/Contributor of the resource."
-                                           + colorama.Style.RESET_ALL)
+        raise azclierror.UnclassifiedUserFault(f"Unable to create Default Endpoint for {vm_name} in {resource_group}."
+                                               f"\nError: {str(e)}",
+                                               const.RECOMMENDATION_FAILED_TO_CREATE_ENDPOINT)
 
 
 # Downloads client side proxy to connect to Arc Connectivity Platform
@@ -97,7 +108,7 @@ def get_client_side_proxy(arc_proxy_folder):
 
         proxy_data = {
             'Context.Default.AzureCLI.SSHProxyDownloadTime': time_elapsed,
-            'Context.Default.AzureCLI.SSHProxyVersion': consts.CLIENT_PROXY_VERSION
+            'Context.Default.AzureCLI.SSHProxyVersion': const.CLIENT_PROXY_VERSION
         }
         telemetry.add_extension_event('ssh', proxy_data)
 
@@ -137,9 +148,9 @@ def _get_proxy_filename_and_url(arc_proxy_folder):
 
     # define the request url and install location based on the os and architecture
     proxy_name = f"sshProxy_{operating_system.lower()}_{architecture}"
-    request_uri = (f"{consts.CLIENT_PROXY_STORAGE_URL}/{consts.CLIENT_PROXY_RELEASE}"
-                   f"/{proxy_name}_{consts.CLIENT_PROXY_VERSION}")
-    install_location = proxy_name + "_" + consts.CLIENT_PROXY_VERSION.replace('.', '_')
+    request_uri = (f"{const.CLIENT_PROXY_STORAGE_URL}/{const.CLIENT_PROXY_RELEASE}"
+                   f"/{proxy_name}_{const.CLIENT_PROXY_VERSION}")
+    install_location = proxy_name + "_" + const.CLIENT_PROXY_VERSION.replace('.', '_')
     older_location = proxy_name + "*"
 
     if operating_system == 'Windows':
