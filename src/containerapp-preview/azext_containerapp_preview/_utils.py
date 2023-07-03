@@ -12,7 +12,7 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-MIN_GA_VERSION = '0.3.34'
+MIN_GA_VERSION = '0.3.35'
 GA_CONTAINERAPP_EXTENSION_NAME = 'containerapp'
 GA_CONTAINERAPP_EXTENSION_MODULE = 'azext_containerapp.custom'
 
