@@ -11,44 +11,17 @@ from azure.cli.core.aaz import (
 )
 from azext_dataprotection.aaz.latest.dataprotection.backup_instance import (
     AdhocBackup as _AdhocBackup,
-    Update as _Update,
     Create as _Create,
     ValidateForBackup as _ValidateForBackup,
     ValidateForRestore as _ValidateForRestore,
 )
 from azext_dataprotection.aaz.latest.dataprotection.backup_instance.restore import Trigger as _RestoreTrigger
-from ..helpers import clean_nulls_from_session_http_response, convert_dict_keys_snake_to_camel
+from ..helpers import convert_dict_keys_snake_to_camel
 
 
 class AdhocBackup(_AdhocBackup):
 
     class BackupInstancesAdhocBackup(_AdhocBackup.BackupInstancesAdhocBackup):
-
-        def __call__(self, *args, **kwargs):    # Remove after error handling fixed.
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            # Removing null valued items from json to fix 'Bad Request' error.
-            # This is a temporary fix for AAZ failing to handle null values in error response.
-            clean_nulls_from_session_http_response(session)
-            return self.on_error(session.http_response)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -58,37 +31,6 @@ class AdhocBackup(_AdhocBackup):
                 data,
                 schema_builder=self._build_schema_on_200
             )
-
-
-class Update(_Update):
-
-    class BackupInstancesCreateOrUpdate(_Update.BackupInstancesCreateOrUpdate):
-
-        def __call__(self, *args, **kwargs):    # Remove after error handling fixed.
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            # Removing null valued items from json to fix 'Bad Request' error.
-            # This is a temporary fix for AAZ failing to handle null values in error response.
-            clean_nulls_from_session_http_response(session)
-            return self.on_error(session.http_response)
 
 
 class ValidateAndCreate(_Create):
@@ -125,32 +67,6 @@ class ValidateAndCreate(_Create):
 
     class BackupInstancesValidateForBackup(_ValidateForBackup.BackupInstancesValidateForBackup):
 
-        def __call__(self, *args, **kwargs):    # Remove after error handling fixed.
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            # Removing null valued items from json to fix 'Bad Request' error.
-            # This is a temporary fix for AAZ failing to handle null values in error response.
-            clean_nulls_from_session_http_response(session)
-            return self.on_error(session.http_response)
-
         @property
         def content(self):
             _content_value, _builder = self.new_content_builder(
@@ -164,32 +80,6 @@ class ValidateAndCreate(_Create):
             }
 
     class BackupInstancesCreateOrUpdate(_Create.BackupInstancesCreateOrUpdate):
-
-        def __call__(self, *args, **kwargs):    # Remove after error handling fixed.
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            # Removing null valued items from json to fix 'Bad Request' error.
-            # This is a temporary fix for AAZ failing to handle null values in error response.
-            clean_nulls_from_session_http_response(session)
-            return self.on_error(session.http_response)
 
         @property
         def content(self):
@@ -234,7 +124,7 @@ class ValidateForRestore(_ValidateForRestore):
 
     class BackupInstancesValidateForRestore(_ValidateForRestore.BackupInstancesValidateForRestore):
 
-        def __call__(self, *args, **kwargs):    # Remove after error handling fixed.
+        def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [202]:
@@ -255,9 +145,6 @@ class ValidateForRestore(_ValidateForRestore):
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            # Removing null valued items from json to fix 'Bad Request' error.
-            # This is a temporary fix for AAZ failing to handle null values in error response.
-            clean_nulls_from_session_http_response(session)
             return self.on_error(session.http_response)
 
         @property
@@ -289,32 +176,6 @@ class RestoreTrigger(_RestoreTrigger):
         return args_schema
 
     class BackupInstancesTriggerRestore(_RestoreTrigger.BackupInstancesTriggerRestore):
-
-        def __call__(self, *args, **kwargs):      # Remove after error handling fixed.
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            # Removing null valued items from json to fix 'Bad Request' error.
-            # This is a temporary fix for AAZ failing to handle null values in error response.
-            clean_nulls_from_session_http_response(session)
-            return self.on_error(session.http_response)
 
         @property
         def content(self):
@@ -384,9 +245,6 @@ class ValidateForBackup(_ValidateForBackup):
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            # Removing null valued items from json to fix 'Bad Request' error.
-            # This is a temporary fix for AAZ failing to handle null values in error response.
-            clean_nulls_from_session_http_response(session)
             return self.on_error(session.http_response)
 
         @property

@@ -230,8 +230,8 @@ def dataprotection_backup_instance_update_policy(cmd, resource_group_name, vault
     policy_info = backup_instance['properties']['policyInfo']
     policy_info['policyId'] = policy_id
 
-    from .aaz_operations.backup_instance import Update as BackupInstanceUpdate
-    return BackupInstanceUpdate(cli_ctx=cmd.cli_ctx)(command_args={
+    from azext_dataprotection.aaz.latest.dataprotection.backup_instance import Update
+    return Update(cli_ctx=cmd.cli_ctx)(command_args={
         "no_wait": no_wait,
         "backup_instance_name": backup_instance_name,
         "resource_group": resource_group_name,
