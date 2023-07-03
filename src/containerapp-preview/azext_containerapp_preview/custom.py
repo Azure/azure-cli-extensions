@@ -77,6 +77,7 @@ def create_containerapp(cmd,
                         user_assigned=None,
                         registry_identity=None,
                         workload_profile_name=None,
+                        termination_grace_period=None,
                         secret_volume_mount=None,
                         environment_type="managed"):
     raw_parameters = locals()

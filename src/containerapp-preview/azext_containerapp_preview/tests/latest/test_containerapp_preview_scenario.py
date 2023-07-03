@@ -23,18 +23,20 @@ class ContainerappScenarioTest(ScenarioTest):
             f'aks create --resource-group {resource_group} --name {aks_name} --enable-aad --generate-ssh-keys --enable-cluster-autoscaler --min-count 4 --max-count 10 --node-count 4')
         self.cmd(
             f'aks get-credentials --resource-group {resource_group} --name {aks_name} --overwrite-existing --admin')
+        connected_cluster = {}
         try:
             self.cmd(f'connectedk8s connect --resource-group {resource_group} --name {connected_cluster_name}')
+            connected_cluster = self.cmd(
+                f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
         except:
             pass
-        connected_cluster = self.cmd(
-            f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
-        connected_cluster_id = connected_cluster['id']
+
+        connected_cluster_id = connected_cluster.get('id')
         extension = self.cmd(f'az k8s-extension create'
                              f' --resource-group {resource_group}'
                              f' --name containerapp-ext'
                              f' --cluster-type connectedClusters'
-                             f' --cluster-name {connected_cluster["name"]}'
+                             f' --cluster-name {connected_cluster_name}'
                              f' --extension-type "Microsoft.App.Environment" '
                              f' --release-train stable'
                              f' --auto-upgrade-minor-version true'
@@ -42,7 +44,7 @@ class ContainerappScenarioTest(ScenarioTest):
                              f' --release-namespace appplat-ns'
                              f' --configuration-settings "Microsoft.CustomLocation.ServiceAccount=default"'
                              f' --configuration-settings "appsNamespace=appplat-ns"'
-                             f' --configuration-settings "clusterName={connected_cluster["name"]}"'
+                             f' --configuration-settings "clusterName={connected_cluster_name}"'
                              f' --configuration-settings "envoy.annotations.service.beta.kubernetes.io/azure-load-balancer-resource-group={resource_group}"').get_output_in_json()
         custom_location_name = "my-custom-location"
         custom_location_id = self.cmd(
