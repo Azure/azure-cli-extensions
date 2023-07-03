@@ -388,32 +388,3 @@ def validate_recovery_point_datetime_format(aaz_str):
         return dt_iso
     except ValueError:
         raise CLIError(f"Input '{date_str}' not valid datetime. Valid example: 2017-12-31T05:30:00") from ValueError
-
-
-def clean_nulls_from_json(json_obj):
-    """
-    Removes all `None` values from a valid json object, and returns a new dictionary or list.
-    This is an adhoc function to `clean_nulls_from_session_http_response` to remove null values
-    from response json object.
-    """
-    if isinstance(json_obj, dict):
-        clean_obj = {}
-        for key, val in json_obj.items():
-            if val is not None:
-                clean_obj[key] = clean_nulls_from_json(val)
-        return clean_obj
-    if isinstance(json_obj, list):
-        return [clean_nulls_from_json(val) for val in json_obj if val is not None]
-    else:
-        return json_obj
-
-
-def clean_nulls_from_session_http_response(session):
-    """
-    Removes all `null` values from http response of a session. This is temporary helper to fix handling
-    of error response. Makes `Operation returned an invalid status 'Bad Request'` more comprehensive by
-    displaying the HTTP error response.
-    """
-    clean_reponse = clean_nulls_from_json(json.loads(session.http_response.text()))
-    encoding = session.http_response.internal_response.encoding
-    session.http_response.internal_response._content = bytes(json.dumps(clean_reponse), encoding)
