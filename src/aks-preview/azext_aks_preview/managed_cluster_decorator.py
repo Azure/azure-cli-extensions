@@ -2769,7 +2769,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_azure_service_mesh_profile(mc)
         # set up azure monitor profile
         mc = self.set_up_azure_monitor_profile(mc)
-        # update nodepool taints
+        # set up nodepool taints
         mc = self.set_up_nodepool_taints_mc(mc)
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
@@ -3588,6 +3588,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
     def update_nodepool_taints_mc(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
         taints = self.context.get_nodepool_taints()
+        taints = ["taint1=value1:NoSchedule", "taint2=value2:NoSchedule"]
         if taints is not None and mc.agent_pool_profiles is not None and len(mc.agent_pool_profiles) > 1:
             for agent_pool_profile in mc.agent_pool_profiles:
                 agent_pool_profile.node_taints = taints
