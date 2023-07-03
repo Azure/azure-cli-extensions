@@ -10,7 +10,6 @@ from azext_dataprotection.aaz.latest.dataprotection.recovery_point import List a
 from ..helpers import validate_recovery_point_datetime_format
 from knack.log import get_logger
 
-
 logger = get_logger(__name__)
 
 
