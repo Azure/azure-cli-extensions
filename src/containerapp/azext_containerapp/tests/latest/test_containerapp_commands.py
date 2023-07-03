@@ -1476,6 +1476,7 @@ class ContainerappScaleTests(ScenarioTest):
         ])
         clean_up_test_file(containerapp_file_name)
 
+
 class ContainerappOtherPropertyTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
