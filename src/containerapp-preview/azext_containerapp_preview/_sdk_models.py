@@ -7808,6 +7808,8 @@ class Template(_serialization.Model):
 
     :ivar revision_suffix: User friendly suffix that is appended to the revision name.
     :vartype revision_suffix: str
+    :ivar termination_grace_period_seconds: Gracefully shut down periods in seconds for the revision
+    :vartype termination_grace_period_seconds: int
     :ivar init_containers: List of specialized containers that run before app containers.
     :vartype init_containers: list[~azure.mgmt.appcontainers.models.InitContainer]
     :ivar containers: List of container definitions for the Container App.
@@ -7822,6 +7824,7 @@ class Template(_serialization.Model):
 
     _attribute_map = {
         "revision_suffix": {"key": "revisionSuffix", "type": "str"},
+        "termination_grace_period_seconds": {"key": "terminationGracePeriodSeconds", "type": "int"},
         "init_containers": {"key": "initContainers", "type": "[InitContainer]"},
         "containers": {"key": "containers", "type": "[Container]"},
         "scale": {"key": "scale", "type": "Scale"},
@@ -7833,6 +7836,7 @@ class Template(_serialization.Model):
         self,
         *,
         revision_suffix: Optional[str] = None,
+        termination_grace_period_seconds: Optional[int] = None,
         init_containers: Optional[List["_models.InitContainer"]] = None,
         containers: Optional[List["_models.Container"]] = None,
         scale: Optional["_models.Scale"] = None,
@@ -7843,6 +7847,8 @@ class Template(_serialization.Model):
         """
         :keyword revision_suffix: User friendly suffix that is appended to the revision name.
         :paramtype revision_suffix: str
+        :keyword termination_grace_period_seconds: Gracefully shut down periods in seconds for the revision
+        :paramtype termination_grace_period_seconds: int
         :keyword init_containers: List of specialized containers that run before app containers.
         :paramtype init_containers: list[~azure.mgmt.appcontainers.models.InitContainer]
         :keyword containers: List of container definitions for the Container App.
@@ -7856,6 +7862,7 @@ class Template(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.revision_suffix = revision_suffix
+        self.termination_grace_period_seconds = termination_grace_period_seconds
         self.init_containers = init_containers
         self.containers = containers
         self.scale = scale

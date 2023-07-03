@@ -42,11 +42,11 @@ class ContainerAppPreviewCreateDecorator(_get_azext_module(GA_CONTAINERAPP_EXTEN
         return containerapp_def
 
     def set_up_extended_location(self, containerapp_def):
-        parsed_env = parse_resource_id(self.get_argument_managed_env())  # custom_location check here perhaps
-        env_name = parsed_env['name']
-        env_rg = parsed_env['resource_group']
-        env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
         if self.get_argument_environment_type() == "connected":
+            parsed_env = parse_resource_id(self.get_argument_managed_env())  # custom_location check here perhaps
+            env_name = parsed_env['name']
+            env_rg = parsed_env['resource_group']
+            env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=env_rg, name=env_name)
             if not containerapp_def.get('extendedLocation'):
                 containerapp_def["extendedLocation"] = env_info["extendedLocation"]
         return containerapp_def
