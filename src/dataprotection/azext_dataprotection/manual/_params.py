@@ -65,7 +65,7 @@ def load_arguments(self, _):
         c.argument('include_cluster_scope_resources', arg_type=get_three_state_flag(),
                    options_list=['--include-cluster-scope-resources', '--include-cluster-scope'],
                    help="Boolean parameter to decide whether cluster scope resources are included for restore. By default this is taken as true.")
-        c.argument('vaulted_backup_containers', type=str, nargs='+', options_list=["--vaulted-backup-container", "--vaulted-backup-containers"],
+        c.argument('vaulted_backup_containers', type=str, nargs='+', options_list=["--container-list", "--vaulted-backup-containers"],
                    help="List of containers to be backed up inside the VaultStore. Use this parameter for DatasourceType AzureBlob.")
         c.argument('include_all_containers', arg_type=get_three_state_flag(),
                    help='Switch parameter to include all containers to be backed up inside the VaultStore. Use this parameter for DatasourceType AzureBlob.')
