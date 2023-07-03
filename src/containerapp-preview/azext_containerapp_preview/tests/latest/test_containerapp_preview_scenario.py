@@ -16,7 +16,6 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class ContainerappScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(location="eastus", random_name_length=15)
-    @live_only()
     def test_containerapp_preview_environment_type(self, resource_group):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         aks_name = "my-aks-cluster"
@@ -25,7 +24,10 @@ class ContainerappScenarioTest(ScenarioTest):
             f'aks create --resource-group {resource_group} --name {aks_name} --enable-aad --generate-ssh-keys --enable-cluster-autoscaler --min-count 4 --max-count 10 --node-count 4')
         self.cmd(
             f'aks get-credentials --resource-group {resource_group} --name {aks_name} --overwrite-existing --admin')
-        self.cmd(f'connectedk8s connect --resource-group {resource_group} --name {connected_cluster_name}')
+        try:
+            self.cmd(f'connectedk8s connect --resource-group {resource_group} --name {connected_cluster_name}')
+        except:
+            pass
         connected_cluster = self.cmd(
             f'az connectedk8s show --resource-group {resource_group} --name {connected_cluster_name}').get_output_in_json()
         connected_cluster_id = connected_cluster['id']

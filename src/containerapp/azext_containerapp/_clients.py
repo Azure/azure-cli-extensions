@@ -57,8 +57,7 @@ def poll(cmd, request_url, poll_if_status):  # pylint: disable=inconsistent-retu
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
             r2 = r.json()
 
-            if "properties" not in r2 or "provisioningState" not in r2["properties"] or r2["properties"][
-                "provisioningState"].lower() in ["succeeded", "failed", "canceled"]:
+            if "properties" not in r2 or "provisioningState" not in r2["properties"] or r2["properties"]["provisioningState"].lower() in ["succeeded", "failed", "canceled"]:
                 break
             start = time.time()
 

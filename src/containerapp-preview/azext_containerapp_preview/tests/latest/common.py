@@ -19,7 +19,3 @@ def write_test_file(filename, content):
 def clean_up_test_file(filename):
     if os.path.exists(filename):
         os.remove(filename)
-
-
-class ContainerappComposePreviewScenarioTest(ScenarioTest):
-    pass
