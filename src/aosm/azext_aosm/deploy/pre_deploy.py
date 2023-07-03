@@ -4,12 +4,19 @@
 # --------------------------------------------------------------------------------------
 """Contains class for deploying resources required by NFDs/NSDs via the SDK."""
 
+import re
 from azure.cli.core.azclierror import AzCLIError
 from azure.core import exceptions as azure_exceptions
 from azure.mgmt.resource.resources.models import ResourceGroup
 from knack.log import get_logger
 
-from azext_aosm._configuration import NFConfiguration, NSConfiguration, VNFConfiguration
+from azext_aosm._configuration import (
+    NFConfiguration,
+    NSConfiguration,
+    VNFConfiguration,
+    CNFConfiguration
+)
+from azext_aosm.util.constants import SOURCE_ACR_REGEX
 from azext_aosm.util.management_clients import ApiClients
 from azext_aosm.vendored_sdks.models import (
     ArtifactStore,
@@ -140,23 +147,25 @@ class PreDeployerViaSDK:
 
         Finds the parameters from self.config
         """
+        assert isinstance(self.config, CNFConfiguration)
         logger.info(
             "Check if the source registry %s exists",
             self.config.source_registry_id,
         )
 
-        # Assume that the registry id is of the form: /subscriptions/<sub_id>
-        # /resourceGroups/<rg_name>/providers/Microsoft.ContainerRegistry/registries/<registry_name>
-        source_registry_name = self.config.source_registry_id.split("/")[-1]
-        source_registry_resource_group_name = self.config.source_registry_id.split("/")[
-            -5
-        ]
+        # Match the source registry format
+        source_registry_match = re.search(SOURCE_ACR_REGEX, self.config.source_registry_id)
+        # Config validation has already checked and raised an error if the regex doesn't
+        # match
+        if source_registry_match and len(source_registry_match.groups()) > 1:
+            source_registry_resource_group_name = source_registry_match.group(1)
+            source_registry_name = source_registry_match.group(2)
 
-        # This will raise an error if the registry does not exist
-        self.api_clients.container_registry_client.get(
-            resource_group_name=source_registry_resource_group_name,
-            registry_name=source_registry_name,
-        )
+            # This will raise an error if the registry does not exist
+            self.api_clients.container_registry_client.get(
+                resource_group_name=source_registry_resource_group_name,
+                registry_name=source_registry_name,
+            )
 
     def ensure_artifact_store_exists(
         self,

@@ -138,6 +138,7 @@ def publish_definition(
     parameters_json_file: Optional[str] = None,
     manifest_file: Optional[str] = None,
     manifest_parameters_json_file: Optional[str] = None,
+    skip: Optional[str] = None,
 ):
     """
     Publish a generated definition.
@@ -157,6 +158,7 @@ def publish_definition(
         manifests
     :param manifest_parameters_json_file: Optional path to an override bicep parameters
         file for manifest parameters
+    :param skip: options to skip, either publish bicep or upload artifacts
     """
     print("Publishing definition.")
     api_clients = ApiClients(
@@ -176,6 +178,7 @@ def publish_definition(
             parameters_json_file=parameters_json_file,
             manifest_bicep_path=manifest_file,
             manifest_parameters_json_file=manifest_parameters_json_file,
+            skip=skip
         )
     elif definition_type == CNF:
         deployer = DeployerViaArm(api_clients, config=config)
@@ -185,6 +188,7 @@ def publish_definition(
             parameters_json_file=parameters_json_file,
             manifest_bicep_path=manifest_file,
             manifest_parameters_json_file=manifest_parameters_json_file,
+            skip=skip
         )
     else:
         raise ValueError(
@@ -329,6 +333,7 @@ def publish_design(
     parameters_json_file: Optional[str] = None,
     manifest_file: Optional[str] = None,
     manifest_parameters_json_file: Optional[str] = None,
+    skip: Optional[str] = None,
 ):
     """
     Publish a generated design.
@@ -346,6 +351,7 @@ def publish_design(
                         manifests
     :param manifest_parameters_json_file: Optional path to an override bicep parameters
                         file for manifest parameters
+    :param skip: options to skip, either publish bicep or upload artifacts
     """
 
     print("Publishing design.")
@@ -364,6 +370,7 @@ def publish_design(
         parameters_json_file=parameters_json_file,
         manifest_bicep_path=manifest_file,
         manifest_parameters_json_file=manifest_parameters_json_file,
+        skip=skip
     )
 
 
