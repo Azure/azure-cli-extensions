@@ -16,7 +16,6 @@ from azext_dataprotection.manual.enums import get_resource_type_values, get_crit
 from knack.log import get_logger
 from ..helpers import critical_operation_map
 
-
 logger = get_logger(__name__)
 
 
