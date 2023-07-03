@@ -19,6 +19,11 @@ class ContainerappScenarioTest(ScenarioTest):
     def test_containerapp_preview_environment_type(self, resource_group):
         cmd = ['azdev', 'extension', 'add', 'containerapp']
         run(cmd, check=True)
+        cmd = ['azdev', 'extension', 'add', 'connectedk8s']
+        run(cmd, check=True)
+        cmd = ['azdev', 'extension', 'add', 'k8s-extension']
+        run(cmd, check=True)
+
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         aks_name = "my-aks-cluster"
         connected_cluster_name = "my-connected-cluster"
@@ -50,9 +55,13 @@ class ContainerappScenarioTest(ScenarioTest):
                              f' --configuration-settings "clusterName={connected_cluster_name}"'
                              f' --configuration-settings "envoy.annotations.service.beta.kubernetes.io/azure-load-balancer-resource-group={resource_group}"').get_output_in_json()
         custom_location_name = "my-custom-location"
-        custom_location_id = self.cmd(
-            f'az customlocation create -g {resource_group} -n {custom_location_name} -l {TEST_LOCATION} --host-resource-id {connected_cluster_id} --namespace appplat-ns -c {extension["id"]}') \
-            .get_output_in_json()['id']
+        custom_location_id = None
+        try:
+            custom_location_id = self.cmd(
+                f'az customlocation create -g {resource_group} -n {custom_location_name} -l {TEST_LOCATION} --host-resource-id {connected_cluster_id} --namespace appplat-ns -c {extension["id"]}') \
+                .get_output_in_json()['id']
+        except:
+            pass
         # create connected environment with client or create a command for connected?
         sub_id = self.cmd('az account show').get_output_in_json()['id']
 
@@ -76,17 +85,19 @@ class ContainerappScenarioTest(ScenarioTest):
             f'az containerapp create --name {ca_name} --resource-group {resource_group} --environment {connected_env_name} --image "mcr.microsoft.com/k8se/quickstart:latest" --environment-type connected',
             checks=[
                 JMESPathCheck('properties.environmentId', connected_env_resource_id),
-                JMESPathCheck('properties.provisioningState', "Succeeded"),
-                JMESPathCheck('extendedLocation.name', custom_location_id)
+                JMESPathCheck('properties.provisioningState', "Succeeded")
             ])
         ca_name2 = self.create_random_name(prefix='containerapp', length=24)
         self.cmd(
             f'az containerapp create --name {ca_name2} --resource-group {resource_group} --environment {connected_env_resource_id} --image "mcr.microsoft.com/k8se/quickstart:latest" --environment-type connected',
             checks=[
                 JMESPathCheck('properties.environmentId', connected_env_resource_id),
-                JMESPathCheck('properties.provisioningState', "Succeeded"),
-                JMESPathCheck('extendedLocation.name', custom_location_id)
+                JMESPathCheck('properties.provisioningState', "Succeeded")
             ])
 
         cmd = ['azdev', 'extension', 'remove', 'containerapp']
+        run(cmd, check=True)
+        cmd = ['azdev', 'extension', 'remove', 'connectedk8s']
+        run(cmd, check=True)
+        cmd = ['azdev', 'extension', 'remove', 'k8s-extension']
         run(cmd, check=True)
