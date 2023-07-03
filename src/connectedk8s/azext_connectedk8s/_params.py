@@ -49,6 +49,7 @@ def load_arguments(self, _):
         c.argument('no_wait', options_list=['--no-wait'], arg_group='Timeout', help="Do not wait for the long-running operation to finish.")
         c.argument('correlation_id', options_list=['--correlation-id'], help='A guid that is used to internally track the source of cluster onboarding. Please do not modify it unless advised', validator=override_client_request_id_header)
         c.argument('container_log_path', help='Override the default container log path to enable fluent-bit logging')
+        c.argument('enable_oidc_issuer', arg_type=get_three_state_flag(), help="Enable creation of OIDC issuer endpoint used for workload identity", is_preview=True)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('connectedk8s update') as c:
@@ -66,6 +67,7 @@ def load_arguments(self, _):
         c.argument('disable_proxy', options_list=['--disable-proxy'], arg_group='Proxy', action='store_true', help='Disables proxy settings for agents')
         c.argument('auto_upgrade', options_list=['--auto-upgrade'], help='Flag to enable/disable auto upgrade of arc agents. By default, auto upgrade of agents is enabled.', arg_type=get_enum_type(["true", "false"]))
         c.argument('container_log_path', help='Override the default container log path to enable fluent-bit logging')
+        c.argument('enable_oidc_issuer', arg_type=get_three_state_flag(), help="Enable creation of OIDC issuer endpoint used for workload identity", is_preview=True)
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
 
     with self.argument_context('connectedk8s upgrade') as c:
