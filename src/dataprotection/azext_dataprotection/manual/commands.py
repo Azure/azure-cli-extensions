@@ -62,13 +62,11 @@ def load_command_table(self, _):
 
     from .aaz_operations.backup_instance import (
         AdhocBackup as BackupInstanceAdhocBackup,
-        Update as BackupInstanceUpdate,
         ValidateAndCreate as BackupInstanceCreate,
         ValidateForRestore as BackupInstanceValidateRestore,
         RestoreTrigger as BackupInstanceRestoreTrigger,
     )
     self.command_table['dataprotection backup-instance adhoc-backup'] = BackupInstanceAdhocBackup(loader=self)
-    self.command_table['dataprotection backup-instance update'] = BackupInstanceUpdate(loader=self)
     self.command_table['dataprotection backup-instance create'] = BackupInstanceCreate(loader=self)
     self.command_table['dataprotection backup-instance validate-for-restore'] = BackupInstanceValidateRestore(loader=self)
     self.command_table['dataprotection backup-instance restore trigger'] = BackupInstanceRestoreTrigger(loader=self)
