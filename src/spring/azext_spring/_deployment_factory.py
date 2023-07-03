@@ -212,6 +212,7 @@ class EnterpriseDeployment(DefaultDeployment):
         if instance_count < 1 or instance_count > 1000:
             raise InvalidArgumentValueError('Invalid --instance-count, should be in range [1, 1000]')
 
+
 class BasicTierDeployment(DefaultDeployment):
     def validate_instance_count(self, instance_count):
         if instance_count < 1 or instance_count > 25:
