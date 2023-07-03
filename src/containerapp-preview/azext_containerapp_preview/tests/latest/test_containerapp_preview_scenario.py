@@ -6,6 +6,7 @@
 import os
 import time
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
+from subprocess import run
 
 from .common import (write_test_file, TEST_LOCATION)
 
@@ -16,6 +17,8 @@ class ContainerappScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(location="eastus", random_name_length=15)
     def test_containerapp_preview_environment_type(self, resource_group):
+        cmd = ['azdev', 'extension', 'add', 'containerapp']
+        run(cmd, check=True)
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
         aks_name = "my-aks-cluster"
         connected_cluster_name = "my-connected-cluster"
@@ -84,3 +87,6 @@ class ContainerappScenarioTest(ScenarioTest):
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck('extendedLocation.name', custom_location_id)
             ])
+
+        cmd = ['azdev', 'extension', 'remove', 'containerapp']
+        run(cmd, check=True)
