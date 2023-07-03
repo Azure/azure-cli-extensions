@@ -15,7 +15,7 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2023-04-01-preview"
+CURRENT_API_VERSION = "2023-04-01-preview"
 POLLING_TIMEOUT = 600  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -149,7 +149,7 @@ def _extract_delay(response):
 class ContainerAppClient():
     @classmethod
     def get_api_version(cls):
-        return PREVIEW_API_VERSION
+        return CURRENT_API_VERSION
 
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, container_app_envelope, no_wait=False):
@@ -493,7 +493,7 @@ class ContainerAppClient():
 class ManagedEnvironmentClient():
     @classmethod
     def get_api_version(cls):
-        return PREVIEW_API_VERSION
+        return CURRENT_API_VERSION
 
     @classmethod
     def create(cls, cmd, resource_group_name, name, managed_environment_envelope, no_wait=False):
@@ -842,7 +842,7 @@ class ManagedEnvironmentClient():
 class WorkloadProfileClient():
     @classmethod
     def get_api_version(cls):
-        return PREVIEW_API_VERSION
+        return CURRENT_API_VERSION
 
     @classmethod
     def list_supported(cls, cmd, location):
@@ -877,7 +877,7 @@ class WorkloadProfileClient():
 class ContainerAppsJobClient():
     @classmethod
     def get_api_version(cls):
-        return PREVIEW_API_VERSION
+        return CURRENT_API_VERSION
 
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, containerapp_job_envelope, no_wait=False):
@@ -1123,7 +1123,7 @@ class ContainerAppsJobClient():
 class GitHubActionClient():
     @classmethod
     def get_api_version(cls):
-        return PREVIEW_API_VERSION
+        return CURRENT_API_VERSION
 
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, name, github_action_envelope, headers, no_wait=False):
@@ -1234,7 +1234,7 @@ class GitHubActionClient():
 class DaprComponentClient():
     @classmethod
     def get_api_version(cls):
-        return PREVIEW_API_VERSION
+        return CURRENT_API_VERSION
 
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, environment_name, name, dapr_component_envelope, no_wait=False):
@@ -1352,7 +1352,7 @@ class DaprComponentClient():
 class StorageClient():
     @classmethod
     def get_api_version(cls):
-        return PREVIEW_API_VERSION
+        return CURRENT_API_VERSION
 
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, env_name, name, storage_envelope, no_wait=False):
@@ -1469,7 +1469,7 @@ class StorageClient():
 class AuthClient():
     @classmethod
     def get_api_version(cls):
-        return PREVIEW_API_VERSION
+        return CURRENT_API_VERSION
 
     @classmethod
     def create_or_update(cls, cmd, resource_group_name, container_app_name, auth_config_name, auth_config_envelope,
