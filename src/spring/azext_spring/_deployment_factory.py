@@ -208,7 +208,6 @@ class EnterpriseDeployment(DefaultDeployment):
             return {}
         return {'env': deployment_resource.properties.deployment_settings.environment_variables}
 
-
     def validate_instance_count(self, instance_count):
         if instance_count < 1 or instance_count > 1000:
             raise InvalidArgumentValueError('Invalid --instance-count, should be in range [1, 1000]')
