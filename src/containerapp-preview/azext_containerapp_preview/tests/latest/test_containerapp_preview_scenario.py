@@ -5,10 +5,9 @@
 
 import os
 import time
-from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only)
 
-from .common import TEST_LOCATION
+from .common import (write_test_file, TEST_LOCATION)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
