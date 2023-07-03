@@ -15,7 +15,6 @@ from ._utils import (_get_azext_module, GA_CONTAINERAPP_EXTENSION_NAME)
 logger = get_logger(__name__)
 
 PREVIEW_API_VERSION = "2023-04-01-preview"
-CURRENT_API_VERSION = "2023-04-01-preview"
 POLLING_TIMEOUT = 600  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
