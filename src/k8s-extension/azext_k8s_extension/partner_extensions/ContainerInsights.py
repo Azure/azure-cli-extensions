@@ -498,7 +498,7 @@ def _get_container_insights_settings(cmd, cluster_resource_group_name, cluster_r
             if 'enableContainerLogV2' in dataCollectionSettings.keys():
                 enableContainerLogV2Value = dataCollectionSettings["enableContainerLogV2"]
                 if not isinstance(enableContainerLogV2Value, bool):
-                    raise InvalidArgumentValueError('enableContainerLogV2Value value MUST be either True or False')
+                    raise InvalidArgumentValueError('enableContainerLogV2Value value MUST be either true or false')
             if 'streams' in dataCollectionSettings.keys():
                 streams = dataCollectionSettings["streams"]
                 if isinstance(streams, list) is False:
